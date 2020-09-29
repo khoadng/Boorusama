@@ -1,6 +1,8 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_loader_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
+import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +14,18 @@ class PostListPage extends StatefulWidget {
 }
 
 class _PostListPageState extends State<PostListPage> {
+  String _currentSearchQuery = "";
+  int _currentPage = 1;
+  final List<Post> _posts = List<Post>();
+  PostListBloc _postListBloc;
+  final ScrollController _scrollController = new ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _postListBloc = BlocProvider.of<PostListBloc>(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +39,8 @@ class _PostListPageState extends State<PostListPage> {
                 return buildLoading();
               } else if (state is PostListLoaded) {
                 return buildListWithData(context, state.posts);
+                // } else if (state is PostListAdditionalLoading) {
+                //   return buildBottomLoading();
               } else {
                 return buildError();
               }
@@ -34,9 +50,7 @@ class _PostListPageState extends State<PostListPage> {
   }
 
   Widget buildInitial() {
-    return Center(
-      child: PostInputField(),
-    );
+    return Center(child: PostInputField(onSearched: _handleSearched));
   }
 
   Widget buildLoading() {
@@ -46,38 +60,32 @@ class _PostListPageState extends State<PostListPage> {
   }
 
   Widget buildListWithData(BuildContext context, List<Post> posts) {
+    _posts.addAll(posts);
     return PostList(
-      posts: posts,
+      posts: _posts,
+      onMaxItemReached: _loadMorePosts,
+      scrollThreshold: 0.8,
+      scrollController: _scrollController,
     );
   }
+
+  // Widget buildBottomLoading() {
+  //   return BottomLoader();
+  // }
 
   Widget buildError() {
     return Center(
       child: Text("OOPS something went wrong"),
     );
   }
-}
 
-class PostInputField extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 50),
-      child: TextField(
-        onSubmitted: (value) => submit(context, value),
-        textInputAction: TextInputAction.search,
-        decoration: InputDecoration(
-          hintText: "Search",
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-          suffixIcon: Icon(Icons.search),
-        ),
-      ),
-    );
+  void _handleSearched(String query) {
+    _currentSearchQuery = query;
+    _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
   }
 
-  void submit(BuildContext context, String tagString) {
-    final postListBloc = BlocProvider.of<PostListBloc>(context);
-
-    postListBloc.add(GetPost(tagString, 1));
+  void _loadMorePosts(_) {
+    _currentPage++;
+    _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
   }
 }
