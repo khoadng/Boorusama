@@ -18,12 +18,15 @@ class _PostListPageState extends State<PostListPage> {
   int _currentPage = 1;
   final List<Post> _posts = List<Post>();
   PostListBloc _postListBloc;
+  // bool _isLoading;
+  // final _loadingNotifier = ValueNotifier<bool>(false);
   final ScrollController _scrollController = new ScrollController();
 
   @override
   void initState() {
     super.initState();
     _postListBloc = BlocProvider.of<PostListBloc>(context);
+    // _loadingNotifier.value = false;
   }
 
   @override
@@ -33,7 +36,10 @@ class _PostListPageState extends State<PostListPage> {
       resizeToAvoidBottomInset: false,
       body: Stack(fit: StackFit.expand, children: [
         buildList(),
-        PostListSearchBar(onSearched: _handleSearched),
+        PostListSearchBar(
+          onSearched: _handleSearched,
+          // progress: _isLoading,
+        ),
       ]),
       bottomNavigationBar: BottomBar(),
     );
@@ -48,6 +54,7 @@ class _PostListPageState extends State<PostListPage> {
         if (state is PostListLoading) {
           return buildLoading();
         } else if (state is PostListLoaded) {
+          // _loadingNotifier.value = false;
           return buildListWithData(context, state.posts);
           // } else if (state is PostListAdditionalLoading) {
           //   return buildBottomLoading();
@@ -91,6 +98,7 @@ class _PostListPageState extends State<PostListPage> {
   void _handleSearched(String query) {
     _currentSearchQuery = query;
     _posts.clear();
+    // _loadingNotifier.value = true;
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
   }
 

@@ -19,7 +19,7 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
     PostListEvent event,
   ) async* {
     if (event is GetPost) {
-      yield PostListLoading();
+      // yield PostListLoading();
       try {
         final posts = await _repository.getPosts(event.tagString, event.page);
         yield PostListLoaded(posts);

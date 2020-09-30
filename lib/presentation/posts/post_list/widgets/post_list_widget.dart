@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_loader_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
+import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
 
 class PostList extends StatefulWidget {
@@ -28,7 +29,11 @@ class _PostListState extends State<PostList> {
       itemCount: widget.posts.length,
       itemBuilder: (context, index) {
         final post = widget.posts[index];
-        final image = PostImage(imageUrl: post.previewImageUri.toString());
+        final image = PostImage(
+          imageUrl: post.previewImageUri.toString(),
+          //TODO: let the parent widget handle navigation
+          onTapped: _handleTap,
+        );
 
         return index >= widget.posts.length ? BottomLoader() : image;
       },
@@ -46,5 +51,14 @@ class _PostListState extends State<PostList> {
     if (currentThresholdPercent >= widget.scrollThreshold) {
       widget.onMaxItemReached(null);
     }
+  }
+
+  void _handleTap(value) {
+    //TODO: use framework
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => PostListSwipePage(posts: widget.posts),
+        ));
   }
 }
