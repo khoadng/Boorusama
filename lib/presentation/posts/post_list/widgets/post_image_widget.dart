@@ -25,9 +25,7 @@ class PostImage extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(image: imageProvider, fit: BoxFit.contain),
           )),
-      placeholder: (context, url) => FractionallySizedBox(
-        widthFactor: 0.1,
-        heightFactor: 0.1,
+      placeholder: (context, url) => Center(
         child: CircularProgressIndicator(),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),

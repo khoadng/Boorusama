@@ -25,6 +25,12 @@ class PostList extends StatefulWidget {
 class _PostListState extends State<PostList> {
   @override
   Widget build(BuildContext context) {
+    return OrientationBuilder(
+      builder: _buildGrid,
+    );
+  }
+
+  Widget _buildGrid(BuildContext context, Orientation orientation) {
     return GridView.builder(
       itemCount: widget.posts.length,
       itemBuilder: (context, index) {
@@ -34,11 +40,10 @@ class _PostListState extends State<PostList> {
           //TODO: let the parent widget handle navigation
           onTapped: _handleTap,
         );
-
         return index >= widget.posts.length ? BottomLoader() : image;
       },
-      gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: orientation == Orientation.landscape ? 5 : 3),
       controller: widget.scrollController..addListener(_onScroll),
     );
   }
