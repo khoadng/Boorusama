@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:photo_view/photo_view.dart';
 
 class PostImage extends StatelessWidget {
   const PostImage({Key key, @required this.imageUrl, this.onTapped})
@@ -19,12 +20,8 @@ class PostImage extends StatelessWidget {
   CachedNetworkImage buildCachedNetworkImage() {
     return CachedNetworkImage(
       imageUrl: imageUrl,
-      imageBuilder: (context, imageProvider) => Container(
-          width: 150,
-          height: 150,
-          decoration: BoxDecoration(
-            image: DecorationImage(image: imageProvider, fit: BoxFit.contain),
-          )),
+      imageBuilder: (context, imageProvider) =>
+          PhotoView(imageProvider: imageProvider),
       placeholder: (context, url) => Center(
         child: CircularProgressIndicator(),
       ),

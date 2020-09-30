@@ -36,6 +36,7 @@ dependencies:
   material_floating_search_bar: ^0.1.7
   cached_network_image: ^2.3.2+1
   flutter_swiper: ^1.1.6
+  photo_view: ^0.10.2
 
 dev_dependencies:
   flutter_test:
