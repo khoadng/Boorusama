@@ -32,6 +32,9 @@ dependencies:
   flutter_bloc: ^6.0.5
   bloc: ^6.0.3
   equatable: ^1.2.5
+  bubble_bottom_bar: ^1.2.0
+  material_floating_search_bar: ^0.1.7
+  cached_network_image: ^2.3.2+1
 
 dev_dependencies:
   flutter_test:

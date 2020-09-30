@@ -1,6 +1,6 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_loader_widget.dart';
+import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
 import 'package:flutter/material.dart';
@@ -29,29 +29,38 @@ class _PostListPageState extends State<PostListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Boorusama")),
-        body: Container(
-          child: BlocBuilder<PostListBloc, PostListState>(
-            builder: (context, state) {
-              if (state is PostListInitial) {
-                return buildInitial();
-              } else if (state is PostListLoading) {
-                return buildLoading();
-              } else if (state is PostListLoaded) {
-                return buildListWithData(context, state.posts);
-                // } else if (state is PostListAdditionalLoading) {
-                //   return buildBottomLoading();
-              } else {
-                return buildError();
-              }
-            },
-          ),
-        ));
+      appBar: AppBar(title: Text("Boorusama")),
+      resizeToAvoidBottomInset: false,
+      body: Stack(fit: StackFit.expand, children: [
+        buildList(),
+        PostListSearchBar(onSearched: _handleSearched),
+      ]),
+      bottomNavigationBar: PostListBottomBar(),
+    );
   }
 
-  Widget buildInitial() {
-    return Center(child: PostInputField(onSearched: _handleSearched));
+  Widget buildList() {
+    return BlocBuilder<PostListBloc, PostListState>(
+      builder: (context, state) {
+        // if (state is PostListInitial) {
+        //   return buildInitial();
+        // } else
+        if (state is PostListLoading) {
+          return buildLoading();
+        } else if (state is PostListLoaded) {
+          return buildListWithData(context, state.posts);
+          // } else if (state is PostListAdditionalLoading) {
+          //   return buildBottomLoading();
+        } else {
+          return buildError();
+        }
+      },
+    );
   }
+
+  // Widget buildInitial() {
+  //   return Center(child: PostListSearchBar(onSearched: _handleSearched));
+  // }
 
   Widget buildLoading() {
     return Center(
@@ -81,6 +90,7 @@ class _PostListPageState extends State<PostListPage> {
 
   void _handleSearched(String query) {
     _currentSearchQuery = query;
+    _posts.clear();
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
   }
 
