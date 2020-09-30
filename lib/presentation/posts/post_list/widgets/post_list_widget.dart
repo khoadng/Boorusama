@@ -1,6 +1,6 @@
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_loader_widget.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
 import 'package:flutter/material.dart';
 
 class PostList extends StatefulWidget {
@@ -28,22 +28,7 @@ class _PostListState extends State<PostList> {
       itemCount: widget.posts.length,
       itemBuilder: (context, index) {
         final post = widget.posts[index];
-        final image = CachedNetworkImage(
-          imageUrl: post.previewImageUri.toString(),
-          imageBuilder: (context, imageProvider) => Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                image:
-                    DecorationImage(image: imageProvider, fit: BoxFit.contain),
-              )),
-          placeholder: (context, url) => FractionallySizedBox(
-            widthFactor: 0.1,
-            heightFactor: 0.1,
-            child: CircularProgressIndicator(),
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        );
+        final image = PostImage(imageUrl: post.previewImageUri.toString());
 
         return index >= widget.posts.length ? BottomLoader() : image;
       },

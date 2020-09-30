@@ -1,6 +1,6 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_bar_widget.dart';
+import 'package:boorusama/presentation/posts/post_list/widgets/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +35,7 @@ class _PostListPageState extends State<PostListPage> {
         buildList(),
         PostListSearchBar(onSearched: _handleSearched),
       ]),
-      bottomNavigationBar: PostListBottomBar(),
+      bottomNavigationBar: BottomBar(),
     );
   }
 
