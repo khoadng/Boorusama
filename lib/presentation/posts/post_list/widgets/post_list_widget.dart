@@ -3,6 +3,7 @@ import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_
 import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class PostList extends StatefulWidget {
   PostList(
@@ -31,7 +32,11 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildGrid(BuildContext context, Orientation orientation) {
-    return GridView.builder(
+    return StaggeredGridView.extentBuilder(
+      primary: false,
+      maxCrossAxisExtent: 150,
+      mainAxisSpacing: 5.0,
+      crossAxisSpacing: 5.0,
       itemCount: widget.posts.length,
       itemBuilder: (context, index) {
         final post = widget.posts[index];
@@ -42,8 +47,20 @@ class _PostListState extends State<PostList> {
         );
         return index >= widget.posts.length ? BottomLoader() : image;
       },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: orientation == Orientation.landscape ? 5 : 3),
+      staggeredTileBuilder: (index) {
+        final height = widget.posts[index].height / 10;
+        double mainAxisExtent;
+
+        if (height > 150) {
+          mainAxisExtent = 150;
+        } else if (height < 80) {
+          mainAxisExtent = 80;
+        } else {
+          mainAxisExtent = height;
+        }
+
+        return StaggeredTile.extent(1, mainAxisExtent);
+      },
       controller: widget.scrollController..addListener(_onScroll),
     );
   }

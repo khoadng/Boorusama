@@ -33,6 +33,7 @@ class _PostListPageState extends State<PostListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Boorusama")),
+      backgroundColor: Color(0xff424242),
       resizeToAvoidBottomInset: false,
       body: Stack(fit: StackFit.expand, children: [
         buildList(),
@@ -59,7 +60,7 @@ class _PostListPageState extends State<PostListPage> {
           // } else if (state is PostListAdditionalLoading) {
           //   return buildBottomLoading();
         } else {
-          return buildError();
+          return Center(child: Text("Nothing here"));
         }
       },
     );

@@ -20,11 +20,11 @@ class PostImage extends StatelessWidget {
     return CachedNetworkImage(
       imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) => Container(
-          width: 150,
-          height: 150,
+          // width: 150,
+          // height: 150,
           decoration: BoxDecoration(
-            image: DecorationImage(image: imageProvider, fit: BoxFit.contain),
-          )),
+        image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+      )),
       placeholder: (context, url) => Center(
         child: CircularProgressIndicator(),
       ),
