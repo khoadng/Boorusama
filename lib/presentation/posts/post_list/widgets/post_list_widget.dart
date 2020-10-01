@@ -3,6 +3,7 @@ import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_
 import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class PostList extends StatefulWidget {
@@ -11,11 +12,15 @@ class PostList extends StatefulWidget {
       @required this.posts,
       @required this.onMaxItemReached,
       @required this.scrollThreshold,
-      @required this.scrollController})
+      @required this.scrollController,
+      this.onScrolledUp,
+      this.onScrolledDown})
       : super(key: key);
 
   final List<Post> posts;
   final ValueChanged onMaxItemReached;
+  final ValueChanged onScrolledUp;
+  final ValueChanged onScrolledDown;
   final scrollThreshold;
   final scrollController;
 
@@ -72,6 +77,14 @@ class _PostListState extends State<PostList> {
 
     if (currentThresholdPercent >= widget.scrollThreshold) {
       widget.onMaxItemReached(null);
+    }
+
+    if (widget.scrollController.position.userScrollDirection ==
+        ScrollDirection.reverse) {
+      widget.onScrolledUp(null);
+    } else if (widget.scrollController.position.userScrollDirection ==
+        ScrollDirection.forward) {
+      widget.onScrolledDown(null);
     }
   }
 
