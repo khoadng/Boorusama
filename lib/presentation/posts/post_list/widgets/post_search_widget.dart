@@ -3,14 +3,16 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class PostListSearchBar extends StatelessWidget {
   final ValueChanged<String> onSearched;
+  final FloatingSearchBarController controller;
   // final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-  PostListSearchBar({Key key, @required this.onSearched});
+  PostListSearchBar({Key key, @required this.onSearched, this.controller});
 
   @override
   Widget build(BuildContext context) {
     return FloatingSearchBar(
       hint: 'Search...',
+      controller: controller,
       onSubmitted: _handleSubmitted,
       scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
       transitionDuration: const Duration(milliseconds: 800),
@@ -20,7 +22,7 @@ class PostListSearchBar extends StatelessWidget {
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
       // maxWidth: isPortrait ? 600 : 500,
-      maxWidth: 500,
+      // maxWidth: 500,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
         // Call your model, bloc, controller here.
