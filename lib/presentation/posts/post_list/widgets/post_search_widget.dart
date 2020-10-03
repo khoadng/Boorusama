@@ -14,15 +14,12 @@ class PostListSearchBar extends StatelessWidget {
       hint: 'Search...',
       controller: controller,
       onSubmitted: _handleSubmitted,
-      scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+      clearQueryOnClose: false,
       transitionDuration: const Duration(milliseconds: 800),
       transitionCurve: Curves.easeInOut,
       physics: const BouncingScrollPhysics(),
-      // axisAlignment: isPortrait ? 0.0 : -1.0,
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
-      // maxWidth: isPortrait ? 600 : 500,
-      // maxWidth: 500,
       debounceDelay: const Duration(milliseconds: 500),
       onQueryChanged: (query) {
         // Call your model, bloc, controller here.
@@ -31,15 +28,8 @@ class PostListSearchBar extends StatelessWidget {
       // animating between opened and closed stated.
       transition: CircularFloatingSearchBarTransition(),
       actions: [
-        FloatingSearchBarAction(
-          showIfOpened: false,
-          child: CircularButton(
-            icon: const Icon(Icons.place),
-            onPressed: () {},
-          ),
-        ),
         FloatingSearchBarAction.searchToClear(
-          showIfClosed: false,
+          showIfClosed: true,
         ),
       ],
       builder: (context, transition) => buildExpandableBody(),
@@ -56,5 +46,6 @@ class PostListSearchBar extends StatelessWidget {
 
   void _handleSubmitted(String value) {
     onSearched(value);
+    controller.close();
   }
 }

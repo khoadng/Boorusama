@@ -40,7 +40,7 @@ class _PostListPageState extends State<PostListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xff424242),
+      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Stack(fit: StackFit.expand, children: [
         buildList(),
@@ -102,6 +102,7 @@ class _PostListPageState extends State<PostListPage> {
     _currentSearchQuery = query;
     _posts.clear();
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
+    _scrollController.jumpTo(0.0);
   }
 
   void _loadMorePosts(_) {

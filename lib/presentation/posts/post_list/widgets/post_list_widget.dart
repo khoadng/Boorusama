@@ -37,36 +37,39 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildGrid(BuildContext context, Orientation orientation) {
-    return StaggeredGridView.extentBuilder(
-      primary: false,
-      maxCrossAxisExtent: 150,
-      mainAxisSpacing: 5.0,
-      crossAxisSpacing: 5.0,
-      itemCount: widget.posts.length,
-      itemBuilder: (context, index) {
-        final post = widget.posts[index];
-        final image = PostImage(
-          imageUrl: post.previewImageUri.toString(),
-          //TODO: let the parent widget handle navigation
-          onTapped: (value) => _handleTap(index),
-        );
-        return index >= widget.posts.length ? BottomLoader() : image;
-      },
-      staggeredTileBuilder: (index) {
-        final height = widget.posts[index].height / 10;
-        double mainAxisExtent;
+    return Padding(
+      padding: const EdgeInsets.only(top: 0, left: 5, right: 5, bottom: 0),
+      child: StaggeredGridView.extentBuilder(
+        primary: false,
+        maxCrossAxisExtent: 150,
+        mainAxisSpacing: 5.0,
+        crossAxisSpacing: 5.0,
+        itemCount: widget.posts.length,
+        itemBuilder: (context, index) {
+          final post = widget.posts[index];
+          final image = PostImage(
+            imageUrl: post.previewImageUri.toString(),
+            //TODO: let the parent widget handle navigation
+            onTapped: (value) => _handleTap(index),
+          );
+          return index >= widget.posts.length ? BottomLoader() : image;
+        },
+        staggeredTileBuilder: (index) {
+          final height = widget.posts[index].height / 10;
+          double mainAxisExtent;
 
-        if (height > 150) {
-          mainAxisExtent = 150;
-        } else if (height < 80) {
-          mainAxisExtent = 80;
-        } else {
-          mainAxisExtent = height;
-        }
+          if (height > 150) {
+            mainAxisExtent = 150;
+          } else if (height < 80) {
+            mainAxisExtent = 80;
+          } else {
+            mainAxisExtent = height;
+          }
 
-        return StaggeredTile.extent(1, mainAxisExtent);
-      },
-      controller: widget.scrollController..addListener(_onScroll),
+          return StaggeredTile.extent(1, mainAxisExtent);
+        },
+        controller: widget.scrollController..addListener(_onScroll),
+      ),
     );
   }
 
