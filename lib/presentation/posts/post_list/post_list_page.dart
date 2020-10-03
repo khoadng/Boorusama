@@ -20,8 +20,6 @@ class _PostListPageState extends State<PostListPage> {
   int _currentPage = 1;
   final List<Post> _posts = List<Post>();
   PostListBloc _postListBloc;
-  // bool _isLoading;
-  // final _loadingNotifier = ValueNotifier<bool>(false);
   final ScrollController _scrollController = new ScrollController();
   final FloatingSearchBarController _searchBarController =
       new FloatingSearchBarController();
@@ -30,7 +28,6 @@ class _PostListPageState extends State<PostListPage> {
   void initState() {
     super.initState();
     _postListBloc = BlocProvider.of<PostListBloc>(context);
-    // _loadingNotifier.value = false;
   }
 
   @override
@@ -50,7 +47,6 @@ class _PostListPageState extends State<PostListPage> {
         PostListSearchBar(
           controller: _searchBarController,
           onSearched: _handleSearched,
-          // progress: _isLoading,
         ),
       ]),
       bottomNavigationBar: BottomBar(),
@@ -77,10 +73,6 @@ class _PostListPageState extends State<PostListPage> {
     );
   }
 
-  // Widget buildInitial() {
-  //   return Center(child: PostListSearchBar(onSearched: _handleSearched));
-  // }
-
   Widget buildLoading() {
     return Center(
       child: CircularProgressIndicator(),
@@ -100,10 +92,6 @@ class _PostListPageState extends State<PostListPage> {
     );
   }
 
-  // Widget buildBottomLoading() {
-  //   return BottomLoader();
-  // }
-
   Widget buildError() {
     return Center(
       child: Text("OOPS something went wrong"),
@@ -113,7 +101,6 @@ class _PostListPageState extends State<PostListPage> {
   void _handleSearched(String query) {
     _currentSearchQuery = query;
     _posts.clear();
-    // _loadingNotifier.value = true;
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
   }
 

@@ -48,7 +48,7 @@ class _PostListState extends State<PostList> {
         final image = PostImage(
           imageUrl: post.previewImageUri.toString(),
           //TODO: let the parent widget handle navigation
-          onTapped: _handleTap,
+          onTapped: (value) => _handleTap(index),
         );
         return index >= widget.posts.length ? BottomLoader() : image;
       },
@@ -99,7 +99,10 @@ class _PostListState extends State<PostList> {
     Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PostListSwipePage(posts: widget.posts),
+          builder: (context) => PostListSwipePage(
+            posts: widget.posts,
+            initialPostIndex: value,
+          ),
         ));
   }
 }
