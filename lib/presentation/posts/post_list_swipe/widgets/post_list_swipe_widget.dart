@@ -4,11 +4,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 class PostListSwipe extends StatefulWidget {
-  PostListSwipe({Key key, @required this.posts, this.initialPostIndex})
+  PostListSwipe(
+      {Key key,
+      @required this.posts,
+      this.initialPostIndex,
+      this.onPostChanged})
       : super(key: key);
 
   final List<Post> posts;
   final int initialPostIndex;
+  final ValueChanged<int> onPostChanged;
 
   @override
   _PostListSwipeState createState() => _PostListSwipeState();
@@ -21,6 +26,7 @@ class _PostListSwipeState extends State<PostListSwipe> {
       options: CarouselOptions(
           initialPage: widget.initialPostIndex, viewportFraction: 1.0),
       itemBuilder: (context, index) {
+        widget.onPostChanged(index);
         final post = widget.posts[index];
         final image = PostImage(imageUrl: post.normalImageUri.toString());
 

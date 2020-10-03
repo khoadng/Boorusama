@@ -28,6 +28,7 @@ class _PostListPageState extends State<PostListPage> {
   void initState() {
     super.initState();
     _postListBloc = BlocProvider.of<PostListBloc>(context);
+    _postListBloc.add(GetPost("", 1));
   }
 
   @override

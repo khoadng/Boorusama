@@ -1,11 +1,16 @@
 class Post {
   final Uri _previewImageUri;
   final Uri _normalImageUri;
+  final Uri _fullImageUri;
   final int _width;
   final int _height;
 
   Post(
-      [this._previewImageUri, this._normalImageUri, this._width, this._height]);
+      [this._previewImageUri,
+      this._normalImageUri,
+      this._fullImageUri,
+      this._width,
+      this._height]);
 
   Uri get previewImageUri {
     return _previewImageUri;
@@ -13,6 +18,10 @@ class Post {
 
   Uri get normalImageUri {
     return _normalImageUri;
+  }
+
+  Uri get fullImageUri {
+    return _fullImageUri;
   }
 
   int get width {
@@ -27,6 +36,7 @@ class Post {
     return new Post(
       Uri.parse(json["preview_file_url"]),
       Uri.parse(json["large_file_url"]),
+      Uri.parse(json["file_url"]),
       json["image_width"],
       json["image_height"],
     );

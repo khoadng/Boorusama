@@ -146,13 +146,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.2"
-  flutter_page_indicator:
-    dependency: transitive
+  flutter_downloader:
+    dependency: "direct main"
     description:
-      name: flutter_page_indicator
+      name: flutter_downloader
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.3"
+    version: "1.5.1"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -160,13 +160,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.2"
-  flutter_swiper:
-    dependency: "direct main"
-    description:
-      name: flutter_swiper
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.1.6"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -236,7 +229,7 @@ packages:
     source: hosted
     version: "1.8.0-nullsafety.1"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       url: "https://pub.dartlang.org"
@@ -277,6 +270,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.0"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "5.0.1+1"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.1"
   photo_view:
     dependency: "direct main"
     description:
@@ -387,13 +394,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
-  transformer_page_view:
-    dependency: transitive
-    description:
-      name: transformer_page_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.6"
   typed_data:
     dependency: transitive
     description:
