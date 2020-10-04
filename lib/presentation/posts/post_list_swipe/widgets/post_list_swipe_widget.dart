@@ -1,5 +1,6 @@
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
+import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_video_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
@@ -24,13 +25,18 @@ class _PostListSwipeState extends State<PostListSwipe> {
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       options: CarouselOptions(
-          initialPage: widget.initialPostIndex, viewportFraction: 1.0),
+          initialPage: widget.initialPostIndex,
+          viewportFraction: 1.0,
+          enableInfiniteScroll: false,
+          height: MediaQuery.of(context).size.height),
       itemBuilder: (context, index) {
         widget.onPostChanged(index);
         final post = widget.posts[index];
-        final image = PostImage(imageUrl: post.normalImageUri.toString());
-
-        return image;
+        if (post.isVideo) {
+          return PostVideo(post: post);
+        } else {
+          return PostImage(imageUrl: post.normalImageUri.toString());
+        }
       },
       itemCount: widget.posts.length,
     );

@@ -41,6 +41,7 @@ dependencies:
   flutter_downloader: ^1.5.1
   path_provider: ^1.6.18
   permission_handler: ^5.0.1+1
+  chewie: ^0.9.10
 
 dev_dependencies:
   flutter_test:
@@ -81,4 +82,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-

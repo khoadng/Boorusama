@@ -23,8 +23,10 @@ class PostImage extends StatelessWidget {
           decoration: BoxDecoration(
         image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
       )),
-      placeholder: (context, url) => Center(
-        child: CircularProgressIndicator(),
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator(
+          value: progress.progress,
+        ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );

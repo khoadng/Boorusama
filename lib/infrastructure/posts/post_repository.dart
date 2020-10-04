@@ -27,7 +27,11 @@ class PostRepository implements IPostRepository {
       var content = jsonDecode(respond.body);
       var posts = List<Post>();
       for (var item in content) {
-        posts.add(Post.fromJson(item));
+        try {
+          posts.add(Post.fromJson(item));
+        } catch (e) {
+          print("Cant parse $item[id]");
+        }
       }
       return posts;
       // return content.map((post) => Post.fromJson(post)).toList();

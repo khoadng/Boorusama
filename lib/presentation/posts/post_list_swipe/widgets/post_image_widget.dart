@@ -22,8 +22,10 @@ class PostImage extends StatelessWidget {
       imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) =>
           PhotoView(imageProvider: imageProvider),
-      placeholder: (context, url) => Center(
-        child: CircularProgressIndicator(),
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator(
+          value: progress.progress,
+        ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
     );
