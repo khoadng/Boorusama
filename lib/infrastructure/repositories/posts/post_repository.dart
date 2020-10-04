@@ -2,26 +2,26 @@ import 'dart:convert';
 
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
-
-import 'package:http/http.dart' as http;
+import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 
 class PostRepository implements IPostRepository {
-  final http.Client _httpClient = http.Client();
-  final _url = "danbooru.donmai.us";
-  final _username = "khoaharp";
-  final _apiKey = "tstJTCP7ghdQ82LNfvuz1fAv";
+  //TODO: shouldn't use concrete type
+  final Danbooru _api;
 
+  PostRepository(this._api);
+
+  //TODO: update to remove duplicate code
   @override
   Future<List<Post>> getPosts(String tagString, int page) async {
-    var uri = Uri.http(_url, "/posts.json", {
-      "login": _username,
-      "api_key": _apiKey,
+    var uri = Uri.https(_api.url, "/posts.json", {
+      "login": _api.username,
+      "api_key": _api.apiKey,
       "page": page.toString(),
       "tags": tagString,
       "limit": "200",
     });
 
-    var respond = await _httpClient.get(uri);
+    var respond = await _api.client.get(uri);
 
     if (respond.statusCode == 200) {
       var content = jsonDecode(respond.body);

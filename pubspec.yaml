@@ -33,7 +33,7 @@ dependencies:
   bloc: ^6.0.3
   equatable: ^1.2.5
   bubble_bottom_bar: ^1.2.0
-  material_floating_search_bar: ^0.1.7
+  material_floating_search_bar: ^0.2.0-dev+1
   cached_network_image: ^2.3.2+1
   photo_view: ^0.10.2
   flutter_staggered_grid_view: ^0.3.2
@@ -42,6 +42,8 @@ dependencies:
   path_provider: ^1.6.18
   permission_handler: ^5.0.1+1
   chewie: ^0.9.10
+  intl: ^0.16.1
+  implicitly_animated_reorderable_list: ^0.2.5
 
 dev_dependencies:
   flutter_test:
@@ -82,3 +84,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
