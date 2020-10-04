@@ -36,6 +36,10 @@ class Post {
     return _height;
   }
 
+  double get aspectRatio {
+    return width / height;
+  }
+
   bool get isVideo {
     //TODO: handle other kind of video format
     final supportVideoFormat = ["mp4", "webm", "zip"];

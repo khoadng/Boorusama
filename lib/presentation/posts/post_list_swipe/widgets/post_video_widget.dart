@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
+//TODO: implement caching video
 class PostVideo extends StatefulWidget {
   PostVideo({Key key, @required this.post}) : super(key: key);
 
@@ -23,7 +24,7 @@ class _PostVideoState extends State<PostVideo> {
         VideoPlayerController.network(widget.post.normalImageUri.toString());
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
-      aspectRatio: widget.post.width / widget.post.height,
+      aspectRatio: widget.post.aspectRatio,
       autoPlay: true,
       looping: true,
       // Try playing around with some of these other options:
