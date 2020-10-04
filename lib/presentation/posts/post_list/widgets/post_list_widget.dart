@@ -101,7 +101,7 @@ class _PostListState extends State<PostList> {
     //TODO: use framework
     Navigator.push(
         context,
-        MaterialPageRoute(
+        MaterialPageRoute<PostListSwipePage>(
           builder: (context) => PostListSwipePage(
             posts: widget.posts,
             initialPostIndex: value,

@@ -10,9 +10,9 @@ part 'post_list_event.dart';
 part 'post_list_state.dart';
 
 class PostListBloc extends Bloc<PostListEvent, PostListState> {
-  final IPostRepository _repository;
+  final IPostRepository repository;
 
-  PostListBloc(this._repository) : super(PostListInitial());
+  PostListBloc({@required this.repository}) : super(PostListInitial());
 
   @override
   Stream<PostListState> mapEventToState(
@@ -21,7 +21,7 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
     if (event is GetPost) {
       // yield PostListLoading();
       // try {
-      final posts = await _repository.getPosts(event.tagString, event.page);
+      final posts = await repository.getPosts(event.tagString, event.page);
       yield PostListLoaded(posts);
       // } on Error {
       //   yield PostListError("Something's wrong");
