@@ -1,6 +1,9 @@
+import 'package:boorusama/application/accounts/add_account/bloc/add_account_bloc.dart';
+import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
@@ -62,6 +65,39 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
           showIfClosed: false,
           duration: Duration(milliseconds: 400),
         ),
+        GestureDetector(
+          onTap: () {
+            //TODO: refactor to widget
+            final accountBloc = BlocProvider.of<GetAllAccountsBloc>(context);
+            accountBloc.add(GetAllAccountsRequested());
+
+            final popup = BeautifulPopup(
+              context: context,
+              template: TemplateAuthentication,
+            );
+            popup.show(
+              title: 'Boorusama',
+              content: buildAccountUserPopup(),
+              actions: [
+                popup.button(
+                    label: 'Add account',
+                    onPressed: () {
+                      final accountAddBloc =
+                          BlocProvider.of<AddAccountBloc>(context);
+                      accountAddBloc.add(AddAccountRequested(
+                          username: "khoaharp", password: "anhlavodich123"));
+                    }),
+              ],
+              // bool barrierDismissible = false,
+              // Widget close,
+            );
+          },
+          child: CircleAvatar(
+            radius: 18.0,
+            backgroundColor: Colors.blue,
+            child: Text("DK"),
+          ),
+        ),
       ],
       builder: (context, transition) => buildExpandableBody(),
     );
@@ -79,6 +115,29 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
         }
       } else {
         return buildEmptySuggestions();
+      }
+    });
+  }
+
+  //TODO: refactor pls
+  Widget buildAccountUserPopup() {
+    return BlocBuilder<GetAllAccountsBloc, GetAllAccountsState>(
+        builder: (context, state) {
+      if (state is GetAllAccountsSuccess) {
+        if (state.accounts != null && state.accounts.isNotEmpty) {
+          return ListView.builder(
+            itemBuilder: (context, index) => ListTile(
+              title: Text(state.accounts[index].username),
+            ),
+            itemCount: state.accounts.length,
+          );
+        } else {
+          return Center(
+            child: Text("No accounts added yet"),
+          );
+        }
+      } else {
+        return Center(child: CircularProgressIndicator());
       }
     });
   }
