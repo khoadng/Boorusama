@@ -1,6 +1,7 @@
 import 'package:boorusama/application/accounts/add_account/bloc/add_account_bloc.dart';
 import 'package:boorusama/application/accounts/add_account/services/i_scrapper_service.dart';
 import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
+import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/download_service.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
@@ -49,6 +50,8 @@ class App extends StatelessWidget {
                 scrapperService: scrapperService)),
         BlocProvider<GetAllAccountsBloc>(
             create: (_) => GetAllAccountsBloc(accountRepository)),
+        BlocProvider<RemoveAccountBloc>(
+            create: (_) => RemoveAccountBloc(accountRepository)),
       ],
       child: MaterialApp(
         title: "Boorusama",

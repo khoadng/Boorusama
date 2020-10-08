@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/accounts/add_account/services/i_scrapper_service.dart';
+import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:equatable/equatable.dart';
 
@@ -24,7 +25,7 @@ class AddAccountBloc extends Bloc<AddAccountEvent, AddAccountState> {
       final account = await scrapperService.crawlAccountData(
           event.username, event.password);
       await accountRepository.add(account);
-      yield AddAccountDone();
+      yield AddAccountDone(account: account);
     }
   }
 }

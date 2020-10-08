@@ -32,8 +32,11 @@ class AccountRepository implements IAccountRepository {
   }
 
   @override
-  Future<void> remove(Account account) {
-    // TODO: implement remove
-    throw UnimplementedError();
+  Future<void> remove(Account account) async {
+    final db = await _db;
+
+    //TODO: implement delete
+    await db.delete("accounts",
+        where: "username = ?", whereArgs: [account.username]);
   }
 }
