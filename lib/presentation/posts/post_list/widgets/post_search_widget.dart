@@ -43,7 +43,7 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
       physics: const BouncingScrollPhysics(),
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
-      debounceDelay: const Duration(milliseconds: 200),
+      // debounceDelay: const Duration(milliseconds: 200),
       onQueryChanged: (query) {
         if (query.isEmpty) {
           widget.controller.close();
@@ -96,37 +96,34 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
     return BlocBuilder<TagSuggestionsBloc, TagSuggestionsState>(
         builder: (context, state) {
       if (state is TagSuggestionsLoaded) {
+        _tags.clear();
         _tags.addAll(state.tags);
-        if (_tags.isNotEmpty) {
-          return buildSuggestionItems(_tags);
-        } else {
-          return buildEmptySuggestions();
-        }
+        return buildSuggestionItems();
       } else {
         return buildEmptySuggestions();
       }
     });
   }
 
-  Widget buildSuggestionItems(List<Tag> tags) {
+  Widget buildSuggestionItems() {
     return Material(
         color: Colors.white,
         elevation: 4.0,
         borderRadius: BorderRadius.circular(8),
         child: ListView.builder(
           shrinkWrap: true,
-          itemCount: 6,
+          itemCount: _tags.length > 6 ? 6 : _tags.length,
           padding: EdgeInsets.all(0.0),
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return ListTile(
               onTap: () =>
                   widget.controller.query = _tags[index].displayName + " ",
-              trailing: Text(tags[index].postCount.toString(),
+              trailing: Text(_tags[index].postCount.toString(),
                   style: TextStyle(color: Colors.grey)),
               title: Text(
-                tags[index].displayName,
-                style: TextStyle(color: Color(tags[index].tagHexColor)),
+                _tags[index].displayName,
+                style: TextStyle(color: Color(_tags[index].tagHexColor)),
               ),
             );
           },

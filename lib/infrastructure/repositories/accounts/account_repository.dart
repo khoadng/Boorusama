@@ -39,4 +39,17 @@ class AccountRepository implements IAccountRepository {
     await db.delete("accounts",
         where: "username = ?", whereArgs: [account.username]);
   }
+
+  @override
+  Future<Account> get() async {
+    final db = await _db;
+
+    final List<Map<String, dynamic>> records = await db.query('accounts');
+
+    if (records == null || records.isEmpty) {
+      return Account.create("", "");
+    }
+
+    return Account.create(records.first['username'], records.first['apiKey']);
+  }
 }

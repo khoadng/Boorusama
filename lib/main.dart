@@ -28,12 +28,13 @@ void main() async {
   Bloc.observer = SimpleBlocObserver();
 
   final apiProvider = Danbooru(http.Client());
+  final accountRepository = AccountRepository(accountDb);
 
   runApp(App(
-    postRepository: PostRepository(apiProvider),
-    tagRepository: TagRepository(apiProvider),
+    postRepository: PostRepository(apiProvider, accountRepository),
+    tagRepository: TagRepository(apiProvider, accountRepository),
     scrapperService: ScrapperService(),
     downloadService: DownloadService(),
-    accountRepository: AccountRepository(accountDb),
+    accountRepository: accountRepository,
   ));
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
@@ -7,23 +8,16 @@ import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 class TagRepository implements ITagRepository {
   final Danbooru _api;
 
-  TagRepository(this._api);
+  final IAccountRepository _accountRepository;
+
+  TagRepository(this._api, this._accountRepository);
 
   @override
   Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) async {
-    // var uri = Uri.http(_api.url, "/tags.json", {
-    //   "login": _api.username,
-    //   "api_key": _api.apiKey,
-    //   "page": page.toString(),
-    //   "search[hide_empty]": "yes",
-    //   "search[name_or_alias_matches]": stringPattern + "*",
-    //   "search[order]": "count",
-    //   "limit": "10",
-    // });
-
+    final account = await _accountRepository.get();
     var uri = Uri.https(_api.url, "/tags.json", {
-      "login": _api.username,
-      "api_key": _api.apiKey,
+      "login": account.username,
+      "api_key": account.apiKey,
       "page": page.toString(),
       "search[hide_empty]": "yes",
       "search[name_or_alias_matches]": stringPattern + "*",

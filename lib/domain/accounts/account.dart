@@ -5,6 +5,7 @@ class Account {
   Account(this._username, this._apiKey);
 
   String get username => _username;
+  String get apiKey => _apiKey;
 
   factory Account.create(String username, String apiKey) {
     return Account(username, apiKey);
