@@ -16,6 +16,10 @@ class PostListPageView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => controller.downloadAllPosts(),
+        child: const Icon(Icons.download_rounded),
+      ),
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: Stack(fit: StackFit.expand, children: [
