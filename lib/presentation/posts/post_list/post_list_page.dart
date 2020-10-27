@@ -44,6 +44,7 @@ class PostListPageState extends State<PostListPage> {
     posts.clear();
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
     scrollController.jumpTo(0.0);
+    _currentPage = 1;
   }
 
   void loadMorePosts(_) {
