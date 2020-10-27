@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
@@ -34,7 +35,7 @@ void main() async {
     postRepository: PostRepository(apiProvider, accountRepository),
     tagRepository: TagRepository(apiProvider, accountRepository),
     scrapperService: ScrapperService(),
-    downloadService: DownloadService(),
+    downloadService: DownloadService(FileNameGenerator()),
     accountRepository: accountRepository,
   ));
 }

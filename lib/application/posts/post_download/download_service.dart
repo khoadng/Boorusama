@@ -1,15 +1,19 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:ui';
 import 'dart:isolate';
 
+import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
+import 'package:boorusama/domain/posts/post.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class DownloadService implements IDownloadService {
-  DownloadService();
+  final FileNameGenerator fileNameGenerator;
+
+  DownloadService(this.fileNameGenerator);
 
   ReceivePort _port = ReceivePort();
   bool _permissionReady;
@@ -17,9 +21,15 @@ class DownloadService implements IDownloadService {
   String _savedDir;
 
   @override
-  void download(String url) async {
+  void download(Post post, String url) async {
+    final filePath = fileNameGenerator.generateFor(post, url);
+    final exist = await io.File(filePath).exists();
+
+    if (exist) return;
+
     await FlutterDownloader.enqueue(
         url: url,
+        fileName: filePath,
         savedDir: _savedDir,
         showNotification: true,
         openFileFromNotification: true);
@@ -28,7 +38,7 @@ class DownloadService implements IDownloadService {
   Future<Null> _prepare() async {
     final tasks = await FlutterDownloader.loadTasks();
 
-    final savedDir = Directory(_localPath);
+    final savedDir = io.Directory(_localPath);
     bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
       savedDir.create();
@@ -89,7 +99,7 @@ class DownloadService implements IDownloadService {
     final directory = platform == TargetPlatform.android
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
-    _localPath = directory.path + Platform.pathSeparator + 'Download';
+    _localPath = directory.path + io.Platform.pathSeparator + 'Download';
     _permissionReady = await _checkPermission(platform);
 
     _prepare();

@@ -23,10 +23,13 @@ class PostDownloadBloc extends Bloc<PostDownloadEvent, PostDownloadState> {
     } else if (event is PostDownloadRequested) {
       //TODO: handle permission denied
       yield PostDownloading();
+      //TODO: Shouldn't pass post and url at the same time, refactor later
       if (event.post.isVideo) {
-        _downloadService.download(event.post.normalImageUri.toString());
+        _downloadService.download(
+            event.post, event.post.normalImageUri.toString());
       } else {
-        _downloadService.download(event.post.fullImageUri.toString());
+        _downloadService.download(
+            event.post, event.post.fullImageUri.toString());
       }
     }
   }

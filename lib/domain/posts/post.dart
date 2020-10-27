@@ -4,6 +4,12 @@ class Post {
   final Uri _fullImageUri;
   final int _width;
   final int _height;
+  // ignore: non_constant_identifier_names
+  final String _tag_string_copyright;
+  // ignore: non_constant_identifier_names
+  final String _tag_string_character;
+  // ignore: non_constant_identifier_names
+  final String _tag_string_artist;
   //TODO: should use Enum instead of raw string
   final String _format;
 
@@ -12,6 +18,12 @@ class Post {
       [this._previewImageUri,
       this._normalImageUri,
       this._fullImageUri,
+      // ignore: non_constant_identifier_names
+      this._tag_string_copyright,
+      // ignore: non_constant_identifier_names
+      this._tag_string_character,
+      // ignore: non_constant_identifier_names
+      this._tag_string_artist,
       this._width,
       this._height,
       this._format]);
@@ -36,6 +48,18 @@ class Post {
     return _height;
   }
 
+  String get tagStringCopyright {
+    return _tag_string_copyright;
+  }
+
+  String get tagStringCharacter {
+    return _tag_string_character;
+  }
+
+  String get tagStringArtist {
+    return _tag_string_artist;
+  }
+
   double get aspectRatio {
     return width / height;
   }
@@ -56,6 +80,9 @@ class Post {
       Uri.parse(json["preview_file_url"]),
       Uri.parse(json["large_file_url"]),
       Uri.parse(json["file_url"]),
+      json["tag_string_copyright"],
+      json["tag_string_character"],
+      json["tag_string_artist"],
       json["image_width"],
       json["image_height"],
       json["file_ext"],
