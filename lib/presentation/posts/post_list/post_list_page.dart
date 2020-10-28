@@ -16,6 +16,7 @@ class PostListPage extends StatefulWidget {
 class PostListPageState extends State<PostListPage> {
   String _currentSearchQuery = "";
   int _currentPage = 1;
+  int currentTab = 0;
   final List<Post> posts = List<Post>();
   PostListBloc _postListBloc;
   PostDownloadBloc _postDownloadBloc;
@@ -45,6 +46,12 @@ class PostListPageState extends State<PostListPage> {
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
     scrollController.jumpTo(0.0);
     _currentPage = 1;
+  }
+
+  void handleTabChanged(int tabIndex) {
+    setState(() {
+      currentTab = tabIndex;
+    });
   }
 
   void loadMorePosts(_) {

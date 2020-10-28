@@ -1,4 +1,5 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
@@ -22,15 +23,27 @@ class PostListPageView
       ),
       backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
-      body: Stack(fit: StackFit.expand, children: [
-        buildList(),
-        PostListSearchBar(
-          controller: controller.searchBarController,
-          onSearched: controller.handleSearched,
-        ),
-      ]),
-      bottomNavigationBar: BottomBar(),
+      body: _getPage(controller.currentTab),
+      bottomNavigationBar: BottomBar(
+        onTabChanged: (value) => controller.handleTabChanged(value),
+      ),
     );
+  }
+
+  //TODO: refactor
+  Widget _getPage(int tabIndex) {
+    switch (tabIndex) {
+      case 0:
+        return Stack(fit: StackFit.expand, children: [
+          buildList(),
+          PostListSearchBar(
+            controller: controller.searchBarController,
+            onSearched: controller.handleSearched,
+          ),
+        ]);
+      case 1:
+        return PostDownloadGalleryPage();
+    }
   }
 
   Widget buildList() {

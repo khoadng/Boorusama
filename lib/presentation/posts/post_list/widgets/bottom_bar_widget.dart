@@ -1,15 +1,37 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
-class BottomBar extends StatelessWidget {
-  const BottomBar({Key key}) : super(key: key);
+class BottomBar extends StatefulWidget {
+  const BottomBar({Key key, @required this.onTabChanged}) : super(key: key);
+
+  final ValueChanged<int> onTabChanged;
+
+  @override
+  _BottomBarState createState() => _BottomBarState();
+}
+
+class _BottomBarState extends State<BottomBar> {
+  int currentIndex;
+
+  @override
+  void initState() {
+    super.initState();
+    currentIndex = 0;
+  }
+
+  void changePage(int index) {
+    setState(() {
+      currentIndex = index;
+    });
+    widget.onTabChanged(index);
+  }
 
   @override
   Widget build(BuildContext context) {
     return BubbleBottomBar(
       opacity: .2,
-      // currentIndex: currentIndex,
-      // onTap: changePage,
+      currentIndex: currentIndex,
+      onTap: changePage,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       elevation: 8,
       fabLocation: BubbleBottomBarFabLocation.end, //new

@@ -2,13 +2,12 @@ import 'dart:io' as io;
 import 'dart:ui';
 import 'dart:isolate';
 
+import 'package:boorusama/IOHelper.dart';
 import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class DownloadService implements IDownloadService {
   final FileNameGenerator fileNameGenerator;
@@ -38,29 +37,13 @@ class DownloadService implements IDownloadService {
   Future<Null> _prepare() async {
     final tasks = await FlutterDownloader.loadTasks();
 
+    //TODO: refactor to use configurable input
     final savedDir = io.Directory(_localPath);
     bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
       savedDir.create();
     }
     _savedDir = savedDir.path;
-  }
-
-  Future<bool> _checkPermission(TargetPlatform platform) async {
-    if (platform == TargetPlatform.android) {
-      final status = await Permission.storage.status;
-      if (status != PermissionStatus.granted) {
-        final result = await Permission.storage.request();
-        if (result == PermissionStatus.granted) {
-          return true;
-        }
-      } else {
-        return true;
-      }
-    } else {
-      return true;
-    }
-    return false;
   }
 
   void _bindBackgroundIsolate() {
@@ -96,11 +79,8 @@ class DownloadService implements IDownloadService {
     FlutterDownloader.registerCallback(downloadCallback);
 
     _permissionReady = false;
-    final directory = platform == TargetPlatform.android
-        ? await getExternalStorageDirectory()
-        : await getApplicationDocumentsDirectory();
-    _localPath = directory.path + io.Platform.pathSeparator + 'Download';
-    _permissionReady = await _checkPermission(platform);
+    _localPath = await IOHelper.getLocalPath('Download', platform);
+    _permissionReady = await IOHelper.checkPermission(platform);
 
     _prepare();
   }
