@@ -1,7 +1,7 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/bottom_bar_widget.dart';
+import 'package:boorusama/presentation/posts/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
 import 'package:flutter/material.dart';

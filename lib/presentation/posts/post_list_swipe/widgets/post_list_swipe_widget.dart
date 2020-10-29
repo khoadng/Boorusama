@@ -35,7 +35,7 @@ class _PostListSwipeState extends State<PostListSwipe> {
         if (post.isVideo) {
           return PostVideo(post: post);
         } else {
-          return PostImage(imageUrl: post.normalImageUri.toString());
+          return PostImage(post: post);
         }
       },
       itemCount: widget.posts.length,

@@ -1,4 +1,5 @@
 class Post {
+  final int _id;
   final Uri _previewImageUri;
   final Uri _normalImageUri;
   final Uri _fullImageUri;
@@ -15,7 +16,8 @@ class Post {
 
 //TODO: fix naming from Image to Post
   Post(
-      [this._previewImageUri,
+      [this._id,
+      this._previewImageUri,
       this._normalImageUri,
       this._fullImageUri,
       // ignore: non_constant_identifier_names
@@ -27,6 +29,10 @@ class Post {
       this._width,
       this._height,
       this._format]);
+
+  int get id {
+    return _id;
+  }
 
   Uri get previewImageUri {
     return _previewImageUri;
@@ -40,12 +46,12 @@ class Post {
     return _fullImageUri;
   }
 
-  int get width {
-    return _width;
+  double get width {
+    return _width.toDouble();
   }
 
-  int get height {
-    return _height;
+  double get height {
+    return _height.toDouble();
   }
 
   String get tagStringCopyright {
@@ -61,7 +67,7 @@ class Post {
   }
 
   double get aspectRatio {
-    return width / height;
+    return this.width / this.height;
   }
 
   bool get isVideo {
@@ -77,6 +83,7 @@ class Post {
   factory Post.fromJson(Map<String, dynamic> json) {
     //TODO: should use json deserialize library
     return new Post(
+      json["id"],
       Uri.parse(json["preview_file_url"]),
       Uri.parse(json["large_file_url"]),
       Uri.parse(json["file_url"]),
