@@ -1,11 +1,13 @@
 enum TagCategory {
   general,
   artist,
+  invalid_,
   copyright,
   charater,
   meta,
 }
 
+//TODO: should be removed ?
 extension TagCategoryExtension on TagCategory {
   int get value {
     switch (this) {

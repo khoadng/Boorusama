@@ -43,7 +43,6 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
       physics: const BouncingScrollPhysics(),
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
-      // debounceDelay: const Duration(milliseconds: 200),
       onQueryChanged: (query) {
         if (query.isEmpty) {
           widget.controller.close();
@@ -53,9 +52,7 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
           widget.controller.close();
           return;
         }
-        setState(() {
-          _tags.clear();
-        });
+
         _tagSuggestionsBloc
             .add(TagSuggestionsRequested(tagString: query, page: 1));
       },
@@ -93,19 +90,42 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
   }
 
   Widget buildExpandableBody() {
-    return BlocBuilder<TagSuggestionsBloc, TagSuggestionsState>(
-        builder: (context, state) {
-      if (state is TagSuggestionsLoaded) {
-        _tags.clear();
-        _tags.addAll(state.tags);
-        return buildSuggestionItems();
-      } else {
-        return buildEmptySuggestions();
-      }
-    });
+    return BlocListener<TagSuggestionsBloc, TagSuggestionsState>(
+      listener: (context, state) {
+        if (state is TagSuggestionsLoaded) {
+          setState(() {
+            _tags = state.tags;
+          });
+        } else {
+          //TODO: handle other case here;
+        }
+      },
+      child: SuggestionItems(tags: _tags, widget: widget),
+    );
   }
 
-  Widget buildSuggestionItems() {
+  void _handleSubmitted(String value) {
+    widget.onSearched(value);
+    setState(() {
+      _tags.clear();
+    });
+    widget.controller.close();
+  }
+}
+
+class SuggestionItems extends StatelessWidget {
+  const SuggestionItems({
+    Key key,
+    @required List<Tag> tags,
+    @required this.widget,
+  })  : _tags = tags,
+        super(key: key);
+
+  final List<Tag> _tags;
+  final PostListSearchBar widget;
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
         color: Colors.white,
         elevation: 4.0,
@@ -128,21 +148,5 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
             );
           },
         ));
-  }
-
-  Widget buildEmptySuggestions() {
-    return Material(
-      color: Colors.white,
-      elevation: 4.0,
-      borderRadius: BorderRadius.circular(8),
-    );
-  }
-
-  void _handleSubmitted(String value) {
-    widget.onSearched(value);
-    setState(() {
-      _tags.clear();
-    });
-    widget.controller.close();
   }
 }
