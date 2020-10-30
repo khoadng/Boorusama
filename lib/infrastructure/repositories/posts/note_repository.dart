@@ -1,17 +1,21 @@
 import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/note.dart';
 import 'package:boorusama/domain/posts/note_coordinate.dart';
-import 'package:dio/dio.dart';
+import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:html/parser.dart' as html;
 
 //TODO: refactor to move Dio outside of this class
 class NoteRepository implements INoteRepository {
-  final Dio _dio = Dio();
   final String _url = "https://danbooru.donmai.us";
+  final Danbooru _api;
+
+  NoteRepository(this._api);
 
   @override
   Future<List<Note>> getNotesFrom(int postId) async {
-    final response = await _dio.get(_url + "/posts/$postId");
+    final response = await _api.dio.get(_url + "/posts/$postId",
+        options: buildCacheOptions(Duration(days: 1)));
     final data = response.data.toString();
     final document = html.parse(data);
 

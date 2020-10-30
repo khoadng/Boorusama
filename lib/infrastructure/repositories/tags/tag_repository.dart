@@ -2,20 +2,15 @@ import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
-import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 
 //TODO: refactor to move Dio outside of this class
 class TagRepository implements ITagRepository {
   final Danbooru _api;
-  final Dio _dio = Dio();
 
   final IAccountRepository _accountRepository;
 
-  TagRepository(this._api, this._accountRepository) {
-    _dio.interceptors
-        .add(DioCacheManager(CacheConfig(baseUrl: _api.url)).interceptor);
-  }
+  TagRepository(this._api, this._accountRepository);
 
   @override
   Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) async {
@@ -30,8 +25,8 @@ class TagRepository implements ITagRepository {
       "limit": "10",
     });
 
-    var respond = await _dio.get(uri.toString(),
-        options: buildCacheOptions(Duration(days: 7)));
+    var respond = await _api.dio
+        .get(uri.toString(), options: buildCacheOptions(Duration(days: 7)));
 
     if (respond.statusCode == 200) {
       var tags = List<Tag>();

@@ -24,9 +24,6 @@ class _PostImageState extends State<PostImage> {
   bool _notesVisible = false;
   List<Note> notes;
   PostTranslateNoteBloc _postTranslateNoteBloc;
-  double screenWidth;
-  double screenHeight;
-  double screenAspectRatio;
 
   @override
   void initState() {
@@ -80,9 +77,9 @@ class _PostImageState extends State<PostImage> {
   Widget buildNotesAndImage() {
     final widgets = List<Widget>();
 
-    screenWidth ??= MediaQuery.of(context).size.width;
-    screenHeight ??= MediaQuery.of(context).size.height;
-    screenAspectRatio ??= MediaQuery.of(context).size.aspectRatio;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenAspectRatio = MediaQuery.of(context).size.aspectRatio;
 
     widgets.add(CachedNetworkImage(
       imageUrl: widget.post.normalImageUri.toString(),
@@ -131,7 +128,9 @@ class _PostImageState extends State<PostImage> {
   }
 
   void _handleTap() {
-    _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
+    if (notes.isEmpty) {
+      _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
+    }
 
     setState(() {
       _notesVisible = !_notesVisible;

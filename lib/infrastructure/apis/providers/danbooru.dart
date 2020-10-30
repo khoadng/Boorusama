@@ -1,11 +1,14 @@
-import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 
-//TODO: shouldn't expose internal http client
 class Danbooru {
   final String url = "danbooru.donmai.us";
-  final http.Client _httpClient;
+  final Dio _dio;
 
-  http.Client get client => _httpClient;
+  Dio get dio => _dio;
 
-  Danbooru(this._httpClient);
+  Danbooru(this._dio) {
+    _dio.interceptors
+        .add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
+  }
 }
