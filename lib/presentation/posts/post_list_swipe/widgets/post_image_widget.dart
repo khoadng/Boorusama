@@ -4,7 +4,6 @@ import 'package:boorusama/application/posts/post_translate_note/bloc/post_transl
 import 'package:boorusama/domain/posts/note.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
@@ -12,9 +11,9 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:super_tooltip/super_tooltip.dart';
 
 class PostImage extends StatefulWidget {
-  PostImage({@required this.post, this.onTapped});
+  PostImage({@required this.post, this.onNoteVisibleChanged});
 
-  final VoidCallback onTapped;
+  final ValueChanged<bool> onNoteVisibleChanged;
   final Post post;
 
   @override
@@ -132,14 +131,12 @@ class _PostImageState extends State<PostImage> {
   }
 
   void _handleTap() {
-    if (notes.isEmpty) {
-      _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
-    }
+    _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
 
     setState(() {
       _notesVisible = !_notesVisible;
     });
 
-    widget.onTapped();
+    widget.onNoteVisibleChanged(_notesVisible);
   }
 }

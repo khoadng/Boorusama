@@ -21,12 +21,17 @@ class PostListSwipe extends StatefulWidget {
 }
 
 class _PostListSwipeState extends State<PostListSwipe> {
+  bool _notesIsVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       options: CarouselOptions(
           initialPage: widget.initialPostIndex,
           viewportFraction: 1.0,
+          scrollPhysics: _notesIsVisible
+              ? const NeverScrollableScrollPhysics()
+              : const ScrollPhysics(),
           enableInfiniteScroll: false,
           height: MediaQuery.of(context).size.height),
       itemBuilder: (context, index) {
@@ -35,7 +40,14 @@ class _PostListSwipeState extends State<PostListSwipe> {
         if (post.isVideo) {
           return PostVideo(post: post);
         } else {
-          return PostImage(post: post);
+          return PostImage(
+            post: post,
+            onNoteVisibleChanged: (value) {
+              setState(() {
+                _notesIsVisible = value;
+              });
+            },
+          );
         }
       },
       itemCount: widget.posts.length,
