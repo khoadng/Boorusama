@@ -11,6 +11,7 @@ class PostDownloadGalleryView extends StatefulWidgetView<
   Widget build(BuildContext context) {
     return Scaffold(
       body: GridView.builder(
+        itemCount: controller.files.length,
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
         itemBuilder: (context, index) {

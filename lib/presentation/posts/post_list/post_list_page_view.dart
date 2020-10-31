@@ -21,7 +21,6 @@ class PostListPageView
         onPressed: () => controller.downloadAllPosts(),
         child: const Icon(Icons.download_rounded),
       ),
-      backgroundColor: Colors.white,
       resizeToAvoidBottomInset: false,
       body: _getPage(controller.currentTab),
       bottomNavigationBar: BottomBar(

@@ -30,6 +30,7 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return BubbleBottomBar(
       opacity: .2,
+      backgroundColor: ThemeData.dark().bottomAppBarColor,
       currentIndex: currentIndex,
       onTap: changePage,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -40,16 +41,19 @@ class _BottomBarState extends State<BottomBar> {
       inkColor: Colors.black12, //optional, uses theme color if not specified
       items: <BubbleBottomBarItem>[
         BubbleBottomBarItem(
-            backgroundColor: Colors.red,
+            backgroundColor: ThemeData.dark().accentIconTheme.color,
             icon: Icon(
               Icons.dashboard,
               color: Colors.black,
             ),
             activeIcon: Icon(
               Icons.dashboard,
-              color: Colors.red,
+              color: ThemeData.dark().accentColor,
             ),
-            title: Text("Posts")),
+            title: Text(
+              "Posts",
+              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+            )),
         BubbleBottomBarItem(
             backgroundColor: Colors.indigo,
             icon: Icon(
@@ -58,9 +62,12 @@ class _BottomBarState extends State<BottomBar> {
             ),
             activeIcon: Icon(
               Icons.folder_open,
-              color: Colors.indigo,
+              color: ThemeData.dark().accentColor,
             ),
-            title: Text("Folders")),
+            title: Text(
+              "Folders",
+              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+            )),
         BubbleBottomBarItem(
             backgroundColor: Colors.green,
             icon: Icon(
@@ -69,9 +76,12 @@ class _BottomBarState extends State<BottomBar> {
             ),
             activeIcon: Icon(
               Icons.menu,
-              color: Colors.green,
+              color: ThemeData.dark().accentColor,
             ),
-            title: Text("Menu"))
+            title: Text(
+              "Menu",
+              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+            )),
       ],
     );
   }

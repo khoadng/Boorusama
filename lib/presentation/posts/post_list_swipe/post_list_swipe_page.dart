@@ -73,14 +73,14 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
                 child: Icon(Icons.download_rounded),
                 backgroundColor: Colors.red,
                 label: 'Download',
-                labelStyle: TextStyle(fontSize: 18.0),
+                labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
                 onTap: () => _postDownloadBloc.add(PostDownloadRequested(
                     post: widget.posts[_currentPostIndex]))),
             SpeedDialChild(
               child: Icon(Icons.tag),
               backgroundColor: Colors.blue,
               label: 'Tags',
-              labelStyle: TextStyle(fontSize: 18.0),
+              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
               onTap: () => _tagListBloc.add(GetTagList(
                   widget.posts[_currentPostIndex].tagString.toCommaFormat(),
                   1)),
@@ -89,7 +89,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
               child: Icon(Icons.translate_rounded),
               backgroundColor: Colors.green,
               label: 'Notes',
-              labelStyle: TextStyle(fontSize: 18.0),
+              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
               onTap: () => _postImageController.toggleTranslationNotes(),
             ),
           ]),
