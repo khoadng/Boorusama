@@ -1,9 +1,9 @@
 import 'package:boorusama/application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
 import 'package:boorusama/domain/posts/note.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:super_tooltip/super_tooltip.dart';
@@ -60,10 +60,12 @@ class _PostImageState extends State<PostImage> {
   }
 
   Widget buildCachedNetworkImage(BuildContext context) {
-    return CachedNetworkImage(
+    return OptimizedCacheImage(
       imageUrl: widget.post.normalImageUri.toString(),
-      imageBuilder: (context, imageProvider) =>
-          PhotoView(imageProvider: imageProvider),
+      imageBuilder: (context, imageProvider) {
+        precacheImage(imageProvider, context);
+        return PhotoView(imageProvider: imageProvider);
+      },
       progressIndicatorBuilder: (context, url, progress) => Center(
         child: CircularProgressIndicator(
           value: progress.progress,
@@ -83,7 +85,7 @@ class _PostImageState extends State<PostImage> {
         20; // minus toolbar height (40) and some offset (20) ;
     final screenAspectRatio = screenWidth / screenHeight;
 
-    widgets.add(CachedNetworkImage(
+    widgets.add(OptimizedCacheImage(
       imageUrl: widget.post.normalImageUri.toString(),
       imageBuilder: (context, imageProvider) =>
           PhotoView(imageProvider: imageProvider),

@@ -1,8 +1,8 @@
 import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 import 'package:widget_view/widget_view.dart';
 
 import 'account_info_page.dart';
@@ -41,7 +41,7 @@ class AccountInfoPageView
                 scrollDirection: Axis.horizontal,
                 itemCount: controller.favedPosts.length,
                 itemBuilder: (context, index) {
-                  return CachedNetworkImage(
+                  return OptimizedCacheImage(
                       imageUrl: controller.favedPosts[index].previewImageUri
                           .toString());
                 },

@@ -1,5 +1,5 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:optimized_cached_image/optimized_cached_image.dart';
 
 class PostImage extends StatelessWidget {
   const PostImage({Key key, @required this.imageUrl, this.onTapped})
@@ -16,13 +16,16 @@ class PostImage extends StatelessWidget {
     );
   }
 
-  CachedNetworkImage buildCachedNetworkImage() {
-    return CachedNetworkImage(
+  Widget buildCachedNetworkImage() {
+    return OptimizedCacheImage(
       imageUrl: imageUrl,
-      imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-        image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-      )),
+      imageBuilder: (context, imageProvider) {
+        precacheImage(imageProvider, context);
+        return Container(
+            decoration: BoxDecoration(
+          image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+        ));
+      },
       // progressIndicatorBuilder: (context, url, progress) => Center(
       //   child: CircularProgressIndicator(
       //     value: progress.progress,
