@@ -4,6 +4,7 @@ import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_acc
 import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
+import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
@@ -59,6 +60,8 @@ class App extends StatelessWidget {
         BlocProvider<PostTranslateNoteBloc>(
             create: (_) => PostTranslateNoteBloc(noteRepository)),
         BlocProvider<TagListBloc>(create: (_) => TagListBloc(tagRepository)),
+        BlocProvider<PostFavoritesBloc>(
+            create: (_) => PostFavoritesBloc(postRepository)),
       ],
       child: MaterialApp(
         theme: ThemeData(

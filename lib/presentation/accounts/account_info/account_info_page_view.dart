@@ -1,4 +1,6 @@
 import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
+import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widget_view/widget_view.dart';
@@ -15,7 +17,37 @@ class AccountInfoPageView
     return Scaffold(
       body: Column(
         children: <Widget>[
-          Expanded(child: buildAccountList()),
+          buildAccountList(),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: FlatButton(
+              onPressed: () {
+                // open full page
+              },
+              textColor: Colors.blue,
+              child: Text('Favorites'),
+            ),
+          ),
+          BlocListener<PostFavoritesBloc, PostFavoritesState>(
+            listener: (BuildContext context, state) {
+              if (state is PostFavoritesLoaded) {
+                controller.assignFavedPosts(state.posts);
+              }
+            },
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: 200,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: controller.favedPosts.length,
+                itemBuilder: (context, index) {
+                  return CachedNetworkImage(
+                      imageUrl: controller.favedPosts[index].previewImageUri
+                          .toString());
+                },
+              ),
+            ),
+          ),
           RaisedButton.icon(
             icon: Icon(Icons.logout),
             onPressed: () => controller.removeAccountRequest(),
@@ -28,36 +60,17 @@ class AccountInfoPageView
 
   Widget buildAccountList() {
     return MultiBlocListener(
-        listeners: [
-          BlocListener<RemoveAccountBloc, RemoveAccountState>(
-            listener: (context, state) {
-              if (state is RemoveAccountSuccess) {
-                controller.removeAccount(state.account);
-              }
-            },
-          )
-        ],
-        child: _AccountItem(
-          controller: controller,
-        ));
-  }
-}
-
-class _AccountItem extends StatelessWidget {
-  const _AccountItem({
-    Key key,
-    @required this.controller,
-  }) : super(key: key);
-
-  final AccountInfoPageState controller;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemBuilder: (context, index) => ListTile(
-        title: Text(controller.accounts[index].username),
-      ),
-      itemCount: controller.accounts.length,
+      listeners: [
+        BlocListener<RemoveAccountBloc, RemoveAccountState>(
+          listener: (context, state) {
+            if (state is RemoveAccountSuccess) {
+              controller.removeAccount(state.account);
+            }
+          },
+        )
+      ],
+      //TODO: warning dirty code to get current account
+      child: Text(controller.accounts.first.username),
     );
   }
 }
