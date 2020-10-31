@@ -8,6 +8,7 @@ import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_b
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/domain/accounts/i_favorite_post_repository.dart';
 import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
@@ -25,6 +26,7 @@ class App extends StatelessWidget {
       @required this.scrapperService,
       @required this.tagRepository,
       @required this.noteRepository,
+      @required this.favoritePostRepository,
       @required this.accountRepository});
 
   final IPostRepository postRepository;
@@ -33,6 +35,7 @@ class App extends StatelessWidget {
   final IAccountRepository accountRepository;
   final IDownloadService downloadService;
   final IScrapperService scrapperService;
+  final IFavoritePostRepository favoritePostRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +64,8 @@ class App extends StatelessWidget {
             create: (_) => PostTranslateNoteBloc(noteRepository)),
         BlocProvider<TagListBloc>(create: (_) => TagListBloc(tagRepository)),
         BlocProvider<PostFavoritesBloc>(
-            create: (_) => PostFavoritesBloc(postRepository)),
+            create: (_) =>
+                PostFavoritesBloc(postRepository, favoritePostRepository)),
       ],
       child: MaterialApp(
         theme: ThemeData(

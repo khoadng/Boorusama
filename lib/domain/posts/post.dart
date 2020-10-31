@@ -17,6 +17,7 @@ class Post {
   final String _tag_string;
   //TODO: should use Enum instead of raw string
   final String _format;
+  bool isFavorited;
 
 //TODO: fix naming from Image to Post
   Post(
@@ -34,7 +35,8 @@ class Post {
       this._tag_string,
       this._width,
       this._height,
-      this._format]);
+      this._format,
+      this.isFavorited]);
 
   int get id => _id;
 
@@ -82,6 +84,7 @@ class Post {
       json["image_width"],
       json["image_height"],
       json["file_ext"],
+      json["is_favorited"],
     );
   }
 }

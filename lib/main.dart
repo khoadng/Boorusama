@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
@@ -34,11 +35,12 @@ void main() async {
   final accountRepository = AccountRepository(accountDb);
 
   runApp(App(
-    postRepository: PostRepository(apiProvider, accountRepository),
-    tagRepository: TagRepository(apiProvider, accountRepository),
-    scrapperService: ScrapperService(),
-    downloadService: DownloadService(FileNameGenerator()),
-    accountRepository: accountRepository,
-    noteRepository: NoteRepository(apiProvider),
-  ));
+      postRepository: PostRepository(apiProvider, accountRepository),
+      tagRepository: TagRepository(apiProvider, accountRepository),
+      scrapperService: ScrapperService(),
+      downloadService: DownloadService(FileNameGenerator()),
+      accountRepository: accountRepository,
+      noteRepository: NoteRepository(apiProvider),
+      favoritePostRepository:
+          FavoritePostRepository(apiProvider, accountRepository)));
 }

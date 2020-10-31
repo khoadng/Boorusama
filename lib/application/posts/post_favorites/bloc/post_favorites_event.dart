@@ -13,3 +13,15 @@ class GetFavoritePosts extends PostFavoritesEvent {
 
   GetFavoritePosts(this.username, this.page);
 }
+
+class AddToFavorites extends PostFavoritesEvent {
+  final int postId;
+
+  AddToFavorites(this.postId);
+}
+
+class RemoveFromFavorites extends PostFavoritesEvent {
+  final int postId;
+
+  RemoveFromFavorites(this.postId);
+}

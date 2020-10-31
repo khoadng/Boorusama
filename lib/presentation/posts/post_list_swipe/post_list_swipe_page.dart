@@ -1,4 +1,5 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
+import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
@@ -22,7 +23,9 @@ class PostListSwipePage extends StatefulWidget {
 
 class _PostListSwipePageState extends State<PostListSwipePage> {
   int _currentPostIndex;
+  bool _currentPostIsFaved = false;
   PostDownloadBloc _postDownloadBloc;
+  PostFavoritesBloc _postFavoritesBloc;
   TagListBloc _tagListBloc;
   List<Tag> _tags;
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
@@ -32,9 +35,12 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
   void initState() {
     super.initState();
     _postDownloadBloc = BlocProvider.of<PostDownloadBloc>(context);
+    _postFavoritesBloc = BlocProvider.of<PostFavoritesBloc>(context);
     _tagListBloc = BlocProvider.of<TagListBloc>(context);
     _tags = List<Tag>();
     _postImageController = PostImageController();
+    //TODO: data maybe stale, should change to other logic
+    _currentPostIsFaved = widget.posts[widget.initialPostIndex].isFavorited;
   }
 
   @override
@@ -45,6 +51,44 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
 
   @override
   Widget build(BuildContext context) {
+    final speedialChildren = [
+      SpeedDialChild(
+          child: Icon(Icons.download_rounded),
+          backgroundColor: Colors.red,
+          label: 'Download',
+          labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+          onTap: () => _postDownloadBloc.add(
+              PostDownloadRequested(post: widget.posts[_currentPostIndex]))),
+      SpeedDialChild(
+        child: Icon(Icons.tag),
+        backgroundColor: Colors.blue,
+        label: 'Tags',
+        labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+        onTap: () => _tagListBloc.add(GetTagList(
+            widget.posts[_currentPostIndex].tagString.toCommaFormat(), 1)),
+      ),
+      SpeedDialChild(
+        child: Icon(Icons.translate_rounded),
+        backgroundColor: Colors.green,
+        label: 'Notes',
+        labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+        onTap: () => _postImageController.toggleTranslationNotes(),
+      ),
+      SpeedDialChild(
+        child: _currentPostIsFaved
+            ? Icon(Icons.favorite)
+            : Icon(Icons.favorite_border),
+        backgroundColor: Colors.orange,
+        onTap: () => _currentPostIsFaved
+            ? _postFavoritesBloc
+                .add(RemoveFromFavorites(widget.posts[_currentPostIndex].id))
+            : _postFavoritesBloc
+                .add(AddToFavorites(widget.posts[_currentPostIndex].id)),
+      ),
+    ];
+
+    //TODO: add fav button should be disable when user is not logged in
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 40,
@@ -59,7 +103,29 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           )
         ],
       ),
-      floatingActionButton: SpeedDial(
+      floatingActionButton: MultiBlocListener(
+        listeners: [
+          BlocListener<PostFavoritesBloc, PostFavoritesState>(
+            listener: (context, state) {
+              if (state is AddPostToFavoritesCompleted) {
+                setState(() {
+                  _currentPostIsFaved = true;
+                });
+                //TODO: warning workaround, updating local data, DANGEROUS CODE
+                widget.posts[_currentPostIndex].isFavorited = true;
+              } else if (state is RemovePostToFavoritesCompleted) {
+                setState(() {
+                  _currentPostIsFaved = false;
+                });
+                //TODO: warning workaround, updating local data, DANGEROUS CODE
+                widget.posts[_currentPostIndex].isFavorited = false;
+              } else {
+                throw Exception("Unknown state for PostFavoriteBloc");
+              }
+            },
+          )
+        ],
+        child: SpeedDial(
           animatedIcon: AnimatedIcons.menu_close,
           animatedIconTheme: IconThemeData(size: 22.0),
           closeManually: false,
@@ -68,31 +134,9 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           overlayOpacity: 0.5,
           elevation: 8.0,
           shape: CircleBorder(),
-          children: [
-            SpeedDialChild(
-                child: Icon(Icons.download_rounded),
-                backgroundColor: Colors.red,
-                label: 'Download',
-                labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-                onTap: () => _postDownloadBloc.add(PostDownloadRequested(
-                    post: widget.posts[_currentPostIndex]))),
-            SpeedDialChild(
-              child: Icon(Icons.tag),
-              backgroundColor: Colors.blue,
-              label: 'Tags',
-              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-              onTap: () => _tagListBloc.add(GetTagList(
-                  widget.posts[_currentPostIndex].tagString.toCommaFormat(),
-                  1)),
-            ),
-            SpeedDialChild(
-              child: Icon(Icons.translate_rounded),
-              backgroundColor: Colors.green,
-              label: 'Notes',
-              labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-              onTap: () => _postImageController.toggleTranslationNotes(),
-            ),
-          ]),
+          children: speedialChildren,
+        ),
+      ),
       body: BlocListener<TagListBloc, TagListState>(
         listener: (context, state) {
           if (state is TagListLoaded) {
@@ -109,7 +153,11 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           front: PostListSwipe(
             postImageController: _postImageController,
             posts: widget.posts,
-            onPostChanged: (value) => _currentPostIndex = value,
+            onPostChanged: (value) {
+              //TODO: not to reconsider, kinda ugly
+              _currentPostIsFaved = widget.posts[value].isFavorited;
+              _currentPostIndex = value;
+            },
             initialPostIndex: widget.initialPostIndex,
           ),
         ),

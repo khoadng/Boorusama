@@ -16,3 +16,7 @@ class PostFavoritesLoaded extends PostFavoritesState {
 
   PostFavoritesLoaded(this.posts);
 }
+
+class AddPostToFavoritesCompleted extends PostFavoritesState {}
+
+class RemovePostToFavoritesCompleted extends PostFavoritesState {}
