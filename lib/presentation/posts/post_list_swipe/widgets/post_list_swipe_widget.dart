@@ -2,6 +2,7 @@ import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_video_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
 class PostListSwipe extends StatefulWidget {
@@ -38,15 +39,21 @@ class _PostListSwipeState extends State<PostListSwipe> {
         widget.onPostChanged(index);
         final post = widget.posts[index];
         if (post.isVideo) {
+          //TODO: add flip tag for video
           return PostVideo(post: post);
         } else {
-          return PostImage(
-            post: post,
-            onNoteVisibleChanged: (value) {
-              setState(() {
-                _notesIsVisible = value;
-              });
-            },
+          return FlipCard(
+            back: Container(
+              color: Colors.red,
+            ),
+            front: PostImage(
+              post: post,
+              onNoteVisibleChanged: (value) {
+                setState(() {
+                  _notesIsVisible = value;
+                });
+              },
+            ),
           );
         }
       },

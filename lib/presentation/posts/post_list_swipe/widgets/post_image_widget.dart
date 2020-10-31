@@ -78,8 +78,11 @@ class _PostImageState extends State<PostImage> {
     final widgets = List<Widget>();
 
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final screenAspectRatio = MediaQuery.of(context).size.aspectRatio;
+    //TODO: remove hardcode, hacky solution
+    final screenHeight = MediaQuery.of(context).size.height -
+        40.0 -
+        20; // minus toolbar height (40) and some offset (20) ;
+    final screenAspectRatio = screenWidth / screenHeight;
 
     widgets.add(CachedNetworkImage(
       imageUrl: widget.post.normalImageUri.toString(),

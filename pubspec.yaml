@@ -33,6 +33,7 @@ dependencies:
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
   equatable: ^1.2.5
+  flip_card: ^0.4.4
   flutter_bloc: ^6.0.5
   flutter_downloader: ^1.5.1
   flutter_html: ^1.0.2
