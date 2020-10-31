@@ -57,9 +57,10 @@ class PostListPageView
         //   return buildInitial();
         // } else
         if (state is PostListLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
+          // return Center(
+          //   child: CircularProgressIndicator(),
+          // );
+          return buildListWithData();
         } else if (state is PostListLoaded) {
           return buildListWithData();
           // } else if (state is PostListAdditionalLoading) {

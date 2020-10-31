@@ -35,19 +35,23 @@ class _LoginBoxState extends State<LoginBox> {
       margin: EdgeInsets.all(100.0),
       child: Column(
         children: [
-          Expanded(
+          Container(
+            padding: EdgeInsets.all(10),
             child: TextField(
               controller: _usernameTextController,
               decoration: InputDecoration(
-                labelText: "Username",
+                border: OutlineInputBorder(),
+                labelText: 'User Name',
               ),
             ),
           ),
-          Expanded(
+          Container(
+            padding: EdgeInsets.all(10),
             child: TextField(
               controller: _passwordTextController,
               decoration: InputDecoration(
-                labelText: "Password",
+                border: OutlineInputBorder(),
+                labelText: 'Password',
               ),
             ),
           ),
@@ -61,12 +65,17 @@ class _LoginBoxState extends State<LoginBox> {
               if (state is AddAccountProcessing) {
                 return CircularProgressIndicator();
               } else {
-                return TextButton.icon(
-                    label: Text("Login"),
-                    icon: Icon(Icons.add),
-                    onPressed: () => _addAccountBloc.add(AddAccountRequested(
-                        username: _usernameTextController.text,
-                        password: _passwordTextController.text)));
+                return Container(
+                    height: 50,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: RaisedButton(
+                      textColor: Colors.white70,
+                      color: Colors.blue,
+                      child: Text('Login'),
+                      onPressed: () => _addAccountBloc.add(AddAccountRequested(
+                          username: _usernameTextController.text,
+                          password: _passwordTextController.text)),
+                    ));
               }
             },
           ),
