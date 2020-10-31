@@ -5,7 +5,6 @@ import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_list_swipe_widget.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
@@ -28,7 +27,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
   PostFavoritesBloc _postFavoritesBloc;
   TagListBloc _tagListBloc;
   List<Tag> _tags;
-  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
   PostImageController _postImageController;
 
   @override
@@ -59,14 +57,14 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
           onTap: () => _postDownloadBloc.add(
               PostDownloadRequested(post: widget.posts[_currentPostIndex]))),
-      SpeedDialChild(
-        child: Icon(Icons.tag),
-        backgroundColor: Colors.blue,
-        label: 'Tags',
-        labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-        onTap: () => _tagListBloc.add(GetTagList(
-            widget.posts[_currentPostIndex].tagString.toCommaFormat(), 1)),
-      ),
+      // SpeedDialChild(
+      //   child: Icon(Icons.tag),
+      //   backgroundColor: Colors.blue,
+      //   label: 'Tags',
+      //   labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
+      //   onTap: () => _tagListBloc.add(GetTagList(
+      //       widget.posts[_currentPostIndex].tagString.toCommaFormat(), 1)),
+      // ),
       SpeedDialChild(
         child: Icon(Icons.translate_rounded),
         backgroundColor: Colors.green,
@@ -89,76 +87,91 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
 
     //TODO: add fav button should be disable when user is not logged in
 
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 40,
-        actions: <Widget>[
-          PopupMenuButton<PostAction>(
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-              const PopupMenuItem<PostAction>(
-                value: PostAction.foo,
-                child: Text('Foo'),
-              ),
-            ],
-          )
-        ],
-      ),
-      floatingActionButton: MultiBlocListener(
-        listeners: [
-          BlocListener<PostFavoritesBloc, PostFavoritesState>(
-            listener: (context, state) {
-              if (state is AddPostToFavoritesCompleted) {
-                setState(() {
-                  _currentPostIsFaved = true;
-                });
-                //TODO: warning workaround, updating local data, DANGEROUS CODE
-                widget.posts[_currentPostIndex].isFavorited = true;
-              } else if (state is RemovePostToFavoritesCompleted) {
-                setState(() {
-                  _currentPostIsFaved = false;
-                });
-                //TODO: warning workaround, updating local data, DANGEROUS CODE
-                widget.posts[_currentPostIndex].isFavorited = false;
-              } else {
-                throw Exception("Unknown state for PostFavoriteBloc");
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          bottom: TabBar(
+            onTap: (value) {
+              if (value == 1) {
+                _tagListBloc.add(GetTagList(
+                    widget.posts[_currentPostIndex].tagString.toCommaFormat(),
+                    1));
               }
             },
-          )
-        ],
-        child: SpeedDial(
-          animatedIcon: AnimatedIcons.menu_close,
-          animatedIconTheme: IconThemeData(size: 22.0),
-          closeManually: false,
-          curve: Curves.bounceIn,
-          overlayColor: Colors.black,
-          overlayOpacity: 0.5,
-          elevation: 8.0,
-          shape: CircleBorder(),
-          children: speedialChildren,
+            tabs: [
+              Tab(icon: Icon(Icons.image)),
+              Tab(icon: Icon(Icons.info)),
+            ],
+          ),
+          actions: <Widget>[
+            PopupMenuButton<PostAction>(
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<PostAction>>[
+                const PopupMenuItem<PostAction>(
+                  value: PostAction.foo,
+                  child: Text('Foo'),
+                ),
+              ],
+            )
+          ],
         ),
-      ),
-      body: BlocListener<TagListBloc, TagListState>(
-        listener: (context, state) {
-          if (state is TagListLoaded) {
-            setState(() {
-              _tags = state.tags;
-              cardKey.currentState.toggleCard();
-            });
-          }
-        },
-        child: FlipCard(
-          key: cardKey,
-          flipOnTouch: false,
-          back: PostInfo(tags: _tags),
-          front: PostListSwipe(
-            postImageController: _postImageController,
-            posts: widget.posts,
-            onPostChanged: (value) {
-              //TODO: not to reconsider, kinda ugly
-              _currentPostIsFaved = widget.posts[value].isFavorited;
-              _currentPostIndex = value;
-            },
-            initialPostIndex: widget.initialPostIndex,
+        floatingActionButton: MultiBlocListener(
+          listeners: [
+            BlocListener<PostFavoritesBloc, PostFavoritesState>(
+              listener: (context, state) {
+                if (state is AddPostToFavoritesCompleted) {
+                  setState(() {
+                    _currentPostIsFaved = true;
+                  });
+                  //TODO: warning workaround, updating local data, DANGEROUS CODE
+                  widget.posts[_currentPostIndex].isFavorited = true;
+                } else if (state is RemovePostToFavoritesCompleted) {
+                  setState(() {
+                    _currentPostIsFaved = false;
+                  });
+                  //TODO: warning workaround, updating local data, DANGEROUS CODE
+                  widget.posts[_currentPostIndex].isFavorited = false;
+                } else {
+                  throw Exception("Unknown state for PostFavoriteBloc");
+                }
+              },
+            )
+          ],
+          child: SpeedDial(
+            animatedIcon: AnimatedIcons.menu_close,
+            animatedIconTheme: IconThemeData(size: 22.0),
+            closeManually: false,
+            curve: Curves.bounceIn,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.5,
+            elevation: 8.0,
+            shape: CircleBorder(),
+            children: speedialChildren,
+          ),
+        ),
+        body: BlocListener<TagListBloc, TagListState>(
+          listener: (context, state) {
+            if (state is TagListLoaded) {
+              setState(() {
+                _tags = state.tags;
+              });
+            }
+          },
+          child: TabBarView(
+            children: [
+              PostListSwipe(
+                postImageController: _postImageController,
+                posts: widget.posts,
+                onPostChanged: (value) {
+                  //TODO: not to reconsider, kinda ugly
+                  _currentPostIsFaved = widget.posts[value].isFavorited;
+                  _currentPostIndex = value;
+                },
+                initialPostIndex: widget.initialPostIndex,
+              ),
+              PostInfo(tags: _tags),
+            ],
           ),
         ),
       ),
