@@ -2,13 +2,13 @@ import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_video_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/material.dart';
 
 class PostListSwipe extends StatefulWidget {
   PostListSwipe(
       {Key key,
       @required this.posts,
+      @required this.postImageController,
       this.initialPostIndex,
       this.onPostChanged})
       : super(key: key);
@@ -16,6 +16,7 @@ class PostListSwipe extends StatefulWidget {
   final List<Post> posts;
   final int initialPostIndex;
   final ValueChanged<int> onPostChanged;
+  final PostImageController postImageController;
 
   @override
   _PostListSwipeState createState() => _PostListSwipeState();
@@ -26,38 +27,35 @@ class _PostListSwipeState extends State<PostListSwipe> {
 
   @override
   Widget build(BuildContext context) {
-    return CarouselSlider.builder(
-      options: CarouselOptions(
-          initialPage: widget.initialPostIndex,
-          viewportFraction: 1.0,
-          scrollPhysics: _notesIsVisible
-              ? const NeverScrollableScrollPhysics()
-              : const ScrollPhysics(),
-          enableInfiniteScroll: false,
-          height: MediaQuery.of(context).size.height),
-      itemBuilder: (context, index) {
-        widget.onPostChanged(index);
-        final post = widget.posts[index];
-        if (post.isVideo) {
-          //TODO: add flip tag for video
-          return PostVideo(post: post);
-        } else {
-          return FlipCard(
-            back: Container(
-              color: Colors.red,
-            ),
-            front: PostImage(
+    return Scaffold(
+      body: CarouselSlider.builder(
+        options: CarouselOptions(
+            initialPage: widget.initialPostIndex,
+            viewportFraction: 1.0,
+            scrollPhysics: _notesIsVisible
+                ? const NeverScrollableScrollPhysics()
+                : const ScrollPhysics(),
+            enableInfiniteScroll: false,
+            height: MediaQuery.of(context).size.height),
+        itemBuilder: (context, index) {
+          widget.onPostChanged(index);
+          final post = widget.posts[index];
+          if (post.isVideo) {
+            return PostVideo(post: post);
+          } else {
+            return PostImage(
+              controller: widget.postImageController,
               post: post,
               onNoteVisibleChanged: (value) {
                 setState(() {
                   _notesIsVisible = value;
                 });
               },
-            ),
-          );
-        }
-      },
-      itemCount: widget.posts.length,
+            );
+          }
+        },
+        itemCount: widget.posts.length,
+      ),
     );
   }
 }

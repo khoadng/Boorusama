@@ -1,3 +1,5 @@
+import 'package:boorusama/domain/posts/tag_string.dart';
+
 class Post {
   final int _id;
   final Uri _previewImageUri;
@@ -11,6 +13,8 @@ class Post {
   final String _tag_string_character;
   // ignore: non_constant_identifier_names
   final String _tag_string_artist;
+  // ignore: non_constant_identifier_names
+  final String _tag_string;
   //TODO: should use Enum instead of raw string
   final String _format;
 
@@ -26,49 +30,33 @@ class Post {
       this._tag_string_character,
       // ignore: non_constant_identifier_names
       this._tag_string_artist,
+      // ignore: non_constant_identifier_names
+      this._tag_string,
       this._width,
       this._height,
       this._format]);
 
-  int get id {
-    return _id;
-  }
+  int get id => _id;
 
-  Uri get previewImageUri {
-    return _previewImageUri;
-  }
+  Uri get previewImageUri => _previewImageUri;
 
-  Uri get normalImageUri {
-    return _normalImageUri;
-  }
+  Uri get normalImageUri => _normalImageUri;
 
-  Uri get fullImageUri {
-    return _fullImageUri;
-  }
+  Uri get fullImageUri => _fullImageUri;
 
-  double get width {
-    return _width.toDouble();
-  }
+  double get width => _width.toDouble();
 
-  double get height {
-    return _height.toDouble();
-  }
+  double get height => _height.toDouble();
 
-  String get tagStringCopyright {
-    return _tag_string_copyright;
-  }
+  String get tagStringCopyright => _tag_string_copyright;
 
-  String get tagStringCharacter {
-    return _tag_string_character;
-  }
+  String get tagStringCharacter => _tag_string_character;
 
-  String get tagStringArtist {
-    return _tag_string_artist;
-  }
+  String get tagStringArtist => _tag_string_artist;
 
-  double get aspectRatio {
-    return this.width / this.height;
-  }
+  TagString get tagString => TagString(_tag_string);
+
+  double get aspectRatio => this.width / this.height;
 
   bool get isVideo {
     //TODO: handle other kind of video format
@@ -90,6 +78,7 @@ class Post {
       json["tag_string_copyright"],
       json["tag_string_character"],
       json["tag_string_artist"],
+      json["tag_string"],
       json["image_width"],
       json["image_height"],
       json["file_ext"],

@@ -43,4 +43,36 @@ class TagRepository implements ITagRepository {
       throw Exception("Unable to perform request!");
     }
   }
+
+  @override
+  Future<List<Tag>> getTagsByNameComma(String stringComma, int page) async {
+    final account = await _accountRepository.get();
+    var uri = Uri.https(_api.url, "/tags.json", {
+      "login": account.username,
+      "api_key": account.apiKey,
+      "page": page.toString(),
+      "search[hide_empty]": "yes",
+      "search[name_comma]": stringComma,
+      "search[order]": "count",
+      "limit": "1000",
+    });
+
+    var respond = await _api.dio
+        .get(uri.toString(), options: buildCacheOptions(Duration(days: 7)));
+
+    if (respond.statusCode == 200) {
+      var tags = List<Tag>();
+      for (var item in respond.data) {
+        try {
+          tags.add(Tag.fromJson(item));
+        } catch (e) {
+          print("Cant parse $item[id]");
+        }
+      }
+      return tags;
+      // return content.map((post) => Post.fromJson(post)).toList();
+    } else {
+      throw Exception("Unable to perform request!");
+    }
+  }
 }
