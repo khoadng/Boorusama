@@ -27,6 +27,12 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
       } on CannotSearchMoreThanTwoTags catch (e) {
         yield PostListError(e.message);
       }
+    } else if (event is GetMorePost) {
+      yield AdditionalPostListLoading();
+      final posts = await repository.getPosts(event.tagString, event.page);
+      yield AddtionalPostListLoaded(posts);
+
+      //TODO: should handle error here
     }
   }
 }

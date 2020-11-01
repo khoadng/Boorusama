@@ -52,6 +52,10 @@ class PostListPageView
       listener: (context, state) {
         if (state is PostListLoaded) {
           controller.posts.addAll(state.posts);
+        } else if (state is AddtionalPostListLoaded) {
+          controller.posts.addAll(state.posts);
+          //TODO: warning internal state exposed
+          controller.isBusy = false;
         } else if (state is PostListError) {
           Flushbar(
             icon: Icon(
@@ -64,19 +68,21 @@ class PostListPageView
             duration: Duration(seconds: 6),
           )..show(context);
         } else {
-          throw Exception("Unknown PostListState");
+          //TODO: handle other cases
         }
       },
       builder: (context, state) {
-        // if (state is PostListInitial) {
-        //   return buildInitial();
-        // } else
-        if (state is PostListLoading) {
-          // return Center(
-          //   child: CircularProgressIndicator(),
-          // );
-          return buildListWithData();
-        } else if (state is PostListLoaded) {
+        if (state is PostListInitial) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is PostListLoading) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (state is PostListLoaded ||
+            state is AddtionalPostListLoaded ||
+            state is AdditionalPostListLoading) {
           return buildListWithData();
         } else if (state is PostListError) {
           return Lottie.asset(

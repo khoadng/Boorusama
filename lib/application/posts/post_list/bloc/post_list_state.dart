@@ -13,10 +13,24 @@ class PostListLoading extends PostListState {
   List<Object> get props => [];
 }
 
+class AdditionalPostListLoading extends PostListState {
+  @override
+  List<Object> get props => [];
+}
+
 class PostListLoaded extends PostListState {
   final List<Post> posts;
 
   PostListLoaded(this.posts);
+
+  @override
+  List<Object> get props => [posts];
+}
+
+class AddtionalPostListLoaded extends PostListState {
+  final List<Post> posts;
+
+  AddtionalPostListLoaded(this.posts);
 
   @override
   List<Object> get props => [posts];

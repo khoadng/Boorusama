@@ -24,6 +24,8 @@ class PostListPageState extends State<PostListPage> {
   final FloatingSearchBarController searchBarController =
       new FloatingSearchBarController();
 
+  bool isBusy = false;
+
   //TODO: Move PostDownload to shared folder
   @override
   void initState() {
@@ -55,8 +57,12 @@ class PostListPageState extends State<PostListPage> {
   }
 
   void loadMorePosts(_) {
-    _currentPage++;
-    _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
+    //TODO: warning dirty code
+    if (!isBusy) {
+      isBusy = true;
+      _currentPage++;
+      _postListBloc.add(GetMorePost(_currentSearchQuery, _currentPage));
+    }
   }
 
   void downloadAllPosts() {

@@ -12,3 +12,13 @@ class GetPost extends PostListEvent {
   @override
   List<Object> get props => [tagString, page];
 }
+
+class GetMorePost extends PostListEvent {
+  final String tagString;
+  final int page;
+
+  GetMorePost(this.tagString, this.page);
+
+  @override
+  List<Object> get props => [tagString, page];
+}
