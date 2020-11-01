@@ -3,6 +3,7 @@ import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
 import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
+import 'package:boorusama/presentation/posts/post_list/models/tag_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -22,6 +23,7 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
   TagSuggestionsBloc _tagSuggestionsBloc;
   GetAllAccountsBloc _getAllAccountsBloc;
   List<Tag> _tags;
+  TagQuery _tagQuery;
 
   @override
   void initState() {
@@ -29,6 +31,10 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
     _tagSuggestionsBloc = BlocProvider.of<TagSuggestionsBloc>(context);
     _getAllAccountsBloc = BlocProvider.of<GetAllAccountsBloc>(context);
     _tags = List<Tag>();
+    _tagQuery = TagQuery(
+      onTagInputCompleted: () => _tags.clear(),
+      onCleared: () => widget.controller.close(),
+    );
   }
 
   @override
@@ -44,17 +50,10 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
       axisAlignment: 0.0,
       openAxisAlignment: 0.0,
       onQueryChanged: (query) {
-        if (query.isEmpty) {
-          widget.controller.close();
-          return;
-        }
-        if (query.endsWith(" ")) {
-          widget.controller.close();
-          return;
-        }
+        _tagQuery.update(query);
 
-        _tagSuggestionsBloc
-            .add(TagSuggestionsRequested(tagString: query, page: 1));
+        _tagSuggestionsBloc.add(
+            TagSuggestionsRequested(tagString: _tagQuery.currentTag, page: 1));
       },
       transition: CircularFloatingSearchBarTransition(),
       actions: [
@@ -100,7 +99,14 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
           //TODO: handle other case here;
         }
       },
-      child: SuggestionItems(tags: _tags, widget: widget),
+      child: SuggestionItems(
+        tags: _tags,
+        widget: widget,
+        onItemTap: (value) {
+          _tagQuery.add(value);
+          widget.controller.query = _tagQuery.currentQuery;
+        },
+      ),
     );
   }
 
@@ -118,11 +124,13 @@ class SuggestionItems extends StatelessWidget {
     Key key,
     @required List<Tag> tags,
     @required this.widget,
+    @required this.onItemTap,
   })  : _tags = tags,
         super(key: key);
 
   final List<Tag> _tags;
   final PostListSearchBar widget;
+  final ValueChanged<String> onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -137,8 +145,7 @@ class SuggestionItems extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return ListTile(
-              onTap: () =>
-                  widget.controller.query = _tags[index].displayName + " ",
+              onTap: () => onItemTap(_tags[index].displayName),
               trailing: Text(_tags[index].postCount.toString(),
                   style: TextStyle(color: Colors.grey)),
               title: Text(
