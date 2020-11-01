@@ -31,6 +31,7 @@ dependencies:
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
+  draggable_scrollbar: ^0.0.4
   equatable: ^1.2.5
   flip_card: ^0.4.4
   flushbar: ^1.10.4

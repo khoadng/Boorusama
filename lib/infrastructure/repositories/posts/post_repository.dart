@@ -21,7 +21,7 @@ class PostRepository implements IPostRepository {
       "api_key": account.apiKey,
       "page": page.toString(),
       "tags": tagString,
-      "limit": "200",
+      "limit": "50",
     });
 
     var posts = List<Post>();
@@ -33,7 +33,7 @@ class PostRepository implements IPostRepository {
         try {
           posts.add(Post.fromJson(item));
         } catch (e) {
-          print("Cant parse $item[id]");
+          print("Cant parse ${item['id']}");
         }
       }
     } on DioError catch (e) {
