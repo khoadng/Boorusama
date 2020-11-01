@@ -2,6 +2,7 @@ import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
+import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 
 class PostRepository implements IPostRepository {
@@ -23,11 +24,11 @@ class PostRepository implements IPostRepository {
       "limit": "200",
     });
 
-    var respond = await _api.dio
-        .get(uri.toString(), options: buildCacheOptions(Duration(minutes: 1)));
+    var posts = List<Post>();
+    try {
+      final respond = await _api.dio.get(uri.toString(),
+          options: buildCacheOptions(Duration(minutes: 1)));
 
-    if (respond.statusCode == 200) {
-      var posts = List<Post>();
       for (var item in respond.data) {
         try {
           posts.add(Post.fromJson(item));
@@ -35,10 +36,18 @@ class PostRepository implements IPostRepository {
           print("Cant parse $item[id]");
         }
       }
-      return posts;
-      // return content.map((post) => Post.fromJson(post)).toList();
-    } else {
-      throw Exception("Unable to perform request!");
+    } on DioError catch (e) {
+      if (e.response.statusCode == 422) {
+        throw CannotSearchMoreThanTwoTags(
+            "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
+      }
     }
+
+    return posts;
   }
+}
+
+class CannotSearchMoreThanTwoTags implements Exception {
+  final String message;
+  CannotSearchMoreThanTwoTags(this.message);
 }

@@ -4,9 +4,11 @@ import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
 import 'package:boorusama/presentation/posts/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 import 'package:widget_view/widget_view.dart';
 
 class PostListPageView
@@ -50,6 +52,19 @@ class PostListPageView
       listener: (context, state) {
         if (state is PostListLoaded) {
           controller.posts.addAll(state.posts);
+        } else if (state is PostListError) {
+          Flushbar(
+            icon: Icon(
+              Icons.info_outline,
+              color: ThemeData.dark().accentColor,
+            ),
+            leftBarIndicatorColor: ThemeData.dark().accentColor,
+            title: "Hold up!",
+            message: state.message,
+            duration: Duration(seconds: 6),
+          )..show(context);
+        } else {
+          throw Exception("Unknown PostListState");
         }
       },
       builder: (context, state) {
@@ -63,8 +78,9 @@ class PostListPageView
           return buildListWithData();
         } else if (state is PostListLoaded) {
           return buildListWithData();
-          // } else if (state is PostListAdditionalLoading) {
-          //   return buildBottomLoading();
+        } else if (state is PostListError) {
+          return Lottie.asset(
+              "assets/animations/11116-404-planet-animation.json");
         } else {
           return Center(child: Text("Nothing's here"));
         }

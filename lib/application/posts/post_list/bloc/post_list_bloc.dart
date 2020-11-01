@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -20,12 +21,12 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
   ) async* {
     if (event is GetPost) {
       yield PostListLoading();
-      // try {
-      final posts = await repository.getPosts(event.tagString, event.page);
-      yield PostListLoaded(posts);
-      // } on Error {
-      //   yield PostListError("Something's wrong");
-      // }
+      try {
+        final posts = await repository.getPosts(event.tagString, event.page);
+        yield PostListLoaded(posts);
+      } on CannotSearchMoreThanTwoTags catch (e) {
+        yield PostListError(e.message);
+      }
     }
   }
 }
