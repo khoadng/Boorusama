@@ -1,8 +1,5 @@
-import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
-import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
 import 'package:boorusama/presentation/posts/post_list/models/tag_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +18,6 @@ class PostListSearchBar extends StatefulWidget {
 
 class _PostListSearchBarState extends State<PostListSearchBar> {
   TagSuggestionsBloc _tagSuggestionsBloc;
-  GetAllAccountsBloc _getAllAccountsBloc;
   List<Tag> _tags;
   TagQuery _tagQuery;
 
@@ -29,7 +25,6 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
   void initState() {
     super.initState();
     _tagSuggestionsBloc = BlocProvider.of<TagSuggestionsBloc>(context);
-    _getAllAccountsBloc = BlocProvider.of<GetAllAccountsBloc>(context);
     _tags = List<Tag>();
     _tagQuery = TagQuery(
       onTagInputCompleted: () => _tags.clear(),
@@ -60,28 +55,6 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
         FloatingSearchBarAction.searchToClear(
           showIfClosed: false,
           duration: Duration(milliseconds: 400),
-        ),
-        BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
-          listener: (context, state) {
-            if (state is GetAllAccountsSuccess) {
-              if (state.accounts == null || state.accounts.isEmpty) {
-                Navigator.of(context).push(
-                    MaterialPageRoute(builder: (context) => AddAccountPage()));
-              } else {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        AccountInfoPage(accounts: state.accounts)));
-              }
-            }
-          },
-          child: GestureDetector(
-            onTap: () => _getAllAccountsBloc.add(GetAllAccountsRequested()),
-            child: CircleAvatar(
-              radius: 18.0,
-              backgroundColor: Colors.blue,
-              child: Text("DK"),
-            ),
-          ),
         ),
       ],
       builder: (context, transition) => buildExpandableBody(),

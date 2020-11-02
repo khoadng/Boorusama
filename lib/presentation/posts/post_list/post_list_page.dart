@@ -1,5 +1,7 @@
+import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page_view.dart';
 import 'package:flutter/material.dart';
@@ -20,11 +22,13 @@ class PostListPageState extends State<PostListPage> {
   final List<Post> posts = List<Post>();
   PostListBloc _postListBloc;
   PostDownloadBloc _postDownloadBloc;
+  GetAllAccountsBloc _getAllAccountsBloc;
   final ScrollController scrollController = new ScrollController();
   final FloatingSearchBarController searchBarController =
       new FloatingSearchBarController();
 
   bool isBusy = false;
+  Account account;
 
   //TODO: Move PostDownload to shared folder
   @override
@@ -32,6 +36,8 @@ class PostListPageState extends State<PostListPage> {
     super.initState();
     _postListBloc = BlocProvider.of<PostListBloc>(context);
     _postDownloadBloc = BlocProvider.of<PostDownloadBloc>(context);
+    _getAllAccountsBloc = BlocProvider.of<GetAllAccountsBloc>(context)
+      ..add(GetAllAccountsRequested());
     _postListBloc.add(GetPost("", 1));
   }
 
@@ -68,6 +74,19 @@ class PostListPageState extends State<PostListPage> {
   void downloadAllPosts() {
     posts.forEach((post) {
       _postDownloadBloc.add(PostDownloadRequested(post: post));
+    });
+  }
+
+  void assignAccount(Account account) {
+    setState(() {
+      this.account = account;
+    });
+  }
+
+  void removeAccount(Account account) {
+    //TODO: dirty solution, unused parameter
+    setState(() {
+      this.account = null;
     });
   }
 

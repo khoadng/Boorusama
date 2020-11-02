@@ -1,9 +1,13 @@
+import 'package:boorusama/application/accounts/add_account/bloc/add_account_bloc.dart';
+import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
+import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
 import 'package:boorusama/presentation/posts/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
+import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -16,9 +20,51 @@ class PostListPageView
   PostListPageView(PostListPageState controller, {Key key})
       : super(controller, key: key);
 
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.settings),
+            onPressed: () {
+              _scaffoldKey.currentState.openEndDrawer();
+            },
+          )
+        ],
+      ),
+      endDrawer: MultiBlocListener(
+        //TODO: simplify these bloc, merge to one
+        listeners: [
+          BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
+            listener: (context, state) {
+              if (state is GetAllAccountsSuccess) {
+                controller.assignAccount(state.accounts.first);
+              }
+            },
+          ),
+          BlocListener<AddAccountBloc, AddAccountState>(
+            listener: (context, state) {
+              if (state is AddAccountDone) {
+                controller.assignAccount(state.account);
+              }
+            },
+          ),
+          BlocListener<RemoveAccountBloc, RemoveAccountState>(
+            listener: (context, state) {
+              if (state is RemoveAccountSuccess) {
+                controller.removeAccount(state.account);
+              }
+            },
+          ),
+        ],
+        child: SideBarMenu(
+          account: controller.account,
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => controller.downloadAllPosts(),
         child: const Icon(Icons.download_rounded),

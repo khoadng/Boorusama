@@ -1,5 +1,4 @@
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/post_list_bottom_loader_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +51,7 @@ class _PostListState extends State<PostList> {
             //TODO: let the parent widget handle navigation
             onTapped: (value) => _handleTap(index),
           );
-          return index >= widget.posts.length ? BottomLoader() : image;
+          return image;
         },
         staggeredTileBuilder: (index) {
           final height = widget.posts[index].height / 10;

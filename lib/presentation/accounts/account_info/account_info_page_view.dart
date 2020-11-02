@@ -59,18 +59,19 @@ class AccountInfoPageView
   }
 
   Widget buildAccountList() {
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<RemoveAccountBloc, RemoveAccountState>(
-          listener: (context, state) {
-            if (state is RemoveAccountSuccess) {
-              controller.removeAccount(state.account);
-            }
-          },
-        )
-      ],
-      //TODO: warning dirty code to get current account
-      child: Text(controller.accounts.first.username),
+    return BlocConsumer<RemoveAccountBloc, RemoveAccountState>(
+      listener: (context, state) {
+        if (state is RemoveAccountSuccess) {
+          controller.removeAccount(state.account);
+        }
+      },
+      builder: (context, state) {
+        if (state is RemoveAccountSuccess) {
+          return Center();
+        } else {
+          return Text(controller.accounts.first.username);
+        }
+      },
     );
   }
 }
