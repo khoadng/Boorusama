@@ -134,7 +134,7 @@ class PostListPageView
           ? controller.searchBarController.show()
           : controller.searchBarController.hide(),
       onMaxItemReached: controller.loadMorePosts,
-      scrollThreshold: 0.8,
+      scrollThreshold: 0.7,
       scrollController: controller.scrollController,
     );
   }

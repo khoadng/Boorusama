@@ -1,7 +1,6 @@
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
-import 'package:draggable_scrollbar/draggable_scrollbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -54,12 +53,38 @@ class _PostListState extends State<PostList> {
           itemCount: widget.posts.length,
           itemBuilder: (context, index) {
             final post = widget.posts[index];
+            final items = <Widget>[];
             final image = PostImage(
               imageUrl: post.previewImageUri.toString(),
               //TODO: let the parent widget handle navigation
               onTapped: (value) => _handleTap(index),
             );
-            return image;
+
+            items.add(image);
+
+            if (post.isFavorited) {
+              items.add(Align(
+                alignment: Alignment.topRight,
+                child: Icon(
+                  Icons.favorite,
+                  color: Colors.redAccent,
+                ),
+              ));
+            }
+
+            if (post.isAnimated) {
+              items.add(Align(
+                alignment: Alignment.topLeft,
+                child: Icon(
+                  Icons.play_circle_outline,
+                  color: Colors.white70,
+                ),
+              ));
+            }
+
+            return Stack(
+              children: items,
+            );
           },
           staggeredTileBuilder: (index) {
             final height = widget.posts[index].height / 10;

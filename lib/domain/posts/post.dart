@@ -70,6 +70,10 @@ class Post {
     }
   }
 
+  bool get isAnimated {
+    return isVideo || (_format == "gif");
+  }
+
   factory Post.fromJson(Map<String, dynamic> json) {
     //TODO: should use json deserialize library
     return new Post(
