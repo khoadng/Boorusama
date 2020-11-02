@@ -23,7 +23,7 @@ class PostImage extends StatefulWidget {
 }
 
 class _PostImageState extends State<PostImage> {
-  bool _notesVisible = false;
+  bool notesVisible = false;
   List<Note> notes;
   PostTranslateNoteBloc _postTranslateNoteBloc;
 
@@ -53,7 +53,7 @@ class _PostImageState extends State<PostImage> {
               SnackBar(content: Text("Oopsie something went wrong")));
         }
       },
-      child: _notesVisible
+      child: notesVisible
           ? buildNotesAndImage()
           : buildCachedNetworkImage(context),
     );
@@ -137,18 +137,18 @@ class _PostImageState extends State<PostImage> {
     }
 
     setState(() {
-      _notesVisible = true;
+      notesVisible = true;
     });
 
-    widget.onNoteVisibleChanged(_notesVisible);
+    widget.onNoteVisibleChanged(notesVisible);
   }
 
   void hideTranslationNotes() {
     setState(() {
-      _notesVisible = false;
+      notesVisible = false;
     });
 
-    widget.onNoteVisibleChanged(_notesVisible);
+    widget.onNoteVisibleChanged(notesVisible);
   }
 }
 
@@ -156,6 +156,8 @@ class PostImageController {
   _PostImageState postImageState;
 
   PostImageController();
+
+  bool get notesVisible => postImageState.notesVisible;
 
   void showTranslationNotes() {
     postImageState.showTranslationNotes();
@@ -166,7 +168,7 @@ class PostImageController {
   }
 
   void toggleTranslationNotes() {
-    postImageState._notesVisible
+    postImageState.notesVisible
         ? postImageState.hideTranslationNotes()
         : postImageState.showTranslationNotes();
   }

@@ -4,7 +4,7 @@ import 'package:boorusama/application/accounts/remove_account/bloc/remove_accoun
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
-import 'package:boorusama/presentation/posts/bottom_bar_widget.dart';
+import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
 import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
@@ -23,7 +23,7 @@ class PostListPageView
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      endDrawer: MultiBlocListener(
+      drawer: MultiBlocListener(
         //TODO: simplify these bloc, merge to one
         listeners: [
           BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
@@ -52,10 +52,6 @@ class PostListPageView
           account: controller.account,
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => controller.downloadAllPosts(),
-        child: const Icon(Icons.download_rounded),
-      ),
       resizeToAvoidBottomInset: false,
       body: _getPage(controller.currentTab),
       bottomNavigationBar: BottomBar(
@@ -73,6 +69,7 @@ class PostListPageView
           PostListSearchBar(
             controller: controller.searchBarController,
             onSearched: controller.handleSearched,
+            onDownloadAllSelected: controller.downloadAllPosts,
           ),
         ]);
       case 1:

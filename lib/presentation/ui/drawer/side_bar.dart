@@ -17,6 +17,7 @@ class SideBarMenu extends StatelessWidget {
       drawerChildren.add(DrawerItem(
         text: "Login",
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => AddAccountPage()));
         },
@@ -25,6 +26,7 @@ class SideBarMenu extends StatelessWidget {
       drawerChildren.add(DrawerItem(
         text: "Profile",
         onPressed: () {
+          Navigator.of(context).pop();
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AccountInfoPage(
                     accounts: [account],
@@ -33,14 +35,12 @@ class SideBarMenu extends StatelessWidget {
       ));
     }
 
-    return ClipPath(
-      clipper: _DrawerClipper(),
-      child: Drawer(
+    return Drawer(
+      child: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            padding: const EdgeInsets.only(top: 48),
             child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: drawerChildren),
           ),
         ),

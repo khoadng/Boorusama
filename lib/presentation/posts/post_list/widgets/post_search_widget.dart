@@ -7,10 +7,15 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class PostListSearchBar extends StatefulWidget {
   final ValueChanged<String> onSearched;
+  final Function onDownloadAllSelected;
   final FloatingSearchBarController controller;
   // final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
-  PostListSearchBar({Key key, @required this.onSearched, this.controller});
+  PostListSearchBar(
+      {Key key,
+      @required this.onSearched,
+      this.controller,
+      this.onDownloadAllSelected});
 
   @override
   _PostListSearchBarState createState() => _PostListSearchBarState();
@@ -56,6 +61,24 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
           showIfClosed: false,
           duration: Duration(milliseconds: 400),
         ),
+        PopupMenuButton<PostListAction>(
+          offset: Offset(0, 250), // Change location of the menu
+          onSelected: (value) {
+            switch (value) {
+              case PostListAction.downloadAll:
+                widget.onDownloadAllSelected();
+                break;
+              default:
+            }
+          },
+          itemBuilder: (BuildContext context) =>
+              <PopupMenuEntry<PostListAction>>[
+            const PopupMenuItem<PostListAction>(
+              value: PostListAction.downloadAll,
+              child: Text('Download all'),
+            ),
+          ],
+        )
       ],
       builder: (context, transition) => buildExpandableBody(),
     );
@@ -130,3 +153,5 @@ class SuggestionItems extends StatelessWidget {
         ));
   }
 }
+
+enum PostListAction { downloadAll }

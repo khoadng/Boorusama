@@ -49,44 +49,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
 
   @override
   Widget build(BuildContext context) {
-    final speedialChildren = [
-      SpeedDialChild(
-          child: Icon(Icons.download_rounded),
-          backgroundColor: Colors.red,
-          label: 'Download',
-          labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-          onTap: () => _postDownloadBloc.add(
-              PostDownloadRequested(post: widget.posts[_currentPostIndex]))),
-      // SpeedDialChild(
-      //   child: Icon(Icons.tag),
-      //   backgroundColor: Colors.blue,
-      //   label: 'Tags',
-      //   labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-      //   onTap: () => _tagListBloc.add(GetTagList(
-      //       widget.posts[_currentPostIndex].tagString.toCommaFormat(), 1)),
-      // ),
-      SpeedDialChild(
-        child: Icon(Icons.translate_rounded),
-        backgroundColor: Colors.green,
-        label: 'Notes',
-        labelStyle: TextStyle(fontSize: 18.0, color: Colors.black),
-        onTap: () => _postImageController.toggleTranslationNotes(),
-      ),
-      SpeedDialChild(
-        child: _currentPostIsFaved
-            ? Icon(Icons.favorite)
-            : Icon(Icons.favorite_border),
-        backgroundColor: Colors.orange,
-        onTap: () => _currentPostIsFaved
-            ? _postFavoritesBloc
-                .add(RemoveFromFavorites(widget.posts[_currentPostIndex].id))
-            : _postFavoritesBloc
-                .add(AddToFavorites(widget.posts[_currentPostIndex].id)),
-      ),
-    ];
-
-    //TODO: add fav button should be disable when user is not logged in
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -105,12 +67,17 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             ],
           ),
           actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.translate),
+              onPressed: () => _postImageController.toggleTranslationNotes(),
+            ),
             PopupMenuButton<PostAction>(
+              offset: Offset(0, 200),
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<PostAction>>[
                 const PopupMenuItem<PostAction>(
                   value: PostAction.foo,
-                  child: Text('Foo'),
+                  child: Text('Placeholder'),
                 ),
               ],
             )
@@ -138,16 +105,31 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
               },
             )
           ],
-          child: SpeedDial(
-            animatedIcon: AnimatedIcons.menu_close,
-            animatedIconTheme: IconThemeData(size: 22.0),
-            closeManually: false,
-            curve: Curves.bounceIn,
-            overlayColor: Colors.black,
-            overlayOpacity: 0.5,
-            elevation: 8.0,
-            shape: CircleBorder(),
-            children: speedialChildren,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              FloatingActionButton(
+                onPressed: () => _currentPostIsFaved
+                    ? _postFavoritesBloc.add(
+                        RemoveFromFavorites(widget.posts[_currentPostIndex].id))
+                    : _postFavoritesBloc.add(
+                        AddToFavorites(widget.posts[_currentPostIndex].id)),
+                child: _currentPostIsFaved
+                    ? Icon(Icons.favorite)
+                    : Icon(Icons.favorite_border),
+                heroTag: null,
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              FloatingActionButton(
+                onPressed: () => _postDownloadBloc.add(
+                  PostDownloadRequested(post: widget.posts[_currentPostIndex]),
+                ),
+                heroTag: null,
+                child: Icon(Icons.download_rounded),
+              ),
+            ],
           ),
         ),
         body: BlocListener<TagListBloc, TagListState>(

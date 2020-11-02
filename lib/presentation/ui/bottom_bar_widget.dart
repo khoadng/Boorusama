@@ -55,7 +55,7 @@ class _BottomBarState extends State<BottomBar> {
               style: TextStyle(color: ThemeData.dark().textSelectionColor),
             )),
         BubbleBottomBarItem(
-            backgroundColor: Colors.indigo,
+            backgroundColor: ThemeData.dark().accentIconTheme.color,
             icon: Icon(
               Icons.folder_open,
               color: Colors.black,
@@ -69,7 +69,7 @@ class _BottomBarState extends State<BottomBar> {
               style: TextStyle(color: ThemeData.dark().textSelectionColor),
             )),
         BubbleBottomBarItem(
-            backgroundColor: Colors.green,
+            backgroundColor: ThemeData.dark().accentIconTheme.color,
             icon: Icon(
               Icons.menu,
               color: Colors.black,
