@@ -37,12 +37,17 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildGrid(BuildContext context, Orientation orientation) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 0, left: 5, right: 5, bottom: 0),
-      child: DraggableScrollbar.semicircle(
-        controller: widget.scrollController,
-        child: StaggeredGridView.extentBuilder(
-          primary: false,
+    return CustomScrollView(
+      controller: widget.scrollController..addListener(_onScroll),
+      slivers: <Widget>[
+        SliverList(
+          delegate: SliverChildListDelegate([
+            Container(
+              padding: EdgeInsets.all(42.0),
+            )
+          ]),
+        ),
+        SliverStaggeredGrid.extentBuilder(
           maxCrossAxisExtent: 150,
           mainAxisSpacing: 5.0,
           crossAxisSpacing: 5.0,
@@ -67,12 +72,10 @@ class _PostListState extends State<PostList> {
             } else {
               mainAxisExtent = height;
             }
-
             return StaggeredTile.extent(1, mainAxisExtent);
           },
-          controller: widget.scrollController..addListener(_onScroll),
         ),
-      ),
+      ],
     );
   }
 

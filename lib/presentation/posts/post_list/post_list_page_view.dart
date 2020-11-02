@@ -20,22 +20,9 @@ class PostListPageView
   PostListPageView(PostListPageState controller, {Key key})
       : super(controller, key: key);
 
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.settings),
-            onPressed: () {
-              _scaffoldKey.currentState.openEndDrawer();
-            },
-          )
-        ],
-      ),
       endDrawer: MultiBlocListener(
         //TODO: simplify these bloc, merge to one
         listeners: [
