@@ -17,6 +17,7 @@ class Post {
   final String _tag_string;
   //TODO: should use Enum instead of raw string
   final String _format;
+  String _lastCommentAt;
   bool isFavorited;
 
 //TODO: fix naming from Image to Post
@@ -36,7 +37,8 @@ class Post {
       this._width,
       this._height,
       this._format,
-      this.isFavorited]);
+      this.isFavorited,
+      this._lastCommentAt]);
 
   int get id => _id;
 
@@ -74,6 +76,10 @@ class Post {
     return isVideo || (_format == "gif");
   }
 
+  bool get isTranslated => tagString.contains("translated");
+
+  bool get hasComment => _lastCommentAt != null;
+
   factory Post.fromJson(Map<String, dynamic> json) {
     //TODO: should use json deserialize library
     return new Post(
@@ -89,6 +95,7 @@ class Post {
       json["image_height"],
       json["file_ext"],
       json["is_favorited"],
+      json["last_commented_at"],
     );
   }
 }

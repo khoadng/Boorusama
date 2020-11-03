@@ -107,11 +107,15 @@ class _PostImageState extends State<PostImage> {
           widget.post.aspectRatio);
 
       var tooltip = SuperTooltip(
+          backgroundColor: ThemeData.dark().cardColor,
           arrowTipDistance: 0,
           arrowBaseWidth: 0,
           arrowLength: 0,
           popupDirection: TooltipDirection.left,
-          content: Material(child: Html(data: note.content)));
+          content: Material(
+            child: Html(data: note.content),
+            color: ThemeData.dark().cardColor,
+          ));
 
       widgets.add(
         GestureDetector(

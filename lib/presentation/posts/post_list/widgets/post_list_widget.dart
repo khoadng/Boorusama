@@ -60,30 +60,43 @@ class _PostListState extends State<PostList> {
               onTapped: (value) => _handleTap(index),
             );
 
-            items.add(image);
-
             if (post.isFavorited) {
-              items.add(Align(
-                alignment: Alignment.topRight,
-                child: Icon(
-                  Icons.favorite,
-                  color: Colors.redAccent,
-                ),
+              items.add(Icon(
+                Icons.favorite,
+                color: Colors.redAccent,
               ));
             }
 
             if (post.isAnimated) {
-              items.add(Align(
-                alignment: Alignment.topLeft,
-                child: Icon(
-                  Icons.play_circle_outline,
-                  color: Colors.white70,
-                ),
+              items.add(Icon(
+                Icons.play_circle_outline,
+                color: Colors.white70,
+              ));
+            }
+
+            if (post.isTranslated) {
+              items.add(Icon(
+                Icons.g_translate_outlined,
+                color: Colors.white70,
+              ));
+            }
+
+            if (post.hasComment) {
+              items.add(Icon(
+                Icons.comment,
+                color: Colors.white70,
               ));
             }
 
             return Stack(
-              children: items,
+              children: <Widget>[
+                image,
+                Align(
+                    alignment: Alignment.topLeft,
+                    child: Column(
+                      children: items,
+                    ))
+              ],
             );
           },
           staggeredTileBuilder: (index) {

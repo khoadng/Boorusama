@@ -52,6 +52,43 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
 
   @override
   Widget build(BuildContext context) {
+    final floatingButtons = <Widget>[];
+
+    if (widget.posts[_currentPostIndex].isTranslated) {
+      floatingButtons.add(FloatingActionButton(
+        onPressed: () => _postImageController.toggleTranslationNotes(),
+        heroTag: null,
+        child: Icon(Icons.translate),
+      ));
+      floatingButtons.add(SizedBox(
+        height: 10,
+      ));
+    }
+
+    floatingButtons.addAll([
+      FloatingActionButton(
+        onPressed: () => _currentPostIsFaved
+            ? _postFavoritesBloc
+                .add(RemoveFromFavorites(widget.posts[_currentPostIndex].id))
+            : _postFavoritesBloc
+                .add(AddToFavorites(widget.posts[_currentPostIndex].id)),
+        child: _currentPostIsFaved
+            ? Icon(Icons.favorite)
+            : Icon(Icons.favorite_border),
+        heroTag: null,
+      ),
+      SizedBox(
+        height: 10,
+      ),
+      FloatingActionButton(
+        onPressed: () => _postDownloadBloc.add(
+          PostDownloadRequested(post: widget.posts[_currentPostIndex]),
+        ),
+        heroTag: null,
+        child: Icon(Icons.download_rounded),
+      )
+    ]);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -75,10 +112,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             ],
           ),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.translate),
-              onPressed: () => _postImageController.toggleTranslationNotes(),
-            ),
             PopupMenuButton<PostAction>(
               offset: Offset(0, 200),
               itemBuilder: (BuildContext context) =>
@@ -91,72 +124,52 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             )
           ],
         ),
-        floatingActionButton: MultiBlocListener(
-          listeners: [
-            BlocListener<PostFavoritesBloc, PostFavoritesState>(
-              listener: (context, state) {
-                if (state is AddPostToFavoritesCompleted) {
-                  setState(() {
-                    _currentPostIsFaved = true;
-                  });
-                  //TODO: warning workaround, updating local data, DANGEROUS CODE
-                  widget.posts[_currentPostIndex].isFavorited = true;
-                } else if (state is RemovePostToFavoritesCompleted) {
-                  setState(() {
-                    _currentPostIsFaved = false;
-                  });
-                  //TODO: warning workaround, updating local data, DANGEROUS CODE
-                  widget.posts[_currentPostIndex].isFavorited = false;
-                } else {
-                  throw Exception("Unknown state for PostFavoriteBloc");
-                }
-              },
-            )
-          ],
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              FloatingActionButton(
-                onPressed: () => _currentPostIsFaved
-                    ? _postFavoritesBloc.add(
-                        RemoveFromFavorites(widget.posts[_currentPostIndex].id))
-                    : _postFavoritesBloc.add(
-                        AddToFavorites(widget.posts[_currentPostIndex].id)),
-                child: _currentPostIsFaved
-                    ? Icon(Icons.favorite)
-                    : Icon(Icons.favorite_border),
-                heroTag: null,
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              FloatingActionButton(
-                onPressed: () => _postDownloadBloc.add(
-                  PostDownloadRequested(post: widget.posts[_currentPostIndex]),
-                ),
-                heroTag: null,
-                child: Icon(Icons.download_rounded),
-              ),
-            ],
-          ),
-        ),
         body: TabBarView(
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            PostListSwipe(
-              postImageController: _postImageController,
-              posts: widget.posts,
-              onPostChanged: (value) {
-                //TODO: not to reconsider, kinda ugly
-                _currentPostIsFaved = widget.posts[value].isFavorited;
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  setState(() {
-                    _currentPostIndex = value;
+            Scaffold(
+              floatingActionButton: MultiBlocListener(
+                listeners: [
+                  BlocListener<PostFavoritesBloc, PostFavoritesState>(
+                    listener: (context, state) {
+                      if (state is AddPostToFavoritesCompleted) {
+                        setState(() {
+                          _currentPostIsFaved = true;
+                        });
+                        //TODO: warning workaround, updating local data, DANGEROUS CODE
+                        widget.posts[_currentPostIndex].isFavorited = true;
+                      } else if (state is RemovePostToFavoritesCompleted) {
+                        setState(() {
+                          _currentPostIsFaved = false;
+                        });
+                        //TODO: warning workaround, updating local data, DANGEROUS CODE
+                        widget.posts[_currentPostIndex].isFavorited = false;
+                      } else {
+                        throw Exception("Unknown state for PostFavoriteBloc");
+                      }
+                    },
+                  )
+                ],
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: floatingButtons,
+                ),
+              ),
+              body: PostListSwipe(
+                postImageController: _postImageController,
+                posts: widget.posts,
+                onPostChanged: (value) {
+                  //TODO: not to reconsider, kinda ugly
+                  _currentPostIsFaved = widget.posts[value].isFavorited;
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      _currentPostIndex = value;
+                    });
                   });
-                });
-                // _tags.clear();
-              },
-              initialPostIndex: _currentPostIndex,
+                  // _tags.clear();
+                },
+                initialPostIndex: _currentPostIndex,
+              ),
             ),
             BlocConsumer<TagListBloc, TagListState>(
               listener: (context, state) {
