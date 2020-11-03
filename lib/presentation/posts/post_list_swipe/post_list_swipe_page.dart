@@ -3,11 +3,11 @@ import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_b
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
+import 'package:boorusama/presentation/comments/comment_page.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_list_swipe_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
 import 'widgets/post_tag_list.dart';
 
@@ -22,8 +22,7 @@ class PostListSwipePage extends StatefulWidget {
   _PostListSwipePageState createState() => _PostListSwipePageState();
 }
 
-class _PostListSwipePageState extends State<PostListSwipePage>
-    with AutomaticKeepAliveClientMixin<PostListSwipePage> {
+class _PostListSwipePageState extends State<PostListSwipePage> {
   int _currentPostIndex;
   bool _currentPostIsFaved = false;
   PostDownloadBloc _postDownloadBloc;
@@ -52,12 +51,9 @@ class _PostListSwipePageState extends State<PostListSwipePage>
   }
 
   @override
-  bool get wantKeepAlive => true;
-
-  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           bottom: TabBar(
@@ -65,16 +61,17 @@ class _PostListSwipePageState extends State<PostListSwipePage>
               // Second tab
               if (value == 1) {
                 // Lazy loading
-                if (_tags.isEmpty) {
-                  _tagListBloc.add(GetTagList(
-                      widget.posts[_currentPostIndex].tagString.toCommaFormat(),
-                      1));
-                }
+                // if (_tags.isEmpty) {
+                _tagListBloc.add(GetTagList(
+                    widget.posts[_currentPostIndex].tagString.toCommaFormat(),
+                    1));
+                // }
               }
             },
             tabs: [
               Tab(icon: Icon(Icons.image)),
               Tab(icon: Icon(Icons.info)),
+              Tab(icon: Icon(Icons.comment)),
             ],
           ),
           actions: <Widget>[
@@ -152,8 +149,12 @@ class _PostListSwipePageState extends State<PostListSwipePage>
               onPostChanged: (value) {
                 //TODO: not to reconsider, kinda ugly
                 _currentPostIsFaved = widget.posts[value].isFavorited;
-                _currentPostIndex = value;
-                _tags.clear();
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    _currentPostIndex = value;
+                  });
+                });
+                // _tags.clear();
               },
               initialPostIndex: _currentPostIndex,
             ),
@@ -182,6 +183,7 @@ class _PostListSwipePageState extends State<PostListSwipePage>
                 }
               },
             ),
+            CommentPage(postId: widget.posts[_currentPostIndex].id),
           ],
         ),
       ),

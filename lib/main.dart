@@ -3,6 +3,7 @@ import 'package:boorusama/application/posts/post_download/file_name_generator.da
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
+import 'package:boorusama/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
@@ -41,6 +42,7 @@ void main() async {
       downloadService: DownloadService(FileNameGenerator()),
       accountRepository: accountRepository,
       noteRepository: NoteRepository(apiProvider),
+      commentRepository: CommentRepository(apiProvider),
       favoritePostRepository:
           FavoritePostRepository(apiProvider, accountRepository)));
 }

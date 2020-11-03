@@ -22,8 +22,12 @@ class PostListSwipe extends StatefulWidget {
   _PostListSwipeState createState() => _PostListSwipeState();
 }
 
-class _PostListSwipeState extends State<PostListSwipe> {
+class _PostListSwipeState extends State<PostListSwipe>
+    with AutomaticKeepAliveClientMixin<PostListSwipe> {
   bool _notesIsVisible = false;
+
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {

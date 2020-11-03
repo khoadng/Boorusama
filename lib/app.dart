@@ -9,12 +9,14 @@ import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/accounts/i_favorite_post_repository.dart';
+import 'package:boorusama/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
 import 'presentation/posts/post_list/post_list_page.dart';
@@ -27,7 +29,8 @@ class App extends StatelessWidget {
       @required this.tagRepository,
       @required this.noteRepository,
       @required this.favoritePostRepository,
-      @required this.accountRepository});
+      @required this.accountRepository,
+      @required this.commentRepository});
 
   final IPostRepository postRepository;
   final ITagRepository tagRepository;
@@ -36,6 +39,7 @@ class App extends StatelessWidget {
   final IDownloadService downloadService;
   final IScrapperService scrapperService;
   final IFavoritePostRepository favoritePostRepository;
+  final ICommentRepository commentRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +70,8 @@ class App extends StatelessWidget {
         BlocProvider<PostFavoritesBloc>(
             create: (_) =>
                 PostFavoritesBloc(postRepository, favoritePostRepository)),
+        BlocProvider<CommentBloc>(
+            create: (_) => CommentBloc(commentRepository)),
       ],
       child: MaterialApp(
         theme: ThemeData(
