@@ -17,7 +17,6 @@ class SideBarMenu extends StatelessWidget {
       drawerChildren.add(DrawerItem(
         text: "Login",
         onPressed: () {
-          Navigator.of(context).pop();
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => AddAccountPage()));
         },
@@ -26,7 +25,6 @@ class SideBarMenu extends StatelessWidget {
       drawerChildren.add(DrawerItem(
         text: "Profile",
         onPressed: () {
-          Navigator.of(context).pop();
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AccountInfoPage(
                     accounts: [account],
