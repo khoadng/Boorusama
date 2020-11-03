@@ -141,7 +141,7 @@ class SuggestionItems extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             return ListTile(
-              onTap: () => onItemTap(_tags[index].displayName),
+              onTap: () => onItemTap(_tags[index].rawName),
               trailing: Text(_tags[index].postCount.toString(),
                   style: TextStyle(color: Colors.grey)),
               title: Text(

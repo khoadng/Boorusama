@@ -8,9 +8,11 @@ class Tag {
 
   Tag(this._name, this._category, this._postCount);
 
-  String get displayName => _name.replaceAll(" ", "_");
+  String get displayName => _name;
+  String get rawName => _name.replaceAll(" ", "_");
   int get tagHexColor => _category.hexColor;
   PostCountType get postCount => _postCount;
+  TagCategory get category => _category;
 
   factory Tag.fromJson(Map<String, dynamic> json) {
     return Tag(
@@ -19,4 +21,7 @@ class Tag {
       PostCountType(json["post_count"]),
     );
   }
+
+  @override
+  String toString() => "$rawName (${_postCount.toString()})";
 }

@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 
+import 'widgets/post_tag_list.dart';
+
 class PostListSwipePage extends StatefulWidget {
   PostListSwipePage({Key key, @required this.posts, this.initialPostIndex})
       : super(key: key);
@@ -152,39 +154,12 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
                 },
                 initialPostIndex: widget.initialPostIndex,
               ),
-              PostInfo(tags: _tags),
+              PostTagList(
+                  tags: _tags..sort((a, b) => a.rawName.compareTo(b.rawName))),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class PostInfo extends StatelessWidget {
-  const PostInfo({
-    Key key,
-    @required List<Tag> tags,
-  })  : _tags = tags,
-        super(key: key);
-
-  final List<Tag> _tags;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _tags.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-            trailing: Text(_tags[index].postCount.toString(),
-                style: TextStyle(color: Colors.grey)),
-            title: Text(
-              _tags[index].displayName,
-              style: TextStyle(
-                color: Color(_tags[index].tagHexColor),
-              ),
-            ));
-      },
     );
   }
 }
