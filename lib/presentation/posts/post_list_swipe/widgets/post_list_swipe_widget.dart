@@ -30,6 +30,7 @@ class _PostListSwipeState extends State<PostListSwipe> {
     return Scaffold(
       body: CarouselSlider.builder(
         options: CarouselOptions(
+            onPageChanged: (index, reason) => widget.onPostChanged(index),
             initialPage: widget.initialPostIndex,
             viewportFraction: 1.0,
             scrollPhysics: _notesIsVisible
@@ -38,7 +39,6 @@ class _PostListSwipeState extends State<PostListSwipe> {
             enableInfiniteScroll: false,
             height: MediaQuery.of(context).size.height),
         itemBuilder: (context, index) {
-          widget.onPostChanged(index);
           final post = widget.posts[index];
           if (post.isVideo) {
             return PostVideo(post: post);

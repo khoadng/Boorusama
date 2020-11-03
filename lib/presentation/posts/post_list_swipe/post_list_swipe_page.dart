@@ -22,7 +22,8 @@ class PostListSwipePage extends StatefulWidget {
   _PostListSwipePageState createState() => _PostListSwipePageState();
 }
 
-class _PostListSwipePageState extends State<PostListSwipePage> {
+class _PostListSwipePageState extends State<PostListSwipePage>
+    with AutomaticKeepAliveClientMixin<PostListSwipePage> {
   int _currentPostIndex;
   bool _currentPostIsFaved = false;
   PostDownloadBloc _postDownloadBloc;
@@ -41,6 +42,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
     _postImageController = PostImageController();
     //TODO: data maybe stale, should change to other logic
     _currentPostIsFaved = widget.posts[widget.initialPostIndex].isFavorited;
+    _currentPostIndex = widget.initialPostIndex;
   }
 
   @override
@@ -50,6 +52,9 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
   }
 
   @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
@@ -57,10 +62,14 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
         appBar: AppBar(
           bottom: TabBar(
             onTap: (value) {
+              // Second tab
               if (value == 1) {
-                _tagListBloc.add(GetTagList(
-                    widget.posts[_currentPostIndex].tagString.toCommaFormat(),
-                    1));
+                // Lazy loading
+                if (_tags.isEmpty) {
+                  _tagListBloc.add(GetTagList(
+                      widget.posts[_currentPostIndex].tagString.toCommaFormat(),
+                      1));
+                }
               }
             },
             tabs: [
@@ -134,30 +143,46 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             ],
           ),
         ),
-        body: BlocListener<TagListBloc, TagListState>(
-          listener: (context, state) {
-            if (state is TagListLoaded) {
-              setState(() {
-                _tags = state.tags;
-              });
-            }
-          },
-          child: TabBarView(
-            children: [
-              PostListSwipe(
-                postImageController: _postImageController,
-                posts: widget.posts,
-                onPostChanged: (value) {
-                  //TODO: not to reconsider, kinda ugly
-                  _currentPostIsFaved = widget.posts[value].isFavorited;
-                  _currentPostIndex = value;
-                },
-                initialPostIndex: widget.initialPostIndex,
-              ),
-              PostTagList(
-                  tags: _tags..sort((a, b) => a.rawName.compareTo(b.rawName))),
-            ],
-          ),
+        body: TabBarView(
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            PostListSwipe(
+              postImageController: _postImageController,
+              posts: widget.posts,
+              onPostChanged: (value) {
+                //TODO: not to reconsider, kinda ugly
+                _currentPostIsFaved = widget.posts[value].isFavorited;
+                _currentPostIndex = value;
+                _tags.clear();
+              },
+              initialPostIndex: _currentPostIndex,
+            ),
+            BlocConsumer<TagListBloc, TagListState>(
+              listener: (context, state) {
+                if (state is TagListLoaded) {
+                  setState(() {
+                    _tags = state.tags;
+                  });
+                }
+              },
+              builder: (context, state) {
+                if (state is TagListLoading) {
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (state is TagListLoaded) {
+                  return PostTagList(
+                      tags: _tags
+                        ..sort((a, b) => a.rawName.compareTo(b.rawName)));
+                } else {
+                  //TODO: handle other state here
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+              },
+            ),
+          ],
         ),
       ),
     );
