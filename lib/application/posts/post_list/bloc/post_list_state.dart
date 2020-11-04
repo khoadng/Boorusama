@@ -38,9 +38,10 @@ class AddtionalPostListLoaded extends PostListState {
 
 class PostListError extends PostListState {
   final String message;
+  final String title;
 
-  PostListError(this.message);
+  PostListError(this.message, this.title);
 
   @override
-  List<Object> get props => [message];
+  List<Object> get props => [message, title];
 }

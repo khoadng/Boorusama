@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
 import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
+import 'package:boorusama/presentation/settings/settings_page.dart';
 import 'package:boorusama/presentation/ui/drawer/drawer_item.dart';
 import 'package:flutter/material.dart';
 
@@ -34,6 +35,15 @@ class SideBarMenu extends StatelessWidget {
         },
       ));
     }
+
+    drawerChildren.add(DrawerItem(
+      text: "Settings",
+      onPressed: () {
+        Navigator.of(context).pop();
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => SettingsPage()));
+      },
+    ));
 
     return Drawer(
       child: SafeArea(

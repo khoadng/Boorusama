@@ -14,8 +14,11 @@ import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/users/i_user_repository.dart';
+import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
@@ -33,6 +36,7 @@ class App extends StatelessWidget {
       @required this.favoritePostRepository,
       @required this.accountRepository,
       @required this.userRepository,
+      @required this.settingRepository,
       @required this.commentRepository});
 
   final IPostRepository postRepository;
@@ -44,6 +48,7 @@ class App extends StatelessWidget {
   final IFavoritePostRepository favoritePostRepository;
   final ICommentRepository commentRepository;
   final IUserRepository userRepository;
+  final ISettingRepository settingRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -78,23 +83,30 @@ class App extends StatelessWidget {
             create: (_) => CommentBloc(commentRepository)),
         BlocProvider<UserListBloc>(create: (_) => UserListBloc(userRepository)),
       ],
-      child: MaterialApp(
-        theme: ThemeData(
-          brightness: Brightness.light,
-          /* light theme settings */
+      child: MultiProvider(
+        providers: [
+          Provider<SettingRepository>(
+            create: (context) => settingRepository,
+          )
+        ],
+        child: MaterialApp(
+          theme: ThemeData(
+            brightness: Brightness.light,
+            /* light theme settings */
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            /* dark theme settings */
+          ),
+          themeMode: ThemeMode.dark,
+          /* ThemeMode.system to follow system theme, 
+           ThemeMode.light for light theme, 
+           ThemeMode.dark for dark theme
+        */
+          debugShowCheckedModeBanner: false,
+          title: "Boorusama",
+          home: PostListPage(),
         ),
-        darkTheme: ThemeData(
-          brightness: Brightness.dark,
-          /* dark theme settings */
-        ),
-        themeMode: ThemeMode.dark,
-        /* ThemeMode.system to follow system theme, 
-         ThemeMode.light for light theme, 
-         ThemeMode.dark for dark theme
-      */
-        debugShowCheckedModeBanner: false,
-        title: "Boorusama",
-        home: PostListPage(),
       ),
     );
   }

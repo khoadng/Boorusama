@@ -84,15 +84,22 @@ class PostListPageView
           //TODO: warning internal state exposed
           controller.isBusy = false;
         } else if (state is PostListError) {
-          Flushbar(
+          var flush;
+          flush = Flushbar(
             icon: Icon(
               Icons.info_outline,
               color: ThemeData.dark().accentColor,
             ),
             leftBarIndicatorColor: ThemeData.dark().accentColor,
-            title: "Hold up!",
+            title: state.title,
             message: state.message,
-            duration: Duration(seconds: 6),
+            mainButton: FlatButton(
+              onPressed: () {
+                flush.dismiss(true);
+                controller.handleSearched("");
+              },
+              child: Text("OK"),
+            ),
           )..show(context);
         } else {
           //TODO: handle other cases
