@@ -50,10 +50,10 @@ class PostListPageState extends State<PostListPage> {
 
   void handleSearched(String query) {
     _currentSearchQuery = query;
+    _currentPage = 1;
     posts.clear();
     _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
     scrollController.jumpTo(0.0);
-    _currentPage = 1;
   }
 
   void handleTabChanged(int tabIndex) {

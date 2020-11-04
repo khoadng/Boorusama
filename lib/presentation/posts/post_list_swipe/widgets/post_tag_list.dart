@@ -3,7 +3,7 @@ import 'package:boorusama/domain/tags/tag_category.dart';
 import 'package:flutter/material.dart';
 
 class PostTagList extends StatelessWidget {
-  const PostTagList({
+  PostTagList({
     Key key,
     @required List<Tag> tags,
   })  : _tags = tags,
