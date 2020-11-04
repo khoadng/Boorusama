@@ -1,6 +1,8 @@
+import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PostTagList extends StatelessWidget {
   PostTagList({
@@ -81,9 +83,15 @@ class _SliverTagList extends StatelessWidget {
           title: tags[index].displayName,
           hexColor: tags[index].tagHexColor,
           postCount: tags[index].postCount.toString(),
+          onTap: () => _handleTap(tags[index], context),
         );
       }, childCount: tags.length),
     );
+  }
+
+  void _handleTap(Tag tag, BuildContext context) {
+    BlocProvider.of<PostListBloc>(context).add(GetPost(tag.rawName, 1));
+    Navigator.of(context).pop();
   }
 }
 
@@ -114,12 +122,14 @@ class _TagTile extends StatelessWidget {
   final String postCount;
   final int hexColor;
   final String title;
+  final Function onTap;
 
   const _TagTile({
     Key key,
     @required this.postCount,
     @required this.hexColor,
     @required this.title,
+    @required this.onTap,
   }) : super(key: key);
 
   @override
@@ -127,6 +137,7 @@ class _TagTile extends StatelessWidget {
     return ListTile(
         visualDensity: VisualDensity(horizontal: 0, vertical: -4),
         trailing: Text(postCount, style: TextStyle(color: Colors.grey)),
+        onTap: () => onTap(),
         title: Text(
           title,
           style: TextStyle(

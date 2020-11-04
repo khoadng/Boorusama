@@ -77,6 +77,7 @@ class PostListPageView
     return BlocConsumer<PostListBloc, PostListState>(
       listener: (context, state) {
         if (state is PostListLoaded) {
+          controller.posts.clear();
           controller.posts.addAll(state.posts);
         } else if (state is AddtionalPostListLoaded) {
           controller.posts.addAll(state.posts);
