@@ -18,6 +18,7 @@ import 'app.dart';
 import 'application/posts/post_download/download_service.dart';
 import 'bloc_observer.dart';
 import 'infrastructure/repositories/posts/post_repository.dart';
+import 'infrastructure/repositories/users/user_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -43,6 +44,7 @@ void main() async {
       accountRepository: accountRepository,
       noteRepository: NoteRepository(apiProvider),
       commentRepository: CommentRepository(apiProvider),
+      userRepository: UserRepository(apiProvider),
       favoritePostRepository:
           FavoritePostRepository(apiProvider, accountRepository)));
 }

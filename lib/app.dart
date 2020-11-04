@@ -13,12 +13,14 @@ import 'package:boorusama/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/domain/users/i_user_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
+import 'application/users/bloc/user_list_bloc.dart';
 import 'presentation/posts/post_list/post_list_page.dart';
 
 class App extends StatelessWidget {
@@ -30,6 +32,7 @@ class App extends StatelessWidget {
       @required this.noteRepository,
       @required this.favoritePostRepository,
       @required this.accountRepository,
+      @required this.userRepository,
       @required this.commentRepository});
 
   final IPostRepository postRepository;
@@ -40,6 +43,7 @@ class App extends StatelessWidget {
   final IScrapperService scrapperService;
   final IFavoritePostRepository favoritePostRepository;
   final ICommentRepository commentRepository;
+  final IUserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +76,7 @@ class App extends StatelessWidget {
                 PostFavoritesBloc(postRepository, favoritePostRepository)),
         BlocProvider<CommentBloc>(
             create: (_) => CommentBloc(commentRepository)),
+        BlocProvider<UserListBloc>(create: (_) => UserListBloc(userRepository)),
       ],
       child: MaterialApp(
         theme: ThemeData(
