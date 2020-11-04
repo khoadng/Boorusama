@@ -22,40 +22,36 @@ class PostListPageView
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      drawer: MultiBlocListener(
-        //TODO: simplify these bloc, merge to one
-        listeners: [
-          BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
-            listener: (context, state) {
-              if (state is GetAllAccountsSuccess) {
-                controller.assignAccount(state.accounts.first);
-              }
-            },
+    //TODO: workaround, this event is not working in MultiBlocListener somehow
+    return BlocListener<RemoveAccountBloc, RemoveAccountState>(
+      listener: (context, state) {
+        if (state is RemoveAccountSuccess) {
+          controller.removeAccount(state.account);
+        }
+      },
+      child: BlocListener<AddAccountBloc, AddAccountState>(
+        listener: (context, state) {
+          if (state is AddAccountDone) {
+            controller.assignAccount(state.account);
+          }
+        },
+        child: BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
+          listener: (context, state) {
+            if (state is GetAllAccountsSuccess) {
+              controller.assignAccount(state.accounts.first);
+            }
+          },
+          child: Scaffold(
+            drawer: SideBarMenu(
+              account: controller.account,
+            ),
+            resizeToAvoidBottomInset: false,
+            body: _getPage(controller.currentTab),
+            bottomNavigationBar: BottomBar(
+              onTabChanged: (value) => controller.handleTabChanged(value),
+            ),
           ),
-          BlocListener<AddAccountBloc, AddAccountState>(
-            listener: (context, state) {
-              if (state is AddAccountDone) {
-                controller.assignAccount(state.account);
-              }
-            },
-          ),
-          BlocListener<RemoveAccountBloc, RemoveAccountState>(
-            listener: (context, state) {
-              if (state is RemoveAccountSuccess) {
-                controller.removeAccount(state.account);
-              }
-            },
-          ),
-        ],
-        child: SideBarMenu(
-          account: controller.account,
         ),
-      ),
-      resizeToAvoidBottomInset: false,
-      body: _getPage(controller.currentTab),
-      bottomNavigationBar: BottomBar(
-        onTabChanged: (value) => controller.handleTabChanged(value),
       ),
     );
   }
