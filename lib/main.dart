@@ -7,6 +7,7 @@ import 'package:boorusama/infrastructure/repositories/comments/comment_repositor
 import 'package:boorusama/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
+import 'package:boorusama/infrastructure/repositories/wikis/wiki_repository.dart';
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
@@ -56,5 +57,6 @@ void main() async {
     favoritePostRepository:
         FavoritePostRepository(apiProvider, accountRepository),
     settingRepository: settingRepository,
+    wikiRepository: WikiRepository(apiProvider),
   ));
 }

@@ -7,6 +7,7 @@ import 'package:boorusama/application/posts/post_download/i_download_service.dar
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
+import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/accounts/i_favorite_post_repository.dart';
 import 'package:boorusama/domain/comments/i_comment_repository.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/domain/posts/i_note_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/users/i_user_repository.dart';
+import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +40,7 @@ class App extends StatelessWidget {
       @required this.accountRepository,
       @required this.userRepository,
       @required this.settingRepository,
+      @required this.wikiRepository,
       @required this.commentRepository});
 
   final IPostRepository postRepository;
@@ -50,6 +53,7 @@ class App extends StatelessWidget {
   final ICommentRepository commentRepository;
   final IUserRepository userRepository;
   final ISettingRepository settingRepository;
+  final IWikiRepository wikiRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +89,7 @@ class App extends StatelessWidget {
         BlocProvider<UserListBloc>(create: (_) => UserListBloc(userRepository)),
         BlocProvider<UserBloc>(
             create: (_) => UserBloc(accountRepository, userRepository)),
+        BlocProvider<WikiBloc>(create: (_) => WikiBloc(wikiRepository)),
       ],
       child: MultiProvider(
         providers: [
