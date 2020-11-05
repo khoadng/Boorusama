@@ -39,7 +39,7 @@ void main() async {
   final apiProvider = Danbooru(Dio());
   final accountRepository = AccountRepository(accountDb);
 
-  final defaultSetings = Setting(false, false);
+  final defaultSetings = Setting(false, "");
   final settingRepository =
       SettingRepository(SharedPreferences.getInstance(), defaultSetings);
 
@@ -52,7 +52,7 @@ void main() async {
     accountRepository: accountRepository,
     noteRepository: NoteRepository(apiProvider),
     commentRepository: CommentRepository(apiProvider),
-    userRepository: UserRepository(apiProvider),
+    userRepository: UserRepository(apiProvider, accountRepository),
     favoritePostRepository:
         FavoritePostRepository(apiProvider, accountRepository),
     settingRepository: settingRepository,

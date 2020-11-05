@@ -1,15 +1,15 @@
 class Setting {
   bool safeMode;
-  bool hideBlacklist;
+  String blacklistedTags;
 
-  Setting(this.safeMode, this.hideBlacklist);
+  Setting(this.safeMode, this.blacklistedTags);
 
   Setting.fromJson(Map<String, dynamic> json)
       : safeMode = json["safeMode"],
-        hideBlacklist = json["hideBlacklist"];
+        blacklistedTags = json["hideBlacklist"];
 
   Map<String, dynamic> toJson() => {
         'safeMode': safeMode,
-        'hideBlacklist': hideBlacklist,
+        'hideBlacklist': blacklistedTags,
       };
 }

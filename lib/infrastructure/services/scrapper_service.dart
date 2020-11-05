@@ -83,6 +83,6 @@ class ScrapperService implements IScrapperService {
         .innerHtml;
 
     print("Done scrapping");
-    return Account.create(username, apiKey);
+    return Account.create(username, apiKey, int.parse(userId));
   }
 }

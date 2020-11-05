@@ -36,7 +36,11 @@ class PostRepository implements IPostRepository {
 
       for (var item in respond.data) {
         try {
-          posts.add(Post.fromJson(item));
+          var post = Post.fromJson(item);
+
+          if (!post.containsBlacklistedTag(settings.blacklistedTags)) {
+            posts.add(post);
+          }
         } catch (e) {
           print("Cant parse ${item['id']}");
         }

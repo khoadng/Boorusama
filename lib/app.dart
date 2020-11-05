@@ -24,6 +24,7 @@ import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
+import 'application/users/user/bloc/user_bloc.dart';
 import 'presentation/posts/post_list/post_list_page.dart';
 
 class App extends StatelessWidget {
@@ -82,6 +83,8 @@ class App extends StatelessWidget {
         BlocProvider<CommentBloc>(
             create: (_) => CommentBloc(commentRepository)),
         BlocProvider<UserListBloc>(create: (_) => UserListBloc(userRepository)),
+        BlocProvider<UserBloc>(
+            create: (_) => UserBloc(accountRepository, userRepository)),
       ],
       child: MultiProvider(
         providers: [

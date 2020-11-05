@@ -27,7 +27,8 @@ class AccountRepository implements IAccountRepository {
     final List<Map<String, dynamic>> maps = await db.query("accounts");
 
     return List.generate(maps.length, (i) {
-      return Account.create(maps[i]['username'], maps[i]['apiKey']);
+      return Account.create(
+          maps[i]['username'], maps[i]['apiKey'], maps[i]['id']);
     });
   }
 
@@ -47,9 +48,10 @@ class AccountRepository implements IAccountRepository {
     final List<Map<String, dynamic>> records = await db.query('accounts');
 
     if (records == null || records.isEmpty) {
-      return Account.create("", "");
+      return Account.create("", "", 0);
     }
 
-    return Account.create(records.first['username'], records.first['apiKey']);
+    return Account.create(records.first['username'], records.first['apiKey'],
+        records.first['id']);
   }
 }

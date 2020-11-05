@@ -98,4 +98,19 @@ class Post {
       json["last_commented_at"],
     );
   }
+
+  bool containsBlacklistedTag(String blacklistedTagString) {
+    final tagRule = blacklistedTagString.split("\n");
+
+    //TODO: should handle tag combination instead of a single tag
+    for (var tags in tagRule) {
+      if (tags.split(" ").length == 1) {
+        if (tagString.contains(tags)) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
 }

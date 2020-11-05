@@ -1,7 +1,10 @@
+import 'package:boorusama/application/users/user/bloc/user_bloc.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/presentation/settings/tag_settings_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -14,7 +17,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   ISettingRepository _settingRepository;
-  Setting _setting = Setting(false, false);
+  Setting _setting = Setting(false, "");
 
   @override
   void initState() {
@@ -40,27 +43,35 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text("Settings"),
       ),
-      body: SettingsList(
-        sections: [
-          SettingsSection(tiles: [
-            SettingsTile.switchTile(
-                title: "Safe mode",
-                onToggle: (value) {
-                  setState(() {
-                    _setting.safeMode = value;
-                  });
+      body: BlocListener<UserBloc, UserState>(
+        listener: (context, state) {
+          if (state is UserFetched) {
+            _setting.blacklistedTags = state.user.blacklistedTags.join("\n");
+          }
+        },
+        child: SettingsList(
+          sections: [
+            SettingsSection(tiles: [
+              SettingsTile.switchTile(
+                  title: "Safe mode",
+                  onToggle: (value) {
+                    setState(() {
+                      _setting.safeMode = value;
+                    });
+                  },
+                  switchValue: _setting.safeMode),
+              SettingsTile(
+                title: "Blacklisted tags",
+                onTap: () {
+                  BlocProvider.of<UserBloc>(context).add(UserRequested());
+
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => TagSettingsPage()));
                 },
-                switchValue: _setting.safeMode),
-            SettingsTile.switchTile(
-                title: "Hide blacklist",
-                onToggle: (value) {
-                  setState(() {
-                    _setting.hideBlacklist = value;
-                  });
-                },
-                switchValue: _setting.hideBlacklist),
-          ]),
-        ],
+              )
+            ]),
+          ],
+        ),
       ),
     );
   }
