@@ -18,19 +18,21 @@ class PostTagList extends StatelessWidget {
           child: BlocBuilder<TagListBloc, TagListState>(
             builder: (context, state) {
               if (state is TagListLoaded) {
-                final artistTags = state.tags
+                final tags = state.tags
+                  ..sort((a, b) => a.rawName.compareTo(b.rawName));
+                final artistTags = tags
                     .where((tag) => tag.category == TagCategory.artist)
                     .toList();
-                final copyrightTags = state.tags
+                final copyrightTags = tags
                     .where((tag) => tag.category == TagCategory.copyright)
                     .toList();
-                final characterTags = state.tags
+                final characterTags = tags
                     .where((tag) => tag.category == TagCategory.charater)
                     .toList();
-                final generalTags = state.tags
+                final generalTags = tags
                     .where((tag) => tag.category == TagCategory.general)
                     .toList();
-                final metaTags = state.tags
+                final metaTags = tags
                     .where((tag) => tag.category == TagCategory.meta)
                     .toList();
 

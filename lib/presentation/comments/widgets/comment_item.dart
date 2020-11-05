@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/comments/comment.dart';
 import 'package:boorusama/domain/users/user.dart';
 import 'package:boorusama/domain/users/user_level.dart';
+import 'package:boorusama/presentation/services/dtext/dtext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:intl/intl.dart';
@@ -14,7 +15,7 @@ class CommentItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 5),
+      margin: EdgeInsets.symmetric(vertical: 10),
       child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -26,18 +27,14 @@ class CommentItem extends StatelessWidget {
                   style: TextStyle(color: Color(user.level.hexColor)),
                 ),
                 SizedBox(
-                  width: 20,
+                  width: 10,
                 ),
                 Text(
                     DateFormat('MMM d, yyyy hh:mm a').format(comment.createdAt),
                     style: TextStyle(color: Colors.grey, fontSize: 12)),
               ],
             ),
-            Container(
-              child: Html(
-                data: comment.body,
-              ),
-            )
+            Dtext.parse(comment.body, "[quote]", "[/quote]"),
           ]),
     );
   }
