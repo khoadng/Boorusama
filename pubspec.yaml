@@ -46,6 +46,7 @@ dependencies:
   intl: ^0.16.1
   lottie: ^0.7.0+1
   material_floating_search_bar: ^0.2.0-dev+1
+  modal_bottom_sheet: ^0.2.2
   optimized_cached_image: ^1.0.0
   path: ^1.7.0
   path_provider: ^1.6.18

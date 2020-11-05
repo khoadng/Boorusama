@@ -1,4 +1,5 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
 import 'package:flutter/material.dart';
@@ -7,63 +8,81 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class PostTagList extends StatelessWidget {
   PostTagList({
     Key key,
-    @required List<Tag> tags,
-  })  : _tags = tags,
-        super(key: key);
-
-  final List<Tag> _tags;
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final artistTags =
-        _tags.where((tag) => tag.category == TagCategory.artist).toList();
-    final copyrightTags =
-        _tags.where((tag) => tag.category == TagCategory.copyright).toList();
-    final characterTags =
-        _tags.where((tag) => tag.category == TagCategory.charater).toList();
-    final generalTags =
-        _tags.where((tag) => tag.category == TagCategory.general).toList();
-    final metaTags =
-        _tags.where((tag) => tag.category == TagCategory.meta).toList();
+    return Material(
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<TagListBloc, TagListState>(
+            builder: (context, state) {
+              if (state is TagListLoaded) {
+                final artistTags = state.tags
+                    .where((tag) => tag.category == TagCategory.artist)
+                    .toList();
+                final copyrightTags = state.tags
+                    .where((tag) => tag.category == TagCategory.copyright)
+                    .toList();
+                final characterTags = state.tags
+                    .where((tag) => tag.category == TagCategory.charater)
+                    .toList();
+                final generalTags = state.tags
+                    .where((tag) => tag.category == TagCategory.general)
+                    .toList();
+                final metaTags = state.tags
+                    .where((tag) => tag.category == TagCategory.meta)
+                    .toList();
 
-    final list = <Widget>[];
+                final list = <Widget>[];
 
-    if (artistTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Artist",
-      ));
-      list.add(_SliverTagList(tags: artistTags));
-    }
+                if (artistTags.isNotEmpty) {
+                  list.add(_SliverTagBlockTitle(
+                    title: "Artist",
+                  ));
+                  list.add(_SliverTagList(tags: artistTags));
+                }
 
-    if (copyrightTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Copyright",
-      ));
-      list.add(_SliverTagList(tags: copyrightTags));
-    }
+                if (copyrightTags.isNotEmpty) {
+                  list.add(_SliverTagBlockTitle(
+                    title: "Copyright",
+                  ));
+                  list.add(_SliverTagList(tags: copyrightTags));
+                }
 
-    if (characterTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Character",
-      ));
-      list.add(_SliverTagList(tags: characterTags));
-    }
+                if (characterTags.isNotEmpty) {
+                  list.add(_SliverTagBlockTitle(
+                    title: "Character",
+                  ));
+                  list.add(_SliverTagList(tags: characterTags));
+                }
 
-    if (generalTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "General",
-      ));
-      list.add(_SliverTagList(tags: generalTags));
-    }
+                if (generalTags.isNotEmpty) {
+                  list.add(_SliverTagBlockTitle(
+                    title: "General",
+                  ));
+                  list.add(_SliverTagList(tags: generalTags));
+                }
 
-    if (metaTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Meta",
-      ));
-      list.add(_SliverTagList(tags: metaTags));
-    }
-
-    return CustomScrollView(slivers: list);
+                if (metaTags.isNotEmpty) {
+                  list.add(_SliverTagBlockTitle(
+                    title: "Meta",
+                  ));
+                  list.add(_SliverTagList(tags: metaTags));
+                }
+                return CustomScrollView(
+                  slivers: list,
+                );
+              } else {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -91,7 +110,8 @@ class _SliverTagList extends StatelessWidget {
 
   void _handleTap(Tag tag, BuildContext context) {
     BlocProvider.of<PostListBloc>(context).add(GetPost(tag.rawName, 1));
-    Navigator.of(context).pop();
+    Navigator.popUntil(
+        context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }
 

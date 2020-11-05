@@ -11,10 +11,12 @@ import 'package:super_tooltip/super_tooltip.dart';
 class PostImage extends StatefulWidget {
   PostImage(
       {@required this.post,
+      this.onLongPressed,
       this.onNoteVisibleChanged,
       @required this.controller});
 
   final ValueChanged<bool> onNoteVisibleChanged;
+  final Function onLongPressed;
   final Post post;
   final PostImageController controller;
 
@@ -60,18 +62,21 @@ class _PostImageState extends State<PostImage> {
   }
 
   Widget buildCachedNetworkImage(BuildContext context) {
-    return OptimizedCacheImage(
-      imageUrl: widget.post.normalImageUri.toString(),
-      imageBuilder: (context, imageProvider) {
-        precacheImage(imageProvider, context);
-        return PhotoView(imageProvider: imageProvider);
-      },
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator(
-          value: progress.progress,
+    return GestureDetector(
+      onLongPress: () => widget.onLongPressed(),
+      child: OptimizedCacheImage(
+        imageUrl: widget.post.normalImageUri.toString(),
+        imageBuilder: (context, imageProvider) {
+          precacheImage(imageProvider, context);
+          return PhotoView(imageProvider: imageProvider);
+        },
+        progressIndicatorBuilder: (context, url, progress) => Center(
+          child: CircularProgressIndicator(
+            value: progress.progress,
+          ),
         ),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
     );
   }
 
@@ -82,20 +87,22 @@ class _PostImageState extends State<PostImage> {
     //TODO: remove hardcode, hacky solution
     final screenHeight = MediaQuery.of(context).size.height -
         60.0 -
-        70; // minus toolbar height (60) and some offset (70) ;
+        80; // minus toolbar height (60) and some offset (70) ;
     final screenAspectRatio = screenWidth / screenHeight;
 
-    widgets.add(OptimizedCacheImage(
-      imageUrl: widget.post.normalImageUri.toString(),
-      imageBuilder: (context, imageProvider) =>
-          PhotoView(imageProvider: imageProvider),
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator(
-          value: progress.progress,
+    widgets.add(
+      OptimizedCacheImage(
+        imageUrl: widget.post.normalImageUri.toString(),
+        imageBuilder: (context, imageProvider) =>
+            PhotoView(imageProvider: imageProvider),
+        progressIndicatorBuilder: (context, url, progress) => Center(
+          child: CircularProgressIndicator(
+            value: progress.progress,
+          ),
         ),
+        errorWidget: (context, url, error) => Icon(Icons.error),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
-    ));
+    );
 
     for (var note in notes) {
       final coordinate = note.coordinate.calibrate(
@@ -107,15 +114,16 @@ class _PostImageState extends State<PostImage> {
           widget.post.aspectRatio);
 
       var tooltip = SuperTooltip(
-          backgroundColor: ThemeData.dark().cardColor,
-          arrowTipDistance: 0,
-          arrowBaseWidth: 0,
-          arrowLength: 0,
-          popupDirection: TooltipDirection.left,
-          content: Material(
-            child: Html(data: note.content),
-            color: ThemeData.dark().cardColor,
-          ));
+        backgroundColor: ThemeData.dark().cardColor,
+        arrowTipDistance: 0,
+        arrowBaseWidth: 0,
+        arrowLength: 0,
+        popupDirection: TooltipDirection.left,
+        content: Material(
+          child: Html(data: note.content),
+          color: ThemeData.dark().cardColor,
+        ),
+      );
 
       widgets.add(
         GestureDetector(

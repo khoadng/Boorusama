@@ -34,62 +34,67 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: <Widget>[
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.only(bottom: 20.0),
-            child: BlocBuilder<CommentBloc, CommentState>(
-              builder: (context, state) {
-                if (state is CommentFetched) {
-                  if (state.comments.isNotEmpty) {
-                    final userList = <String>[];
-                    state.comments.forEach((comment) {
-                      userList.add(comment.creatorId.toString());
-                    });
-                    _userListBloc.add(UserListRequested(userList.join(",")));
-                    return BlocListener<UserListBloc, UserListState>(
-                      listener: (context, state) {
-                        if (state is UserListFetched) {
-                          if (_users.isEmpty) {
-                            setState(() {
-                              _users = state.users;
-                            });
-                          }
-                        }
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                            itemBuilder: (context, index) => CommentItem(
-                              comment: state.comments[index],
-                              user: _users.isNotEmpty
-                                  ? _users
-                                      .where((user) =>
-                                          user.id ==
-                                          state.comments[index].creatorId)
-                                      .first
-                                  : User.placeholder(),
-                            ),
-                            itemCount: state.comments.length,
-                          )),
-                    );
-                  } else {
-                    return Center(
-                      child: Text("There are no comments."),
-                    );
-                  }
-                } else {
-                  return Center(
-                    child:
-                        Lottie.asset("assets/animations/comment_loading.json"),
-                  );
-                }
-              },
-            ),
-          ))
-        ],
+    return Material(
+      child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: <Widget>[
+              Expanded(
+                  child: Padding(
+                padding: const EdgeInsets.only(bottom: 20.0),
+                child: BlocBuilder<CommentBloc, CommentState>(
+                  builder: (context, state) {
+                    if (state is CommentFetched) {
+                      if (state.comments.isNotEmpty) {
+                        final userList = <String>[];
+                        state.comments.forEach((comment) {
+                          userList.add(comment.creatorId.toString());
+                        });
+                        _userListBloc
+                            .add(UserListRequested(userList.join(",")));
+                        return BlocListener<UserListBloc, UserListState>(
+                          listener: (context, state) {
+                            if (state is UserListFetched) {
+                              if (_users.isEmpty) {
+                                setState(() {
+                                  _users = state.users;
+                                });
+                              }
+                            }
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ListView.builder(
+                                itemBuilder: (context, index) => CommentItem(
+                                  comment: state.comments[index],
+                                  user: _users.isNotEmpty
+                                      ? _users
+                                          .where((user) =>
+                                              user.id ==
+                                              state.comments[index].creatorId)
+                                          .first
+                                      : User.placeholder(),
+                                ),
+                                itemCount: state.comments.length,
+                              )),
+                        );
+                      } else {
+                        return Center(
+                          child: Text("There are no comments."),
+                        );
+                      }
+                    } else {
+                      return Center(
+                        child: Lottie.asset(
+                            "assets/animations/comment_loading.json"),
+                      );
+                    }
+                  },
+                ),
+              ))
+            ],
+          ),
+        ),
       ),
     );
   }
