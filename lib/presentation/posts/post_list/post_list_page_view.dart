@@ -38,7 +38,7 @@ class PostListPageView
         child: BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
           listener: (context, state) {
             if (state is GetAllAccountsSuccess) {
-              controller.assignAccount(state.accounts.first);
+              controller.assignAccount(state.accounts?.first);
             }
           },
           child: Scaffold(
@@ -81,8 +81,6 @@ class PostListPageView
           controller.posts.addAll(state.posts);
         } else if (state is AddtionalPostListLoaded) {
           controller.posts.addAll(state.posts);
-          //TODO: warning internal state exposed
-          controller.isBusy = false;
         } else if (state is PostListError) {
           var flush;
           flush = Flushbar(
@@ -135,7 +133,7 @@ class PostListPageView
           ? controller.searchBarController.show()
           : controller.searchBarController.hide(),
       onMaxItemReached: controller.loadMorePosts,
-      scrollThreshold: 0.7,
+      scrollThreshold: 0.8,
       scrollController: controller.scrollController,
     );
   }

@@ -4,6 +4,7 @@ import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page_view.dart';
+import 'package:boorusama/presentation/services/debouncer/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
@@ -26,8 +27,8 @@ class PostListPageState extends State<PostListPage> {
   final ScrollController scrollController = new ScrollController();
   final FloatingSearchBarController searchBarController =
       new FloatingSearchBarController();
+  final Debouncer _debouncer = Debouncer();
 
-  bool isBusy = false;
   Account account;
 
   //TODO: Move PostDownload to shared folder
@@ -63,12 +64,10 @@ class PostListPageState extends State<PostListPage> {
   }
 
   void loadMorePosts(_) {
-    //TODO: warning dirty code
-    if (!isBusy) {
-      isBusy = true;
+    _debouncer(() {
       _currentPage++;
       _postListBloc.add(GetMorePost(_currentSearchQuery, _currentPage));
-    }
+    });
   }
 
   void downloadAllPosts() {

@@ -31,9 +31,12 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
       }
     } else if (event is GetMorePost) {
       yield AdditionalPostListLoading();
-      final posts = await repository.getPosts(event.tagString, event.page);
-      yield AddtionalPostListLoaded(posts);
-
+      try {
+        final posts = await repository.getPosts(event.tagString, event.page);
+        yield AddtionalPostListLoaded(posts);
+      } on DatabaseTimeOut catch (e) {
+        yield PostListError(e.message, "Search Timeout");
+      }
       //TODO: should handle error here
     }
   }
