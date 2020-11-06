@@ -36,6 +36,12 @@ class _CommentPageState extends State<CommentPage> {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_down),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: SafeArea(
           child: Column(
             children: <Widget>[

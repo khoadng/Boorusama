@@ -68,7 +68,12 @@ class _PostImageState extends State<PostImage> {
         imageUrl: widget.post.normalImageUri.toString(),
         imageBuilder: (context, imageProvider) {
           precacheImage(imageProvider, context);
-          return PhotoView(imageProvider: imageProvider);
+          return PhotoView(
+            imageProvider: imageProvider,
+            backgroundDecoration: BoxDecoration(
+              color: ThemeData.dark().appBarTheme.color,
+            ),
+          );
         },
         progressIndicatorBuilder: (context, url, progress) => Center(
           child: CircularProgressIndicator(
@@ -93,8 +98,12 @@ class _PostImageState extends State<PostImage> {
     widgets.add(
       OptimizedCacheImage(
         imageUrl: widget.post.normalImageUri.toString(),
-        imageBuilder: (context, imageProvider) =>
-            PhotoView(imageProvider: imageProvider),
+        imageBuilder: (context, imageProvider) => PhotoView(
+          imageProvider: imageProvider,
+          backgroundDecoration: BoxDecoration(
+            color: ThemeData.dark().appBarTheme.color,
+          ),
+        ),
         progressIndicatorBuilder: (context, url, progress) => Center(
           child: CircularProgressIndicator(
             value: progress.progress,

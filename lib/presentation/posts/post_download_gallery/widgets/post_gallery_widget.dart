@@ -48,8 +48,6 @@ class _PostListState extends State<PostList> {
           final post = widget.posts[index];
           final image = PostImage(
             imageUrl: post.previewImageUri.toString(),
-            //TODO: let the parent widget handle navigation
-            onTapped: (value) => _handleTap(index),
           );
           return image;
         },

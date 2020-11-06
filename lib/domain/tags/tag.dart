@@ -8,8 +8,8 @@ class Tag {
 
   Tag(this._name, this._category, this._postCount);
 
-  String get displayName => _name;
-  String get rawName => _name.replaceAll(" ", "_");
+  String get displayName => _name.replaceAll("_", " ");
+  String get rawName => _name;
   int get tagHexColor => _category.hexColor;
   PostCountType get postCount => _postCount;
   TagCategory get category => _category;

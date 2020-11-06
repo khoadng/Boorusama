@@ -4,6 +4,8 @@ import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_pag
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:animations/animations.dart';
+import 'package:time/time.dart';
 
 class PostList extends StatefulWidget {
   PostList(
@@ -36,84 +38,103 @@ class _PostListState extends State<PostList> {
   }
 
   Widget _buildGrid(BuildContext context, Orientation orientation) {
-    return CustomScrollView(
-      controller: widget.scrollController..addListener(_onScroll),
-      slivers: <Widget>[
-        SliverList(
-          delegate: SliverChildListDelegate([
-            Container(
-              padding: EdgeInsets.all(42.0),
-            )
-          ]),
-        ),
-        SliverStaggeredGrid.extentBuilder(
-          maxCrossAxisExtent: 150,
-          mainAxisSpacing: 5.0,
-          crossAxisSpacing: 5.0,
-          itemCount: widget.posts.length,
-          itemBuilder: (context, index) {
-            final post = widget.posts[index];
-            final items = <Widget>[];
-            final image = PostImage(
-              imageUrl: post.previewImageUri.toString(),
-              //TODO: let the parent widget handle navigation
-              onTapped: (value) => _handleTap(index),
-            );
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: CustomScrollView(
+        controller: widget.scrollController..addListener(_onScroll),
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Container(
+                  padding: EdgeInsets.all(42.0),
+                )
+              ],
+            ),
+          ),
+          SliverStaggeredGrid.extentBuilder(
+            maxCrossAxisExtent: 150,
+            mainAxisSpacing: 5.0,
+            crossAxisSpacing: 5.0,
+            itemCount: widget.posts.length,
+            itemBuilder: (context, index) {
+              final post = widget.posts[index];
+              final items = <Widget>[];
+              final image = PostImage(
+                imageUrl: post.previewImageUri.toString(),
+              );
 
-            if (post.isFavorited) {
-              items.add(Icon(
-                Icons.favorite,
-                color: Colors.redAccent,
-              ));
-            }
+              if (post.isFavorited) {
+                items.add(
+                  Icon(
+                    Icons.favorite,
+                    color: Colors.redAccent,
+                  ),
+                );
+              }
 
-            if (post.isAnimated) {
-              items.add(Icon(
-                Icons.play_circle_outline,
-                color: Colors.white70,
-              ));
-            }
+              if (post.isAnimated) {
+                items.add(
+                  Icon(
+                    Icons.play_circle_outline,
+                    color: Colors.white70,
+                  ),
+                );
+              }
 
-            if (post.isTranslated) {
-              items.add(Icon(
-                Icons.g_translate_outlined,
-                color: Colors.white70,
-              ));
-            }
+              if (post.isTranslated) {
+                items.add(
+                  Icon(
+                    Icons.g_translate_outlined,
+                    color: Colors.white70,
+                  ),
+                );
+              }
 
-            if (post.hasComment) {
-              items.add(Icon(
-                Icons.comment,
-                color: Colors.white70,
-              ));
-            }
+              if (post.hasComment) {
+                items.add(
+                  Icon(
+                    Icons.comment,
+                    color: Colors.white70,
+                  ),
+                );
+              }
 
-            return Stack(
-              children: <Widget>[
-                image,
-                Align(
+              return Stack(
+                children: <Widget>[
+                  OpenContainer(
+                    transitionDuration: 500.milliseconds,
+                    closedBuilder: (context, action) => image,
+                    openBuilder: (context, action) => PostListSwipePage(
+                      posts: widget.posts,
+                      initialPostIndex: index,
+                    ),
+                  ),
+                  Align(
                     alignment: Alignment.topLeft,
                     child: Column(
                       children: items,
-                    ))
-              ],
-            );
-          },
-          staggeredTileBuilder: (index) {
-            final height = widget.posts[index].height / 10;
-            double mainAxisExtent;
+                    ),
+                  )
+                ],
+              );
+            },
+            staggeredTileBuilder: (index) {
+              final height = widget.posts[index].height / 10;
+              double mainAxisExtent;
 
-            if (height > 150) {
-              mainAxisExtent = 150;
-            } else if (height < 80) {
-              mainAxisExtent = 80;
-            } else {
-              mainAxisExtent = height;
-            }
-            return StaggeredTile.extent(1, mainAxisExtent);
-          },
-        ),
-      ],
+              if (height > 150) {
+                mainAxisExtent = 150;
+              } else if (height < 80) {
+                mainAxisExtent = 80;
+              } else {
+                mainAxisExtent = height;
+              }
+              return StaggeredTile.extent(1, mainAxisExtent);
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -139,17 +160,5 @@ class _PostListState extends State<PostList> {
         widget.onScrollDirectionChanged(ScrollDirection.forward);
       }
     }
-  }
-
-  void _handleTap(value) {
-    //TODO: use framework
-    Navigator.push(
-        context,
-        MaterialPageRoute<PostListSwipePage>(
-          builder: (context) => PostListSwipePage(
-            posts: widget.posts,
-            initialPostIndex: value,
-          ),
-        ));
   }
 }

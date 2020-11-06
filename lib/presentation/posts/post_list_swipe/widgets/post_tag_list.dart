@@ -17,6 +17,12 @@ class PostTagList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: Icon(Icons.keyboard_arrow_down),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         body: SafeArea(
           child: BlocBuilder<TagListBloc, TagListState>(
             builder: (context, state) {
@@ -75,8 +81,11 @@ class PostTagList extends StatelessWidget {
                   ));
                   list.add(_SliverTagList(tags: metaTags));
                 }
-                return CustomScrollView(
-                  slivers: list,
+                return Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: CustomScrollView(
+                    slivers: list,
+                  ),
                 );
               } else {
                 return Center(
