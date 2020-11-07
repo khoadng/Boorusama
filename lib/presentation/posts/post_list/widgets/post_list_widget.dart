@@ -4,8 +4,6 @@ import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_pag
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:animations/animations.dart';
-import 'package:time/time.dart';
 
 class PostList extends StatefulWidget {
   PostList(

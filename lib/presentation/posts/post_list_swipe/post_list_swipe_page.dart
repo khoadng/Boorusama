@@ -84,20 +84,18 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
         actions: appbarActions,
       ),
       bottomNavigationBar: bottomAppBar(context),
-      body: Hero(
-        tag: widget.postHeroTag,
-        child: PostListSwipe(
-          postImageController: _postImageController,
-          posts: widget.posts,
-          onPostChanged: (value) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _currentPostIndex = value;
-              });
+      body: PostListSwipe(
+        postHeroTag: widget.postHeroTag,
+        postImageController: _postImageController,
+        posts: widget.posts,
+        onPostChanged: (value) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            setState(() {
+              _currentPostIndex = value;
             });
-          },
-          initialPostIndex: _currentPostIndex,
-        ),
+          });
+        },
+        initialPostIndex: _currentPostIndex,
       ),
     );
   }

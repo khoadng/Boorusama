@@ -1,3 +1,5 @@
+import 'package:boorusama/domain/posts/created_time.dart';
+import 'package:boorusama/domain/posts/rating.dart';
 import 'package:boorusama/domain/posts/tag_string.dart';
 
 class Post {
@@ -17,7 +19,16 @@ class Post {
   final String _tag_string;
   //TODO: should use Enum instead of raw string
   final String _format;
+  final String _source;
+  final String _createdAt;
+  final int _score;
+  final int _uploaderId;
+  final int _favCount;
+  final int _upScore;
+  final int _downScore;
+  final String _rating;
   String _lastCommentAt;
+
   bool isFavorited;
 
 //TODO: fix naming from Image to Post
@@ -38,7 +49,15 @@ class Post {
       this._height,
       this._format,
       this.isFavorited,
-      this._lastCommentAt]);
+      this._lastCommentAt,
+      this._source,
+      this._createdAt,
+      this._score,
+      this._upScore,
+      this._downScore,
+      this._favCount,
+      this._uploaderId,
+      this._rating]);
 
   int get id => _id;
 
@@ -80,6 +99,22 @@ class Post {
 
   bool get hasComment => _lastCommentAt != null;
 
+  String get source => _source;
+  int get score => _score;
+  int get upScore => _upScore;
+  int get downScore => _downScore;
+  int get favCount => _favCount;
+  CreatedTime get createdAt => CreatedTime(_createdAt);
+  Rating get rating {
+    if (_rating == "s") {
+      return Rating.safe;
+    } else if (_rating == "q") {
+      return Rating.questionable;
+    } else {
+      return Rating.explicit;
+    }
+  }
+
   factory Post.fromJson(Map<String, dynamic> json) {
     //TODO: should use json deserialize library
     return new Post(
@@ -96,6 +131,14 @@ class Post {
       json["file_ext"],
       json["is_favorited"],
       json["last_commented_at"],
+      json["source"],
+      json["created_at"],
+      json["score"],
+      json["up_score"],
+      json["down_score"],
+      json["fav_count"],
+      json["uploader_id"],
+      json["rating"],
     );
   }
 

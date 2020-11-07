@@ -11,6 +11,7 @@ class PostListSwipe extends StatefulWidget {
       @required this.posts,
       @required this.postImageController,
       this.initialPostIndex,
+      this.postHeroTag,
       this.onPostChanged})
       : super(key: key);
 
@@ -18,6 +19,7 @@ class PostListSwipe extends StatefulWidget {
   final int initialPostIndex;
   final ValueChanged<int> onPostChanged;
   final PostImageController postImageController;
+  final String postHeroTag;
 
   @override
   _PostListSwipeState createState() => _PostListSwipeState();
@@ -25,12 +27,15 @@ class PostListSwipe extends StatefulWidget {
 
 class _PostListSwipeState extends State<PostListSwipe> {
   bool _notesIsVisible = false;
+  // PostImage _postImage; // Caching
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       options: CarouselOptions(
           onPageChanged: (index, reason) {
+            // Clear cache when page changed
+            // _postImage = null;
             widget.onPostChanged(index);
           },
           initialPage: widget.initialPostIndex,
@@ -45,7 +50,8 @@ class _PostListSwipeState extends State<PostListSwipe> {
         if (post.isVideo) {
           return PostVideo(post: post);
         } else {
-          return PostImage(
+          var _postImage = PostImage(
+            postHeroTag: widget.postHeroTag,
             controller: widget.postImageController,
             post: post,
             onLongPressed: () {},
@@ -55,6 +61,7 @@ class _PostListSwipeState extends State<PostListSwipe> {
               });
             },
           );
+          return _postImage;
         }
       },
       itemCount: widget.posts.length,

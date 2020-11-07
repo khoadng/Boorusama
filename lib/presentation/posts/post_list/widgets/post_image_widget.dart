@@ -1,5 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:optimized_cached_image/optimized_cached_image.dart';
+import 'package:time/time.dart';
 
 class PostImage extends StatelessWidget {
   const PostImage({
@@ -11,7 +12,7 @@ class PostImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OptimizedCacheImage(
+    return CachedNetworkImage(
       imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) {
         precacheImage(imageProvider, context);
@@ -22,6 +23,7 @@ class PostImage extends StatelessWidget {
         );
       },
       errorWidget: (context, url, error) => Icon(Icons.error),
+      fadeInDuration: 10.milliseconds,
     );
   }
 }
