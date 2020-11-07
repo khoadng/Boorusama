@@ -112,6 +112,9 @@ class PostListPageView
           return Center(
             child: CircularProgressIndicator(),
           );
+        } else if (state is PostListLoaded) {
+          controller.assignTagQuery(state.query);
+          return buildListWithData();
         } else if (state is PostListLoaded ||
             state is AddtionalPostListLoaded ||
             state is AdditionalPostListLoading) {

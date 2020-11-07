@@ -20,8 +20,9 @@ class AdditionalPostListLoading extends PostListState {
 
 class PostListLoaded extends PostListState {
   final List<Post> posts;
+  final String query;
 
-  PostListLoaded(this.posts);
+  PostListLoaded(this.posts, this.query);
 
   @override
   List<Object> get props => [posts];

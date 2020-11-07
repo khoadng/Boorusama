@@ -89,6 +89,11 @@ class PostListPageState extends State<PostListPage> {
     });
   }
 
+  void assignTagQuery(String query) {
+    _currentSearchQuery = query;
+    searchBarController.query = query;
+  }
+
   @override
   Widget build(BuildContext context) => PostListPageView(this);
 }
