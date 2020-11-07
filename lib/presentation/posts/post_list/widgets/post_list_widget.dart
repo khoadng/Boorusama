@@ -102,13 +102,15 @@ class _PostListState extends State<PostList> {
 
               return Stack(
                 children: <Widget>[
-                  OpenContainer(
-                    transitionDuration: 500.milliseconds,
-                    closedBuilder: (context, action) => image,
-                    openBuilder: (context, action) => PostListSwipePage(
-                      posts: widget.posts,
-                      initialPostIndex: index,
-                    ),
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PostListSwipePage(
+                        posts: widget.posts,
+                        initialPostIndex: index,
+                        postHeroTag: "postHero$index",
+                      ),
+                    )),
+                    child: Hero(tag: "postHero$index", child: image),
                   ),
                   Align(
                     alignment: Alignment.topLeft,

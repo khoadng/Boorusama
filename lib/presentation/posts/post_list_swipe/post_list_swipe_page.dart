@@ -2,6 +2,8 @@ import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_b
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/comments/comment_page.dart';
+import 'package:boorusama/presentation/posts/post_detail/post_detail_page.dart';
+import 'package:boorusama/presentation/posts/post_list_swipe/widgets/custom_page_route.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_list_swipe_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_tag_list.dart';
@@ -11,11 +13,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PostListSwipePage extends StatefulWidget {
-  PostListSwipePage({Key key, @required this.posts, this.initialPostIndex})
+  PostListSwipePage(
+      {Key key, @required this.posts, this.initialPostIndex, this.postHeroTag})
       : super(key: key);
 
   final List<Post> posts;
   final int initialPostIndex;
+  final String postHeroTag;
 
   @override
   _PostListSwipePageState createState() => _PostListSwipePageState();
@@ -49,6 +53,18 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
     }
 
     appbarActions.add(
+      IconButton(
+        icon: Icon(Icons.info),
+        onPressed: () => Navigator.push(context, FadePageRoute(builder: (_) {
+          return PostDetailPage(
+            post: widget.posts[_currentPostIndex],
+            postHeroTag: widget.postHeroTag,
+          );
+        })),
+      ),
+    );
+
+    appbarActions.add(
       PopupMenuButton<PostAction>(
         itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
           const PopupMenuItem<PostAction>(
@@ -68,17 +84,20 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
         actions: appbarActions,
       ),
       bottomNavigationBar: bottomAppBar(context),
-      body: PostListSwipe(
-        postImageController: _postImageController,
-        posts: widget.posts,
-        onPostChanged: (value) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              _currentPostIndex = value;
+      body: Hero(
+        tag: widget.postHeroTag,
+        child: PostListSwipe(
+          postImageController: _postImageController,
+          posts: widget.posts,
+          onPostChanged: (value) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              setState(() {
+                _currentPostIndex = value;
+              });
             });
-          });
-        },
-        initialPostIndex: _currentPostIndex,
+          },
+          initialPostIndex: _currentPostIndex,
+        ),
       ),
     );
   }
