@@ -5,6 +5,7 @@ import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter/foundation.dart';
 
 class PostRepository implements IPostRepository {
   //TODO: shouldn't use concrete type
@@ -24,27 +25,15 @@ class PostRepository implements IPostRepository {
       "api_key": account.apiKey,
       "page": page.toString(),
       "tags": settings.safeMode ? "$tagString rating:s" : tagString,
-      "limit": "100",
+      "limit": "200",
     });
 
-    var posts = List<Post>();
+    var respond;
     try {
-      final respond = await _api.dio.get(uri.toString(),
+      respond = await _api.dio.get(uri.toString(),
           options: buildCacheOptions(
             Duration(minutes: 1),
           ));
-
-      for (var item in respond.data) {
-        try {
-          var post = Post.fromJson(item);
-
-          if (!post.containsBlacklistedTag(settings.blacklistedTags)) {
-            posts.add(post);
-          }
-        } catch (e) {
-          print("Cant parse ${item['id']}");
-        }
-      }
     } on DioError catch (e) {
       if (e.response.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
@@ -54,9 +43,34 @@ class PostRepository implements IPostRepository {
             "Your search took too long to execute and was cancelled.");
       }
     }
+    final Map<String, dynamic> data = {
+      "settings": settings,
+      "data": respond.data
+    };
+    final posts = compute(parsePosts, data);
 
     return posts;
   }
+}
+
+List<Post> parsePosts(Map<String, dynamic> data) {
+  var posts = List<Post>();
+  var settings = data["settings"];
+  var json = data["data"];
+
+  for (var item in json) {
+    try {
+      var post = Post.fromJson(item);
+
+      if (!post.containsBlacklistedTag(settings.blacklistedTags)) {
+        posts.add(post);
+      }
+    } catch (e) {
+      print("Cant parse ${item['id']}");
+    }
+  }
+
+  return posts;
 }
 
 class CannotSearchMoreThanTwoTags implements Exception {
