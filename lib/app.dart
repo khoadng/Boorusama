@@ -19,6 +19,7 @@ import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -97,23 +98,33 @@ class App extends StatelessWidget {
             create: (context) => settingRepository,
           )
         ],
-        child: MaterialApp(
-          theme: ThemeData(
-            brightness: Brightness.light,
-            /* light theme settings */
+        child: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent, // transparent status bar
+            systemNavigationBarColor: Colors.black, // navigation bar color
+            statusBarIconBrightness:
+                Brightness.light, // status bar icons' color
+            systemNavigationBarIconBrightness:
+                Brightness.light, //navigation bar icons' color
           ),
-          darkTheme: ThemeData(
-            brightness: Brightness.dark,
-            /* dark theme settings */
+          child: MaterialApp(
+            theme: ThemeData(
+              brightness: Brightness.light,
+              /* light theme settings */
+            ),
+            darkTheme: ThemeData(
+              brightness: Brightness.dark,
+              /* dark theme settings */
+            ),
+            themeMode: ThemeMode.dark,
+            /* ThemeMode.system to follow system theme, 
+             ThemeMode.light for light theme, 
+             ThemeMode.dark for dark theme
+          */
+            debugShowCheckedModeBanner: false,
+            title: "Boorusama",
+            home: PostListPage(),
           ),
-          themeMode: ThemeMode.dark,
-          /* ThemeMode.system to follow system theme, 
-           ThemeMode.light for light theme, 
-           ThemeMode.dark for dark theme
-        */
-          debugShowCheckedModeBanner: false,
-          title: "Boorusama",
-          home: PostListPage(),
         ),
       ),
     );

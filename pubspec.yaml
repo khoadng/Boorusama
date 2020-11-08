@@ -42,6 +42,7 @@ dependencies:
   flutter_html: ^1.0.2
   flutter_speed_dial: ^1.2.5
   flutter_staggered_grid_view: ^0.3.2
+  flutter_tags: ^0.4.9
   html: ^0.14.0+3
   http: ^0.12.2
   implicitly_animated_reorderable_list: ^0.2.5
