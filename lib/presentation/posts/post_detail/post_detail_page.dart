@@ -1,8 +1,11 @@
+import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
+import 'package:boorusama/presentation/comments/comment_page.dart';
 import 'package:boorusama/presentation/posts/post_detail/widgets/post_tag_list.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PostDetailPage extends StatelessWidget {
   final Post post;
@@ -21,54 +24,46 @@ class PostDetailPage extends StatelessWidget {
     var appbarActions = <Widget>[];
 
     appbarActions.add(
-      PopupMenuButton<String>(
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-          const PopupMenuItem<String>(
-            value: "Test",
-            child: ListTile(
-              title: Text("Test"),
-            ),
-          ),
-        ],
+      RaisedButton(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+            side: BorderSide(color: Colors.red)),
+        onPressed: () {},
+        color: Colors.red,
+        textColor: Colors.white,
+        child: Text("Favorite".toUpperCase(), style: TextStyle(fontSize: 14)),
       ),
     );
 
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        actions: appbarActions,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: <Widget>[
-          Hero(
-            tag: postHeroTag,
-            child: CachedNetworkImage(
-              imageUrl: post.normalImageUri.toString(),
-              fit: BoxFit.cover,
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 2,
+    return Stack(
+      children: [
+        PostTagList(tags: tags),
+        Row(
+          children: <Widget>[
+            Spacer(
+              flex: 1,
             ),
-          ),
-          Expanded(child: PostTagList(tags: tags)),
-          // Expanded(
-          //   child: Column(
-          //     crossAxisAlignment: CrossAxisAlignment.start,
-          //     children: [
-          //       Text("ID: ${post.id}"),
-          //       Text("Date: ${post.createdAt.toString()}"),
-          //       Text("Source: ${post.source}"),
-          //       Text("Rating: ${post.rating.toString().split('.').last}"),
-          //       Text("Score: ${post.score}"),
-          //       Text("Favorites: ${post.favCount}"),
-          //     ],
-          //   ),
-          // )
-        ],
-      ),
+            IconButton(
+              icon: Icon(Icons.favorite),
+              onPressed: () => BlocProvider.of<PostFavoritesBloc>(context).add(
+                AddToFavorites(post.id),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.comment),
+              onPressed: () {
+                showBarModalBottomSheet(
+                  expand: false,
+                  context: context,
+                  builder: (context, controller) => CommentPage(
+                    postId: post.id,
+                  ),
+                );
+              },
+            ),
+          ],
+        )
+      ],
     );
   }
 }

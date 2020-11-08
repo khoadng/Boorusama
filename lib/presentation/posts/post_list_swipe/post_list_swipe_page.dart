@@ -1,17 +1,13 @@
-import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/comments/comment_page.dart';
 import 'package:boorusama/presentation/posts/post_detail/post_detail_page.dart';
-import 'package:boorusama/presentation/posts/post_list_swipe/widgets/custom_page_route.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_list_swipe_widget.dart';
-import 'package:boorusama/presentation/posts/post_detail/widgets/post_tag_list.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class PostListSwipePage extends StatefulWidget {
   PostListSwipePage(
@@ -57,18 +53,18 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           onPressed: () => _postImageController.toggleTranslationNotes()));
     }
 
-    appbarActions.add(
-      IconButton(
-        icon: Icon(Icons.info),
-        onPressed: () => Navigator.push(context, FadePageRoute(builder: (_) {
-          return PostDetailPage(
-            post: widget.posts[_currentPostIndex],
-            postHeroTag: widget.postHeroTag,
-            tags: _tags,
-          );
-        })),
-      ),
-    );
+    // appbarActions.add(
+    //   IconButton(
+    //     icon: Icon(Icons.info),
+    //     onPressed: () => Navigator.push(context, FadePageRoute(builder: (_) {
+    //       return PostDetailPage(
+    //         post: widget.posts[_currentPostIndex],
+    //         postHeroTag: widget.postHeroTag,
+    //         tags: _tags,
+    //       );
+    //     })),
+    //   ),
+    // );
 
     appbarActions.add(
       PopupMenuButton<PostAction>(
@@ -90,7 +86,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
         backgroundColor: Colors.transparent,
         actions: appbarActions,
       ),
-      bottomNavigationBar: bottomAppBar(context),
+      // bottomNavigationBar: bottomAppBar(context),
       body: BlocListener<TagListBloc, TagListState>(
         listener: (context, state) {
           if (state is TagListLoaded) {
@@ -99,61 +95,36 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             });
           }
         },
-        child: PostListSwipe(
-          postHeroTag: widget.postHeroTag,
-          postImageController: _postImageController,
-          posts: widget.posts,
-          onPostChanged: (value) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              setState(() {
-                _currentPostIndex = value;
-              });
-            });
+        child: SlidingUpPanel(
+          maxHeight: 700,
+          minHeight: 50,
+          panel: PostDetailPage(
+            post: widget.posts[_currentPostIndex],
+            postHeroTag: widget.postHeroTag,
+            tags: _tags,
+          ),
+          body: Padding(
+            // pull the image over the bottom sheet
+            padding: EdgeInsets.only(bottom: 50),
+            child: PostListSwipe(
+              postHeroTag: widget.postHeroTag,
+              postImageController: _postImageController,
+              posts: widget.posts,
+              onPostChanged: (value) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  setState(() {
+                    _currentPostIndex = value;
+                  });
+                });
 
-            BlocProvider.of<TagListBloc>(context).add(
-              GetTagList(widget.posts[value].tagString.toCommaFormat(), 1),
-            );
-          },
-          initialPostIndex: _currentPostIndex,
-        ),
-      ),
-    );
-  }
-
-  Widget bottomAppBar(BuildContext context) {
-    return BottomAppBar(
-      color: Colors.transparent,
-      elevation: 0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          CupertinoButton(
-            child: Icon(
-              CupertinoIcons.heart,
-              size: 28,
-              color: Colors.white70,
-            ),
-            onPressed: () => BlocProvider.of<PostFavoritesBloc>(context).add(
-              AddToFavorites(widget.posts[_currentPostIndex].id),
+                BlocProvider.of<TagListBloc>(context).add(
+                  GetTagList(widget.posts[value].tagString.toCommaFormat(), 1),
+                );
+              },
+              initialPostIndex: _currentPostIndex,
             ),
           ),
-          CupertinoButton(
-            child: Icon(
-              Icons.comment,
-              size: 28,
-              color: Colors.white70,
-            ),
-            onPressed: () {
-              showBarModalBottomSheet(
-                expand: false,
-                context: context,
-                builder: (context, controller) => CommentPage(
-                  postId: widget.posts[_currentPostIndex].id,
-                ),
-              );
-            },
-          )
-        ],
+        ),
       ),
     );
   }

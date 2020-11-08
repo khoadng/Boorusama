@@ -97,21 +97,19 @@ class _PostTagListState extends State<PostTagList> {
         children: <Widget>[
           if (_selectedTag.isNotEmpty)
             FloatingActionButton(
-                child: Icon(Icons.search),
-                heroTag: null,
-                elevation: 10.0,
-                onPressed: () => _searchTags(_selectedTag, context)),
+              child: Icon(Icons.search),
+              heroTag: null,
+              elevation: 10.0,
+              onPressed: () => _searchTags(_selectedTag, context),
+            ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: widget.tags.isNotEmpty
-            ? CustomScrollView(
-                slivers: list,
-              )
-            : Center(
-                child: CircularProgressIndicator(),
-              ),
+        padding: const EdgeInsets.only(top: 80.0, left: 10.0, right: 10.0),
+        child: CustomScrollView(
+          physics: const BouncingScrollPhysics(),
+          slivers: list,
+        ),
       ),
     );
   }
