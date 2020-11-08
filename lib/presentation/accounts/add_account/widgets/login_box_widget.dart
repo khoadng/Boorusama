@@ -32,7 +32,7 @@ class _LoginBoxState extends State<LoginBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(100.0),
+      margin: EdgeInsets.all(30.0),
       child: Column(
         children: [
           Container(

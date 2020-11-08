@@ -25,8 +25,6 @@ class _PostTagListState extends State<PostTagList> {
 
   @override
   Widget build(BuildContext context) {
-    var start = DateTime.now();
-
     widget.tags.sort((a, b) => a.rawName.compareTo(b.rawName));
     final artistTags =
         widget.tags.where((tag) => tag.category == TagCategory.artist).toList();
@@ -93,9 +91,6 @@ class _PostTagListState extends State<PostTagList> {
         onTagTap: _handleTagSelected,
       ));
     }
-
-    var diff = DateTime.now().difference(start).inMicroseconds;
-    print("TEST: Completed parsing post in $diff us");
 
     return Scaffold(
       floatingActionButton: Column(

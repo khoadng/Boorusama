@@ -1,7 +1,9 @@
 import 'package:boorusama/application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
 import 'package:boorusama/domain/posts/note.dart';
+import 'package:boorusama/domain/posts/note_coordinate.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
@@ -27,9 +29,10 @@ class PostImage extends StatefulWidget {
 }
 
 class _PostImageState extends State<PostImage> {
-  bool notesVisible = false;
+  ValueNotifier<bool> notesVisible = ValueNotifier(false);
   List<Note> notes;
   PostTranslateNoteBloc _postTranslateNoteBloc;
+  Flushbar _noteFlushbar;
 
   @override
   void initState() {
@@ -37,7 +40,23 @@ class _PostImageState extends State<PostImage> {
     _postTranslateNoteBloc = BlocProvider.of<PostTranslateNoteBloc>(context);
     widget.controller.postImageState = this;
 
+    _noteFlushbar = Flushbar(
+      icon: Icon(
+        Icons.info_outline,
+        color: ThemeData.dark().accentColor,
+      ),
+      leftBarIndicatorColor: ThemeData.dark().accentColor,
+      title: "Loading",
+      message: "Fetching translation notes, plese hold on...",
+    );
+
     notes = List<Note>();
+  }
+
+  @override
+  void dispose() {
+    _noteFlushbar = null;
+    super.dispose();
   }
 
   @override
@@ -50,30 +69,28 @@ class _PostImageState extends State<PostImage> {
             setState(() {
               notes = state.notes;
             });
+            _noteFlushbar.dismiss();
           } else if (state is PostTranslateNoteInProgress) {
-            Scaffold.of(context).showSnackBar(SnackBar(
-                duration: Duration(milliseconds: 1000),
-                content: Text("Fetching translation notes, plese hold on...")));
+            _noteFlushbar.show(context);
           } else {
             Scaffold.of(context).showSnackBar(
                 SnackBar(content: Text("Oopsie something went wrong")));
           }
         },
-        child: notesVisible
-            ? buildNotesAndImage()
-            : buildCachedNetworkImage(context),
+        child: ValueListenableBuilder(
+          valueListenable: notesVisible,
+          builder: (context, value, child) => Stack(
+            children: <Widget>[
+              _Image(imageUrl: widget.post.normalImageUri.toString()),
+              if (value) ...buildNotes(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
-  Widget buildCachedNetworkImage(BuildContext context) {
-    return GestureDetector(
-      onLongPress: () => widget.onLongPressed(),
-      child: _Image(imageUrl: widget.post.normalImageUri.toString()),
-    );
-  }
-
-  Widget buildNotesAndImage() {
+  List<Widget> buildNotes() {
     final widgets = List<Widget>();
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -82,8 +99,6 @@ class _PostImageState extends State<PostImage> {
         60.0 -
         80; // minus toolbar height (60) and some offset (70) ;
     final screenAspectRatio = screenWidth / screenHeight;
-
-    widgets.add(_Image(imageUrl: widget.post.normalImageUri.toString()));
 
     for (var note in notes) {
       final coordinate = note.coordinate.calibrate(
@@ -94,34 +109,16 @@ class _PostImageState extends State<PostImage> {
           widget.post.width,
           widget.post.aspectRatio);
 
-      var tooltip = SuperTooltip(
-        backgroundColor: ThemeData.dark().cardColor,
-        arrowTipDistance: 0,
-        arrowBaseWidth: 0,
-        arrowLength: 0,
-        popupDirection: TooltipDirection.left,
-        content: Material(
-          child: Html(data: note.content),
-          color: ThemeData.dark().cardColor,
-        ),
-      );
-
       widgets.add(
-        GestureDetector(
-          onTap: () => tooltip.show(context),
-          child: Container(
-            margin: EdgeInsets.only(left: coordinate.x, top: coordinate.y),
-            width: coordinate.width,
-            height: coordinate.height,
-            decoration: BoxDecoration(
-                color: Colors.white54,
-                border: Border.all(color: Colors.red, width: 1)),
-          ),
+        _Note(
+          coordinate: coordinate,
+          content: note.content,
+          targetContext: context,
         ),
       );
     }
 
-    return Stack(children: widgets);
+    return widgets;
   }
 
   void showTranslationNotes() {
@@ -129,19 +126,54 @@ class _PostImageState extends State<PostImage> {
       _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
     }
 
-    setState(() {
-      notesVisible = true;
-    });
+    notesVisible.value = true;
 
-    widget.onNoteVisibleChanged(notesVisible);
+    widget.onNoteVisibleChanged(notesVisible.value);
   }
 
   void hideTranslationNotes() {
-    setState(() {
-      notesVisible = false;
-    });
+    notesVisible.value = false;
 
-    widget.onNoteVisibleChanged(notesVisible);
+    widget.onNoteVisibleChanged(notesVisible.value);
+  }
+}
+
+class _Note extends StatelessWidget {
+  const _Note({
+    Key key,
+    @required this.coordinate,
+    @required this.content,
+    @required this.targetContext,
+  }) : super(key: key);
+
+  final NoteCoordinate coordinate;
+  final String content;
+  final BuildContext targetContext;
+
+  @override
+  Widget build(BuildContext context) {
+    var tooltip = SuperTooltip(
+      backgroundColor: ThemeData.dark().cardColor,
+      arrowTipDistance: 0,
+      arrowBaseWidth: 0,
+      arrowLength: 0,
+      popupDirection: TooltipDirection.left,
+      content: Material(
+        child: Html(data: content),
+        color: ThemeData.dark().cardColor,
+      ),
+    );
+    return GestureDetector(
+      onTap: () => tooltip.show(targetContext),
+      child: Container(
+        margin: EdgeInsets.only(left: coordinate.x, top: coordinate.y),
+        width: coordinate.width,
+        height: coordinate.height,
+        decoration: BoxDecoration(
+            color: Colors.white54,
+            border: Border.all(color: Colors.red, width: 1)),
+      ),
+    );
   }
 }
 
@@ -181,7 +213,7 @@ class PostImageController {
 
   PostImageController();
 
-  bool get notesVisible => postImageState.notesVisible;
+  bool get notesVisible => postImageState.notesVisible.value;
 
   void showTranslationNotes() {
     postImageState.showTranslationNotes();
@@ -192,7 +224,7 @@ class PostImageController {
   }
 
   void toggleTranslationNotes() {
-    postImageState.notesVisible
+    postImageState.notesVisible.value
         ? postImageState.hideTranslationNotes()
         : postImageState.showTranslationNotes();
   }

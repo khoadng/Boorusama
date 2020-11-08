@@ -38,7 +38,9 @@ class PostListPageView
         child: BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
           listener: (context, state) {
             if (state is GetAllAccountsSuccess) {
-              controller.assignAccount(state.accounts?.first);
+              if (state.accounts != null && state.accounts.isNotEmpty) {
+                controller.assignAccount(state.accounts.first);
+              }
             }
           },
           child: Scaffold(
