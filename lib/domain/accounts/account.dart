@@ -1,23 +1,29 @@
+import 'package:meta/meta.dart';
+
 class Account {
-  String _username;
-  String _apiKey;
-  int _id;
+  const Account({
+    @required this.username,
+    @required this.apiKey,
+    @required this.id,
+  })  : assert(username != null),
+        assert(apiKey != null),
+        assert(id != null);
 
-  Account(this._username, this._apiKey, this._id);
+  final String username;
+  final String apiKey;
+  final int id;
 
-  String get username => _username;
-  String get apiKey => _apiKey;
-  int get id => _id;
+  static const empty = Account(username: "", apiKey: "", id: 0);
 
   factory Account.create(String username, String apiKey, int id) {
-    return Account(username, apiKey, id);
+    return Account(username: username, apiKey: apiKey, id: id);
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'username': _username,
-      'apiKey': _apiKey,
-      'id': _id,
+      'username': username,
+      'apiKey': apiKey,
+      'id': id,
     };
   }
 
