@@ -11,6 +11,7 @@ import 'package:boorusama/infrastructure/repositories/wikis/wiki_repository.dart
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -18,6 +19,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'app.dart';
 import 'application/posts/post_download/download_service.dart';
+import 'application/posts/post_search/bloc/post_search_bloc.dart';
 import 'bloc_observer.dart';
 import 'infrastructure/repositories/posts/post_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
@@ -43,19 +45,26 @@ void main() async {
   final settingRepository =
       SettingRepository(SharedPreferences.getInstance(), defaultSetings);
 
-  runApp(App(
-    postRepository:
-        PostRepository(apiProvider, accountRepository, settingRepository),
-    tagRepository: TagRepository(apiProvider, accountRepository),
-    scrapperService: ScrapperService(),
-    downloadService: DownloadService(FileNameGenerator()),
-    accountRepository: accountRepository,
-    noteRepository: NoteRepository(apiProvider),
-    commentRepository: CommentRepository(apiProvider),
-    userRepository: UserRepository(apiProvider, accountRepository),
-    favoritePostRepository:
-        FavoritePostRepository(apiProvider, accountRepository),
-    settingRepository: settingRepository,
-    wikiRepository: WikiRepository(apiProvider),
+  final postRepository =
+      PostRepository(apiProvider, accountRepository, settingRepository);
+
+  runApp(BlocProvider(
+    create: (_) => PostSearchBloc(
+      postRepository: postRepository,
+    ),
+    child: App(
+      postRepository: postRepository,
+      tagRepository: TagRepository(apiProvider, accountRepository),
+      scrapperService: ScrapperService(),
+      downloadService: DownloadService(FileNameGenerator()),
+      accountRepository: accountRepository,
+      noteRepository: NoteRepository(apiProvider),
+      commentRepository: CommentRepository(apiProvider),
+      userRepository: UserRepository(apiProvider, accountRepository),
+      favoritePostRepository:
+          FavoritePostRepository(apiProvider, accountRepository),
+      settingRepository: settingRepository,
+      wikiRepository: WikiRepository(apiProvider),
+    ),
   ));
 }

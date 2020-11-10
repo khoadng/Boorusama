@@ -1,5 +1,6 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
@@ -20,7 +21,6 @@ class PostListPageView
 
   @override
   Widget build(BuildContext context) {
-    //TODO: workaround, this event is not working in MultiBlocListener somehow
     return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
         if (state is Authenticated) {
@@ -34,7 +34,7 @@ class PostListPageView
           account: controller.account,
         ),
         resizeToAvoidBottomInset: false,
-        body: _getPage(controller.currentTab),
+        body: _getPage(controller.currentTab, context),
         bottomNavigationBar: BottomBar(
           onTabChanged: (value) => controller.handleTabChanged(value),
         ),
@@ -43,11 +43,26 @@ class PostListPageView
   }
 
   //TODO: refactor
-  Widget _getPage(int tabIndex) {
+  Widget _getPage(int tabIndex, BuildContext context) {
     switch (tabIndex) {
       case 0:
         return Stack(fit: StackFit.expand, children: [
           buildList(),
+          BlocBuilder<PostSearchBloc, PostSearchState>(
+            builder: (context, state) {
+              if (state is SearchLoading) {
+                return Positioned(
+                    bottom: 0,
+                    child: Container(
+                      height: 3,
+                      width: MediaQuery.of(context).size.width,
+                      child: LinearProgressIndicator(),
+                    ));
+              } else {
+                return Center();
+              }
+            },
+          ),
           PostListSearchBar(
             controller: controller.searchBarController,
             onSearched: controller.handleSearched,
@@ -60,14 +75,9 @@ class PostListPageView
   }
 
   Widget buildList() {
-    return BlocConsumer<PostListBloc, PostListState>(
+    return BlocListener<PostSearchBloc, PostSearchState>(
       listener: (context, state) {
-        if (state is PostListLoaded) {
-          controller.posts.clear();
-          controller.posts.addAll(state.posts);
-        } else if (state is AddtionalPostListLoaded) {
-          controller.posts.addAll(state.posts);
-        } else if (state is PostListError) {
+        if (state is SearchError) {
           var flush;
           flush = Flushbar(
             icon: Icon(
@@ -75,7 +85,7 @@ class PostListPageView
               color: ThemeData.dark().accentColor,
             ),
             leftBarIndicatorColor: ThemeData.dark().accentColor,
-            title: state.title,
+            title: state.error,
             message: state.message,
             mainButton: FlatButton(
               onPressed: () {
@@ -85,33 +95,32 @@ class PostListPageView
               child: Text("OK"),
             ),
           )..show(context);
+        } else if (state is SearchSuccess) {
+          controller.assignTagQuery(state.query);
         } else {
           //TODO: handle other cases
         }
       },
-      builder: (context, state) {
-        if (state is PostListInitial) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is PostListLoading) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (state is PostListLoaded) {
-          controller.assignTagQuery(state.query);
-          return buildListWithData();
-        } else if (state is PostListLoaded ||
-            state is AddtionalPostListLoaded ||
-            state is AdditionalPostListLoading) {
-          return buildListWithData();
-        } else if (state is PostListError) {
-          return Lottie.asset(
-              "assets/animations/11116-404-planet-animation.json");
-        } else {
-          return Center(child: Text("Nothing's here"));
-        }
-      },
+      child: BlocConsumer<PostListBloc, PostListState>(
+        listener: (context, state) {
+          if (state is PostListLoaded) {
+            controller.posts.clear();
+            controller.posts.addAll(state.posts);
+          } else if (state is AddtionalPostListLoaded) {
+            controller.posts.addAll(state.posts);
+          } else {}
+        },
+        builder: (context, state) {
+          if (state is PostListLoaded || state is AddtionalPostListLoaded) {
+            return buildListWithData();
+          } else if (state is PostListError) {
+            // return Lottie.asset(
+            //     "assets/animations/11116-404-planet-animation.json");
+          } else {
+            return Center(child: Text("Nothing's here"));
+          }
+        },
+      ),
     );
   }
 
@@ -122,7 +131,7 @@ class PostListPageView
           ? controller.searchBarController.show()
           : controller.searchBarController.hide(),
       onMaxItemReached: controller.loadMorePosts,
-      scrollThreshold: 0.8,
+      scrollThreshold: 1,
       scrollController: controller.scrollController,
     );
   }

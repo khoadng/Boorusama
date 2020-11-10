@@ -1,5 +1,6 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page_view.dart';
@@ -23,14 +24,14 @@ class PostListPageState extends State<PostListPage> {
   final ScrollController scrollController = new ScrollController();
   final FloatingSearchBarController searchBarController =
       FloatingSearchBarController();
-  final Debouncer _debouncer = Debouncer();
+  final Debouncer _debouncer = Debouncer(delay: Duration(seconds: 1));
 
   Account account;
 
   @override
   void initState() {
     super.initState();
-    context.read<PostListBloc>().add(GetPost("", 1));
+    context.read<PostSearchBloc>().add(PostSearched(query: "", page: 1));
   }
 
   @override
@@ -45,8 +46,8 @@ class PostListPageState extends State<PostListPage> {
     _currentPage = 1;
     posts.clear();
     context
-        .read<PostListBloc>()
-        .add(GetPost(_currentSearchQuery, _currentPage));
+        .read<PostSearchBloc>()
+        .add(PostSearched(query: _currentSearchQuery, page: _currentPage));
     scrollController.jumpTo(0.0);
   }
 
@@ -60,8 +61,8 @@ class PostListPageState extends State<PostListPage> {
     _debouncer(() {
       _currentPage++;
       context
-          .read<PostListBloc>()
-          .add(GetMorePost(_currentSearchQuery, _currentPage));
+          .read<PostSearchBloc>()
+          .add(PostSearched(query: _currentSearchQuery, page: _currentPage));
     });
   }
 

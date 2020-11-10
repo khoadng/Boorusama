@@ -96,7 +96,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           }
         },
         child: SlidingUpPanel(
-          maxHeight: 700,
+          maxHeight: MediaQuery.of(context).size.height * 0.8,
           minHeight: 50,
           panel: PostDetailPage(
             post: widget.posts[_currentPostIndex],

@@ -1,6 +1,7 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
@@ -59,8 +60,9 @@ class App extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<PostListBloc>(
+          lazy: false,
           create: (_) => PostListBloc(
-            repository: postRepository,
+            postSearchBloc: BlocProvider.of<PostSearchBloc>(context),
           ),
         ),
         BlocProvider<PostDownloadBloc>(

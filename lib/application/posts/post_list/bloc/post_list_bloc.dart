@@ -1,9 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:boorusama/domain/posts/i_post_repository.dart';
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
 
@@ -11,33 +10,37 @@ part 'post_list_event.dart';
 part 'post_list_state.dart';
 
 class PostListBloc extends Bloc<PostListEvent, PostListState> {
-  final IPostRepository repository;
+  final PostSearchBloc _postSearchBloc;
+  StreamSubscription _postSearchBlocSubscription;
 
-  PostListBloc({@required this.repository}) : super(PostListInitial());
+  PostListBloc({@required PostSearchBloc postSearchBloc})
+      : _postSearchBloc = postSearchBloc,
+        super(PostListEmpty()) {
+    _postSearchBlocSubscription = _postSearchBloc.listen((state) {
+      if (state is SearchSuccess) {
+        if (state.page == 1) {
+          add(ListLoadRequested(state.posts));
+        } else if (state.page > 1) {
+          add(MorePostLoaded(state.posts));
+        }
+      }
+    });
+  }
 
   @override
   Stream<PostListState> mapEventToState(
     PostListEvent event,
   ) async* {
-    if (event is GetPost) {
-      yield PostListLoading();
-      try {
-        final posts = await repository.getPosts(event.tagString, event.page);
-        yield PostListLoaded(posts, event.tagString);
-      } on CannotSearchMoreThanTwoTags catch (e) {
-        yield PostListError(e.message, "Search Error");
-      } on DatabaseTimeOut catch (e) {
-        yield PostListError(e.message, "Search Timeout");
-      }
-    } else if (event is GetMorePost) {
-      yield AdditionalPostListLoading();
-      try {
-        final posts = await repository.getPosts(event.tagString, event.page);
-        yield AddtionalPostListLoaded(posts);
-      } on DatabaseTimeOut catch (e) {
-        yield PostListError(e.message, "Search Timeout");
-      }
-      //TODO: should handle error here
+    if (event is ListLoadRequested) {
+      yield PostListLoaded(event.posts);
+    } else if (event is MorePostLoaded) {
+      yield AddtionalPostListLoaded(event.posts);
     }
+  }
+
+  @override
+  Future<void> close() {
+    _postSearchBlocSubscription.cancel();
+    return super.close();
   }
 }

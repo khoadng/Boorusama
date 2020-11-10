@@ -1,24 +1,26 @@
 part of 'post_list_bloc.dart';
 
-@immutable
-abstract class PostListEvent extends Equatable {}
-
-class GetPost extends PostListEvent {
-  final String tagString;
-  final int page;
-
-  GetPost(this.tagString, this.page);
+abstract class PostListEvent extends Equatable {
+  const PostListEvent();
 
   @override
-  List<Object> get props => [tagString, page];
+  List<Object> get props => [];
 }
 
-class GetMorePost extends PostListEvent {
-  final String tagString;
-  final int page;
+class ListLoadRequested extends PostListEvent {
+  final List<Post> posts;
 
-  GetMorePost(this.tagString, this.page);
+  ListLoadRequested(this.posts);
 
   @override
-  List<Object> get props => [tagString, page];
+  List<Object> get props => [posts];
+}
+
+class MorePostLoaded extends PostListEvent {
+  final List<Post> posts;
+
+  MorePostLoaded(this.posts);
+
+  @override
+  List<Object> get props => [posts];
 }

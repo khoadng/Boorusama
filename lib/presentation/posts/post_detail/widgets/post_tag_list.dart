@@ -1,4 +1,5 @@
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
@@ -93,6 +94,7 @@ class _PostTagListState extends State<PostTagList> {
     }
 
     return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
       floatingActionButton: Column(
         children: <Widget>[
           if (_selectedTag.isNotEmpty)
@@ -131,7 +133,9 @@ class _PostTagListState extends State<PostTagList> {
       tagNames.add(tag.rawName);
     }
 
-    BlocProvider.of<PostListBloc>(context).add(GetPost(tagNames.join(" "), 1));
+    context
+        .read<PostSearchBloc>()
+        .add(PostSearched(query: tagNames.join(" "), page: 1));
     Navigator.popUntil(
         context, ModalRoute.withName(Navigator.defaultRouteName));
   }
