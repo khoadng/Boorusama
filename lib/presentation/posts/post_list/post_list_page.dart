@@ -1,4 +1,3 @@
-import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
@@ -21,25 +20,17 @@ class PostListPageState extends State<PostListPage> {
   int _currentPage = 1;
   int currentTab = 0;
   final List<Post> posts = List<Post>();
-  PostListBloc _postListBloc;
-  PostDownloadBloc _postDownloadBloc;
-  GetAllAccountsBloc _getAllAccountsBloc;
   final ScrollController scrollController = new ScrollController();
   final FloatingSearchBarController searchBarController =
-      new FloatingSearchBarController();
+      FloatingSearchBarController();
   final Debouncer _debouncer = Debouncer();
 
   Account account;
 
-  //TODO: Move PostDownload to shared folder
   @override
   void initState() {
     super.initState();
-    _postListBloc = BlocProvider.of<PostListBloc>(context);
-    _postDownloadBloc = BlocProvider.of<PostDownloadBloc>(context);
-    _getAllAccountsBloc = BlocProvider.of<GetAllAccountsBloc>(context)
-      ..add(GetAllAccountsRequested());
-    _postListBloc.add(GetPost("", 1));
+    context.read<PostListBloc>().add(GetPost("", 1));
   }
 
   @override
@@ -53,7 +44,9 @@ class PostListPageState extends State<PostListPage> {
     _currentSearchQuery = query;
     _currentPage = 1;
     posts.clear();
-    _postListBloc.add(GetPost(_currentSearchQuery, _currentPage));
+    context
+        .read<PostListBloc>()
+        .add(GetPost(_currentSearchQuery, _currentPage));
     scrollController.jumpTo(0.0);
   }
 
@@ -66,13 +59,15 @@ class PostListPageState extends State<PostListPage> {
   void loadMorePosts(_) {
     _debouncer(() {
       _currentPage++;
-      _postListBloc.add(GetMorePost(_currentSearchQuery, _currentPage));
+      context
+          .read<PostListBloc>()
+          .add(GetMorePost(_currentSearchQuery, _currentPage));
     });
   }
 
   void downloadAllPosts() {
     posts.forEach((post) {
-      _postDownloadBloc.add(PostDownloadRequested(post: post));
+      context.read<PostDownloadBloc>().add(PostDownloadRequested(post: post));
     });
   }
 

@@ -1,6 +1,4 @@
-import 'package:boorusama/application/accounts/add_account/bloc/add_account_bloc.dart';
-import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
-import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
+import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
@@ -23,36 +21,22 @@ class PostListPageView
   @override
   Widget build(BuildContext context) {
     //TODO: workaround, this event is not working in MultiBlocListener somehow
-    return BlocListener<RemoveAccountBloc, RemoveAccountState>(
+    return BlocListener<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        if (state is RemoveAccountSuccess) {
+        if (state is Authenticated) {
+          controller.assignAccount(state.account);
+        } else if (state is Unauthenticated) {
           controller.removeAccount(state.account);
         }
       },
-      child: BlocListener<AddAccountBloc, AddAccountState>(
-        listener: (context, state) {
-          if (state is AddAccountDone) {
-            controller.assignAccount(state.account);
-          }
-        },
-        child: BlocListener<GetAllAccountsBloc, GetAllAccountsState>(
-          listener: (context, state) {
-            if (state is GetAllAccountsSuccess) {
-              if (state.accounts != null && state.accounts.isNotEmpty) {
-                controller.assignAccount(state.accounts.first);
-              }
-            }
-          },
-          child: Scaffold(
-            drawer: SideBarMenu(
-              account: controller.account,
-            ),
-            resizeToAvoidBottomInset: false,
-            body: _getPage(controller.currentTab),
-            bottomNavigationBar: BottomBar(
-              onTabChanged: (value) => controller.handleTabChanged(value),
-            ),
-          ),
+      child: Scaffold(
+        drawer: SideBarMenu(
+          account: controller.account,
+        ),
+        resizeToAvoidBottomInset: false,
+        body: _getPage(controller.currentTab),
+        bottomNavigationBar: BottomBar(
+          onTabChanged: (value) => controller.handleTabChanged(value),
         ),
       ),
     );

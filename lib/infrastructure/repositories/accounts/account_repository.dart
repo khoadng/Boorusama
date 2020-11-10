@@ -48,7 +48,7 @@ class AccountRepository implements IAccountRepository {
     final List<Map<String, dynamic>> records = await db.query('accounts');
 
     if (records == null || records.isEmpty) {
-      return Account.create("", "", 0);
+      return Account.empty;
     }
 
     return Account.create(records.first['username'], records.first['apiKey'],

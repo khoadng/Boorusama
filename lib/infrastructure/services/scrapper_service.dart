@@ -1,4 +1,4 @@
-import 'package:boorusama/application/accounts/add_account/services/i_scrapper_service.dart';
+import 'package:boorusama/application/authentication/services/i_scrapper_service.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' as html;
@@ -17,6 +17,7 @@ class ScrapperService implements IScrapperService {
 
   @override
   Future<Account> crawlAccountData(String username, String password) async {
+    //TODO: handle http error i.e 502
     final loginResponse = await _dio.get(_url + "/login");
     final loginHtml = loginResponse.data.toString();
     final loginDocument = html.parse(loginHtml);

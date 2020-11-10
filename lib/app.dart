@@ -1,7 +1,3 @@
-import 'package:boorusama/application/accounts/add_account/bloc/add_account_bloc.dart';
-import 'package:boorusama/application/accounts/add_account/services/i_scrapper_service.dart';
-import 'package:boorusama/application/accounts/get_all_accounts/bloc/get_all_accounts_bloc.dart';
-import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
@@ -23,6 +19,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
+import 'application/authentication/bloc/authentication_bloc.dart';
+import 'application/authentication/services/i_scrapper_service.dart';
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
@@ -71,14 +69,6 @@ class App extends StatelessWidget {
         ),
         BlocProvider<TagSuggestionsBloc>(
             create: (_) => TagSuggestionsBloc(tagRepository)),
-        BlocProvider<AddAccountBloc>(
-            create: (_) => AddAccountBloc(
-                accountRepository: accountRepository,
-                scrapperService: scrapperService)),
-        BlocProvider<GetAllAccountsBloc>(
-            create: (_) => GetAllAccountsBloc(accountRepository)),
-        BlocProvider<RemoveAccountBloc>(
-            create: (_) => RemoveAccountBloc(accountRepository)),
         BlocProvider<PostTranslateNoteBloc>(
             create: (_) => PostTranslateNoteBloc(noteRepository)),
         BlocProvider<TagListBloc>(create: (_) => TagListBloc(tagRepository)),
@@ -91,6 +81,12 @@ class App extends StatelessWidget {
         BlocProvider<UserBloc>(
             create: (_) => UserBloc(accountRepository, userRepository)),
         BlocProvider<WikiBloc>(create: (_) => WikiBloc(wikiRepository)),
+        BlocProvider<AuthenticationBloc>(
+            lazy: false,
+            create: (_) => AuthenticationBloc(
+                scrapperService: scrapperService,
+                accountRepository: accountRepository)
+              ..add(AuthenticationRequested())),
       ],
       child: MultiProvider(
         providers: [

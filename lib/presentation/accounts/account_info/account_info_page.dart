@@ -1,4 +1,4 @@
-import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
+import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
@@ -22,7 +22,6 @@ class AccountInfoPage extends StatefulWidget {
 class AccountInfoPageState extends State<AccountInfoPage> {
   List<Account> accounts;
   List<Post> favedPosts;
-  RemoveAccountBloc _removeAccountBloc;
   PostFavoritesBloc _postFavoritesBloc;
 
   @override
@@ -30,7 +29,6 @@ class AccountInfoPageState extends State<AccountInfoPage> {
     super.initState();
     accounts = widget.accounts;
     favedPosts = List<Post>();
-    _removeAccountBloc = BlocProvider.of<RemoveAccountBloc>(context);
     _postFavoritesBloc = BlocProvider.of<PostFavoritesBloc>(context);
 
     //TODO: warning dirty code to get current account
@@ -47,8 +45,8 @@ class AccountInfoPageState extends State<AccountInfoPage> {
   }
 
   void removeAccountRequest() {
-    _removeAccountBloc.add(RemoveAccountRequested(account: accounts[0]));
-    Navigator.of(context).pop();
+    BlocProvider.of<AuthenticationBloc>(context)
+        .add(UserLoggedOut(account: accounts[0]));
   }
 
   void assignFavedPosts(List<Post> posts) {

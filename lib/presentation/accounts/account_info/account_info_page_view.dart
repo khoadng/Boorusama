@@ -1,4 +1,4 @@
-import 'package:boorusama/application/accounts/remove_account/bloc/remove_account_bloc.dart';
+import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -60,14 +60,15 @@ class AccountInfoPageView
   }
 
   Widget buildAccountList() {
-    return BlocConsumer<RemoveAccountBloc, RemoveAccountState>(
+    return BlocConsumer<AuthenticationBloc, AuthenticationState>(
       listener: (context, state) {
-        if (state is RemoveAccountSuccess) {
+        if (state is Unauthenticated) {
           controller.removeAccount(state.account);
+          Navigator.of(context).pop();
         }
       },
       builder: (context, state) {
-        if (state is RemoveAccountSuccess) {
+        if (state is Unauthenticated) {
           return Center();
         } else {
           return Text(controller.accounts.first.username);
