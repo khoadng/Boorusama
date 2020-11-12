@@ -1,5 +1,6 @@
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/domain/posts/post_name.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/comments/comment_page.dart';
 import 'package:boorusama/presentation/posts/post_detail/widgets/post_tag_list.dart';
@@ -39,27 +40,50 @@ class PostDetailPage extends StatelessWidget {
       children: [
         PostTagList(tags: tags),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Spacer(
-              flex: 1,
-            ),
-            IconButton(
-              icon: Icon(Icons.favorite),
-              onPressed: () => BlocProvider.of<PostFavoritesBloc>(context).add(
-                AddToFavorites(post.id),
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.only(top: 16.0, bottom: 10.0, left: 20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                        "${post.name.characterOnly.pretty.capitalizeFirstofEach}",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.subtitle1),
+                    Text(
+                        "${post.name.copyRightOnly.pretty.capitalizeFirstofEach}",
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.caption),
+                  ],
+                ),
               ),
             ),
-            IconButton(
-              icon: Icon(Icons.comment),
-              onPressed: () {
-                showBarModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  builder: (context, controller) => CommentPage(
-                    postId: post.id,
+            Expanded(
+              child: ButtonBar(
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.favorite),
+                    onPressed: () =>
+                        BlocProvider.of<PostFavoritesBloc>(context).add(
+                      AddToFavorites(post.id),
+                    ),
                   ),
-                );
-              },
+                  IconButton(
+                    icon: Icon(Icons.comment),
+                    onPressed: () {
+                      showBarModalBottomSheet(
+                        expand: false,
+                        context: context,
+                        builder: (context, controller) => CommentPage(
+                          postId: post.id,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         )

@@ -2,6 +2,8 @@ import 'package:boorusama/domain/posts/created_time.dart';
 import 'package:boorusama/domain/posts/rating.dart';
 import 'package:boorusama/domain/posts/tag_string.dart';
 
+import 'post_name.dart';
+
 class Post {
   final int _id;
   final Uri _previewImageUri;
@@ -80,6 +82,14 @@ class Post {
   TagString get tagString => TagString(_tag_string);
 
   double get aspectRatio => this.width / this.height;
+
+  PostName get name {
+    return PostName(
+      tagStringArtist: tagStringArtist,
+      tagStringCharacter: tagStringCharacter,
+      tagStringCopyright: tagStringCopyright,
+    );
+  }
 
   bool get isVideo {
     //TODO: handle other kind of video format

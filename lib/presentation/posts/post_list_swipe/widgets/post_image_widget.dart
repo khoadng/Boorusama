@@ -98,7 +98,7 @@ class _PostImageState extends State<PostImage> {
     final screenHeight = MediaQuery.of(context).size.height -
         kToolbarHeight -
         24 -
-        50; // minus toolbar height, status bar height and custom value for the bottom sheet;
+        60; // minus toolbar height, status bar height and custom value for the bottom sheet;
     final screenAspectRatio = screenWidth / screenHeight;
 
     for (var note in notes) {

@@ -51,7 +51,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
     var appbarActions = <Widget>[];
     _bodyHeight ??= (MediaQuery.of(context).size.height -
             kToolbarHeight -
-            50 -
+            60 -
             MediaQuery.of(context).padding.top) *
         1;
 
@@ -103,7 +103,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
               setState(() {
                 _bodyHeight = (MediaQuery.of(context).size.height -
                         kToolbarHeight -
-                        50 -
+                        60 -
                         MediaQuery.of(context).padding.top) *
                     1;
               });
@@ -114,7 +114,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
                   kToolbarHeight -
                   MediaQuery.of(context).padding.top) *
               0.65,
-          minHeight: 50,
+          minHeight: 60,
           panel: PostDetailPage(
             post: widget.posts[_currentPostIndex],
             postHeroTag: widget.postHeroTag,
