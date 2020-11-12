@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:widget_view/widget_view.dart';
 
 class PostListPageView
@@ -46,29 +47,33 @@ class PostListPageView
   Widget _getPage(int tabIndex, BuildContext context) {
     switch (tabIndex) {
       case 0:
-        return Stack(fit: StackFit.expand, children: [
-          buildList(),
-          BlocBuilder<PostSearchBloc, PostSearchState>(
-            builder: (context, state) {
-              if (state is SearchLoading) {
-                return Positioned(
+        return Stack(
+          fit: StackFit.expand,
+          children: [
+            BlocBuilder<PostSearchBloc, PostSearchState>(
+              builder: (context, state) {
+                if (state is SearchLoading) {
+                  return Positioned(
                     bottom: 0,
                     child: Container(
                       height: 3,
                       width: MediaQuery.of(context).size.width,
                       child: LinearProgressIndicator(),
-                    ));
-              } else {
-                return Center();
-              }
-            },
-          ),
-          PostListSearchBar(
-            controller: controller.searchBarController,
-            onSearched: controller.handleSearched,
-            onDownloadAllSelected: controller.downloadAllPosts,
-          ),
-        ]);
+                    ),
+                  );
+                } else {
+                  return Center();
+                }
+              },
+            ),
+            PostListSearchBar(
+              controller: controller.searchBarController,
+              onSearched: controller.handleSearched,
+              body: FloatingSearchBarScrollNotifier(child: buildList()),
+              onDownloadAllSelected: controller.downloadAllPosts,
+            ),
+          ],
+        );
       case 1:
         return PostDownloadGalleryPage();
     }
@@ -127,9 +132,6 @@ class PostListPageView
   Widget buildListWithData() {
     return PostList(
       posts: controller.posts,
-      onScrollDirectionChanged: (value) => value == ScrollDirection.forward
-          ? controller.searchBarController.show()
-          : controller.searchBarController.hide(),
       onMaxItemReached: controller.loadMorePosts,
       scrollThreshold: 1,
       scrollController: controller.scrollController,

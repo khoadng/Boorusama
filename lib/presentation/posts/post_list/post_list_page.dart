@@ -1,5 +1,4 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
-import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
@@ -57,7 +56,7 @@ class PostListPageState extends State<PostListPage> {
     });
   }
 
-  void loadMorePosts(_) {
+  void loadMorePosts() {
     _debouncer(() {
       _currentPage++;
       context

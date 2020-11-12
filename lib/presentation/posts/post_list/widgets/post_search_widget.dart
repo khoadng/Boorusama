@@ -9,11 +9,13 @@ class PostListSearchBar extends StatefulWidget {
   final ValueChanged<String> onSearched;
   final Function onDownloadAllSelected;
   final FloatingSearchBarController controller;
+  final Widget body;
   // final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
   PostListSearchBar(
       {Key key,
       @required this.onSearched,
+      this.body,
       this.controller,
       this.onDownloadAllSelected});
 
@@ -43,6 +45,7 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
       hint: 'Search...',
       controller: widget.controller,
       onSubmitted: _handleSubmitted,
+      body: widget.body,
       clearQueryOnClose: false,
       transitionDuration: const Duration(milliseconds: 150),
       transitionCurve: Curves.easeInOut,
@@ -131,26 +134,27 @@ class SuggestionItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: Colors.white,
-        elevation: 4.0,
-        borderRadius: BorderRadius.circular(8),
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _tags.length > 6 ? 6 : _tags.length,
-          padding: EdgeInsets.all(0.0),
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) {
-            return ListTile(
-              onTap: () => onItemTap(_tags[index].rawName),
-              trailing: Text(_tags[index].postCount.toString(),
-                  style: TextStyle(color: Colors.grey)),
-              title: Text(
-                _tags[index].displayName,
-                style: TextStyle(color: Color(_tags[index].tagHexColor)),
-              ),
-            );
-          },
-        ));
+      color: Colors.white,
+      elevation: 4.0,
+      borderRadius: BorderRadius.circular(8),
+      child: ListView.builder(
+        shrinkWrap: true,
+        itemCount: _tags.length > 6 ? 6 : _tags.length,
+        padding: EdgeInsets.all(0.0),
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return ListTile(
+            onTap: () => onItemTap(_tags[index].rawName),
+            trailing: Text(_tags[index].postCount.toString(),
+                style: TextStyle(color: Colors.grey)),
+            title: Text(
+              _tags[index].displayName,
+              style: TextStyle(color: Color(_tags[index].tagHexColor)),
+            ),
+          );
+        },
+      ),
+    );
   }
 }
 

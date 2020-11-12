@@ -16,7 +16,7 @@ class PostList extends StatefulWidget {
       : super(key: key);
 
   final List<Post> posts;
-  final ValueChanged onMaxItemReached;
+  final VoidCallback onMaxItemReached;
   final ValueChanged<ScrollDirection> onScrollDirectionChanged;
   final scrollThreshold;
   final scrollController;
@@ -144,20 +144,20 @@ class _PostListState extends State<PostList> {
     final currentThresholdPercent = currentScroll / maxScroll;
 
     if (currentThresholdPercent >= widget.scrollThreshold) {
-      widget.onMaxItemReached(null);
+      widget.onMaxItemReached?.call();
     }
 
     if (widget.scrollController.position.userScrollDirection ==
         ScrollDirection.reverse) {
       if (!_isScrollingDown) {
         _isScrollingDown = true;
-        widget.onScrollDirectionChanged(ScrollDirection.reverse);
+        widget.onScrollDirectionChanged?.call(ScrollDirection.reverse);
       }
     } else if (widget.scrollController.position.userScrollDirection ==
         ScrollDirection.forward) {
       if (_isScrollingDown) {
         _isScrollingDown = false;
-        widget.onScrollDirectionChanged(ScrollDirection.forward);
+        widget.onScrollDirectionChanged?.call(ScrollDirection.forward);
       }
     }
   }
