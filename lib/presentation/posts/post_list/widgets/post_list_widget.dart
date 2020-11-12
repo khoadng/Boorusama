@@ -120,7 +120,8 @@ class _PostListState extends State<PostList> {
               );
             },
             staggeredTileBuilder: (index) {
-              final height = widget.posts[index].height / 10;
+              final height =
+                  index != null ? widget.posts[index].height / 10 : 0;
               double mainAxisExtent;
 
               if (height > 150) {

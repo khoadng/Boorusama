@@ -7,9 +7,17 @@ abstract class TagSuggestionsEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class TagSuggestionsRequested extends TagSuggestionsEvent {
+class TagSuggestionsChanged extends TagSuggestionsEvent {
   final String tagString;
   final int page;
 
-  TagSuggestionsRequested({this.tagString, this.page});
+  TagSuggestionsChanged({
+    @required this.tagString,
+    @required this.page,
+  });
+
+  @override
+  List<Object> get props => [tagString, page];
 }
+
+class TagSuggestionsCleared extends TagSuggestionsEvent {}

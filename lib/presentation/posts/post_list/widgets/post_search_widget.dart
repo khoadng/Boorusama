@@ -56,7 +56,7 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
         _tagQuery.update(query);
 
         _tagSuggestionsBloc.add(
-            TagSuggestionsRequested(tagString: _tagQuery.currentTag, page: 1));
+            TagSuggestionsChanged(tagString: _tagQuery.currentTag, page: 1));
       },
       transition: CircularFloatingSearchBarTransition(),
       actions: [
@@ -88,32 +88,44 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
   }
 
   Widget buildExpandableBody() {
-    return BlocListener<TagSuggestionsBloc, TagSuggestionsState>(
+    return BlocConsumer<TagSuggestionsBloc, TagSuggestionsState>(
       listener: (context, state) {
         if (state is TagSuggestionsLoaded) {
-          setState(() {
-            _tags = state.tags;
-          });
+          _tags = state.tags;
+        } else if (state is TagSuggestionsCleared) {
+          _tags.clear();
         } else {
           //TODO: handle other case here;
+
         }
       },
-      child: SuggestionItems(
-        tags: _tags,
-        widget: widget,
-        onItemTap: (value) {
-          _tagQuery.add(value);
-          widget.controller.query = _tagQuery.currentQuery;
-        },
-      ),
+      builder: (context, state) {
+        if (state is TagSuggestionsLoaded) {
+          return SuggestionItems(
+            tags: state.tags,
+            onItemTap: (value) {
+              _tagQuery.add(value);
+              widget.controller.query = _tagQuery.currentQuery;
+            },
+          );
+        } else if (state is TagSuggestionsLoading) {
+          return SuggestionItems(
+            tags: _tags,
+            onItemTap: null,
+          );
+        } else {
+          return SuggestionItems(
+            tags: <Tag>[],
+            onItemTap: null,
+          );
+        }
+      },
     );
   }
 
   void _handleSubmitted(String value) {
     widget.onSearched(value);
-    setState(() {
-      _tags.clear();
-    });
+    context.read<TagSuggestionsBloc>().add(TagSuggestionsCleared());
     widget.controller.close();
   }
 }
@@ -122,19 +134,16 @@ class SuggestionItems extends StatelessWidget {
   const SuggestionItems({
     Key key,
     @required List<Tag> tags,
-    @required this.widget,
     @required this.onItemTap,
   })  : _tags = tags,
         super(key: key);
 
   final List<Tag> _tags;
-  final PostListSearchBar widget;
   final ValueChanged<String> onItemTap;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.white,
       elevation: 4.0,
       borderRadius: BorderRadius.circular(8),
       child: ListView.builder(

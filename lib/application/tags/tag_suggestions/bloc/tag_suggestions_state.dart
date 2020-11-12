@@ -7,7 +7,7 @@ abstract class TagSuggestionsState extends Equatable {
   List<Object> get props => [];
 }
 
-class TagSuggestionsInitial extends TagSuggestionsState {}
+class TagSuggestionsEmpty extends TagSuggestionsState {}
 
 class TagSuggestionsLoading extends TagSuggestionsState {}
 
