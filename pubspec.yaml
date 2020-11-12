@@ -58,7 +58,10 @@ dependencies:
   provider: ^4.3.2+2
   settings_ui: ^0.4.0
   shared_preferences: ^0.5.12+4
-  sliding_up_panel: ^1.0.2
+  sliding_up_panel: 
+    git: 
+      url: https://github.com/AndroidNils/sliding_up_panel 
+      ref: body-size 
   sqflite: ^1.3.1+1
   super_tooltip: ^0.9.6
   time: ^1.3.0

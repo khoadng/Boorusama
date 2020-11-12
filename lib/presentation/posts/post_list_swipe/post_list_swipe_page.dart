@@ -26,6 +26,8 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
   int _currentPostIndex;
   PostImageController _postImageController;
   List<Tag> _tags = <Tag>[];
+  double _bodyHeight;
+  PanelController _panelController = PanelController();
 
   @override
   void initState() {
@@ -40,31 +42,24 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
   @override
   void dispose() {
     _postImageController.dispose();
+    _panelController = null;
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     var appbarActions = <Widget>[];
+    _bodyHeight ??= (MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            50 -
+            MediaQuery.of(context).padding.top) *
+        1;
 
     if (widget.posts[_currentPostIndex].isTranslated) {
       appbarActions.add(IconButton(
           icon: Icon(Icons.translate),
           onPressed: () => _postImageController.toggleTranslationNotes()));
     }
-
-    // appbarActions.add(
-    //   IconButton(
-    //     icon: Icon(Icons.info),
-    //     onPressed: () => Navigator.push(context, FadePageRoute(builder: (_) {
-    //       return PostDetailPage(
-    //         post: widget.posts[_currentPostIndex],
-    //         postHeroTag: widget.postHeroTag,
-    //         tags: _tags,
-    //       );
-    //     })),
-    //   ),
-    // );
 
     appbarActions.add(
       PopupMenuButton<PostAction>(
@@ -86,7 +81,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
         backgroundColor: Colors.transparent,
         actions: appbarActions,
       ),
-      // bottomNavigationBar: bottomAppBar(context),
       body: BlocListener<TagListBloc, TagListState>(
         listener: (context, state) {
           if (state is TagListLoaded) {
@@ -96,33 +90,52 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           }
         },
         child: SlidingUpPanel(
-          maxHeight: MediaQuery.of(context).size.height * 0.8,
+          controller: _panelController,
+          onPanelSlide: (position) {
+            if (_panelController.isPanelOpen) {
+              setState(() {
+                _bodyHeight = (MediaQuery.of(context).size.height -
+                        kToolbarHeight -
+                        MediaQuery.of(context).padding.top) *
+                    0.35;
+              });
+            } else if (_panelController.isPanelClosed) {
+              setState(() {
+                _bodyHeight = (MediaQuery.of(context).size.height -
+                        kToolbarHeight -
+                        50 -
+                        MediaQuery.of(context).padding.top) *
+                    1;
+              });
+            }
+          },
+          bodyHeight: _bodyHeight,
+          maxHeight: (MediaQuery.of(context).size.height -
+                  kToolbarHeight -
+                  MediaQuery.of(context).padding.top) *
+              0.65,
           minHeight: 50,
           panel: PostDetailPage(
             post: widget.posts[_currentPostIndex],
             postHeroTag: widget.postHeroTag,
             tags: _tags,
           ),
-          body: Padding(
-            // pull the image over the bottom sheet
-            padding: EdgeInsets.only(bottom: 50),
-            child: PostListSwipe(
-              postHeroTag: widget.postHeroTag,
-              postImageController: _postImageController,
-              posts: widget.posts,
-              onPostChanged: (value) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  setState(() {
-                    _currentPostIndex = value;
-                  });
+          body: PostListSwipe(
+            postHeroTag: widget.postHeroTag,
+            postImageController: _postImageController,
+            posts: widget.posts,
+            onPostChanged: (value) {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                setState(() {
+                  _currentPostIndex = value;
                 });
+              });
 
-                BlocProvider.of<TagListBloc>(context).add(
-                  GetTagList(widget.posts[value].tagString.toCommaFormat(), 1),
-                );
-              },
-              initialPostIndex: _currentPostIndex,
-            ),
+              BlocProvider.of<TagListBloc>(context).add(
+                GetTagList(widget.posts[value].tagString.toCommaFormat(), 1),
+              );
+            },
+            initialPostIndex: _currentPostIndex,
           ),
         ),
       ),

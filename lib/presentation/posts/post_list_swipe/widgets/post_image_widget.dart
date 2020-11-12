@@ -94,10 +94,11 @@ class _PostImageState extends State<PostImage> {
     final widgets = List<Widget>();
 
     final screenWidth = MediaQuery.of(context).size.width;
-    //TODO: remove hardcode, hacky solution
+    //TODO: Can't get status bar height inside Scaffold
     final screenHeight = MediaQuery.of(context).size.height -
-        60.0 -
-        80; // minus toolbar height (60) and some offset (70) ;
+        kToolbarHeight -
+        24 -
+        50; // minus toolbar height, status bar height and custom value for the bottom sheet;
     final screenAspectRatio = screenWidth / screenHeight;
 
     for (var note in notes) {
