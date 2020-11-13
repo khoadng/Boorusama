@@ -56,68 +56,72 @@ class _PostListState extends State<PostList> {
             crossAxisSpacing: 5.0,
             itemCount: widget.posts.length,
             itemBuilder: (context, index) {
-              final post = widget.posts[index];
-              final items = <Widget>[];
-              final image = PostImage(
-                imageUrl: post.previewImageUri.toString(),
-              );
-
-              if (post.isFavorited) {
-                items.add(
-                  Icon(
-                    Icons.favorite,
-                    color: Colors.redAccent,
-                  ),
+              if (index != null) {
+                final post = widget.posts[index];
+                final items = <Widget>[];
+                final image = PostImage(
+                  imageUrl: post.previewImageUri.toString(),
                 );
-              }
 
-              if (post.isAnimated) {
-                items.add(
-                  Icon(
-                    Icons.play_circle_outline,
-                    color: Colors.white70,
-                  ),
-                );
-              }
-
-              if (post.isTranslated) {
-                items.add(
-                  Icon(
-                    Icons.g_translate_outlined,
-                    color: Colors.white70,
-                  ),
-                );
-              }
-
-              if (post.hasComment) {
-                items.add(
-                  Icon(
-                    Icons.comment,
-                    color: Colors.white70,
-                  ),
-                );
-              }
-
-              return Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => PostListSwipePage(
-                        posts: widget.posts,
-                        initialPostIndex: index,
-                        postHeroTag: "postHero$index",
-                      ),
-                    )),
-                    child: Hero(tag: "postHero$index", child: image),
-                  ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Column(
-                      children: items,
+                if (post.isFavorited) {
+                  items.add(
+                    Icon(
+                      Icons.favorite,
+                      color: Colors.redAccent,
                     ),
-                  )
-                ],
-              );
+                  );
+                }
+
+                if (post.isAnimated) {
+                  items.add(
+                    Icon(
+                      Icons.play_circle_outline,
+                      color: Colors.white70,
+                    ),
+                  );
+                }
+
+                if (post.isTranslated) {
+                  items.add(
+                    Icon(
+                      Icons.g_translate_outlined,
+                      color: Colors.white70,
+                    ),
+                  );
+                }
+
+                if (post.hasComment) {
+                  items.add(
+                    Icon(
+                      Icons.comment,
+                      color: Colors.white70,
+                    ),
+                  );
+                }
+
+                return Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => PostListSwipePage(
+                          posts: widget.posts,
+                          initialPostIndex: index,
+                          postHeroTag: "postHero$index",
+                        ),
+                      )),
+                      child: Hero(tag: "postHero$index", child: image),
+                    ),
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Column(
+                        children: items,
+                      ),
+                    )
+                  ],
+                );
+              } else {
+                return Center();
+              }
             },
             staggeredTileBuilder: (index) {
               final height =
