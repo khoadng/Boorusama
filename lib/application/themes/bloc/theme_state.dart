@@ -16,7 +16,7 @@ class ThemeDark extends ThemeState {
       : super(
           ThemeMode.dark,
           Brightness.light,
-          Colors.white,
+          Colors.white70,
         );
 }
 

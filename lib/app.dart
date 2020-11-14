@@ -110,9 +110,13 @@ class _AppState extends State<App> {
             theme: ThemeData(
               appBarTheme:
                   AppBarTheme(iconTheme: IconThemeData(color: state.iconColor)),
+              iconTheme: IconThemeData(color: state.iconColor),
               brightness: Brightness.light,
             ),
             darkTheme: ThemeData(
+              appBarTheme:
+                  AppBarTheme(iconTheme: IconThemeData(color: state.iconColor)),
+              iconTheme: IconThemeData(color: state.iconColor),
               brightness: Brightness.dark,
             ),
             themeMode: state.theme,

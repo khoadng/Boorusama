@@ -65,7 +65,6 @@ class _PostListSearchBarState extends State<PostListSearchBar> {
           duration: Duration(milliseconds: 400),
         ),
         PopupMenuButton<PostListAction>(
-          offset: Offset(0, 250), // Change location of the menu
           onSelected: (value) {
             switch (value) {
               case PostListAction.downloadAll:

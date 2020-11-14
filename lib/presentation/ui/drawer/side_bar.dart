@@ -2,7 +2,6 @@ import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
 import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
 import 'package:boorusama/presentation/settings/settings_page.dart';
-import 'package:boorusama/presentation/ui/drawer/drawer_item.dart';
 import 'package:flutter/material.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -15,20 +14,20 @@ class SideBarMenu extends StatelessWidget {
     final drawerChildren = <Widget>[];
 
     if (account == null) {
-      drawerChildren.add(DrawerItem(
+      drawerChildren.add(ListTile(
         leading: Icon(Icons.login),
-        text: "Login",
-        onPressed: () {
+        title: Text("Login"),
+        onTap: () {
           Navigator.of(context).pop();
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (context) => AddAccountPage()));
         },
       ));
     } else {
-      drawerChildren.add(DrawerItem(
+      drawerChildren.add(ListTile(
         leading: Icon(Icons.person),
-        text: "Profile",
-        onPressed: () {
+        title: Text("Profile"),
+        onTap: () {
           Navigator.of(context).pop();
           Navigator.of(context).push(MaterialPageRoute(
               builder: (context) => AccountInfoPage(
@@ -40,14 +39,26 @@ class SideBarMenu extends StatelessWidget {
 
     drawerChildren.add(Divider());
 
-    drawerChildren.add(DrawerItem(
+    drawerChildren.add(ListTile(
       leading: Icon(Icons.settings),
-      text: "Settings",
-      onPressed: () {
+      title: Text("Settings"),
+      onTap: () {
         Navigator.of(context).pop();
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => SettingsPage()));
       },
+    ));
+
+    drawerChildren.add(AboutListTile(
+      icon: Icon(Icons.info),
+      applicationIcon: FlutterLogo(),
+      applicationVersion: "Alpha T.B.D",
+      applicationLegalese: "\u{a9} 2020 Nguyen Duc Khoa",
+      applicationName: "Boorusama",
+      aboutBoxChildren: <Widget>[
+        SizedBox(height: 24),
+        Text("Blah blah T.B.D"),
+      ],
     ));
 
     return Drawer(
@@ -62,24 +73,4 @@ class SideBarMenu extends StatelessWidget {
       ),
     );
   }
-}
-
-class _DrawerClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-
-    path.moveTo(50, 0);
-    path.quadraticBezierTo(0, size.height / 2, 50, size.height);
-    path.lineTo(0, size.height / 2);
-    path.lineTo(50, size.height);
-    path.lineTo(size.width, size.height);
-    path.lineTo(size.width, 0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => true;
 }
