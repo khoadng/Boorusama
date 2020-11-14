@@ -20,7 +20,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
-import 'application/authentication/services/i_scrapper_service.dart';
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
@@ -33,7 +32,6 @@ class App extends StatefulWidget {
   App({
     @required this.postRepository,
     @required this.downloadService,
-    @required this.scrapperService,
     @required this.tagRepository,
     @required this.noteRepository,
     @required this.favoritePostRepository,
@@ -50,7 +48,6 @@ class App extends StatefulWidget {
   final INoteRepository noteRepository;
   final IAccountRepository accountRepository;
   final IDownloadService downloadService;
-  final IScrapperService scrapperService;
   final IFavoritePostRepository favoritePostRepository;
   final ICommentRepository commentRepository;
   final IUserRepository userRepository;
@@ -91,18 +88,18 @@ class _AppState extends State<App> {
         BlocProvider<UserListBloc>(
             create: (_) => UserListBloc(widget.userRepository)),
         BlocProvider<UserBloc>(
-            create: (_) =>
-                UserBloc(widget.accountRepository, widget.userRepository)),
+          lazy: false,
+          create: (_) => UserBloc(
+            accountRepository: widget.accountRepository,
+            userRepository: widget.userRepository,
+            authenticationBloc: context.read<AuthenticationBloc>(),
+            settingRepository: widget.settingRepository,
+          ),
+        ),
         BlocProvider<WikiBloc>(create: (_) => WikiBloc(widget.wikiRepository)),
         BlocProvider<ThemeBloc>(
             create: (_) => ThemeBloc()
               ..add(ThemeChanged(theme: widget.settings.themeMode))),
-        BlocProvider<AuthenticationBloc>(
-            lazy: false,
-            create: (_) => AuthenticationBloc(
-                scrapperService: widget.scrapperService,
-                accountRepository: widget.accountRepository)
-              ..add(AuthenticationRequested())),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

@@ -52,37 +52,45 @@ class _SettingsPageState extends State<SettingsPage> {
         },
         child: SettingsList(
           sections: [
-            SettingsSection(tiles: [
-              SettingsTile.switchTile(
-                  leading: Icon(Icons.admin_panel_settings),
-                  title: "Safe mode",
-                  onToggle: (value) {
-                    setState(() {
-                      _setting.safeMode = value;
-                    });
+            SettingsSection(
+              tiles: [
+                SettingsTile.switchTile(
+                    leading: Icon(Icons.admin_panel_settings),
+                    title: "Safe mode",
+                    onToggle: (value) {
+                      setState(() {
+                        _setting.safeMode = value;
+                      });
+                    },
+                    switchValue: _setting.safeMode),
+                SettingsTile(
+                  leading: Icon(Icons.tag),
+                  title: "Blacklisted tags",
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => TagSettingsPage(
+                          settings: _setting,
+                        ),
+                      ),
+                    );
                   },
-                  switchValue: _setting.safeMode),
-              SettingsTile(
-                leading: Icon(Icons.tag),
-                title: "Blacklisted tags",
-                onTap: () {
-                  BlocProvider.of<UserBloc>(context).add(UserRequested());
-
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => TagSettingsPage()));
-                },
-              ),
-              SettingsTile(
-                leading: Icon(Icons.format_paint),
-                title: "Appearance",
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AppearancePage(
-                            settings: _setting,
-                          )));
-                },
-              )
-            ]),
+                ),
+                SettingsTile(
+                  leading: Icon(Icons.format_paint),
+                  title: "Appearance",
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => AppearancePage(
+                          settings: _setting,
+                        ),
+                      ),
+                    );
+                  },
+                )
+              ],
+            ),
           ],
         ),
       ),

@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'app.dart';
+import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/posts/post_download/download_service.dart';
 import 'application/posts/post_search/bloc/post_search_bloc.dart';
 import 'bloc_observer.dart';
@@ -43,10 +44,15 @@ void main() async {
   final accountRepository = AccountRepository(accountDb);
 
   final settingRepository = SettingRepository(
-      SharedPreferences.getInstance(), Setting.defaultSettings);
+    SharedPreferences.getInstance(),
+    Setting.defaultSettings,
+  );
 
-  final postRepository =
-      PostRepository(apiProvider, accountRepository, settingRepository);
+  final postRepository = PostRepository(
+    apiProvider,
+    accountRepository,
+    settingRepository,
+  );
 
   final settings = await settingRepository.load();
 
@@ -56,15 +62,25 @@ void main() async {
         create: (context) => settingRepository,
       )
     ],
-    child: BlocProvider(
-      create: (_) => PostSearchBloc(
-        postRepository: postRepository,
-      ),
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthenticationBloc>(
+          lazy: false,
+          create: (_) => AuthenticationBloc(
+            scrapperService: ScrapperService(),
+            accountRepository: accountRepository,
+          )..add(AuthenticationRequested()),
+        ),
+        BlocProvider(
+          create: (_) => PostSearchBloc(
+            postRepository: postRepository,
+          ),
+        ),
+      ],
       child: App(
         settings: settings,
         postRepository: postRepository,
         tagRepository: TagRepository(apiProvider, accountRepository),
-        scrapperService: ScrapperService(),
         downloadService: DownloadService(FileNameGenerator()),
         accountRepository: accountRepository,
         noteRepository: NoteRepository(apiProvider),
