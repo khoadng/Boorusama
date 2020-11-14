@@ -77,7 +77,9 @@ class _SettingsPageState extends State<SettingsPage> {
                 title: "Appearance",
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AppearancePage()));
+                      builder: (BuildContext context) => AppearancePage(
+                            settings: _setting,
+                          )));
                 },
               )
             ]),
