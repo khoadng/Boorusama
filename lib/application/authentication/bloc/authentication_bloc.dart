@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/authentication/services/i_scrapper_service.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/infrastructure/services/scrapper_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:meta/meta.dart';
@@ -46,10 +47,18 @@ class AuthenticationBloc
     } else if (state is Unauthenticated) {
       if (event is UserLoggedIn) {
         yield Authenticating();
-        final account = await _scrapperService.crawlAccountData(
-            event.username, event.password);
-        await _accountRepository.add(account);
-        yield Authenticated(account: account);
+        try {
+          final account = await _scrapperService.crawlAccountData(
+              event.username, event.password);
+          await _accountRepository.add(account);
+          yield Authenticated(account: account);
+        } on InvalidUsernameOrPassword catch (e) {
+          yield AuthenticationError(
+            error: "Login error",
+            message: "Invalid username or password",
+          );
+          yield Unauthenticated(account: Account.empty);
+        }
       }
     } else if (state is Authenticating) {
       // Authentication in progress, skip all event

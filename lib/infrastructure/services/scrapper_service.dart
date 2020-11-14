@@ -35,14 +35,18 @@ class ScrapperService implements IScrapperService {
       "commit": "Login",
     };
 
-    print("Post login forms");
-    final sessionResponse = await _dio.post(_url + "/session",
-        data: content,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          followRedirects: false,
-          validateStatus: (status) => status < 500,
-        ));
+    try {
+      print("Post login forms");
+      final sessionResponse = await _dio.post(_url + "/session",
+          data: content,
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+          ));
+    } on DioError catch (e) {
+      if (e.response.statusCode == 401) {
+        throw InvalidUsernameOrPassword();
+      }
+    }
 
     print("Get to user profile");
     final profileResponse = await _dio.get(_url + "/profile");
@@ -87,3 +91,5 @@ class ScrapperService implements IScrapperService {
     return Account.create(username, apiKey, int.parse(userId));
   }
 }
+
+class InvalidUsernameOrPassword implements Exception {}

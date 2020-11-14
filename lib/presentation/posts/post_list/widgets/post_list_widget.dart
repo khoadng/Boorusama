@@ -124,18 +124,21 @@ class _PostListState extends State<PostList> {
               }
             },
             staggeredTileBuilder: (index) {
-              final height =
-                  index != null ? widget.posts[index].height / 10 : 0;
-              double mainAxisExtent;
+              if (index != null) {
+                final height = widget.posts[index].height / 10;
+                double mainAxisExtent;
 
-              if (height > 150) {
-                mainAxisExtent = 150;
-              } else if (height < 80) {
-                mainAxisExtent = 80;
+                if (height > 150) {
+                  mainAxisExtent = 150;
+                } else if (height < 80) {
+                  mainAxisExtent = 80;
+                } else {
+                  mainAxisExtent = height;
+                }
+                return StaggeredTile.extent(1, mainAxisExtent);
               } else {
-                mainAxisExtent = height;
+                return StaggeredTile.extent(1, 150);
               }
-              return StaggeredTile.extent(1, mainAxisExtent);
             },
           ),
         ],
