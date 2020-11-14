@@ -18,6 +18,7 @@ class PostImage extends StatelessWidget {
         precacheImage(imageProvider, context);
         return Container(
           decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(2.0),
             image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
           ),
         );

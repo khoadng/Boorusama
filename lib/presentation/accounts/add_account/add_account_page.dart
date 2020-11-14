@@ -11,9 +11,14 @@ class AddAccountPage extends StatefulWidget {
 class _AddAccountPageState extends State<AddAccountPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Center(child: LoginBox()),
+    return SafeArea(
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(10.0)),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Center(child: LoginBox()),
+        ),
+      ),
     );
   }
 }

@@ -30,8 +30,10 @@ class _LoginBoxState extends State<LoginBox> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.all(30.0),
+      margin: EdgeInsets.symmetric(horizontal: 20.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             padding: EdgeInsets.all(10),
@@ -72,9 +74,10 @@ class _LoginBoxState extends State<LoginBox> {
                     child: Text('Login'),
                     onPressed: () =>
                         BlocProvider.of<AuthenticationBloc>(context).add(
-                            UserLoggedIn(
-                                username: _usernameTextController.text,
-                                password: _passwordTextController.text)),
+                      UserLoggedIn(
+                          username: _usernameTextController.text,
+                          password: _passwordTextController.text),
+                    ),
                   ),
                 );
               }

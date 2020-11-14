@@ -45,7 +45,7 @@ class _PostListState extends State<PostList> {
             delegate: SliverChildListDelegate(
               [
                 Container(
-                  padding: EdgeInsets.all(42.0),
+                  padding: EdgeInsets.all(30.0),
                 )
               ],
             ),

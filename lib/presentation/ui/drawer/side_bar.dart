@@ -16,6 +16,7 @@ class SideBarMenu extends StatelessWidget {
 
     if (account == null) {
       drawerChildren.add(DrawerItem(
+        leading: Icon(Icons.login),
         text: "Login",
         onPressed: () {
           Navigator.of(context).pop();
@@ -25,6 +26,7 @@ class SideBarMenu extends StatelessWidget {
       ));
     } else {
       drawerChildren.add(DrawerItem(
+        leading: Icon(Icons.person),
         text: "Profile",
         onPressed: () {
           Navigator.of(context).pop();
@@ -36,7 +38,10 @@ class SideBarMenu extends StatelessWidget {
       ));
     }
 
+    drawerChildren.add(Divider());
+
     drawerChildren.add(DrawerItem(
+      leading: Icon(Icons.settings),
       text: "Settings",
       onPressed: () {
         Navigator.of(context).pop();

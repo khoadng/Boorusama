@@ -32,7 +32,7 @@ class PostListPageView
       },
       child: SafeArea(
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
           child: Scaffold(
             drawer: SideBarMenu(
               account: controller.account,
@@ -55,6 +55,12 @@ class PostListPageView
         return Stack(
           fit: StackFit.expand,
           children: [
+            PostListSearchBar(
+              controller: controller.searchBarController,
+              onSearched: controller.handleSearched,
+              body: FloatingSearchBarScrollNotifier(child: buildList()),
+              onDownloadAllSelected: controller.downloadAllPosts,
+            ),
             BlocBuilder<PostSearchBloc, PostSearchState>(
               builder: (context, state) {
                 if (state is SearchLoading) {
@@ -70,12 +76,6 @@ class PostListPageView
                   return Center();
                 }
               },
-            ),
-            PostListSearchBar(
-              controller: controller.searchBarController,
-              onSearched: controller.handleSearched,
-              body: FloatingSearchBarScrollNotifier(child: buildList()),
-              onDownloadAllSelected: controller.downloadAllPosts,
             ),
           ],
         );
