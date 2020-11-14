@@ -75,67 +75,73 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
       ),
     );
 
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.transparent,
-        actions: appbarActions,
-      ),
-      body: BlocListener<TagListBloc, TagListState>(
-        listener: (context, state) {
-          if (state is TagListLoaded) {
-            setState(() {
-              _tags = state.tags;
-            });
-          }
-        },
-        child: SlidingUpPanel(
-          controller: _panelController,
-          onPanelSlide: (position) {
-            if (_panelController.isPanelOpen) {
-              setState(() {
-                _bodyHeight = (MediaQuery.of(context).size.height -
-                        kToolbarHeight -
-                        MediaQuery.of(context).padding.top) *
-                    0.35;
-              });
-            } else if (_panelController.isPanelClosed) {
-              setState(() {
-                _bodyHeight = (MediaQuery.of(context).size.height -
-                        kToolbarHeight -
-                        60 -
-                        MediaQuery.of(context).padding.top) *
-                    1;
-              });
-            }
-          },
-          bodyHeight: _bodyHeight,
-          maxHeight: (MediaQuery.of(context).size.height -
-                  kToolbarHeight -
-                  MediaQuery.of(context).padding.top) *
-              0.65,
-          minHeight: 60,
-          panel: PostDetailPage(
-            post: widget.posts[_currentPostIndex],
-            postHeroTag: widget.postHeroTag,
-            tags: _tags,
+    return SafeArea(
+      child: ClipRRect(
+        borderRadius: BorderRadius.all(Radius.circular(15.0)),
+        child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            actions: appbarActions,
           ),
-          body: PostListSwipe(
-            postHeroTag: widget.postHeroTag,
-            postImageController: _postImageController,
-            posts: widget.posts,
-            onPostChanged: (value) {
-              WidgetsBinding.instance.addPostFrameCallback((_) {
+          body: BlocListener<TagListBloc, TagListState>(
+            listener: (context, state) {
+              if (state is TagListLoaded) {
                 setState(() {
-                  _currentPostIndex = value;
+                  _tags = state.tags;
                 });
-              });
-
-              BlocProvider.of<TagListBloc>(context).add(
-                GetTagList(widget.posts[value].tagString.toCommaFormat(), 1),
-              );
+              }
             },
-            initialPostIndex: _currentPostIndex,
+            child: SlidingUpPanel(
+              controller: _panelController,
+              onPanelSlide: (position) {
+                if (_panelController.isPanelOpen) {
+                  setState(() {
+                    _bodyHeight = (MediaQuery.of(context).size.height -
+                            kToolbarHeight -
+                            MediaQuery.of(context).padding.top) *
+                        0.35;
+                  });
+                } else if (_panelController.isPanelClosed) {
+                  setState(() {
+                    _bodyHeight = (MediaQuery.of(context).size.height -
+                            kToolbarHeight -
+                            60 -
+                            MediaQuery.of(context).padding.top) *
+                        1;
+                  });
+                }
+              },
+              bodyHeight: _bodyHeight,
+              maxHeight: (MediaQuery.of(context).size.height -
+                      kToolbarHeight -
+                      MediaQuery.of(context).padding.top) *
+                  0.65,
+              minHeight: 60,
+              panel: PostDetailPage(
+                post: widget.posts[_currentPostIndex],
+                postHeroTag: widget.postHeroTag,
+                tags: _tags,
+              ),
+              body: PostListSwipe(
+                postHeroTag: widget.postHeroTag,
+                postImageController: _postImageController,
+                posts: widget.posts,
+                onPostChanged: (value) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    setState(() {
+                      _currentPostIndex = value;
+                    });
+                  });
+
+                  BlocProvider.of<TagListBloc>(context).add(
+                    GetTagList(
+                        widget.posts[value].tagString.toCommaFormat(), 1),
+                  );
+                },
+                initialPostIndex: _currentPostIndex,
+              ),
+            ),
           ),
         ),
       ),

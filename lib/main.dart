@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path/path.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -41,30 +42,39 @@ void main() async {
   final apiProvider = Danbooru(Dio());
   final accountRepository = AccountRepository(accountDb);
 
-  final defaultSetings = Setting(false, "");
-  final settingRepository =
-      SettingRepository(SharedPreferences.getInstance(), defaultSetings);
+  final settingRepository = SettingRepository(
+      SharedPreferences.getInstance(), Setting.defaultSettings);
 
   final postRepository =
       PostRepository(apiProvider, accountRepository, settingRepository);
 
-  runApp(BlocProvider(
-    create: (_) => PostSearchBloc(
-      postRepository: postRepository,
-    ),
-    child: App(
-      postRepository: postRepository,
-      tagRepository: TagRepository(apiProvider, accountRepository),
-      scrapperService: ScrapperService(),
-      downloadService: DownloadService(FileNameGenerator()),
-      accountRepository: accountRepository,
-      noteRepository: NoteRepository(apiProvider),
-      commentRepository: CommentRepository(apiProvider),
-      userRepository: UserRepository(apiProvider, accountRepository),
-      favoritePostRepository:
-          FavoritePostRepository(apiProvider, accountRepository),
-      settingRepository: settingRepository,
-      wikiRepository: WikiRepository(apiProvider),
+  final settings = await settingRepository.load();
+
+  runApp(MultiProvider(
+    providers: [
+      Provider<SettingRepository>(
+        create: (context) => settingRepository,
+      )
+    ],
+    child: BlocProvider(
+      create: (_) => PostSearchBloc(
+        postRepository: postRepository,
+      ),
+      child: App(
+        settings: settings,
+        postRepository: postRepository,
+        tagRepository: TagRepository(apiProvider, accountRepository),
+        scrapperService: ScrapperService(),
+        downloadService: DownloadService(FileNameGenerator()),
+        accountRepository: accountRepository,
+        noteRepository: NoteRepository(apiProvider),
+        commentRepository: CommentRepository(apiProvider),
+        userRepository: UserRepository(apiProvider, accountRepository),
+        favoritePostRepository:
+            FavoritePostRepository(apiProvider, accountRepository),
+        settingRepository: settingRepository,
+        wikiRepository: WikiRepository(apiProvider),
+      ),
     ),
   ));
 }

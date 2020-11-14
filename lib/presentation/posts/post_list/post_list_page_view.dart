@@ -30,14 +30,19 @@ class PostListPageView
           controller.removeAccount(state.account);
         }
       },
-      child: Scaffold(
-        drawer: SideBarMenu(
-          account: controller.account,
-        ),
-        resizeToAvoidBottomInset: false,
-        body: _getPage(controller.currentTab, context),
-        bottomNavigationBar: BottomBar(
-          onTabChanged: (value) => controller.handleTabChanged(value),
+      child: SafeArea(
+        child: ClipRRect(
+          borderRadius: BorderRadius.all(Radius.circular(15.0)),
+          child: Scaffold(
+            drawer: SideBarMenu(
+              account: controller.account,
+            ),
+            resizeToAvoidBottomInset: false,
+            body: _getPage(controller.currentTab, context),
+            bottomNavigationBar: BottomBar(
+              onTabChanged: (value) => controller.handleTabChanged(value),
+            ),
+          ),
         ),
       ),
     );
@@ -87,9 +92,9 @@ class PostListPageView
           flush = Flushbar(
             icon: Icon(
               Icons.info_outline,
-              color: ThemeData.dark().accentColor,
+              color: Theme.of(context).accentColor,
             ),
-            leftBarIndicatorColor: ThemeData.dark().accentColor,
+            leftBarIndicatorColor: Theme.of(context).accentColor,
             title: state.error,
             message: state.message,
             mainButton: FlatButton(

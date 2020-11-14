@@ -30,7 +30,7 @@ class PostImage extends StatefulWidget {
 
 class _PostImageState extends State<PostImage> {
   ValueNotifier<bool> notesVisible = ValueNotifier(false);
-  List<Note> notes;
+  List<Note> notes = <Note>[];
   PostTranslateNoteBloc _postTranslateNoteBloc;
   Flushbar _noteFlushbar;
 
@@ -40,17 +40,17 @@ class _PostImageState extends State<PostImage> {
     _postTranslateNoteBloc = BlocProvider.of<PostTranslateNoteBloc>(context);
     widget.controller.postImageState = this;
 
-    _noteFlushbar = Flushbar(
-      icon: Icon(
-        Icons.info_outline,
-        color: ThemeData.dark().accentColor,
-      ),
-      leftBarIndicatorColor: ThemeData.dark().accentColor,
-      title: "Loading",
-      message: "Fetching translation notes, plese hold on...",
-    );
-
-    notes = List<Note>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _noteFlushbar = Flushbar(
+        icon: Icon(
+          Icons.info_outline,
+          color: Theme.of(context).accentColor,
+        ),
+        leftBarIndicatorColor: Theme.of(context).accentColor,
+        title: "Loading",
+        message: "Fetching translation notes, plese hold on...",
+      );
+    });
   }
 
   @override
@@ -154,14 +154,14 @@ class _Note extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var tooltip = SuperTooltip(
-      backgroundColor: ThemeData.dark().cardColor,
+      backgroundColor: Theme.of(context).cardColor,
       arrowTipDistance: 0,
       arrowBaseWidth: 0,
       arrowLength: 0,
       popupDirection: TooltipDirection.left,
       content: Material(
         child: Html(data: content),
-        color: ThemeData.dark().cardColor,
+        color: Theme.of(context).cardColor,
       ),
     );
     return GestureDetector(
@@ -195,7 +195,7 @@ class _Image extends StatelessWidget {
         return PhotoView(
           imageProvider: imageProvider,
           backgroundDecoration: BoxDecoration(
-            color: ThemeData.dark().appBarTheme.color,
+            color: Theme.of(context).appBarTheme.color,
           ),
         );
       },

@@ -2,6 +2,7 @@ import 'package:boorusama/application/users/user/bloc/user_bloc.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/presentation/settings/appearance_page.dart';
 import 'package:boorusama/presentation/settings/tag_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +18,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   ISettingRepository _settingRepository;
-  Setting _setting = Setting(false, "");
+  Setting _setting = Setting.defaultSettings;
 
   @override
   void initState() {
@@ -53,6 +54,7 @@ class _SettingsPageState extends State<SettingsPage> {
           sections: [
             SettingsSection(tiles: [
               SettingsTile.switchTile(
+                  leading: Icon(Icons.admin_panel_settings),
                   title: "Safe mode",
                   onToggle: (value) {
                     setState(() {
@@ -61,12 +63,21 @@ class _SettingsPageState extends State<SettingsPage> {
                   },
                   switchValue: _setting.safeMode),
               SettingsTile(
+                leading: Icon(Icons.tag),
                 title: "Blacklisted tags",
                 onTap: () {
                   BlocProvider.of<UserBloc>(context).add(UserRequested());
 
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => TagSettingsPage()));
+                },
+              ),
+              SettingsTile(
+                leading: Icon(Icons.format_paint),
+                title: "Appearance",
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => AppearancePage()));
                 },
               )
             ]),

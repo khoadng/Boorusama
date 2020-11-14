@@ -278,7 +278,7 @@ packages:
       name: flutter_bloc
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.0"
+    version: "6.1.1"
   flutter_blurhash:
     dependency: transitive
     description:
@@ -334,7 +334,7 @@ packages:
       name: flutter_tags
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.9"
+    version: "0.4.9+1"
   flutter_test:
     dependency: "direct dev"
     description: flutter

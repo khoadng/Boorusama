@@ -30,7 +30,7 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return BubbleBottomBar(
       opacity: .2,
-      backgroundColor: ThemeData.dark().bottomAppBarColor,
+      backgroundColor: Theme.of(context).bottomAppBarColor,
       currentIndex: currentIndex,
       onTap: changePage,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -41,46 +41,46 @@ class _BottomBarState extends State<BottomBar> {
       inkColor: Colors.black12, //optional, uses theme color if not specified
       items: <BubbleBottomBarItem>[
         BubbleBottomBarItem(
-            backgroundColor: ThemeData.dark().accentIconTheme.color,
+            backgroundColor: Theme.of(context).accentIconTheme.color,
             icon: Icon(
               Icons.dashboard,
               color: Colors.black,
             ),
             activeIcon: Icon(
               Icons.dashboard,
-              color: ThemeData.dark().accentColor,
+              color: Theme.of(context).accentColor,
             ),
             title: Text(
               "Posts",
-              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+              style: TextStyle(color: Theme.of(context).accentColor),
             )),
         BubbleBottomBarItem(
-            backgroundColor: ThemeData.dark().accentIconTheme.color,
+            backgroundColor: Theme.of(context).accentIconTheme.color,
             icon: Icon(
               Icons.folder_open,
               color: Colors.black,
             ),
             activeIcon: Icon(
               Icons.folder_open,
-              color: ThemeData.dark().accentColor,
+              color: Theme.of(context).accentColor,
             ),
             title: Text(
               "Folders",
-              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+              style: TextStyle(color: Theme.of(context).accentColor),
             )),
         BubbleBottomBarItem(
-            backgroundColor: ThemeData.dark().accentIconTheme.color,
+            backgroundColor: Theme.of(context).accentIconTheme.color,
             icon: Icon(
               Icons.menu,
               color: Colors.black,
             ),
             activeIcon: Icon(
               Icons.menu,
-              color: ThemeData.dark().accentColor,
+              color: Theme.of(context).accentColor,
             ),
             title: Text(
               "Menu",
-              style: TextStyle(color: ThemeData.dark().textSelectionColor),
+              style: TextStyle(color: Theme.of(context).accentColor),
             )),
       ],
     );
