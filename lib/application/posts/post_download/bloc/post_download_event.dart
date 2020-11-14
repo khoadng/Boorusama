@@ -10,17 +10,21 @@ abstract class PostDownloadEvent extends Equatable {
 class PostDownloadRequested extends PostDownloadEvent {
   final Post post;
 
-  const PostDownloadRequested({this.post});
+  const PostDownloadRequested({
+    @required this.post,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [post];
 }
 
 class PostDownloadServiceInitRequested extends PostDownloadEvent {
   final TargetPlatform platform;
 
-  const PostDownloadServiceInitRequested({this.platform});
+  const PostDownloadServiceInitRequested({
+    this.platform,
+  });
 
   @override
-  List<Object> get props => [];
+  List<Object> get props => [platform];
 }

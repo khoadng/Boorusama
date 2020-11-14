@@ -22,7 +22,9 @@ class DownloadService implements IDownloadService {
   @override
   void download(Post post, String url) async {
     final filePath = fileNameGenerator.generateFor(post, url);
-    final exist = await io.File(filePath).exists();
+    final exist =
+        await io.File(_savedDir + io.Platform.pathSeparator + filePath)
+            .exists();
 
     if (exist) return;
 

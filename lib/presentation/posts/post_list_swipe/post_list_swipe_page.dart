@@ -1,3 +1,4 @@
+import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
@@ -63,8 +64,20 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
 
     appbarActions.add(
       PopupMenuButton<PostAction>(
+        onSelected: (value) {
+          switch (value) {
+            case PostAction.download:
+              context.read<PostDownloadBloc>().add(
+                    PostDownloadRequested(
+                      post: widget.posts[_currentPostIndex],
+                    ),
+                  );
+              break;
+            default:
+          }
+        },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-          const PopupMenuItem<PostAction>(
+          PopupMenuItem<PostAction>(
             value: PostAction.download,
             child: ListTile(
               leading: const Icon(Icons.download_rounded),

@@ -71,8 +71,12 @@ class _AppState extends State<App> {
           ),
         ),
         BlocProvider<PostDownloadBloc>(
-          create: (_) => PostDownloadBloc(
-              widget.downloadService..init(Theme.of(context).platform)),
+          lazy: false,
+          create: (_) => PostDownloadBloc(widget.downloadService)
+            ..add(
+              PostDownloadServiceInitRequested(
+                  platform: Theme.of(context).platform),
+            ),
         ),
         BlocProvider<TagSuggestionsBloc>(
             create: (_) => TagSuggestionsBloc(widget.tagRepository)),

@@ -53,6 +53,7 @@ class _SettingsPageState extends State<SettingsPage> {
         child: SettingsList(
           sections: [
             SettingsSection(
+              title: "App Settings",
               tiles: [
                 SettingsTile.switchTile(
                     leading: Icon(Icons.admin_panel_settings),
