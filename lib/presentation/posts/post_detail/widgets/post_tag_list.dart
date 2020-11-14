@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:popup_menu/popup_menu.dart';
 
 class PostTagList extends StatefulWidget {
   final List<Tag> tags;
@@ -94,24 +95,27 @@ class _PostTagListState extends State<PostTagList> {
     }
 
     return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
-      floatingActionButton: Column(
-        children: <Widget>[
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 50.0, left: 10.0, right: 10.0),
+            child: CustomScrollView(
+              physics: const BouncingScrollPhysics(),
+              slivers: list,
+            ),
+          ),
           if (_selectedTag.isNotEmpty)
-            FloatingActionButton(
-              child: Icon(Icons.search),
-              heroTag: null,
-              elevation: 10.0,
-              onPressed: () => _searchTags(_selectedTag, context),
+            Positioned(
+              bottom: 10.0,
+              right: 10.0,
+              child: FloatingActionButton(
+                child: Icon(Icons.search),
+                heroTag: null,
+                elevation: 10.0,
+                onPressed: () => _searchTags(_selectedTag, context),
+              ),
             ),
         ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 80.0, left: 10.0, right: 10.0),
-        child: CustomScrollView(
-          physics: const BouncingScrollPhysics(),
-          slivers: list,
-        ),
       ),
     );
   }
@@ -141,7 +145,7 @@ class _PostTagListState extends State<PostTagList> {
   }
 }
 
-class _SliverTagList extends StatelessWidget {
+class _SliverTagList extends StatefulWidget {
   const _SliverTagList({
     Key key,
     @required this.tags,
@@ -152,74 +156,75 @@ class _SliverTagList extends StatelessWidget {
   final List<Tag> tags;
 
   @override
-  Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate([
-        Tags(
-          itemCount: tags.length,
-          itemBuilder: (index) {
-            final tag = tags[index];
-
-            return Tooltip(
-              preferBelow: false,
-              message: tag.postCount.toString(),
-              child: ItemTags(
-                activeColor: Color(tag.tagHexColor),
-                index: index,
-                onPressed: (i) => onTagTap(tag),
-                title: tag.displayName,
-                key: Key(index.toString()),
-              ),
-            );
-          },
-        ),
-      ]),
-    );
-  }
-
-  void _handLongPress(Tag tag, BuildContext context) {
-    showMaterialModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context, controller) => ModalFit(tag: tag),
-    );
-  }
+  __SliverTagListState createState() => __SliverTagListState();
 }
 
-class ModalFit extends StatelessWidget {
-  final Tag tag;
-  const ModalFit({
-    Key key,
-    @required this.tag,
-  }) : super(key: key);
+class __SliverTagListState extends State<_SliverTagList> {
+  Map<int, GlobalKey> _tagKeys = Map<int, GlobalKey>();
+  PopupMenu _menu;
+  Tag _currentPopupTag;
+
+  @override
+  void initState() {
+    super.initState();
+    PopupMenu.context = context;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-        child: SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            title: Text('Wiki page'),
-            leading: Icon(Icons.info_outline),
-            onTap: () {
-              BlocProvider.of<WikiBloc>(context)
-                  .add(WikiRequested(tag.rawName));
-              Navigator.of(context).pop();
-              showBarModalBottomSheet(
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context, controller) => WikiPage(
-                  title: tag.displayName,
-                ),
+    _menu ??= PopupMenu(
+      items: [
+        MenuItem(
+          title: 'Wiki',
+          image: Icon(
+            Icons.info,
+            color: Colors.white70,
+          ),
+        )
+      ],
+      onClickMenu: (_) {
+        context.read<WikiBloc>().add(WikiRequested(_currentPopupTag.rawName));
+        showBarModalBottomSheet(
+          expand: false,
+          context: context,
+          builder: (context, controller) => WikiPage(
+            title: _currentPopupTag.displayName,
+          ),
+        );
+      },
+      maxColumn: 4,
+    );
+
+    return SliverList(
+      delegate: SliverChildListDelegate(
+        [
+          Tags(
+            alignment: WrapAlignment.start,
+            itemCount: widget.tags.length,
+            itemBuilder: (index) {
+              final tag = widget.tags[index];
+              final tagKey = GlobalKey();
+              _tagKeys[index] = tagKey;
+
+              return ItemTags(
+                activeColor: Color(tag.tagHexColor),
+                index: index,
+                onPressed: (i) => widget.onTagTap(tag),
+                onLongPressed: (i) {
+                  if (_menu.isShow) {
+                    _menu.dismiss();
+                  }
+                  _currentPopupTag = tag;
+                  _menu.show(widgetKey: _tagKeys[i.index]);
+                },
+                title: tag.displayName,
+                key: tagKey,
               );
             },
           ),
         ],
       ),
-    ));
+    );
   }
 }
 
@@ -235,8 +240,11 @@ class _SliverTagBlockTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverList(
       delegate: SliverChildListDelegate([
-        SizedBox(
+        const SizedBox(
           height: 20,
+        ),
+        const Divider(
+          thickness: 1.0,
         ),
         _TagHeader(
           title: title,
@@ -256,9 +264,15 @@ class _TagHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: TextStyle(color: Colors.white70, fontWeight: FontWeight.w900),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: Theme.of(context)
+            .textTheme
+            .bodyText1
+            .copyWith(fontWeight: FontWeight.w900),
+      ),
     );
   }
 }
