@@ -21,12 +21,12 @@ class TagQuery {
 
     if (tagString.endsWith(" ")) {
       _tags = tags;
-      onTagInputCompleted();
+      onTagInputCompleted?.call();
     }
 
     if (tagString.isEmpty) {
       _tags.clear();
-      onCleared();
+      onCleared?.call();
     }
   }
 

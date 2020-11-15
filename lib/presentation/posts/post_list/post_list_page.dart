@@ -1,4 +1,3 @@
-import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
@@ -6,7 +5,6 @@ import 'package:boorusama/presentation/posts/post_list/post_list_page_view.dart'
 import 'package:boorusama/presentation/services/debouncer/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 
 class PostListPage extends StatefulWidget {
   PostListPage({Key key}) : super(key: key);
@@ -21,8 +19,6 @@ class PostListPageState extends State<PostListPage> {
   int currentTab = 0;
   final List<Post> posts = List<Post>();
   final ScrollController scrollController = new ScrollController();
-  final FloatingSearchBarController searchBarController =
-      FloatingSearchBarController();
   final Debouncer _debouncer = Debouncer(delay: Duration(seconds: 1));
 
   Account account;
@@ -36,7 +32,6 @@ class PostListPageState extends State<PostListPage> {
   @override
   void dispose() {
     scrollController.dispose();
-    searchBarController.dispose();
     super.dispose();
   }
 
@@ -65,12 +60,6 @@ class PostListPageState extends State<PostListPage> {
     });
   }
 
-  void downloadAllPosts() {
-    posts.forEach((post) {
-      context.read<PostDownloadBloc>().add(PostDownloadRequested(post: post));
-    });
-  }
-
   void assignAccount(Account account) {
     setState(() {
       this.account = account;
@@ -86,7 +75,6 @@ class PostListPageState extends State<PostListPage> {
 
   void assignTagQuery(String query) {
     _currentSearchQuery = query;
-    searchBarController.query = query;
   }
 
   @override

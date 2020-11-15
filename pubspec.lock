@@ -218,13 +218,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.11"
-  draggable_scrollbar:
-    dependency: "direct main"
-    description:
-      name: draggable_scrollbar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.4"
   equatable:
     dependency: "direct main"
     description:
@@ -253,13 +246,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.1"
-  flip_card:
-    dependency: "direct main"
-    description:
-      name: flip_card
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.4.4"
   flushbar:
     dependency: "direct main"
     description:
@@ -307,13 +293,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
-  flutter_speed_dial:
-    dependency: "direct main"
-    description:
-      name: flutter_speed_dial
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.5"
   flutter_staggered_grid_view:
     dependency: "direct main"
     description:
@@ -373,13 +352,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.1.4"
-  implicitly_animated_reorderable_list:
-    dependency: "direct main"
-    description:
-      name: implicitly_animated_reorderable_list
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.5"
   intl:
     dependency: "direct main"
     description:
@@ -429,13 +401,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.10-nullsafety.1"
-  material_floating_search_bar:
-    dependency: "direct main"
-    description:
-      name: material_floating_search_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.3"
   meta:
     dependency: "direct main"
     description:

@@ -4,15 +4,13 @@ import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.da
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/posts/post_list/post_list_page.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/post_list_widget.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/post_search_widget.dart';
+import 'package:boorusama/presentation/posts/post_list/post_list.dart';
 import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
-import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:widget_view/widget_view.dart';
 
 class PostListPageView
@@ -55,12 +53,7 @@ class PostListPageView
         return Stack(
           fit: StackFit.expand,
           children: [
-            PostListSearchBar(
-              controller: controller.searchBarController,
-              onSearched: controller.handleSearched,
-              body: FloatingSearchBarScrollNotifier(child: buildList()),
-              onDownloadAllSelected: controller.downloadAllPosts,
-            ),
+            buildList(),
             BlocBuilder<PostSearchBloc, PostSearchState>(
               builder: (context, state) {
                 if (state is SearchLoading) {
@@ -125,7 +118,7 @@ class PostListPageView
         },
         builder: (context, state) {
           if (state is PostListLoaded || state is AddtionalPostListLoaded) {
-            return buildListWithData();
+            return buildListWithData(context);
           } else if (state is PostListError) {
             // return Lottie.asset(
             //     "assets/animations/11116-404-planet-animation.json");
@@ -137,10 +130,12 @@ class PostListPageView
     );
   }
 
-  Widget buildListWithData() {
+  Widget buildListWithData(BuildContext context) {
     return PostList(
       posts: controller.posts,
+      onMenuTap: () => Scaffold.of(context).openDrawer(),
       onMaxItemReached: controller.loadMorePosts,
+      onSearched: (query) => controller.handleSearched(query),
       scrollThreshold: 1,
       scrollController: controller.scrollController,
     );
