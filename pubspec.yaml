@@ -48,6 +48,7 @@ dependencies:
   http: ^0.12.2
   intl: ^0.16.1
   lottie: ^0.7.0+1
+  md2_tab_indicator: ^1.0.2
   meta: ^1.2.3
   modal_bottom_sheet: ^0.2.2
   path: ^1.7.0

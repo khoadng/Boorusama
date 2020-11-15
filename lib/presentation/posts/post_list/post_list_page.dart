@@ -20,6 +20,7 @@ class PostListPageState extends State<PostListPage> {
   final List<Post> posts = List<Post>();
   final ScrollController scrollController = new ScrollController();
   final Debouncer _debouncer = Debouncer(delay: Duration(seconds: 1));
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   Account account;
 

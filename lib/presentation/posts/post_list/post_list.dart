@@ -5,6 +5,7 @@ import 'package:boorusama/presentation/posts/post_list/pages/all_posts_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 import 'widgets/searches/search_bar.dart';
 
@@ -38,6 +39,8 @@ class _PostListState extends State<PostList> {
   final List<String> _tabs = <String>[
     "All",
     "Popular",
+    "Curated",
+    "Most Viewed"
   ];
 
   @override
@@ -67,13 +70,25 @@ class _PostListState extends State<PostList> {
                     onSearched: widget.onSearched,
                     onMoreSelected: (value) => _handleMoreSelected(value),
                   ),
+                  shape: Border(
+                    bottom: BorderSide(color: Colors.grey[400], width: 1.0),
+                  ),
                   floating: true,
                   pinned: true,
                   snap: true,
                   primary: true,
-                  forceElevated: innerBoxIsScrolled,
+                  forceElevated: true,
                   automaticallyImplyLeading: false,
                   bottom: TabBar(
+                    unselectedLabelColor:
+                        Theme.of(context).unselectedWidgetColor,
+                    labelColor: Theme.of(context).accentColor,
+                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: MD2Indicator(
+                      indicatorHeight: 4,
+                      indicatorColor: Theme.of(context).accentColor,
+                      indicatorSize: MD2IndicatorSize.full,
+                    ),
                     // These are the widgets to put in each tab in the tab bar.
                     tabs: _tabs.map((String name) => Tab(text: name)).toList(),
                   ),
@@ -88,8 +103,14 @@ class _PostListState extends State<PostList> {
           children: <Widget>[
             AllPostsPage(posts: widget.posts),
             Center(
-              child: Text("T.B.D"),
-            )
+              child: Text("Popular"),
+            ),
+            Center(
+              child: Text("Curated"),
+            ),
+            Center(
+              child: Text("Most Viewed"),
+            ),
           ],
         ),
       ),

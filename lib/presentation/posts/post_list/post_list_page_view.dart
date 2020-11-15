@@ -29,17 +29,15 @@ class PostListPageView
         }
       },
       child: SafeArea(
-        child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(10.0)),
-          child: Scaffold(
-            drawer: SideBarMenu(
-              account: controller.account,
-            ),
-            resizeToAvoidBottomInset: false,
-            body: _getPage(controller.currentTab, context),
-            bottomNavigationBar: BottomBar(
-              onTabChanged: (value) => controller.handleTabChanged(value),
-            ),
+        child: Scaffold(
+          key: controller.scaffoldKey,
+          drawer: SideBarMenu(
+            account: controller.account,
+          ),
+          resizeToAvoidBottomInset: false,
+          body: _getPage(controller.currentTab, context),
+          bottomNavigationBar: BottomBar(
+            onTabChanged: (value) => controller.handleTabChanged(value),
           ),
         ),
       ),
@@ -104,7 +102,7 @@ class PostListPageView
           //TODO: handle other cases
         }
       },
-      child: BlocConsumer<PostListBloc, PostListState>(
+      child: BlocListener<PostListBloc, PostListState>(
         listener: (context, state) {
           if (state is PostListLoaded) {
             if (controller.scrollController.hasClients) {
@@ -116,34 +114,15 @@ class PostListPageView
             controller.posts.addAll(state.posts);
           } else {}
         },
-        builder: (context, state) {
-          if (state is PostListLoaded || state is AddtionalPostListLoaded) {
-            return buildListWithData(context);
-          } else if (state is PostListError) {
-            // return Lottie.asset(
-            //     "assets/animations/11116-404-planet-animation.json");
-          } else {
-            return Center(child: Text("Nothing's here"));
-          }
-        },
+        child: PostList(
+          posts: controller.posts,
+          onMenuTap: () => controller.scaffoldKey.currentState.openDrawer(),
+          onMaxItemReached: controller.loadMorePosts,
+          onSearched: (query) => controller.handleSearched(query),
+          scrollThreshold: 1,
+          scrollController: controller.scrollController,
+        ),
       ),
-    );
-  }
-
-  Widget buildListWithData(BuildContext context) {
-    return PostList(
-      posts: controller.posts,
-      onMenuTap: () => Scaffold.of(context).openDrawer(),
-      onMaxItemReached: controller.loadMorePosts,
-      onSearched: (query) => controller.handleSearched(query),
-      scrollThreshold: 1,
-      scrollController: controller.scrollController,
-    );
-  }
-
-  Widget buildError() {
-    return Center(
-      child: Text("OOPS something went wrong"),
     );
   }
 }

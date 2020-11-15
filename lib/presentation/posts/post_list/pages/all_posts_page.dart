@@ -1,3 +1,4 @@
+import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
@@ -37,27 +38,40 @@ class _AllPostsPageState extends State<AllPostsPage> {
                 _refreshController.refreshCompleted();
               }
             },
-            child: SmartRefresher(
-              controller: _refreshController,
-              enablePullDown: true,
-              header: const WaterDropMaterialHeader(),
-              onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-                  .add(PostSearched(query: "", page: 1)),
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverList(
-                    delegate: SliverChildListDelegate(
-                      [
-                        Container(
-                          padding: EdgeInsets.all(2.0),
+            child: BlocBuilder<PostListBloc, PostListState>(
+              builder: (context, state) {
+                if (state is PostListLoaded ||
+                    state is AddtionalPostListLoaded) {
+                  return SmartRefresher(
+                    controller: _refreshController,
+                    enablePullDown: true,
+                    header: const WaterDropMaterialHeader(),
+                    onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
+                        .add(PostSearched(query: "", page: 1)),
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Container(
+                                padding: EdgeInsets.all(2.0),
+                              ),
+                            ],
+                          ),
                         ),
+                        SliverPostList(
+                            length: widget.posts.length, posts: widget.posts),
                       ],
                     ),
-                  ),
-                  SliverPostList(
-                      length: widget.posts.length, posts: widget.posts),
-                ],
-              ),
+                  );
+                } else if (state is PostListError) {
+                  return Center(
+                    child: Text("Something went wrong"),
+                  );
+                } else {
+                  return Center(child: Text("Nothing's here"));
+                }
+              },
             ),
           );
         },

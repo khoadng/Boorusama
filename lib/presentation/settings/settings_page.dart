@@ -43,6 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: Text("Settings"),
       ),
       body: SettingsList(
+        backgroundColor: Theme.of(context).appBarTheme.color,
         sections: [
           SettingsSection(
             title: "App Settings",

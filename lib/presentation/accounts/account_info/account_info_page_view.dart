@@ -15,57 +15,53 @@ class AccountInfoPageView
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Profile"),
-            actions: <Widget>[
-              IconButton(
-                  icon: Icon(Icons.logout),
-                  onPressed: () => controller.removeAccountRequest()),
-            ],
-          ),
-          body: Column(
-            children: <Widget>[
-              buildAccountList(),
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: FlatButton(
-                  onPressed: () {
-                    // open full page
-                  },
-                  textColor: Colors.blue,
-                  child: Text('Favorites'),
-                ),
-              ),
-              BlocListener<PostFavoritesBloc, PostFavoritesState>(
-                listener: (BuildContext context, state) {
-                  if (state is PostFavoritesLoaded) {
-                    controller.assignFavedPosts(state.posts);
-                  }
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Profile"),
+          actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.logout),
+                onPressed: () => controller.removeAccountRequest()),
+          ],
+        ),
+        body: Column(
+          children: <Widget>[
+            buildAccountList(),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: FlatButton(
+                onPressed: () {
+                  // open full page
                 },
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 200,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: controller.favedPosts.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        margin: EdgeInsets.symmetric(horizontal: 5.0),
-                        child: CachedNetworkImage(
-                            fit: BoxFit.contain,
-                            imageUrl: controller
-                                .favedPosts[index].previewImageUri
-                                .toString()),
-                      );
-                    },
-                  ),
+                textColor: Colors.blue,
+                child: Text('Favorites'),
+              ),
+            ),
+            BlocListener<PostFavoritesBloc, PostFavoritesState>(
+              listener: (BuildContext context, state) {
+                if (state is PostFavoritesLoaded) {
+                  controller.assignFavedPosts(state.posts);
+                }
+              },
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 200,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: controller.favedPosts.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.symmetric(horizontal: 5.0),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.contain,
+                          imageUrl: controller.favedPosts[index].previewImageUri
+                              .toString()),
+                    );
+                  },
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

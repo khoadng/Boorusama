@@ -12,12 +12,9 @@ class _AddAccountPageState extends State<AddAccountPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: ClipRRect(
-        borderRadius: BorderRadius.all(Radius.circular(10.0)),
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          body: Center(child: LoginBox()),
-        ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        body: Center(child: LoginBox()),
       ),
     );
   }

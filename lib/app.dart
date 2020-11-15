@@ -105,18 +105,36 @@ class _AppState extends State<App> {
             create: (_) => ThemeBloc()
               ..add(ThemeChanged(theme: widget.settings.themeMode))),
       ],
-      child: BlocBuilder<ThemeBloc, ThemeState>(
+      child: BlocConsumer<ThemeBloc, ThemeState>(
+        listener: (context, state) {
+          // WidgetsBinding.instance.addPostFrameCallback((_) async {
+          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+              statusBarColor: state.appBarColor,
+              statusBarBrightness: state.statusBarIconBrightness,
+              statusBarIconBrightness: state.statusBarIconBrightness));
+          // });
+        },
         builder: (context, state) {
           return MaterialApp(
             theme: ThemeData(
-              appBarTheme:
-                  AppBarTheme(iconTheme: IconThemeData(color: state.iconColor)),
+              primaryTextTheme: Theme.of(context)
+                  .textTheme
+                  .copyWith(headline6: TextStyle(color: Colors.black)),
+              appBarTheme: AppBarTheme(
+                  brightness: state.appBarBrightness,
+                  iconTheme: IconThemeData(color: state.iconColor),
+                  color: state.appBarColor),
               iconTheme: IconThemeData(color: state.iconColor),
               brightness: Brightness.light,
             ),
             darkTheme: ThemeData(
-              appBarTheme:
-                  AppBarTheme(iconTheme: IconThemeData(color: state.iconColor)),
+              primaryTextTheme: Theme.of(context)
+                  .textTheme
+                  .copyWith(headline6: TextStyle(color: Colors.white)),
+              appBarTheme: AppBarTheme(
+                  brightness: state.appBarBrightness,
+                  iconTheme: IconThemeData(color: state.iconColor),
+                  color: state.appBarColor),
               iconTheme: IconThemeData(color: state.iconColor),
               brightness: Brightness.dark,
             ),
