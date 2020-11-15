@@ -46,7 +46,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       final user = await _userRepository.getUserById(account.id);
       //TODO: WARNING error prone code, need serialization
       final settings = await _settingRepository.load();
-      settings.blacklistedTags = user.blacklistedTags.join(" ");
+      settings.blacklistedTags = user.blacklistedTags.join("\n");
       await _settingRepository.save(settings);
       yield UserFetched(user: user);
     }

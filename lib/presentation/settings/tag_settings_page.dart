@@ -29,10 +29,10 @@ class _TagSettingsPageState extends State<TagSettingsPage> {
       body: ListView.builder(
         itemBuilder: (context, index) {
           return ListTile(
-            title: Text(widget.settings.blacklistedTags.split(" ")[index]),
+            title: Text(widget.settings.blacklistedTags.split("\n")[index]),
           );
         },
-        itemCount: widget.settings.blacklistedTags.split(" ").length,
+        itemCount: widget.settings.blacklistedTags.split("\n").length,
       ),
     );
   }
