@@ -1,6 +1,9 @@
+import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class AllPostsPage extends StatefulWidget {
   AllPostsPage({
@@ -15,6 +18,9 @@ class AllPostsPage extends StatefulWidget {
 }
 
 class _AllPostsPageState extends State<AllPostsPage> {
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -25,19 +31,34 @@ class _AllPostsPageState extends State<AllPostsPage> {
         // the NestedScrollView, so that sliverOverlapAbsorberHandleFor() can
         // find the NestedScrollView.
         builder: (BuildContext context) {
-          return CustomScrollView(
-            slivers: <Widget>[
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Container(
-                      padding: EdgeInsets.all(0.0),
+          return BlocListener<PostSearchBloc, PostSearchState>(
+            listener: (context, state) {
+              if (state is SearchSuccess) {
+                _refreshController.refreshCompleted();
+              }
+            },
+            child: SmartRefresher(
+              controller: _refreshController,
+              enablePullDown: true,
+              header: const WaterDropMaterialHeader(),
+              onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
+                  .add(PostSearched(query: "", page: 1)),
+              child: CustomScrollView(
+                slivers: <Widget>[
+                  SliverList(
+                    delegate: SliverChildListDelegate(
+                      [
+                        Container(
+                          padding: EdgeInsets.all(2.0),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                  SliverPostList(
+                      length: widget.posts.length, posts: widget.posts),
+                ],
               ),
-              SliverPostList(length: widget.posts.length, posts: widget.posts),
-            ],
+            ),
           );
         },
       ),

@@ -69,7 +69,7 @@ class _PostListState extends State<PostList> {
                   ),
                   floating: true,
                   pinned: true,
-                  snap: false,
+                  snap: true,
                   primary: true,
                   forceElevated: innerBoxIsScrolled,
                   automaticallyImplyLeading: false,
