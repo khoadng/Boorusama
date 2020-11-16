@@ -1,6 +1,7 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
+import 'package:boorusama/application/posts/post_popular/bloc/post_popular_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
@@ -101,6 +102,9 @@ class _AppState extends State<App> {
           ),
         ),
         BlocProvider<WikiBloc>(create: (_) => WikiBloc(widget.wikiRepository)),
+        BlocProvider<PostPopularBloc>(
+            create: (_) =>
+                PostPopularBloc(postRepository: widget.postRepository)),
         BlocProvider<ThemeBloc>(
             create: (_) => ThemeBloc()
               ..add(ThemeChanged(theme: widget.settings.themeMode))),

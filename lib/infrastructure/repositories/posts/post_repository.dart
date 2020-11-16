@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:dio/dio.dart';
@@ -39,6 +40,45 @@ class PostRepository implements IPostRepository {
         throw CannotSearchMoreThanTwoTags(
             "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
       } else if (e.response.statusCode == 500) {
+        throw DatabaseTimeOut(
+            "Your search took too long to execute and was cancelled.");
+      }
+    }
+    final Map<String, dynamic> data = {
+      "settings": settings,
+      "data": respond.data
+    };
+    final posts = compute(parsePosts, data);
+
+    return posts;
+  }
+
+  @override
+  Future<List<Post>> getPopularPosts(
+    DateTime date,
+    int page,
+    TimeScale scale,
+  ) async {
+    final account = await _accountRepository.get();
+    final settings = await _settingRepository.load();
+
+    final uri = Uri.https(_api.url, "/explore/posts/popular.json", {
+      "login": account.username,
+      "api_key": account.apiKey,
+      "date": "${date.year}-${date.month}-${date.day}",
+      "scale": scale.toString().split(".").last,
+      "page": page.toString(),
+      "limit": "200",
+    });
+
+    var respond;
+    try {
+      respond = await _api.dio.get(uri.toString(),
+          options: buildCacheOptions(
+            Duration(minutes: 1),
+          ));
+    } on DioError catch (e) {
+      if (e.response.statusCode == 500) {
         throw DatabaseTimeOut(
             "Your search took too long to execute and was cancelled.");
       }

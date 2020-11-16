@@ -2,6 +2,7 @@ import 'package:boorusama/application/posts/post_download/bloc/post_download_blo
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/models/post_list_action.dart';
 import 'package:boorusama/presentation/posts/post_list/pages/all_posts_page.dart';
+import 'package:boorusama/presentation/posts/post_list/pages/popular_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -102,9 +103,7 @@ class _PostListState extends State<PostList> {
           // These are the contents of the tab views, below the tabs.
           children: <Widget>[
             AllPostsPage(posts: widget.posts),
-            Center(
-              child: Text("Popular"),
-            ),
+            PopularPage(),
             Center(
               child: Text("Curated"),
             ),
