@@ -17,13 +17,15 @@ class PostListBloc extends Bloc<PostListEvent, PostListState> {
       : _postSearchBloc = postSearchBloc,
         super(PostListEmpty()) {
     _postSearchBlocSubscription = _postSearchBloc.listen((state) {
-      if (state is SearchSuccess) {
-        if (state.page == 1) {
-          add(ListLoadRequested(state.posts));
-        } else if (state.page > 1) {
-          add(MorePostLoaded(state.posts));
-        }
-      }
+      state.maybeWhen(
+          success: (posts, query, page) {
+            if (page == 1) {
+              add(ListLoadRequested(posts));
+            } else {
+              add(MorePostLoaded(posts));
+            }
+          },
+          orElse: () {});
     });
   }
 

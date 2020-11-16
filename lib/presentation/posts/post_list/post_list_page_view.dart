@@ -54,18 +54,17 @@ class PostListPageView
             buildList(),
             BlocBuilder<PostSearchBloc, PostSearchState>(
               builder: (context, state) {
-                if (state is SearchLoading) {
-                  return Positioned(
+                return state.maybeWhen(
+                  loading: () => Positioned(
                     bottom: 0,
                     child: Container(
                       height: 3,
                       width: MediaQuery.of(context).size.width,
                       child: LinearProgressIndicator(),
                     ),
-                  );
-                } else {
-                  return Center();
-                }
+                  ),
+                  orElse: () => Center(),
+                );
               },
             ),
           ],
@@ -78,29 +77,29 @@ class PostListPageView
   Widget buildList() {
     return BlocListener<PostSearchBloc, PostSearchState>(
       listener: (context, state) {
-        if (state is SearchError) {
-          var flush;
-          flush = Flushbar(
-            icon: Icon(
-              Icons.info_outline,
-              color: Theme.of(context).accentColor,
-            ),
-            leftBarIndicatorColor: Theme.of(context).accentColor,
-            title: state.error,
-            message: state.message,
-            mainButton: FlatButton(
-              onPressed: () {
-                flush.dismiss(true);
-                controller.handleSearched("");
-              },
-              child: Text("OK"),
-            ),
-          )..show(context);
-        } else if (state is SearchSuccess) {
-          controller.assignTagQuery(state.query);
-        } else {
-          //TODO: handle other cases
-        }
+        state.maybeWhen(
+          orElse: () {},
+          success: (posts, query, page) => controller.assignTagQuery(query),
+          error: (error, message) {
+            var flush;
+            flush = Flushbar(
+              icon: Icon(
+                Icons.info_outline,
+                color: Theme.of(context).accentColor,
+              ),
+              leftBarIndicatorColor: Theme.of(context).accentColor,
+              title: error,
+              message: message,
+              mainButton: FlatButton(
+                onPressed: () {
+                  flush.dismiss(true);
+                  controller.handleSearched("");
+                },
+                child: Text("OK"),
+              ),
+            )..show(context);
+          },
+        );
       },
       child: BlocListener<PostListBloc, PostListState>(
         listener: (context, state) {

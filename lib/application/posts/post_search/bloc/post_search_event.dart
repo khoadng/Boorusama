@@ -1,24 +1,12 @@
 part of 'post_search_bloc.dart';
 
-abstract class PostSearchEvent extends Equatable {
-  const PostSearchEvent();
-
-  @override
-  List<Object> get props => [];
-}
-
-class PostSearched extends PostSearchEvent {
-  final String query;
-  final int page;
-
-  PostSearched({
-    @required this.query,
-    @required this.page,
-  });
-
-  @override
-  String toString() => "PostSearched { query: $query, page: $page }";
-
-  @override
-  List<Object> get props => [query, page];
+@freezed
+abstract class PostSearchEvent with _$PostSearchEvent {
+  @Assert('query != null')
+  @Assert('page != null')
+  @Assert('page > 0', 'page cannot be negative')
+  const factory PostSearchEvent.postSearched({
+    @required String query,
+    @required int page,
+  }) = _PostSearched;
 }

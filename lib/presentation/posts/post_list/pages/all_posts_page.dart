@@ -34,9 +34,12 @@ class _AllPostsPageState extends State<AllPostsPage> {
         builder: (BuildContext context) {
           return BlocListener<PostSearchBloc, PostSearchState>(
             listener: (context, state) {
-              if (state is SearchSuccess) {
-                _refreshController.refreshCompleted();
-              }
+              state.maybeWhen(
+                success: (posts, query, page) {
+                  _refreshController.refreshCompleted();
+                },
+                orElse: () {},
+              );
             },
             child: BlocBuilder<PostListBloc, PostListState>(
               builder: (context, state) {
@@ -47,7 +50,7 @@ class _AllPostsPageState extends State<AllPostsPage> {
                     enablePullDown: true,
                     header: const WaterDropMaterialHeader(),
                     onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-                        .add(PostSearched(query: "", page: 1)),
+                        .add(PostSearchEvent.postSearched(query: "", page: 1)),
                     child: CustomScrollView(
                       slivers: <Widget>[
                         SliverList(

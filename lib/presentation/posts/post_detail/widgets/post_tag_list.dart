@@ -139,7 +139,7 @@ class _PostTagListState extends State<PostTagList> {
 
     context
         .read<PostSearchBloc>()
-        .add(PostSearched(query: tagNames.join(" "), page: 1));
+        .add(PostSearchEvent.postSearched(query: tagNames.join(" "), page: 1));
     Navigator.popUntil(
         context, ModalRoute.withName(Navigator.defaultRouteName));
   }

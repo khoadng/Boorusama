@@ -27,7 +27,9 @@ class PostListPageState extends State<PostListPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PostSearchBloc>().add(PostSearched(query: "", page: 1));
+    context
+        .read<PostSearchBloc>()
+        .add(PostSearchEvent.postSearched(query: "", page: 1));
   }
 
   @override
@@ -40,9 +42,8 @@ class PostListPageState extends State<PostListPage> {
     _currentSearchQuery = query;
     _currentPage = 1;
     posts.clear();
-    context
-        .read<PostSearchBloc>()
-        .add(PostSearched(query: _currentSearchQuery, page: _currentPage));
+    context.read<PostSearchBloc>().add(PostSearchEvent.postSearched(
+        query: _currentSearchQuery, page: _currentPage));
     scrollController.jumpTo(0.0);
   }
 
@@ -55,9 +56,8 @@ class PostListPageState extends State<PostListPage> {
   void loadMorePosts() {
     _debouncer(() {
       _currentPage++;
-      context
-          .read<PostSearchBloc>()
-          .add(PostSearched(query: _currentSearchQuery, page: _currentPage));
+      context.read<PostSearchBloc>().add(PostSearchEvent.postSearched(
+          query: _currentSearchQuery, page: _currentPage));
     });
   }
 
