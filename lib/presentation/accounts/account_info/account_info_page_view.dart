@@ -39,9 +39,10 @@ class AccountInfoPageView
             ),
             BlocListener<PostFavoritesBloc, PostFavoritesState>(
               listener: (BuildContext context, state) {
-                if (state is PostFavoritesLoaded) {
-                  controller.assignFavedPosts(state.posts);
-                }
+                state.maybeWhen(
+                  orElse: () {},
+                  loaded: (posts) => controller.assignFavedPosts(posts),
+                );
               },
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,

@@ -22,19 +22,22 @@ class AccountInfoPage extends StatefulWidget {
 class AccountInfoPageState extends State<AccountInfoPage> {
   List<Account> accounts;
   List<Post> favedPosts;
-  PostFavoritesBloc _postFavoritesBloc;
 
   @override
   void initState() {
     super.initState();
     accounts = widget.accounts;
     favedPosts = List<Post>();
-    _postFavoritesBloc = BlocProvider.of<PostFavoritesBloc>(context);
 
     //TODO: warning dirty code to get current account
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _postFavoritesBloc.add(GetFavoritePosts(accounts.first.username, 1));
+      context.read<PostFavoritesBloc>().add(
+            PostFavoritesEvent.fetched(
+              username: accounts.first.username,
+              page: 1,
+            ),
+          );
     });
   }
 

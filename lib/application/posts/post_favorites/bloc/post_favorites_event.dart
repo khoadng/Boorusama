@@ -1,27 +1,12 @@
 part of 'post_favorites_bloc.dart';
 
-abstract class PostFavoritesEvent extends Equatable {
-  const PostFavoritesEvent();
+@freezed
+abstract class PostFavoritesEvent with _$PostFavoritesEvent {
+  const factory PostFavoritesEvent.fetched({
+    @required String username,
+    @required int page,
+  }) = _Fetched;
 
-  @override
-  List<Object> get props => [];
-}
-
-class GetFavoritePosts extends PostFavoritesEvent {
-  final String username;
-  final int page;
-
-  GetFavoritePosts(this.username, this.page);
-}
-
-class AddToFavorites extends PostFavoritesEvent {
-  final int postId;
-
-  AddToFavorites(this.postId);
-}
-
-class RemoveFromFavorites extends PostFavoritesEvent {
-  final int postId;
-
-  RemoveFromFavorites(this.postId);
+  const factory PostFavoritesEvent.added({@required int postId}) = _Added;
+  const factory PostFavoritesEvent.removed({@required int postId}) = _Removed;
 }

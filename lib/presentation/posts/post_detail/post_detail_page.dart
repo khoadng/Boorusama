@@ -65,10 +65,9 @@ class PostDetailPage extends StatelessWidget {
                 children: <Widget>[
                   IconButton(
                     icon: Icon(Icons.favorite),
-                    onPressed: () =>
-                        BlocProvider.of<PostFavoritesBloc>(context).add(
-                      AddToFavorites(post.id),
-                    ),
+                    onPressed: () => context
+                        .read<PostFavoritesBloc>()
+                        .add(PostFavoritesEvent.added(postId: post.id)),
                   ),
                   IconButton(
                     icon: Icon(Icons.comment),

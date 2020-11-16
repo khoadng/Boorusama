@@ -1,22 +1,12 @@
 part of 'post_favorites_bloc.dart';
 
-abstract class PostFavoritesState extends Equatable {
-  const PostFavoritesState();
+@freezed
+abstract class PostFavoritesState with _$PostFavoritesState {
+  const factory PostFavoritesState.initial() = _Initial;
+  const factory PostFavoritesState.loading() = _Loading;
+  const factory PostFavoritesState.loaded({@required List<Post> posts}) =
+      _Loaded;
 
-  @override
-  List<Object> get props => [];
+  const factory PostFavoritesState.addCompleted() = _AddCompleted;
+  const factory PostFavoritesState.removeComplated() = _RemoveComplated;
 }
-
-class PostFavoritesInitial extends PostFavoritesState {}
-
-class PostFavoritesLoading extends PostFavoritesState {}
-
-class PostFavoritesLoaded extends PostFavoritesState {
-  final List<Post> posts;
-
-  PostFavoritesLoaded(this.posts);
-}
-
-class AddPostToFavoritesCompleted extends PostFavoritesState {}
-
-class RemovePostToFavoritesCompleted extends PostFavoritesState {}
