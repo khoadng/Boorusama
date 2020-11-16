@@ -103,15 +103,17 @@ class PostListPageView
       },
       child: BlocListener<PostListBloc, PostListState>(
         listener: (context, state) {
-          if (state is PostListLoaded) {
-            if (controller.scrollController.hasClients) {
-              controller.scrollController.jumpTo(0.0);
-            }
-            controller.posts.clear();
-            controller.posts.addAll(state.posts);
-          } else if (state is AddtionalPostListLoaded) {
-            controller.posts.addAll(state.posts);
-          } else {}
+          state.maybeWhen(
+            fetched: (posts) {
+              if (controller.scrollController.hasClients) {
+                controller.scrollController.jumpTo(0.0);
+              }
+              controller.posts.clear();
+              controller.posts.addAll(posts);
+            },
+            fetchedMore: (posts) => controller.posts.addAll(posts),
+            orElse: () {},
+          );
         },
         child: PostList(
           posts: controller.posts,

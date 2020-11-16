@@ -43,41 +43,45 @@ class _AllPostsPageState extends State<AllPostsPage> {
             },
             child: BlocBuilder<PostListBloc, PostListState>(
               builder: (context, state) {
-                if (state is PostListLoaded ||
-                    state is AddtionalPostListLoaded) {
-                  return SmartRefresher(
-                    controller: _refreshController,
-                    enablePullDown: true,
-                    header: const WaterDropMaterialHeader(),
-                    onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-                        .add(PostSearchEvent.postSearched(query: "", page: 1)),
-                    child: CustomScrollView(
-                      slivers: <Widget>[
-                        SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Container(
-                                padding: EdgeInsets.all(2.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverPostList(
-                            length: widget.posts.length, posts: widget.posts),
-                      ],
-                    ),
-                  );
-                } else if (state is PostListError) {
-                  return Center(
+                return state.when(
+                  empty: () => Center(child: Text("Nothing's here")),
+                  fetched: (posts) => _buildSmartRefresher(context, posts),
+                  fetchedMore: (posts) => _buildSmartRefresher(context, posts),
+                  error: (error, message) => Center(
                     child: Text("Something went wrong"),
-                  );
-                } else {
-                  return Center(child: Text("Nothing's here"));
-                }
+                  ),
+                );
               },
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildSmartRefresher(BuildContext context, List<Post> posts) {
+    return SmartRefresher(
+      controller: _refreshController,
+      enablePullDown: true,
+      header: const WaterDropMaterialHeader(),
+      onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
+          .add(PostSearchEvent.postSearched(query: "", page: 1)),
+      child: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Container(
+                  padding: EdgeInsets.all(2.0),
+                ),
+              ],
+            ),
+          ),
+          SliverPostList(
+            length: posts.length,
+            posts: posts,
+          ),
+        ],
       ),
     );
   }
