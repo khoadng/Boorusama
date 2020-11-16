@@ -75,8 +75,7 @@ class _AppState extends State<App> {
           lazy: false,
           create: (_) => PostDownloadBloc(widget.downloadService)
             ..add(
-              PostDownloadServiceInitRequested(
-                  platform: Theme.of(context).platform),
+              PostDownloadEvent.init(platform: Theme.of(context).platform),
             ),
         ),
         BlocProvider<TagSuggestionsBloc>(

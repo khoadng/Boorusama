@@ -28,7 +28,7 @@ dependencies:
       url: https://github.com/AndroidNils/sliding_up_panel
       ref: body-size
   animations: ^1.1.2
-  bloc: ^6.0.3
+  bloc: ^6.1.0
   bubble_bottom_bar: ^1.2.0
   cached_network_image: ^2.3.3
   carousel_slider: ^2.3.1
@@ -39,7 +39,7 @@ dependencies:
   dio_http_cache: ^0.2.11
   equatable: ^1.2.5
   flushbar: ^1.10.4
-  flutter_bloc: ^6.0.5
+  flutter_bloc: ^6.1.0
   flutter_datetime_picker: ^1.4.0
   flutter_downloader: ^1.5.1
   flutter_html: ^1.0.2

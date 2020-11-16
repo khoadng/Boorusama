@@ -151,7 +151,9 @@ class _PostListState extends State<PostList> {
 
   void _downloadAllPosts() {
     widget.posts.forEach((post) {
-      context.read<PostDownloadBloc>().add(PostDownloadRequested(post: post));
+      context
+          .read<PostDownloadBloc>()
+          .add(PostDownloadEvent.downloaded(post: post));
     });
   }
 }

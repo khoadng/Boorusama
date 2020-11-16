@@ -1,14 +1,9 @@
 part of 'post_download_bloc.dart';
 
-abstract class PostDownloadState extends Equatable {
-  const PostDownloadState();
-
-  @override
-  List<Object> get props => [];
+@freezed
+abstract class PostDownloadState with _$PostDownloadState {
+  const factory PostDownloadState.uninitialized() = _Uninitialized;
+  const factory PostDownloadState.initialized() = _Initialized;
+  const factory PostDownloadState.downloading() = _Downloading;
+  const factory PostDownloadState.done() = _Done;
 }
-
-class PostDownloadInitial extends PostDownloadState {}
-
-class PostDownloading extends PostDownloadState {}
-
-class PostDownloaded extends PostDownloadState {}

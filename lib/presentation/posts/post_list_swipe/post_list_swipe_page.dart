@@ -68,7 +68,7 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
           switch (value) {
             case PostAction.download:
               context.read<PostDownloadBloc>().add(
-                    PostDownloadRequested(
+                    PostDownloadEvent.downloaded(
                       post: widget.posts[_currentPostIndex],
                     ),
                   );
