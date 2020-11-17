@@ -1,11 +1,11 @@
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/domain/posts/post_name.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/comments/comment_page.dart';
 import 'package:boorusama/presentation/posts/post_detail/widgets/post_tag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class PostDetailPage extends StatelessWidget {
@@ -22,70 +22,47 @@ class PostDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var appbarActions = <Widget>[];
-
-    appbarActions.add(
-      RaisedButton(
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: BorderSide(color: Colors.red)),
-        onPressed: () {},
-        color: Colors.red,
-        textColor: Colors.white,
-        child: Text("Favorite".toUpperCase(), style: TextStyle(fontSize: 14)),
-      ),
-    );
-
     return Stack(
       children: [
         PostTagList(tags: tags),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        ButtonBar(
           children: <Widget>[
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.only(top: 16.0, bottom: 10.0, left: 20.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                        "${post.name.characterOnly.pretty.capitalizeFirstofEach}",
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.subtitle1),
-                    Text(
-                        "${post.name.copyRightOnly.pretty.capitalizeFirstofEach}",
-                        overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.caption),
-                  ],
-                ),
-              ),
+            LikeButton(
+              isLiked: post.isFavorited,
+              likeCount: post.favCount,
+              onTap: (isLiked) {
+                //TODO: check for success here
+                if (!isLiked) {
+                  context
+                      .read<PostFavoritesBloc>()
+                      .add(PostFavoritesEvent.added(postId: post.id));
+                  post.isFavorited = true;
+                  post.favCount++;
+                  return Future(() => true);
+                } else {
+                  context
+                      .read<PostFavoritesBloc>()
+                      .add(PostFavoritesEvent.removed(postId: post.id));
+                  post.isFavorited = false;
+                  post.favCount--;
+                  return Future(() => false);
+                }
+              },
             ),
-            Expanded(
-              child: ButtonBar(
-                children: <Widget>[
-                  IconButton(
-                    icon: Icon(Icons.favorite),
-                    onPressed: () => context
-                        .read<PostFavoritesBloc>()
-                        .add(PostFavoritesEvent.added(postId: post.id)),
+            IconButton(
+              icon: Icon(Icons.comment),
+              onPressed: () {
+                showBarModalBottomSheet(
+                  expand: false,
+                  context: context,
+                  builder: (context, controller) => CommentPage(
+                    postId: post.id,
                   ),
-                  IconButton(
-                    icon: Icon(Icons.comment),
-                    onPressed: () {
-                      showBarModalBottomSheet(
-                        expand: false,
-                        context: context,
-                        builder: (context, controller) => CommentPage(
-                          postId: post.id,
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+                );
+              },
             ),
           ],
-        )
+        ),
       ],
     );
   }

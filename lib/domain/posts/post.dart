@@ -25,12 +25,12 @@ class Post {
   final String _createdAt;
   final int _score;
   final int _uploaderId;
-  final int _favCount;
   final int _upScore;
   final int _downScore;
   final String _rating;
   String _lastCommentAt;
 
+  int favCount;
   bool isFavorited;
 
 //TODO: fix naming from Image to Post
@@ -57,7 +57,7 @@ class Post {
       this._score,
       this._upScore,
       this._downScore,
-      this._favCount,
+      this.favCount,
       this._uploaderId,
       this._rating]);
 
@@ -113,7 +113,6 @@ class Post {
   int get score => _score;
   int get upScore => _upScore;
   int get downScore => _downScore;
-  int get favCount => _favCount;
   CreatedTime get createdAt => CreatedTime(_createdAt);
   Rating get rating {
     if (_rating == "s") {

@@ -50,6 +50,7 @@ dependencies:
   http: ^0.12.2
   intl: ^0.16.1
   jiffy: ^3.0.1
+  like_button: ^1.0.4
   lottie: ^0.7.0+1
   md2_tab_indicator: ^1.0.2
   meta: ^1.2.3
@@ -109,6 +110,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-
 dependency_overrides:
   analyzer: '0.40.4'

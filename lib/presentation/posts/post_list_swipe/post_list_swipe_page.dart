@@ -5,6 +5,7 @@ import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/posts/post_detail/post_detail_page.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_image_widget.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/widgets/post_list_swipe_widget.dart';
+import 'package:boorusama/domain/posts/post_name.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -91,6 +92,22 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          title: Padding(
+            padding: EdgeInsets.only(top: 16.0, bottom: 10.0, left: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                    "${widget.posts[_currentPostIndex].name.characterOnly.pretty.capitalizeFirstofEach}",
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.subtitle1),
+                Text(
+                    "${widget.posts[_currentPostIndex].name.copyRightOnly.pretty.capitalizeFirstofEach}",
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.caption),
+              ],
+            ),
+          ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: appbarActions,
