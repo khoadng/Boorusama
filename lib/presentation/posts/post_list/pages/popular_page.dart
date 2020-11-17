@@ -30,7 +30,7 @@ class _PopularPageState extends State<PopularPage> {
     _currentSelectedDate = DateTime.now();
     _currentSelectedTimeScale = TimeScale.day;
     _currentPage = 1;
-    context.read<PostPopularBloc>().add(PostPopularRequested(
+    context.read<PostPopularBloc>().add(PostPopularEvent.requested(
         date: _currentSelectedDate,
         scale: _currentSelectedTimeScale,
         page: _currentPage));
@@ -51,7 +51,7 @@ class _PopularPageState extends State<PopularPage> {
                 setState(() {
                   _currentSelectedDate = time;
                 });
-                context.read<PostPopularBloc>().add(PostPopularRequested(
+                context.read<PostPopularBloc>().add(PostPopularEvent.requested(
                     date: _currentSelectedDate,
                     scale: _currentSelectedTimeScale,
                     page: _currentPage));
@@ -68,9 +68,10 @@ class _PopularPageState extends State<PopularPage> {
           builder: (BuildContext context) {
             return BlocListener<PostPopularBloc, PostPopularState>(
               listener: (context, state) {
-                if (state is PostPopularFetched) {
-                  _refreshController.refreshCompleted();
-                }
+                state.maybeWhen(
+                  fetched: (posts) => _refreshController.refreshCompleted(),
+                  orElse: () {},
+                );
               },
               child:
                   // state is AdditionalPostPopularFetched)
@@ -79,7 +80,7 @@ class _PopularPageState extends State<PopularPage> {
                 enablePullDown: true,
                 header: const WaterDropMaterialHeader(),
                 onRefresh: () => BlocProvider.of<PostPopularBloc>(context)
-                    .add(PostPopularRequested(
+                    .add(PostPopularEvent.requested(
                   date: DateTime.now(),
                   scale: TimeScale.day,
                   page: 1,
@@ -108,7 +109,7 @@ class _PopularPageState extends State<PopularPage> {
                                           _currentSelectedTimeScale = value;
                                         });
                                         context.read<PostPopularBloc>().add(
-                                            PostPopularRequested(
+                                            PostPopularEvent.requested(
                                                 date: _currentSelectedDate,
                                                 scale:
                                                     _currentSelectedTimeScale,
@@ -162,7 +163,7 @@ class _PopularPageState extends State<PopularPage> {
                                         }
                                       });
                                       context.read<PostPopularBloc>().add(
-                                          PostPopularRequested(
+                                          PostPopularEvent.requested(
                                               date: _currentSelectedDate,
                                               scale: _currentSelectedTimeScale,
                                               page: _currentPage));
@@ -196,7 +197,7 @@ class _PopularPageState extends State<PopularPage> {
                                         }
                                       });
                                       context.read<PostPopularBloc>().add(
-                                          PostPopularRequested(
+                                          PostPopularEvent.requested(
                                               date: _currentSelectedDate,
                                               scale: _currentSelectedTimeScale,
                                               page: _currentPage));
@@ -210,23 +211,21 @@ class _PopularPageState extends State<PopularPage> {
                       ),
                     ),
                     BlocBuilder<PostPopularBloc, PostPopularState>(
-                      builder: (context, state) {
-                        if (state is PostPopularFetched) {
-                          return SliverPostList(
-                              length: state.posts.length, posts: state.posts);
-                        } else {
-                          return SliverList(
-                            delegate: SliverChildListDelegate(
-                              [
-                                Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                    ),
+                        builder: (context, state) {
+                      return state.maybeWhen(
+                        fetched: (posts) =>
+                            SliverPostList(length: posts.length, posts: posts),
+                        orElse: () => SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
