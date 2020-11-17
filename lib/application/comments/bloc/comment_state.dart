@@ -1,18 +1,9 @@
 part of 'comment_bloc.dart';
 
-abstract class CommentState extends Equatable {
-  const CommentState();
-
-  @override
-  List<Object> get props => [];
-}
-
-class CommentInitial extends CommentState {}
-
-class CommentLoading extends CommentState {}
-
-class CommentFetched extends CommentState {
-  final List<Comment> comments;
-
-  CommentFetched(this.comments);
+@freezed
+abstract class CommentState with _$CommentState {
+  const factory CommentState.empty() = _Empty;
+  const factory CommentState.loading() = _Loading;
+  const factory CommentState.fetched({@required List<Comment> comments}) =
+      _Fetched;
 }

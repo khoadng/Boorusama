@@ -19,17 +19,14 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-  CommentBloc _commentBloc;
-  UserListBloc _userListBloc;
-  List<User> _users;
+  List<User> _users = <User>[];
 
   @override
   void initState() {
     super.initState();
-    _commentBloc = BlocProvider.of<CommentBloc>(context)
-      ..add(GetCommentsFromPostIdRequested(widget.postId));
-    _userListBloc = BlocProvider.of<UserListBloc>(context);
-    _users = <User>[];
+    context
+        .read<CommentBloc>()
+        .add(CommentEvent.requested(postId: widget.postId));
   }
 
   @override
@@ -46,58 +43,61 @@ class _CommentPageState extends State<CommentPage> {
           child: Column(
             children: <Widget>[
               Expanded(
-                  child: Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: BlocBuilder<CommentBloc, CommentState>(
-                  builder: (context, state) {
-                    if (state is CommentFetched) {
-                      if (state.comments.isNotEmpty) {
-                        final userList = <String>[];
-                        state.comments.forEach((comment) {
-                          userList.add(comment.creatorId.toString());
-                        });
-                        _userListBloc
-                            .add(UserListRequested(userList.join(",")));
-                        return BlocListener<UserListBloc, UserListState>(
-                          listener: (context, state) {
-                            if (state is UserListFetched) {
-                              if (_users.isEmpty) {
-                                setState(() {
-                                  _users = state.users;
-                                });
-                              }
-                            }
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.all(8.0),
-                              child: ListView.builder(
-                                itemBuilder: (context, index) => CommentItem(
-                                  comment: state.comments[index],
-                                  user: _users.isNotEmpty
-                                      ? _users
-                                          .where((user) =>
-                                              user.id ==
-                                              state.comments[index].creatorId)
-                                          .first
-                                      : User.placeholder(),
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 20.0),
+                  child: BlocBuilder<CommentBloc, CommentState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        fetched: (comments) {
+                          if (comments.isNotEmpty) {
+                            final userList = <String>[];
+                            comments.forEach((comment) {
+                              userList.add(comment.creatorId.toString());
+                            });
+                            BlocProvider.of<UserListBloc>(context)
+                                .add(UserListRequested(userList.join(",")));
+                            return BlocListener<UserListBloc, UserListState>(
+                              listener: (context, state) {
+                                if (state is UserListFetched) {
+                                  if (_users.isEmpty) {
+                                    setState(() {
+                                      _users = state.users;
+                                    });
+                                  }
+                                }
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(8.0),
+                                child: ListView.builder(
+                                  itemBuilder: (context, index) => CommentItem(
+                                    comment: comments[index],
+                                    user: _users.isNotEmpty
+                                        ? _users
+                                            .where((user) =>
+                                                user.id ==
+                                                comments[index].creatorId)
+                                            .first
+                                        : User.placeholder(),
+                                  ),
+                                  itemCount: comments.length,
                                 ),
-                                itemCount: state.comments.length,
-                              )),
-                        );
-                      } else {
-                        return Center(
-                          child: Text("There are no comments."),
-                        );
-                      }
-                    } else {
-                      return Center(
-                        child: Lottie.asset(
-                            "assets/animations/comment_loading.json"),
+                              ),
+                            );
+                          } else {
+                            return Center(
+                              child: Text("There are no comments."),
+                            );
+                          }
+                        },
+                        orElse: () => Center(
+                          child: Lottie.asset(
+                              "assets/animations/comment_loading.json"),
+                        ),
                       );
-                    }
-                  },
+                    },
+                  ),
                 ),
-              ))
+              ),
             ],
           ),
         ),

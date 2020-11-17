@@ -88,7 +88,8 @@ class _AppState extends State<App> {
             create: (_) => PostFavoritesBloc(
                 widget.postRepository, widget.favoritePostRepository)),
         BlocProvider<CommentBloc>(
-            create: (_) => CommentBloc(widget.commentRepository)),
+            create: (_) =>
+                CommentBloc(commentRepository: widget.commentRepository)),
         BlocProvider<UserListBloc>(
             create: (_) => UserListBloc(widget.userRepository)),
         BlocProvider<UserBloc>(
