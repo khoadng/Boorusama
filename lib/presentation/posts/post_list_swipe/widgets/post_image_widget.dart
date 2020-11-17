@@ -1,4 +1,4 @@
-import 'package:boorusama/application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
+import 'package:boorusama/application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'package:boorusama/domain/posts/note.dart';
 import 'package:boorusama/domain/posts/note_coordinate.dart';
 import 'package:boorusama/domain/posts/post.dart';
@@ -31,13 +31,11 @@ class PostImage extends StatefulWidget {
 class _PostImageState extends State<PostImage> {
   ValueNotifier<bool> notesVisible = ValueNotifier(false);
   List<Note> notes = <Note>[];
-  PostTranslateNoteBloc _postTranslateNoteBloc;
   Flushbar _noteFlushbar;
 
   @override
   void initState() {
     super.initState();
-    _postTranslateNoteBloc = BlocProvider.of<PostTranslateNoteBloc>(context);
     widget.controller.postImageState = this;
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -63,19 +61,18 @@ class _PostImageState extends State<PostImage> {
   Widget build(BuildContext context) {
     return Hero(
       tag: widget.postHeroTag,
-      child: BlocListener<PostTranslateNoteBloc, PostTranslateNoteState>(
+      child: BlocListener<PostNoteBloc, PostNoteState>(
         listener: (context, state) {
-          if (state is PostTranslateNoteFetched) {
-            setState(() {
-              notes = state.notes;
-            });
-            _noteFlushbar.dismiss();
-          } else if (state is PostTranslateNoteInProgress) {
-            _noteFlushbar.show(context);
-          } else {
-            Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text("Oopsie something went wrong")));
-          }
+          state.when(
+            empty: () {},
+            loading: () => _noteFlushbar.show(context),
+            fetched: (notes) {
+              setState(() {
+                this.notes = notes;
+              });
+              _noteFlushbar.dismiss();
+            },
+          );
         },
         child: ValueListenableBuilder(
           valueListenable: notesVisible,
@@ -124,7 +121,8 @@ class _PostImageState extends State<PostImage> {
 
   void showTranslationNotes() {
     if (notes.isEmpty) {
-      _postTranslateNoteBloc.add(GetTranslatedNotes(postId: widget.post.id));
+      BlocProvider.of<PostNoteBloc>(context)
+          .add(PostNoteEvent.requested(postId: widget.post.id));
     }
 
     notesVisible.value = true;

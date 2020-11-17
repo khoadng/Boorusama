@@ -23,7 +23,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
-import 'application/posts/post_translate_note/bloc/post_translate_note_bloc.dart';
+import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
@@ -80,8 +80,8 @@ class _AppState extends State<App> {
         ),
         BlocProvider<TagSuggestionsBloc>(
             create: (_) => TagSuggestionsBloc(widget.tagRepository)),
-        BlocProvider<PostTranslateNoteBloc>(
-            create: (_) => PostTranslateNoteBloc(widget.noteRepository)),
+        BlocProvider<PostNoteBloc>(
+            create: (_) => PostNoteBloc(noteRepository: widget.noteRepository)),
         BlocProvider<TagListBloc>(
             create: (_) => TagListBloc(widget.tagRepository)),
         BlocProvider<PostFavoritesBloc>(
