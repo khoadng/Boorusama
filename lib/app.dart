@@ -27,7 +27,7 @@ import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
-import 'presentation/posts/post_list/post_list_page.dart';
+import 'presentation/posts/post_list/pages/browse_all_page.dart';
 
 class App extends StatefulWidget {
   App({
@@ -145,7 +145,7 @@ class _AppState extends State<App> {
             themeMode: state.theme,
             debugShowCheckedModeBanner: false,
             title: "Boorusama",
-            home: PostListPage(),
+            home: BrowseAllPage(),
           );
         },
       ),
