@@ -16,6 +16,7 @@ import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/users/i_user_repository.dart';
 import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'package:boorusama/presentation/posts/post_list/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -145,7 +146,7 @@ class _AppState extends State<App> {
             themeMode: state.theme,
             debugShowCheckedModeBanner: false,
             title: "Boorusama",
-            home: BrowseAllPage(),
+            home: HomePage(),
           );
         },
       ),

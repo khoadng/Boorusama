@@ -6,19 +6,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class AllPostsPage extends StatefulWidget {
-  AllPostsPage({
+class RefreshableList extends StatefulWidget {
+  RefreshableList({
     Key key,
     @required this.posts,
+    @required this.onRefresh,
+    @required this.refreshController,
   }) : super(key: key);
 
   final List<Post> posts;
-
+  final VoidCallback onRefresh;
+  final RefreshController refreshController;
   @override
-  _AllPostsPageState createState() => _AllPostsPageState();
+  _RefreshableListState createState() => _RefreshableListState();
 }
 
-class _AllPostsPageState extends State<AllPostsPage> {
+class _RefreshableListState extends State<RefreshableList> {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -64,8 +67,7 @@ class _AllPostsPageState extends State<AllPostsPage> {
       controller: _refreshController,
       enablePullDown: true,
       header: const WaterDropMaterialHeader(),
-      onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-          .add(PostSearchEvent.postSearched(query: "", page: 1)),
+      onRefresh: () => widget.onRefresh(),
       child: CustomScrollView(
         slivers: <Widget>[
           SliverList(

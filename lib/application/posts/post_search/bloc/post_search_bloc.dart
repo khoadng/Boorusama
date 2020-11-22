@@ -30,7 +30,8 @@ class PostSearchBloc extends Bloc<PostSearchEvent, PostSearchState> {
   }
 
   Stream<PostSearchState> _mapPostSearchedToState(_PostSearched event) async* {
-    yield const PostSearchState.loading();
+    yield const PostSearchState.idle();
+    yield PostSearchState.loading(event.query, event.page);
     try {
       final posts = await _postRepository.getPosts(event.query, event.page);
       yield PostSearchState.success(posts, event.query, event.page);
