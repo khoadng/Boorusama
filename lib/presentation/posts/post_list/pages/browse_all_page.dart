@@ -13,7 +13,7 @@ class BrowseAllPage extends StatefulWidget {
     Key key,
   }) : super(key: key);
 
-  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   _BrowseAllPageState createState() => _BrowseAllPageState();
@@ -49,8 +49,8 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
 
   void _handleSearched(String query) {
     _currentSearchQuery = query;
-    _currentPage = 1;
-    _posts.clear();
+    // _currentPage = 1;
+    // _posts.clear();
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(0.0);
     }
@@ -100,18 +100,34 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
               if (_scrollController.hasClients) {
                 _scrollController.jumpTo(0.0);
               }
-              _posts.clear();
-              _posts.addAll(posts);
+
+              setState(() {
+                // _posts.clear();
+                _posts.addAll(posts);
+              });
             },
-            fetchedMore: (posts) => _posts.addAll(posts),
+            fetchedMore: (posts) {
+              setState(() {
+                _posts.addAll(posts);
+              });
+            },
             orElse: () {},
           );
         },
-        child: RefreshableList(
-          posts: _posts,
-          onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-              .add(PostSearchEvent.postSearched(query: "", page: 1)),
-          refreshController: _refreshController,
+        child: NotificationListener<ScrollNotification>(
+          onNotification: (notification) {
+            if (notification is ScrollEndNotification) {
+              _loadMorePosts();
+              return true;
+            }
+            return false;
+          },
+          child: RefreshableList(
+            posts: _posts,
+            onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
+                .add(PostSearchEvent.postSearched(query: "", page: 1)),
+            refreshController: _refreshController,
+          ),
         ),
         // child: PostList(
         //   posts: _posts,

@@ -1,4 +1,3 @@
-import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
@@ -44,17 +43,9 @@ class _RefreshableListState extends State<RefreshableList> {
                 orElse: () {},
               );
             },
-            child: BlocBuilder<PostListBloc, PostListState>(
-              builder: (context, state) {
-                return state.when(
-                  empty: () => Center(child: Text("Nothing's here")),
-                  fetched: (posts) => _buildSmartRefresher(context, posts),
-                  fetchedMore: (posts) => _buildSmartRefresher(context, posts),
-                  error: (error, message) => Center(
-                    child: Text("Something went wrong"),
-                  ),
-                );
-              },
+            child: _buildSmartRefresher(
+              context,
+              widget.posts,
             ),
           );
         },
