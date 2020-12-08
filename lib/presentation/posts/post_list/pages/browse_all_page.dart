@@ -19,7 +19,8 @@ class BrowseAllPage extends StatefulWidget {
   _BrowseAllPageState createState() => _BrowseAllPageState();
 }
 
-class _BrowseAllPageState extends State<BrowseAllPage> {
+class _BrowseAllPageState extends State<BrowseAllPage>
+    with AutomaticKeepAliveClientMixin {
   final List<Post> _posts = List<Post>();
   final ScrollController _scrollController = new ScrollController();
   final Debouncer _debouncer = Debouncer(delay: Duration(seconds: 1));
@@ -44,6 +45,7 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return buildList();
   }
 
@@ -102,7 +104,7 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
               }
 
               setState(() {
-                // _posts.clear();
+                _posts.clear();
                 _posts.addAll(posts);
               });
             },
@@ -129,14 +131,6 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
             refreshController: _refreshController,
           ),
         ),
-        // child: PostList(
-        //   posts: _posts,
-        //   onMenuTap: () => widget.scaffoldKey.currentState.openDrawer(),
-        //   onMaxItemReached: _loadMorePosts,
-        //   onSearched: (query) {},
-        //   scrollThreshold: 1,
-        //   scrollController: _scrollController,
-        // ),
       ),
     );
   }
@@ -148,4 +142,7 @@ class _BrowseAllPageState extends State<BrowseAllPage> {
           query: _currentSearchQuery, page: _currentPage));
     });
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

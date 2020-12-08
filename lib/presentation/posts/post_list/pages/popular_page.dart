@@ -17,7 +17,8 @@ class PopularPage extends StatefulWidget {
   _PopularPageState createState() => _PopularPageState();
 }
 
-class _PopularPageState extends State<PopularPage> {
+class _PopularPageState extends State<PopularPage>
+    with AutomaticKeepAliveClientMixin {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   DateTime _currentSelectedDate;
@@ -38,6 +39,7 @@ class _PopularPageState extends State<PopularPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return SafeArea(
       top: false,
       bottom: false,
@@ -235,4 +237,7 @@ class _PopularPageState extends State<PopularPage> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
