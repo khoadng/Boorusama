@@ -28,10 +28,17 @@ class _HomePageState extends State<HomePage> {
     "Curated",
     "Most Viewed"
   ];
+  final SearchBarController _searchBarController = SearchBarController();
 
   int _currentTab = 0;
 
   Account _account;
+
+  @override
+  void dispose() {
+    _searchBarController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,16 +92,30 @@ class _HomePageState extends State<HomePage> {
               sliver: SliverSafeArea(
                 top: false,
                 sliver: SliverAppBar(
-                  title: SearchBar(
-                    onRemoveTap: () => BlocProvider.of<PostSearchBloc>(context)
-                        .add(PostSearchEvent.postSearched(query: "", page: 1)),
-                    onMenuTap: () =>
-                        widget.scaffoldKey.currentState.openDrawer(),
-                    onSearched: (query) =>
-                        BlocProvider.of<PostSearchBloc>(context).add(
-                            PostSearchEvent.postSearched(
-                                query: query, page: 1)),
-                    onMoreSelected: (value) => _handleMoreSelected(value),
+                  title: BlocListener<PostSearchBloc, PostSearchState>(
+                    listener: (context, state) {
+                      state.maybeWhen(
+                        loading: (query, page) {
+                          setState(() {
+                            _searchBarController.assignQuery(query);
+                          });
+                        },
+                        orElse: () {},
+                      );
+                    },
+                    child: SearchBar(
+                      controller: _searchBarController,
+                      onRemoveTap: () =>
+                          BlocProvider.of<PostSearchBloc>(context).add(
+                              PostSearchEvent.postSearched(query: "", page: 1)),
+                      onMenuTap: () =>
+                          widget.scaffoldKey.currentState.openDrawer(),
+                      onSearched: (query) =>
+                          BlocProvider.of<PostSearchBloc>(context).add(
+                              PostSearchEvent.postSearched(
+                                  query: query, page: 1)),
+                      onMoreSelected: (value) => _handleMoreSelected(value),
+                    ),
                   ),
                   shape: Border(
                     bottom: BorderSide(color: Colors.grey[400], width: 1.0),

@@ -10,12 +10,15 @@ class SearchBar extends StatefulWidget {
     @required this.onSearched,
     @required this.onMoreSelected,
     @required this.onRemoveTap,
-  }) : super(key: key);
+    @required this.controller,
+  })  : assert(controller != null),
+        super(key: key);
 
   final VoidCallback onMenuTap;
   final VoidCallback onRemoveTap;
   final ValueChanged<String> onSearched;
   final ValueChanged<PostListAction> onMoreSelected;
+  final SearchBarController controller;
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -23,6 +26,18 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   String _currentQuery = "";
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.searchBarState = this;
+  }
+
+  set query(String query) {
+    setState(() {
+      _currentQuery = query;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,5 +106,19 @@ class _SearchBarState extends State<SearchBar> {
         ),
       ),
     );
+  }
+}
+
+class SearchBarController {
+  _SearchBarState searchBarState;
+
+  void assignQuery(String query) {
+    assert(searchBarState != null);
+
+    searchBarState.query = query;
+  }
+
+  void dispose() {
+    searchBarState = null;
   }
 }
