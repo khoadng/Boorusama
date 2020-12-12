@@ -20,6 +20,10 @@ class PostSearch extends SearchDelegate {
       onTagInputCompleted: () => _tags.clear(),
       onCleared: null,
     );
+
+    if (query.isNotEmpty) {
+      _tagQuery.update(query);
+    }
   }
 
   @override

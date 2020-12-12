@@ -86,6 +86,8 @@ class _HomePageState extends State<HomePage> {
                 top: false,
                 sliver: SliverAppBar(
                   title: SearchBar(
+                    onRemoveTap: () => BlocProvider.of<PostSearchBloc>(context)
+                        .add(PostSearchEvent.postSearched(query: "", page: 1)),
                     onMenuTap: () =>
                         widget.scaffoldKey.currentState.openDrawer(),
                     onSearched: (query) =>

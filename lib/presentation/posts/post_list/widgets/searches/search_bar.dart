@@ -3,17 +3,26 @@ import 'package:flutter/material.dart';
 
 import 'post_search.dart';
 
-class SearchBar extends StatelessWidget {
+class SearchBar extends StatefulWidget {
   const SearchBar({
     Key key,
     @required this.onMenuTap,
     @required this.onSearched,
     @required this.onMoreSelected,
+    @required this.onRemoveTap,
   }) : super(key: key);
 
   final VoidCallback onMenuTap;
+  final VoidCallback onRemoveTap;
   final ValueChanged<String> onSearched;
   final ValueChanged<PostListAction> onMoreSelected;
+
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  String _currentQuery = "";
 
   @override
   Widget build(BuildContext context) {
@@ -31,30 +40,53 @@ class SearchBar extends StatelessWidget {
           visualDensity: VisualDensity.compact,
           onTap: () {
             showSearch(
+              query: _currentQuery,
               context: context,
               delegate: PostSearch(
-                  onSearched: onSearched,
+                  onSearched: (value) {
+                    if (mounted) {
+                      setState(() {
+                        _currentQuery = value;
+                      });
+                    }
+
+                    widget.onSearched(_currentQuery);
+                  },
                   searchFieldStyle:
                       Theme.of(context).inputDecorationTheme.hintStyle),
             );
           },
           title: Text(
-            "Search...",
+            _currentQuery.isEmpty ? "Search..." : _currentQuery,
             style: Theme.of(context).inputDecorationTheme.hintStyle,
           ),
-          trailing: PopupMenuButton<PostListAction>(
-            onSelected: (value) => onMoreSelected(value),
-            itemBuilder: (BuildContext context) =>
-                <PopupMenuEntry<PostListAction>>[
-              const PopupMenuItem<PostListAction>(
-                value: PostListAction.downloadAll,
-                child: Text('Download all'),
+          trailing: Wrap(
+            children: <Widget>[
+              if (_currentQuery.isNotEmpty)
+                IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () {
+                    setState(() {
+                      _currentQuery = "";
+                    });
+                    widget.onRemoveTap();
+                  },
+                ),
+              PopupMenuButton<PostListAction>(
+                onSelected: (value) => widget.onMoreSelected(value),
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<PostListAction>>[
+                  const PopupMenuItem<PostListAction>(
+                    value: PostListAction.downloadAll,
+                    child: Text('Download all'),
+                  ),
+                ],
               ),
             ],
           ),
           leading: IconButton(
             icon: Icon(Icons.menu),
-            onPressed: onMenuTap,
+            onPressed: widget.onMenuTap,
           ),
         ),
       ),

@@ -126,8 +126,9 @@ class _BrowseAllPageState extends State<BrowseAllPage>
           },
           child: RefreshableList(
             posts: _posts,
-            onRefresh: () => BlocProvider.of<PostSearchBloc>(context)
-                .add(PostSearchEvent.postSearched(query: "", page: 1)),
+            onRefresh: () => BlocProvider.of<PostSearchBloc>(context).add(
+                PostSearchEvent.postSearched(
+                    query: _currentSearchQuery, page: 1)),
             refreshController: _refreshController,
           ),
         ),
