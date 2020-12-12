@@ -1,3 +1,4 @@
+import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
 import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/domain/posts/post.dart';
@@ -12,8 +13,6 @@ class BrowseAllPage extends StatefulWidget {
   BrowseAllPage({
     Key key,
   }) : super(key: key);
-
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   _BrowseAllPageState createState() => _BrowseAllPageState();
@@ -116,20 +115,26 @@ class _BrowseAllPageState extends State<BrowseAllPage>
             orElse: () {},
           );
         },
-        child: NotificationListener<ScrollNotification>(
-          onNotification: (notification) {
-            if (notification is ScrollEndNotification) {
-              _loadMorePosts();
-              return true;
-            }
-            return false;
-          },
-          child: RefreshableList(
-            posts: _posts,
-            onRefresh: () => BlocProvider.of<PostSearchBloc>(context).add(
-                PostSearchEvent.postSearched(
-                    query: _currentSearchQuery, page: 1)),
-            refreshController: _refreshController,
+        child: Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: _downloadAllPosts,
+            child: Icon(Icons.download_sharp),
+          ),
+          body: NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification is ScrollEndNotification) {
+                _loadMorePosts();
+                return true;
+              }
+              return false;
+            },
+            child: RefreshableList(
+              posts: _posts,
+              onRefresh: () => BlocProvider.of<PostSearchBloc>(context).add(
+                  PostSearchEvent.postSearched(
+                      query: _currentSearchQuery, page: 1)),
+              refreshController: _refreshController,
+            ),
           ),
         ),
       ),
@@ -146,4 +151,12 @@ class _BrowseAllPageState extends State<BrowseAllPage>
 
   @override
   bool get wantKeepAlive => true;
+
+  void _downloadAllPosts() {
+    _posts.forEach((post) {
+      context
+          .read<PostDownloadBloc>()
+          .add(PostDownloadEvent.downloaded(post: post));
+    });
+  }
 }

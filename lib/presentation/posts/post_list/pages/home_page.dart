@@ -185,12 +185,4 @@ class _HomePageState extends State<HomePage> {
     //   default:
     // }
   }
-
-  // void _downloadAllPosts() {
-  //   widget.posts.forEach((post) {
-  //     context
-  //         .read<PostDownloadBloc>()
-  //         .add(PostDownloadEvent.downloaded(post: post));
-  //   });
-  // }
 }
