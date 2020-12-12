@@ -101,5 +101,6 @@ class PostSearch extends SearchDelegate {
   void _onTagItemSelected(String tag) {
     _tagQuery.add(tag);
     query = _tagQuery.currentQuery;
+    setCursorPosition(query.length);
   }
 }
