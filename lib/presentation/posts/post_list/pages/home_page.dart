@@ -5,6 +5,7 @@ import 'package:boorusama/presentation/posts/post_download_gallery/post_download
 import 'package:boorusama/presentation/posts/post_list/models/post_list_action.dart';
 import 'package:boorusama/presentation/posts/post_list/pages/browse_all_page.dart';
 import 'package:boorusama/presentation/posts/post_list/pages/curated_page.dart';
+import 'package:boorusama/presentation/posts/post_list/pages/most_viewed_page.dart';
 import 'package:boorusama/presentation/posts/post_list/widgets/searches/search_bar.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
@@ -152,9 +153,7 @@ class _HomePageState extends State<HomePage> {
             BrowseAllPage(),
             PopularPage(),
             CuratedPage(),
-            Center(
-              child: Text("Most Viewed"),
-            ),
+            MostViewedPage(),
           ],
         ),
       ),

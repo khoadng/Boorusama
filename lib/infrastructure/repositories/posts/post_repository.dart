@@ -130,6 +130,40 @@ class PostRepository implements IPostRepository {
 
     return posts;
   }
+
+  @override
+  Future<List<Post>> getMostViewedPosts(
+    DateTime date,
+  ) async {
+    final account = await _accountRepository.get();
+    final settings = await _settingRepository.load();
+
+    final uri = Uri.https(_api.url, "/explore/posts/viewed.json", {
+      "login": account.username,
+      "api_key": account.apiKey,
+      "date": "${date.year}-${date.month}-${date.day}",
+    });
+
+    var respond;
+    try {
+      respond = await _api.dio.get(uri.toString(),
+          options: buildCacheOptions(
+            Duration(minutes: 1),
+          ));
+    } on DioError catch (e) {
+      if (e.response.statusCode == 500) {
+        throw DatabaseTimeOut(
+            "Your search took too long to execute and was cancelled.");
+      }
+    }
+    final Map<String, dynamic> data = {
+      "settings": settings,
+      "data": respond.data
+    };
+    final posts = compute(parsePosts, data);
+
+    return posts;
+  }
 }
 
 List<Post> parsePosts(Map<String, dynamic> data) {
