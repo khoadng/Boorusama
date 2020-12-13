@@ -59,29 +59,28 @@ class _PostImageState extends State<PostImage> {
 
   @override
   Widget build(BuildContext context) {
-    return Hero(
-      tag: widget.postHeroTag,
-      child: BlocListener<PostNoteBloc, PostNoteState>(
-        listener: (context, state) {
-          state.when(
-            empty: () {},
-            loading: () => _noteFlushbar.show(context),
-            fetched: (notes) {
-              setState(() {
-                this.notes = notes;
-              });
-              _noteFlushbar.dismiss();
-            },
-          );
-        },
-        child: ValueListenableBuilder(
-          valueListenable: notesVisible,
-          builder: (context, value, child) => Stack(
-            children: <Widget>[
-              _Image(imageUrl: widget.post.normalImageUri.toString()),
-              if (value) ...buildNotes(),
-            ],
-          ),
+    return BlocListener<PostNoteBloc, PostNoteState>(
+      listener: (context, state) {
+        state.when(
+          empty: () {},
+          loading: () => _noteFlushbar.show(context),
+          fetched: (notes) {
+            setState(() {
+              this.notes = notes;
+            });
+            _noteFlushbar.dismiss();
+          },
+        );
+      },
+      child: ValueListenableBuilder(
+        valueListenable: notesVisible,
+        builder: (context, value, child) => Stack(
+          children: <Widget>[
+            Hero(
+                tag: widget.postHeroTag,
+                child: _Image(imageUrl: widget.post.normalImageUri.toString())),
+            if (value) ...buildNotes(),
+          ],
         ),
       ),
     );

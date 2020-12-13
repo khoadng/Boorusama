@@ -67,7 +67,7 @@ class SliverPostList extends StatelessWidget {
             );
           }
 
-          final tagId = Uuid().v4();
+          // final tagId = Uuid().v4();
           return Stack(
             children: <Widget>[
               GestureDetector(
@@ -75,10 +75,10 @@ class SliverPostList extends StatelessWidget {
                   builder: (context) => PostListSwipePage(
                     posts: posts,
                     initialPostIndex: index,
-                    postHeroTag: tagId,
+                    postHeroTag: "postImageHero$index",
                   ),
                 )),
-                child: Hero(tag: tagId, child: image),
+                child: Hero(tag: "postImageHero$index", child: image),
               ),
               Align(
                 alignment: Alignment.topLeft,
