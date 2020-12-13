@@ -23,7 +23,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   final List<String> _tabs = <String>[
     "All",
     "Popular",
@@ -31,14 +32,22 @@ class _HomePageState extends State<HomePage> {
     "Most Viewed"
   ];
   final SearchBarController _searchBarController = SearchBarController();
+  TabController _tabController;
 
   int _currentTab = 0;
 
   Account _account;
 
   @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: _tabs.length, vsync: this);
+  }
+
+  @override
   void dispose() {
     _searchBarController.dispose();
+    _tabController.dispose();
     super.dispose();
   }
 
@@ -74,87 +83,100 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildTabView() {
-    return DefaultTabController(
-      length: _tabs.length,
-      child: NestedScrollView(
-        floatHeaderSlivers: true,
-        // controller: widget.scrollController..addListener(_onScroll),
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          // These are the slivers that show up in the "outer" scroll view.
-          return <Widget>[
-            SliverOverlapAbsorber(
-              // This widget takes the overlapping behavior of the SliverAppBar,
-              // and redirects it to the SliverOverlapInjector below. If it is
-              // missing, then it is possible for the nested "inner" scroll view
-              // below to end up under the SliverAppBar even when the inner
-              // scroll view thinks it has not been scrolled.
-              // This is not necessary if the "headerSliverBuilder" only builds
-              // widgets that do not overlap the next sliver.
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              sliver: SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
-                  title: BlocListener<PostSearchBloc, PostSearchState>(
-                    listener: (context, state) {
-                      state.maybeWhen(
-                        loading: (query, page) {
-                          setState(() {
-                            _searchBarController.assignQuery(query);
-                          });
-                        },
-                        orElse: () {},
-                      );
-                    },
-                    child: SearchBar(
-                      controller: _searchBarController,
-                      onRemoveTap: () =>
-                          BlocProvider.of<PostSearchBloc>(context).add(
-                              PostSearchEvent.postSearched(query: "", page: 1)),
-                      onMenuTap: () =>
-                          widget.scaffoldKey.currentState.openDrawer(),
-                      onSearched: (query) =>
-                          BlocProvider.of<PostSearchBloc>(context).add(
-                              PostSearchEvent.postSearched(
-                                  query: query, page: 1)),
-                      onMoreSelected: (value) => _handleMoreSelected(value),
+    return BlocListener<PostSearchBloc, PostSearchState>(
+      listener: (context, state) {
+        setState(() {
+          _tabController.index = 0;
+        });
+      },
+      child: DefaultTabController(
+        length: _tabs.length,
+        child: NestedScrollView(
+          floatHeaderSlivers: true,
+          // controller: widget.scrollController..addListener(_onScroll),
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
+            // These are the slivers that show up in the "outer" scroll view.
+            return <Widget>[
+              SliverOverlapAbsorber(
+                // This widget takes the overlapping behavior of the SliverAppBar,
+                // and redirects it to the SliverOverlapInjector below. If it is
+                // missing, then it is possible for the nested "inner" scroll view
+                // below to end up under the SliverAppBar even when the inner
+                // scroll view thinks it has not been scrolled.
+                // This is not necessary if the "headerSliverBuilder" only builds
+                // widgets that do not overlap the next sliver.
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar(
+                    title: BlocListener<PostSearchBloc, PostSearchState>(
+                      listener: (context, state) {
+                        state.maybeWhen(
+                          loading: (query, page) {
+                            setState(() {
+                              _searchBarController.assignQuery(query);
+                            });
+                          },
+                          orElse: () {},
+                        );
+                      },
+                      child: SearchBar(
+                        controller: _searchBarController,
+                        onRemoveTap: () =>
+                            BlocProvider.of<PostSearchBloc>(context).add(
+                                PostSearchEvent.postSearched(
+                                    query: "", page: 1)),
+                        onMenuTap: () =>
+                            widget.scaffoldKey.currentState.openDrawer(),
+                        onSearched: (query) =>
+                            BlocProvider.of<PostSearchBloc>(context).add(
+                                PostSearchEvent.postSearched(
+                                    query: query, page: 1)),
+                        onMoreSelected: (value) => _handleMoreSelected(value),
+                      ),
                     ),
-                  ),
-                  shape: Border(
-                    bottom: BorderSide(color: Colors.grey[400], width: 1.0),
-                  ),
-                  floating: true,
-                  pinned: true,
-                  snap: true,
-                  primary: true,
-                  forceElevated: true,
-                  automaticallyImplyLeading: false,
-                  bottom: TabBar(
-                    unselectedLabelColor:
-                        Theme.of(context).unselectedWidgetColor,
-                    labelColor: Theme.of(context).accentColor,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicator: MD2Indicator(
-                      indicatorHeight: 4,
-                      indicatorColor: Theme.of(context).accentColor,
-                      indicatorSize: MD2IndicatorSize.full,
+                    shape: Border(
+                      bottom: BorderSide(color: Colors.grey[400], width: 1.0),
                     ),
-                    // These are the widgets to put in each tab in the tab bar.
-                    tabs: _tabs.map((String name) => Tab(text: name)).toList(),
+                    floating: true,
+                    pinned: true,
+                    snap: true,
+                    primary: true,
+                    forceElevated: true,
+                    automaticallyImplyLeading: false,
+                    bottom: TabBar(
+                      isScrollable: true,
+                      controller: _tabController,
+                      unselectedLabelColor:
+                          Theme.of(context).unselectedWidgetColor,
+                      labelColor: Theme.of(context).accentColor,
+                      indicatorSize: TabBarIndicatorSize.label,
+                      indicator: MD2Indicator(
+                        indicatorHeight: 4,
+                        indicatorColor: Theme.of(context).accentColor,
+                        indicatorSize: MD2IndicatorSize.full,
+                      ),
+                      // These are the widgets to put in each tab in the tab bar.
+                      tabs:
+                          _tabs.map((String name) => Tab(text: name)).toList(),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          physics: const NeverScrollableScrollPhysics(),
-          // These are the contents of the tab views, below the tabs.
-          children: <Widget>[
-            BrowseAllPage(),
-            PopularPage(),
-            CuratedPage(),
-            MostViewedPage(),
-          ],
+            ];
+          },
+          body: TabBarView(
+            controller: _tabController,
+            physics: const NeverScrollableScrollPhysics(),
+            // These are the contents of the tab views, below the tabs.
+            children: <Widget>[
+              BrowseAllPage(),
+              PopularPage(),
+              CuratedPage(),
+              MostViewedPage(),
+            ],
+          ),
         ),
       ),
     );

@@ -87,16 +87,16 @@ class _SearchBarState extends State<SearchBar> {
                     widget.onRemoveTap();
                   },
                 ),
-              PopupMenuButton<PostListAction>(
-                onSelected: (value) => widget.onMoreSelected(value),
-                itemBuilder: (BuildContext context) =>
-                    <PopupMenuEntry<PostListAction>>[
-                  const PopupMenuItem<PostListAction>(
-                    value: PostListAction.downloadAll,
-                    child: Text('Download all'),
-                  ),
-                ],
-              ),
+              // PopupMenuButton<PostListAction>(
+              //   onSelected: (value) => widget.onMoreSelected(value),
+              //   itemBuilder: (BuildContext context) =>
+              //       <PopupMenuEntry<PostListAction>>[
+              //     const PopupMenuItem<PostListAction>(
+              //       value: PostListAction.downloadAll,
+              //       child: Text('Download all'),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
           leading: IconButton(

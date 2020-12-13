@@ -26,7 +26,7 @@ class PostRepository implements IPostRepository {
       "api_key": account.apiKey,
       "page": page.toString(),
       "tags": settings.safeMode ? "$tagString rating:s" : tagString,
-      "limit": "20",
+      "limit": "200",
     });
 
     var respond;
