@@ -196,21 +196,6 @@ class _HomePageState extends State<HomePage>
           fit: StackFit.expand,
           children: [
             _buildTabView(),
-            BlocBuilder<PostSearchBloc, PostSearchState>(
-              builder: (context, state) {
-                return state.maybeWhen(
-                  loading: (query, page) => Positioned(
-                    bottom: 0,
-                    child: Container(
-                      height: 3,
-                      width: MediaQuery.of(context).size.width,
-                      child: LinearProgressIndicator(),
-                    ),
-                  ),
-                  orElse: () => Center(),
-                );
-              },
-            ),
           ],
         );
       case 1:

@@ -10,11 +10,13 @@ class RefreshableList extends StatefulWidget {
     Key key,
     @required this.posts,
     @required this.onRefresh,
+    @required this.onLoadMore,
     @required this.refreshController,
   }) : super(key: key);
 
   final List<Post> posts;
   final VoidCallback onRefresh;
+  final VoidCallback onLoadMore;
   final RefreshController refreshController;
   @override
   _RefreshableListState createState() => _RefreshableListState();
@@ -34,20 +36,27 @@ class _RefreshableListState extends State<RefreshableList> {
         // the NestedScrollView, so that sliverOverlapAbsorberHandleFor() can
         // find the NestedScrollView.
         builder: (BuildContext context) {
-          return BlocListener<PostSearchBloc, PostSearchState>(
-            listener: (context, state) {
-              state.maybeWhen(
-                success: (posts, query, page) {
-                  _refreshController.refreshCompleted();
-                },
-                orElse: () {},
-              );
-            },
-            child: _buildSmartRefresher(
-              context,
-              widget.posts,
-            ),
-          );
+          if (widget.posts.isNotEmpty) {
+            return BlocListener<PostSearchBloc, PostSearchState>(
+              listener: (context, state) {
+                state.maybeWhen(
+                  success: (posts, query, page) {
+                    _refreshController.refreshCompleted();
+                    _refreshController.loadComplete();
+                  },
+                  orElse: () {},
+                );
+              },
+              child: _buildSmartRefresher(
+                context,
+                widget.posts,
+              ),
+            );
+          } else {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
         },
       ),
     );
@@ -56,9 +65,12 @@ class _RefreshableListState extends State<RefreshableList> {
   Widget _buildSmartRefresher(BuildContext context, List<Post> posts) {
     return SmartRefresher(
       controller: _refreshController,
+      enablePullUp: true,
       enablePullDown: true,
       header: const WaterDropMaterialHeader(),
+      footer: const ClassicFooter(),
       onRefresh: () => widget.onRefresh(),
+      onLoading: () => widget.onLoadMore(),
       child: CustomScrollView(
         slivers: <Widget>[
           SliverList(

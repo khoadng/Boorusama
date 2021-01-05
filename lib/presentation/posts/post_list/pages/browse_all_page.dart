@@ -110,6 +110,7 @@ class _BrowseAllPageState extends State<BrowseAllPage>
             fetchedMore: (posts) {
               setState(() {
                 _posts.addAll(posts);
+                _refreshController.loadComplete();
               });
             },
             orElse: () {},
@@ -120,21 +121,13 @@ class _BrowseAllPageState extends State<BrowseAllPage>
             onPressed: _downloadAllPosts,
             child: Icon(Icons.download_sharp),
           ),
-          body: NotificationListener<ScrollNotification>(
-            onNotification: (notification) {
-              if (notification is ScrollEndNotification) {
-                _loadMorePosts();
-                return true;
-              }
-              return false;
-            },
-            child: RefreshableList(
-              posts: _posts,
-              onRefresh: () => BlocProvider.of<PostSearchBloc>(context).add(
-                  PostSearchEvent.postSearched(
-                      query: _currentSearchQuery, page: 1)),
-              refreshController: _refreshController,
-            ),
+          body: RefreshableList(
+            posts: _posts,
+            onLoadMore: () => _loadMorePosts(),
+            onRefresh: () => BlocProvider.of<PostSearchBloc>(context).add(
+                PostSearchEvent.postSearched(
+                    query: _currentSearchQuery, page: 1)),
+            refreshController: _refreshController,
           ),
         ),
       ),
