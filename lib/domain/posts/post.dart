@@ -138,7 +138,7 @@ class Post {
       json["image_width"],
       json["image_height"],
       json["file_ext"],
-      json["is_favorited"],
+      json["is_favorited"] ?? false,
       json["last_commented_at"],
       json["source"],
       json["created_at"],
