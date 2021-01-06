@@ -84,7 +84,7 @@ void main() async {
         downloadService: DownloadService(FileNameGenerator()),
         accountRepository: accountRepository,
         noteRepository: NoteRepository(apiProvider),
-        commentRepository: CommentRepository(apiProvider),
+        commentRepository: CommentRepository(apiProvider, accountRepository),
         userRepository: UserRepository(apiProvider, accountRepository),
         favoritePostRepository:
             FavoritePostRepository(apiProvider, accountRepository),

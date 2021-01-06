@@ -22,12 +22,28 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     CommentEvent event,
   ) async* {
     yield* event.map(
+      added: (e) => _mapAddedToState(e),
       requested: (e) => _mapRequestedToState(e),
     );
   }
 
   Stream<CommentState> _mapRequestedToState(_Requested event) async* {
     yield const CommentState.loading();
+    final comments =
+        await _commentRepository.getCommentsFromPostId(event.postId);
+    yield CommentState.fetched(comments: comments);
+  }
+
+  Stream<CommentState> _mapAddedToState(_Added event) async* {
+    yield const CommentState.loading();
+    final success =
+        await _commentRepository.postComment(event.postId, event.content);
+
+    if (!success) {
+      yield CommentState.error();
+    }
+
+    yield CommentState.addedSuccess();
     final comments =
         await _commentRepository.getCommentsFromPostId(event.postId);
     yield CommentState.fetched(comments: comments);

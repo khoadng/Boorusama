@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
+import 'editor_page.dart';
+
 class CommentPage extends StatefulWidget {
   final int postId;
 
@@ -20,6 +22,7 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   List<User> _users = <User>[];
+  final GlobalKey _fabKey = GlobalKey();
 
   @override
   void initState() {
@@ -40,68 +43,106 @@ class _CommentPageState extends State<CommentPage> {
           ),
         ),
         body: SafeArea(
-          child: Column(
-            children: <Widget>[
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
-                  child: BlocBuilder<CommentBloc, CommentState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        fetched: (comments) {
-                          if (comments.isNotEmpty) {
-                            final userList = <String>[];
-                            comments.forEach((comment) {
-                              userList.add(comment.creatorId.toString());
-                            });
-                            BlocProvider.of<UserListBloc>(context)
-                                .add(UserListRequested(userList.join(",")));
-                            return BlocListener<UserListBloc, UserListState>(
-                              listener: (context, state) {
-                                if (state is UserListFetched) {
-                                  if (_users.isEmpty) {
-                                    setState(() {
-                                      _users = state.users;
-                                    });
+          child: Scaffold(
+            floatingActionButton: _fab,
+            body: Column(
+              children: <Widget>[
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 20.0),
+                    child: BlocBuilder<CommentBloc, CommentState>(
+                      builder: (context, state) {
+                        return state.maybeWhen(
+                          fetched: (comments) {
+                            if (comments.isNotEmpty) {
+                              final userList = <String>[];
+                              comments.forEach((comment) {
+                                userList.add(comment.creatorId.toString());
+                              });
+                              BlocProvider.of<UserListBloc>(context)
+                                  .add(UserListRequested(userList.join(",")));
+                              return BlocListener<UserListBloc, UserListState>(
+                                listener: (context, state) {
+                                  if (state is UserListFetched) {
+                                    if (_users.isEmpty) {
+                                      setState(() {
+                                        _users = state.users;
+                                      });
+                                    }
                                   }
-                                }
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.all(8.0),
-                                child: ListView.builder(
-                                  itemBuilder: (context, index) => CommentItem(
-                                    comment: comments[index],
-                                    user: _users.isNotEmpty
-                                        ? _users
-                                            .where((user) =>
-                                                user.id ==
-                                                comments[index].creatorId)
-                                            .first
-                                        : User.placeholder(),
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: ListView.builder(
+                                    itemBuilder: (context, index) =>
+                                        CommentItem(
+                                      comment: comments[index],
+                                      user: _users.isNotEmpty
+                                          ? _users
+                                              .where((user) =>
+                                                  user.id ==
+                                                  comments[index].creatorId)
+                                              .first
+                                          : User.placeholder(),
+                                    ),
+                                    itemCount: comments.length,
                                   ),
-                                  itemCount: comments.length,
                                 ),
-                              ),
-                            );
-                          } else {
-                            return Center(
-                              child: Text("There are no comments."),
-                            );
-                          }
-                        },
-                        orElse: () => Center(
-                          child: Lottie.asset(
-                              "assets/animations/comment_loading.json"),
-                        ),
-                      );
-                    },
+                              );
+                            } else {
+                              return Center(
+                                child: Text("There are no comments."),
+                              );
+                            }
+                          },
+                          orElse: () => Center(
+                            child: Lottie.asset(
+                                "assets/animations/comment_loading.json"),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget get _fab {
+    return AnimatedBuilder(
+      animation: ModalRoute.of(context).animation,
+      child: FloatingActionButton(
+        key: _fabKey,
+        child: Icon(Icons.add),
+        onPressed: () => Navigator.of(context).push(
+          _route(),
+        ),
+      ),
+      builder: (BuildContext context, Widget fab) {
+        final Animation<double> animation = ModalRoute.of(context).animation;
+        return SizedBox(
+          width: 54 * animation.value,
+          height: 54 * animation.value,
+          child: fab,
+        );
+      },
+    );
+  }
+
+  Route<dynamic> _route() {
+    final RenderBox box = _fabKey.currentContext.findRenderObject();
+    final Rect rect = box.localToGlobal(Offset.zero) & box.size;
+
+    return PageRouteBuilder<void>(
+      pageBuilder: (BuildContext context, _, __) => EditorPage(
+        sourceRect: rect,
+        postId: widget.postId,
+      ),
+      transitionDuration: const Duration(milliseconds: 350),
     );
   }
 }

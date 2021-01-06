@@ -8,7 +8,7 @@ class Danbooru {
   Dio get dio => _dio;
 
   Danbooru(this._dio) {
-    _dio.interceptors
-        .add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
+    // _dio.interceptors
+    //     .add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
   }
 }
