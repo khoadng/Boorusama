@@ -7,6 +7,7 @@ class Comment {
   final int _score;
   final String _updatedAt;
   final int _updaterId;
+  final bool _is_deleted;
 
   Comment(
       {int id,
@@ -16,7 +17,8 @@ class Comment {
       String body,
       int score,
       String updatedAt,
-      int updaterId})
+      int updaterId,
+      bool isDeleted})
       : _id = id,
         _createdAt = createdAt,
         _postId = postId,
@@ -24,7 +26,8 @@ class Comment {
         _body = body,
         _score = score,
         _updatedAt = updatedAt,
-        _updaterId = updaterId;
+        _updaterId = updaterId,
+        _is_deleted = isDeleted;
 
   int get id => _id;
   int get postId => _postId;
@@ -34,6 +37,7 @@ class Comment {
   DateTime get createdAt => DateTime.parse(_createdAt);
   //TODO: should use ADT instead of String
   String get body => _body;
+  bool get isDeleted => _is_deleted;
 
   factory Comment.fromJson(Map<String, dynamic> json) {
     assert(json != null);
@@ -47,6 +51,7 @@ class Comment {
       score: json["score"],
       updatedAt: json["updated_at"],
       updaterId: json["updater_id"],
+      isDeleted: json["is_deleted"],
     );
   }
 }
