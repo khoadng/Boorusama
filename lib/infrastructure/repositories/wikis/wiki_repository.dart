@@ -2,7 +2,6 @@ import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/domain/wikis/wiki.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 
 class WikiRepository implements IWikiRepository {
   final Danbooru _api;
@@ -16,8 +15,7 @@ class WikiRepository implements IWikiRepository {
 
     var wiki;
     try {
-      final respond = await _api.dio
-          .get(uri.toString(), options: buildCacheOptions(Duration(days: 7)));
+      final respond = await _api.dio.get(uri.toString());
 
       try {
         wiki = Wiki.fromJson(respond.data);

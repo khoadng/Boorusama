@@ -5,7 +5,6 @@ import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/foundation.dart';
 
 class PostRepository implements IPostRepository {
@@ -31,10 +30,7 @@ class PostRepository implements IPostRepository {
 
     var respond;
     try {
-      respond = await _api.dio.get(uri.toString(),
-          options: buildCacheOptions(
-            Duration(minutes: 1),
-          ));
+      respond = await _api.dio.get(uri.toString());
     } on DioError catch (e) {
       if (e.response.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
@@ -73,10 +69,7 @@ class PostRepository implements IPostRepository {
 
     var respond;
     try {
-      respond = await _api.dio.get(uri.toString(),
-          options: buildCacheOptions(
-            Duration(minutes: 1),
-          ));
+      respond = await _api.dio.get(uri.toString());
     } on DioError catch (e) {
       if (e.response.statusCode == 500) {
         throw DatabaseTimeOut(
@@ -112,10 +105,7 @@ class PostRepository implements IPostRepository {
 
     var respond;
     try {
-      respond = await _api.dio.get(uri.toString(),
-          options: buildCacheOptions(
-            Duration(minutes: 1),
-          ));
+      respond = await _api.dio.get(uri.toString());
     } on DioError catch (e) {
       if (e.response.statusCode == 500) {
         throw DatabaseTimeOut(
@@ -146,10 +136,7 @@ class PostRepository implements IPostRepository {
 
     var respond;
     try {
-      respond = await _api.dio.get(uri.toString(),
-          options: buildCacheOptions(
-            Duration(minutes: 1),
-          ));
+      respond = await _api.dio.get(uri.toString());
     } on DioError catch (e) {
       if (e.response.statusCode == 500) {
         throw DatabaseTimeOut(

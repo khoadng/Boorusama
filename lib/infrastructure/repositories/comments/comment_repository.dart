@@ -3,7 +3,6 @@ import 'package:boorusama/domain/comments/comment.dart';
 import 'package:boorusama/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 
 class CommentRepository implements ICommentRepository {
   final Danbooru _api;
