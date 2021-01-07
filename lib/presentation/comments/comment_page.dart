@@ -6,6 +6,7 @@ import 'package:boorusama/presentation/comments/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'editor_page.dart';
 
@@ -124,13 +125,19 @@ class _CommentPageState extends State<CommentPage> {
       return Container(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
-          itemBuilder: (context, index) => CommentItem(
-            comment: comments[index],
-            user: _users.isNotEmpty
-                ? _users
-                    .where((user) => user.id == comments[index].creatorId)
-                    .first
-                : User.placeholder(),
+          itemBuilder: (context, index) => ListTile(
+            onLongPress: () => showMaterialModalBottomSheet(
+              context: context,
+              builder: (context, controller) => ModalFit(),
+            ),
+            title: CommentItem(
+              comment: comments[index],
+              user: _users.isNotEmpty
+                  ? _users
+                      .where((user) => user.id == comments[index].creatorId)
+                      .first
+                  : User.placeholder(),
+            ),
           ),
           itemCount: _comments.length,
         ),
@@ -188,5 +195,37 @@ class _CommentPageState extends State<CommentPage> {
         _showDeleted = true;
       });
     }
+  }
+}
+
+class ModalFit extends StatelessWidget {
+  const ModalFit({Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        child: SafeArea(
+      top: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          ListTile(
+            title: Text('Edit'),
+            leading: Icon(Icons.edit),
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          ListTile(
+            title: Text('Reply'),
+            leading: Icon(Icons.folder_open),
+            onTap: () => Navigator.of(context).pop(),
+          ),
+          ListTile(
+            title: Text('Delete'),
+            leading: Icon(Icons.delete),
+            onTap: () => Navigator.of(context).pop(),
+          )
+        ],
+      ),
+    ));
   }
 }

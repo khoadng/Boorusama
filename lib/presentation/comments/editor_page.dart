@@ -9,25 +9,16 @@ class EditorPage extends StatefulWidget {
     Key key,
     @required this.sourceRect,
     @required this.postId,
+    this.initialContent,
   })  : assert(sourceRect != null),
         assert(
           postId != null,
         ),
         super(key: key);
 
-  // static Route<dynamic> route(BuildContext context, GlobalKey key) {
-  //   final RenderBox box = key.currentContext.findRenderObject();
-  //   final Rect sourceRect = box.localToGlobal(Offset.zero) & box.size;
-
-  //   return PageRouteBuilder<void>(
-  //     pageBuilder: (BuildContext context, _, __) =>
-  //         EditorPage(sourceRect: sourceRect),
-  //     transitionDuration: const Duration(milliseconds: 350),
-  //   );
-  // }
-
   final Rect sourceRect;
   final int postId;
+  final String initialContent;
 
   @override
   _EditorPageState createState() => _EditorPageState();
@@ -36,11 +27,14 @@ class EditorPage extends StatefulWidget {
 class _EditorPageState extends State<EditorPage> {
   String _subject = '';
   TextEditingController _textEditingController;
+  String _initialContent = "";
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    _initialContent = widget.initialContent ?? "";
+    _textEditingController.text = _initialContent;
   }
 
   @override

@@ -7,4 +7,9 @@ abstract class CommentEvent with _$CommentEvent {
     @required int postId,
     @required String content,
   }) = _Added;
+  const factory CommentEvent.updated({
+    @required int commentId,
+    @required int postId,
+    @required String content,
+  }) = _Updated;
 }

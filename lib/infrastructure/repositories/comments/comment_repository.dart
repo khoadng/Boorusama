@@ -74,4 +74,36 @@ class CommentRepository implements ICommentRepository {
       return false;
     }
   }
+
+  @override
+  Future<bool> updateComment(int commentId, String content) async {
+    final account = await _accountRepository.get();
+    final uri = Uri.https(_api.url, "/comments/$commentId.json", {
+      "login": account.username,
+      "api_key": account.apiKey,
+    });
+
+    final data = {
+      "comment[body]": content,
+    };
+
+    var respond = await _api.dio.putUri(
+      uri,
+      data: data,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        followRedirects: false,
+        validateStatus: (status) => status < 500,
+      ),
+    );
+
+    if (respond.statusCode >= 200 && respond.statusCode < 300) {
+      print("Update comment $commentId success");
+      return true;
+    } else {
+      // throw Exception("Failed to add post $postId to favorites");
+      print("Failed to update comment $commentId");
+      return false;
+    }
+  }
 }
