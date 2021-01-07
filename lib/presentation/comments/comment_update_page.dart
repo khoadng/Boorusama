@@ -63,6 +63,8 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
                       decoration:
                           InputDecoration.collapsed(hintText: 'Comment'),
                       autofocus: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                     ),
                   ),
                 ],

@@ -61,6 +61,8 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
                       decoration:
                           InputDecoration.collapsed(hintText: 'Comment'),
                       autofocus: true,
+                      keyboardType: TextInputType.multiline,
+                      maxLines: null,
                     ),
                   ),
                 ],
