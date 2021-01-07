@@ -2,26 +2,30 @@ import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EditorPage extends StatefulWidget {
-  const EditorPage({
+class CommentCreatePage extends StatefulWidget {
+  const CommentCreatePage({
     Key key,
     @required this.postId,
+    this.initialContent,
   }) : super(key: key);
 
   final int postId;
+  final String initialContent;
 
   @override
-  _EditorPageState createState() => _EditorPageState();
+  _CommentCreatePageState createState() => _CommentCreatePageState();
 }
 
-class _EditorPageState extends State<EditorPage> {
+class _CommentCreatePageState extends State<CommentCreatePage> {
   String _subject = '';
   TextEditingController _textEditingController;
+  String _initialContent = "";
 
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
+    _initialContent = widget.initialContent ?? "";
+    _textEditingController = TextEditingController(text: _initialContent);
   }
 
   @override
@@ -54,15 +58,9 @@ class _EditorPageState extends State<EditorPage> {
                     padding: const EdgeInsets.all(12),
                     child: TextField(
                       controller: _textEditingController,
-                      minLines: 6,
-                      maxLines: 20,
                       decoration:
                           InputDecoration.collapsed(hintText: 'Comment'),
-                      autofocus: false,
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          .copyWith(fontSize: 14),
+                      autofocus: true,
                     ),
                   ),
                 ],

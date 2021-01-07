@@ -26,9 +26,8 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController();
     _initialContent = widget.initialContent ?? "";
-    _textEditingController.text = _initialContent;
+    _textEditingController = TextEditingController(text: _initialContent);
   }
 
   @override
@@ -61,15 +60,9 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
                     padding: const EdgeInsets.all(12),
                     child: TextField(
                       controller: _textEditingController,
-                      minLines: 6,
-                      maxLines: 20,
                       decoration:
                           InputDecoration.collapsed(hintText: 'Comment'),
-                      autofocus: false,
-                      style: Theme.of(context)
-                          .textTheme
-                          .caption
-                          .copyWith(fontSize: 14),
+                      autofocus: true,
                     ),
                   ),
                 ],

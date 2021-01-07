@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-import 'editor_page.dart';
+import 'comment_create_page.dart';
 
 class CommentPage extends StatefulWidget {
   final int postId;
@@ -67,7 +67,7 @@ class _CommentPageState extends State<CommentPage> {
                 onPressed: null,
               ),
               openBuilder: (context, action) =>
-                  EditorPage(postId: widget.postId),
+                  CommentCreatePage(postId: widget.postId),
             ),
             body: Column(
               children: <Widget>[
@@ -77,29 +77,8 @@ class _CommentPageState extends State<CommentPage> {
                     child: BlocListener<CommentBloc, CommentState>(
                       listener: (context, state) {
                         state.maybeWhen(
-                          fetched: (comments) {
-                            _commentsWithDeleted = comments;
-                            _commentsWithoutDeleted = comments
-                                .where((comment) => comment.isDeleted == false)
-                                .toList();
-                            setState(() {
-                              if (_showDeleted) {
-                                _comments = _commentsWithDeleted;
-                              } else {
-                                _comments = _commentsWithoutDeleted;
-                              }
-                            });
-
-                            final userList = <String>[];
-                            comments.forEach((comment) {
-                              if (!userList
-                                  .contains(comment.creatorId.toString())) {
-                                userList.add(comment.creatorId.toString());
-                              }
-                            });
-                            BlocProvider.of<UserListBloc>(context)
-                                .add(UserListRequested(userList.join(",")));
-                          },
+                          fetched: (comments) =>
+                              _handleCommentsFetched(comments, context),
                           orElse: () => Center(
                             child: Lottie.asset(
                                 "assets/animations/comment_loading.json"),
@@ -129,6 +108,29 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
+  void _handleCommentsFetched(List<Comment> comments, BuildContext context) {
+    _commentsWithDeleted = comments;
+    _commentsWithoutDeleted =
+        comments.where((comment) => comment.isDeleted == false).toList();
+    setState(() {
+      if (_showDeleted) {
+        _comments = _commentsWithDeleted;
+      } else {
+        _comments = _commentsWithoutDeleted;
+      }
+    });
+
+    final userList = <String>[];
+    comments.forEach((comment) {
+      if (!userList.contains(comment.creatorId.toString())) {
+        userList.add(comment.creatorId.toString());
+      }
+    });
+
+    BlocProvider.of<UserListBloc>(context)
+        .add(UserListRequested(userList.join(",")));
+  }
+
   Widget _buildCommentSection(List<Comment> comments) {
     if (comments.isNotEmpty) {
       return Container(
@@ -148,35 +150,12 @@ class _CommentPageState extends State<CommentPage> {
                         ListTile(
                           title: Text('Edit'),
                           leading: Icon(Icons.edit),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            Navigator.of(context).push(
-                              PageRouteBuilder(
-                                pageBuilder:
-                                    (context, animation, secondaryAnimation) =>
-                                        CommentUpdatePage(
-                                  postId: widget.postId,
-                                  commentId: comment.id,
-                                  initialContent: comment.body,
-                                ),
-                                transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) =>
-                                    SharedAxisTransition(
-                                  child: child,
-                                  animation: animation,
-                                  secondaryAnimation: secondaryAnimation,
-                                  transitionType:
-                                      SharedAxisTransitionType.scaled,
-                                ),
-                                transitionDuration: Duration(milliseconds: 500),
-                              ),
-                            );
-                          },
+                          onTap: () => _handleEditTap(context, comment),
                         ),
                         ListTile(
                           title: Text('Reply'),
                           leading: Icon(Icons.folder_open),
-                          onTap: () => Navigator.of(context).pop(),
+                          onTap: () => _handleReplyTap(context, comment),
                         ),
                         ListTile(
                           title: Text('Delete'),
@@ -204,6 +183,53 @@ class _CommentPageState extends State<CommentPage> {
         child: Text("There are no comments."),
       );
     }
+  }
+
+  void _handleEditTap(BuildContext context, Comment comment) {
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CommentUpdatePage(
+          postId: widget.postId,
+          commentId: comment.id,
+          initialContent: comment.body,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            SharedAxisTransition(
+          child: child,
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.scaled,
+        ),
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
+  }
+
+  void _handleReplyTap(BuildContext context, Comment comment) {
+    final author = _users.where((user) => user.id == comment.creatorId).first;
+    final content =
+        "[quote]\n${author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
+
+    Navigator.of(context).pop();
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) =>
+            CommentCreatePage(
+          postId: widget.postId,
+          initialContent: content,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            SharedAxisTransition(
+          child: child,
+          animation: animation,
+          secondaryAnimation: secondaryAnimation,
+          transitionType: SharedAxisTransitionType.scaled,
+        ),
+        transitionDuration: Duration(milliseconds: 500),
+      ),
+    );
   }
 
   void _toggleDeletedComments() {
