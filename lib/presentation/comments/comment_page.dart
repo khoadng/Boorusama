@@ -74,7 +74,7 @@ class _CommentPageState extends State<CommentPage> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
-                    child: BlocListener<CommentBloc, CommentState>(
+                    child: BlocConsumer<CommentBloc, CommentState>(
                       listener: (context, state) {
                         state.maybeWhen(
                           fetched: (comments) =>
@@ -85,18 +85,27 @@ class _CommentPageState extends State<CommentPage> {
                           ),
                         );
                       },
-                      child: BlocListener<UserListBloc, UserListState>(
-                        listener: (context, state) {
-                          if (state is UserListFetched) {
-                            if (_users.isEmpty) {
-                              setState(() {
-                                _users = state.users;
-                              });
-                            }
-                          }
-                        },
-                        child: _buildCommentSection(_comments),
-                      ),
+                      builder: (context, state) {
+                        return state.maybeWhen(
+                          fetched: (comments) =>
+                              BlocListener<UserListBloc, UserListState>(
+                            listener: (context, state) {
+                              if (state is UserListFetched) {
+                                if (_users.isEmpty) {
+                                  setState(() {
+                                    _users = state.users;
+                                  });
+                                }
+                              }
+                            },
+                            child: _buildCommentSection(_comments),
+                          ),
+                          orElse: () => Center(
+                            child: Lottie.asset(
+                                "assets/animations/comment_loading.json"),
+                          ),
+                        );
+                      },
                     ),
                   ),
                 ),
