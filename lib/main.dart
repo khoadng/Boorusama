@@ -67,7 +67,7 @@ void main() async {
         BlocProvider<AuthenticationBloc>(
           lazy: false,
           create: (_) => AuthenticationBloc(
-            scrapperService: ScrapperService(),
+            scrapperService: ScrapperService(apiProvider),
             accountRepository: accountRepository,
           )..add(AuthenticationRequested()),
         ),

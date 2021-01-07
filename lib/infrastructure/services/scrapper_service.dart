@@ -1,24 +1,24 @@
 import 'package:boorusama/application/authentication/services/i_scrapper_service.dart';
 import 'package:boorusama/domain/accounts/account.dart';
+import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' as html;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
-//TODO: refactor to move Dio outside of this class
 class ScrapperService implements IScrapperService {
-  final Dio _dio = Dio();
-  final String _url = "https://danbooru.donmai.us";
+  final Danbooru _api;
 
-  ScrapperService() {
+  ScrapperService(this._api) {
     final cookieJar = CookieJar();
-    _dio.interceptors.add(CookieManager(cookieJar));
+    _api.dio.interceptors.add(CookieManager(cookieJar));
   }
 
   @override
   Future<Account> crawlAccountData(String username, String password) async {
     //TODO: handle http error i.e 502
-    final loginResponse = await _dio.get(_url + "/login");
+    var url = Uri.https(_api.url, "/login").toString();
+    final loginResponse = await _api.dio.get(url);
     final loginHtml = loginResponse.data.toString();
     final loginDocument = html.parse(loginHtml);
 
@@ -37,7 +37,8 @@ class ScrapperService implements IScrapperService {
 
     try {
       print("Post login forms");
-      final sessionResponse = await _dio.post(_url + "/session",
+      url = Uri.https(_api.url, "/session").toString();
+      final sessionResponse = await _api.dio.post(url,
           data: content,
           options: Options(
             contentType: Headers.formUrlEncodedContentType,
@@ -49,7 +50,8 @@ class ScrapperService implements IScrapperService {
     }
 
     print("Get to user profile");
-    final profileResponse = await _dio.get(_url + "/profile");
+    url = Uri.https(_api.url, "/profile").toString();
+    final profileResponse = await _api.dio.get(url);
     final profileHtml = profileResponse.data.toString();
     final profileDocument = html.parse(profileHtml);
 
@@ -58,7 +60,8 @@ class ScrapperService implements IScrapperService {
         .attributes["data-current-user-id"];
 
     print("Get to user api key view");
-    final apiKeyViewResponse = await _dio.get(_url + "/users/$userId/api_key");
+    url = Uri.https(_api.url, "/users/$userId/api_key").toString();
+    final apiKeyViewResponse = await _api.dio.get(url);
     final apiKeyViewHtml = apiKeyViewResponse.data.toString();
     final apiKeyViewDocument = html.parse(apiKeyViewHtml);
 
@@ -73,13 +76,16 @@ class ScrapperService implements IScrapperService {
     };
 
     print("Get to user api key page");
-    final apiKeyResponse = await _dio.post(_url + "/users/$userId/api_key/view",
-        data: apiKeyViewContent,
-        options: Options(
-          contentType: Headers.formUrlEncodedContentType,
-          followRedirects: false,
-          validateStatus: (status) => status < 500,
-        ));
+    url = Uri.https(_api.url, "/users/$userId/api_key/view").toString();
+    final apiKeyResponse = await _api.dio.post(
+      url,
+      data: apiKeyViewContent,
+      options: Options(
+        contentType: Headers.formUrlEncodedContentType,
+        followRedirects: false,
+        validateStatus: (status) => status < 500,
+      ),
+    );
     final apiKeyHtml = apiKeyResponse.data.toString();
     final apiKeyDocument = html.parse(apiKeyHtml);
     final apiKey = apiKeyDocument.documentElement
