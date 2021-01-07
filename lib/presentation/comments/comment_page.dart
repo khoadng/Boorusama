@@ -1,7 +1,9 @@
+import 'package:animations/animations.dart';
 import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
 import 'package:boorusama/application/users/bloc/user_list_bloc.dart';
 import 'package:boorusama/domain/comments/comment.dart';
 import 'package:boorusama/domain/users/user.dart';
+import 'package:boorusama/presentation/comments/comment_update_page.dart';
 import 'package:boorusama/presentation/comments/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,7 +26,6 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   List<User> _users = <User>[];
-  final GlobalKey _fabKey = GlobalKey();
   bool _showDeleted = false;
   List<Comment> _comments = <Comment>[];
   List<Comment> _commentsWithDeleted = <Comment>[];
@@ -59,7 +60,15 @@ class _CommentPageState extends State<CommentPage> {
         ),
         body: SafeArea(
           child: Scaffold(
-            floatingActionButton: _fab,
+            floatingActionButton: OpenContainer(
+              closedColor: Colors.transparent,
+              closedBuilder: (context, action) => FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: null,
+              ),
+              openBuilder: (context, action) =>
+                  EditorPage(postId: widget.postId),
+            ),
             body: Column(
               children: <Widget>[
                 Expanded(
@@ -125,21 +134,69 @@ class _CommentPageState extends State<CommentPage> {
       return Container(
         padding: const EdgeInsets.all(8.0),
         child: ListView.builder(
-          itemBuilder: (context, index) => ListTile(
-            onLongPress: () => showMaterialModalBottomSheet(
-              context: context,
-              builder: (context, controller) => ModalFit(),
-            ),
-            title: CommentItem(
-              comment: comments[index],
-              user: _users.isNotEmpty
-                  ? _users
-                      .where((user) => user.id == comments[index].creatorId)
-                      .first
-                  : User.placeholder(),
-            ),
-          ),
-          itemCount: _comments.length,
+          itemBuilder: (context, index) {
+            final comment = comments[index];
+            return ListTile(
+              onLongPress: () => showMaterialModalBottomSheet(
+                context: context,
+                builder: (context, controller) => Material(
+                  child: SafeArea(
+                    top: false,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          title: Text('Edit'),
+                          leading: Icon(Icons.edit),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                pageBuilder:
+                                    (context, animation, secondaryAnimation) =>
+                                        CommentUpdatePage(
+                                  postId: widget.postId,
+                                  commentId: comment.id,
+                                  initialContent: comment.body,
+                                ),
+                                transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) =>
+                                    SharedAxisTransition(
+                                  child: child,
+                                  animation: animation,
+                                  secondaryAnimation: secondaryAnimation,
+                                  transitionType:
+                                      SharedAxisTransitionType.scaled,
+                                ),
+                                transitionDuration: Duration(milliseconds: 500),
+                              ),
+                            );
+                          },
+                        ),
+                        ListTile(
+                          title: Text('Reply'),
+                          leading: Icon(Icons.folder_open),
+                          onTap: () => Navigator.of(context).pop(),
+                        ),
+                        ListTile(
+                          title: Text('Delete'),
+                          leading: Icon(Icons.delete),
+                          onTap: () => Navigator.of(context).pop(),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              title: CommentItem(
+                comment: comment,
+                user: _users.isNotEmpty
+                    ? _users.where((user) => user.id == comment.creatorId).first
+                    : User.placeholder(),
+              ),
+            );
+          },
+          itemCount: comments.length,
         ),
       );
     } else {
@@ -147,40 +204,6 @@ class _CommentPageState extends State<CommentPage> {
         child: Text("There are no comments."),
       );
     }
-  }
-
-  Widget get _fab {
-    return AnimatedBuilder(
-      animation: ModalRoute.of(context).animation,
-      child: FloatingActionButton(
-        key: _fabKey,
-        child: Icon(Icons.add),
-        onPressed: () => Navigator.of(context).push(
-          _route(),
-        ),
-      ),
-      builder: (BuildContext context, Widget fab) {
-        final Animation<double> animation = ModalRoute.of(context).animation;
-        return SizedBox(
-          width: 54 * animation.value,
-          height: 54 * animation.value,
-          child: fab,
-        );
-      },
-    );
-  }
-
-  Route<dynamic> _route() {
-    final RenderBox box = _fabKey.currentContext.findRenderObject();
-    final Rect rect = box.localToGlobal(Offset.zero) & box.size;
-
-    return PageRouteBuilder<void>(
-      pageBuilder: (BuildContext context, _, __) => EditorPage(
-        sourceRect: rect,
-        postId: widget.postId,
-      ),
-      transitionDuration: const Duration(milliseconds: 350),
-    );
   }
 
   void _toggleDeletedComments() {
@@ -195,37 +218,5 @@ class _CommentPageState extends State<CommentPage> {
         _showDeleted = true;
       });
     }
-  }
-}
-
-class ModalFit extends StatelessWidget {
-  const ModalFit({Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-        child: SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          ListTile(
-            title: Text('Edit'),
-            leading: Icon(Icons.edit),
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          ListTile(
-            title: Text('Reply'),
-            leading: Icon(Icons.folder_open),
-            onTap: () => Navigator.of(context).pop(),
-          ),
-          ListTile(
-            title: Text('Delete'),
-            leading: Icon(Icons.delete),
-            onTap: () => Navigator.of(context).pop(),
-          )
-        ],
-      ),
-    ));
   }
 }

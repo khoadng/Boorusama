@@ -2,26 +2,33 @@ import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class EditorPage extends StatefulWidget {
-  const EditorPage({
+class CommentUpdatePage extends StatefulWidget {
+  const CommentUpdatePage({
     Key key,
     @required this.postId,
+    @required this.commentId,
+    this.initialContent,
   }) : super(key: key);
 
   final int postId;
+  final int commentId;
+  final String initialContent;
 
   @override
-  _EditorPageState createState() => _EditorPageState();
+  _CommentUpdatePageState createState() => _CommentUpdatePageState();
 }
 
-class _EditorPageState extends State<EditorPage> {
+class _CommentUpdatePageState extends State<CommentUpdatePage> {
   String _subject = '';
   TextEditingController _textEditingController;
+  String _initialContent = "";
 
   @override
   void initState() {
     super.initState();
     _textEditingController = TextEditingController();
+    _initialContent = widget.initialContent ?? "";
+    _textEditingController.text = _initialContent;
   }
 
   @override
@@ -103,9 +110,7 @@ class _EditorPageState extends State<EditorPage> {
           BlocListener<CommentBloc, CommentState>(
             listener: (context, state) {
               state.maybeWhen(
-                addedSuccess: () {
-                  Navigator.of(context).pop();
-                },
+                updatedSuccess: () => Navigator.of(context).pop(),
                 loading: () => Scaffold.of(context)
                     .showSnackBar(SnackBar(content: Text("Please wait..."))),
                 error: () => Scaffold.of(context)
@@ -117,13 +122,14 @@ class _EditorPageState extends State<EditorPage> {
                 onPressed: () {
                   FocusScope.of(context).unfocus();
                   BlocProvider.of<CommentBloc>(context).add(
-                    CommentEvent.added(
+                    CommentEvent.updated(
+                      commentId: widget.commentId,
                       postId: widget.postId,
                       content: _textEditingController.text,
                     ),
                   );
                 },
-                icon: Icon(Icons.send)),
+                icon: Icon(Icons.save)),
           ),
         ],
       ),
