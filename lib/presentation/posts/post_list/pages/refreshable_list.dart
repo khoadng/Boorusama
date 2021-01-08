@@ -36,58 +36,58 @@ class _RefreshableListState extends State<RefreshableList> {
         // the NestedScrollView, so that sliverOverlapAbsorberHandleFor() can
         // find the NestedScrollView.
         builder: (BuildContext context) {
-          if (widget.posts.isNotEmpty) {
-            return BlocListener<PostSearchBloc, PostSearchState>(
-              listener: (context, state) {
-                state.maybeWhen(
-                  success: (posts, query, page) {
-                    _refreshController.refreshCompleted();
-                    _refreshController.loadComplete();
-                  },
-                  orElse: () {},
-                );
-              },
-              child: _buildSmartRefresher(
-                context,
-                widget.posts,
-              ),
-            );
-          } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          return BlocListener<PostSearchBloc, PostSearchState>(
+            listener: (context, state) {
+              state.maybeWhen(
+                success: (posts, query, page) {
+                  _refreshController.refreshCompleted();
+                  _refreshController.loadComplete();
+                },
+                orElse: () {},
+              );
+            },
+            child: _buildBody(
+              context,
+              widget.posts,
+            ),
+          );
         },
       ),
     );
   }
 
-  Widget _buildSmartRefresher(BuildContext context, List<Post> posts) {
-    return SmartRefresher(
-      controller: _refreshController,
-      enablePullUp: true,
-      enablePullDown: true,
-      header: const WaterDropMaterialHeader(),
-      footer: const ClassicFooter(),
-      onRefresh: () => widget.onRefresh(),
-      onLoading: () => widget.onLoadMore(),
-      child: CustomScrollView(
-        slivers: <Widget>[
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Container(
-                  padding: EdgeInsets.all(2.0),
-                ),
-              ],
+  Widget _buildBody(BuildContext context, List<Post> posts) {
+    if (posts.isNotEmpty) {
+      return SmartRefresher(
+        controller: _refreshController,
+        enablePullUp: true,
+        enablePullDown: true,
+        header: const WaterDropMaterialHeader(),
+        footer: const ClassicFooter(),
+        onRefresh: () => widget.onRefresh(),
+        onLoading: () => widget.onLoadMore(),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Container(
+                    padding: EdgeInsets.all(2.0),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SliverPostList(
-            length: posts.length,
-            posts: posts,
-          ),
-        ],
-      ),
-    );
+            SliverPostList(
+              length: posts.length,
+              posts: posts,
+            ),
+          ],
+        ),
+      );
+    } else {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
   }
 }

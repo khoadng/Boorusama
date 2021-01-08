@@ -50,8 +50,8 @@ class _BrowseAllPageState extends State<BrowseAllPage>
 
   void _handleSearched(String query) {
     _currentSearchQuery = query;
-    // _currentPage = 1;
-    // _posts.clear();
+    _currentPage = 1;
+    _posts.clear();
     if (_scrollController.hasClients) {
       _scrollController.jumpTo(0.0);
     }
