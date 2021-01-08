@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
@@ -42,6 +43,9 @@ void main() async {
 
   final apiProvider = Danbooru(Dio());
   final accountRepository = AccountRepository(accountDb);
+
+  final dio = Dio();
+  final api = DanbooruApi(dio, baseUrl: "https://danbooru.donmai.us/");
 
   final settingRepository = SettingRepository(
     SharedPreferences.getInstance(),
@@ -86,8 +90,7 @@ void main() async {
         noteRepository: NoteRepository(apiProvider),
         commentRepository: CommentRepository(apiProvider, accountRepository),
         userRepository: UserRepository(apiProvider, accountRepository),
-        favoritePostRepository:
-            FavoritePostRepository(apiProvider, accountRepository),
+        favoritePostRepository: FavoritePostRepository(api, accountRepository),
         settingRepository: settingRepository,
         wikiRepository: WikiRepository(apiProvider),
       ),
