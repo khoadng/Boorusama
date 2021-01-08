@@ -13,4 +13,24 @@ abstract class IApi {
     String apiKey,
     String method,
   );
+
+  Future<HttpResponse> getComments(
+    int postId,
+    int limit,
+  );
+
+  Future<HttpResponse> postComment(
+    String login,
+    String apiKey,
+    int postId,
+    String content,
+    bool doNotBumpPost,
+  );
+
+  Future<HttpResponse> updateComment(
+    String login,
+    String apiKey,
+    int commentId,
+    String content,
+  );
 }

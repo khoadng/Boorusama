@@ -11,6 +11,7 @@ import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/infrastructure/repositories/wikis/wiki_repository.dart';
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -44,8 +45,10 @@ void main() async {
   final apiProvider = Danbooru(Dio());
   final accountRepository = AccountRepository(accountDb);
 
+  final url = "https://danbooru.donmai.us/";
   final dio = Dio();
-  final api = DanbooruApi(dio, baseUrl: "https://danbooru.donmai.us/");
+  dio.interceptors.add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
+  final api = DanbooruApi(dio, baseUrl: url);
 
   final settingRepository = SettingRepository(
     SharedPreferences.getInstance(),
@@ -88,7 +91,7 @@ void main() async {
         downloadService: DownloadService(FileNameGenerator()),
         accountRepository: accountRepository,
         noteRepository: NoteRepository(apiProvider),
-        commentRepository: CommentRepository(apiProvider, accountRepository),
+        commentRepository: CommentRepository(api, accountRepository),
         userRepository: UserRepository(apiProvider, accountRepository),
         favoritePostRepository: FavoritePostRepository(api, accountRepository),
         settingRepository: settingRepository,
