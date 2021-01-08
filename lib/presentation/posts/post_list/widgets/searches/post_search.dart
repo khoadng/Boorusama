@@ -79,9 +79,19 @@ class PostSearch extends SearchDelegate {
               )
             ]);
           } else {
-            return Center(
-              child: CircularProgressIndicator(),
-            );
+            return Stack(children: <Widget>[
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+              Positioned(
+                bottom: 30.0,
+                right: 30.0,
+                child: FloatingActionButton(
+                  onPressed: () => _submit(context, query),
+                  child: Icon(Icons.search),
+                ),
+              )
+            ]);
           }
         },
       );
