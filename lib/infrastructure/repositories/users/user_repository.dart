@@ -21,7 +21,14 @@ class UserRepository implements IUserRepository {
 
     var users = List<User>();
     try {
-      final respond = await _api.dio.get(uri.toString());
+      final respond = await _api.dio.get(
+        uri.toString(),
+        options: buildCacheOptions(
+          Duration(
+            days: 7,
+          ),
+        ),
+      );
 
       for (var item in respond.data) {
         try {
