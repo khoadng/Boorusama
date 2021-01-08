@@ -3,12 +3,14 @@ import 'package:boorusama/domain/users/i_user_repository.dart';
 import 'package:boorusama/domain/users/user.dart';
 import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 
 class UserRepository implements IUserRepository {
   final Danbooru _api;
   final IAccountRepository _accountRepository;
 
   UserRepository(this._api, this._accountRepository);
+
   @override
   Future<List<User>> getUsersByIdStringComma(String idComma) async {
     //TODO: should hardcode limit parameter
@@ -49,7 +51,14 @@ class UserRepository implements IUserRepository {
 
     var users = List<User>();
     try {
-      final respond = await _api.dio.get(uri.toString());
+      final respond = await _api.dio.get(
+        uri.toString(),
+        options: buildCacheOptions(
+          Duration(
+            days: 90,
+          ),
+        ),
+      );
 
       try {
         users.add(User.fromJson(respond.data));
