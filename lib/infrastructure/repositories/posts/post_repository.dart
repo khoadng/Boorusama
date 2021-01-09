@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/domain/posts/post_dto.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
@@ -15,7 +16,7 @@ class PostRepository implements IPostRepository {
   PostRepository(this._api, this._accountRepository, this._settingRepository);
 
   @override
-  Future<List<Post>> getPosts(String tagString, int page) async {
+  Future<List<PostDto>> getPosts(String tagString, int page) async {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();
 
@@ -51,7 +52,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<Post>> getPopularPosts(
+  Future<List<PostDto>> getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale,
@@ -92,7 +93,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<Post>> getCuratedPosts(
+  Future<List<PostDto>> getCuratedPosts(
     DateTime date,
     int page,
     TimeScale scale,
@@ -134,7 +135,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<Post>> getMostViewedPosts(
+  Future<List<PostDto>> getMostViewedPosts(
     DateTime date,
   ) async {
     final account = await _accountRepository.get();
@@ -169,18 +170,14 @@ class PostRepository implements IPostRepository {
   }
 }
 
-List<Post> parsePosts(Map<String, dynamic> data) {
-  var posts = List<Post>();
-  var settings = data["settings"];
+List<PostDto> parsePosts(Map<String, dynamic> data) {
+  var posts = List<PostDto>();
   var json = data["data"];
 
   for (var item in json) {
     try {
-      var post = Post.fromJson(item);
-
-      if (!post.containsBlacklistedTag(settings.blacklistedTags)) {
-        posts.add(post);
-      }
+      var post = PostDto.fromJson(item);
+      posts.add(post);
     } catch (e) {
       print("Cant parse ${item['id']}");
     }

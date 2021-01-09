@@ -148,7 +148,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
             minHeight: 60,
             panel: PostDetailPage(
               post: widget.posts[_currentPostIndex],
-              postHeroTag: widget.postHeroTag,
               tags: _tags,
             ),
             body: PostListSwipe(

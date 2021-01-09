@@ -1,0 +1,31 @@
+include: package:lint/analysis_options.yaml
+
+linter:
+  rules:
+    # ------ Enable individual rules ------ #
+    #                 ---                   #
+    # These rules here are good but too     #
+    # opinionated to enable them by default #
+    # ------------------------------------- #
+
+    # Make constructors the first thing in every class
+    sort_constructors_first: true
+
+    # Blindly follow the Flutter code style, which prefers types everywhere
+    always_specify_types: true
+  
+    # Back to the 80s
+    lines_longer_than_80_chars: true
+
+    # Use same identifier returned from json response, I'm lazy
+    non_constant_identifier_names: false
+
+analyzer:
+  errors:
+    missing_required_param: error
+    parameter_assignments: error
+    missing_return: error
+      
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"

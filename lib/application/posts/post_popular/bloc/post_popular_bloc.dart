@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/domain/posts/post_dto.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
+import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:flutter/foundation.dart';
 import 'package:meta/meta.dart';
@@ -15,10 +17,13 @@ part 'post_popular_bloc.freezed.dart';
 
 class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
   final IPostRepository _postRepository;
+  final ISettingRepository _settingRepository;
 
   PostPopularBloc({
     @required IPostRepository postRepository,
+    @required ISettingRepository settingRepository,
   })  : _postRepository = postRepository,
+        _settingRepository = settingRepository,
         super(PostPopularState.empty());
 
   @override
@@ -33,22 +38,52 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
 
   Stream<PostPopularState> _mapRequestedToState(_Requested event) async* {
     yield const PostPopularState.loading();
-    final posts = await _postRepository.getPopularPosts(
+    final dtos = await _postRepository.getPopularPosts(
       event.date,
       event.page,
       event.scale,
     );
-    yield PostPopularState.fetched(posts: posts);
+
+    final settings = await _settingRepository.load();
+    final posts = <Post>[];
+    dtos.forEach((dto) {
+      if (dto.file_url != null &&
+          dto.preview_file_url != null &&
+          dto.large_file_url != null) {
+        posts.add(dto.toEntity());
+      }
+    });
+
+    final filteredPosts = posts
+        .where((post) => !post.containsBlacklistedTag(settings.blacklistedTags))
+        .toList();
+
+    yield PostPopularState.fetched(posts: filteredPosts);
   }
 
   Stream<PostPopularState> _mapMoreRequestedToState(
       _MoreRequested event) async* {
     yield const PostPopularState.additionalLoading();
-    final posts = await _postRepository.getPopularPosts(
+    final dtos = await _postRepository.getPopularPosts(
       event.date,
       event.page,
       event.scale,
     );
-    yield PostPopularState.additionalFetched(posts: posts);
+
+    final settings = await _settingRepository.load();
+    final posts = <Post>[];
+    dtos.forEach((dto) {
+      if (dto.file_url != null &&
+          dto.preview_file_url != null &&
+          dto.large_file_url != null) {
+        posts.add(dto.toEntity());
+      }
+    });
+
+    final filteredPosts = posts
+        .where((post) => !post.containsBlacklistedTag(settings.blacklistedTags))
+        .toList();
+
+    yield PostPopularState.additionalFetched(posts: filteredPosts);
   }
 }

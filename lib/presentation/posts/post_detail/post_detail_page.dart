@@ -8,43 +8,53 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class PostDetailPage extends StatelessWidget {
+class PostDetailPage extends StatefulWidget {
   final Post post;
-  final String postHeroTag;
   final List<Tag> tags;
 
   const PostDetailPage({
     Key key,
     @required this.post,
     @required this.tags,
-    @required this.postHeroTag,
   }) : super(key: key);
+
+  @override
+  _PostDetailPageState createState() => _PostDetailPageState();
+}
+
+class _PostDetailPageState extends State<PostDetailPage> {
+  int _favCount;
+
+  @override
+  void initState() {
+    super.initState();
+    _favCount = widget.post.favCount;
+  }
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        PostTagList(tags: tags),
+        PostTagList(tags: widget.tags),
         ButtonBar(
           children: <Widget>[
             LikeButton(
-              isLiked: post.isFavorited,
-              likeCount: post.favCount,
+              likeCount: _favCount,
               onTap: (isLiked) {
                 //TODO: check for success here
                 if (!isLiked) {
                   context
                       .read<PostFavoritesBloc>()
-                      .add(PostFavoritesEvent.added(postId: post.id));
-                  post.isFavorited = true;
-                  post.favCount++;
+                      .add(PostFavoritesEvent.added(postId: widget.post.id));
+                  // post.isFavorited = true;
+                  _favCount++;
                   return Future(() => true);
                 } else {
                   context
                       .read<PostFavoritesBloc>()
-                      .add(PostFavoritesEvent.removed(postId: post.id));
-                  post.isFavorited = false;
-                  post.favCount--;
+                      .add(PostFavoritesEvent.removed(postId: widget.post.id));
+                  // widget.post.isFavorited = false;
+                  _favCount--;
                   return Future(() => false);
                 }
               },
@@ -56,7 +66,7 @@ class PostDetailPage extends StatelessWidget {
                   expand: false,
                   context: context,
                   builder: (context, controller) => CommentPage(
-                    postId: post.id,
+                    postId: widget.post.id,
                   ),
                 );
               },

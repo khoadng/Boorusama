@@ -31,14 +31,14 @@ class SliverPostList extends StatelessWidget {
             imageUrl: post.previewImageUri.toString(),
           );
 
-          if (post.isFavorited) {
-            items.add(
-              Icon(
-                Icons.favorite,
-                color: Colors.redAccent,
-              ),
-            );
-          }
+          // if (post.isFavorited) {
+          //   items.add(
+          //     Icon(
+          //       Icons.favorite,
+          //       color: Colors.redAccent,
+          //     ),
+          //   );
+          // }
 
           if (post.isAnimated) {
             items.add(

@@ -80,6 +80,7 @@ void main() async {
           BlocProvider(
             create: (_) => PostSearchBloc(
               postRepository: postRepository,
+              settingRepository: settingRepository,
             ),
           ),
         ],

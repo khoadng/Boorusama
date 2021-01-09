@@ -88,7 +88,10 @@ class _AppState extends State<App> {
             create: (_) => TagListBloc(widget.tagRepository)),
         BlocProvider<PostFavoritesBloc>(
             create: (_) => PostFavoritesBloc(
-                widget.postRepository, widget.favoritePostRepository)),
+                  widget.postRepository,
+                  widget.favoritePostRepository,
+                  widget.settingRepository,
+                )),
         BlocProvider<CommentBloc>(
             create: (_) =>
                 CommentBloc(commentRepository: widget.commentRepository)),
@@ -105,14 +108,20 @@ class _AppState extends State<App> {
         ),
         BlocProvider<WikiBloc>(create: (_) => WikiBloc(widget.wikiRepository)),
         BlocProvider<PostPopularBloc>(
-            create: (_) =>
-                PostPopularBloc(postRepository: widget.postRepository)),
+            create: (_) => PostPopularBloc(
+                  postRepository: widget.postRepository,
+                  settingRepository: widget.settingRepository,
+                )),
         BlocProvider<PostCuratedBloc>(
-            create: (_) =>
-                PostCuratedBloc(postRepository: widget.postRepository)),
+            create: (_) => PostCuratedBloc(
+                  postRepository: widget.postRepository,
+                  settingRepository: widget.settingRepository,
+                )),
         BlocProvider<PostMostViewedBloc>(
-            create: (_) =>
-                PostMostViewedBloc(postRepository: widget.postRepository)),
+            create: (_) => PostMostViewedBloc(
+                  postRepository: widget.postRepository,
+                  settingRepository: widget.settingRepository,
+                )),
         BlocProvider<ThemeBloc>(
             create: (_) => ThemeBloc()
               ..add(ThemeChanged(theme: widget.settings.themeMode))),
