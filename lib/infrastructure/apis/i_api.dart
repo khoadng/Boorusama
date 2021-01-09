@@ -89,4 +89,15 @@ abstract class IApi {
     String order,
     int limit,
   );
+
+  Future<HttpResponse> getUsersByIdStringComma(
+    String idComma,
+    int limit,
+  );
+
+  Future<HttpResponse> getUserById(
+    String login,
+    String apiKey,
+    int id,
+  );
 }

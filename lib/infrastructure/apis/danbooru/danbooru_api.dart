@@ -132,4 +132,27 @@ abstract class DanbooruApi implements IApi {
     @Query("search[order]") String order,
     @Query("limit") int limit,
   );
+
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
+  })
+  @GET("/users.json")
+  @override
+  Future<HttpResponse> getUsersByIdStringComma(
+    @Query("search[id]") String idComma,
+    @Query("search[hide_empty]") int limit,
+  );
+
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(days: 90),
+  })
+  @GET("/users/{id}.json")
+  @override
+  Future<HttpResponse> getUserById(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Path() int id,
+  );
 }

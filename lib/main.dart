@@ -92,7 +92,7 @@ void main() async {
         accountRepository: accountRepository,
         noteRepository: NoteRepository(api),
         commentRepository: CommentRepository(api, accountRepository),
-        userRepository: UserRepository(apiProvider, accountRepository),
+        userRepository: UserRepository(api, accountRepository),
         favoritePostRepository: FavoritePostRepository(api, accountRepository),
         settingRepository: settingRepository,
         wikiRepository: WikiRepository(apiProvider),
