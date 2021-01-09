@@ -90,7 +90,7 @@ void main() async {
         tagRepository: TagRepository(apiProvider, accountRepository),
         downloadService: DownloadService(FileNameGenerator()),
         accountRepository: accountRepository,
-        noteRepository: NoteRepository(apiProvider),
+        noteRepository: NoteRepository(api),
         commentRepository: CommentRepository(api, accountRepository),
         userRepository: UserRepository(apiProvider, accountRepository),
         favoritePostRepository: FavoritePostRepository(api, accountRepository),

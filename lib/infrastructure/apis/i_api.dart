@@ -33,4 +33,8 @@ abstract class IApi {
     int commentId,
     String content,
   );
+
+  Future<HttpResponse> getNotes(
+    int postId,
+  );
 }

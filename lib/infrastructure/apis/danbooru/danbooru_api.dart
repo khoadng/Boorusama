@@ -53,4 +53,10 @@ abstract class DanbooruApi implements IApi {
     @Path() int commentId,
     @Field("comment[body]") String content,
   );
+
+  @GET("/posts/{postId}")
+  @override
+  Future<HttpResponse> getNotes(
+    @Path() int postId,
+  );
 }
