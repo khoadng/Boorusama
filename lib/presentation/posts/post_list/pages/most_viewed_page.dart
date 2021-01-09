@@ -41,6 +41,7 @@ class _MostViewedPageState extends State<MostViewedPage>
       bottom: false,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
+          heroTag: null,
           onPressed: () {
             DatePicker.showDatePicker(
               context,

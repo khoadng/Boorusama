@@ -45,6 +45,7 @@ class _CuratedPageState extends State<CuratedPage>
       bottom: false,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
+          heroTag: null,
           onPressed: () {
             DatePicker.showDatePicker(
               context,

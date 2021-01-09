@@ -119,6 +119,7 @@ class _BrowseAllPageState extends State<BrowseAllPage>
         child: Scaffold(
           floatingActionButton: FloatingActionButton(
             onPressed: _downloadAllPosts,
+            heroTag: null,
             child: Icon(Icons.download_sharp),
           ),
           body: RefreshableList(

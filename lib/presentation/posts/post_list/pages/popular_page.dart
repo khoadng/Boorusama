@@ -45,6 +45,7 @@ class _PopularPageState extends State<PopularPage>
       bottom: false,
       child: Scaffold(
         floatingActionButton: FloatingActionButton(
+          heroTag: null,
           onPressed: () {
             DatePicker.showDatePicker(
               context,

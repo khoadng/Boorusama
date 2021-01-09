@@ -15,14 +15,12 @@ class PostImage extends StatefulWidget {
       {@required this.post,
       this.onLongPressed,
       this.onNoteVisibleChanged,
-      this.postHeroTag,
       @required this.controller});
 
   final ValueChanged<bool> onNoteVisibleChanged;
   final Function onLongPressed;
   final Post post;
   final PostImageController controller;
-  final String postHeroTag;
 
   @override
   _PostImageState createState() => _PostImageState();
@@ -76,9 +74,7 @@ class _PostImageState extends State<PostImage> {
         valueListenable: notesVisible,
         builder: (context, value, child) => Stack(
           children: <Widget>[
-            Hero(
-                tag: widget.postHeroTag,
-                child: _Image(imageUrl: widget.post.normalImageUri.toString())),
+            _Image(imageUrl: widget.post.normalImageUri.toString()),
             if (value) ...buildNotes(),
           ],
         ),

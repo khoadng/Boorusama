@@ -75,10 +75,9 @@ class SliverPostList extends StatelessWidget {
                   builder: (context) => PostListSwipePage(
                     posts: posts,
                     initialPostIndex: index,
-                    postHeroTag: "postImageHero$index",
                   ),
                 )),
-                child: Hero(tag: "postImageHero$index", child: image),
+                child: image,
               ),
               Align(
                 alignment: Alignment.topLeft,

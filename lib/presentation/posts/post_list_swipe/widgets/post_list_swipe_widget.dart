@@ -11,7 +11,6 @@ class PostListSwipe extends StatefulWidget {
       @required this.posts,
       @required this.postImageController,
       this.initialPostIndex,
-      this.postHeroTag,
       this.onPostChanged})
       : super(key: key);
 
@@ -19,7 +18,6 @@ class PostListSwipe extends StatefulWidget {
   final int initialPostIndex;
   final ValueChanged<int> onPostChanged;
   final PostImageController postImageController;
-  final String postHeroTag;
 
   @override
   _PostListSwipeState createState() => _PostListSwipeState();
@@ -51,7 +49,6 @@ class _PostListSwipeState extends State<PostListSwipe> {
           return PostVideo(post: post);
         } else {
           var _postImage = PostImage(
-            postHeroTag: widget.postHeroTag,
             controller: widget.postImageController,
             post: post,
             onLongPressed: () {},

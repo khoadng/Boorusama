@@ -12,13 +12,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 class PostListSwipePage extends StatefulWidget {
-  PostListSwipePage(
-      {Key key, @required this.posts, this.initialPostIndex, this.postHeroTag})
-      : super(key: key);
+  PostListSwipePage({
+    Key key,
+    @required this.posts,
+    this.initialPostIndex,
+  }) : super(key: key);
 
   final List<Post> posts;
   final int initialPostIndex;
-  final String postHeroTag;
 
   @override
   _PostListSwipePageState createState() => _PostListSwipePageState();
@@ -151,7 +152,6 @@ class _PostListSwipePageState extends State<PostListSwipePage> {
               tags: _tags,
             ),
             body: PostListSwipe(
-              postHeroTag: widget.postHeroTag,
               postImageController: _postImageController,
               posts: widget.posts,
               onPostChanged: (value) {
