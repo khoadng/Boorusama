@@ -1,7 +1,7 @@
-import 'package:boorusama/domain/comments/comment.dart';
+import 'comment_dto.dart';
 
 abstract class ICommentRepository {
-  Future<List<Comment>> getCommentsFromPostId(int postId);
+  Future<List<CommentDto>> getCommentsFromPostId(int postId);
   Future<bool> postComment(int postId, String content);
   Future<bool> updateComment(int commentId, String content);
 }

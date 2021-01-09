@@ -1,5 +1,5 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/domain/comments/comment.dart';
+import 'package:boorusama/domain/comments/comment_dto.dart';
 import 'package:boorusama/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:dio/dio.dart';
@@ -11,14 +11,14 @@ class CommentRepository implements ICommentRepository {
   CommentRepository(this._api, this._accountRepository);
 
   @override
-  Future<List<Comment>> getCommentsFromPostId(int postId) =>
+  Future<List<CommentDto>> getCommentsFromPostId(int postId) =>
       _api.getComments(postId, 1000).then((value) {
         final data = value.response.data;
-        var comments = List<Comment>();
+        var comments = List<CommentDto>();
 
         for (var item in data) {
           try {
-            comments.add(Comment.fromJson(item));
+            comments.add(CommentDto.fromJson(item));
           } catch (e) {
             print("Cant parse ${item['id']}");
           }
@@ -31,7 +31,7 @@ class CommentRepository implements ICommentRepository {
             break;
           default:
         }
-        return List<Comment>();
+        return List<CommentDto>();
       });
 
   @override

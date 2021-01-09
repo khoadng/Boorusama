@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/domain/comments/comment.dart';
+import 'package:boorusama/domain/comments/comment_dto.dart';
 import 'package:boorusama/domain/comments/i_comment_repository.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -30,8 +31,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
   Stream<CommentState> _mapRequestedToState(_Requested event) async* {
     yield const CommentState.loading();
-    final comments =
-        await _commentRepository.getCommentsFromPostId(event.postId);
+    final dtos = await _commentRepository.getCommentsFromPostId(event.postId);
+    final comments = <Comment>[];
+    dtos.forEach((dto) => comments.add(dto.toEntity()));
     yield CommentState.fetched(comments: comments);
   }
 
@@ -45,8 +47,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     }
 
     yield CommentState.addedSuccess();
-    final comments =
-        await _commentRepository.getCommentsFromPostId(event.postId);
+    final dtos = await _commentRepository.getCommentsFromPostId(event.postId);
+    final comments = <Comment>[];
+    dtos.forEach((dto) => comments.add(dto.toEntity()));
     yield CommentState.fetched(comments: comments);
   }
 
@@ -60,8 +63,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     }
 
     yield CommentState.updatedSuccess();
-    final comments =
-        await _commentRepository.getCommentsFromPostId(event.postId);
+    final dtos = await _commentRepository.getCommentsFromPostId(event.postId);
+    final comments = <Comment>[];
+    dtos.forEach((dto) => comments.add(dto.toEntity()));
     yield CommentState.fetched(comments: comments);
   }
 }
