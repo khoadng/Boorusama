@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/comments/comment_repository.dart';
@@ -42,12 +41,11 @@ void main() async {
 
   Bloc.observer = SimpleBlocObserver();
 
-  final apiProvider = Danbooru(Dio());
   final accountRepository = AccountRepository(accountDb);
 
   final url = "https://danbooru.donmai.us/";
-  final dio = Dio();
-  dio.interceptors.add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
+  final dio = Dio()
+    ..interceptors.add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
   final api = DanbooruApi(dio, baseUrl: url);
 
   final settingRepository = SettingRepository(
@@ -63,40 +61,43 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  runApp(MultiProvider(
-    providers: [
-      Provider<SettingRepository>(
-        create: (context) => settingRepository,
-      )
-    ],
-    child: MultiBlocProvider(
+  runApp(
+    MultiProvider(
       providers: [
-        BlocProvider<AuthenticationBloc>(
-          lazy: false,
-          create: (_) => AuthenticationBloc(
-            scrapperService: ScrapperService(apiProvider),
-            accountRepository: accountRepository,
-          )..add(AuthenticationRequested()),
-        ),
-        BlocProvider(
-          create: (_) => PostSearchBloc(
-            postRepository: postRepository,
-          ),
-        ),
+        Provider<SettingRepository>(
+          create: (context) => settingRepository,
+        )
       ],
-      child: App(
-        settings: settings,
-        postRepository: postRepository,
-        tagRepository: TagRepository(api, accountRepository),
-        downloadService: DownloadService(FileNameGenerator()),
-        accountRepository: accountRepository,
-        noteRepository: NoteRepository(api),
-        commentRepository: CommentRepository(api, accountRepository),
-        userRepository: UserRepository(api, accountRepository),
-        favoritePostRepository: FavoritePostRepository(api, accountRepository),
-        settingRepository: settingRepository,
-        wikiRepository: WikiRepository(api),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<AuthenticationBloc>(
+            lazy: false,
+            create: (_) => AuthenticationBloc(
+              scrapperService: ScrapperService(url),
+              accountRepository: accountRepository,
+            )..add(AuthenticationRequested()),
+          ),
+          BlocProvider(
+            create: (_) => PostSearchBloc(
+              postRepository: postRepository,
+            ),
+          ),
+        ],
+        child: App(
+          settings: settings,
+          postRepository: postRepository,
+          tagRepository: TagRepository(api, accountRepository),
+          downloadService: DownloadService(FileNameGenerator()),
+          accountRepository: accountRepository,
+          noteRepository: NoteRepository(api),
+          commentRepository: CommentRepository(api, accountRepository),
+          userRepository: UserRepository(api, accountRepository),
+          favoritePostRepository:
+              FavoritePostRepository(api, accountRepository),
+          settingRepository: settingRepository,
+          wikiRepository: WikiRepository(api),
+        ),
       ),
     ),
-  ));
+  );
 }

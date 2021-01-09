@@ -1,34 +1,34 @@
 import 'package:boorusama/application/authentication/services/i_scrapper_service.dart';
 import 'package:boorusama/domain/accounts/account.dart';
-import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
 import 'package:dio/dio.dart';
 import 'package:html/parser.dart' as html;
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:cookie_jar/cookie_jar.dart';
 
 class ScrapperService implements IScrapperService {
-  final Danbooru _api;
+  final String _url;
+  Dio _client;
 
-  ScrapperService(this._api) {
+  ScrapperService(this._url) {
     final cookieJar = CookieJar();
-    _api.dio.interceptors.add(CookieManager(cookieJar));
+    _client = Dio()..options.baseUrl = _url;
+    _client.interceptors.add(CookieManager(cookieJar));
   }
 
   @override
   Future<Account> crawlAccountData(String username, String password) async {
     //TODO: handle http error i.e 502
-    var url = Uri.https(_api.url, "/login").toString();
-    final loginResponse = await _api.dio.get(url);
+    final loginResponse = await _client.get("$_url/login");
     final loginHtml = loginResponse.data.toString();
     final loginDocument = html.parse(loginHtml);
 
     print("Get login token");
-    final authenticity_token = loginDocument.documentElement
+    final authenticityToken = loginDocument.documentElement
         .querySelector("meta[name='csrf-token']")
         .attributes["content"];
 
     final content = {
-      "authenticity_token": authenticity_token,
+      "authenticity_token": authenticityToken,
       "session[url]": "",
       "session[name]": username,
       "session[password]": password,
@@ -37,12 +37,13 @@ class ScrapperService implements IScrapperService {
 
     try {
       print("Post login forms");
-      url = Uri.https(_api.url, "/session").toString();
-      final sessionResponse = await _api.dio.post(url,
-          data: content,
-          options: Options(
-            contentType: Headers.formUrlEncodedContentType,
-          ));
+      await _client.post(
+        "$_url/session",
+        data: content,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
     } on DioError catch (e) {
       if (e.response.statusCode == 401) {
         throw InvalidUsernameOrPassword();
@@ -50,8 +51,7 @@ class ScrapperService implements IScrapperService {
     }
 
     print("Get to user profile");
-    url = Uri.https(_api.url, "/profile").toString();
-    final profileResponse = await _api.dio.get(url);
+    final profileResponse = await _client.get("$_url/profile");
     final profileHtml = profileResponse.data.toString();
     final profileDocument = html.parse(profileHtml);
 
@@ -60,8 +60,7 @@ class ScrapperService implements IScrapperService {
         .attributes["data-current-user-id"];
 
     print("Get to user api key view");
-    url = Uri.https(_api.url, "/users/$userId/api_key").toString();
-    final apiKeyViewResponse = await _api.dio.get(url);
+    final apiKeyViewResponse = await _client.get("$_url/users/$userId/api_key");
     final apiKeyViewHtml = apiKeyViewResponse.data.toString();
     final apiKeyViewDocument = html.parse(apiKeyViewHtml);
 
@@ -76,9 +75,8 @@ class ScrapperService implements IScrapperService {
     };
 
     print("Get to user api key page");
-    url = Uri.https(_api.url, "/users/$userId/api_key/view").toString();
-    final apiKeyResponse = await _api.dio.post(
-      url,
+    final apiKeyResponse = await _client.post(
+      "$_url/users/$userId/api_key/view",
       data: apiKeyViewContent,
       options: Options(
         contentType: Headers.formUrlEncodedContentType,
