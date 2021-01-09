@@ -56,7 +56,7 @@ void main() async {
   );
 
   final postRepository = PostRepository(
-    apiProvider,
+    api,
     accountRepository,
     settingRepository,
   );

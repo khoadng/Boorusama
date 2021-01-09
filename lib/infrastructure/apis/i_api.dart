@@ -37,4 +37,36 @@ abstract class IApi {
   Future<HttpResponse> getNotes(
     int postId,
   );
+
+  Future<HttpResponse> getPosts(
+    String login,
+    String apiKey,
+    int page,
+    String tags,
+    int limit,
+  );
+
+  Future<HttpResponse> getPopularPosts(
+    String login,
+    String apiKey,
+    String date,
+    String scale,
+    int page,
+    int limit,
+  );
+
+  Future<HttpResponse> getCuratedPosts(
+    String login,
+    String apiKey,
+    String date,
+    String scale,
+    int page,
+    int limit,
+  );
+
+  Future<HttpResponse> getMostViewedPosts(
+    String login,
+    String apiKey,
+    String date,
+  );
 }

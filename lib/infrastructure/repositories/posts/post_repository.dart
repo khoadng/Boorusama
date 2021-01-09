@@ -2,51 +2,52 @@ import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
-import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
+import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
 class PostRepository implements IPostRepository {
-  //TODO: shouldn't use concrete type
-  final Danbooru _api;
+  final IApi _api;
   final IAccountRepository _accountRepository;
   final ISettingRepository _settingRepository;
 
   PostRepository(this._api, this._accountRepository, this._settingRepository);
-  //TODO: update to remove duplicate code
+
   @override
   Future<List<Post>> getPosts(String tagString, int page) async {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();
 
-    final uri = Uri.https(_api.url, "/posts.json", {
-      "login": account.username,
-      "api_key": account.apiKey,
-      "page": page.toString(),
-      "tags": settings.safeMode ? "$tagString rating:s" : tagString,
-      "limit": "200",
-    });
+    return _api
+        .getPosts(account.username, account.apiKey, page,
+            settings.safeMode ? "$tagString rating:s" : tagString, 200)
+        .then((value) {
+      final Map<String, dynamic> data = {
+        "settings": settings,
+        "data": value.response.data
+      };
+      final posts = compute(parsePosts, data);
 
-    var respond;
-    try {
-      respond = await _api.dio.get(uri.toString());
-    } on DioError catch (e) {
-      if (e.response.statusCode == 422) {
-        throw CannotSearchMoreThanTwoTags(
-            "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
-      } else if (e.response.statusCode == 500) {
-        throw DatabaseTimeOut(
-            "Your search took too long to execute and was cancelled.");
+      return posts;
+    }).catchError((Object obj) {
+      switch (obj.runtimeType) {
+        case DioError:
+          final response = (obj as DioError).response;
+          if (response.statusCode == 422) {
+            throw CannotSearchMoreThanTwoTags(
+                "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
+          } else if (response.statusCode == 500) {
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
+          } else {
+            throw Exception("Failed to get posts for $tagString");
+          }
+          break;
+        default:
       }
-    }
-    final Map<String, dynamic> data = {
-      "settings": settings,
-      "data": respond.data
-    };
-    final posts = compute(parsePosts, data);
-
-    return posts;
+      return List<Post>();
+    });
   }
 
   @override
@@ -57,32 +58,37 @@ class PostRepository implements IPostRepository {
   ) async {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();
+    return _api
+        .getPopularPosts(
+            account.username,
+            account.apiKey,
+            "${date.year}-${date.month}-${date.day}",
+            scale.toString().split(".").last,
+            page,
+            200)
+        .then((value) {
+      final Map<String, dynamic> data = {
+        "settings": settings,
+        "data": value.response.data
+      };
+      final posts = compute(parsePosts, data);
 
-    final uri = Uri.https(_api.url, "/explore/posts/popular.json", {
-      "login": account.username,
-      "api_key": account.apiKey,
-      "date": "${date.year}-${date.month}-${date.day}",
-      "scale": scale.toString().split(".").last,
-      "page": page.toString(),
-      "limit": "200",
-    });
-
-    var respond;
-    try {
-      respond = await _api.dio.get(uri.toString());
-    } on DioError catch (e) {
-      if (e.response.statusCode == 500) {
-        throw DatabaseTimeOut(
-            "Your search took too long to execute and was cancelled.");
+      return posts;
+    }).catchError((Object obj) {
+      switch (obj.runtimeType) {
+        case DioError:
+          final response = (obj as DioError).response;
+          if (response.statusCode == 500) {
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
+          } else {
+            throw Exception("Failed to get popular posts for $date");
+          }
+          break;
+        default:
       }
-    }
-    final Map<String, dynamic> data = {
-      "settings": settings,
-      "data": respond.data
-    };
-    final posts = compute(parsePosts, data);
-
-    return posts;
+      return List<Post>();
+    });
   }
 
   @override
@@ -94,31 +100,37 @@ class PostRepository implements IPostRepository {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();
 
-    final uri = Uri.https(_api.url, "/explore/posts/curated.json", {
-      "login": account.username,
-      "api_key": account.apiKey,
-      "date": "${date.year}-${date.month}-${date.day}",
-      "scale": scale.toString().split(".").last,
-      "page": page.toString(),
-      "limit": "200",
-    });
+    return _api
+        .getCuratedPosts(
+            account.username,
+            account.apiKey,
+            "${date.year}-${date.month}-${date.day}",
+            scale.toString().split(".").last,
+            page,
+            200)
+        .then((value) {
+      final Map<String, dynamic> data = {
+        "settings": settings,
+        "data": value.response.data
+      };
+      final posts = compute(parsePosts, data);
 
-    var respond;
-    try {
-      respond = await _api.dio.get(uri.toString());
-    } on DioError catch (e) {
-      if (e.response.statusCode == 500) {
-        throw DatabaseTimeOut(
-            "Your search took too long to execute and was cancelled.");
+      return posts;
+    }).catchError((Object obj) {
+      switch (obj.runtimeType) {
+        case DioError:
+          final response = (obj as DioError).response;
+          if (response.statusCode == 500) {
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
+          } else {
+            throw Exception("Failed to get popular posts for $date");
+          }
+          break;
+        default:
       }
-    }
-    final Map<String, dynamic> data = {
-      "settings": settings,
-      "data": respond.data
-    };
-    final posts = compute(parsePosts, data);
-
-    return posts;
+      return List<Post>();
+    });
   }
 
   @override
@@ -128,28 +140,32 @@ class PostRepository implements IPostRepository {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();
 
-    final uri = Uri.https(_api.url, "/explore/posts/viewed.json", {
-      "login": account.username,
-      "api_key": account.apiKey,
-      "date": "${date.year}-${date.month}-${date.day}",
-    });
+    return _api
+        .getMostViewedPosts(account.username, account.apiKey,
+            "${date.year}-${date.month}-${date.day}")
+        .then((value) {
+      final Map<String, dynamic> data = {
+        "settings": settings,
+        "data": value.response.data
+      };
+      final posts = compute(parsePosts, data);
 
-    var respond;
-    try {
-      respond = await _api.dio.get(uri.toString());
-    } on DioError catch (e) {
-      if (e.response.statusCode == 500) {
-        throw DatabaseTimeOut(
-            "Your search took too long to execute and was cancelled.");
+      return posts;
+    }).catchError((Object obj) {
+      switch (obj.runtimeType) {
+        case DioError:
+          final response = (obj as DioError).response;
+          if (response.statusCode == 500) {
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
+          } else {
+            throw Exception("Failed to get popular posts for $date");
+          }
+          break;
+        default:
       }
-    }
-    final Map<String, dynamic> data = {
-      "settings": settings,
-      "data": respond.data
-    };
-    final posts = compute(parsePosts, data);
-
-    return posts;
+      return List<Post>();
+    });
   }
 }
 

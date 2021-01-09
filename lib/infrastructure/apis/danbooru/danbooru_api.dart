@@ -59,4 +59,44 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getNotes(
     @Path() int postId,
   );
+
+  @GET("/posts.json")
+  @override
+  Future<HttpResponse> getPosts(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("page") int page,
+    @Query("tags") String tags,
+    @Query("limit") int limit,
+  );
+
+  @GET("/explore/posts/popular.json")
+  @override
+  Future<HttpResponse> getPopularPosts(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("date") String date,
+    @Query("scale") String scale,
+    @Query("page") int page,
+    @Query("limit") int limit,
+  );
+
+  @GET("/explore/posts/curated.json")
+  @override
+  Future<HttpResponse> getCuratedPosts(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("date") String date,
+    @Query("scale") String scale,
+    @Query("page") int page,
+    @Query("limit") int limit,
+  );
+
+  @GET("/explore/posts/viewed.json")
+  @override
+  Future<HttpResponse> getMostViewedPosts(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("date") String date,
+  );
 }
