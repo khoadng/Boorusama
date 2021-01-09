@@ -87,7 +87,7 @@ void main() async {
       child: App(
         settings: settings,
         postRepository: postRepository,
-        tagRepository: TagRepository(apiProvider, accountRepository),
+        tagRepository: TagRepository(api, accountRepository),
         downloadService: DownloadService(FileNameGenerator()),
         accountRepository: accountRepository,
         noteRepository: NoteRepository(api),

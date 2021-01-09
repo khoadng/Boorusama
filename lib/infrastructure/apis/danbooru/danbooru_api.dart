@@ -1,5 +1,6 @@
 import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'danbooru_api.g.dart';
@@ -98,5 +99,37 @@ abstract class DanbooruApi implements IApi {
     @Query("login") String login,
     @Query("api_key") String apiKey,
     @Query("date") String date,
+  );
+
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
+  })
+  @GET("/tags.json")
+  @override
+  Future<HttpResponse> getTagsByNamePattern(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("page") int page,
+    @Query("search[hide_empty]") String hideEmpty,
+    @Query("search[name_or_alias_matches]") String stringPattern,
+    @Query("search[order]") String order,
+    @Query("limit") int limit,
+  );
+
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
+  })
+  @GET("/tags.json")
+  @override
+  Future<HttpResponse> getTagsByNameComma(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("page") int page,
+    @Query("search[hide_empty]") String hideEmpty,
+    @Query("search[name_comma]") String stringComma,
+    @Query("search[order]") String order,
+    @Query("limit") int limit,
   );
 }

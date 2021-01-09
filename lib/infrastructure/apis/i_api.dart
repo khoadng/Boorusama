@@ -69,4 +69,24 @@ abstract class IApi {
     String apiKey,
     String date,
   );
+
+  Future<HttpResponse> getTagsByNamePattern(
+    String login,
+    String apiKey,
+    int page,
+    String hideEmpty,
+    String stringPattern,
+    String order,
+    int limit,
+  );
+
+  Future<HttpResponse> getTagsByNameComma(
+    String login,
+    String apiKey,
+    int page,
+    String hideEmpty,
+    String stringComma,
+    String order,
+    int limit,
+  );
 }
