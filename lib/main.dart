@@ -95,7 +95,7 @@ void main() async {
         userRepository: UserRepository(api, accountRepository),
         favoritePostRepository: FavoritePostRepository(api, accountRepository),
         settingRepository: settingRepository,
-        wikiRepository: WikiRepository(apiProvider),
+        wikiRepository: WikiRepository(api),
       ),
     ),
   ));

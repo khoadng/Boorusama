@@ -155,4 +155,14 @@ abstract class DanbooruApi implements IApi {
     @Query("api_key") String apiKey,
     @Path() int id,
   );
+
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
+  })
+  @GET("/wiki_pages/{subject}.json")
+  @override
+  Future<HttpResponse> getWiki(
+    @Path() String subject,
+  );
 }

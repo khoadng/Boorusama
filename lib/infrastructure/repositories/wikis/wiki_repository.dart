@@ -1,34 +1,22 @@
 import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/domain/wikis/wiki.dart';
-import 'package:boorusama/infrastructure/apis/providers/danbooru.dart';
-import 'package:dio/dio.dart';
+import 'package:boorusama/infrastructure/apis/i_api.dart';
 
 class WikiRepository implements IWikiRepository {
-  final Danbooru _api;
+  final IApi _api;
 
   WikiRepository(this._api);
 
   @override
-  Future<Wiki> getWikiFor(String title) async {
-    //TODO: should hardcode limit parameter
-    var uri = Uri.https(_api.url, "/wiki_pages/$title.json", {});
-
-    var wiki;
-    try {
-      final respond = await _api.dio.get(uri.toString());
-
-      try {
-        wiki = Wiki.fromJson(respond.data);
-      } catch (e) {
-        print("Cant parse ${respond.data['id']}");
-      }
-    } on DioError {
-      // if (e.response.statusCode == 422) {
-      //   throw CannotSearchMoreThanTwoTags(
-      //       "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
-      // }
-    }
-
-    return wiki;
-  }
+  Future<Wiki> getWikiFor(String title) async =>
+      _api.getWiki(title).then((value) {
+        try {
+          var wiki = Wiki.fromJson(value.response.data);
+          return wiki;
+        } catch (e) {
+          print("Cant parse $title");
+        }
+      }).catchError((Object obj) {
+        throw Exception("Failed to get wiki for $title");
+      });
 }

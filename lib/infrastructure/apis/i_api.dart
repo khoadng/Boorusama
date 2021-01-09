@@ -100,4 +100,8 @@ abstract class IApi {
     String apiKey,
     int id,
   );
+
+  Future<HttpResponse> getWiki(
+    String subject,
+  );
 }
