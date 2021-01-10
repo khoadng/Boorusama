@@ -1,6 +1,6 @@
 import 'package:boorusama/application/posts/post_curated/bloc/post_curated_bloc.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
+import 'package:boorusama/presentation/home/widgets/lists/sliver_image_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -8,16 +8,16 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class CuratedPage extends StatefulWidget {
-  CuratedPage({
+class CuratedView extends StatefulWidget {
+  CuratedView({
     Key key,
   }) : super(key: key);
 
   @override
-  _CuratedPageState createState() => _CuratedPageState();
+  _CuratedViewState createState() => _CuratedViewState();
 }
 
-class _CuratedPageState extends State<CuratedPage>
+class _CuratedViewState extends State<CuratedView>
     with AutomaticKeepAliveClientMixin {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);

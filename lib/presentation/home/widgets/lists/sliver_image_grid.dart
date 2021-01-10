@@ -2,7 +2,6 @@ import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:uuid/uuid.dart';
 
 import 'post_image.dart';
 

@@ -17,7 +17,7 @@ import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/users/i_user_repository.dart';
 import 'package:boorusama/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:boorusama/presentation/posts/post_list/pages/home_page.dart';
+import 'package:boorusama/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,6 +30,7 @@ import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
+import 'presentation/home/bloc/home_bloc.dart';
 
 class App extends StatefulWidget {
   App({
@@ -162,7 +163,10 @@ class _AppState extends State<App> {
             themeMode: state.theme,
             debugShowCheckedModeBanner: false,
             title: "Boorusama",
-            home: HomePage(),
+            home: BlocProvider(
+              create: (context) => HomeBloc(),
+              child: HomePage(),
+            ),
           );
         },
       ),

@@ -1,5 +1,5 @@
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/lists/post_image.dart';
+import 'package:boorusama/presentation/home/widgets/lists/post_image.dart';
 import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';

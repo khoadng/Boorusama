@@ -1,5 +1,5 @@
 import 'package:boorusama/application/posts/post_most_viewed/bloc/post_most_viewed_bloc.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
+import 'package:boorusama/presentation/home/widgets/lists/sliver_image_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -7,16 +7,16 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class MostViewedPage extends StatefulWidget {
-  MostViewedPage({
+class MostViewedView extends StatefulWidget {
+  MostViewedView({
     Key key,
   }) : super(key: key);
 
   @override
-  _MostViewedPageState createState() => _MostViewedPageState();
+  _MostViewedViewState createState() => _MostViewedViewState();
 }
 
-class _MostViewedPageState extends State<MostViewedPage>
+class _MostViewedViewState extends State<MostViewedView>
     with AutomaticKeepAliveClientMixin {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);

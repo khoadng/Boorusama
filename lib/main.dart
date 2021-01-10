@@ -14,6 +14,7 @@ import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +25,9 @@ import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/posts/post_download/download_service.dart';
 import 'application/posts/post_search/bloc/post_search_bloc.dart';
 import 'bloc_observer.dart';
+import 'domain/posts/i_post_repository.dart';
 import 'infrastructure/repositories/posts/post_repository.dart';
+import 'infrastructure/repositories/settings/i_setting_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
 import 'infrastructure/repositories/users/user_repository.dart';
 
@@ -60,6 +63,9 @@ void main() async {
   );
 
   final settings = await settingRepository.load();
+
+  GetIt.I.registerSingleton<ISettingRepository>(settingRepository);
+  GetIt.I.registerSingleton<IPostRepository>(postRepository);
 
   runApp(
     MultiProvider(

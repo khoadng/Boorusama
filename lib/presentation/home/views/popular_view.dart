@@ -1,6 +1,6 @@
 import 'package:boorusama/application/posts/post_popular/bloc/post_popular_bloc.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
-import 'package:boorusama/presentation/posts/post_list/widgets/lists/sliver_image_grid.dart';
+import 'package:boorusama/presentation/home/widgets/lists/sliver_image_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -8,16 +8,16 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class PopularPage extends StatefulWidget {
-  PopularPage({
+class PopularView extends StatefulWidget {
+  PopularView({
     Key key,
   }) : super(key: key);
 
   @override
-  _PopularPageState createState() => _PopularPageState();
+  _PopularViewState createState() => _PopularViewState();
 }
 
-class _PopularPageState extends State<PopularPage>
+class _PopularViewState extends State<PopularView>
     with AutomaticKeepAliveClientMixin {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
