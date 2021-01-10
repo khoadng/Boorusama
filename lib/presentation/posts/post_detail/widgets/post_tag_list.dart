@@ -1,5 +1,3 @@
-import 'package:boorusama/application/posts/post_list/bloc/post_list_bloc.dart';
-import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
@@ -131,17 +129,17 @@ class _PostTagListState extends State<PostTagList> {
   }
 
   void _searchTags(List<Tag> tags, BuildContext context) {
-    final List<String> tagNames = <String>[];
+    // final List<String> tagNames = <String>[];
 
-    for (var tag in tags) {
-      tagNames.add(tag.rawName);
-    }
+    // for (var tag in tags) {
+    //   tagNames.add(tag.rawName);
+    // }
 
-    context
-        .read<PostSearchBloc>()
-        .add(PostSearchEvent.postSearched(query: tagNames.join(" "), page: 1));
-    Navigator.popUntil(
-        context, ModalRoute.withName(Navigator.defaultRouteName));
+    // context
+    //     .read<PostSearchBloc>()
+    //     .add(PostSearchEvent.postSearched(query: tagNames.join(" "), page: 1));
+    // Navigator.popUntil(
+    //     context, ModalRoute.withName(Navigator.defaultRouteName));
   }
 }
 

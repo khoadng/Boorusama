@@ -23,7 +23,6 @@ import 'package:sqflite/sqflite.dart';
 import 'app.dart';
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/posts/post_download/download_service.dart';
-import 'application/posts/post_search/bloc/post_search_bloc.dart';
 import 'bloc_observer.dart';
 import 'domain/posts/i_post_repository.dart';
 import 'infrastructure/repositories/posts/post_repository.dart';
@@ -82,12 +81,6 @@ void main() async {
               scrapperService: ScrapperService(url),
               accountRepository: accountRepository,
             )..add(AuthenticationRequested()),
-          ),
-          BlocProvider(
-            create: (_) => PostSearchBloc(
-              postRepository: postRepository,
-              settingRepository: settingRepository,
-            ),
           ),
         ],
         child: App(

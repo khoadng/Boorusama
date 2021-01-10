@@ -1,9 +1,7 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
-import 'package:boorusama/application/posts/post_most_viewed/bloc/post_most_viewed_bloc.dart';
 import 'package:boorusama/application/posts/post_popular/bloc/post_popular_bloc.dart';
-import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/application/themes/bloc/theme_bloc.dart';
@@ -25,8 +23,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
 import 'application/home/home_bloc.dart';
-import 'application/posts/post_curated/bloc/post_curated_bloc.dart';
-import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
@@ -68,12 +64,6 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PostListBloc>(
-          lazy: false,
-          create: (_) => PostListBloc(
-            postSearchBloc: BlocProvider.of<PostSearchBloc>(context),
-          ),
-        ),
         BlocProvider<PostDownloadBloc>(
           lazy: false,
           create: (_) => PostDownloadBloc(widget.downloadService)
@@ -110,16 +100,6 @@ class _AppState extends State<App> {
         BlocProvider<WikiBloc>(create: (_) => WikiBloc(widget.wikiRepository)),
         BlocProvider<PostPopularBloc>(
             create: (_) => PostPopularBloc(
-                  postRepository: widget.postRepository,
-                  settingRepository: widget.settingRepository,
-                )),
-        BlocProvider<PostCuratedBloc>(
-            create: (_) => PostCuratedBloc(
-                  postRepository: widget.postRepository,
-                  settingRepository: widget.settingRepository,
-                )),
-        BlocProvider<PostMostViewedBloc>(
-            create: (_) => PostMostViewedBloc(
                   postRepository: widget.postRepository,
                   settingRepository: widget.settingRepository,
                 )),
