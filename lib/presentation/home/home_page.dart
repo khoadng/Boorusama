@@ -1,13 +1,14 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/home/curated/curated_bloc.dart';
 import 'package:boorusama/application/home/home_bloc.dart';
+import 'package:boorusama/application/home/most_viewed/most_viewed_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:boorusama/application/home/browse_all/browse_all_bloc.dart';
 import 'package:boorusama/presentation/home/curated/curated_view.dart';
-import 'package:boorusama/presentation/home/most_viewed_view.dart';
+import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
 import 'package:boorusama/application/home/popular/popular_bloc.dart';
 import 'package:boorusama/presentation/home/widgets/searches/search_bar.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
@@ -196,7 +197,13 @@ class _HomePageState extends State<HomePage>
               ),
               child: CuratedView(),
             ),
-            MostViewedView(),
+            BlocProvider(
+              create: (context) => MostViewedBloc(
+                settingRepository: GetIt.instance<ISettingRepository>(),
+                postRepository: GetIt.instance<IPostRepository>(),
+              ),
+              child: MostViewedView(),
+            ),
           ],
         ),
       ),
