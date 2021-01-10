@@ -1,4 +1,4 @@
-import 'package:boorusama/application/home/popular/popular_bloc.dart';
+import 'package:boorusama/application/home/curated/curated_bloc.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/presentation/home/widgets/lists/sliver_image_grid.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +7,16 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class PopularView extends StatefulWidget {
-  PopularView({
+class CuratedView extends StatefulWidget {
+  CuratedView({
     Key key,
   }) : super(key: key);
 
   @override
-  _PopularViewState createState() => _PopularViewState();
+  _CuratedViewState createState() => _CuratedViewState();
 }
 
-class _PopularViewState extends State<PopularView>
+class _CuratedViewState extends State<CuratedView>
     with AutomaticKeepAliveClientMixin {
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
@@ -30,7 +30,7 @@ class _PopularViewState extends State<PopularView>
     super.initState();
     _currentSelectedDate = DateTime.now();
     _currentSelectedTimeScale = TimeScale.day;
-    BlocProvider.of<PopularBloc>(context).add(PopularEvent.started());
+    BlocProvider.of<CuratedBloc>(context).add(CuratedEvent.started());
   }
 
   @override
@@ -42,7 +42,7 @@ class _PopularViewState extends State<PopularView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<PopularBloc, PopularState>(
+    return BlocListener<CuratedBloc, CuratedState>(
       listener: (context, state) {
         setState(() {
           _currentSelectedDate = state.selectedTime;
@@ -80,8 +80,8 @@ class _PopularViewState extends State<PopularView>
                 enablePullUp: true,
                 header: const WaterDropMaterialHeader(),
                 footer: const ClassicFooter(),
-                onRefresh: () => BlocProvider.of<PopularBloc>(context)
-                    .add(PopularEvent.refreshed()),
+                onRefresh: () => BlocProvider.of<CuratedBloc>(context)
+                    .add(CuratedEvent.refreshed()),
                 child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
@@ -90,13 +90,13 @@ class _PopularViewState extends State<PopularView>
                           Container(
                             padding: EdgeInsets.all(10.0),
                             child: Text(
-                                "Popular: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
+                                "Curated: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
                           ),
                           _buildToolRow(context),
                         ],
                       ),
                     ),
-                    BlocBuilder<PopularBloc, PopularState>(
+                    BlocBuilder<CuratedBloc, CuratedState>(
                         builder: (context, state) {
                       if (state.error != null) {
                         return SliverList(
@@ -135,8 +135,8 @@ class _PopularViewState extends State<PopularView>
     DatePicker.showDatePicker(
       context,
       theme: DatePickerTheme(),
-      onConfirm: (time) => BlocProvider.of<PopularBloc>(context)
-          .add(PopularEvent.timeChanged(date: time)),
+      onConfirm: (time) => BlocProvider.of<CuratedBloc>(context)
+          .add(CuratedEvent.timeChanged(date: time)),
       currentTime: DateTime.now(),
     );
   }
@@ -151,8 +151,8 @@ class _PopularViewState extends State<PopularView>
               child: DropdownButton<TimeScale>(
                 value: _currentSelectedTimeScale,
                 icon: Icon(Icons.arrow_drop_down),
-                onChanged: (value) => BlocProvider.of<PopularBloc>(context)
-                    .add(PopularEvent.timeScaleChanged(scale: value)),
+                onChanged: (value) => BlocProvider.of<CuratedBloc>(context)
+                    .add(CuratedEvent.timeScaleChanged(scale: value)),
                 items: <DropdownMenuItem<TimeScale>>[
                   DropdownMenuItem(
                     value: TimeScale.day,
@@ -175,13 +175,13 @@ class _PopularViewState extends State<PopularView>
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
-              onPressed: () => BlocProvider.of<PopularBloc>(context)
-                  .add(PopularEvent.timeBackwarded()),
+              onPressed: () => BlocProvider.of<CuratedBloc>(context)
+                  .add(CuratedEvent.timeBackwarded()),
             ),
             IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
-              onPressed: () => BlocProvider.of<PopularBloc>(context)
-                  .add(PopularEvent.timeForwarded()),
+              onPressed: () => BlocProvider.of<CuratedBloc>(context)
+                  .add(CuratedEvent.timeForwarded()),
             ),
           ],
         ),

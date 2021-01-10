@@ -24,11 +24,16 @@ class PostRepository implements IPostRepository {
         .getPosts(account.username, account.apiKey, page,
             settings.safeMode ? "$tagString rating:s" : tagString, 200)
         .then((value) {
-      final Map<String, dynamic> data = {
-        "settings": settings,
-        "data": value.response.data
-      };
-      final posts = compute(parsePosts, data);
+      final posts = <PostDto>[];
+
+      for (var item in value.response.data) {
+        try {
+          var post = PostDto.fromJson(item);
+          posts.add(post);
+        } catch (e) {
+          print("Cant parse ${item['id']}");
+        }
+      }
 
       return posts;
     }).catchError((Object obj) {
@@ -58,7 +63,6 @@ class PostRepository implements IPostRepository {
     TimeScale scale,
   ) async {
     final account = await _accountRepository.get();
-    final settings = await _settingRepository.load();
     return _api
         .getPopularPosts(
             account.username,
@@ -68,11 +72,16 @@ class PostRepository implements IPostRepository {
             page,
             200)
         .then((value) {
-      final Map<String, dynamic> data = {
-        "settings": settings,
-        "data": value.response.data
-      };
-      final posts = compute(parsePosts, data);
+      final posts = <PostDto>[];
+
+      for (var item in value.response.data) {
+        try {
+          var post = PostDto.fromJson(item);
+          posts.add(post);
+        } catch (e) {
+          print("Cant parse ${item['id']}");
+        }
+      }
 
       return posts;
     }).catchError((Object obj) {
@@ -99,7 +108,6 @@ class PostRepository implements IPostRepository {
     TimeScale scale,
   ) async {
     final account = await _accountRepository.get();
-    final settings = await _settingRepository.load();
 
     return _api
         .getCuratedPosts(
@@ -110,11 +118,16 @@ class PostRepository implements IPostRepository {
             page,
             200)
         .then((value) {
-      final Map<String, dynamic> data = {
-        "settings": settings,
-        "data": value.response.data
-      };
-      final posts = compute(parsePosts, data);
+      final posts = <PostDto>[];
+
+      for (var item in value.response.data) {
+        try {
+          var post = PostDto.fromJson(item);
+          posts.add(post);
+        } catch (e) {
+          print("Cant parse ${item['id']}");
+        }
+      }
 
       return posts;
     }).catchError((Object obj) {
@@ -139,17 +152,21 @@ class PostRepository implements IPostRepository {
     DateTime date,
   ) async {
     final account = await _accountRepository.get();
-    final settings = await _settingRepository.load();
 
     return _api
         .getMostViewedPosts(account.username, account.apiKey,
             "${date.year}-${date.month}-${date.day}")
         .then((value) {
-      final Map<String, dynamic> data = {
-        "settings": settings,
-        "data": value.response.data
-      };
-      final posts = compute(parsePosts, data);
+      final posts = <PostDto>[];
+
+      for (var item in value.response.data) {
+        try {
+          var post = PostDto.fromJson(item);
+          posts.add(post);
+        } catch (e) {
+          print("Cant parse ${item['id']}");
+        }
+      }
 
       return posts;
     }).catchError((Object obj) {
@@ -168,22 +185,6 @@ class PostRepository implements IPostRepository {
       return List<Post>();
     });
   }
-}
-
-List<PostDto> parsePosts(Map<String, dynamic> data) {
-  var posts = List<PostDto>();
-  var json = data["data"];
-
-  for (var item in json) {
-    try {
-      var post = PostDto.fromJson(item);
-      posts.add(post);
-    } catch (e) {
-      print("Cant parse ${item['id']}");
-    }
-  }
-
-  return posts;
 }
 
 class CannotSearchMoreThanTwoTags implements Exception {
