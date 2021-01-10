@@ -1,6 +1,6 @@
 import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/home/models/tag_query.dart';
+import 'package:boorusama/presentation/home/tag_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

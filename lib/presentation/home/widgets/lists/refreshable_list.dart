@@ -68,10 +68,5 @@ class _RefreshableListState extends State<RefreshableList> {
         ],
       ),
     );
-    // } else {
-    //   return Center(
-    //     child: CircularProgressIndicator(),
-    //   );
-    // }
   }
 }

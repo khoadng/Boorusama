@@ -1,4 +1,4 @@
-import 'package:boorusama/presentation/home/models/post_list_action.dart';
+import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:flutter/material.dart';
 
 import 'post_search.dart';

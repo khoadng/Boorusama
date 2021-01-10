@@ -1,15 +1,13 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
-import 'package:boorusama/application/posts/post_search/bloc/post_search_bloc.dart';
+import 'package:boorusama/application/home/home_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:boorusama/presentation/home/bloc/home_bloc.dart';
-import 'package:boorusama/presentation/home/models/post_list_action.dart';
-import 'package:boorusama/presentation/home/views/browse_all/bloc/browse_all_bloc.dart';
-import 'package:boorusama/presentation/home/views/browse_all/browse_all_view.dart';
-import 'package:boorusama/presentation/home/views/curated_view.dart';
-import 'package:boorusama/presentation/home/views/most_viewed_view.dart';
-import 'package:boorusama/presentation/home/views/popular_view.dart';
+import 'package:boorusama/presentation/home/post_list_action.dart';
+import 'package:boorusama/application/home/browse_all/browse_all_bloc.dart';
+import 'package:boorusama/presentation/home/curated_view.dart';
+import 'package:boorusama/presentation/home/most_viewed_view.dart';
+import 'package:boorusama/application/home/popular/popular_bloc.dart';
 import 'package:boorusama/presentation/home/widgets/searches/search_bar.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
@@ -18,6 +16,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:md2_tab_indicator/md2_tab_indicator.dart';
+
+import 'browse_all/browse_all_view.dart';
+import 'popular/popular_view.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -180,7 +181,13 @@ class _HomePageState extends State<HomePage>
                 },
               ),
             ),
-            PopularView(),
+            BlocProvider(
+              create: (context) => PopularBloc(
+                settingRepository: GetIt.instance<ISettingRepository>(),
+                postRepository: GetIt.instance<IPostRepository>(),
+              )..add(PopularEvent.started()),
+              child: PopularView(),
+            ),
             CuratedView(),
             MostViewedView(),
           ],

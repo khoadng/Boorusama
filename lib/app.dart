@@ -24,13 +24,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
+import 'application/home/home_bloc.dart';
 import 'application/posts/post_curated/bloc/post_curated_bloc.dart';
 import 'application/posts/post_list/bloc/post_list_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
-import 'presentation/home/bloc/home_bloc.dart';
 
 class App extends StatefulWidget {
   App({

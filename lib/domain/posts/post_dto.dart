@@ -1,4 +1,5 @@
 import 'package:boorusama/domain/posts/created_time.dart';
+import 'package:boorusama/domain/posts/image_source.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'post.dart';
@@ -83,7 +84,7 @@ extension PostDtoX on PostDto {
       lastCommentAt: last_comment_bumped_at != null
           ? DateTime.parse(last_commented_at)
           : null,
-      source: Uri.parse(source),
+      source: ImageSource(source),
       createdAt: CreatedTime(created_at),
       score: score,
       upScore: up_score,

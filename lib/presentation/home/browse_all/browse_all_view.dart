@@ -1,13 +1,8 @@
-import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
-import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/application/home/browse_all/browse_all_bloc.dart';
 import 'package:boorusama/presentation/home/widgets/lists/refreshable_list.dart';
-import 'package:boorusama/presentation/services/debouncer/debouncer.dart';
-import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
-
-import 'bloc/browse_all_bloc.dart';
 
 class BrowseAllView extends StatefulWidget {
   BrowseAllView({
@@ -57,25 +52,6 @@ class _BrowseAllViewState extends State<BrowseAllView>
             _refreshController.loadComplete();
           }
         });
-
-        // if (state.error != null) {
-        //   // var flush;
-        //   Flushbar(
-        //     icon: Icon(
-        //       Icons.info_outline,
-        //       color: Theme.of(context).accentColor,
-        //     ),
-        //     leftBarIndicatorColor: Theme.of(context).accentColor,
-        //     title: state.error.name,
-        //     message: state.error.message,
-        //     // mainButton: FlatButton(
-        //     //   onPressed: () {
-        //     //     flush.dismiss(true);
-        //     //   },
-        //     //   child: Text("OK"),
-        //     // ),
-        //   )..show(context);
-        // }
       },
       builder: (context, state) {
         if (state.error != null) {

@@ -6,7 +6,7 @@ import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/posts/post_dto.dart';
 import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:boorusama/presentation/home/views/browse_all/errors.dart';
+import 'package:boorusama/presentation/home/errors.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'browse_all_event.dart';
