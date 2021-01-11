@@ -1,26 +1,17 @@
-part of 'popular_bloc.dart';
+part of 'popular_state_notifier.dart';
 
 @freezed
 abstract class PopularState with _$PopularState {
-  const factory PopularState({
+  const factory PopularState.initial() = _Initial;
+  const factory PopularState.loading() = _Loading;
+  const factory PopularState.fetched({
     @required List<Post> posts,
     @required int page,
-    @required DateTime selectedTime,
-    @required TimeScale selectedTimeScale,
-    @required bool isRefreshing,
-    @required bool isLoadingNew,
-    @required bool isLoadingMore,
-    @required @nullable Error error,
-  }) = _PopularState;
-
-  factory PopularState.initial() => PopularState(
-        posts: <Post>[],
-        page: 1,
-        selectedTime: DateTime.now(),
-        selectedTimeScale: TimeScale.day,
-        isRefreshing: false,
-        isLoadingNew: false,
-        isLoadingMore: false,
-        error: null,
-      );
+    @required DateTime date,
+    @required TimeScale scale,
+  }) = _Fetched;
+  const factory PopularState.error({
+    @required String name,
+    @required String message,
+  }) = _Error;
 }

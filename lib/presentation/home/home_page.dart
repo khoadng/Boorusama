@@ -7,7 +7,6 @@ import 'package:boorusama/infrastructure/repositories/settings/i_setting_reposit
 import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:boorusama/presentation/home/curated/curated_view.dart';
 import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
-import 'package:boorusama/application/home/popular/popular_bloc.dart';
 import 'package:boorusama/presentation/home/search/search_page.dart';
 import 'package:boorusama/presentation/home/search_bar.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
@@ -165,13 +164,7 @@ class _HomePageState extends State<HomePage>
           // These are the contents of the tab views, below the tabs.
           children: <Widget>[
             BrowseAllView(),
-            BlocProvider(
-              create: (context) => PopularBloc(
-                settingRepository: GetIt.instance<ISettingRepository>(),
-                postRepository: GetIt.instance<IPostRepository>(),
-              ),
-              child: PopularView(),
-            ),
+            PopularView(),
             BlocProvider(
               create: (context) => CuratedBloc(
                 settingRepository: GetIt.instance<ISettingRepository>(),
