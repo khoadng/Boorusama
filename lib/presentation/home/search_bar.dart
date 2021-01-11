@@ -1,22 +1,20 @@
 import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:flutter/material.dart';
 
-import 'post_search.dart';
-
 class SearchBar extends StatefulWidget {
   const SearchBar({
     Key key,
     @required this.onMenuTap,
-    @required this.onSearched,
+    @required this.onTap,
     @required this.onMoreSelected,
-    @required this.onRemoveTap,
+    this.onRemoveTap,
     @required this.controller,
   })  : assert(controller != null),
         super(key: key);
 
   final VoidCallback onMenuTap;
   final VoidCallback onRemoveTap;
-  final ValueChanged<String> onSearched;
+  final VoidCallback onTap;
   final ValueChanged<PostListAction> onMoreSelected;
   final SearchBarController controller;
 
@@ -53,24 +51,7 @@ class _SearchBarState extends State<SearchBar> {
         child: ListTile(
           tileColor: Colors.transparent,
           visualDensity: VisualDensity.compact,
-          onTap: () {
-            showSearch(
-              query: _currentQuery,
-              context: context,
-              delegate: PostSearch(
-                  onSearched: (value) {
-                    if (mounted) {
-                      setState(() {
-                        _currentQuery = value;
-                      });
-                    }
-
-                    widget.onSearched(_currentQuery);
-                  },
-                  searchFieldStyle:
-                      Theme.of(context).inputDecorationTheme.hintStyle),
-            );
-          },
+          onTap: () => widget.onTap(),
           title: Text(
             _currentQuery.isEmpty ? "Search..." : _currentQuery,
             style: Theme.of(context).inputDecorationTheme.hintStyle,

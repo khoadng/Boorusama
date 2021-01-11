@@ -61,13 +61,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.tag),
                 title: "Blacklisted tags",
                 onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => TagSettingsPage(
-                        settings: _setting,
-                      ),
-                    ),
-                  );
+                  // Navigator.of(context).push(
+                  //   MaterialPageRoute(
+                  //     builder: (BuildContext context) => TagSettingsPage(
+                  //       settings: _setting,
+                  //     ),
+                  //   ),
+                  // );
                 },
               ),
               SettingsTile(

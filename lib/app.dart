@@ -3,7 +3,6 @@ import 'package:boorusama/application/posts/post_download/i_download_service.dar
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/application/posts/post_popular/bloc/post_popular_bloc.dart';
 import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
-import 'package:boorusama/application/tags/tag_suggestions/bloc/tag_suggestions_bloc.dart';
 import 'package:boorusama/application/themes/bloc/theme_bloc.dart';
 import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
@@ -23,7 +22,6 @@ import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
-import 'application/home/home_bloc.dart';
 import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
@@ -72,8 +70,6 @@ class _AppState extends State<App> {
               PostDownloadEvent.init(platform: Theme.of(context).platform),
             ),
         ),
-        BlocProvider<TagSuggestionsBloc>(
-            create: (_) => TagSuggestionsBloc(widget.tagRepository)),
         BlocProvider<PostNoteBloc>(
             create: (_) => PostNoteBloc(noteRepository: widget.noteRepository)),
         BlocProvider<TagListBloc>(
@@ -145,10 +141,7 @@ class _AppState extends State<App> {
               themeMode: state.theme,
               debugShowCheckedModeBanner: false,
               title: "Boorusama",
-              home: BlocProvider(
-                create: (context) => HomeBloc(),
-                child: HomePage(),
-              ),
+              home: HomePage(),
             ),
           );
         },

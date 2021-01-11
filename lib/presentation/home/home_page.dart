@@ -1,16 +1,15 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/application/home/curated/curated_bloc.dart';
-import 'package:boorusama/application/home/home_bloc.dart';
 import 'package:boorusama/application/home/most_viewed/most_viewed_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/presentation/home/post_list_action.dart';
-import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
 import 'package:boorusama/presentation/home/curated/curated_view.dart';
 import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
 import 'package:boorusama/application/home/popular/popular_bloc.dart';
-import 'package:boorusama/presentation/home/widgets/searches/search_bar.dart';
+import 'package:boorusama/presentation/home/search/search_page.dart';
+import 'package:boorusama/presentation/home/search_bar.dart';
 import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
@@ -42,6 +41,7 @@ class _HomePageState extends State<HomePage>
   TabController _tabController;
 
   int _currentBottomTab = 0;
+  int _currentTopTab = 0;
 
   Account _account;
 
@@ -82,8 +82,11 @@ class _HomePageState extends State<HomePage>
           resizeToAvoidBottomInset: false,
           body: _getPage(_currentBottomTab, context),
           bottomNavigationBar: BottomBar(
-            onTabChanged: (value) => BlocProvider.of<HomeBloc>(context)
-                .add(HomeEvent.bottomTabChanged(tabIndex: value)),
+            onTabChanged: (value) {
+              setState(() {
+                _currentBottomTab = value;
+              });
+            },
           ),
         ),
       ),
@@ -111,24 +114,21 @@ class _HomePageState extends State<HomePage>
               sliver: SliverSafeArea(
                 top: false,
                 sliver: SliverAppBar(
-                  title: BlocListener<HomeBloc, HomeState>(
-                    listener: (context, state) {
-                      setState(() {
-                        _searchBarController.assignQuery(state.query);
-                        _tabController.index = state.topTabIndex;
-                        _currentBottomTab = state.bottomTabIndex;
-                      });
+                  title: SearchBar(
+                    controller: _searchBarController,
+                    onRemoveTap: () {},
+                    onMenuTap: () =>
+                        widget.scaffoldKey.currentState.openDrawer(),
+                    onTap: () {
+                      showSearch(
+                        context: context,
+                        delegate: SearchPage(
+                            searchFieldStyle: Theme.of(context)
+                                .inputDecorationTheme
+                                .hintStyle),
+                      );
                     },
-                    child: SearchBar(
-                      controller: _searchBarController,
-                      onRemoveTap: () => BlocProvider.of<HomeBloc>(context)
-                          .add(HomeEvent.reset()),
-                      onMenuTap: () =>
-                          widget.scaffoldKey.currentState.openDrawer(),
-                      onSearched: (query) => BlocProvider.of<HomeBloc>(context)
-                          .add(HomeEvent.searched(query: query)),
-                      onMoreSelected: (value) => _handleMoreSelected(value),
-                    ),
+                    onMoreSelected: (value) => _handleMoreSelected(value),
                   ),
                   shape: Border(
                     bottom: BorderSide(color: Colors.grey[400], width: 1.0),

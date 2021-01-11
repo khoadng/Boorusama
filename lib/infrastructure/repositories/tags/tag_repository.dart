@@ -1,7 +1,13 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/domain/tags/tag.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:flutter_riverpod/all.dart';
+
+final tagProvider = Provider<ITagRepository>(
+    (ref) => TagRepository(ref.watch(apiProvider), ref.watch(accountProvider)));
 
 class TagRepository implements ITagRepository {
   final IApi _api;

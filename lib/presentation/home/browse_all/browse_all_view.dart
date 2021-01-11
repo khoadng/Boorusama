@@ -1,5 +1,5 @@
 import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
-import 'package:boorusama/presentation/home/widgets/lists/refreshable_list.dart';
+import 'package:boorusama/presentation/home/refreshable_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
