@@ -6,7 +6,7 @@ import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/presentation/home/post_list_action.dart';
-import 'package:boorusama/application/home/browse_all/browse_all_bloc.dart';
+import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
 import 'package:boorusama/presentation/home/curated/curated_view.dart';
 import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
 import 'package:boorusama/application/home/popular/popular_bloc.dart';
@@ -164,25 +164,7 @@ class _HomePageState extends State<HomePage>
           physics: const NeverScrollableScrollPhysics(),
           // These are the contents of the tab views, below the tabs.
           children: <Widget>[
-            BlocProvider(
-              create: (context) => BrowseAllBloc(
-                settingRepository: GetIt.instance<ISettingRepository>(),
-                postRepository: GetIt.instance<IPostRepository>(),
-              )..add(BrowseAllEvent.started()),
-              child: BlocConsumer<HomeBloc, HomeState>(
-                listener: (context, state) {
-                  BlocProvider.of<BrowseAllBloc>(context)
-                      .add(BrowseAllEvent.searched(query: state.query));
-                },
-                listenWhen: (previous, current) =>
-                    current.query != previous.query,
-                builder: (context, state) {
-                  return BrowseAllView(
-                    initialQuery: state.query,
-                  );
-                },
-              ),
-            ),
+            BrowseAllView(),
             BlocProvider(
               create: (context) => PopularBloc(
                 settingRepository: GetIt.instance<ISettingRepository>(),

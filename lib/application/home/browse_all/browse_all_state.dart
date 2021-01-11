@@ -1,26 +1,13 @@
-part of 'browse_all_bloc.dart';
+part of 'browse_all_state_notifier.dart';
 
 @freezed
 abstract class BrowseAllState with _$BrowseAllState {
-  const factory BrowseAllState({
-    @required List<Post> posts,
-    @required String query,
-    @required int page,
-    @required bool isRefreshing,
-    @required bool isLoadingNew,
-    @required bool isLoadingMore,
-    @required bool isSearching,
-    @required @nullable Error error,
-  }) = _BrowseAllState;
+  const factory BrowseAllState.initial() = _Initial;
+  const factory BrowseAllState.loading() = _Loading;
 
-  factory BrowseAllState.initial() => BrowseAllState(
-        posts: <Post>[],
-        query: "",
-        page: 1,
-        isRefreshing: false,
-        isLoadingNew: false,
-        isLoadingMore: false,
-        isSearching: false,
-        error: null,
-      );
+  const factory BrowseAllState.fetched({
+    @required List<Post> posts,
+    @required int page,
+    @required String query,
+  }) = _Fetched;
 }

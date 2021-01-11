@@ -1,9 +1,17 @@
 import 'dart:convert';
 
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'setting.dart';
+
+final settingsProvider = Provider<ISettingRepository>((ref) {
+  return SettingRepository(
+    SharedPreferences.getInstance(),
+    Setting.defaultSettings,
+  );
+});
 
 class SettingRepository implements ISettingRepository {
   final Future<SharedPreferences> _prefs;

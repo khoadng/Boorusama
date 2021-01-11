@@ -1,9 +1,20 @@
 import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'danbooru_api.g.dart';
+
+final apiProvider = Provider<IApi>((ref) {
+  return DanbooruApi(
+    Dio()
+      ..interceptors.add(
+          DioCacheManager(CacheConfig(baseUrl: "https://danbooru.donmai.us/"))
+              .interceptor),
+    baseUrl: "https://danbooru.donmai.us/",
+  );
+});
 
 @RestApi()
 abstract class DanbooruApi implements IApi {

@@ -1,16 +1,14 @@
-import 'package:boorusama/application/home/browse_all/browse_all_bloc.dart';
+import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
 import 'package:boorusama/presentation/home/widgets/lists/refreshable_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-class BrowseAllView extends StatefulWidget {
-  BrowseAllView({
-    Key key,
-    this.initialQuery,
-  }) : super(key: key);
+final browseAllStateNotifier = StateNotifierProvider<BrowseAllStateNotifier>(
+    (ref) => BrowseAllStateNotifier(ref));
 
-  final String initialQuery;
+class BrowseAllView extends StatefulWidget {
+  BrowseAllView({Key key}) : super(key: key);
 
   @override
   _BrowseAllViewState createState() => _BrowseAllViewState();
@@ -18,68 +16,54 @@ class BrowseAllView extends StatefulWidget {
 
 class _BrowseAllViewState extends State<BrowseAllView>
     with AutomaticKeepAliveClientMixin {
-  final ScrollController _scrollController = ScrollController();
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
-  bool _isRefreshing = false;
-  bool _isLoadingMore = false;
 
   @override
   void initState() {
+    Future.delayed(Duration.zero,
+        () => context.read(browseAllStateNotifier).getPosts("", 1));
     super.initState();
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocConsumer<BrowseAllBloc, BrowseAllState>(
-      listener: (context, state) {
-        setState(() {
-          _isRefreshing = state.isRefreshing;
-          _isLoadingMore = state.isLoadingMore;
-
-          if (!_isRefreshing) {
-            _refreshController.refreshCompleted();
-          }
-
-          if (!_isLoadingMore) {
-            _refreshController.loadComplete();
-          }
-        });
+    return ProviderListener<BrowseAllState>(
+      provider: browseAllStateNotifier.state,
+      onChange: (context, state) {
+        state.maybeWhen(
+            fetched: (posts, page, query) => _refreshController
+              ..loadComplete()
+              ..refreshCompleted(),
+            orElse: () {});
       },
-      builder: (context, state) {
-        if (state.error != null) {
-          return Center(
-            child: Text(state.error.message),
-          );
-        } else if (state.isLoadingNew || state.isSearching) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          return Scaffold(
-            floatingActionButton: FloatingActionButton(
-              onPressed: _downloadAllPosts,
-              heroTag: null,
-              child: Icon(Icons.download_sharp),
-            ),
-            body: RefreshableList(
-              posts: state.posts,
-              onLoadMore: () => BlocProvider.of<BrowseAllBloc>(context)
-                  .add(BrowseAllEvent.loadedMore()),
-              onRefresh: () => BlocProvider.of<BrowseAllBloc>(context)
-                  .add(BrowseAllEvent.refreshed()),
-              refreshController: _refreshController,
-            ),
-          );
-        }
-      },
+      child: Consumer(
+        builder: (context, watch, child) {
+          final state = watch(browseAllStateNotifier.state);
+          return state.when(
+              initial: () => Center(),
+              loading: () => Center(child: CircularProgressIndicator()),
+              fetched: (posts, page, query) {
+                return Scaffold(
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: _downloadAllPosts,
+                    heroTag: null,
+                    child: Icon(Icons.download_sharp),
+                  ),
+                  body: RefreshableList(
+                    posts: posts,
+                    onLoadMore: () => context
+                        .read(browseAllStateNotifier)
+                        .getMorePosts(posts, query, page),
+                    onRefresh: () =>
+                        context.read(browseAllStateNotifier).refresh(),
+                    refreshController: _refreshController,
+                  ),
+                );
+              });
+        },
+      ),
     );
   }
 

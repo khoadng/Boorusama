@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
 import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_database.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/infrastructure/repositories/posts/note_repository.dart';
@@ -40,6 +41,8 @@ void main() async {
         "CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, apiKey TEXT)"),
     version: 1,
   );
+
+  AccountDatabase.dbProvider.init();
 
   Bloc.observer = SimpleBlocObserver();
 

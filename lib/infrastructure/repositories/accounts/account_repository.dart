@@ -1,6 +1,13 @@
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'account_database.dart';
+
+final accountProvider = Provider<IAccountRepository>((ref) {
+  return AccountRepository(AccountDatabase.dbProvider.database);
+});
 
 class AccountRepository implements IAccountRepository {
   final Future<Database> _db;

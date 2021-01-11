@@ -3,10 +3,19 @@ import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/posts/post_dto.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_database.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/all.dart';
+
+final postProvider = Provider<IPostRepository>((ref) {
+  return PostRepository(ref.watch(apiProvider), ref.watch(accountProvider),
+      ref.watch(settingsProvider));
+});
 
 class PostRepository implements IPostRepository {
   final IApi _api;

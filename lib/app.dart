@@ -19,6 +19,7 @@ import 'package:boorusama/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
@@ -93,7 +94,7 @@ class _AppState extends State<App> {
           create: (_) => UserBloc(
             accountRepository: widget.accountRepository,
             userRepository: widget.userRepository,
-            authenticationBloc: context.read<AuthenticationBloc>(),
+            authenticationBloc: BlocProvider.of<AuthenticationBloc>(context),
             settingRepository: widget.settingRepository,
           ),
         ),
@@ -117,35 +118,37 @@ class _AppState extends State<App> {
           // });
         },
         builder: (context, state) {
-          return MaterialApp(
-            theme: ThemeData(
-              primaryTextTheme: Theme.of(context)
-                  .textTheme
-                  .copyWith(headline6: TextStyle(color: Colors.black)),
-              appBarTheme: AppBarTheme(
-                  brightness: state.appBarBrightness,
-                  iconTheme: IconThemeData(color: state.iconColor),
-                  color: state.appBarColor),
-              iconTheme: IconThemeData(color: state.iconColor),
-              brightness: Brightness.light,
-            ),
-            darkTheme: ThemeData(
-              primaryTextTheme: Theme.of(context)
-                  .textTheme
-                  .copyWith(headline6: TextStyle(color: Colors.white)),
-              appBarTheme: AppBarTheme(
-                  brightness: state.appBarBrightness,
-                  iconTheme: IconThemeData(color: state.iconColor),
-                  color: state.appBarColor),
-              iconTheme: IconThemeData(color: state.iconColor),
-              brightness: Brightness.dark,
-            ),
-            themeMode: state.theme,
-            debugShowCheckedModeBanner: false,
-            title: "Boorusama",
-            home: BlocProvider(
-              create: (context) => HomeBloc(),
-              child: HomePage(),
+          return ProviderScope(
+            child: MaterialApp(
+              theme: ThemeData(
+                primaryTextTheme: Theme.of(context)
+                    .textTheme
+                    .copyWith(headline6: TextStyle(color: Colors.black)),
+                appBarTheme: AppBarTheme(
+                    brightness: state.appBarBrightness,
+                    iconTheme: IconThemeData(color: state.iconColor),
+                    color: state.appBarColor),
+                iconTheme: IconThemeData(color: state.iconColor),
+                brightness: Brightness.light,
+              ),
+              darkTheme: ThemeData(
+                primaryTextTheme: Theme.of(context)
+                    .textTheme
+                    .copyWith(headline6: TextStyle(color: Colors.white)),
+                appBarTheme: AppBarTheme(
+                    brightness: state.appBarBrightness,
+                    iconTheme: IconThemeData(color: state.iconColor),
+                    color: state.appBarColor),
+                iconTheme: IconThemeData(color: state.iconColor),
+                brightness: Brightness.dark,
+              ),
+              themeMode: state.theme,
+              debugShowCheckedModeBanner: false,
+              title: "Boorusama",
+              home: BlocProvider(
+                create: (context) => HomeBloc(),
+                child: HomePage(),
+              ),
             ),
           );
         },
