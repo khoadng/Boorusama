@@ -1,26 +1,17 @@
-part of 'curated_bloc.dart';
+part of 'curated_state_notifier.dart';
 
 @freezed
 abstract class CuratedState with _$CuratedState {
-  const factory CuratedState({
+  const factory CuratedState.initial() = _Initial;
+  const factory CuratedState.loading() = _Loading;
+  const factory CuratedState.fetched({
     @required List<Post> posts,
     @required int page,
-    @required DateTime selectedTime,
-    @required TimeScale selectedTimeScale,
-    @required bool isRefreshing,
-    @required bool isLoadingNew,
-    @required bool isLoadingMore,
-    @required @nullable Error error,
-  }) = _CuratedState;
-
-  factory CuratedState.initial() => CuratedState(
-        posts: <Post>[],
-        page: 1,
-        selectedTime: DateTime.now(),
-        selectedTimeScale: TimeScale.day,
-        isRefreshing: false,
-        isLoadingNew: false,
-        isLoadingMore: false,
-        error: null,
-      );
+    @required DateTime date,
+    @required TimeScale scale,
+  }) = _Fetched;
+  const factory CuratedState.error({
+    @required String name,
+    @required String message,
+  }) = _Error;
 }

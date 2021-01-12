@@ -1,16 +1,20 @@
-import 'package:boorusama/application/home/curated/curated_bloc.dart';
-import 'package:boorusama/domain/posts/time_scale.dart';
+import 'package:boorusama/application/home/curated/curated_state_notifier.dart';
+import 'package:boorusama/application/home/popular/popular_state_notifier.dart';
+import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+final curatedStateNotifierProvider =
+    StateNotifierProvider<CuratedStateNotifier>(
+        (ref) => CuratedStateNotifier(ref));
+
 class CuratedView extends StatefulWidget {
-  CuratedView({
-    Key key,
-  }) : super(key: key);
+  CuratedView({Key key}) : super(key: key);
 
   @override
   _CuratedViewState createState() => _CuratedViewState();
@@ -22,15 +26,17 @@ class _CuratedViewState extends State<CuratedView>
       RefreshController(initialRefresh: false);
   DateTime _currentSelectedDate;
   TimeScale _currentSelectedTimeScale;
-  bool _isRefreshing = false;
-  bool _isLoadingMore = false;
+  int _currentPage = 1;
+  List<Post> _posts = <Post>[];
 
   @override
   void initState() {
     super.initState();
     _currentSelectedDate = DateTime.now();
     _currentSelectedTimeScale = TimeScale.day;
-    BlocProvider.of<CuratedBloc>(context).add(CuratedEvent.started());
+
+    Future.delayed(Duration.zero,
+        () => context.read(curatedStateNotifierProvider).refresh());
   }
 
   @override
@@ -42,24 +48,17 @@ class _CuratedViewState extends State<CuratedView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<CuratedBloc, CuratedState>(
-      listener: (context, state) {
-        setState(() {
-          _currentSelectedDate = state.selectedTime;
-          _currentSelectedTimeScale = state.selectedTimeScale;
-
-          _isRefreshing = state.isRefreshing;
-          _isLoadingMore = state.isLoadingMore;
-
-          if (!_isRefreshing) {
-            _refreshController.refreshCompleted();
-          }
-
-          if (!_isLoadingMore) {
-            _refreshController.loadComplete();
-          }
-        });
-      },
+    return ProviderListener<CuratedState>(
+      provider: curatedStateNotifierProvider.state,
+      onChange: (context, state) => state.maybeWhen(
+          fetched: (posts, page, date, scale) => setState(() {
+                _currentSelectedDate = date;
+                _currentSelectedTimeScale = scale;
+                _refreshController
+                  ..loadComplete()
+                  ..refreshCompleted();
+              }),
+          orElse: () => null),
       child: SafeArea(
         top: false,
         bottom: false,
@@ -80,8 +79,12 @@ class _CuratedViewState extends State<CuratedView>
                 enablePullUp: true,
                 header: const WaterDropMaterialHeader(),
                 footer: const ClassicFooter(),
-                onRefresh: () => BlocProvider.of<CuratedBloc>(context)
-                    .add(CuratedEvent.refreshed()),
+                onRefresh: () =>
+                    context.read(curatedStateNotifierProvider).refresh(),
+                onLoading: () => context
+                    .read(curatedStateNotifierProvider)
+                    .getMorePosts(_posts, _currentSelectedDate, _currentPage,
+                        _currentSelectedTimeScale),
                 child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
@@ -96,30 +99,38 @@ class _CuratedViewState extends State<CuratedView>
                         ],
                       ),
                     ),
-                    BlocBuilder<CuratedBloc, CuratedState>(
-                        builder: (context, state) {
-                      if (state.error != null) {
-                        return SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Center(child: Text(state.error.message)),
-                            ],
-                          ),
-                        );
-                      } else if (state.isLoadingNew) {
-                        return SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Center(child: CircularProgressIndicator()),
-                            ],
-                          ),
-                        );
-                      } else {
-                        return SliverPostList(
-                          length: state.posts.length,
-                          posts: state.posts,
-                        );
-                      }
+                    Consumer(builder: (context, watch, child) {
+                      final state = watch(curatedStateNotifierProvider.state);
+                      return state.when(
+                          initial: () => SliverList(
+                                delegate: SliverChildListDelegate(
+                                  [
+                                    Center(),
+                                  ],
+                                ),
+                              ),
+                          loading: () => SliverList(
+                                delegate: SliverChildListDelegate(
+                                  [
+                                    Center(child: CircularProgressIndicator()),
+                                  ],
+                                ),
+                              ),
+                          fetched: (posts, page, date, scale) {
+                            _currentPage = page;
+                            _posts = posts;
+                            return SliverPostList(
+                              length: posts.length,
+                              posts: posts,
+                            );
+                          },
+                          error: (name, message) => SliverList(
+                                delegate: SliverChildListDelegate(
+                                  [
+                                    Center(child: Text(message)),
+                                  ],
+                                ),
+                              ));
                     }),
                   ],
                 ),
@@ -135,13 +146,17 @@ class _CuratedViewState extends State<CuratedView>
     DatePicker.showDatePicker(
       context,
       theme: DatePickerTheme(),
-      onConfirm: (time) => BlocProvider.of<CuratedBloc>(context)
-          .add(CuratedEvent.timeChanged(date: time)),
+      onConfirm: (time) => setState(() {
+        _currentSelectedDate = time;
+        context
+            .read(curatedStateNotifierProvider)
+            .getPosts(_currentSelectedDate, 1, _currentSelectedTimeScale);
+      }),
       currentTime: DateTime.now(),
     );
   }
 
-  Row _buildToolRow(BuildContext context) {
+  Widget _buildToolRow(BuildContext context) {
     return Row(
       children: [
         Wrap(
@@ -151,8 +166,11 @@ class _CuratedViewState extends State<CuratedView>
               child: DropdownButton<TimeScale>(
                 value: _currentSelectedTimeScale,
                 icon: Icon(Icons.arrow_drop_down),
-                onChanged: (value) => BlocProvider.of<CuratedBloc>(context)
-                    .add(CuratedEvent.timeScaleChanged(scale: value)),
+                onChanged: (value) => setState(() {
+                  _currentSelectedTimeScale = value;
+                  context.read(curatedStateNotifierProvider).getPosts(
+                      _currentSelectedDate, 1, _currentSelectedTimeScale);
+                }),
                 items: <DropdownMenuItem<TimeScale>>[
                   DropdownMenuItem(
                     value: TimeScale.day,
@@ -175,13 +193,55 @@ class _CuratedViewState extends State<CuratedView>
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
-              onPressed: () => BlocProvider.of<CuratedBloc>(context)
-                  .add(CuratedEvent.timeBackwarded()),
+              onPressed: () {
+                switch (_currentSelectedTimeScale) {
+                  case TimeScale.day:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).subtract(days: 1);
+                    break;
+                  case TimeScale.week:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).subtract(weeks: 1);
+                    break;
+                  case TimeScale.month:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).subtract(months: 1);
+                    break;
+                  default:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).subtract(days: 1);
+                    break;
+                }
+                setState(() {});
+                context.read(curatedStateNotifierProvider).getPosts(
+                    _currentSelectedDate, 1, _currentSelectedTimeScale);
+              },
             ),
             IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
-              onPressed: () => BlocProvider.of<CuratedBloc>(context)
-                  .add(CuratedEvent.timeForwarded()),
+              onPressed: () {
+                switch (_currentSelectedTimeScale) {
+                  case TimeScale.day:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).add(days: 1);
+                    break;
+                  case TimeScale.week:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).add(weeks: 1);
+                    break;
+                  case TimeScale.month:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).add(months: 1);
+                    break;
+                  default:
+                    _currentSelectedDate =
+                        Jiffy(_currentSelectedDate).add(days: 1);
+                    break;
+                }
+                setState(() {});
+                context.read(curatedStateNotifierProvider).getPosts(
+                    _currentSelectedDate, 1, _currentSelectedTimeScale);
+              },
             ),
           ],
         ),

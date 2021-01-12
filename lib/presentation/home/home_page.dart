@@ -1,5 +1,5 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
-import 'package:boorusama/application/home/curated/curated_bloc.dart';
+import 'package:boorusama/application/home/curated/curated_state_notifier.dart';
 import 'package:boorusama/application/home/most_viewed/most_viewed_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
@@ -165,13 +165,7 @@ class _HomePageState extends State<HomePage>
           children: <Widget>[
             BrowseAllView(),
             PopularView(),
-            BlocProvider(
-              create: (context) => CuratedBloc(
-                settingRepository: GetIt.instance<ISettingRepository>(),
-                postRepository: GetIt.instance<IPostRepository>(),
-              ),
-              child: CuratedView(),
-            ),
+            CuratedView(),
             BlocProvider(
               create: (context) => MostViewedBloc(
                 settingRepository: GetIt.instance<ISettingRepository>(),

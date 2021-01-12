@@ -9,27 +9,27 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../post_filter.dart';
 
-part 'popular_state.dart';
-part 'popular_state_notifier.freezed.dart';
+part 'curated_state.dart';
+part 'curated_state_notifier.freezed.dart';
 
-class PopularStateNotifier extends StateNotifier<PopularState> {
+class CuratedStateNotifier extends StateNotifier<CuratedState> {
   final IPostRepository _postRepository;
   final ISettingRepository _settingRepository;
 
-  PopularStateNotifier(ProviderReference ref)
+  CuratedStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
         _settingRepository = ref.read(settingsProvider),
-        super(PopularState.initial());
+        super(CuratedState.initial());
 
   void getPosts(DateTime date, int page, TimeScale scale) async {
     try {
-      state = PopularState.loading();
+      state = CuratedState.loading();
 
-      final dtos = await _postRepository.getPopularPosts(date, page, scale);
+      final dtos = await _postRepository.getCuratedPosts(date, page, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = PopularState.fetched(
+      state = CuratedState.fetched(
         posts: filteredPosts,
         page: page,
         date: date,
@@ -37,23 +37,23 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
       );
     } on DatabaseTimeOut catch (e) {
       state =
-          PopularState.error(name: "Errors", message: "Something went wrong");
+          CuratedState.error(name: "Errors", message: "Something went wrong");
     }
   }
 
   void refresh() async {
     try {
-      state = PopularState.loading();
+      state = CuratedState.loading();
 
       final date = DateTime.now();
       final page = 1;
       final scale = TimeScale.day;
 
-      final dtos = await _postRepository.getPopularPosts(date, page, scale);
+      final dtos = await _postRepository.getCuratedPosts(date, page, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = PopularState.fetched(
+      state = CuratedState.fetched(
         posts: filteredPosts,
         page: page,
         scale: scale,
@@ -66,11 +66,11 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
       List<Post> currentPosts, DateTime date, int page, TimeScale scale) async {
     try {
       final nextPage = page + 1;
-      final dtos = await _postRepository.getPopularPosts(date, nextPage, scale);
+      final dtos = await _postRepository.getCuratedPosts(date, nextPage, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = PopularState.fetched(
+      state = CuratedState.fetched(
         posts: currentPosts..addAll(filteredPosts),
         page: nextPage,
         scale: scale,
