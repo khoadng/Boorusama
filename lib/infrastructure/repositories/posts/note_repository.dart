@@ -1,9 +1,12 @@
-import 'package:boorusama/domain/posts/i_note_repository.dart';
-import 'package:boorusama/domain/posts/note.dart';
-import 'package:boorusama/domain/posts/note_coordinate.dart';
+import 'package:boorusama/domain/posts/posts.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:html/parser.dart' as html;
+
+final noteProvider =
+    Provider<INoteRepository>((ref) => NoteRepository(ref.watch(apiProvider)));
 
 class NoteRepository implements INoteRepository {
   final IApi _api;

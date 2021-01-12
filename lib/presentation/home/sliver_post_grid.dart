@@ -1,5 +1,5 @@
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/posts/post_list_swipe/post_list_swipe_page.dart';
+import 'package:boorusama/presentation/post_detail/post_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -66,14 +66,12 @@ class SliverPostList extends StatelessWidget {
             );
           }
 
-          // final tagId = Uuid().v4();
           return Stack(
             children: <Widget>[
               GestureDetector(
                 onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PostListSwipePage(
-                    posts: posts,
-                    initialPostIndex: index,
+                  builder: (context) => PostDetailPage(
+                    postId: post.id,
                   ),
                 )),
                 child: image,

@@ -82,6 +82,14 @@ abstract class DanbooruApi implements IApi {
     @Query("limit") int limit,
   );
 
+  @GET("/posts/{id}.json")
+  @override
+  Future<HttpResponse> getPost(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Path() int id,
+  );
+
   @GET("/explore/posts/popular.json")
   @override
   Future<HttpResponse> getPopularPosts(

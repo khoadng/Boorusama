@@ -4,6 +4,7 @@ import 'post_dto.dart';
 
 abstract class IPostRepository {
   Future<List<PostDto>> getPosts(String tagString, int page);
+  Future<PostDto> getPost(int id);
   Future<List<PostDto>> getPopularPosts(
       DateTime date, int page, TimeScale scale);
   Future<List<PostDto>> getCuratedPosts(

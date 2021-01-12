@@ -1,28 +1,29 @@
-import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
+import 'package:boorusama/application/post_detail/favorite/bloc/post_favorite_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/comments/comment_page.dart';
-import 'package:boorusama/presentation/posts/post_detail/widgets/post_tag_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
-class PostDetailPage extends StatefulWidget {
+import 'widgets/post_tag_list.dart';
+
+class PostInfoPage extends StatefulWidget {
   final Post post;
   final List<Tag> tags;
 
-  const PostDetailPage({
+  const PostInfoPage({
     Key key,
     @required this.post,
     @required this.tags,
   }) : super(key: key);
 
   @override
-  _PostDetailPageState createState() => _PostDetailPageState();
+  _PostInfoPageState createState() => _PostInfoPageState();
 }
 
-class _PostDetailPageState extends State<PostDetailPage> {
+class _PostInfoPageState extends State<PostInfoPage> {
   int _favCount;
 
   @override
@@ -44,15 +45,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 //TODO: check for success here
                 if (!isLiked) {
                   context
-                      .read<PostFavoritesBloc>()
-                      .add(PostFavoritesEvent.added(postId: widget.post.id));
+                      .read(postFavoriteStateNotifierProvider)
+                      .favorite(widget.post.id);
                   // post.isFavorited = true;
                   _favCount++;
                   return Future(() => true);
                 } else {
                   context
-                      .read<PostFavoritesBloc>()
-                      .add(PostFavoritesEvent.removed(postId: widget.post.id));
+                      .read(postFavoriteStateNotifierProvider)
+                      .unfavorite(widget.post.id);
                   // widget.post.isFavorited = false;
                   _favCount--;
                   return Future(() => false);

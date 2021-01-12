@@ -21,7 +21,6 @@ import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/comments/bloc/comment_bloc.dart';
-import 'application/posts/post_translate_note/bloc/post_note_bloc.dart';
 import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
@@ -69,8 +68,6 @@ class _AppState extends State<App> {
               PostDownloadEvent.init(platform: Theme.of(context).platform),
             ),
         ),
-        BlocProvider<PostNoteBloc>(
-            create: (_) => PostNoteBloc(noteRepository: widget.noteRepository)),
         BlocProvider<TagListBloc>(
             create: (_) => TagListBloc(widget.tagRepository)),
         BlocProvider<PostFavoritesBloc>(

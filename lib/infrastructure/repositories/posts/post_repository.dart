@@ -24,6 +24,29 @@ class PostRepository implements IPostRepository {
   PostRepository(this._api, this._accountRepository, this._settingRepository);
 
   @override
+  Future<PostDto> getPost(int id) async {
+    final account = await _accountRepository.get();
+
+    return _api.getPost(account.username, account.apiKey, id).then((value) {
+      try {
+        var post = PostDto.fromJson(value.response.data);
+        return post;
+      } catch (e) {
+        print("Cant parse $id");
+        return null;
+      }
+    }).catchError((Object obj) {
+      switch (obj.runtimeType) {
+        case DioError:
+          throw Exception("Failed to get post for $id");
+          break;
+        default:
+      }
+      return null;
+    });
+  }
+
+  @override
   Future<List<PostDto>> getPosts(String tagString, int page) async {
     final account = await _accountRepository.get();
     final settings = await _settingRepository.load();

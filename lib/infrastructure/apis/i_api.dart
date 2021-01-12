@@ -38,6 +38,12 @@ abstract class IApi {
     int postId,
   );
 
+  Future<HttpResponse> getPost(
+    String login,
+    String apiKey,
+    int id,
+  );
+
   Future<HttpResponse> getPosts(
     String login,
     String apiKey,
