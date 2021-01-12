@@ -5,7 +5,6 @@ import 'package:boorusama/presentation/home/curated/curated_view.dart';
 import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
 import 'package:boorusama/presentation/home/search/search_page.dart';
 import 'package:boorusama/presentation/home/search_bar.dart';
-import 'package:boorusama/presentation/posts/post_download_gallery/post_download_gallery_page.dart';
 import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
 import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
 import 'package:flutter/material.dart';
@@ -178,8 +177,8 @@ class _HomePageState extends State<HomePage>
             _buildTabView(),
           ],
         );
-      case 1:
-        return PostDownloadGalleryPage();
+      // case 1:
+      // return PostDownloadGalleryPage();
     }
   }
 
