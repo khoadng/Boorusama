@@ -60,9 +60,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           builder: (context, watch, child) {
             final state = watch(postDetailStateNotifierProvider.state);
             return state.when(
-              initial: () => Center(
-                child: CircularProgressIndicator(),
-              ),
+              initial: () => _buildLoading(context),
               loading: () => _buildLoading(context),
               fetched: (post) {
                 if (post.isVideo) {

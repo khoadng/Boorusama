@@ -1,3 +1,4 @@
+import 'package:animations/animations.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/post_detail/post_detail_page.dart';
 import 'package:flutter/material.dart';
@@ -68,13 +69,20 @@ class SliverPostList extends StatelessWidget {
 
           return Stack(
             children: <Widget>[
-              GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PostDetailPage(
-                    postId: post.id,
-                  ),
-                )),
-                child: image,
+              // GestureDetector(
+              //   onTap: () => Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => PostDetailPage(
+              //       postId: post.id,
+              //     ),
+              //   )),
+              //   child: image,
+              // ),
+              OpenContainer(
+                closedColor: Colors.transparent,
+                openColor: Colors.transparent,
+                closedBuilder: (context, action) => image,
+                openBuilder: (context, action) =>
+                    PostDetailPage(postId: post.id),
               ),
               Align(
                 alignment: Alignment.topLeft,

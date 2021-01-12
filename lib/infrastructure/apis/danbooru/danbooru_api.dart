@@ -82,6 +82,10 @@ abstract class DanbooruApi implements IApi {
     @Query("limit") int limit,
   );
 
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
+  })
   @GET("/posts/{id}.json")
   @override
   Future<HttpResponse> getPost(
