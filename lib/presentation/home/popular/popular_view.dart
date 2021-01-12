@@ -34,8 +34,11 @@ class _PopularViewState extends State<PopularView>
     _currentSelectedDate = DateTime.now();
     _currentSelectedTimeScale = TimeScale.day;
 
-    Future.delayed(Duration.zero,
-        () => context.read(popularStateNotifierProvider).refresh());
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(popularStateNotifierProvider)
+            .refresh(_currentSelectedDate, _currentSelectedTimeScale));
   }
 
   @override
@@ -78,8 +81,9 @@ class _PopularViewState extends State<PopularView>
                 enablePullUp: true,
                 header: const WaterDropMaterialHeader(),
                 footer: const ClassicFooter(),
-                onRefresh: () =>
-                    context.read(popularStateNotifierProvider).refresh(),
+                onRefresh: () => context
+                    .read(popularStateNotifierProvider)
+                    .refresh(_currentSelectedDate, _currentSelectedTimeScale),
                 onLoading: () => context
                     .read(popularStateNotifierProvider)
                     .getMorePosts(_posts, _currentSelectedDate, _currentPage,

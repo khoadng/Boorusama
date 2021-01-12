@@ -1,5 +1,4 @@
 import 'package:boorusama/application/home/curated/curated_state_notifier.dart';
-import 'package:boorusama/application/home/popular/popular_state_notifier.dart';
 import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
@@ -35,8 +34,11 @@ class _CuratedViewState extends State<CuratedView>
     _currentSelectedDate = DateTime.now();
     _currentSelectedTimeScale = TimeScale.day;
 
-    Future.delayed(Duration.zero,
-        () => context.read(curatedStateNotifierProvider).refresh());
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(curatedStateNotifierProvider)
+            .refresh(_currentSelectedDate, _currentSelectedTimeScale));
   }
 
   @override
@@ -79,8 +81,9 @@ class _CuratedViewState extends State<CuratedView>
                 enablePullUp: true,
                 header: const WaterDropMaterialHeader(),
                 footer: const ClassicFooter(),
-                onRefresh: () =>
-                    context.read(curatedStateNotifierProvider).refresh(),
+                onRefresh: () => context
+                    .read(curatedStateNotifierProvider)
+                    .refresh(_currentSelectedDate, _currentSelectedTimeScale),
                 onLoading: () => context
                     .read(curatedStateNotifierProvider)
                     .getMorePosts(_posts, _currentSelectedDate, _currentPage,

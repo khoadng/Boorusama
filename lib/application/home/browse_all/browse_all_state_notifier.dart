@@ -37,8 +37,6 @@ class BrowseAllStateNotifier extends StateNotifier<BrowseAllState> {
 
   void refresh() async {
     try {
-      state = BrowseAllState.loading();
-
       final dtos = await _postRepository.getPosts("", 1);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);

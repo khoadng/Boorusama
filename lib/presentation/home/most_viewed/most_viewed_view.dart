@@ -1,15 +1,18 @@
-import 'package:boorusama/application/home/most_viewed/most_viewed_bloc.dart';
+import 'package:boorusama/application/home/most_viewed/most_viewed_state_notifier.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+final mostViewedStateNotifierProvider =
+    StateNotifierProvider<MostViewedStateNotifier>(
+        (ref) => MostViewedStateNotifier(ref));
+
 class MostViewedView extends StatefulWidget {
-  MostViewedView({
-    Key key,
-  }) : super(key: key);
+  MostViewedView({Key key}) : super(key: key);
 
   @override
   _MostViewedViewState createState() => _MostViewedViewState();
@@ -20,13 +23,17 @@ class _MostViewedViewState extends State<MostViewedView>
   RefreshController _refreshController =
       RefreshController(initialRefresh: false);
   DateTime _currentSelectedDate;
-  bool _isRefreshing = false;
 
   @override
   void initState() {
     super.initState();
     _currentSelectedDate = DateTime.now();
-    BlocProvider.of<MostViewedBloc>(context).add(MostViewedEvent.started());
+
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(mostViewedStateNotifierProvider)
+            .refresh(_currentSelectedDate));
   }
 
   @override
@@ -38,18 +45,16 @@ class _MostViewedViewState extends State<MostViewedView>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return BlocListener<MostViewedBloc, MostViewedState>(
-      listener: (context, state) {
-        setState(() {
-          _currentSelectedDate = state.selectedTime;
-
-          _isRefreshing = state.isRefreshing;
-
-          if (!_isRefreshing) {
-            _refreshController.refreshCompleted();
-          }
-        });
-      },
+    return ProviderListener<MostViewedState>(
+      provider: mostViewedStateNotifierProvider.state,
+      onChange: (context, state) => state.maybeWhen(
+          fetched: (posts, date) => setState(() {
+                _currentSelectedDate = date;
+                _refreshController
+                  ..loadComplete()
+                  ..refreshCompleted();
+              }),
+          orElse: () => null),
       child: SafeArea(
         top: false,
         bottom: false,
@@ -68,8 +73,9 @@ class _MostViewedViewState extends State<MostViewedView>
                 controller: _refreshController,
                 enablePullDown: true,
                 header: const WaterDropMaterialHeader(),
-                onRefresh: () => BlocProvider.of<MostViewedBloc>(context)
-                    .add(MostViewedEvent.refreshed()),
+                onRefresh: () => context
+                    .read(mostViewedStateNotifierProvider)
+                    .refresh(_currentSelectedDate),
                 child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
@@ -84,30 +90,36 @@ class _MostViewedViewState extends State<MostViewedView>
                         ],
                       ),
                     ),
-                    BlocBuilder<MostViewedBloc, MostViewedState>(
-                        builder: (context, state) {
-                      if (state.error != null) {
-                        return SliverList(
+                    Consumer(builder: (context, watch, child) {
+                      final state =
+                          watch(mostViewedStateNotifierProvider.state);
+                      return state.when(
+                        initial: () => SliverList(
                           delegate: SliverChildListDelegate(
                             [
-                              Center(child: Text(state.error.message)),
+                              Center(),
                             ],
                           ),
-                        );
-                      } else if (state.isLoadingNew) {
-                        return SliverList(
+                        ),
+                        loading: () => SliverList(
                           delegate: SliverChildListDelegate(
                             [
                               Center(child: CircularProgressIndicator()),
                             ],
                           ),
-                        );
-                      } else {
-                        return SliverPostList(
-                          length: state.posts.length,
-                          posts: state.posts,
-                        );
-                      }
+                        ),
+                        fetched: (posts, date) => SliverPostList(
+                          length: posts.length,
+                          posts: posts,
+                        ),
+                        error: (name, message) => SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Center(child: Text(message)),
+                            ],
+                          ),
+                        ),
+                      );
                     }),
                   ],
                 ),
@@ -123,26 +135,43 @@ class _MostViewedViewState extends State<MostViewedView>
     DatePicker.showDatePicker(
       context,
       theme: DatePickerTheme(),
-      onConfirm: (time) => BlocProvider.of<MostViewedBloc>(context)
-          .add(MostViewedEvent.timeChanged(date: time)),
+      onConfirm: (time) => setState(() {
+        _currentSelectedDate = time;
+        context
+            .read(mostViewedStateNotifierProvider)
+            .getPosts(_currentSelectedDate);
+      }),
       currentTime: DateTime.now(),
     );
   }
 
-  Row _buildToolRow(BuildContext context) {
+  Widget _buildToolRow(BuildContext context) {
     return Row(
       children: [
         ButtonBar(
           children: <Widget>[
             IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
-              onPressed: () => BlocProvider.of<MostViewedBloc>(context)
-                  .add(MostViewedEvent.timeBackwarded()),
+              onPressed: () {
+                _currentSelectedDate =
+                    Jiffy(_currentSelectedDate).subtract(days: 1);
+
+                setState(() {});
+                context
+                    .read(mostViewedStateNotifierProvider)
+                    .getPosts(_currentSelectedDate);
+              },
             ),
             IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
-              onPressed: () => BlocProvider.of<MostViewedBloc>(context)
-                  .add(MostViewedEvent.timeForwarded()),
+              onPressed: () {
+                _currentSelectedDate = Jiffy(_currentSelectedDate).add(days: 1);
+
+                setState(() {});
+                context
+                    .read(mostViewedStateNotifierProvider)
+                    .getPosts(_currentSelectedDate);
+              },
             ),
           ],
         ),
