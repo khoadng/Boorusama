@@ -1,6 +1,6 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
-import 'package:boorusama/application/search/bloc/suggestions_state_notifier.dart';
+import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/home/browse_all/browse_all_view.dart';

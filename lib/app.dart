@@ -7,7 +7,6 @@ import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/download/download_service.dart';
 import 'application/themes/bloc/theme_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
-import 'application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'domain/accounts/i_account_repository.dart';
 import 'domain/accounts/i_favorite_post_repository.dart';
 import 'domain/comments/i_comment_repository.dart';
@@ -73,7 +72,6 @@ class _AppState extends State<App> {
             settingRepository: widget.settingRepository,
           ),
         ),
-        BlocProvider<WikiBloc>(create: (_) => WikiBloc(widget.wikiRepository)),
         BlocProvider<ThemeBloc>(
             create: (_) => ThemeBloc()
               ..add(ThemeChanged(theme: widget.settings.themeMode))),

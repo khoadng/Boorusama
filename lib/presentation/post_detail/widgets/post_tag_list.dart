@@ -1,9 +1,7 @@
-import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
-import 'package:boorusama/presentation/tags/wikis/wiki_page.dart';
+import 'package:boorusama/presentation/wiki/wiki_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:popup_menu/popup_menu.dart';
@@ -181,7 +179,6 @@ class __SliverTagListState extends State<_SliverTagList> {
         )
       ],
       onClickMenu: (_) {
-        context.read<WikiBloc>().add(WikiRequested(_currentPopupTag.rawName));
         showBarModalBottomSheet(
           expand: false,
           context: context,
