@@ -1,8 +1,11 @@
 import 'package:boorusama/application/comment/comment_state_notifier.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
-class CommentCreatePage extends StatefulWidget {
+import 'widgets/editor_spacer.dart';
+
+class CommentCreatePage extends HookWidget {
   const CommentCreatePage({
     Key key,
     @required this.postId,
@@ -13,29 +16,10 @@ class CommentCreatePage extends StatefulWidget {
   final String initialContent;
 
   @override
-  _CommentCreatePageState createState() => _CommentCreatePageState();
-}
-
-class _CommentCreatePageState extends State<CommentCreatePage> {
-  String _subject = '';
-  TextEditingController _textEditingController;
-  String _initialContent = "";
-
-  @override
-  void initState() {
-    super.initState();
-    _initialContent = widget.initialContent ?? "";
-    _textEditingController = TextEditingController(text: _initialContent);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _textEditingController.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final textEditingController =
+        useTextEditingController(text: initialContent ?? "");
+
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -47,17 +31,36 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
-                  _subjectRow,
-                  _spacer,
-                  // _senderAddressRow,
-                  // _spacer,
-                  // _recipientRow,
-                  _spacer,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        IconButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(
+                            Icons.close,
+                          ),
+                        ),
+                        Expanded(child: Center()),
+                        ProviderListener(
+                          provider: commentStateNotifierProvider.state,
+                          onChange: (context, state) =>
+                              _handleCommentStateChanged(state, context),
+                          child: IconButton(
+                              onPressed: () => _handleSend(
+                                  context, textEditingController.text),
+                              icon: Icon(Icons.send)),
+                        ),
+                      ],
+                    ),
+                  ),
+                  EditorSpacer(),
                   const SizedBox(height: 8),
                   Padding(
                     padding: const EdgeInsets.all(12),
                     child: TextField(
-                      controller: _textEditingController,
+                      controller: textEditingController,
                       decoration:
                           InputDecoration.collapsed(hintText: 'Comment'),
                       autofocus: true,
@@ -74,60 +77,22 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
     );
   }
 
-  Widget get _spacer {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Container(
-        width: double.infinity,
-        height: 1,
-        color: Theme.of(context).dividerColor,
-      ),
-    );
+  void _handleSend(BuildContext context, String content) {
+    FocusScope.of(context).unfocus();
+    context.read(commentStateNotifierProvider).addComment(postId, content);
   }
 
-  Widget get _subjectRow {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-            onPressed: () => Navigator.of(context).pop(),
-            icon: const Icon(
-              Icons.close,
-            ),
-          ),
-          Expanded(
-              child:
-                  Text(_subject, style: Theme.of(context).textTheme.headline6)),
-          ProviderListener(
-            provider: commentStateNotifierProvider.state,
-            onChange: (context, state) {
-              state.maybeWhen(
-                addedSuccess: () {
-                  context
-                      .read(commentStateNotifierProvider)
-                      .getComments(widget.postId);
-                  Navigator.of(context).pop();
-                },
-                loading: () => Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text("Please wait..."))),
-                error: () => Scaffold.of(context)
-                    .showSnackBar(SnackBar(content: Text("Error"))),
-                orElse: () {},
-              );
-            },
-            child: IconButton(
-                onPressed: () {
-                  FocusScope.of(context).unfocus();
-                  context
-                      .read(commentStateNotifierProvider)
-                      .addComment(widget.postId, _textEditingController.text);
-                },
-                icon: Icon(Icons.send)),
-          ),
-        ],
-      ),
+  void _handleCommentStateChanged(state, BuildContext context) {
+    state.maybeWhen(
+      addedSuccess: () {
+        context.read(commentStateNotifierProvider).getComments(postId);
+        Navigator.of(context).pop();
+      },
+      loading: () => Scaffold.of(context)
+          .showSnackBar(SnackBar(content: Text("Please wait..."))),
+      error: () =>
+          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error"))),
+      orElse: () {},
     );
   }
 }
