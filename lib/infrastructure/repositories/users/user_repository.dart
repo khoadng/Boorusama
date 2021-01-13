@@ -1,7 +1,13 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/users/i_user_repository.dart';
 import 'package:boorusama/domain/users/user.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:flutter_riverpod/all.dart';
+
+final userProvider = Provider<UserRepository>((ref) =>
+    UserRepository(ref.watch(apiProvider), ref.watch(accountProvider)));
 
 class UserRepository implements IUserRepository {
   final IApi _api;

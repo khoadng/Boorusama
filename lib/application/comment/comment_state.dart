@@ -1,4 +1,4 @@
-part of 'comment_bloc.dart';
+part of 'comment_state_notifier.dart';
 
 @freezed
 abstract class CommentState with _$CommentState {

@@ -1,8 +1,14 @@
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/comments/comment_dto.dart';
 import 'package:boorusama/domain/comments/i_comment_repository.dart';
+import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
+import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/all.dart';
+
+final commentProvider = Provider<CommentRepository>((ref) =>
+    CommentRepository(ref.watch(apiProvider), ref.watch(accountProvider)));
 
 class CommentRepository implements ICommentRepository {
   final IApi _api;

@@ -1,13 +1,11 @@
 import 'package:animations/animations.dart';
-import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
-import 'package:boorusama/application/users/bloc/user_list_bloc.dart';
-import 'package:boorusama/domain/comments/comment.dart';
-import 'package:boorusama/domain/users/user.dart';
-import 'package:boorusama/presentation/comments/comment_update_page.dart';
-import 'package:boorusama/presentation/comments/widgets/comment_item.dart';
+import 'package:boorusama/application/comment/comment.dart';
+import 'package:boorusama/application/comment/comment_state_notifier.dart';
+import 'package:boorusama/presentation/comment/comment_update_page.dart';
+import 'package:boorusama/presentation/comment/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_riverpod/all.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'comment_create_page.dart';
@@ -25,7 +23,7 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-  List<User> _users = <User>[];
+  // List<User> _users = <User>[];
   bool _showDeleted = false;
   List<Comment> _comments = <Comment>[];
   List<Comment> _commentsWithDeleted = <Comment>[];
@@ -34,9 +32,11 @@ class _CommentPageState extends State<CommentPage> {
   @override
   void initState() {
     super.initState();
-    context
-        .read<CommentBloc>()
-        .add(CommentEvent.requested(postId: widget.postId));
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(commentStateNotifierProvider)
+            .getComments(widget.postId));
   }
 
   @override
@@ -74,8 +74,9 @@ class _CommentPageState extends State<CommentPage> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
-                    child: BlocConsumer<CommentBloc, CommentState>(
-                      listener: (context, state) {
+                    child: ProviderListener(
+                      provider: commentStateNotifierProvider.state,
+                      onChange: (context, state) {
                         state.maybeWhen(
                           fetched: (comments) =>
                               _handleCommentsFetched(comments, context),
@@ -85,27 +86,32 @@ class _CommentPageState extends State<CommentPage> {
                           ),
                         );
                       },
-                      builder: (context, state) {
-                        return state.maybeWhen(
-                          fetched: (comments) =>
-                              BlocListener<UserListBloc, UserListState>(
-                            listener: (context, state) {
-                              if (state is UserListFetched) {
-                                if (_users.isEmpty) {
-                                  setState(() {
-                                    _users = state.users;
-                                  });
-                                }
-                              }
-                            },
-                            child: _buildCommentSection(_comments),
-                          ),
-                          orElse: () => Center(
-                            child: Lottie.asset(
-                                "assets/animations/comment_loading.json"),
-                          ),
-                        );
-                      },
+                      child: Consumer(
+                        builder: (context, watch, child) {
+                          final state =
+                              watch(commentStateNotifierProvider.state);
+                          return state.maybeWhen(
+                            fetched: (comments) =>
+                                _buildCommentSection(_comments),
+                            //     BlocListener<UserListBloc, UserListState>(
+                            //   listener: (context, state) {
+                            //     if (state is UserListFetched) {
+                            //       if (_users.isEmpty) {
+                            //         setState(() {
+                            //           _users = state.users;
+                            //         });
+                            //       }
+                            //     }
+                            //   },
+                            //   child: _buildCommentSection(_comments),
+                            // ),
+                            orElse: () => Center(
+                              child: Lottie.asset(
+                                  "assets/animations/comment_loading.json"),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -128,16 +134,6 @@ class _CommentPageState extends State<CommentPage> {
         _comments = _commentsWithoutDeleted;
       }
     });
-
-    final userList = <String>[];
-    comments.forEach((comment) {
-      if (!userList.contains(comment.creatorId.toString())) {
-        userList.add(comment.creatorId.toString());
-      }
-    });
-
-    BlocProvider.of<UserListBloc>(context)
-        .add(UserListRequested(userList.join(",")));
   }
 
   Widget _buildCommentSection(List<Comment> comments) {
@@ -159,12 +155,14 @@ class _CommentPageState extends State<CommentPage> {
                         ListTile(
                           title: Text('Edit'),
                           leading: Icon(Icons.edit),
-                          onTap: () => _handleEditTap(context, comment),
+                          onTap: () =>
+                              _handleEditTap(context, comment, widget.postId),
                         ),
                         ListTile(
                           title: Text('Reply'),
                           leading: Icon(Icons.folder_open),
-                          onTap: () => _handleReplyTap(context, comment),
+                          onTap: () =>
+                              _handleReplyTap(context, comment, widget.postId),
                         ),
                         ListTile(
                           title: Text('Delete'),
@@ -178,9 +176,6 @@ class _CommentPageState extends State<CommentPage> {
               ),
               title: CommentItem(
                 comment: comment,
-                user: _users.isNotEmpty
-                    ? _users.where((user) => user.id == comment.creatorId).first
-                    : User.placeholder(),
               ),
             );
           },
@@ -194,15 +189,15 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
-  void _handleEditTap(BuildContext context, Comment comment) {
+  void _handleEditTap(BuildContext context, Comment comment, int postId) async {
     Navigator.of(context).pop();
-    Navigator.of(context).push(
+    await Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             CommentUpdatePage(
           postId: widget.postId,
           commentId: comment.id,
-          initialContent: comment.body,
+          initialContent: comment.content,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             SharedAxisTransition(
@@ -216,13 +211,13 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  void _handleReplyTap(BuildContext context, Comment comment) {
-    final author = _users.where((user) => user.id == comment.creatorId).first;
+  void _handleReplyTap(
+      BuildContext context, Comment comment, int postId) async {
     final content =
-        "[quote]\n${author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
+        "[quote]\n${comment.author.name} said:\n\n${comment.content}\n[/quote]\n\n";
 
     Navigator.of(context).pop();
-    Navigator.of(context).push(
+    await Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) =>
             CommentCreatePage(

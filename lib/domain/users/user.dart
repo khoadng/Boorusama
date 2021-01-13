@@ -1,14 +1,13 @@
-import 'user_level.dart';
+import '../../application/comment/user_level.dart';
 
 class User {
   int _id;
   String _name;
-  UserLevel _level;
+  int level;
   String _blacklistedTagString;
 
-  User(this._id, this._name, this._level, this._blacklistedTagString);
+  User(this._id, this._name, this.level, this._blacklistedTagString);
 
-  Level get level => _level.level;
   int get id => _id;
   String get displayName => _name.replaceAll("_", " ");
   String get rawName => _name;
@@ -18,10 +17,10 @@ class User {
     return User(
       json["id"],
       json["name"],
-      UserLevel(json["level"]),
+      json["level"],
       json["blacklisted_tags"],
     );
   }
 
-  factory User.placeholder() => User(0, "User", UserLevel(20), "");
+  // factory User.placeholder() => User(0, "User", UserLevel(20), "");
 }

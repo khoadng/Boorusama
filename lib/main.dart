@@ -48,7 +48,7 @@ void main() async {
 
   final accountRepository = AccountRepository(accountDb);
 
-  final url = "https://danbooru.donmai.us/";
+  final url = "https://testbooru.donmai.us/";
   final dio = Dio()
     ..interceptors.add(DioCacheManager(CacheConfig(baseUrl: url)).interceptor);
   final api = DanbooruApi(dio, baseUrl: url);

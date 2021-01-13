@@ -1,7 +1,7 @@
 import 'package:boorusama/application/post_detail/favorite/bloc/post_favorite_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/comments/comment_page.dart';
+import 'package:boorusama/presentation/comment/comment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:like_button/like_button.dart';

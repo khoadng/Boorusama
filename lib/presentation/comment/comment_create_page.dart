@@ -1,6 +1,6 @@
-import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
+import 'package:boorusama/application/comment/comment_state_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 
 class CommentCreatePage extends StatefulWidget {
   const CommentCreatePage({
@@ -100,10 +100,14 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
           Expanded(
               child:
                   Text(_subject, style: Theme.of(context).textTheme.headline6)),
-          BlocListener<CommentBloc, CommentState>(
-            listener: (context, state) {
+          ProviderListener(
+            provider: commentStateNotifierProvider.state,
+            onChange: (context, state) {
               state.maybeWhen(
                 addedSuccess: () {
+                  context
+                      .read(commentStateNotifierProvider)
+                      .getComments(widget.postId);
                   Navigator.of(context).pop();
                 },
                 loading: () => Scaffold.of(context)
@@ -116,12 +120,9 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
             child: IconButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  BlocProvider.of<CommentBloc>(context).add(
-                    CommentEvent.added(
-                      postId: widget.postId,
-                      content: _textEditingController.text,
-                    ),
-                  );
+                  context
+                      .read(commentStateNotifierProvider)
+                      .addComment(widget.postId, _textEditingController.text);
                 },
                 icon: Icon(Icons.send)),
           ),

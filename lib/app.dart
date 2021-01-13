@@ -1,7 +1,6 @@
 import 'package:boorusama/application/posts/post_download/bloc/post_download_bloc.dart';
 import 'package:boorusama/application/posts/post_download/i_download_service.dart';
 import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
-import 'package:boorusama/application/tags/tag_list/bloc/tag_list_bloc.dart';
 import 'package:boorusama/application/themes/bloc/theme_bloc.dart';
 import 'package:boorusama/application/wikis/wiki/bloc/wiki_bloc.dart';
 import 'package:boorusama/domain/accounts/i_account_repository.dart';
@@ -20,8 +19,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
-import 'application/comments/bloc/comment_bloc.dart';
-import 'application/users/bloc/user_list_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'infrastructure/repositories/settings/setting.dart';
 
@@ -68,19 +65,12 @@ class _AppState extends State<App> {
               PostDownloadEvent.init(platform: Theme.of(context).platform),
             ),
         ),
-        BlocProvider<TagListBloc>(
-            create: (_) => TagListBloc(widget.tagRepository)),
         BlocProvider<PostFavoritesBloc>(
             create: (_) => PostFavoritesBloc(
                   widget.postRepository,
                   widget.favoritePostRepository,
                   widget.settingRepository,
                 )),
-        BlocProvider<CommentBloc>(
-            create: (_) =>
-                CommentBloc(commentRepository: widget.commentRepository)),
-        BlocProvider<UserListBloc>(
-            create: (_) => UserListBloc(widget.userRepository)),
         BlocProvider<UserBloc>(
           lazy: false,
           create: (_) => UserBloc(

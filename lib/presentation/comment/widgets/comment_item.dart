@@ -1,17 +1,14 @@
-import 'package:boorusama/domain/comments/comment.dart';
-import 'package:boorusama/domain/users/user.dart';
-import 'package:boorusama/domain/users/user_level.dart';
+import 'package:boorusama/application/comment/comment.dart';
+import 'package:boorusama/application/comment/user_level.dart';
 import 'package:boorusama/presentation/services/dtext/dtext.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class CommentItem extends StatelessWidget {
   final Comment comment;
-  final User user;
 
   CommentItem({
     @required this.comment,
-    @required this.user,
   });
 
   @override
@@ -24,9 +21,9 @@ class CommentItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                user.displayName,
+                comment.author.name,
                 style: TextStyle(
-                  color: Color(user.level.hexColor),
+                  color: Color(comment.author.level.hexColor),
                 ),
               ),
               SizedBox(
@@ -39,7 +36,7 @@ class CommentItem extends StatelessWidget {
             ],
           ),
           Dtext.parse(
-            comment.body,
+            comment.content,
             "[quote]",
             "[/quote]",
           ),

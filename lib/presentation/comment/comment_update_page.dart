@@ -1,6 +1,6 @@
-import 'package:boorusama/application/comments/bloc/comment_bloc.dart';
+import 'package:boorusama/application/comment/comment_state_notifier.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/all.dart';
 
 class CommentUpdatePage extends StatefulWidget {
   const CommentUpdatePage({
@@ -102,10 +102,17 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
           Expanded(
               child:
                   Text(_subject, style: Theme.of(context).textTheme.headline6)),
-          BlocListener<CommentBloc, CommentState>(
-            listener: (context, state) {
+          ProviderListener<CommentState>(
+            provider: commentStateNotifierProvider.state,
+            onChange: (context, state) {
               state.maybeWhen(
-                updatedSuccess: () => Navigator.of(context).pop(),
+                updatedSuccess: () {
+                  context
+                      .read(commentStateNotifierProvider)
+                      .getComments(widget.postId);
+
+                  Navigator.of(context).pop();
+                },
                 loading: () => Scaffold.of(context)
                     .showSnackBar(SnackBar(content: Text("Please wait..."))),
                 error: () => Scaffold.of(context)
@@ -116,13 +123,10 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
             child: IconButton(
                 onPressed: () {
                   FocusScope.of(context).unfocus();
-                  BlocProvider.of<CommentBloc>(context).add(
-                    CommentEvent.updated(
-                      commentId: widget.commentId,
-                      postId: widget.postId,
-                      content: _textEditingController.text,
-                    ),
-                  );
+                  context.read(commentStateNotifierProvider).updateComment(
+                      widget.commentId,
+                      widget.postId,
+                      _textEditingController.text);
                 },
                 icon: Icon(Icons.save)),
           ),
