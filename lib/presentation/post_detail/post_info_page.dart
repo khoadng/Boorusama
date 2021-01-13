@@ -1,4 +1,4 @@
-import 'package:boorusama/application/post_detail/favorite/bloc/post_favorite_state_notifier.dart';
+import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/comment/comment_page.dart';

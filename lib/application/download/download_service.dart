@@ -3,11 +3,15 @@ import 'dart:ui';
 import 'dart:isolate';
 
 import 'package:boorusama/IOHelper.dart';
-import 'package:boorusama/application/posts/post_download/file_name_generator.dart';
-import 'package:boorusama/application/posts/post_download/i_download_service.dart';
-import 'package:boorusama/domain/posts/post.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_riverpod/all.dart';
+
+import 'file_name_generator.dart';
+import 'i_download_service.dart';
+
+final downloadServiceProvider = Provider<IDownloadService>(
+    (ref) => DownloadService(ref.watch(fileNameGeneratorProvider)));
 
 class DownloadService implements IDownloadService {
   final FileNameGenerator fileNameGenerator;
@@ -20,8 +24,7 @@ class DownloadService implements IDownloadService {
   String _savedDir;
 
   @override
-  void download(Post post, String url) async {
-    final filePath = fileNameGenerator.generateFor(post, url);
+  void download(String filePath, String url) async {
     final exist =
         await io.File(_savedDir + io.Platform.pathSeparator + filePath)
             .exists();
@@ -85,6 +88,7 @@ class DownloadService implements IDownloadService {
     _permissionReady = await IOHelper.checkPermission(platform);
 
     _prepare();
+    print("Download service initialized");
   }
 
   static void downloadCallback(

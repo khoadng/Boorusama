@@ -1,3 +1,4 @@
+import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/post_detail/notes/notes_state_notifier.dart';
 import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/application/post_detail/tags/tags_state_notifier.dart';
@@ -162,11 +163,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         onSelected: (value) {
           switch (value) {
             case PostAction.download:
-              // context.read<PostDownloadBloc>().add(
-              //       PostDownloadEvent.downloaded(
-              //         post: widget.posts[_currentPostIndex],
-              //       ),
-              //     );
+              context.read(postDownloadStateNotifierProvider).download(post);
               break;
             default:
           }

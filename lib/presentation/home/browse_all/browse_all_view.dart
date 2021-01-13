@@ -46,11 +46,6 @@ class _BrowseAllViewState extends State<BrowseAllView>
               loading: () => Center(child: CircularProgressIndicator()),
               fetched: (posts, page, query) {
                 return Scaffold(
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: _downloadAllPosts,
-                    heroTag: null,
-                    child: Icon(Icons.download_sharp),
-                  ),
                   body: RefreshableList(
                     posts: posts,
                     onLoadMore: () => context
@@ -69,12 +64,4 @@ class _BrowseAllViewState extends State<BrowseAllView>
 
   @override
   bool get wantKeepAlive => true;
-
-  void _downloadAllPosts() {
-    // _posts.forEach((post) {
-    //   context
-    //       .read<PostDownloadBloc>()
-    //       .add(PostDownloadEvent.downloaded(post: post));
-    // });
-  }
 }

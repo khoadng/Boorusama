@@ -1,8 +1,8 @@
+import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
 import 'package:boorusama/application/search/bloc/suggestions_state_notifier.dart';
-import 'package:boorusama/domain/posts/i_post_repository.dart';
+import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/presentation/home/browse_all/browse_all_view.dart';
 import 'package:boorusama/presentation/home/refreshable_list.dart';
 import 'package:boorusama/presentation/home/tag_query.dart';
@@ -80,14 +80,21 @@ class SearchPage extends SearchDelegate {
               initial: () => Center(),
               loading: () => Center(child: CircularProgressIndicator()),
               fetched: (posts, page, query) {
-                return RefreshableList(
-                  posts: posts,
-                  onLoadMore: () => context
-                      .read(browseAllStateNotifier)
-                      .getMorePosts(posts, query, page),
-                  onRefresh: () =>
-                      context.read(browseAllStateNotifier).refresh(),
-                  refreshController: _refreshController,
+                return Scaffold(
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => _downloadAllPosts(posts, context),
+                    heroTag: null,
+                    child: Icon(Icons.download_sharp),
+                  ),
+                  body: RefreshableList(
+                    posts: posts,
+                    onLoadMore: () => context
+                        .read(browseAllStateNotifier)
+                        .getMorePosts(posts, query, page),
+                    onRefresh: () =>
+                        context.read(browseAllStateNotifier).refresh(),
+                    refreshController: _refreshController,
+                  ),
                 );
               });
         },
@@ -101,44 +108,26 @@ class SearchPage extends SearchDelegate {
 
     if (query.isNotEmpty) {
       Future.delayed(
-        Duration.zero, () => context
-          .read(suggestionsStateNotifier)
-          .getSuggestions(_tagQuery.currentTag)
-      );
+          Duration.zero,
+          () => context
+              .read(suggestionsStateNotifier)
+              .getSuggestions(_tagQuery.currentTag));
 
-      return  Consumer(
+      return Consumer(
         builder: (context, watch, child) {
           final state = watch(suggestionsStateNotifier.state);
           return state.when(
               empty: () => Center(
                     child: Text("No result"),
                   ),
-              loading: () => Stack(children: <Widget>[
-                    Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    Positioned(
-                      bottom: 30.0,
-                      right: 30.0,
-                      child: FloatingActionButton(
-                        onPressed: () => _submit(context),
-                        child: Icon(Icons.search),
-                      ),
-                    )
-                  ]),
-              fetched: (tags) => Stack(children: <Widget>[
-                    TagSuggestionItems(
-                        tags: tags,
-                        onItemTap: (tag) => _onTagItemSelected(tag)),
-                    Positioned(
-                      bottom: 30.0,
-                      right: 30.0,
-                      child: FloatingActionButton(
-                        onPressed: () => _submit(context),
-                        child: Icon(Icons.search),
-                      ),
-                    )
-                  ]),
+              loading: () => _SearchSuggestionsStack(
+                    child: Center(child: CircularProgressIndicator()),
+                    onSearch: () => _submit(context),
+                  ),
+              fetched: (tags) => _SearchSuggestionsStack(
+                  child: TagSuggestionItems(
+                      tags: tags, onItemTap: (tag) => _onTagItemSelected(tag)),
+                  onSearch: () => _submit(context)),
               error: (name, message) => Center(
                     child: Text(message),
                   ));
@@ -158,5 +147,36 @@ class SearchPage extends SearchDelegate {
     _tagQuery.add(tag);
     query = _tagQuery.currentQuery;
     setCursorPosition(query.length);
+  }
+
+  void _downloadAllPosts(List<Post> posts, BuildContext context) {
+    posts.forEach((post) =>
+        context.read(postDownloadStateNotifierProvider).download(post));
+  }
+}
+
+class _SearchSuggestionsStack extends StatelessWidget {
+  const _SearchSuggestionsStack({
+    Key key,
+    @required this.child,
+    @required this.onSearch,
+  }) : super(key: key);
+
+  final Widget child;
+  final Function onSearch;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(children: <Widget>[
+      child,
+      Positioned(
+        bottom: 30.0,
+        right: 30.0,
+        child: FloatingActionButton(
+          onPressed: () => onSearch(),
+          child: Icon(Icons.search),
+        ),
+      )
+    ]);
   }
 }

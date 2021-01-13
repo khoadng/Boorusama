@@ -1,5 +1,9 @@
+import 'package:flutter_riverpod/all.dart';
 import 'package:path/path.dart' as path;
 import 'package:boorusama/domain/posts/post.dart';
+
+final fileNameGeneratorProvider =
+    Provider<FileNameGenerator>((ref) => FileNameGenerator());
 
 class FileNameGenerator {
   String generateFor(Post post, String fileUrl) {

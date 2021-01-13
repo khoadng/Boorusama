@@ -10,9 +10,9 @@ final apiProvider = Provider<IApi>((ref) {
   return DanbooruApi(
     Dio()
       ..interceptors.add(
-          DioCacheManager(CacheConfig(baseUrl: "https://testbooru.donmai.us/"))
+          DioCacheManager(CacheConfig(baseUrl: "https://danbooru.donmai.us/"))
               .interceptor),
-    baseUrl: "https://testbooru.donmai.us/",
+    baseUrl: "https://danbooru.donmai.us/",
   );
 });
 
