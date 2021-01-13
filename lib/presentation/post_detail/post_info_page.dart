@@ -9,6 +9,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'widgets/post_tag_list.dart';
 
+final postFavoriteStateNotifierProvider =
+    StateNotifierProvider<PostFavoriteStateNotifier>(
+        (ref) => PostFavoriteStateNotifier(ref));
+
 class PostInfoPage extends StatefulWidget {
   final Post post;
   final List<Tag> tags;

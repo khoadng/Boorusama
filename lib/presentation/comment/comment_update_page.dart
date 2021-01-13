@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
+import 'comment_page.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends HookWidget {

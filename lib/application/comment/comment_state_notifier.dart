@@ -13,10 +13,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'comment_state.dart';
 part 'comment_state_notifier.freezed.dart';
 
-final commentStateNotifierProvider =
-    StateNotifierProvider<CommentStateNotifier>(
-        (ref) => CommentStateNotifier(ref));
-
 class CommentStateNotifier extends StateNotifier<CommentState> {
   final ICommentRepository _commentRepository;
   final IUserRepository _userRepository;

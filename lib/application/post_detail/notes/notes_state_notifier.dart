@@ -7,9 +7,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'notes_state.dart';
 part 'notes_state_notifier.freezed.dart';
 
-final notesStateNotifierProvider =
-    StateNotifierProvider<NotesStateNotifier>((ref) => NotesStateNotifier(ref));
-
 class NotesStateNotifier extends StateNotifier<NotesState> {
   final INoteRepository _noteRepository;
 

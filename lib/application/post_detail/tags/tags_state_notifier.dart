@@ -7,9 +7,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'tags_state.dart';
 part 'tags_state_notifier.freezed.dart';
 
-final tagsStateNotifierProvider =
-    StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
-
 class TagsStateNotifier extends StateNotifier<TagsState> {
   final ITagRepository _tagRepository;
 

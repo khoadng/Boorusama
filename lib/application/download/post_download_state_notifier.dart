@@ -10,10 +10,6 @@ import 'i_download_service.dart';
 part 'post_download_state.dart';
 part 'post_download_state_notifier.freezed.dart';
 
-final postDownloadStateNotifierProvider =
-    StateNotifierProvider<PostDownloadStateNotifier>(
-        (ref) => PostDownloadStateNotifier(ref));
-
 class PostDownloadStateNotifier extends StateNotifier<PostDownloadState> {
   final IDownloadService _downloadService;
   final FileNameGenerator _fileNameGenerator;

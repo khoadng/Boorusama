@@ -6,10 +6,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'post_favorite_state.dart';
 part 'post_favorite_state_notifier.freezed.dart';
 
-final postFavoriteStateNotifierProvider =
-    StateNotifierProvider<PostFavoriteStateNotifier>(
-        (ref) => PostFavoriteStateNotifier(ref));
-
 class PostFavoriteStateNotifier extends StateNotifier<PostFavoriteState> {
   final IFavoritePostRepository _favoritePostRepository;
 

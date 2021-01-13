@@ -15,6 +15,20 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'widgets/post_note.dart';
 import 'widgets/post_image.dart';
 
+final postDownloadStateNotifierProvider =
+    StateNotifierProvider<PostDownloadStateNotifier>(
+        (ref) => PostDownloadStateNotifier(ref));
+
+final notesStateNotifierProvider =
+    StateNotifierProvider<NotesStateNotifier>((ref) => NotesStateNotifier(ref));
+
+final postDetailStateNotifierProvider =
+    StateNotifierProvider<PostDetailStateNotifier>(
+        (ref) => PostDetailStateNotifier(ref));
+
+final tagsStateNotifierProvider =
+    StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
+
 class PostDetailPage extends StatefulWidget {
   PostDetailPage({
     Key key,

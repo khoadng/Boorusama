@@ -8,10 +8,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'post_detail_state.dart';
 part 'post_detail_state_notifier.freezed.dart';
 
-final postDetailStateNotifierProvider =
-    StateNotifierProvider<PostDetailStateNotifier>(
-        (ref) => PostDetailStateNotifier(ref));
-
 class PostDetailStateNotifier extends StateNotifier<PostDetailState> {
   final IPostRepository _postRepository;
 

@@ -16,6 +16,10 @@ final suggestionsStateNotifier =
     StateNotifierProvider<SuggestionsStateNotifier>(
         (ref) => SuggestionsStateNotifier(ref));
 
+final postDownloadStateNotifierProvider =
+    StateNotifierProvider<PostDownloadStateNotifier>(
+        (ref) => PostDownloadStateNotifier(ref));
+
 class SearchPage extends SearchDelegate {
   List<Tag> _tags;
   TagQuery _tagQuery;

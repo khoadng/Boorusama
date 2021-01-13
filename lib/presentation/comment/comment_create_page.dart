@@ -1,8 +1,8 @@
-import 'package:boorusama/application/comment/comment_state_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
+import 'comment_page.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentCreatePage extends HookWidget {
