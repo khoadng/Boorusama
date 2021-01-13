@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/download/download_service.dart';
-import 'application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'application/themes/bloc/theme_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'application/wikis/wiki/bloc/wiki_bloc.dart';
@@ -65,12 +64,6 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<PostFavoritesBloc>(
-            create: (_) => PostFavoritesBloc(
-                  widget.postRepository,
-                  widget.favoritePostRepository,
-                  widget.settingRepository,
-                )),
         BlocProvider<UserBloc>(
           lazy: false,
           create: (_) => UserBloc(

@@ -1,6 +1,4 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
-import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:widget_view/widget_view.dart';
@@ -37,31 +35,31 @@ class AccountInfoPageView
                 child: Text('Favorites'),
               ),
             ),
-            BlocListener<PostFavoritesBloc, PostFavoritesState>(
-              listener: (BuildContext context, state) {
-                state.maybeWhen(
-                  orElse: () {},
-                  loaded: (posts) => controller.assignFavedPosts(posts),
-                );
-              },
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 200,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: controller.favedPosts.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5.0),
-                      child: CachedNetworkImage(
-                          fit: BoxFit.contain,
-                          imageUrl: controller.favedPosts[index].previewImageUri
-                              .toString()),
-                    );
-                  },
-                ),
-              ),
-            ),
+            // BlocListener<PostFavoritesBloc, PostFavoritesState>(
+            //   listener: (BuildContext context, state) {
+            //     state.maybeWhen(
+            //       orElse: () {},
+            //       loaded: (posts) => controller.assignFavedPosts(posts),
+            //     );
+            //   },
+            //   child: SizedBox(
+            //     width: MediaQuery.of(context).size.width,
+            //     height: 200,
+            //     child: ListView.builder(
+            //       scrollDirection: Axis.horizontal,
+            //       itemCount: controller.favedPosts.length,
+            //       itemBuilder: (context, index) {
+            //         return Container(
+            //           margin: EdgeInsets.symmetric(horizontal: 5.0),
+            //           child: CachedNetworkImage(
+            //               fit: BoxFit.contain,
+            //               imageUrl: controller.favedPosts[index].previewImageUri
+            //                   .toString()),
+            //         );
+            //       },
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),

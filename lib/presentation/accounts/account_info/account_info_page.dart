@@ -1,5 +1,4 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
-import 'package:boorusama/application/posts/post_favorites/bloc/post_favorites_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:flutter/material.dart';
@@ -28,17 +27,6 @@ class AccountInfoPageState extends State<AccountInfoPage> {
     super.initState();
     accounts = widget.accounts;
     favedPosts = List<Post>();
-
-    //TODO: warning dirty code to get current account
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<PostFavoritesBloc>().add(
-            PostFavoritesEvent.fetched(
-              username: accounts.first.username,
-              page: 1,
-            ),
-          );
-    });
   }
 
   void removeAccount(Account account) {
@@ -52,11 +40,11 @@ class AccountInfoPageState extends State<AccountInfoPage> {
         .add(UserLoggedOut(account: accounts[0]));
   }
 
-  void assignFavedPosts(List<Post> posts) {
-    setState(() {
-      favedPosts = posts;
-    });
-  }
+  // void assignFavedPosts(List<Post> posts) {
+  //   setState(() {
+  //     favedPosts = posts;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) => AccountInfoPageView(this);
