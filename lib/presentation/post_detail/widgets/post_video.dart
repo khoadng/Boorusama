@@ -1,13 +1,17 @@
-import 'package:boorusama/domain/posts/post.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 import 'package:chewie/chewie.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
-  PostVideo({Key key, @required this.post}) : super(key: key);
+  PostVideo({
+    Key key,
+    @required this.videoSourceUrl,
+    @required this.aspectRatio,
+  }) : super(key: key);
 
-  final Post post;
+  final String videoSourceUrl;
+  final double aspectRatio;
 
   @override
   _PostVideoState createState() => _PostVideoState();
@@ -21,10 +25,10 @@ class _PostVideoState extends State<PostVideo> {
   void initState() {
     super.initState();
     _videoPlayerController =
-        VideoPlayerController.network(widget.post.normalImageUri.toString());
+        VideoPlayerController.network(widget.videoSourceUrl);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
-      aspectRatio: widget.post.aspectRatio,
+      aspectRatio: widget.aspectRatio,
       autoPlay: true,
       looping: true,
       // Try playing around with some of these other options:

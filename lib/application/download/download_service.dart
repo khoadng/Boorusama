@@ -7,16 +7,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/all.dart';
 
-import 'file_name_generator.dart';
 import 'i_download_service.dart';
 
-final downloadServiceProvider = Provider<IDownloadService>(
-    (ref) => DownloadService(ref.watch(fileNameGeneratorProvider)));
+final downloadServiceProvider =
+    Provider<IDownloadService>((ref) => DownloadService());
 
 class DownloadService implements IDownloadService {
-  final FileNameGenerator fileNameGenerator;
-
-  DownloadService(this.fileNameGenerator);
+  DownloadService();
 
   ReceivePort _port = ReceivePort();
   bool _permissionReady;

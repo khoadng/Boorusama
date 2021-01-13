@@ -6,7 +6,7 @@ abstract class BrowseAllState with _$BrowseAllState {
   const factory BrowseAllState.loading() = _Loading;
 
   const factory BrowseAllState.fetched({
-    @required List<Post> posts,
+    @required List<PostViewModel> posts,
     @required int page,
     @required String query,
   }) = _Fetched;

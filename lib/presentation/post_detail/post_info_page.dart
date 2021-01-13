@@ -1,5 +1,5 @@
 import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
-import 'package:boorusama/domain/posts/post.dart';
+import 'package:boorusama/application/post_detail/post/post_view_model.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/comment/comment_page.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ final postFavoriteStateNotifierProvider =
         (ref) => PostFavoriteStateNotifier(ref));
 
 class PostInfoPage extends StatefulWidget {
-  final Post post;
+  final PostViewModel post;
   final List<Tag> tags;
 
   const PostInfoPage({

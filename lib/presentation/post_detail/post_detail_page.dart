@@ -1,9 +1,9 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/post_detail/notes/notes_state_notifier.dart';
 import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
+import 'package:boorusama/application/post_detail/post/post_view_model.dart';
 import 'package:boorusama/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/domain/posts/note.dart';
-import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/post_detail/post_info_page.dart';
 import 'package:boorusama/presentation/post_detail/widgets/post_video.dart';
@@ -57,6 +57,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    _bodyHeight ??= (MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            60 -
+            MediaQuery.of(context).padding.top) *
+        1;
+
     return WillPopScope(
       onWillPop: () {
         context.read(notesStateNotifierProvider).clearNotes();
@@ -79,11 +85,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
               loading: () => _buildLoading(context),
               fetched: (post) {
                 if (post.isVideo) {
-                  final postVideo = PostVideo(post: post);
+                  final postVideo = PostVideo(
+                      videoSourceUrl: post.mediumResSource,
+                      aspectRatio: post.aspectRatio);
                   return _buildPage(context, post, postVideo);
                 } else {
-                  final postImage =
-                      PostImage(imageUrl: post.normalImageUri.toString());
+                  final postImage = PostImage(imageUrl: post.mediumResSource);
                   return _buildPage(context, post, postImage);
                 }
               },
@@ -98,39 +105,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget _buildLoading(BuildContext context) {
-    var appbarActions = <Widget>[];
-    _bodyHeight ??= (MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            60 -
-            MediaQuery.of(context).padding.top) *
-        1;
-
-    appbarActions.add(
-      PopupMenuButton<PostAction>(
-        onSelected: (value) {
-          switch (value) {
-            case PostAction.download:
-              // context.read<PostDownloadBloc>().add(
-              //       PostDownloadEvent.downloaded(
-              //         post: widget.posts[_currentPostIndex],
-              //       ),
-              //     );
-              break;
-            default:
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-          PopupMenuItem<PostAction>(
-            value: PostAction.download,
-            child: ListTile(
-              leading: const Icon(Icons.download_rounded),
-              title: Text("Download"),
-            ),
-          ),
-        ],
-      ),
-    );
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -150,20 +124,41 @@ class _PostDetailPageState extends State<PostDetailPage> {
           ),
           elevation: 0,
           backgroundColor: Colors.transparent,
-          actions: appbarActions,
+          actions: <Widget>[
+            PopupMenuButton<PostAction>(
+              onSelected: (value) {
+                switch (value) {
+                  case PostAction.download:
+                    // context.read<PostDownloadBloc>().add(
+                    //       PostDownloadEvent.downloaded(
+                    //         post: widget.posts[_currentPostIndex],
+                    //       ),
+                    //     );
+                    break;
+                  default:
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<PostAction>>[
+                PopupMenuItem<PostAction>(
+                  value: PostAction.download,
+                  child: ListTile(
+                    leading: const Icon(Icons.download_rounded),
+                    title: Text("Download"),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
         body: Center(child: CircularProgressIndicator()),
       ),
     );
   }
 
-  Widget _buildPage(BuildContext context, Post post, Widget postWidget) {
+  Widget _buildPage(
+      BuildContext context, PostViewModel post, Widget postWidget) {
     var appbarActions = <Widget>[];
-    _bodyHeight ??= (MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            60 -
-            MediaQuery.of(context).padding.top) *
-        1;
 
     if (post.isTranslated) {
       appbarActions.add(IconButton(
@@ -177,7 +172,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
         onSelected: (value) {
           switch (value) {
             case PostAction.download:
-              context.read(postDownloadStateNotifierProvider).download(post);
+              context
+                  .read(postDownloadStateNotifierProvider)
+                  .download(post.downloadLink, post.descriptiveName);
               break;
             default:
           }
@@ -202,10 +199,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("${post.name.characterOnly.pretty.capitalizeFirstofEach}",
+                Text(post.copyrights,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.subtitle1),
-                Text("${post.name.copyRightOnly.pretty.capitalizeFirstofEach}",
+                Text(post.characters,
                     overflow: TextOverflow.ellipsis,
                     style: Theme.of(context).textTheme.caption),
               ],
@@ -253,7 +250,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  List<Widget> buildNotes(List<Note> notes, Post post) {
+  List<Widget> buildNotes(List<Note> notes, PostViewModel post) {
     final widgets = List<Widget>();
 
     final screenWidth = MediaQuery.of(context).size.width;

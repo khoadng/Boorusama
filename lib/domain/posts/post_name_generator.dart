@@ -1,11 +1,12 @@
 import 'package:flutter_riverpod/all.dart';
 import 'package:path/path.dart' as path;
-import 'package:boorusama/domain/posts/post.dart';
 
-final fileNameGeneratorProvider =
-    Provider<FileNameGenerator>((ref) => FileNameGenerator());
+import 'post.dart';
 
-class FileNameGenerator {
+final postNameGeneratorProvider =
+    Provider<PostNameGenerator>((ref) => PostNameGenerator());
+
+class PostNameGenerator {
   String generateFor(Post post, String fileUrl) {
     return "${post.name.full} - ${path.basename(fileUrl)}"
         .fixInvalidCharacterForPathName();

@@ -1,7 +1,7 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
+import 'package:boorusama/application/home/post_view_model.dart';
 import 'package:boorusama/application/search/suggestions_state_notifier.dart';
-import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/presentation/home/browse_all/browse_all_view.dart';
 import 'package:boorusama/presentation/home/refreshable_list.dart';
@@ -153,9 +153,10 @@ class SearchPage extends SearchDelegate {
     setCursorPosition(query.length);
   }
 
-  void _downloadAllPosts(List<Post> posts, BuildContext context) {
-    posts.forEach((post) =>
-        context.read(postDownloadStateNotifierProvider).download(post));
+  void _downloadAllPosts(List<PostViewModel> posts, BuildContext context) {
+    posts.forEach((post) => context
+        .read(postDownloadStateNotifierProvider)
+        .download(post.downloadLink, post.descriptiveName));
   }
 }
 

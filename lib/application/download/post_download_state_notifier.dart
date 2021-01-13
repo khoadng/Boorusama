@@ -1,5 +1,3 @@
-import 'package:boorusama/application/download/file_name_generator.dart';
-import 'package:boorusama/domain/posts/post.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -12,11 +10,9 @@ part 'post_download_state_notifier.freezed.dart';
 
 class PostDownloadStateNotifier extends StateNotifier<PostDownloadState> {
   final IDownloadService _downloadService;
-  final FileNameGenerator _fileNameGenerator;
 
   PostDownloadStateNotifier(ProviderReference ref)
       : _downloadService = ref.read(downloadServiceProvider),
-        _fileNameGenerator = ref.read(fileNameGeneratorProvider),
         super(PostDownloadState.uninitialized());
 
   void init(TargetPlatform platform) async {
@@ -24,15 +20,10 @@ class PostDownloadStateNotifier extends StateNotifier<PostDownloadState> {
     state = const PostDownloadState.initialized();
   }
 
-  void download(Post post) async {
-    final url = post.isVideo
-        ? post.normalImageUri.toString()
-        : post.fullImageUri.toString();
-    final filePath = _fileNameGenerator.generateFor(post, url);
-
+  void download(String url, String fileName) async {
     //TODO: handle permission denied
     state = const PostDownloadState.downloading();
-    _downloadService.download(filePath, url);
+    _downloadService.download(fileName, url);
     state = const PostDownloadState.success();
   }
 }
