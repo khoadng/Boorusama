@@ -1,17 +1,30 @@
 import 'package:boorusama/infrastructure/apis/i_api.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:retrofit/retrofit.dart';
 
+import 'dio_connectivity_request_retrier.dart';
+import 'retry_interceptor.dart';
+
 part 'danbooru_api.g.dart';
 
 final apiProvider = Provider<IApi>((ref) {
+  final dio = Dio();
+  dio.interceptors
+    ..add(
+      RetryOnConnectionChangeInterceptor(
+        requestRetrier: DioConnectivityRequestRetrier(
+          dio: Dio(),
+          connectivity: Connectivity(),
+        ),
+      ),
+    )
+    ..add(DioCacheManager(CacheConfig(baseUrl: "https://danbooru.donmai.us/"))
+        .interceptor);
   return DanbooruApi(
-    Dio()
-      ..interceptors.add(
-          DioCacheManager(CacheConfig(baseUrl: "https://danbooru.donmai.us/"))
-              .interceptor),
+    dio,
     baseUrl: "https://danbooru.donmai.us/",
   );
 });

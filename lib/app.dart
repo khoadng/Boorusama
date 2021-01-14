@@ -1,4 +1,3 @@
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide ReadContext;
@@ -9,41 +8,22 @@ import 'application/download/download_service.dart';
 import 'application/themes/bloc/theme_bloc.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'domain/accounts/i_account_repository.dart';
-import 'domain/accounts/i_favorite_post_repository.dart';
-import 'domain/comments/i_comment_repository.dart';
-import 'domain/posts/i_note_repository.dart';
-import 'domain/posts/i_post_repository.dart';
-import 'domain/tags/i_tag_repository.dart';
 import 'domain/users/i_user_repository.dart';
-import 'domain/wikis/i_wiki_repository.dart';
 import 'infrastructure/repositories/settings/i_setting_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
-import 'presentation/home/home_page.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {
   App({
-    @required this.postRepository,
-    @required this.tagRepository,
-    @required this.noteRepository,
-    @required this.favoritePostRepository,
     @required this.accountRepository,
     @required this.userRepository,
     @required this.settingRepository,
-    @required this.wikiRepository,
-    @required this.commentRepository,
     this.settings,
   });
 
-  final IPostRepository postRepository;
-  final ITagRepository tagRepository;
-  final INoteRepository noteRepository;
   final IAccountRepository accountRepository;
-  final IFavoritePostRepository favoritePostRepository;
-  final ICommentRepository commentRepository;
   final IUserRepository userRepository;
   final ISettingRepository settingRepository;
-  final IWikiRepository wikiRepository;
   final Setting settings;
 
   @override

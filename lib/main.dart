@@ -2,12 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/infrastructure/repositories/accounts/account_database.dart';
-import 'package:boorusama/infrastructure/repositories/accounts/favorite_post_repository.dart';
-import 'package:boorusama/infrastructure/repositories/comments/comment_repository.dart';
-import 'package:boorusama/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:boorusama/infrastructure/repositories/tags/tag_repository.dart';
-import 'package:boorusama/infrastructure/repositories/wikis/wiki_repository.dart';
 import 'package:boorusama/infrastructure/services/scrapper_service.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
@@ -15,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:get_it/get_it.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,9 +18,6 @@ import 'package:sqflite/sqflite.dart';
 import 'app.dart';
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'bloc_observer.dart';
-import 'domain/posts/i_post_repository.dart';
-import 'infrastructure/repositories/posts/post_repository.dart';
-import 'infrastructure/repositories/settings/i_setting_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
 import 'infrastructure/repositories/users/user_repository.dart';
 
@@ -57,16 +48,7 @@ void main() async {
     Setting.defaultSettings,
   );
 
-  final postRepository = PostRepository(
-    api,
-    accountRepository,
-    settingRepository,
-  );
-
   final settings = await settingRepository.load();
-
-  GetIt.I.registerSingleton<ISettingRepository>(settingRepository);
-  GetIt.I.registerSingleton<IPostRepository>(postRepository);
 
   runApp(
     provider.MultiProvider(
@@ -88,16 +70,9 @@ void main() async {
         child: ProviderScope(
           child: App(
             settings: settings,
-            postRepository: postRepository,
-            tagRepository: TagRepository(api, accountRepository),
             accountRepository: accountRepository,
-            noteRepository: NoteRepository(api),
-            commentRepository: CommentRepository(api, accountRepository),
             userRepository: UserRepository(api, accountRepository),
-            favoritePostRepository:
-                FavoritePostRepository(api, accountRepository),
             settingRepository: settingRepository,
-            wikiRepository: WikiRepository(api),
           ),
         ),
       ),
