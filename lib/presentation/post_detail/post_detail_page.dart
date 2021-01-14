@@ -44,6 +44,7 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   double _bodyHeight;
   PanelController _panelController = PanelController();
+  bool _notesVisible = true;
 
   @override
   void initState() {
@@ -53,6 +54,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
         () => context
             .read(postDetailStateNotifierProvider)
             .getPost(widget.postId));
+
+    Future.delayed(Duration.zero,
+        () => context.read(notesStateNotifierProvider).getNotes(widget.postId));
   }
 
   @override
@@ -165,8 +169,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
     if (post.isTranslated) {
       appbarActions.add(IconButton(
           icon: Icon(Icons.translate),
-          onPressed: () =>
-              context.read(notesStateNotifierProvider).getNotes(post.id)));
+          onPressed: () {
+            setState(() {
+              _notesVisible = !_notesVisible;
+            });
+          }));
     }
 
     appbarActions.add(
@@ -240,7 +247,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               body: Stack(
                 children: <Widget>[
                   postWidget,
-                  ...widgets,
+                  if (_notesVisible) ...widgets,
                 ],
               ),
             );

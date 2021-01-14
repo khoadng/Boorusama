@@ -8,8 +8,7 @@ class AppRouter {
 
   void setupRoutes() {
     router.define("/", handler: rootHandler);
-    router.define("/posts/:id",
-        handler: postDetailHandler, transitionType: TransitionType.fadeIn);
+    router.define("/posts/:id", handler: postDetailHandler);
     router.define("/users/:id", handler: userHandler);
   }
 }
