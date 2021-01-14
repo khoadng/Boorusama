@@ -40,12 +40,10 @@ class AccountRepository implements IAccountRepository {
   }
 
   @override
-  Future<void> remove(Account account) async {
+  Future<void> remove(int accountId) async {
     final db = await _db;
 
-    //TODO: implement delete
-    await db.delete("accounts",
-        where: "username = ?", whereArgs: [account.username]);
+    await db.delete("accounts", where: "id = ?", whereArgs: [accountId]);
   }
 
   @override

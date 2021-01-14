@@ -25,13 +25,13 @@ class AuthenticationError extends AuthenticationState {
 }
 
 class Unauthenticated extends AuthenticationState {
-  final Account account;
+  final int accountId;
 
   Unauthenticated({
-    @required this.account,
+    @required this.accountId,
   });
   @override
-  List<Object> get props => [account];
+  List<Object> get props => [accountId];
 }
 
 class Authenticated extends AuthenticationState {

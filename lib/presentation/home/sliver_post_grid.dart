@@ -1,5 +1,8 @@
+import 'package:animations/animations.dart';
 import 'package:boorusama/application/home/post_view_model.dart';
 import 'package:boorusama/presentation/post_detail/post_detail_page.dart';
+import 'package:boorusama/router.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
@@ -69,11 +72,8 @@ class SliverPostList extends StatelessWidget {
           return Stack(
             children: <Widget>[
               GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PostDetailPage(
-                    postId: post.id,
-                  ),
-                )),
+                onTap: () =>
+                    AppRouter.router.navigateTo(context, "/posts/${post.id}"),
                 child: Hero(tag: "${post.id}", child: image),
               ),
               Align(

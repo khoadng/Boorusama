@@ -20,9 +20,9 @@ class UserLoggedIn extends AuthenticationEvent {
 }
 
 class UserLoggedOut extends AuthenticationEvent {
-  final Account account;
+  final int accountId;
 
   UserLoggedOut({
-    @required this.account,
+    @required this.accountId,
   });
 }

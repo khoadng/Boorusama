@@ -1,3 +1,4 @@
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide ReadContext;
@@ -18,6 +19,7 @@ import 'domain/wikis/i_wiki_repository.dart';
 import 'infrastructure/repositories/settings/i_setting_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
 import 'presentation/home/home_page.dart';
+import 'router.dart';
 
 class App extends StatefulWidget {
   App({
@@ -52,6 +54,9 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+
+    AppRouter().setupRoutes();
+
     Future.delayed(
         Duration.zero,
         () => context
@@ -111,8 +116,8 @@ class _AppState extends State<App> {
             ),
             themeMode: state.theme,
             debugShowCheckedModeBanner: false,
+            onGenerateRoute: AppRouter.router.generator,
             title: "Boorusama",
-            home: HomePage(),
           );
         },
       ),

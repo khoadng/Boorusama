@@ -38,6 +38,7 @@ dependencies:
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
   equatable: ^1.2.5
+  fluro: ^1.7.8
   flushbar: ^1.10.4
   flutter_bloc: ^6.1.0
   flutter_datetime_picker: ^1.4.0

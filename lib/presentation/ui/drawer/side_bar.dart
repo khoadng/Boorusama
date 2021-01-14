@@ -2,6 +2,7 @@ import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
 import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
 import 'package:boorusama/presentation/settings/settings_page.dart';
+import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -29,10 +30,7 @@ class SideBarMenu extends StatelessWidget {
         title: Text("Profile"),
         onTap: () {
           Navigator.of(context).pop();
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => AccountInfoPage(
-                    accounts: [account],
-                  )));
+          AppRouter.router.navigateTo(context, "/users/${account.id}");
         },
       ));
     }

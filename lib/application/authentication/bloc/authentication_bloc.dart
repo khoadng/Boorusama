@@ -35,14 +35,14 @@ class AuthenticationBloc
         if (accounts != null && accounts.isNotEmpty) {
           yield Authenticated(account: accounts.first);
         } else {
-          yield Unauthenticated(account: null);
+          yield Unauthenticated(accountId: null);
         }
       }
     } else if (state is Authenticated) {
       if (event is UserLoggedOut) {
         yield Authenticating();
-        await _accountRepository.remove(event.account);
-        yield Unauthenticated(account: event.account);
+        await _accountRepository.remove(event.accountId);
+        yield Unauthenticated(accountId: event.accountId);
       }
     } else if (state is Unauthenticated) {
       if (event is UserLoggedIn) {
@@ -57,7 +57,7 @@ class AuthenticationBloc
             error: "Login error",
             message: "Invalid username or password",
           );
-          yield Unauthenticated(account: Account.empty);
+          yield Unauthenticated(accountId: 0);
         }
       }
     } else if (state is Authenticating) {
