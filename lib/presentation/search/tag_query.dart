@@ -8,7 +8,10 @@ class TagQuery {
   List<String> _tags = <String>[];
   String _currentInputTag = "";
 
-  TagQuery({@required this.onTagInputCompleted, @required this.onCleared});
+  TagQuery({
+    @required this.onTagInputCompleted,
+    @required this.onCleared,
+  });
 
   String get currentTag => _currentInputTag;
   bool get isEmpty => _tags.isEmpty;

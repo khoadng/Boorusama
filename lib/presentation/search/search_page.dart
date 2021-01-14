@@ -3,9 +3,8 @@ import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.
 import 'package:boorusama/application/home/post_view_model.dart';
 import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/home/browse_all/browse_all_view.dart';
 import 'package:boorusama/presentation/home/refreshable_list.dart';
-import 'package:boorusama/presentation/home/tag_query.dart';
+import 'package:boorusama/presentation/search/tag_query.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -19,6 +18,10 @@ final suggestionsStateNotifier =
 final postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
         (ref) => PostDownloadStateNotifier(ref));
+
+final postSearchStateNotifierProvider =
+    StateNotifierProvider<BrowseAllStateNotifier>(
+        (ref) => BrowseAllStateNotifier(ref));
 
 class SearchPage extends SearchDelegate {
   List<Tag> _tags;
@@ -35,9 +38,7 @@ class SearchPage extends SearchDelegate {
       onCleared: null,
     );
 
-    if (query.isNotEmpty) {
-      _tagQuery.update(query);
-    }
+    _tagQuery.update(query);
   }
 
   @override
@@ -69,7 +70,7 @@ class SearchPage extends SearchDelegate {
   @override
   Widget buildResults(BuildContext context) {
     return ProviderListener<BrowseAllState>(
-      provider: browseAllStateNotifier.state,
+      provider: postSearchStateNotifierProvider.state,
       onChange: (context, state) {
         state.maybeWhen(
             fetched: (posts, page, query) => _refreshController
@@ -79,7 +80,7 @@ class SearchPage extends SearchDelegate {
       },
       child: Consumer(
         builder: (context, watch, child) {
-          final state = watch(browseAllStateNotifier.state);
+          final state = watch(postSearchStateNotifierProvider.state);
           return state.when(
               initial: () => Center(),
               loading: () => Center(child: CircularProgressIndicator()),
@@ -93,10 +94,10 @@ class SearchPage extends SearchDelegate {
                   body: RefreshableList(
                     posts: posts,
                     onLoadMore: () => context
-                        .read(browseAllStateNotifier)
+                        .read(postSearchStateNotifierProvider)
                         .getMorePosts(posts, query, page),
                     onRefresh: () =>
-                        context.read(browseAllStateNotifier).refresh(),
+                        context.read(postSearchStateNotifierProvider).refresh(),
                     refreshController: _refreshController,
                   ),
                 );
@@ -144,7 +145,7 @@ class SearchPage extends SearchDelegate {
 
   void _submit(BuildContext context) {
     showResults(context);
-    context.read(browseAllStateNotifier).getPosts(query, 1);
+    context.read(postSearchStateNotifierProvider).getPosts(query, 1);
   }
 
   void _onTagItemSelected(String tag) {

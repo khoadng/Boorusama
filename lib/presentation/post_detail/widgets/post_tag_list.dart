@@ -1,5 +1,6 @@
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
+import 'package:boorusama/presentation/search/search_page.dart';
 import 'package:boorusama/presentation/wiki/wiki_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -127,17 +128,18 @@ class _PostTagListState extends State<PostTagList> {
   }
 
   void _searchTags(List<Tag> tags, BuildContext context) {
-    // final List<String> tagNames = <String>[];
+    final List<String> tagNames = <String>[];
 
-    // for (var tag in tags) {
-    //   tagNames.add(tag.rawName);
-    // }
+    for (var tag in tags) {
+      tagNames.add(tag.rawName);
+    }
 
-    // context
-    //     .read<PostSearchBloc>()
-    //     .add(PostSearchEvent.postSearched(query: tagNames.join(" "), page: 1));
-    // Navigator.popUntil(
-    //     context, ModalRoute.withName(Navigator.defaultRouteName));
+    showSearch(
+      context: context,
+      query: tagNames.join(" ") + " ",
+      delegate: SearchPage(
+          searchFieldStyle: Theme.of(context).inputDecorationTheme.hintStyle),
+    );
   }
 }
 
