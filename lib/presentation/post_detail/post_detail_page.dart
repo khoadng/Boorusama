@@ -85,12 +85,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
               loading: () => _buildLoading(context),
               fetched: (post) {
                 if (post.isVideo) {
-                  final postVideo = PostVideo(
-                      videoSourceUrl: post.mediumResSource,
-                      aspectRatio: post.aspectRatio);
+                  final postVideo = Hero(
+                      tag: "${post.id}",
+                      child: PostVideo(
+                          videoSourceUrl: post.mediumResSource,
+                          aspectRatio: post.aspectRatio));
                   return _buildPage(context, post, postVideo);
                 } else {
-                  final postImage = PostImage(imageUrl: post.mediumResSource);
+                  final postImage = Hero(
+                      tag: "${post.id}",
+                      child: PostImage(imageUrl: post.mediumResSource));
                   return _buildPage(context, post, postImage);
                 }
               },
