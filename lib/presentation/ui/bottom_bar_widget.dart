@@ -30,7 +30,7 @@ class _BottomBarState extends State<BottomBar> {
   Widget build(BuildContext context) {
     return BubbleBottomBar(
       opacity: .2,
-      backgroundColor: Theme.of(context).bottomAppBarColor,
+      backgroundColor: Theme.of(context).bottomAppBarTheme.color,
       currentIndex: currentIndex,
       onTap: changePage,
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -41,7 +41,7 @@ class _BottomBarState extends State<BottomBar> {
       inkColor: Colors.black12, //optional, uses theme color if not specified
       items: <BubbleBottomBarItem>[
         BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).accentIconTheme.color,
+            backgroundColor: Theme.of(context).bottomAppBarTheme.color,
             icon: Icon(
               Icons.dashboard,
               color: Colors.black,

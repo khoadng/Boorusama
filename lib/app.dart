@@ -1,3 +1,4 @@
+import 'package:boorusama/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide ReadContext;
@@ -5,7 +6,7 @@ import 'package:flutter_riverpod/all.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/download/download_service.dart';
-import 'application/themes/bloc/theme_bloc.dart';
+import 'application/themes/theme_state_notifier.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'domain/accounts/i_account_repository.dart';
 import 'domain/users/i_user_repository.dart';
@@ -42,6 +43,12 @@ class _AppState extends State<App> {
         () => context
             .read(downloadServiceProvider)
             .init(Theme.of(context).platform));
+
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(themeStateNotifierProvider)
+            .changeTheme(widget.settings.themeMode));
   }
 
   @override
@@ -57,49 +64,45 @@ class _AppState extends State<App> {
             settingRepository: widget.settingRepository,
           ),
         ),
-        BlocProvider<ThemeBloc>(
-            create: (_) => ThemeBloc()
-              ..add(ThemeChanged(theme: widget.settings.themeMode))),
       ],
-      child: BlocConsumer<ThemeBloc, ThemeState>(
-        listener: (context, state) {
-          // WidgetsBinding.instance.addPostFrameCallback((_) async {
-          SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-              statusBarColor: state.appBarColor,
-              statusBarBrightness: state.statusBarIconBrightness,
-              statusBarIconBrightness: state.statusBarIconBrightness));
-          // });
-        },
-        builder: (context, state) {
-          return MaterialApp(
-            theme: ThemeData(
-              primaryTextTheme: Theme.of(context)
-                  .textTheme
-                  .copyWith(headline6: TextStyle(color: Colors.black)),
-              appBarTheme: AppBarTheme(
-                  brightness: state.appBarBrightness,
-                  iconTheme: IconThemeData(color: state.iconColor),
-                  color: state.appBarColor),
-              iconTheme: IconThemeData(color: state.iconColor),
-              brightness: Brightness.light,
-            ),
-            darkTheme: ThemeData(
-              primaryTextTheme: Theme.of(context)
-                  .textTheme
-                  .copyWith(headline6: TextStyle(color: Colors.white)),
-              appBarTheme: AppBarTheme(
-                  brightness: state.appBarBrightness,
-                  iconTheme: IconThemeData(color: state.iconColor),
-                  color: state.appBarColor),
-              iconTheme: IconThemeData(color: state.iconColor),
-              brightness: Brightness.dark,
-            ),
-            themeMode: state.theme,
-            debugShowCheckedModeBanner: false,
-            onGenerateRoute: AppRouter.router.generator,
-            title: "Boorusama",
+      child: ProviderListener<ThemeState>(
+        provider: themeStateNotifierProvider.state,
+        onChange: (context, state) {
+          state.when(
+            darkMode: () async {
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                systemNavigationBarColor: Color(0xff323232),
+                statusBarColor: Color(0xff323232),
+                statusBarIconBrightness: Brightness.dark,
+                statusBarBrightness: Brightness.light,
+              ));
+            },
+            lightMode: () async {
+              SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+                systemNavigationBarColor: Colors.white,
+                statusBarColor: Colors.white,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.dark,
+              ));
+            },
           );
         },
+        child: Consumer(
+          builder: (context, watch, child) {
+            final state = watch(themeStateNotifierProvider.state);
+            return MaterialApp(
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: state.when(
+                darkMode: () => ThemeMode.dark,
+                lightMode: () => ThemeMode.light,
+              ),
+              debugShowCheckedModeBanner: false,
+              onGenerateRoute: AppRouter.router.generator,
+              title: "Boorusama",
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,7 +1,7 @@
-import 'package:boorusama/application/themes/bloc/theme_bloc.dart';
+import 'package:boorusama/application/themes/theme_state_notifier.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/all.dart';
 
 class AppearancePage extends StatefulWidget {
   AppearancePage({Key key, @required this.settings}) : super(key: key);
@@ -45,6 +45,6 @@ class _AppearancePageState extends State<AppearancePage> {
     setState(() {
       widget.settings.themeMode = value;
     });
-    context.read<ThemeBloc>().add(ThemeChanged(theme: value));
+    context.read(themeStateNotifierProvider).changeTheme(value);
   }
 }

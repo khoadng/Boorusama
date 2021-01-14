@@ -9,8 +9,10 @@ final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),
 );
 
-final postDetailHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+final postDetailHandler = Handler(handlerFunc: (
+  BuildContext context,
+  Map<String, List<String>> params,
+) {
   final String postId = params["id"][0];
 
   return PostDetailPage(postId: int.parse(postId));

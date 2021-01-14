@@ -126,8 +126,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ],
             ),
           ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
           actions: <Widget>[
             PopupMenuButton<PostAction>(
               onSelected: (value) {
@@ -212,8 +210,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ],
             ),
           ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
           actions: appbarActions,
         ),
         body: Consumer(
