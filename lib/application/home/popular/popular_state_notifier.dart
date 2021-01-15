@@ -1,7 +1,5 @@
-import 'package:boorusama/application/home/post_view_model.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/domain/posts/post_name_generator.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
@@ -16,12 +14,10 @@ part 'popular_state_notifier.freezed.dart';
 
 class PopularStateNotifier extends StateNotifier<PopularState> {
   final IPostRepository _postRepository;
-  final PostNameGenerator _postNameGenerator;
   final ISettingRepository _settingRepository;
 
   PopularStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
-        _postNameGenerator = ref.read(postNameGeneratorProvider),
         _settingRepository = ref.read(settingsProvider),
         super(PopularState.initial());
 
@@ -32,10 +28,9 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
       final dtos = await _postRepository.getPopularPosts(date, page, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
-      final postVms = getPostVms(filteredPosts, _postNameGenerator);
 
       state = PopularState.fetched(
-        posts: postVms,
+        posts: filteredPosts,
         page: page,
         date: date,
         scale: scale,
@@ -53,10 +48,9 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
       final dtos = await _postRepository.getPopularPosts(date, page, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
-      final postVms = getPostVms(filteredPosts, _postNameGenerator);
 
       state = PopularState.fetched(
-        posts: postVms,
+        posts: filteredPosts,
         page: page,
         scale: scale,
         date: date,
@@ -64,17 +58,16 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
     } on DatabaseTimeOut catch (e) {}
   }
 
-  void getMorePosts(List<PostViewModel> currentPosts, DateTime date, int page,
-      TimeScale scale) async {
+  void getMorePosts(
+      List<Post> currentPosts, DateTime date, int page, TimeScale scale) async {
     try {
       final nextPage = page + 1;
       final dtos = await _postRepository.getPopularPosts(date, nextPage, scale);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
-      final postVms = getPostVms(filteredPosts, _postNameGenerator);
 
       state = PopularState.fetched(
-        posts: currentPosts..addAll(postVms),
+        posts: currentPosts..addAll(filteredPosts),
         page: nextPage,
         scale: scale,
         date: date,

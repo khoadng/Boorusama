@@ -5,7 +5,7 @@ abstract class CuratedState with _$CuratedState {
   const factory CuratedState.initial() = _Initial;
   const factory CuratedState.loading() = _Loading;
   const factory CuratedState.fetched({
-    @required List<PostViewModel> posts,
+    @required List<Post> posts,
     @required int page,
     @required DateTime date,
     @required TimeScale scale,

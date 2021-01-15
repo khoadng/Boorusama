@@ -1,6 +1,5 @@
 import 'package:boorusama/application/home/popular/popular_state_notifier.dart';
-import 'package:boorusama/application/home/post_view_model.dart';
-import 'package:boorusama/domain/posts/time_scale.dart';
+import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -27,7 +26,7 @@ class _PopularViewState extends State<PopularView>
   DateTime _currentSelectedDate;
   TimeScale _currentSelectedTimeScale;
   int _currentPage = 1;
-  List<PostViewModel> _posts = <PostViewModel>[];
+  List<Post> _posts = <Post>[];
 
   @override
   void initState() {

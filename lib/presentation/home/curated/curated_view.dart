@@ -1,5 +1,4 @@
 import 'package:boorusama/application/home/curated/curated_state_notifier.dart';
-import 'package:boorusama/application/home/post_view_model.dart';
 import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +26,7 @@ class _CuratedViewState extends State<CuratedView>
   DateTime _currentSelectedDate;
   TimeScale _currentSelectedTimeScale;
   int _currentPage = 1;
-  List<PostViewModel> _posts = <PostViewModel>[];
+  List<Post> _posts = <Post>[];
 
   @override
   void initState() {

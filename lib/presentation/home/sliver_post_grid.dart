@@ -1,5 +1,5 @@
 import 'package:animations/animations.dart';
-import 'package:boorusama/application/home/post_view_model.dart';
+import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/post_detail/post_detail_page.dart';
 import 'package:boorusama/router.dart';
 import 'package:fluro/fluro.dart';
@@ -16,7 +16,7 @@ class SliverPostList extends StatelessWidget {
   }) : super(key: key);
 
   final int length;
-  final List<PostViewModel> posts;
+  final List<Post> posts;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +30,7 @@ class SliverPostList extends StatelessWidget {
           final post = posts[index];
           final items = <Widget>[];
           final image = PostImage(
-            imageUrl: post.lowResSource,
+            imageUrl: post.previewImageUri.toString(),
           );
 
           // if (post.isFavorited) {

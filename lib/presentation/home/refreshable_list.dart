@@ -1,4 +1,4 @@
-import 'package:boorusama/application/home/post_view_model.dart';
+import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -12,7 +12,7 @@ class RefreshableList extends StatefulWidget {
     @required this.refreshController,
   }) : super(key: key);
 
-  final List<PostViewModel> posts;
+  final List<Post> posts;
   final VoidCallback onRefresh;
   final VoidCallback onLoadMore;
   final RefreshController refreshController;
@@ -40,7 +40,7 @@ class _RefreshableListState extends State<RefreshableList> {
     );
   }
 
-  Widget _buildBody(BuildContext context, List<PostViewModel> posts) {
+  Widget _buildBody(BuildContext context, List<Post> posts) {
     // if (posts.isNotEmpty) {
     return SmartRefresher(
       controller: widget.refreshController,

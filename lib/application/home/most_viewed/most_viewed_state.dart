@@ -5,7 +5,7 @@ abstract class MostViewedState with _$MostViewedState {
   const factory MostViewedState.initial() = _Initial;
   const factory MostViewedState.loading() = _Loading;
   const factory MostViewedState.fetched({
-    @required List<PostViewModel> posts,
+    @required List<Post> posts,
     @required DateTime date,
   }) = _Fetched;
   const factory MostViewedState.error({

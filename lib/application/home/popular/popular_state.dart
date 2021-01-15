@@ -5,7 +5,7 @@ abstract class PopularState with _$PopularState {
   const factory PopularState.initial() = _Initial;
   const factory PopularState.loading() = _Loading;
   const factory PopularState.fetched({
-    @required List<PostViewModel> posts,
+    @required List<Post> posts,
     @required int page,
     @required DateTime date,
     @required TimeScale scale,
