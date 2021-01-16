@@ -1,5 +1,5 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
+import 'package:boorusama/application/home/latest/latest_state_notifier.dart';
 import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
@@ -20,8 +20,8 @@ final postDownloadStateNotifierProvider =
         (ref) => PostDownloadStateNotifier(ref));
 
 final postSearchStateNotifierProvider =
-    StateNotifierProvider<BrowseAllStateNotifier>(
-        (ref) => BrowseAllStateNotifier(ref));
+    StateNotifierProvider<LatestStateNotifier>(
+        (ref) => LatestStateNotifier(ref));
 
 class SearchPage extends SearchDelegate {
   List<Tag> _tags;
@@ -69,7 +69,7 @@ class SearchPage extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return ProviderListener<BrowseAllState>(
+    return ProviderListener<LatestState>(
       provider: postSearchStateNotifierProvider.state,
       onChange: (context, state) {
         state.maybeWhen(

@@ -7,27 +7,27 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../post_filter.dart';
 
-part 'browse_all_state.dart';
-part 'browse_all_state_notifier.freezed.dart';
+part 'latest_state.dart';
+part 'latest_state_notifier.freezed.dart';
 
-class BrowseAllStateNotifier extends StateNotifier<BrowseAllState> {
+class LatestStateNotifier extends StateNotifier<LatestState> {
   final IPostRepository _postRepository;
   final ISettingRepository _settingRepository;
 
-  BrowseAllStateNotifier(ProviderReference ref)
+  LatestStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
         _settingRepository = ref.read(settingsProvider),
-        super(BrowseAllState.initial());
+        super(LatestState.initial());
 
   void getPosts(String query, int page) async {
     try {
-      state = BrowseAllState.loading();
+      state = LatestState.loading();
 
       final dtos = await _postRepository.getPosts(query, 1);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = BrowseAllState.fetched(
+      state = LatestState.fetched(
         posts: filteredPosts,
         page: page,
         query: query,
@@ -41,7 +41,7 @@ class BrowseAllStateNotifier extends StateNotifier<BrowseAllState> {
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = BrowseAllState.fetched(
+      state = LatestState.fetched(
         posts: filteredPosts,
         page: 1,
         query: "",
@@ -56,7 +56,7 @@ class BrowseAllStateNotifier extends StateNotifier<BrowseAllState> {
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
-      state = BrowseAllState.fetched(
+      state = LatestState.fetched(
         posts: currentPosts..addAll(filteredPosts),
         page: nextPage,
         query: query,

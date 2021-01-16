@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
-import 'browse_all/browse_all_view.dart';
+import 'latest/latest_view.dart';
 import 'popular/popular_view.dart';
 
 class HomePage extends StatefulWidget {
@@ -25,7 +25,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   final List<String> _tabs = <String>[
-    "All",
+    "Latest",
     "Popular",
     "Curated",
     "Most Viewed"
@@ -157,7 +157,7 @@ class _HomePageState extends State<HomePage>
           physics: const NeverScrollableScrollPhysics(),
           // These are the contents of the tab views, below the tabs.
           children: <Widget>[
-            BrowseAllView(),
+            LatestView(),
             PopularView(),
             CuratedView(),
             MostViewedView(),
