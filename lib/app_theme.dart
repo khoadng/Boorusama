@@ -26,11 +26,15 @@ class AppTheme {
           .textTheme
           .copyWith(headline6: TextStyle(color: Colors.white)),
       iconTheme: ThemeData.dark().iconTheme.copyWith(
-            color: Colors.white70,
+            color: Colors.white,
           ),
       bottomAppBarTheme:
           ThemeData.dark().bottomAppBarTheme.copyWith(color: Color(0xff323232)),
       appBarTheme: ThemeData.dark().appBarTheme.copyWith(
+            actionsIconTheme:
+                ThemeData.dark().iconTheme.copyWith(color: Colors.white70),
+            iconTheme:
+                ThemeData.dark().iconTheme.copyWith(color: Colors.white70),
             color: Color(0xff323232),
           ));
 }

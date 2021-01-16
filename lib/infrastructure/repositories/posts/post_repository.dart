@@ -53,7 +53,7 @@ class PostRepository implements IPostRepository {
 
     return _api
         .getPosts(account.username, account.apiKey, page,
-            settings.safeMode ? "$tagString rating:s" : tagString, 200)
+            settings.safeMode ? "$tagString rating:s" : tagString, 100)
         .then((value) {
       final posts = <PostDto>[];
 

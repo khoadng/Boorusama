@@ -1,7 +1,9 @@
 import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
+import 'package:boorusama/presentation/post_detail/post_image_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
+import 'domain/posts/post.dart';
 import 'presentation/home/home_page.dart';
 import 'presentation/post_detail/post_detail_page.dart';
 
@@ -13,9 +15,18 @@ final postDetailHandler = Handler(handlerFunc: (
   BuildContext context,
   Map<String, List<String>> params,
 ) {
-  final String postId = params["id"][0];
+  final post = context.settings.arguments as Post;
 
-  return PostDetailPage(postId: int.parse(postId));
+  return PostDetailPage(post: post);
+});
+
+final postDetailImageHandler = Handler(handlerFunc: (
+  BuildContext context,
+  Map<String, List<String>> params,
+) {
+  final post = context.settings.arguments as Post;
+
+  return PostImagePage(post: post);
 });
 
 final userHandler = Handler(

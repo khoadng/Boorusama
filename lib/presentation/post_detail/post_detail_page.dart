@@ -1,62 +1,72 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/application/post_detail/notes/notes_state_notifier.dart';
+import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
-import 'package:boorusama/application/post_detail/tags/tags_state_notifier.dart';
-import 'package:boorusama/domain/posts/note.dart';
 import 'package:boorusama/domain/posts/posts.dart';
-import 'package:boorusama/domain/tags/tag.dart';
-import 'package:boorusama/presentation/post_detail/post_info_page.dart';
+import 'package:boorusama/presentation/comment/comment_page.dart';
+import 'package:boorusama/presentation/post_detail/post_image_page.dart';
+import 'package:boorusama/presentation/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/presentation/post_detail/widgets/post_video.dart';
+import 'package:boorusama/router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
-
-import 'widgets/post_note.dart';
-import 'widgets/post_image.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:like_button/like_button.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 final postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
         (ref) => PostDownloadStateNotifier(ref));
 
-final notesStateNotifierProvider =
-    StateNotifierProvider<NotesStateNotifier>((ref) => NotesStateNotifier(ref));
-
 final postDetailStateNotifierProvider =
     StateNotifierProvider<PostDetailStateNotifier>(
         (ref) => PostDetailStateNotifier(ref));
 
-final tagsStateNotifierProvider =
-    StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
+final postFavoriteStateNotifierProvider =
+    StateNotifierProvider<PostFavoriteStateNotifier>(
+        (ref) => PostFavoriteStateNotifier(ref));
 
 class PostDetailPage extends StatefulWidget {
   PostDetailPage({
     Key key,
-    @required this.postId,
+    @required this.post,
   }) : super(key: key);
 
-  final int postId;
+  final Post post;
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  double _bodyHeight;
-  PanelController _panelController = PanelController();
+  int _favCount = 0;
 
   @override
   void initState() {
     super.initState();
-    Future.delayed(
-        Duration.zero,
-        () => context
-            .read(postDetailStateNotifierProvider)
-            .getPost(widget.postId));
+    _favCount = widget.post.favCount;
   }
 
   @override
   Widget build(BuildContext context) {
+    var postWidget;
+    if (widget.post.isVideo) {
+      postWidget = PostVideo(post: widget.post);
+    } else {
+      postWidget = Hero(
+        tag: "${widget.post.id}",
+        child: GestureDetector(
+          onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: widget.post)),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CachedNetworkImage(
+                  imageUrl: widget.post.normalImageUri.toString())),
+        ),
+      );
+    }
+
     return WillPopScope(
       onWillPop: () {
         context.read(notesStateNotifierProvider).clearNotes();
@@ -66,219 +76,127 @@ class _PostDetailPageState extends State<PostDetailPage> {
         provider: postDetailStateNotifierProvider.state,
         onChange: (context, state) {
           state.maybeWhen(
-              fetched: (post) => context
-                  .read(tagsStateNotifierProvider)
-                  .getTags(post.tagString.toCommaFormat()),
+              fetched: (post) {
+                setState(() {
+                  _favCount = post.favCount;
+                });
+              },
               orElse: () {});
         },
-        child: Consumer(
-          builder: (context, watch, child) {
-            final state = watch(postDetailStateNotifierProvider.state);
-            return state.when(
-              initial: () => _buildLoading(context),
-              loading: () => _buildLoading(context),
-              fetched: (post) {
-                if (post.isVideo) {
-                  final postVideo = PostVideo(post: post);
-                  return _buildPage(context, post, postVideo);
-                } else {
-                  final postImage =
-                      PostImage(imageUrl: post.normalImageUri.toString());
-                  return _buildPage(context, post, postImage);
-                }
-              },
-              error: (name, message) => Center(
-                child: Text(message),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoading(BuildContext context) {
-    var appbarActions = <Widget>[];
-    _bodyHeight ??= (MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            60 -
-            MediaQuery.of(context).padding.top) *
-        1;
-
-    appbarActions.add(
-      PopupMenuButton<PostAction>(
-        onSelected: (value) {
-          switch (value) {
-            case PostAction.download:
-              // context.read<PostDownloadBloc>().add(
-              //       PostDownloadEvent.downloaded(
-              //         post: widget.posts[_currentPostIndex],
-              //       ),
-              //     );
-              break;
-            default:
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-          PopupMenuItem<PostAction>(
-            value: PostAction.download,
-            child: ListTile(
-              leading: const Icon(Icons.download_rounded),
-              title: Text("Download"),
-            ),
-          ),
-        ],
-      ),
-    );
-
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: EdgeInsets.only(top: 16.0, bottom: 10.0, left: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1),
-                Text("",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.caption),
-              ],
-            ),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          actions: appbarActions,
-        ),
-        body: Center(child: CircularProgressIndicator()),
+        child: _buildPage(context, widget.post, postWidget),
       ),
     );
   }
 
   Widget _buildPage(BuildContext context, Post post, Widget postWidget) {
-    var appbarActions = <Widget>[];
-    _bodyHeight ??= (MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            60 -
-            MediaQuery.of(context).padding.top) *
-        1;
-
-    if (post.isTranslated) {
-      appbarActions.add(IconButton(
-          icon: Icon(Icons.translate),
-          onPressed: () =>
-              context.read(notesStateNotifierProvider).getNotes(post.id)));
-    }
-
-    appbarActions.add(
-      PopupMenuButton<PostAction>(
-        onSelected: (value) {
-          switch (value) {
-            case PostAction.download:
-              context.read(postDownloadStateNotifierProvider).download(post);
-              break;
-            default:
-          }
-        },
-        itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-          PopupMenuItem<PostAction>(
-            value: PostAction.download,
-            child: ListTile(
-              leading: const Icon(Icons.download_rounded),
-              title: Text("Download"),
-            ),
-          ),
-        ],
-      ),
-    );
-
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
-          title: Padding(
-            padding: EdgeInsets.only(top: 16.0, bottom: 10.0, left: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text("${post.name.characterOnly.pretty.capitalizeFirstofEach}",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.subtitle1),
-                Text("${post.name.copyRightOnly.pretty.capitalizeFirstofEach}",
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.caption),
-              ],
-            ),
-          ),
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-          actions: appbarActions,
-        ),
-        body: Consumer(
-          builder: (context, watch, child) {
-            final state = watch(notesStateNotifierProvider.state);
-            final widgets = state.maybeWhen(
-              fetched: (notes) => buildNotes(notes, post),
-              orElse: () => [Center()],
-            );
-
-            return SlidingUpPanel(
-              controller: _panelController,
-              bodyHeight: _bodyHeight,
-              maxHeight: (MediaQuery.of(context).size.height -
-                      kToolbarHeight -
-                      MediaQuery.of(context).padding.top) *
-                  0.65,
-              minHeight: 60,
-              panel: Consumer(
-                builder: (context, watch, child) {
-                  final state = watch(tagsStateNotifierProvider.state);
-                  return state.maybeWhen(
-                      fetched: (tags) => PostInfoPage(post: post, tags: tags),
-                      orElse: () => PostInfoPage(post: post, tags: <Tag>[]));
-                },
-                child: PostInfoPage(post: null, tags: null),
+        body: CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              pinned: true,
+              flexibleSpace: FlexibleSpaceBar(
+                title: Padding(
+                  padding: EdgeInsets.only(top: 5.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                          widget.post.name.characterOnly.pretty
+                              .capitalizeFirstofEach,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.subtitle1),
+                      Text(
+                          widget.post.name.copyRightOnly.pretty
+                              .capitalizeFirstofEach,
+                          overflow: TextOverflow.ellipsis,
+                          style: Theme.of(context).textTheme.caption),
+                    ],
+                  ),
+                ),
               ),
-              body: Stack(
-                children: <Widget>[
-                  postWidget,
-                  ...widgets,
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Stack(
+                    children: [
+                      Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: FittedBox(
+                              fit: BoxFit.scaleDown, child: postWidget)),
+                    ],
+                  ),
                 ],
               ),
-            );
-          },
+            ),
+            SliverList(
+                delegate: SliverChildListDelegate([
+              Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(10.0)),
+                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                padding: EdgeInsets.all(8.0),
+                child: Text("Artist Commentary"),
+              ),
+            ])),
+            SliverStickyHeader(
+                header: ButtonBar(
+                  alignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                        color: Colors.white,
+                        icon: Icon(
+                          Icons.download_rounded,
+                          color: Colors.white,
+                        ),
+                        onPressed: () => context
+                            .read(postDownloadStateNotifierProvider)
+                            .download(post)),
+                    IconButton(
+                      icon: Icon(
+                        Icons.comment,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => showBarModalBottomSheet(
+                        expand: false,
+                        context: context,
+                        builder: (context, controller) => CommentPage(
+                          postId: widget.post.id,
+                        ),
+                      ),
+                    ),
+                    LikeButton(
+                      size: 24,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      likeCount: _favCount,
+                      onTap: (isLiked) {
+                        //TODO: check for success here
+                        if (!isLiked) {
+                          context
+                              .read(postFavoriteStateNotifierProvider)
+                              .favorite(widget.post.id);
+                          // post.isFavorited = true;
+                          _favCount++;
+                          return Future(() => true);
+                        } else {
+                          context
+                              .read(postFavoriteStateNotifierProvider)
+                              .unfavorite(widget.post.id);
+                          // widget.post.isFavorited = false;
+                          _favCount--;
+                          return Future(() => false);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                sliver: PostTagList(
+                    tagStringComma: widget.post.tagString.toCommaFormat())),
+          ],
         ),
       ),
     );
   }
-
-  List<Widget> buildNotes(List<Note> notes, Post post) {
-    final widgets = List<Widget>();
-
-    final screenWidth = MediaQuery.of(context).size.width;
-    //TODO: Can't get status bar height inside Scaffold
-    final screenHeight = MediaQuery.of(context).size.height -
-        kToolbarHeight -
-        24 -
-        60; // minus toolbar height, status bar height and custom value for the bottom sheet;
-    final screenAspectRatio = screenWidth / screenHeight;
-
-    for (var note in notes) {
-      final coordinate = note.coordinate.calibrate(screenHeight, screenWidth,
-          screenAspectRatio, post.height, post.width, post.aspectRatio);
-
-      widgets.add(
-        PostNote(
-          coordinate: coordinate,
-          content: note.content,
-          targetContext: context,
-        ),
-      );
-    }
-
-    return widgets;
-  }
 }
-
-enum PostAction { download }

@@ -1,18 +1,23 @@
+import 'package:boorusama/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
 import 'package:boorusama/presentation/search/search_page.dart';
 import 'package:boorusama/presentation/wiki/wiki_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:popup_menu/popup_menu.dart';
 
+final tagsStateNotifierProvider =
+    StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
+
 class PostTagList extends StatefulWidget {
-  final List<Tag> tags;
+  final String tagStringComma;
 
   PostTagList({
     Key key,
-    @required this.tags,
+    @required this.tagStringComma,
   }) : super(key: key);
 
   @override
@@ -21,99 +26,151 @@ class PostTagList extends StatefulWidget {
 
 class _PostTagListState extends State<PostTagList> {
   List<Tag> _selectedTag = <Tag>[];
+  List<Tag> _artistTags = <Tag>[];
+  List<Tag> _copyrightTags = <Tag>[];
+  List<Tag> _characterTags = <Tag>[];
+  List<Tag> _generalTags = <Tag>[];
+  List<Tag> _metaTags = <Tag>[];
+
+  Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
+  PopupMenu _menu;
+  Tag _currentPopupTag;
+
+  @override
+  void initState() {
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(tagsStateNotifierProvider)
+            .getTags(widget.tagStringComma));
+    PopupMenu.context = context;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    widget.tags.sort((a, b) => a.rawName.compareTo(b.rawName));
-    final artistTags =
-        widget.tags.where((tag) => tag.category == TagCategory.artist).toList();
-    final copyrightTags = widget.tags
-        .where((tag) => tag.category == TagCategory.copyright)
-        .toList();
-    final characterTags = widget.tags
-        .where((tag) => tag.category == TagCategory.charater)
-        .toList();
-    final generalTags = widget.tags
-        .where((tag) => tag.category == TagCategory.general)
-        .toList();
-    final metaTags =
-        widget.tags.where((tag) => tag.category == TagCategory.meta).toList();
+    _menu ??= PopupMenu(
+      items: [
+        MenuItem(
+          title: 'Wiki',
+          image: Icon(
+            Icons.info,
+            color: Colors.white70,
+          ),
+        )
+      ],
+      onClickMenu: (_) {
+        showBarModalBottomSheet(
+          expand: false,
+          context: context,
+          builder: (context, controller) => WikiPage(
+            title: _currentPopupTag.displayName,
+          ),
+        );
+      },
+      maxColumn: 4,
+    );
 
-    final list = <Widget>[];
-
-    if (artistTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Artist",
-      ));
-      list.add(_SliverTagList(
-        tags: artistTags,
-        onTagTap: _handleTagSelected,
-      ));
-    }
-
-    if (copyrightTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Copyright",
-      ));
-      list.add(_SliverTagList(
-        tags: copyrightTags,
-        onTagTap: _handleTagSelected,
-      ));
-    }
-
-    if (characterTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Character",
-      ));
-      list.add(_SliverTagList(
-        tags: characterTags,
-        onTagTap: _handleTagSelected,
-      ));
-    }
-
-    if (generalTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "General",
-      ));
-      list.add(_SliverTagList(
-        tags: generalTags,
-        onTagTap: _handleTagSelected,
-      ));
-    }
-
-    if (metaTags.isNotEmpty) {
-      list.add(_SliverTagBlockTitle(
-        title: "Meta",
-      ));
-      list.add(_SliverTagList(
-        tags: metaTags,
-        onTagTap: _handleTagSelected,
-      ));
-    }
-
-    return Scaffold(
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 50.0, left: 10.0, right: 10.0),
-            child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
-              slivers: list,
+    return Consumer(
+      builder: (context, watch, child) {
+        final state = watch(tagsStateNotifierProvider.state);
+        return state.when(
+          initial: () => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
             ),
           ),
-          if (_selectedTag.isNotEmpty)
-            Positioned(
-              bottom: 10.0,
-              right: 10.0,
-              child: FloatingActionButton(
-                child: Icon(Icons.search),
-                heroTag: null,
-                elevation: 10.0,
-                onPressed: () => _searchTags(_selectedTag, context),
-              ),
+          loading: () => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
             ),
-        ],
-      ),
+          ),
+          fetched: (tags) {
+            tags.sort((a, b) => a.rawName.compareTo(b.rawName));
+            _artistTags = tags
+                .where((tag) => tag.category == TagCategory.artist)
+                .toList();
+            _copyrightTags = tags
+                .where((tag) => tag.category == TagCategory.copyright)
+                .toList();
+            _characterTags = tags
+                .where((tag) => tag.category == TagCategory.charater)
+                .toList();
+            _generalTags = tags
+                .where((tag) => tag.category == TagCategory.general)
+                .toList();
+            _metaTags =
+                tags.where((tag) => tag.category == TagCategory.meta).toList();
+            return SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  if (_artistTags.length > 0) _TagBlockTitle(title: "Artist"),
+                  _buildTags(_artistTags),
+                  if (_characterTags.length > 0)
+                    _TagBlockTitle(title: "Character"),
+                  _buildTags(_characterTags),
+                  if (_copyrightTags.length > 0)
+                    _TagBlockTitle(title: "Copyright"),
+                  _buildTags(_copyrightTags),
+                  if (_generalTags.length > 0) _TagBlockTitle(title: "General"),
+                  _buildTags(_generalTags),
+                  if (_metaTags.length > 0) _TagBlockTitle(title: "Meta"),
+                  _buildTags(_metaTags),
+                ],
+              ),
+            );
+          },
+          error: (e, m) => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildTags(List<Tag> tags) {
+    return Tags(
+      alignment: WrapAlignment.start,
+      itemCount: tags.length,
+      itemBuilder: (index) {
+        final tag = tags[index];
+        final tagKey = GlobalKey();
+        _tagKeys[tag.rawName] = tagKey;
+
+        return ItemTags(
+          singleItem: true,
+          color: Color(tag.tagHexColor),
+          highlightColor: Color(tag.tagHexColor),
+          activeColor: Color(tag.tagHexColor),
+          textColor: Colors.white,
+          textActiveColor: Colors.white,
+          index: index,
+          onPressed: (i) => showSearch(
+            context: context,
+            query: tag.rawName,
+            delegate: SearchPage(
+                searchFieldStyle:
+                    Theme.of(context).inputDecorationTheme.hintStyle),
+          ),
+          onLongPressed: (i) {
+            if (_menu.isShow) {
+              _menu.dismiss();
+            }
+            _currentPopupTag = tag;
+            _menu.show(widgetKey: _tagKeys[tag.rawName]);
+          },
+          title: tag.displayName,
+          key: tagKey,
+        );
+      },
     );
   }
 
@@ -143,111 +200,30 @@ class _PostTagListState extends State<PostTagList> {
   }
 }
 
-class _SliverTagList extends StatefulWidget {
-  const _SliverTagList({
-    Key key,
-    @required this.tags,
-    this.onTagTap,
-  }) : super(key: key);
-
-  final ValueChanged<Tag> onTagTap;
-  final List<Tag> tags;
-
-  @override
-  __SliverTagListState createState() => __SliverTagListState();
-}
-
-class __SliverTagListState extends State<_SliverTagList> {
-  Map<int, GlobalKey> _tagKeys = Map<int, GlobalKey>();
-  PopupMenu _menu;
-  Tag _currentPopupTag;
-
-  @override
-  void initState() {
-    super.initState();
-    PopupMenu.context = context;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _menu ??= PopupMenu(
-      items: [
-        MenuItem(
-          title: 'Wiki',
-          image: Icon(
-            Icons.info,
-            color: Colors.white70,
-          ),
-        )
-      ],
-      onClickMenu: (_) {
-        showBarModalBottomSheet(
-          expand: false,
-          context: context,
-          builder: (context, controller) => WikiPage(
-            title: _currentPopupTag.displayName,
-          ),
-        );
-      },
-      maxColumn: 4,
-    );
-
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Tags(
-            alignment: WrapAlignment.start,
-            itemCount: widget.tags.length,
-            itemBuilder: (index) {
-              final tag = widget.tags[index];
-              final tagKey = GlobalKey();
-              _tagKeys[index] = tagKey;
-
-              return ItemTags(
-                activeColor: Color(tag.tagHexColor),
-                index: index,
-                onPressed: (i) => widget.onTagTap(tag),
-                onLongPressed: (i) {
-                  if (_menu.isShow) {
-                    _menu.dismiss();
-                  }
-                  _currentPopupTag = tag;
-                  _menu.show(widgetKey: _tagKeys[i.index]);
-                },
-                title: tag.displayName,
-                key: tagKey,
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SliverTagBlockTitle extends StatelessWidget {
+class _TagBlockTitle extends StatelessWidget {
   final String title;
 
-  const _SliverTagBlockTitle({
+  const _TagBlockTitle({
     @required this.title,
     Key key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SliverList(
-      delegate: SliverChildListDelegate([
-        const SizedBox(
-          height: 20,
-        ),
-        const Divider(
-          thickness: 1.0,
-        ),
-        _TagHeader(
-          title: title,
-        ),
-      ]),
-    );
+    return Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const SizedBox(
+            height: 5,
+          ),
+          const Divider(
+            thickness: 1.0,
+          ),
+          _TagHeader(
+            title: title,
+          ),
+        ]);
   }
 }
 
@@ -262,7 +238,7 @@ class _TagHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 1.0),
       child: Text(
         title,
         style: Theme.of(context)

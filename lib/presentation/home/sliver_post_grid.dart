@@ -20,91 +20,100 @@ class SliverPostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverStaggeredGrid.extentBuilder(
-      maxCrossAxisExtent: 150,
-      mainAxisSpacing: 5.0,
-      crossAxisSpacing: 5.0,
-      itemCount: length,
-      itemBuilder: (context, index) {
-        if (index != null) {
-          final post = posts[index];
-          final items = <Widget>[];
-          final image = PostImage(
-            imageUrl: post.previewImageUri.toString(),
-          );
-
-          // if (post.isFavorited) {
-          //   items.add(
-          //     Icon(
-          //       Icons.favorite,
-          //       color: Colors.redAccent,
-          //     ),
-          //   );
-          // }
-
-          if (post.isAnimated) {
-            items.add(
-              Icon(
-                Icons.play_circle_outline,
-                color: Colors.white70,
-              ),
+    return SliverPadding(
+      padding: EdgeInsets.symmetric(horizontal: 5.0),
+      sliver: SliverStaggeredGrid.countBuilder(
+        crossAxisCount: 2,
+        mainAxisSpacing: 5.0,
+        crossAxisSpacing: 5.0,
+        itemCount: length,
+        itemBuilder: (context, index) {
+          if (index != null) {
+            final post = posts[index];
+            final items = <Widget>[];
+            final image = PostImage(
+              imageUrl: post.isAnimated
+                  ? post.previewImageUri.toString()
+                  : post.normalImageUri.toString(),
             );
-          }
 
-          if (post.isTranslated) {
-            items.add(
-              Icon(
-                Icons.g_translate_outlined,
-                color: Colors.white70,
-              ),
-            );
-          }
+            // if (post.isFavorited) {
+            //   items.add(
+            //     Icon(
+            //       Icons.favorite,
+            //       color: Colors.redAccent,
+            //     ),
+            //   );
+            // }
 
-          if (post.hasComment) {
-            items.add(
-              Icon(
-                Icons.comment,
-                color: Colors.white70,
-              ),
-            );
-          }
-
-          return Stack(
-            children: <Widget>[
-              GestureDetector(
-                onTap: () =>
-                    AppRouter.router.navigateTo(context, "/posts/${post.id}"),
-                child: Hero(tag: "${post.id}", child: image),
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Column(
-                  children: items,
+            if (post.isAnimated) {
+              items.add(
+                Icon(
+                  Icons.play_circle_outline,
+                  color: Colors.white70,
                 ),
-              )
-            ],
-          );
-        } else {
-          return Center();
-        }
-      },
-      staggeredTileBuilder: (index) {
-        if (index != null) {
-          final height = posts[index].height / 10;
-          double mainAxisExtent;
+              );
+            }
 
-          if (height > 150) {
-            mainAxisExtent = 150;
-          } else if (height < 80) {
-            mainAxisExtent = 80;
+            if (post.isTranslated) {
+              items.add(
+                Icon(
+                  Icons.g_translate_outlined,
+                  color: Colors.white70,
+                ),
+              );
+            }
+
+            if (post.hasComment) {
+              items.add(
+                Icon(
+                  Icons.comment,
+                  color: Colors.white70,
+                ),
+              );
+            }
+
+            return Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => AppRouter.router.navigateTo(context, "/posts",
+                      routeSettings: RouteSettings(arguments: post)),
+                  child: Hero(tag: "${post.id}", child: image),
+                ),
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    children: items,
+                  ),
+                )
+              ],
+            );
           } else {
-            mainAxisExtent = height;
+            return Center();
           }
-          return StaggeredTile.extent(1, mainAxisExtent);
-        } else {
-          return StaggeredTile.extent(1, 150);
-        }
-      },
+        },
+        staggeredTileBuilder: (index) {
+          // return StaggeredTile.fit(2);
+          return StaggeredTile.extent(
+              1, MediaQuery.of(context).size.height * 0.3);
+          // double extent = MediaQuery.of(context).size.height / 3;
+          // if (index != null) {
+          //   final height = posts[index].height / 5;
+          //   double mainAxisExtent;
+
+          //   if (height > extent) {
+          //     mainAxisExtent = extent;
+          //     // } else if (height < 80) {
+          //     //   mainAxisExtent = 80;
+          //   } else {
+          //     mainAxisExtent = height;
+          //   }
+          //   return StaggeredTile.extent(1, mainAxisExtent);
+          // } else {
+          //   return StaggeredTile.extent(1, extent);
+          // }
+        },
+      ),
     );
   }
 }
