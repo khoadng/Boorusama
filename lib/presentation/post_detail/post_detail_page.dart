@@ -3,7 +3,9 @@ import 'dart:math';
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
+import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/domain/posts/artist_commentary.dart';
+import 'package:boorusama/domain/posts/post_statistics.dart';
 import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/comment/comment_page.dart';
 import 'package:boorusama/presentation/post_detail/post_image_page.dart';
@@ -32,6 +34,9 @@ final artistCommentaryStateNotifierProvider =
     StateNotifierProvider<ArtistCommentaryStateNotifier>(
         (ref) => ArtistCommentaryStateNotifier(ref));
 
+final postDetailStateNotifier = StateNotifierProvider<PostDetailStateNotifier>(
+    (ref) => PostDetailStateNotifier(ref));
+
 class PostDetailPage extends StatefulWidget {
   PostDetailPage({
     Key key,
@@ -57,6 +62,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
         () => context
             .read(artistCommentaryStateNotifierProvider)
             .getCommentary(widget.post.id));
+
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(postDetailStateNotifier)
+            .getPostStatistics(widget.post.id));
   }
 
   @override
@@ -133,6 +144,81 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget _buildCommandToolBar(BuildContext context, Post post) {
+    return Consumer(
+      builder: (context, watch, child) {
+        final state = watch(postDetailStateNotifier.state);
+
+        return state.when(
+          initial: () => _buildCommandToolbarPlaceholder(context, post),
+          loading: () => _buildCommandToolbarPlaceholder(context, post),
+          fetched: (statistics) {
+            return SliverStickyHeader(
+                header: ButtonBar(
+                  alignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    IconButton(
+                        color: Colors.white,
+                        icon: Icon(
+                          Icons.download_rounded,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                        onPressed: () => context
+                            .read(postDownloadStateNotifierProvider)
+                            .download(post)),
+                    LikeButton(
+                      size: 40,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      likeCount: statistics.commentCount,
+                      likeBuilder: (isLiked) => Icon(
+                        Icons.comment,
+                        color: Colors.white,
+                      ),
+                      onTap: (isLiked) => showBarModalBottomSheet(
+                        expand: false,
+                        context: context,
+                        builder: (context, controller) => CommentPage(
+                          postId: widget.post.id,
+                        ),
+                      ),
+                    ),
+                    LikeButton(
+                      size: 40,
+                      isLiked: statistics.isFavorited,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      likeCount: statistics.favCount,
+                      likeBuilder: (isLiked) => Icon(
+                        Icons.favorite,
+                        color: isLiked ? Colors.red : Colors.white,
+                      ),
+                      onTap: (isLiked) {
+                        //TODO: check for success here
+                        if (!isLiked) {
+                          context
+                              .read(postFavoriteStateNotifierProvider)
+                              .favorite(widget.post.id);
+
+                          return Future(() => true);
+                        } else {
+                          context
+                              .read(postFavoriteStateNotifierProvider)
+                              .unfavorite(widget.post.id);
+                          return Future(() => false);
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                sliver: PostTagList(
+                    tagStringComma: widget.post.tagString.toCommaFormat()));
+          },
+          error: (e, m) => _buildCommandToolbarPlaceholder(context, post),
+        );
+      },
+    );
+  }
+
+  Widget _buildCommandToolbarPlaceholder(BuildContext context, Post post) {
     return SliverStickyHeader(
         header: ButtonBar(
           alignment: MainAxisAlignment.center,
@@ -142,16 +228,21 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 icon: Icon(
                   Icons.download_rounded,
                   color: Colors.white,
+                  size: 30,
                 ),
                 onPressed: () => context
                     .read(postDownloadStateNotifierProvider)
                     .download(post)),
-            IconButton(
-              icon: Icon(
+            LikeButton(
+              size: 40,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              likeBuilder: (isLiked) => Icon(
                 Icons.comment,
                 color: Colors.white,
               ),
-              onPressed: () => showBarModalBottomSheet(
+              countBuilder: (likeCount, isLiked, text) =>
+                  CircularProgressIndicator(),
+              onTap: (isLiked) => showBarModalBottomSheet(
                 expand: false,
                 context: context,
                 builder: (context, controller) => CommentPage(
@@ -160,24 +251,26 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
             ),
             LikeButton(
-              size: 24,
+              size: 40,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              likeCount: _favCount,
+              likeBuilder: (isLiked) => Icon(
+                Icons.favorite,
+                color: isLiked ? Colors.red : Colors.white,
+              ),
+              countBuilder: (likeCount, isLiked, text) =>
+                  CircularProgressIndicator(),
               onTap: (isLiked) {
                 //TODO: check for success here
                 if (!isLiked) {
                   context
                       .read(postFavoriteStateNotifierProvider)
                       .favorite(widget.post.id);
-                  // post.isFavorited = true;
-                  _favCount++;
+
                   return Future(() => true);
                 } else {
                   context
                       .read(postFavoriteStateNotifierProvider)
                       .unfavorite(widget.post.id);
-                  // widget.post.isFavorited = false;
-                  _favCount--;
                   return Future(() => false);
                 }
               },

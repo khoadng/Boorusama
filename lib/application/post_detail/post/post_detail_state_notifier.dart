@@ -1,6 +1,7 @@
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/posts/post_dto.dart';
+import 'package:boorusama/domain/posts/post_statistics.dart';
 import 'package:boorusama/infrastructure/repositories/posts/post_repository.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -15,13 +16,13 @@ class PostDetailStateNotifier extends StateNotifier<PostDetailState> {
       : _postRepository = ref.read(postProvider),
         super(PostDetailState.initial());
 
-  void getPost(int id) async {
+  void getPostStatistics(int id) async {
     try {
       state = PostDetailState.loading();
 
-      final dto = await _postRepository.getPost(id);
+      final statistics = await _postRepository.getPostStatistics(id);
 
-      state = PostDetailState.fetched(post: dto.toEntity());
+      state = PostDetailState.fetched(statistics: statistics);
     } on Exception {
       state =
           PostDetailState.error(name: "Error", message: "Something went wrong");

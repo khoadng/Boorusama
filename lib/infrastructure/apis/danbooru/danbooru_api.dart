@@ -101,20 +101,16 @@ abstract class DanbooruApi implements IApi {
 
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
+    DIO_CACHE_KEY_MAX_AGE: Duration(seconds: 3),
   })
-  @GET("/posts/{id}.json")
+  @GET("/posts/{postId}")
   @override
   Future<HttpResponse> getPost(
     @Query("login") String login,
     @Query("api_key") String apiKey,
-    @Path() int id,
+    @Path() int postId,
   );
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
-  })
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,
     DIO_CACHE_KEY_MAX_AGE: Duration(minutes: 1),

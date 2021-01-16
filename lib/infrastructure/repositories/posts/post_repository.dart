@@ -2,6 +2,7 @@ import 'package:boorusama/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/domain/posts/i_post_repository.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/posts/post_dto.dart';
+import 'package:boorusama/domain/posts/post_statistics.dart';
 import 'package:boorusama/domain/posts/time_scale.dart';
 import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/infrastructure/apis/i_api.dart';
@@ -10,6 +11,7 @@ import 'package:boorusama/infrastructure/repositories/settings/i_setting_reposit
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
+import 'package:html/parser.dart' as html;
 
 final postProvider = Provider<IPostRepository>((ref) {
   return PostRepository(ref.watch(apiProvider), ref.watch(accountProvider),
@@ -24,17 +26,33 @@ class PostRepository implements IPostRepository {
   PostRepository(this._api, this._accountRepository, this._settingRepository);
 
   @override
-  Future<PostDto> getPost(int id) async {
+  Future<PostStatistics> getPostStatistics(int id) async {
     final account = await _accountRepository.get();
 
     return _api.getPost(account.username, account.apiKey, id).then((value) {
-      try {
-        var post = PostDto.fromJson(value.response.data);
-        return post;
-      } catch (e) {
-        print("Cant parse $id");
-        return null;
-      }
+      final data = value.response.data.toString();
+      final document = html.parse(data);
+
+      final contentNode =
+          document.documentElement.querySelector("section[id='content']");
+      final isFavorited = contentNode
+              .querySelector("div[class='fav-buttons fav-buttons-true']") !=
+          null;
+
+      final commentCount = contentNode
+          .querySelector("section[id='comments']")
+          .querySelector("div[class='list-of-comments list-of-messages']")
+          .querySelectorAll("article[class='comment message']")
+          .length;
+
+      final favCount = document.documentElement
+          .querySelector("span[id='favcount-for-post-$id']")
+          .text;
+
+      return PostStatistics(
+          favCount: int.parse(favCount),
+          commentCount: commentCount,
+          isFavorited: isFavorited);
     }).catchError((Object obj) {
       switch (obj.runtimeType) {
         case DioError:
