@@ -19,14 +19,15 @@ class UserRepository implements IUserRepository {
   Future<List<User>> getUsersByIdStringComma(String idComma) async =>
       _api.getUsersByIdStringComma(idComma, 1000).then((value) {
         var users = List<User>();
+        print(idComma);
         for (var item in value.response.data) {
           try {
             users.add(User.fromJson(item));
           } catch (e) {
             print("Cant parse ${item['id']}");
           }
-          return users;
         }
+        return users;
       }).catchError((Object obj) {
         throw Exception("Failed to get users for $idComma");
       });

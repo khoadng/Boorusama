@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
-import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/domain/posts/artist_commentary.dart';
 import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/comment/comment_page.dart';
@@ -93,29 +92,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            SliverAppBar(
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Padding(
-                  padding: EdgeInsets.only(top: 5.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                          widget.post.name.characterOnly.pretty
-                              .capitalizeFirstofEach,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.subtitle1),
-                      Text(
-                          widget.post.name.copyRightOnly.pretty
-                              .capitalizeFirstofEach,
-                          overflow: TextOverflow.ellipsis,
-                          style: Theme.of(context).textTheme.caption),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            _buildSliverAppBar(context),
             SliverList(
               delegate: SliverChildListDelegate(
                 [
@@ -124,178 +101,222 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       Padding(
                           padding: EdgeInsets.all(8.0),
                           child: FittedBox(
-                              fit: BoxFit.scaleDown, child: postWidget)),
+                              fit: BoxFit.fitWidth, child: postWidget)),
+                      // Text("")
                     ],
                   ),
                 ],
               ),
             ),
-            SliverList(
-                delegate: SliverChildListDelegate([
-              Container(
-                decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(10.0)),
-                margin: EdgeInsets.symmetric(horizontal: 8.0),
-                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                child: Consumer(
-                    builder: (context, watch, child) {
-                      final state =
-                          watch(artistCommentaryStateNotifierProvider.state);
-                      return state.when(
-                        initial: () => _buildLoading(),
-                        loading: () => _buildLoading(),
-                        fetched: (commentary) {
-                          return Column(children: [
-                            ListTile(
-                              title: Text(post.tagStringArtist.pretty),
-                              leading: CircleAvatar(),
-                              trailing: PopupMenuButton<ArtistCommentaryAction>(
-                                icon: Icon(Icons.keyboard_arrow_down),
-                                onSelected: (value) {
-                                  switch (value) {
-                                    case ArtistCommentaryAction.translate:
-                                      setState(() {
-                                        _showTranslated = !_showTranslated;
-                                      });
-                                      break;
-                                    default:
-                                  }
-                                },
-                                itemBuilder: (BuildContext context) =>
-                                    <PopupMenuEntry<ArtistCommentaryAction>>[
-                                  PopupMenuItem<ArtistCommentaryAction>(
-                                    value: ArtistCommentaryAction.translate,
-                                    child: ListTile(
-                                      // leading: const Icon(Icons.download_rounded),
-                                      title: Text(_showTranslated
-                                          ? "Show Original"
-                                          : "Show Translated"),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Html(
-                                data: commentary.isTranslated && _showTranslated
-                                    ? commentary.translated
-                                    : commentary.original),
-                          ]);
-                        },
-                        error: (name, message) =>
-                            Text("Failed to load commentary"),
-                      );
-                    },
-                    child: Text("Artist Commentary")),
-              ),
-            ])),
-            SliverStickyHeader(
-                header: ButtonBar(
-                  alignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    IconButton(
-                        color: Colors.white,
-                        icon: Icon(
-                          Icons.download_rounded,
-                          color: Colors.white,
-                        ),
-                        onPressed: () => context
-                            .read(postDownloadStateNotifierProvider)
-                            .download(post)),
-                    IconButton(
-                      icon: Icon(
-                        Icons.comment,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => showBarModalBottomSheet(
-                        expand: false,
-                        context: context,
-                        builder: (context, controller) => CommentPage(
-                          postId: widget.post.id,
-                        ),
-                      ),
-                    ),
-                    LikeButton(
-                      size: 24,
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      likeCount: _favCount,
-                      onTap: (isLiked) {
-                        //TODO: check for success here
-                        if (!isLiked) {
-                          context
-                              .read(postFavoriteStateNotifierProvider)
-                              .favorite(widget.post.id);
-                          // post.isFavorited = true;
-                          _favCount++;
-                          return Future(() => true);
-                        } else {
-                          context
-                              .read(postFavoriteStateNotifierProvider)
-                              .unfavorite(widget.post.id);
-                          // widget.post.isFavorited = false;
-                          _favCount--;
-                          return Future(() => false);
-                        }
-                      },
-                    ),
-                  ],
-                ),
-                sliver: PostTagList(
-                    tagStringComma: widget.post.tagString.toCommaFormat())),
+            Consumer(builder: (context, watch, child) {
+              final state = watch(artistCommentaryStateNotifierProvider.state);
+              return state.when(
+                initial: () => _buildLoading(),
+                loading: () => _buildLoading(),
+                fetched: (commentary) {
+                  if (!commentary.hasCommentary) {
+                    // No artist comment, skip building this widget
+                    return SliverList(
+                        delegate: SliverChildListDelegate([Center()]));
+                  }
+
+                  return _buildArtistCommentSection(context, post, commentary);
+                },
+                error: (name, message) => Text("Failed to load commentary"),
+              );
+            }),
+            _buildCommandToolBar(context, post),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildLoading() => Shimmer.fromColors(
-        highlightColor: Colors.grey[500],
-        baseColor: Colors.grey[700],
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ListTile(
-              leading: CircleAvatar(),
-              title: Container(
-                margin: EdgeInsets.only(
-                    right: MediaQuery.of(context).size.width * 0.6),
-                width: 10,
-                height: 20,
-                decoration: BoxDecoration(
-                    color: Colors.grey[400],
-                    borderRadius: BorderRadius.circular(8.0)),
+  Widget _buildCommandToolBar(BuildContext context, Post post) {
+    return SliverStickyHeader(
+        header: ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+                color: Colors.white,
+                icon: Icon(
+                  Icons.download_rounded,
+                  color: Colors.white,
+                ),
+                onPressed: () => context
+                    .read(postDownloadStateNotifierProvider)
+                    .download(post)),
+            IconButton(
+              icon: Icon(
+                Icons.comment,
+                color: Colors.white,
+              ),
+              onPressed: () => showBarModalBottomSheet(
+                expand: false,
+                context: context,
+                builder: (context, controller) => CommentPage(
+                  postId: widget.post.id,
+                ),
               ),
             ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10.0),
-              width: Random().nextDouble() * 100 +
-                  MediaQuery.of(context).size.width * 0.3,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10.0),
-              width: Random().nextDouble() * 100 +
-                  MediaQuery.of(context).size.width * 0.3,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
-            Container(
-              margin: EdgeInsets.only(bottom: 10.0),
-              width: Random().nextDouble() * 100 +
-                  MediaQuery.of(context).size.width * 0.3,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8.0)),
+            LikeButton(
+              size: 24,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              likeCount: _favCount,
+              onTap: (isLiked) {
+                //TODO: check for success here
+                if (!isLiked) {
+                  context
+                      .read(postFavoriteStateNotifierProvider)
+                      .favorite(widget.post.id);
+                  // post.isFavorited = true;
+                  _favCount++;
+                  return Future(() => true);
+                } else {
+                  context
+                      .read(postFavoriteStateNotifierProvider)
+                      .unfavorite(widget.post.id);
+                  // widget.post.isFavorited = false;
+                  _favCount--;
+                  return Future(() => false);
+                }
+              },
             ),
           ],
         ),
+        sliver:
+            PostTagList(tagStringComma: widget.post.tagString.toCommaFormat()));
+  }
+
+  Widget _buildArtistCommentSection(
+      BuildContext context, Post post, ArtistCommentary commentary) {
+    return SliverList(
+        delegate: SliverChildListDelegate([
+      Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(10.0)),
+        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(children: [
+          ListTile(
+            title: Text(post.tagStringArtist.pretty),
+            leading: CircleAvatar(),
+            trailing: PopupMenuButton<ArtistCommentaryAction>(
+              icon: Icon(Icons.keyboard_arrow_down),
+              onSelected: (value) {
+                switch (value) {
+                  case ArtistCommentaryAction.translate:
+                    setState(() {
+                      _showTranslated = !_showTranslated;
+                    });
+                    break;
+                  default:
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<ArtistCommentaryAction>>[
+                PopupMenuItem<ArtistCommentaryAction>(
+                  value: ArtistCommentaryAction.translate,
+                  child: ListTile(
+                    // leading: const Icon(Icons.download_rounded),
+                    title: Text(
+                        _showTranslated ? "Show Original" : "Show Translated"),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Html(
+              data: commentary.isTranslated && _showTranslated
+                  ? commentary.translated
+                  : commentary.original),
+        ]),
+      ),
+    ]));
+  }
+
+  Widget _buildSliverAppBar(BuildContext context) {
+    return SliverAppBar(
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        title: Padding(
+          padding: EdgeInsets.only(top: 5.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(widget.post.name.characterOnly.pretty.capitalizeFirstofEach,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.subtitle1),
+              Text(widget.post.name.copyRightOnly.pretty.capitalizeFirstofEach,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.caption),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading() => SliverList(
+        delegate: SliverChildListDelegate([
+          Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(10.0)),
+            margin: EdgeInsets.symmetric(horizontal: 8.0),
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: Shimmer.fromColors(
+              highlightColor: Colors.grey[500],
+              baseColor: Colors.grey[700],
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    leading: CircleAvatar(),
+                    title: Container(
+                      margin: EdgeInsets.only(
+                          right: MediaQuery.of(context).size.width * 0.6),
+                      width: 10,
+                      height: 20,
+                      decoration: BoxDecoration(
+                          color: Colors.grey[400],
+                          borderRadius: BorderRadius.circular(8.0)),
+                    ),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    width: Random().nextDouble() * 100 +
+                        MediaQuery.of(context).size.width * 0.3,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    width: Random().nextDouble() * 100 +
+                        MediaQuery.of(context).size.width * 0.3,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 10.0),
+                    width: Random().nextDouble() * 100 +
+                        MediaQuery.of(context).size.width * 0.3,
+                    height: 20,
+                    decoration: BoxDecoration(
+                        color: Colors.grey[400],
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ]),
       );
 }
 

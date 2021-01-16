@@ -8,6 +8,7 @@ class ArtistCommentary {
   ArtistCommentary({@required this.original, this.translated, this.profileUrl});
 
   bool get isTranslated => translated != null;
+  bool get hasCommentary => original != null;
 
   factory ArtistCommentary.empty() => ArtistCommentary(original: "");
 }

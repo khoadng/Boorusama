@@ -195,7 +195,7 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getUsersByIdStringComma(
     @Query("search[id]") String idComma,
-    @Query("search[hide_empty]") int limit,
+    @Query("limit") int limit,
   );
 
   @Extra({

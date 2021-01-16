@@ -40,7 +40,7 @@ class CommentStateNotifier extends StateNotifier<CommentState> {
 
     final comments = <Comment>[];
 
-    for (var comment in domainComments) {
+    for (var comment in domainComments..sort((a, b) => a.id.compareTo(b.id))) {
       final author = users.where((user) => user.id == comment.creatorId).first;
       comments.add(Comment(
         id: comment.id,
