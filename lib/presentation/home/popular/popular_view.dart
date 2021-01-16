@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../sliver_post_grid_placeholder.dart';
+
 final popularStateNotifierProvider =
     StateNotifierProvider<PopularStateNotifier>(
         (ref) => PopularStateNotifier(ref));
@@ -105,20 +107,8 @@ class _PopularViewState extends State<PopularView>
                     Consumer(builder: (context, watch, child) {
                       final state = watch(popularStateNotifierProvider.state);
                       return state.when(
-                          initial: () => SliverList(
-                                delegate: SliverChildListDelegate(
-                                  [
-                                    Center(),
-                                  ],
-                                ),
-                              ),
-                          loading: () => SliverList(
-                                delegate: SliverChildListDelegate(
-                                  [
-                                    Center(child: CircularProgressIndicator()),
-                                  ],
-                                ),
-                              ),
+                          initial: () => SliverPostGridPlaceHolder(),
+                          loading: () => SliverPostGridPlaceHolder(),
                           fetched: (posts, page, date, scale) {
                             _currentPage = page;
                             _posts = posts;

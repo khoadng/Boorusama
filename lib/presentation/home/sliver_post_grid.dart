@@ -19,8 +19,8 @@ class SliverPostGrid extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 5.0),
       sliver: SliverStaggeredGrid.countBuilder(
         crossAxisCount: 2,
-        mainAxisSpacing: 5.0,
-        crossAxisSpacing: 5.0,
+        mainAxisSpacing: 10.0,
+        crossAxisSpacing: 10.0,
         itemCount: posts.length,
         itemBuilder: (context, index) {
           if (index != null) {

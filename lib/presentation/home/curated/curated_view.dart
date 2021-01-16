@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../sliver_post_grid_placeholder.dart';
+
 final curatedStateNotifierProvider =
     StateNotifierProvider<CuratedStateNotifier>(
         (ref) => CuratedStateNotifier(ref));
@@ -105,20 +107,8 @@ class _CuratedViewState extends State<CuratedView>
                     Consumer(builder: (context, watch, child) {
                       final state = watch(curatedStateNotifierProvider.state);
                       return state.when(
-                          initial: () => SliverList(
-                                delegate: SliverChildListDelegate(
-                                  [
-                                    Center(),
-                                  ],
-                                ),
-                              ),
-                          loading: () => SliverList(
-                                delegate: SliverChildListDelegate(
-                                  [
-                                    Center(child: CircularProgressIndicator()),
-                                  ],
-                                ),
-                              ),
+                          initial: () => SliverPostGridPlaceHolder(),
+                          loading: () => SliverPostGridPlaceHolder(),
                           fetched: (posts, page, date, scale) {
                             _currentPage = page;
                             _posts = posts;

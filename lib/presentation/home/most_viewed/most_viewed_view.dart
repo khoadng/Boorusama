@@ -7,6 +7,8 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+import '../sliver_post_grid_placeholder.dart';
+
 final mostViewedStateNotifierProvider =
     StateNotifierProvider<MostViewedStateNotifier>(
         (ref) => MostViewedStateNotifier(ref));
@@ -94,20 +96,8 @@ class _MostViewedViewState extends State<MostViewedView>
                       final state =
                           watch(mostViewedStateNotifierProvider.state);
                       return state.when(
-                        initial: () => SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Center(),
-                            ],
-                          ),
-                        ),
-                        loading: () => SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Center(child: CircularProgressIndicator()),
-                            ],
-                          ),
-                        ),
+                        initial: () => SliverPostGridPlaceHolder(),
+                        loading: () => SliverPostGridPlaceHolder(),
                         fetched: (posts, date) => SliverPostGrid(
                           posts: posts,
                         ),

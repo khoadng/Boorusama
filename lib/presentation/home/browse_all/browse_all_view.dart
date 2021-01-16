@@ -1,5 +1,6 @@
 import 'package:boorusama/application/home/browse_all/browse_all_state_notifier.dart';
 import 'package:boorusama/presentation/home/refreshable_list.dart';
+import 'package:boorusama/presentation/home/sliver_post_grid_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -43,7 +44,22 @@ class _BrowseAllViewState extends State<BrowseAllView>
           final state = watch(browseAllStateNotifier.state);
           return state.when(
               initial: () => Center(),
-              loading: () => Center(child: CircularProgressIndicator()),
+              loading: () => Scaffold(
+                    body: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Container(
+                                padding: EdgeInsets.all(2.0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SliverPostGridPlaceHolder(),
+                      ],
+                    ),
+                  ),
               fetched: (posts, page, query) {
                 return Scaffold(
                   body: RefreshableList(
