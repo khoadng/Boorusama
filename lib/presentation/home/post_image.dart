@@ -23,6 +23,12 @@ class PostImage extends StatelessWidget {
           ),
         );
       },
+      placeholder: (context, url) => Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(8.0),
+          color: Theme.of(context).cardColor,
+        ),
+      ),
       errorWidget: (context, url, error) => Icon(Icons.error),
       fadeInDuration: 10.milliseconds,
     );
