@@ -5,14 +5,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'post_image.dart';
 
-class SliverPostList extends StatelessWidget {
-  const SliverPostList({
+class SliverPostGrid extends StatelessWidget {
+  const SliverPostGrid({
     Key key,
-    @required this.length,
     @required this.posts,
   }) : super(key: key);
 
-  final int length;
   final List<Post> posts;
 
   @override
@@ -23,7 +21,7 @@ class SliverPostList extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 5.0,
         crossAxisSpacing: 5.0,
-        itemCount: length,
+        itemCount: posts.length,
         itemBuilder: (context, index) {
           if (index != null) {
             final post = posts[index];

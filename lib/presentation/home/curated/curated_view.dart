@@ -122,8 +122,7 @@ class _CuratedViewState extends State<CuratedView>
                           fetched: (posts, page, date, scale) {
                             _currentPage = page;
                             _posts = posts;
-                            return SliverPostList(
-                              length: posts.length,
+                            return SliverPostGrid(
                               posts: posts,
                             );
                           },

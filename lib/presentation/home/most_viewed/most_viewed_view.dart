@@ -108,8 +108,7 @@ class _MostViewedViewState extends State<MostViewedView>
                             ],
                           ),
                         ),
-                        fetched: (posts, date) => SliverPostList(
-                          length: posts.length,
+                        fetched: (posts, date) => SliverPostGrid(
                           posts: posts,
                         ),
                         error: (name, message) => SliverList(

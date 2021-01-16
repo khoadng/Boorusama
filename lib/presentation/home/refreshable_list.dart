@@ -61,8 +61,7 @@ class _RefreshableListState extends State<RefreshableList> {
               ],
             ),
           ),
-          SliverPostList(
-            length: posts.length,
+          SliverPostGrid(
             posts: posts,
           ),
         ],
