@@ -60,45 +60,47 @@ class _PostImagePageState extends State<PostImagePage> {
           errorWidget: (context, url, error) => Icon(Icons.error),
         ));
     return SafeArea(
-      child: Consumer(
-        builder: (context, watch, child) {
-          final state = watch(notesStateNotifierProvider.state);
-          final imageAndOverlay = Stack(
-            children: [
-              image,
-              if (!_hideOverlay) _buildTopShadowGradient(),
-              if (!_hideOverlay) _buildBackButton(context),
-              if (!_hideOverlay) _buildMoreVertButton(),
-            ],
-          );
-          return state.when(
-            initial: () => imageAndOverlay,
-            loading: () => imageAndOverlay,
-            fetched: (notes) => Stack(
+      child: Scaffold(
+        body: Consumer(
+          builder: (context, watch, child) {
+            final state = watch(notesStateNotifierProvider.state);
+            final imageAndOverlay = Stack(
               children: [
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        _hideOverlay = !_hideOverlay;
-                      });
-
-                      if (_hideOverlay) {
-                        SystemChrome.setEnabledSystemUIOverlays([]);
-                      } else {
-                        SystemChrome.setEnabledSystemUIOverlays(
-                            SystemUiOverlay.values);
-                      }
-                    },
-                    child: image),
+                image,
                 if (!_hideOverlay) _buildTopShadowGradient(),
-                if (!_hideOverlay) ...buildNotes(notes, widget.post),
                 if (!_hideOverlay) _buildBackButton(context),
                 if (!_hideOverlay) _buildMoreVertButton(),
               ],
-            ),
-            error: (name, message) => imageAndOverlay,
-          );
-        },
+            );
+            return state.when(
+              initial: () => imageAndOverlay,
+              loading: () => imageAndOverlay,
+              fetched: (notes) => Stack(
+                children: [
+                  InkWell(
+                      onTap: () {
+                        setState(() {
+                          _hideOverlay = !_hideOverlay;
+                        });
+
+                        if (_hideOverlay) {
+                          SystemChrome.setEnabledSystemUIOverlays([]);
+                        } else {
+                          SystemChrome.setEnabledSystemUIOverlays(
+                              SystemUiOverlay.values);
+                        }
+                      },
+                      child: image),
+                  if (!_hideOverlay) _buildTopShadowGradient(),
+                  if (!_hideOverlay) ...buildNotes(notes, widget.post),
+                  if (!_hideOverlay) _buildBackButton(context),
+                  if (!_hideOverlay) _buildMoreVertButton(),
+                ],
+              ),
+              error: (name, message) => imageAndOverlay,
+            );
+          },
+        ),
       ),
     );
   }

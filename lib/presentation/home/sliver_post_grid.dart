@@ -1,8 +1,5 @@
-import 'package:animations/animations.dart';
 import 'package:boorusama/domain/posts/post.dart';
-import 'package:boorusama/presentation/post_detail/post_detail_page.dart';
 import 'package:boorusama/router.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 

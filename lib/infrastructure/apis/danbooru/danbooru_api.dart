@@ -111,6 +111,20 @@ abstract class DanbooruApi implements IApi {
     @Path() int id,
   );
 
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
+  })
+  @Extra({
+    DIO_CACHE_KEY_TRY_CACHE: true,
+    DIO_CACHE_KEY_MAX_AGE: Duration(minutes: 1),
+  })
+  @GET("/posts/{postId}")
+  @override
+  Future<HttpResponse> getArtistCommentary(
+    @Path() int postId,
+  );
+
   @GET("/explore/posts/popular.json")
   @override
   Future<HttpResponse> getPopularPosts(

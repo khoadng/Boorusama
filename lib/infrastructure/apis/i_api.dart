@@ -44,6 +44,10 @@ abstract class IApi {
     int id,
   );
 
+  Future<HttpResponse> getArtistCommentary(
+    int postId,
+  );
+
   Future<HttpResponse> getPosts(
     String login,
     String apiKey,

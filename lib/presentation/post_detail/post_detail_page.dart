@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
+import 'package:boorusama/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/application/post_detail/post/post_detail_state_notifier.dart';
+import 'package:boorusama/domain/posts/artist_commentary.dart';
 import 'package:boorusama/domain/posts/posts.dart';
 import 'package:boorusama/presentation/comment/comment_page.dart';
 import 'package:boorusama/presentation/post_detail/post_image_page.dart';
@@ -10,22 +14,24 @@ import 'package:boorusama/router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart';
 
 final postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
         (ref) => PostDownloadStateNotifier(ref));
 
-final postDetailStateNotifierProvider =
-    StateNotifierProvider<PostDetailStateNotifier>(
-        (ref) => PostDetailStateNotifier(ref));
-
 final postFavoriteStateNotifierProvider =
     StateNotifierProvider<PostFavoriteStateNotifier>(
         (ref) => PostFavoriteStateNotifier(ref));
+
+final artistCommentaryStateNotifierProvider =
+    StateNotifierProvider<ArtistCommentaryStateNotifier>(
+        (ref) => ArtistCommentaryStateNotifier(ref));
 
 class PostDetailPage extends StatefulWidget {
   PostDetailPage({
@@ -41,11 +47,17 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   int _favCount = 0;
+  bool _showTranslated = true;
 
   @override
   void initState() {
     super.initState();
     _favCount = widget.post.favCount;
+    Future.delayed(
+        Duration.zero,
+        () => context
+            .read(artistCommentaryStateNotifierProvider)
+            .getCommentary(widget.post.id));
   }
 
   @override
@@ -72,19 +84,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         context.read(notesStateNotifierProvider).clearNotes();
         return Future.value(true);
       },
-      child: ProviderListener<PostDetailState>(
-        provider: postDetailStateNotifierProvider.state,
-        onChange: (context, state) {
-          state.maybeWhen(
-              fetched: (post) {
-                setState(() {
-                  _favCount = post.favCount;
-                });
-              },
-              orElse: () {});
-        },
-        child: _buildPage(context, widget.post, postWidget),
-      ),
+      child: _buildPage(context, widget.post, postWidget),
     );
   }
 
@@ -137,8 +137,56 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(10.0)),
                 margin: EdgeInsets.symmetric(horizontal: 8.0),
-                padding: EdgeInsets.all(8.0),
-                child: Text("Artist Commentary"),
+                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                child: Consumer(
+                    builder: (context, watch, child) {
+                      final state =
+                          watch(artistCommentaryStateNotifierProvider.state);
+                      return state.when(
+                        initial: () => _buildLoading(),
+                        loading: () => _buildLoading(),
+                        fetched: (commentary) {
+                          return Column(children: [
+                            ListTile(
+                              title: Text(post.tagStringArtist.pretty),
+                              leading: CircleAvatar(),
+                              trailing: PopupMenuButton<ArtistCommentaryAction>(
+                                icon: Icon(Icons.keyboard_arrow_down),
+                                onSelected: (value) {
+                                  switch (value) {
+                                    case ArtistCommentaryAction.translate:
+                                      setState(() {
+                                        _showTranslated = !_showTranslated;
+                                      });
+                                      break;
+                                    default:
+                                  }
+                                },
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry<ArtistCommentaryAction>>[
+                                  PopupMenuItem<ArtistCommentaryAction>(
+                                    value: ArtistCommentaryAction.translate,
+                                    child: ListTile(
+                                      // leading: const Icon(Icons.download_rounded),
+                                      title: Text(_showTranslated
+                                          ? "Show Original"
+                                          : "Show Translated"),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Html(
+                                data: commentary.isTranslated && _showTranslated
+                                    ? commentary.translated
+                                    : commentary.original),
+                          ]);
+                        },
+                        error: (name, message) =>
+                            Text("Failed to load commentary"),
+                      );
+                    },
+                    child: Text("Artist Commentary")),
               ),
             ])),
             SliverStickyHeader(
@@ -199,4 +247,56 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ),
     );
   }
+
+  Widget _buildLoading() => Shimmer.fromColors(
+        highlightColor: Colors.grey[500],
+        baseColor: Colors.grey[700],
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              leading: CircleAvatar(),
+              title: Container(
+                margin: EdgeInsets.only(
+                    right: MediaQuery.of(context).size.width * 0.6),
+                width: 10,
+                height: 20,
+                decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(8.0)),
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              width: Random().nextDouble() * 100 +
+                  MediaQuery.of(context).size.width * 0.3,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(8.0)),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              width: Random().nextDouble() * 100 +
+                  MediaQuery.of(context).size.width * 0.3,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(8.0)),
+            ),
+            Container(
+              margin: EdgeInsets.only(bottom: 10.0),
+              width: Random().nextDouble() * 100 +
+                  MediaQuery.of(context).size.width * 0.3,
+              height: 20,
+              decoration: BoxDecoration(
+                  color: Colors.grey[400],
+                  borderRadius: BorderRadius.circular(8.0)),
+            ),
+          ],
+        ),
+      );
 }
+
+enum ArtistCommentaryAction { translate }
