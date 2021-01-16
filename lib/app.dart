@@ -71,8 +71,8 @@ class _AppState extends State<App> {
           state.when(
             darkMode: () async {
               SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-                systemNavigationBarColor: Color(0xff323232),
-                statusBarColor: Color(0xff323232),
+                systemNavigationBarColor: Colors.grey[900],
+                statusBarColor: Colors.grey[900],
                 statusBarIconBrightness: Brightness.light,
                 statusBarBrightness: Brightness.light,
               ));
