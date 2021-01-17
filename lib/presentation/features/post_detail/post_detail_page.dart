@@ -41,9 +41,11 @@ class PostDetailPage extends StatefulWidget {
   PostDetailPage({
     Key key,
     @required this.post,
+    @required this.heroTag,
   }) : super(key: key);
 
   final Post post;
+  final String heroTag;
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
@@ -77,10 +79,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
       postWidget = PostVideo(post: widget.post);
     } else {
       postWidget = Hero(
-        tag: "${widget.post.id}",
+        tag: widget.heroTag,
         child: GestureDetector(
           onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: widget.post)),
+              routeSettings:
+                  RouteSettings(arguments: [widget.post, widget.heroTag])),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(

@@ -71,8 +71,10 @@ class SliverPostGrid extends StatelessWidget {
               children: <Widget>[
                 GestureDetector(
                   onTap: () => AppRouter.router.navigateTo(context, "/posts",
-                      routeSettings: RouteSettings(arguments: post)),
-                  child: Hero(tag: "${post.id}", child: image),
+                      routeSettings: RouteSettings(
+                          arguments: [post, "${key.toString()}_${post.id}"])),
+                  child:
+                      Hero(tag: "${key.toString()}_${post.id}", child: image),
                 ),
                 Align(
                   alignment: Alignment.topLeft,

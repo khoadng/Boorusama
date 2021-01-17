@@ -57,6 +57,8 @@ class LatestView extends HookWidget {
       ValueNotifier<List<Post>> currentPosts,
       BuildContext context,
       ValueNotifier<int> page) {
+    final gridKey = useState(GlobalKey());
+
     return Scaffold(
       body: SmartRefresher(
         controller: refreshController.value,
@@ -84,6 +86,7 @@ class LatestView extends HookWidget {
               ),
             ),
             SliverPostGrid(
+              key: gridKey.value,
               posts: currentPosts.value,
             ),
           ],

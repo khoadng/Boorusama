@@ -21,6 +21,7 @@ class PopularView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final gridKey = useState(GlobalKey());
     final selectedDate = useState(DateTime.now());
     final selectedTimeScale = useState(TimeScale.day);
     final currentPosts = useState(<Post>[]);
@@ -210,7 +211,10 @@ class PopularView extends HookWidget {
                     popularState.when(
                       initial: () => SliverPostGridPlaceHolder(),
                       loading: () => SliverPostGrid(posts: currentPosts.value),
-                      fetched: (posts) => SliverPostGrid(posts: currentPosts.value),
+                      fetched: (posts) => SliverPostGrid(
+                        key: gridKey.value,
+                        posts: currentPosts.value,
+                      ),
                       error: (name, message) => SliverPostGridPlaceHolder(),
                     ),
                   ],

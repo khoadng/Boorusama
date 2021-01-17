@@ -15,18 +15,24 @@ final postDetailHandler = Handler(handlerFunc: (
   BuildContext context,
   Map<String, List<String>> params,
 ) {
-  final post = context.settings.arguments as Post;
+  final args = context.settings.arguments as List;
 
-  return PostDetailPage(post: post);
+  return PostDetailPage(
+    post: args[0],
+    heroTag: args[1],
+  );
 });
 
 final postDetailImageHandler = Handler(handlerFunc: (
   BuildContext context,
   Map<String, List<String>> params,
 ) {
-  final post = context.settings.arguments as Post;
+  final args = context.settings.arguments as List;
 
-  return PostImagePage(post: post);
+  return PostImagePage(
+    post: args[0],
+    heroTag: args[1],
+  );
 });
 
 final userHandler = Handler(
