@@ -28,6 +28,7 @@ class SearchPage extends SearchDelegate {
   List<Tag> _tags;
   TagQuery _tagQuery;
   List<Post> _posts;
+  int _page = 1;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -76,12 +77,13 @@ class SearchPage extends SearchDelegate {
       provider: postSearchStateNotifierProvider.state,
       onChange: (context, state) {
         state.maybeWhen(
-            fetched: (posts, page, query) {
-              if (posts.length == _posts.length) {
+            fetched: (posts) {
+              if (posts.isEmpty) {
                 _refreshController.loadNoData();
               } else {
-                _refreshController..loadComplete();
-                _posts = posts;
+                _refreshController.loadComplete();
+                _refreshController.refreshCompleted();
+                _posts.addAll(posts);
               }
             },
             orElse: () {});
@@ -92,10 +94,10 @@ class SearchPage extends SearchDelegate {
           return state.when(
               initial: () => Center(),
               loading: () => Center(child: CircularProgressIndicator()),
-              fetched: (posts, page, query) {
+              fetched: (_) {
                 return Scaffold(
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => _downloadAllPosts(posts, context),
+                    onPressed: () => _downloadAllPosts(_posts, context),
                     heroTag: null,
                     child: Icon(Icons.download_sharp),
                   ),
@@ -103,9 +105,12 @@ class SearchPage extends SearchDelegate {
                     controller: _refreshController,
                     enablePullUp: true,
                     footer: const ClassicFooter(),
-                    onLoading: () => context
-                        .read(postSearchStateNotifierProvider)
-                        .getMorePosts(posts, query, page),
+                    onLoading: () {
+                      _page = _page + 1;
+                      context
+                          .read(postSearchStateNotifierProvider)
+                          .getPosts(query, _page);
+                    },
                     child: CustomScrollView(
                       slivers: <Widget>[
                         SliverList(
@@ -118,7 +123,7 @@ class SearchPage extends SearchDelegate {
                           ),
                         ),
                         SliverPostGrid(
-                          posts: posts,
+                          posts: _posts,
                         ),
                       ],
                     ),

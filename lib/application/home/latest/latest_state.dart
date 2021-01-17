@@ -7,7 +7,5 @@ abstract class LatestState with _$LatestState {
 
   const factory LatestState.fetched({
     @required List<Post> posts,
-    @required int page,
-    @required String query,
   }) = _Fetched;
 }

@@ -30,7 +30,6 @@ class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
 
       state = MostViewedState.fetched(
         posts: filteredPosts,
-        date: date,
       );
     } on DatabaseTimeOut catch (e) {
       state = MostViewedState.error(
@@ -46,7 +45,6 @@ class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
 
       state = MostViewedState.fetched(
         posts: filteredPosts,
-        date: date,
       );
     } on DatabaseTimeOut catch (e) {}
   }

@@ -71,7 +71,7 @@ class PostRepository implements IPostRepository {
 
     return _api
         .getPosts(account.username, account.apiKey, page,
-            settings.safeMode ? "$tagString rating:s" : tagString, 100)
+            settings.safeMode ? "$tagString rating:s" : tagString, 20)
         .then((value) {
       final posts = <PostDto>[];
 
@@ -119,7 +119,7 @@ class PostRepository implements IPostRepository {
             "${date.year}-${date.month}-${date.day}",
             scale.toString().split(".").last,
             page,
-            200)
+            20)
         .then((value) {
       final posts = <PostDto>[];
 
@@ -165,7 +165,7 @@ class PostRepository implements IPostRepository {
             "${date.year}-${date.month}-${date.day}",
             scale.toString().split(".").last,
             page,
-            200)
+            20)
         .then((value) {
       final posts = <PostDto>[];
 

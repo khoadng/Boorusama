@@ -6,9 +6,6 @@ abstract class PopularState with _$PopularState {
   const factory PopularState.loading() = _Loading;
   const factory PopularState.fetched({
     @required List<Post> posts,
-    @required int page,
-    @required DateTime date,
-    @required TimeScale scale,
   }) = _Fetched;
   const factory PopularState.error({
     @required String name,

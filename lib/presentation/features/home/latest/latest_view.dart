@@ -1,84 +1,113 @@
 import 'package:boorusama/application/home/latest/latest_state_notifier.dart';
+import 'package:boorusama/domain/posts/posts.dart';
+import 'package:boorusama/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../refreshable_list.dart';
 import '../sliver_post_grid_placeholder.dart';
 
 final latestStateNotifier = StateNotifierProvider<LatestStateNotifier>(
     (ref) => LatestStateNotifier(ref));
 
-class LatestView extends StatefulWidget {
-  LatestView({Key key}) : super(key: key);
-
-  @override
-  _LatestViewState createState() => _LatestViewState();
-}
-
-class _LatestViewState extends State<LatestView>
-    with AutomaticKeepAliveClientMixin {
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
-
-  @override
-  void initState() {
-    Future.delayed(
-        Duration.zero, () => context.read(latestStateNotifier).getPosts("", 1));
-    super.initState();
-  }
+class LatestView extends HookWidget {
+  const LatestView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
+    final currentPosts = useState(<Post>[]);
+    final page = useState(1);
+    final refreshController =
+        useState(RefreshController(initialRefresh: false));
+    final latestState = useProvider(latestStateNotifier.state);
+
+    useEffect(() {
+      Future.microtask(() => context.read(latestStateNotifier).refresh());
+      return () => {};
+    }, []);
+
     return ProviderListener<LatestState>(
       provider: latestStateNotifier.state,
       onChange: (context, state) {
         state.maybeWhen(
-            fetched: (posts, page, query) => _refreshController
-              ..loadComplete()
-              ..refreshCompleted(),
+            fetched: (posts) {
+              if (posts.isEmpty) {
+                refreshController.value.loadNoData();
+              } else {
+                refreshController.value.loadComplete();
+                refreshController.value.refreshCompleted();
+                currentPosts.value.addAll(posts);
+              }
+            },
             orElse: () {});
       },
-      child: Consumer(
-        builder: (context, watch, child) {
-          final state = watch(latestStateNotifier.state);
-          return state.when(
-              initial: () => Center(),
-              loading: () => Scaffold(
-                    body: CustomScrollView(
-                      slivers: <Widget>[
-                        SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Container(
-                                padding: EdgeInsets.all(2.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverPostGridPlaceHolder(),
-                      ],
-                    ),
-                  ),
-              fetched: (posts, page, query) {
-                return Scaffold(
-                  body: RefreshableList(
-                    posts: posts,
-                    onLoadMore: () => context
-                        .read(latestStateNotifier)
-                        .getMorePosts(posts, query, page),
-                    onRefresh: () =>
-                        context.read(latestStateNotifier).refresh(),
-                    refreshController: _refreshController,
-                  ),
-                );
-              });
-        },
+      child: latestState.when(
+        initial: () => _buildLoading(),
+        loading: () =>
+            _buildGrid(refreshController, currentPosts, context, page),
+        fetched: (_) =>
+            _buildGrid(refreshController, currentPosts, context, page),
       ),
     );
   }
 
-  @override
-  bool get wantKeepAlive => true;
+  Widget _buildGrid(
+      ValueNotifier<RefreshController> refreshController,
+      ValueNotifier<List<Post>> currentPosts,
+      BuildContext context,
+      ValueNotifier<int> page) {
+    return Scaffold(
+      body: SmartRefresher(
+        controller: refreshController.value,
+        enablePullUp: true,
+        enablePullDown: true,
+        header: const WaterDropMaterialHeader(),
+        footer: const ClassicFooter(),
+        onRefresh: () {
+          currentPosts.value.clear();
+          context.read(latestStateNotifier).refresh();
+        },
+        onLoading: () {
+          page.value = page.value + 1;
+          context.read(latestStateNotifier).getPosts("", page.value);
+        },
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Container(
+                    padding: EdgeInsets.all(2.0),
+                  ),
+                ],
+              ),
+            ),
+            SliverPostGrid(
+              posts: currentPosts.value,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLoading() {
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Container(
+                  padding: EdgeInsets.all(2.0),
+                ),
+              ],
+            ),
+          ),
+          SliverPostGridPlaceHolder(),
+        ],
+      ),
+    );
+  }
 }

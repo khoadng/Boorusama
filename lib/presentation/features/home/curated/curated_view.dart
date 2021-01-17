@@ -87,10 +87,11 @@ class CuratedView extends HookWidget {
                       .read(curatedStateNotifierProvider)
                       .refresh(selectedDate.value, selectedTimeScale.value);
                 },
-                onLoading: () => context
-                    .read(curatedStateNotifierProvider)
-                    .getPosts(selectedDate.value, page.value,
-                        selectedTimeScale.value),
+                onLoading: () {
+                  page.value = page.value + 1;
+                  context.read(curatedStateNotifierProvider).getPosts(
+                      selectedDate.value, page.value, selectedTimeScale.value);
+                },
                 child: CustomScrollView(
                   slivers: <Widget>[
                     SliverList(
@@ -99,7 +100,7 @@ class CuratedView extends HookWidget {
                           Container(
                             padding: EdgeInsets.all(10.0),
                             child: Text(
-                                "${I18n.of(context).postCategoriesLatest}: ${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
+                                "${I18n.of(context).postCategoriesCurated}: ${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
                           ),
                           Row(
                             children: [
@@ -208,8 +209,8 @@ class CuratedView extends HookWidget {
                     ),
                     curatedState.when(
                       initial: () => SliverPostGridPlaceHolder(),
-                      loading: () => SliverPostGridPlaceHolder(),
-                      fetched: (posts) => SliverPostGrid(posts: posts),
+                      loading: () => SliverPostGrid(posts: currentPosts.value),
+                      fetched: (posts) => SliverPostGrid(posts: currentPosts.value),
                       error: (name, message) => SliverPostGridPlaceHolder(),
                     ),
                   ],

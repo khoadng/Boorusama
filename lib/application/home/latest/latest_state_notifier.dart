@@ -23,14 +23,12 @@ class LatestStateNotifier extends StateNotifier<LatestState> {
     try {
       state = LatestState.loading();
 
-      final dtos = await _postRepository.getPosts(query, 1);
+      final dtos = await _postRepository.getPosts(query, page);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
       state = LatestState.fetched(
         posts: filteredPosts,
-        page: page,
-        query: query,
       );
     } on DatabaseTimeOut catch (e) {}
   }
@@ -43,23 +41,6 @@ class LatestStateNotifier extends StateNotifier<LatestState> {
 
       state = LatestState.fetched(
         posts: filteredPosts,
-        page: 1,
-        query: "",
-      );
-    } on DatabaseTimeOut catch (e) {}
-  }
-
-  void getMorePosts(List<Post> currentPosts, String query, int page) async {
-    try {
-      final nextPage = page + 1;
-      final dtos = await _postRepository.getPosts(query, nextPage);
-      final settings = await _settingRepository.load();
-      final filteredPosts = filter(dtos, settings);
-
-      state = LatestState.fetched(
-        posts: currentPosts..addAll(filteredPosts),
-        page: nextPage,
-        query: query,
       );
     } on DatabaseTimeOut catch (e) {}
   }
