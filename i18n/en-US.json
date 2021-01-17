@@ -63,7 +63,11 @@
                     "light" : "Light"
                 }
             },
-
+            "language" : {
+                "_string" : "Language",
+                "english" : "English",
+                "vietnamese" : "Vietnamese"
+            },
             "safeMode" : "Safe Mode",
             "blacklistedTags" : "Blacklisted tags"
         }

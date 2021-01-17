@@ -1,0 +1,87 @@
+{
+    "profile": {
+        "profile" : "Hồ sơ",
+        "favorites" : "Yêu thích"
+    },
+
+
+    "login" : {
+        "form" : {
+            "username" : "Tài khoản",
+            "password" : "Mật khẩu",
+            "login" : "Đăng nhập"
+        },
+        "errors" : {
+            "invalidUsernameOrPassword" : "Tài khoản hoặc mật khẩu không chính xác",
+            "missingUsername" : "Chưa nhập tên tài khoản",
+            "missingPassword" : "Chưa nhập mật khẩu"
+        }
+    },
+
+    "commentCreate" : {
+        "hint" : "Bình luận",
+        "loading" : "Đợi tí...",
+        "error": "Lỗi"
+    },
+
+    "commentListing": {
+        "commands" : {
+            "edit" : "Sửa",
+            "reply" : "Phản hồi",
+            "delete" : "Xóa"
+        },
+        "tooltips": {
+            "toggleDeletedComments" : "Bật tắt bình luận đã xóa"
+        },
+        "notifications" : {
+            "noComments" : "Không có bình luận"
+        }
+    },
+
+    "postCategories" : {
+        "latest": "Mới",
+        "popular": "Phổ biến",
+        "curated": "Tuyển chọn",
+        "mostViewed": "Xem nhiều"
+    },
+
+    "search" : {
+        "hint": "Tìm...",
+        "noResult" : "Không có kết quả",
+        "empty" : "Trống"
+    },
+
+    "settings" : {
+        "_string" : "Cài đặt",
+        "appSettings" : {
+            "_string" : "Cài đặt ứng dụng",
+            "appearance" : {
+                "_string" : "Hiển thị",
+                "theme" :{
+                    "_string": "Nền",
+                    "dark" : "Tối",
+                    "light" : "Sáng"
+                }
+            },
+            "language" : {
+                "_string" : "Ngôn ngữ",
+                "english" : "Tiếng Anh",
+                "vietnamese" : "Tiếng Việt"
+            },
+            "safeMode" : "Safe Mode",
+            "blacklistedTags" : "Danh sách đen"
+        }
+    },
+
+    "sideMenu": {
+        "login" : "Đăng nhập",
+        "profile" : "Hồ sơ",
+        "settings" : "Cài đặt"
+    },
+
+    "dateRange" : {
+        "day" : "Ngày",
+        "week": "Tuần",
+        "month" : "Tháng"
+    }
+}

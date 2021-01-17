@@ -90,6 +90,12 @@ class I18n implements WidgetsLocalizations {
   String get settingsAppSettingsAppearanceThemeDark => "Dark";
   /// "Light"
   String get settingsAppSettingsAppearanceThemeLight => "Light";
+  /// "Language"
+  String get settingsAppSettingsLanguage_string => "Language";
+  /// "English"
+  String get settingsAppSettingsLanguageEnglish => "English";
+  /// "Vietnamese"
+  String get settingsAppSettingsLanguageVietnamese => "Vietnamese";
   /// "Safe Mode"
   String get settingsAppSettingsSafeMode => "Safe Mode";
   /// "Blacklisted tags"
@@ -115,11 +121,140 @@ class _I18n_en_US extends I18n {
   TextDirection get textDirection => TextDirection.ltr;
 }
 
+class _I18n_vi_VN extends I18n {
+  const _I18n_vi_VN();
+
+  /// "Hồ sơ"
+  @override
+  String get profileProfile => "Hồ sơ";
+  /// "Yêu thích"
+  @override
+  String get profileFavorites => "Yêu thích";
+  /// "Tài khoản"
+  @override
+  String get loginFormUsername => "Tài khoản";
+  /// "Mật khẩu"
+  @override
+  String get loginFormPassword => "Mật khẩu";
+  /// "Đăng nhập"
+  @override
+  String get loginFormLogin => "Đăng nhập";
+  /// "Tài khoản hoặc mật khẩu không chính xác"
+  @override
+  String get loginErrorsInvalidUsernameOrPassword => "Tài khoản hoặc mật khẩu không chính xác";
+  /// "Chưa nhập tên tài khoản"
+  @override
+  String get loginErrorsMissingUsername => "Chưa nhập tên tài khoản";
+  /// "Chưa nhập mật khẩu"
+  @override
+  String get loginErrorsMissingPassword => "Chưa nhập mật khẩu";
+  /// "Bình luận"
+  @override
+  String get commentCreateHint => "Bình luận";
+  /// "Đợi tí..."
+  @override
+  String get commentCreateLoading => "Đợi tí...";
+  /// "Lỗi"
+  @override
+  String get commentCreateError => "Lỗi";
+  /// "Sửa"
+  @override
+  String get commentListingCommandsEdit => "Sửa";
+  /// "Phản hồi"
+  @override
+  String get commentListingCommandsReply => "Phản hồi";
+  /// "Xóa"
+  @override
+  String get commentListingCommandsDelete => "Xóa";
+  /// "Bật tắt bình luận đã xóa"
+  @override
+  String get commentListingTooltipsToggleDeletedComments => "Bật tắt bình luận đã xóa";
+  /// "Không có bình luận"
+  @override
+  String get commentListingNotificationsNoComments => "Không có bình luận";
+  /// "Mới"
+  @override
+  String get postCategoriesLatest => "Mới";
+  /// "Phổ biến"
+  @override
+  String get postCategoriesPopular => "Phổ biến";
+  /// "Tuyển chọn"
+  @override
+  String get postCategoriesCurated => "Tuyển chọn";
+  /// "Xem nhiều"
+  @override
+  String get postCategoriesMostViewed => "Xem nhiều";
+  /// "Tìm..."
+  @override
+  String get searchHint => "Tìm...";
+  /// "Không có kết quả"
+  @override
+  String get searchNoResult => "Không có kết quả";
+  /// "Trống"
+  @override
+  String get searchEmpty => "Trống";
+  /// "Cài đặt"
+  @override
+  String get settings_string => "Cài đặt";
+  /// "Cài đặt ứng dụng"
+  @override
+  String get settingsAppSettings_string => "Cài đặt ứng dụng";
+  /// "Hiển thị"
+  @override
+  String get settingsAppSettingsAppearance_string => "Hiển thị";
+  /// "Nền"
+  @override
+  String get settingsAppSettingsAppearanceTheme_string => "Nền";
+  /// "Tối"
+  @override
+  String get settingsAppSettingsAppearanceThemeDark => "Tối";
+  /// "Sáng"
+  @override
+  String get settingsAppSettingsAppearanceThemeLight => "Sáng";
+  /// "Ngôn ngữ"
+  @override
+  String get settingsAppSettingsLanguage_string => "Ngôn ngữ";
+  /// "Tiếng Anh"
+  @override
+  String get settingsAppSettingsLanguageEnglish => "Tiếng Anh";
+  /// "Tiếng Việt"
+  @override
+  String get settingsAppSettingsLanguageVietnamese => "Tiếng Việt";
+  /// "Safe Mode"
+  @override
+  String get settingsAppSettingsSafeMode => "Safe Mode";
+  /// "Danh sách đen"
+  @override
+  String get settingsAppSettingsBlacklistedTags => "Danh sách đen";
+  /// "Đăng nhập"
+  @override
+  String get sideMenuLogin => "Đăng nhập";
+  /// "Hồ sơ"
+  @override
+  String get sideMenuProfile => "Hồ sơ";
+  /// "Cài đặt"
+  @override
+  String get sideMenuSettings => "Cài đặt";
+  /// "Ngày"
+  @override
+  String get dateRangeDay => "Ngày";
+  /// "Tuần"
+  @override
+  String get dateRangeWeek => "Tuần";
+  /// "Tháng"
+  @override
+  String get dateRangeMonth => "Tháng";
+
+  @override
+  TextDirection get textDirection => TextDirection.ltr;
+}
+
 class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocalizations> {
   const GeneratedLocalizationsDelegate();
   List<Locale> get supportedLocales {
     return const <Locale>[
-      Locale("en", "US")
+      Locale("en", "US"),
+      Locale("vi", "VN")
     ];
   }
 
@@ -142,8 +277,14 @@ class GeneratedLocalizationsDelegate extends LocalizationsDelegate<WidgetsLocali
     if ("en_US" == lang) {
       return SynchronousFuture<WidgetsLocalizations>(const _I18n_en_US());
     }
+    else if ("vi_VN" == lang) {
+      return SynchronousFuture<WidgetsLocalizations>(const _I18n_vi_VN());
+    }
     else if ("en" == languageCode) {
       return SynchronousFuture<WidgetsLocalizations>(const _I18n_en_US());
+    }
+    else if ("vi" == languageCode) {
+      return SynchronousFuture<WidgetsLocalizations>(const _I18n_vi_VN());
     }
 
     return SynchronousFuture<WidgetsLocalizations>(const I18n());

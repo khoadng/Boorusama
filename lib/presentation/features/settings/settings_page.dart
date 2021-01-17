@@ -83,6 +83,41 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   );
                 },
+              ),
+              SettingsTile(
+                leading: Icon(Icons.translate),
+                title: I18n.of(context).settingsAppSettingsLanguage_string,
+                trailing: DropdownButton<String>(
+                  value: _setting.language,
+                  icon: Icon(Icons.keyboard_arrow_right),
+                  onChanged: (value) {
+                    setState(() {
+                      _setting.language = value;
+                    });
+                    I18n.onLocaleChanged(Locale(value));
+                  },
+                  items: <DropdownMenuItem<String>>[
+                    DropdownMenuItem(
+                      value: "en",
+                      child: Text(
+                          I18n.of(context).settingsAppSettingsLanguageEnglish),
+                    ),
+                    DropdownMenuItem(
+                      value: "vi",
+                      child: Text(I18n.of(context)
+                          .settingsAppSettingsLanguageVietnamese),
+                    ),
+                  ],
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => AppearancePage(
+                        settings: _setting,
+                      ),
+                    ),
+                  );
+                },
               )
             ],
           ),

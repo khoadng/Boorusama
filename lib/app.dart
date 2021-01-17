@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide ReadContext;
 import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'application/authentication/bloc/authentication_bloc.dart';
 import 'application/download/download_service.dart';
@@ -34,6 +35,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
+  final i18n = I18n.delegate;
+
   @override
   void initState() {
     super.initState();
@@ -51,11 +54,18 @@ class _AppState extends State<App> {
         () => context
             .read(themeStateNotifierProvider)
             .changeTheme(widget.settings.themeMode));
+
+    I18n.onLocaleChanged = onLocaleChange;
+  }
+
+  void onLocaleChange(Locale locale) {
+    setState(() {
+      I18n.locale = locale;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final i18n = I18n.delegate;
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserBloc>(
@@ -100,7 +110,13 @@ class _AppState extends State<App> {
                 darkMode: () => ThemeMode.dark,
                 lightMode: () => ThemeMode.light,
               ),
-              localizationsDelegates: [i18n],
+              localizationsDelegates: [
+                i18n,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate
+              ],
+              locale: Locale(widget.settings.language),
               supportedLocales: i18n.supportedLocales,
               localeResolutionCallback:
                   i18n.resolution(fallback: Locale("en", "US")),
