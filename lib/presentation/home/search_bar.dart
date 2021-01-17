@@ -1,3 +1,4 @@
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,7 @@ class _SearchBarState extends State<SearchBar> {
           visualDensity: VisualDensity.compact,
           onTap: () => widget.onTap(),
           title: Text(
-            _currentQuery.isEmpty ? "Search..." : _currentQuery,
+            _currentQuery.isEmpty ? I18n.of(context).searchHint : _currentQuery,
             style: Theme.of(context).inputDecorationTheme.hintStyle,
           ),
           leading: IconButton(

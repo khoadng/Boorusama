@@ -1,4 +1,5 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -37,18 +38,19 @@ class LoginBox extends HookWidget {
                 child: TextFormField(
                   validator: (value) {
                     if (value.isEmpty) {
-                      return "Please enter your username";
+                      return I18n.of(context).loginErrorsMissingUsername;
                     }
 
                     if (!_isValidUsernameAndPassword.value) {
-                      return "Invalid username or password";
+                      return I18n.of(context)
+                          .loginErrorsInvalidUsernameOrPassword;
                     }
                     return null;
                   },
                   controller: usernameTextController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Name',
+                    labelText: I18n.of(context).loginFormUsername,
                   ),
                 ),
               ),
@@ -57,17 +59,18 @@ class LoginBox extends HookWidget {
                 child: TextFormField(
                   validator: (value) {
                     if (value.isEmpty) {
-                      return "Please enter your password";
+                      return I18n.of(context).loginErrorsMissingPassword;
                     }
                     if (!_isValidUsernameAndPassword.value) {
-                      return "Invalid username or password";
+                      return I18n.of(context)
+                          .loginErrorsInvalidUsernameOrPassword;
                     }
                     return null;
                   },
                   controller: passwordTextController,
                   decoration: InputDecoration(
                     border: OutlineInputBorder(),
-                    labelText: 'Password',
+                    labelText: I18n.of(context).loginFormPassword,
                   ),
                 ),
               ),
@@ -82,7 +85,7 @@ class LoginBox extends HookWidget {
                       child: RaisedButton(
                         textColor: Colors.white70,
                         color: Colors.blue,
-                        child: Text('Login'),
+                        child: Text(I18n.of(context).loginFormLogin),
                         onPressed: () {
                           if (_formKey.value.currentState.validate()) {
                             context.read<AuthenticationBloc>().add(

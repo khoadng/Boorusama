@@ -1,6 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:boorusama/application/comment/comment.dart';
 import 'package:boorusama/application/comment/comment_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/comment/comment_update_page.dart';
 import 'package:boorusama/presentation/comment/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,8 @@ class _CommentPageState extends State<CommentPage> {
           ),
           actions: <Widget>[
             Tooltip(
-              message: "Toggle deleted comments",
+              message:
+                  I18n.of(context).commentListingTooltipsToggleDeletedComments,
               child: IconButton(
                 icon: Icon(Icons.remove_red_eye),
                 onPressed: () => _toggleDeletedComments(),
@@ -97,18 +99,6 @@ class _CommentPageState extends State<CommentPage> {
                           return state.maybeWhen(
                             fetched: (comments) =>
                                 _buildCommentSection(_comments),
-                            //     BlocListener<UserListBloc, UserListState>(
-                            //   listener: (context, state) {
-                            //     if (state is UserListFetched) {
-                            //       if (_users.isEmpty) {
-                            //         setState(() {
-                            //           _users = state.users;
-                            //         });
-                            //       }
-                            //     }
-                            //   },
-                            //   child: _buildCommentSection(_comments),
-                            // ),
                             orElse: () => Center(
                               child: Lottie.asset(
                                   "assets/animations/comment_loading.json"),
@@ -157,19 +147,22 @@ class _CommentPageState extends State<CommentPage> {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         ListTile(
-                          title: Text('Edit'),
+                          title:
+                              Text(I18n.of(context).commentListingCommandsEdit),
                           leading: Icon(Icons.edit),
                           onTap: () =>
                               _handleEditTap(context, comment, widget.postId),
                         ),
                         ListTile(
-                          title: Text('Reply'),
+                          title: Text(
+                              I18n.of(context).commentListingCommandsReply),
                           leading: Icon(Icons.folder_open),
                           onTap: () =>
                               _handleReplyTap(context, comment, widget.postId),
                         ),
                         ListTile(
-                          title: Text('Delete'),
+                          title: Text(
+                              I18n.of(context).commentListingCommandsDelete),
                           leading: Icon(Icons.delete),
                           onTap: () => Navigator.of(context).pop(),
                         ),
@@ -188,7 +181,7 @@ class _CommentPageState extends State<CommentPage> {
       );
     } else {
       return Center(
-        child: Text("There are no comments."),
+        child: Text(I18n.of(context).commentListingNotificationsNoComments),
       );
     }
   }

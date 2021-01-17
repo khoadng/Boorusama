@@ -1,4 +1,5 @@
 import 'package:boorusama/application/comment/comment_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -66,8 +67,8 @@ class CommentUpdatePage extends HookWidget {
                     padding: const EdgeInsets.all(12),
                     child: TextField(
                       controller: textEditingController,
-                      decoration:
-                          InputDecoration.collapsed(hintText: 'Comment'),
+                      decoration: InputDecoration.collapsed(
+                          hintText: I18n.of(context).commentCreateHint),
                       autofocus: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,
@@ -89,10 +90,10 @@ class CommentUpdatePage extends HookWidget {
 
         Navigator.of(context).pop();
       },
-      loading: () => Scaffold.of(context)
-          .showSnackBar(SnackBar(content: Text("Please wait..."))),
-      error: () =>
-          Scaffold.of(context).showSnackBar(SnackBar(content: Text("Error"))),
+      loading: () => Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text(I18n.of(context).commentCreateLoading))),
+      error: () => Scaffold.of(context).showSnackBar(
+          SnackBar(content: Text(I18n.of(context).commentCreateError))),
       orElse: () {},
     );
   }

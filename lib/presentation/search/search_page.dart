@@ -3,6 +3,7 @@ import 'package:boorusama/application/home/latest/latest_state_notifier.dart';
 import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/home/refreshable_list.dart';
 import 'package:boorusama/presentation/search/tag_query.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class SearchPage extends SearchDelegate {
           final state = watch(suggestionsStateNotifier.state);
           return state.when(
               empty: () => Center(
-                    child: Text("No result"),
+                    child: Text(I18n.of(context).searchNoResult),
                   ),
               loading: () => _SearchSuggestionsStack(
                     child: Center(child: CircularProgressIndicator()),
@@ -139,7 +140,7 @@ class SearchPage extends SearchDelegate {
         },
       );
     } else {
-      return Center(child: Text("Such empty"));
+      return Center(child: Text(I18n.of(context).searchEmpty));
     }
   }
 

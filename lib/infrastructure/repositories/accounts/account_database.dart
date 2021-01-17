@@ -20,7 +20,7 @@ class AccountDatabase {
     // final dbDirectory = await getExternalStorageDirectory();
     print('Database path: $dbDirectory');
     Future<Database> _db = openDatabase(
-        join(await getDatabasesPath(), "accounts.db"),
+        join(await getDatabasesPath(), databaseFileName),
         version: 1,
         onCreate: (db, version) => db.execute(
             "CREATE TABLE accounts(id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT, apiKey TEXT)"),

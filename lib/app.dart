@@ -1,3 +1,4 @@
+import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,7 @@ import 'application/themes/theme_state_notifier.dart';
 import 'application/users/user/bloc/user_bloc.dart';
 import 'domain/accounts/i_account_repository.dart';
 import 'domain/users/i_user_repository.dart';
+import 'generated/i18n.dart';
 import 'infrastructure/repositories/settings/i_setting_repository.dart';
 import 'infrastructure/repositories/settings/setting.dart';
 import 'router.dart';
@@ -53,6 +55,7 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = I18n.delegate;
     return MultiBlocProvider(
       providers: [
         BlocProvider<UserBloc>(
@@ -97,9 +100,13 @@ class _AppState extends State<App> {
                 darkMode: () => ThemeMode.dark,
                 lightMode: () => ThemeMode.light,
               ),
+              localizationsDelegates: [i18n],
+              supportedLocales: i18n.supportedLocales,
+              localeResolutionCallback:
+                  i18n.resolution(fallback: Locale("en", "US")),
               debugShowCheckedModeBanner: false,
               onGenerateRoute: AppRouter.router.generator,
-              title: "Boorusama",
+              title: AppConstants.appName,
             );
           },
         ),

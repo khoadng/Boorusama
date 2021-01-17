@@ -1,5 +1,6 @@
 import 'package:boorusama/application/home/curated/curated_state_notifier.dart';
 import 'package:boorusama/domain/posts/posts.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -98,7 +99,7 @@ class _CuratedViewState extends State<CuratedView>
                           Container(
                             padding: EdgeInsets.all(10.0),
                             child: Text(
-                                "Curated: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
+                                "${I18n.of(context).postCategoriesLatest}: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
                           ),
                           _buildToolRow(context),
                         ],
@@ -166,15 +167,15 @@ class _CuratedViewState extends State<CuratedView>
                 items: <DropdownMenuItem<TimeScale>>[
                   DropdownMenuItem(
                     value: TimeScale.day,
-                    child: Text("Day"),
+                    child: Text(I18n.of(context).dateRangeDay),
                   ),
                   DropdownMenuItem(
                     value: TimeScale.week,
-                    child: Text("Week"),
+                    child: Text(I18n.of(context).dateRangeWeek),
                   ),
                   DropdownMenuItem(
                     value: TimeScale.month,
-                    child: Text("Month"),
+                    child: Text(I18n.of(context).dateRangeMonth),
                   ),
                 ],
               ),

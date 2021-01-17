@@ -1,3 +1,4 @@
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
@@ -40,17 +41,17 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text(I18n.of(context).settings_string),
       ),
       body: SettingsList(
         backgroundColor: Theme.of(context).appBarTheme.color,
         sections: [
           SettingsSection(
-            title: "App Settings",
+            title: I18n.of(context).settingsAppSettings_string,
             tiles: [
               SettingsTile.switchTile(
                   leading: Icon(Icons.admin_panel_settings),
-                  title: "Safe mode",
+                  title: I18n.of(context).settingsAppSettingsSafeMode,
                   onToggle: (value) {
                     setState(() {
                       _setting.safeMode = value;
@@ -59,7 +60,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   switchValue: _setting.safeMode),
               SettingsTile(
                 leading: Icon(Icons.tag),
-                title: "Blacklisted tags",
+                title: I18n.of(context).settingsAppSettingsBlacklistedTags,
                 onTap: () {
                   // Navigator.of(context).push(
                   //   MaterialPageRoute(
@@ -72,7 +73,7 @@ class _SettingsPageState extends State<SettingsPage> {
               ),
               SettingsTile(
                 leading: Icon(Icons.format_paint),
-                title: "Appearance",
+                title: I18n.of(context).settingsAppSettingsAppearance_string,
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(

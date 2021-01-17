@@ -1,5 +1,6 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/home/post_list_action.dart';
 import 'package:boorusama/presentation/home/curated/curated_view.dart';
 import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
@@ -24,15 +25,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  final List<String> _tabs = <String>[
-    "Latest",
-    "Popular",
-    "Curated",
-    "Most Viewed"
-  ];
   final SearchBarController _searchBarController = SearchBarController();
+  final int tabLength = 4;
   TabController _tabController;
-
   int _currentBottomTab = 0;
   int _currentTopTab = 0;
 
@@ -41,7 +36,7 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: _tabs.length, vsync: this);
+    _tabController = TabController(length: tabLength, vsync: this);
   }
 
   @override
@@ -88,7 +83,7 @@ class _HomePageState extends State<HomePage>
 
   Widget _buildTabView() {
     return DefaultTabController(
-      length: _tabs.length,
+      length: tabLength,
       child: NestedScrollView(
         floatHeaderSlivers: true,
         // controller: widget.scrollController..addListener(_onScroll),
@@ -145,7 +140,12 @@ class _HomePageState extends State<HomePage>
                       indicatorSize: MD2IndicatorSize.full,
                     ),
                     // These are the widgets to put in each tab in the tab bar.
-                    tabs: _tabs.map((String name) => Tab(text: name)).toList(),
+                    tabs: [
+                      Tab(text: I18n.of(context).postCategoriesLatest),
+                      Tab(text: I18n.of(context).postCategoriesPopular),
+                      Tab(text: I18n.of(context).postCategoriesCurated),
+                      Tab(text: I18n.of(context).postCategoriesMostViewed),
+                    ],
                   ),
                 ),
               ),

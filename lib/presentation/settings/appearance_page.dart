@@ -1,4 +1,5 @@
 import 'package:boorusama/application/themes/theme_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -17,20 +18,22 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Appearance"),
+        title: Text(I18n.of(context).settingsAppSettingsAppearance_string),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Text("Theme"),
+            Text(I18n.of(context).settingsAppSettingsAppearanceTheme_string),
             RadioListTile<ThemeMode>(
-              title: const Text("Dark"),
+              title:
+                  Text(I18n.of(context).settingsAppSettingsAppearanceThemeDark),
               value: ThemeMode.dark,
               groupValue: widget.settings.themeMode,
               onChanged: (value) => setTheme(value, context),
             ),
             RadioListTile<ThemeMode>(
-              title: const Text("Light"),
+              title: Text(
+                  I18n.of(context).settingsAppSettingsAppearanceThemeLight),
               value: ThemeMode.light,
               groupValue: widget.settings.themeMode,
               onChanged: (value) => setTheme(value, context),

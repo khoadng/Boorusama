@@ -1,4 +1,5 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Profile"),
+          title: Text(I18n.of(context).profileProfile),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.logout),
@@ -51,7 +52,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
                   // open full page
                 },
                 textColor: Colors.blue,
-                child: Text('Favorites'),
+                child: Text(I18n.of(context).profileFavorites),
               ),
             ),
             // BlocListener<PostFavoritesBloc, PostFavoritesState>(

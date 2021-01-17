@@ -1,4 +1,5 @@
 import 'package:boorusama/application/home/most_viewed/most_viewed_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/presentation/home/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -86,7 +87,7 @@ class _MostViewedViewState extends State<MostViewedView>
                           Container(
                             padding: EdgeInsets.all(10.0),
                             child: Text(
-                                "Most viewed: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
+                                "${I18n.of(context).postCategoriesMostViewed}: ${DateFormat('MMM d, yyyy').format(_currentSelectedDate)}"),
                           ),
                           _buildToolRow(context),
                         ],

@@ -1,0 +1,83 @@
+{
+    "profile": {
+        "profile" : "Profile",
+        "favorites" : "Favorites"
+    },
+
+
+    "login" : {
+        "form" : {
+            "username" : "Name",
+            "password" : "Password",
+            "login" : "Login"
+        },
+        "errors" : {
+            "invalidUsernameOrPassword" : "Invalid username or password",
+            "missingUsername" : "Please enter your username",
+            "missingPassword" : "Please enter your password"
+        }
+    },
+
+    "commentCreate" : {
+        "hint" : "Comment",
+        "loading" : "Please wait...",
+        "error": "Error"
+    },
+
+    "commentListing": {
+        "commands" : {
+            "edit" : "Edit",
+            "reply" : "Reply",
+            "delete" : "Delete"
+        },
+        "tooltips": {
+            "toggleDeletedComments" : "Toggle deleted comments"
+        },
+        "notifications" : {
+            "noComments" : "There are no comments"
+        }
+    },
+
+    "postCategories" : {
+        "latest": "Latest",
+        "popular": "Popular",
+        "curated": "Curated",
+        "mostViewed": "Most viewed"
+    },
+
+    "search" : {
+        "hint": "Search...",
+        "noResult" : "No result",
+        "empty" : "Such empty"
+    },
+
+    "settings" : {
+        "_string" : "Settings",
+        "appSettings" : {
+            "_string" : "App Settings",
+            "appearance" : {
+                "_string" : "Appearance",
+                "theme" :{
+                    "_string": "Theme",
+                    "dark" : "Dark",
+                    "light" : "Light"
+                }
+            },
+
+            "safeMode" : "Safe Mode",
+            "blacklistedTags" : "Blacklisted tags"
+        }
+    },
+
+    "sideMenu": {
+        "login" : "Login",
+        "profile" : "Profile",
+        "settings" : "Settings"
+    },
+
+    "dateRange" : {
+        "day" : "Day",
+        "week": "Week",
+        "month" : "Month"
+    }
+}
