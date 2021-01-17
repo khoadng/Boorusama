@@ -4,7 +4,7 @@ import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/search/tag_query.dart';
+import 'package:boorusama/presentation/features/search/tag_query.dart';
 import 'package:boorusama/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';

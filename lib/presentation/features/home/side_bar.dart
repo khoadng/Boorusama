@@ -1,7 +1,7 @@
 import 'package:boorusama/domain/accounts/account.dart';
-import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
-import 'package:boorusama/presentation/accounts/add_account/add_account_page.dart';
-import 'package:boorusama/presentation/settings/settings_page.dart';
+import 'package:boorusama/generated/i18n.dart';
+import 'package:boorusama/presentation/features/accounts/add_account/add_account_page.dart';
+import 'package:boorusama/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/router.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class SideBarMenu extends StatelessWidget {
     if (account == null) {
       drawerChildren.add(ListTile(
         leading: Icon(Icons.login),
-        title: Text("Login"),
+        title: Text(I18n.of(context).sideMenuLogin),
         onTap: () {
           Navigator.of(context).pop();
           Navigator.of(context)
@@ -27,7 +27,7 @@ class SideBarMenu extends StatelessWidget {
     } else {
       drawerChildren.add(ListTile(
         leading: Icon(Icons.person),
-        title: Text("Profile"),
+        title: Text(I18n.of(context).sideMenuProfile),
         onTap: () {
           Navigator.of(context).pop();
           AppRouter.router.navigateTo(context, "/users/${account.id}");
@@ -39,7 +39,7 @@ class SideBarMenu extends StatelessWidget {
 
     drawerChildren.add(ListTile(
       leading: Icon(Icons.settings),
-      title: Text("Settings"),
+      title: Text(I18n.of(context).sideMenuSettings),
       onTap: () {
         Navigator.of(context).pop();
         Navigator.of(context)

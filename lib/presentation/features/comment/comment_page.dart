@@ -2,14 +2,14 @@ import 'package:animations/animations.dart';
 import 'package:boorusama/application/comment/comment.dart';
 import 'package:boorusama/application/comment/comment_state_notifier.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/comment/comment_update_page.dart';
-import 'package:boorusama/presentation/comment/widgets/comment_item.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 import 'comment_create_page.dart';
+import 'comment_update_page.dart';
+import 'widgets/comment_item.dart';
 
 final commentStateNotifierProvider =
     StateNotifierProvider<CommentStateNotifier>(

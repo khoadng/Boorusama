@@ -1,9 +1,10 @@
 import 'package:boorusama/application/home/latest/latest_state_notifier.dart';
-import 'package:boorusama/presentation/home/refreshable_list.dart';
-import 'package:boorusama/presentation/home/sliver_post_grid_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+import '../refreshable_list.dart';
+import '../sliver_post_grid_placeholder.dart';
 
 final latestStateNotifier = StateNotifierProvider<LatestStateNotifier>(
     (ref) => LatestStateNotifier(ref));

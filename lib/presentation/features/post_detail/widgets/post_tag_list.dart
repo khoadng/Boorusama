@@ -1,8 +1,8 @@
 import 'package:boorusama/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/domain/tags/tag_category.dart';
-import 'package:boorusama/presentation/search/search_page.dart';
-import 'package:boorusama/presentation/wiki/wiki_page.dart';
+import 'package:boorusama/presentation/features/search/search_page.dart';
+import 'package:boorusama/presentation/features/wiki/wiki_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_tags/flutter_tags.dart' hide TagsState;

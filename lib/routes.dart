@@ -1,11 +1,11 @@
-import 'package:boorusama/presentation/accounts/account_info/account_info_page.dart';
-import 'package:boorusama/presentation/post_detail/post_image_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 import 'domain/posts/post.dart';
-import 'presentation/home/home_page.dart';
-import 'presentation/post_detail/post_detail_page.dart';
+import 'presentation/features/accounts/account_info/account_info_page.dart';
+import 'presentation/features/home/home_page.dart';
+import 'presentation/features/post_detail/post_detail_page.dart';
+import 'presentation/features/post_detail/post_image_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),

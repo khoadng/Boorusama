@@ -1,19 +1,19 @@
 import 'package:boorusama/application/authentication/bloc/authentication_bloc.dart';
 import 'package:boorusama/domain/accounts/account.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/home/post_list_action.dart';
-import 'package:boorusama/presentation/home/curated/curated_view.dart';
-import 'package:boorusama/presentation/home/most_viewed/most_viewed_view.dart';
-import 'package:boorusama/presentation/home/search_bar.dart';
-import 'package:boorusama/presentation/search/search_page.dart';
-import 'package:boorusama/presentation/ui/bottom_bar_widget.dart';
-import 'package:boorusama/presentation/ui/drawer/side_bar.dart';
+import 'package:boorusama/presentation/features/search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
+import 'bottom_bar_widget.dart';
+import 'curated/curated_view.dart';
 import 'latest/latest_view.dart';
+import 'most_viewed/most_viewed_view.dart';
 import 'popular/popular_view.dart';
+import 'post_list_action.dart';
+import 'search_bar.dart';
+import 'side_bar.dart';
 
 class HomePage extends StatefulWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();

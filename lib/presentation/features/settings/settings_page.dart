@@ -2,11 +2,11 @@ import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:boorusama/presentation/settings/appearance_page.dart';
-import 'package:boorusama/presentation/settings/tag_settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
+
+import 'appearance_page.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);

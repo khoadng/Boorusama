@@ -1,5 +1,6 @@
-import 'package:boorusama/presentation/accounts/add_account/widgets/login_box_widget.dart';
 import 'package:flutter/material.dart';
+
+import 'widgets/login_box_widget.dart';
 
 class AddAccountPage extends StatefulWidget {
   AddAccountPage({Key key}) : super(key: key);

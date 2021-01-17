@@ -1,5 +1,5 @@
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/home/post_list_action.dart';
+import 'package:boorusama/presentation/features/home/post_list_action.dart';
 import 'package:flutter/material.dart';
 
 class SearchBar extends StatefulWidget {
