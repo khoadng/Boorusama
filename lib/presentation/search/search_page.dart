@@ -4,8 +4,8 @@ import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/home/refreshable_list.dart';
 import 'package:boorusama/presentation/search/tag_query.dart';
+import 'package:boorusama/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -27,6 +27,7 @@ final postSearchStateNotifierProvider =
 class SearchPage extends SearchDelegate {
   List<Tag> _tags;
   TagQuery _tagQuery;
+  List<Post> _posts;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
 
@@ -34,6 +35,7 @@ class SearchPage extends SearchDelegate {
     TextStyle searchFieldStyle,
   }) : super(searchFieldStyle: searchFieldStyle) {
     _tags = List<Tag>();
+    _posts = <Post>[];
     _tagQuery = TagQuery(
       onTagInputCompleted: () => _tags.clear(),
       onCleared: null,
@@ -74,9 +76,14 @@ class SearchPage extends SearchDelegate {
       provider: postSearchStateNotifierProvider.state,
       onChange: (context, state) {
         state.maybeWhen(
-            fetched: (posts, page, query) => _refreshController
-              ..loadComplete()
-              ..refreshCompleted(),
+            fetched: (posts, page, query) {
+              if (posts.length == _posts.length) {
+                _refreshController.loadNoData();
+              } else {
+                _refreshController..loadComplete();
+                _posts = posts;
+              }
+            },
             orElse: () {});
       },
       child: Consumer(
@@ -92,14 +99,29 @@ class SearchPage extends SearchDelegate {
                     heroTag: null,
                     child: Icon(Icons.download_sharp),
                   ),
-                  body: RefreshableList(
-                    posts: posts,
-                    onLoadMore: () => context
+                  body: SmartRefresher(
+                    controller: _refreshController,
+                    enablePullUp: true,
+                    footer: const ClassicFooter(),
+                    onLoading: () => context
                         .read(postSearchStateNotifierProvider)
                         .getMorePosts(posts, query, page),
-                    onRefresh: () =>
-                        context.read(postSearchStateNotifierProvider).refresh(),
-                    refreshController: _refreshController,
+                    child: CustomScrollView(
+                      slivers: <Widget>[
+                        SliverList(
+                          delegate: SliverChildListDelegate(
+                            [
+                              Container(
+                                padding: EdgeInsets.all(2.0),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SliverPostGrid(
+                          posts: posts,
+                        ),
+                      ],
+                    ),
                   ),
                 );
               });

@@ -93,6 +93,7 @@ class LoginBox extends HookWidget {
                                       username: usernameTextController.text,
                                       password: passwordTextController.text),
                                 );
+                            FocusScope.of(context).unfocus();
                           } else {
                             _isValidUsernameAndPassword.value = true;
                           }

@@ -1,6 +1,6 @@
 import 'package:boorusama/application/home/most_viewed/most_viewed_state_notifier.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/presentation/home/sliver_post_grid.dart';
+import 'package:boorusama/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_riverpod/all.dart';
