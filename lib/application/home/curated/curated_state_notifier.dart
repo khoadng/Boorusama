@@ -31,9 +31,6 @@ class CuratedStateNotifier extends StateNotifier<CuratedState> {
 
       state = CuratedState.fetched(
         posts: filteredPosts,
-        page: page,
-        date: date,
-        scale: scale,
       );
     } on DatabaseTimeOut catch (e) {
       state =
@@ -51,26 +48,6 @@ class CuratedStateNotifier extends StateNotifier<CuratedState> {
 
       state = CuratedState.fetched(
         posts: filteredPosts,
-        page: page,
-        scale: scale,
-        date: date,
-      );
-    } on DatabaseTimeOut catch (e) {}
-  }
-
-  void getMorePosts(
-      List<Post> currentPosts, DateTime date, int page, TimeScale scale) async {
-    try {
-      final nextPage = page + 1;
-      final dtos = await _postRepository.getCuratedPosts(date, nextPage, scale);
-      final settings = await _settingRepository.load();
-      final filteredPosts = filter(dtos, settings);
-
-      state = CuratedState.fetched(
-        posts: currentPosts..addAll(filteredPosts),
-        page: nextPage,
-        scale: scale,
-        date: date,
       );
     } on DatabaseTimeOut catch (e) {}
   }
