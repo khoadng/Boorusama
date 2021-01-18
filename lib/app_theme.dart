@@ -28,7 +28,9 @@ class AppTheme {
       iconTheme: ThemeData.dark().iconTheme.copyWith(
             color: Colors.white,
           ),
-      cardColor: Colors.grey[800],
+      cardColor: Colors.grey[850],
+      backgroundColor: Colors.grey[900],
+      scaffoldBackgroundColor: Colors.grey[900],
       bottomAppBarTheme:
           ThemeData.dark().bottomAppBarTheme.copyWith(color: Colors.grey[900]),
       appBarTheme: ThemeData.dark().appBarTheme.copyWith(

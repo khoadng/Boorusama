@@ -19,7 +19,7 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
         itemBuilder: (context, index) {
           return Shimmer.fromColors(
             highlightColor: Colors.grey[700],
-            baseColor: Colors.grey[800],
+            baseColor: Theme.of(context).cardColor,
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.grey[700],

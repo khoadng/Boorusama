@@ -13,28 +13,27 @@ final tagsStateNotifierProvider =
     StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
 
 class PostTagList extends StatefulWidget {
-  final String tagStringComma;
-
   PostTagList({
     Key key,
     @required this.tagStringComma,
   }) : super(key: key);
+
+  final String tagStringComma;
 
   @override
   _PostTagListState createState() => _PostTagListState();
 }
 
 class _PostTagListState extends State<PostTagList> {
-  List<Tag> _selectedTag = <Tag>[];
   List<Tag> _artistTags = <Tag>[];
-  List<Tag> _copyrightTags = <Tag>[];
   List<Tag> _characterTags = <Tag>[];
-  List<Tag> _generalTags = <Tag>[];
-  List<Tag> _metaTags = <Tag>[];
-
-  Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
-  PopupMenu _menu;
+  List<Tag> _copyrightTags = <Tag>[];
   Tag _currentPopupTag;
+  List<Tag> _generalTags = <Tag>[];
+  PopupMenu _menu;
+  List<Tag> _metaTags = <Tag>[];
+  List<Tag> _selectedTag = <Tag>[];
+  Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
 
   @override
   void initState() {
@@ -45,95 +44,6 @@ class _PostTagListState extends State<PostTagList> {
             .getTags(widget.tagStringComma));
     PopupMenu.context = context;
     super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _menu ??= PopupMenu(
-      items: [
-        MenuItem(
-          title: 'Wiki',
-          image: Icon(
-            Icons.info,
-            color: Colors.white70,
-          ),
-        )
-      ],
-      onClickMenu: (_) {
-        showBarModalBottomSheet(
-          expand: false,
-          context: context,
-          builder: (context, controller) => WikiPage(
-            title: _currentPopupTag.displayName,
-          ),
-        );
-      },
-      maxColumn: 4,
-    );
-
-    return Consumer(
-      builder: (context, watch, child) {
-        final state = watch(tagsStateNotifierProvider.state);
-        return state.when(
-          initial: () => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-          loading: () => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-          fetched: (tags) {
-            tags.sort((a, b) => a.rawName.compareTo(b.rawName));
-            _artistTags = tags
-                .where((tag) => tag.category == TagCategory.artist)
-                .toList();
-            _copyrightTags = tags
-                .where((tag) => tag.category == TagCategory.copyright)
-                .toList();
-            _characterTags = tags
-                .where((tag) => tag.category == TagCategory.charater)
-                .toList();
-            _generalTags = tags
-                .where((tag) => tag.category == TagCategory.general)
-                .toList();
-            _metaTags =
-                tags.where((tag) => tag.category == TagCategory.meta).toList();
-            return SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  if (_artistTags.length > 0) _TagBlockTitle(title: "Artist"),
-                  _buildTags(_artistTags),
-                  if (_characterTags.length > 0)
-                    _TagBlockTitle(title: "Character"),
-                  _buildTags(_characterTags),
-                  if (_copyrightTags.length > 0)
-                    _TagBlockTitle(title: "Copyright"),
-                  _buildTags(_copyrightTags),
-                  if (_generalTags.length > 0) _TagBlockTitle(title: "General"),
-                  _buildTags(_generalTags),
-                  if (_metaTags.length > 0) _TagBlockTitle(title: "Meta"),
-                  _buildTags(_metaTags),
-                ],
-              ),
-            );
-          },
-          error: (e, m) => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Widget _buildTags(List<Tag> tags) {
@@ -198,15 +108,111 @@ class _PostTagListState extends State<PostTagList> {
           searchFieldStyle: Theme.of(context).inputDecorationTheme.hintStyle),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    _menu ??= PopupMenu(
+      items: [
+        MenuItem(
+          title: 'Wiki',
+          image: Icon(
+            Icons.info,
+            color: Colors.white70,
+          ),
+        )
+      ],
+      onClickMenu: (_) {
+        showBarModalBottomSheet(
+          expand: false,
+          context: context,
+          builder: (context, controller) => WikiPage(
+            title: _currentPopupTag.displayName,
+          ),
+        );
+      },
+      maxColumn: 4,
+    );
+
+    return Consumer(
+      builder: (context, watch, child) {
+        final state = watch(tagsStateNotifierProvider.state);
+        return state.when(
+          initial: () => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
+            ),
+          ),
+          loading: () => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
+            ),
+          ),
+          fetched: (tags) {
+            tags.sort((a, b) => a.rawName.compareTo(b.rawName));
+            _artistTags = tags
+                .where((tag) => tag.category == TagCategory.artist)
+                .toList();
+            _copyrightTags = tags
+                .where((tag) => tag.category == TagCategory.copyright)
+                .toList();
+            _characterTags = tags
+                .where((tag) => tag.category == TagCategory.charater)
+                .toList();
+            _generalTags = tags
+                .where((tag) => tag.category == TagCategory.general)
+                .toList();
+            _metaTags =
+                tags.where((tag) => tag.category == TagCategory.meta).toList();
+            final headers = [];
+            if (_artistTags.length > 0) headers.add(["Artist", _artistTags]);
+            if (_characterTags.length > 0)
+              headers.add(["Character", _characterTags]);
+            if (_copyrightTags.length > 0)
+              headers.add(["Copyright", _copyrightTags]);
+            if (_generalTags.length > 0) headers.add(["General", _generalTags]);
+            if (_metaTags.length > 0) headers.add(["Meta", _metaTags]);
+
+            final widgets = <Widget>[];
+            for (var header in headers) {
+              widgets.add(_TagBlockTitle(
+                title: header[0],
+                isFirstBlock: header[0] == headers.first[0],
+              ));
+              widgets.add(_buildTags(header[1]));
+            }
+
+            return SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  ...widgets,
+                ],
+              ),
+            );
+          },
+          error: (e, m) => SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                Center(child: CircularProgressIndicator()),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 class _TagBlockTitle extends StatelessWidget {
-  final String title;
+  const _TagBlockTitle(
+      {@required this.title, Key key, this.isFirstBlock = false})
+      : super(key: key);
 
-  const _TagBlockTitle({
-    @required this.title,
-    Key key,
-  }) : super(key: key);
+  final bool isFirstBlock;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
@@ -214,11 +220,13 @@ class _TagBlockTitle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          if (!isFirstBlock) ...[
+            const Divider(
+              thickness: 1.0,
+            ),
+          ],
           const SizedBox(
             height: 5,
-          ),
-          const Divider(
-            thickness: 1.0,
           ),
           _TagHeader(
             title: title,
@@ -228,12 +236,12 @@ class _TagBlockTitle extends StatelessWidget {
 }
 
 class _TagHeader extends StatelessWidget {
-  final String title;
-
   const _TagHeader({
     Key key,
     @required this.title,
   }) : super(key: key);
+
+  final String title;
 
   @override
   Widget build(BuildContext context) {
