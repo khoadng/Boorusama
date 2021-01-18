@@ -42,11 +42,11 @@ class PopularView extends HookWidget {
       onChange: (context, state) {
         state.maybeWhen(
             fetched: (posts) {
+              refreshController.value.refreshCompleted();
               if (posts.isEmpty) {
                 refreshController.value.loadNoData();
               } else {
                 refreshController.value.loadComplete();
-                refreshController.value.refreshCompleted();
                 currentPosts.value.addAll(posts);
               }
             },
@@ -164,9 +164,10 @@ class PopularView extends HookWidget {
                                                   .subtract(days: 1);
                                           break;
                                       }
+                                      currentPosts.value.clear();
                                       context
                                           .read(popularStateNotifierProvider)
-                                          .getPosts(selectedDate.value, 1,
+                                          .refresh(selectedDate.value,
                                               selectedTimeScale.value);
                                     },
                                   ),
@@ -195,9 +196,10 @@ class PopularView extends HookWidget {
                                                   .add(days: 1);
                                           break;
                                       }
+                                      currentPosts.value.clear();
                                       context
                                           .read(popularStateNotifierProvider)
-                                          .getPosts(selectedDate.value, 1,
+                                          .refresh(selectedDate.value,
                                               selectedTimeScale.value);
                                     },
                                   ),
@@ -210,6 +212,9 @@ class PopularView extends HookWidget {
                     ),
                     popularState.when(
                       initial: () => SliverPostGridPlaceHolder(),
+                      refreshing: () {
+                        return SliverPostGridPlaceHolder();
+                      },
                       loading: () => SliverPostGrid(posts: currentPosts.value),
                       fetched: (posts) => SliverPostGrid(
                         key: gridKey.value,

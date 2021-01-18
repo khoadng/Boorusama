@@ -4,6 +4,7 @@ part of 'latest_state_notifier.dart';
 abstract class LatestState with _$LatestState {
   const factory LatestState.initial() = _Initial;
   const factory LatestState.loading() = _Loading;
+  const factory LatestState.refreshing() = _Refreshing;
 
   const factory LatestState.fetched({
     @required List<Post> posts,

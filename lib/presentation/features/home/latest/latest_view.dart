@@ -44,6 +44,7 @@ class LatestView extends HookWidget {
       },
       child: latestState.when(
         initial: () => _buildLoading(),
+        refreshing: () => _buildLoading(),
         loading: () =>
             _buildGrid(refreshController, currentPosts, context, page),
         fetched: (_) =>

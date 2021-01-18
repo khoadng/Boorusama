@@ -40,6 +40,8 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
 
   void refresh(DateTime date, TimeScale scale) async {
     try {
+      state = PopularState.refreshing();
+
       final page = 1;
 
       final dtos = await _postRepository.getPopularPosts(date, page, scale);

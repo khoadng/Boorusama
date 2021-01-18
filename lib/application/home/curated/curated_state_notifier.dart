@@ -41,6 +41,7 @@ class CuratedStateNotifier extends StateNotifier<CuratedState> {
   void refresh(DateTime date, TimeScale scale) async {
     try {
       final page = 1;
+      state = CuratedState.refreshing();
 
       final dtos = await _postRepository.getCuratedPosts(date, page, scale);
       final settings = await _settingRepository.load();

@@ -35,6 +35,8 @@ class LatestStateNotifier extends StateNotifier<LatestState> {
 
   void refresh() async {
     try {
+      state = LatestState.refreshing();
+
       final dtos = await _postRepository.getPosts("", 1);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);

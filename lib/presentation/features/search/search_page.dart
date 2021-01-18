@@ -92,7 +92,8 @@ class SearchPage extends SearchDelegate {
         builder: (context, watch, child) {
           final state = watch(postSearchStateNotifierProvider.state);
           return state.when(
-              initial: () => Center(),
+              initial: () => Center(child: CircularProgressIndicator()),
+              refreshing: () => Center(child: CircularProgressIndicator()),
               loading: () => Center(child: CircularProgressIndicator()),
               fetched: (_) {
                 return Scaffold(

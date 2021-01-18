@@ -4,6 +4,8 @@ part of 'curated_state_notifier.dart';
 abstract class CuratedState with _$CuratedState {
   const factory CuratedState.initial() = _Initial;
   const factory CuratedState.loading() = _Loading;
+  const factory CuratedState.refreshing() = _Refreshing;
+
   const factory CuratedState.fetched({
     @required List<Post> posts,
   }) = _Fetched;
