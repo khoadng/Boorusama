@@ -6,9 +6,11 @@ class PostImage extends StatefulWidget {
   const PostImage({
     Key key,
     @required this.imageUrl,
+    @required this.placeholderUrl,
   }) : super(key: key);
 
   final String imageUrl;
+  final String placeholderUrl;
 
   @override
   _PostImageState createState() => _PostImageState();
@@ -16,6 +18,12 @@ class PostImage extends StatefulWidget {
 
 class _PostImageState extends State<PostImage> {
   Image myImage;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(myImage.image, context);
+  }
 
   @override
   void initState() {
@@ -26,12 +34,6 @@ class _PostImageState extends State<PostImage> {
         .resolve(ImageConfiguration())
         .addListener(ImageStreamListener((_, __) {}));
     super.initState();
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(myImage.image, context);
   }
 
   @override
@@ -46,10 +48,19 @@ class _PostImageState extends State<PostImage> {
           ),
         );
       },
-      placeholder: (context, url) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(8.0),
-          color: Theme.of(context).cardColor,
+      placeholder: (context, url) => CachedNetworkImage(
+        imageUrl: widget.placeholderUrl,
+        imageBuilder: (context, imageProvider) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
+          ),
+        ),
+        placeholder: (context, url) => Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8.0),
+            color: Theme.of(context).cardColor,
+          ),
         ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),

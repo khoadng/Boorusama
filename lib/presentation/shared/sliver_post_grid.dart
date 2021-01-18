@@ -29,6 +29,7 @@ class SliverPostGrid extends StatelessWidget {
               imageUrl: post.isAnimated
                   ? post.previewImageUri.toString()
                   : post.normalImageUri.toString(),
+              placeholderUrl: post.previewImageUri.toString(),
             );
 
             // if (post.isFavorited) {
@@ -88,27 +89,8 @@ class SliverPostGrid extends StatelessWidget {
             return Center();
           }
         },
-        staggeredTileBuilder: (index) {
-          // return StaggeredTile.fit(2);
-          return StaggeredTile.extent(
-              1, MediaQuery.of(context).size.height * 0.3);
-          // double extent = MediaQuery.of(context).size.height / 3;
-          // if (index != null) {
-          //   final height = posts[index].height / 5;
-          //   double mainAxisExtent;
-
-          //   if (height > extent) {
-          //     mainAxisExtent = extent;
-          //     // } else if (height < 80) {
-          //     //   mainAxisExtent = 80;
-          //   } else {
-          //     mainAxisExtent = height;
-          //   }
-          //   return StaggeredTile.extent(1, mainAxisExtent);
-          // } else {
-          //   return StaggeredTile.extent(1, extent);
-          // }
-        },
+        staggeredTileBuilder: (index) =>
+            StaggeredTile.extent(1, MediaQuery.of(context).size.height * 0.3),
       ),
     );
   }
