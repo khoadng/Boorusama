@@ -1,9 +1,10 @@
 import 'package:boorusama/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/application/home/latest/latest_state_notifier.dart';
+import 'package:boorusama/application/home/latest/latest_posts_state_notifier.dart';
 import 'package:boorusama/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/domain/posts/post.dart';
 import 'package:boorusama/domain/tags/tag.dart';
 import 'package:boorusama/generated/i18n.dart';
+import 'package:boorusama/presentation/features/home/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/presentation/features/search/tag_query.dart';
 import 'package:boorusama/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
@@ -27,16 +28,14 @@ final postSearchStateNotifierProvider =
 class SearchPage extends SearchDelegate {
   List<Tag> _tags;
   TagQuery _tagQuery;
-  List<Post> _posts;
-  int _page = 1;
   final RefreshController _refreshController =
       RefreshController(initialRefresh: false);
+  final gridKey = GlobalKey();
 
   SearchPage({
     TextStyle searchFieldStyle,
   }) : super(searchFieldStyle: searchFieldStyle) {
     _tags = List<Tag>();
-    _posts = <Post>[];
     _tagQuery = TagQuery(
       onTagInputCompleted: () => _tags.clear(),
       onCleared: null,
@@ -73,66 +72,48 @@ class SearchPage extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    return ProviderListener<LatestState>(
-      provider: postSearchStateNotifierProvider.state,
-      onChange: (context, state) {
-        state.maybeWhen(
-            fetched: (posts) {
-              if (posts.isEmpty) {
-                _refreshController.loadNoData();
-              } else {
-                _refreshController.loadComplete();
-                _refreshController.refreshCompleted();
-                _posts.addAll(posts);
-              }
-            },
-            orElse: () {});
+    return Consumer(
+      builder: (context, watch, child) {
+        final state = watch(postSearchStateNotifierProvider.state);
+
+        if (!state.isLoadingMore) _refreshController.loadComplete();
+        if (!state.isRefreshing) _refreshController.refreshCompleted();
+
+        return Scaffold(
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _downloadAllPosts(state.posts, context),
+            heroTag: null,
+            child: Icon(Icons.download_sharp),
+          ),
+          body: SmartRefresher(
+            controller: _refreshController,
+            enablePullUp: true,
+            enablePullDown: false,
+            footer: const ClassicFooter(),
+            onLoading: () =>
+                context.read(postSearchStateNotifierProvider).getMore(),
+            child: CustomScrollView(
+              slivers: <Widget>[
+                SliverList(
+                  delegate: SliverChildListDelegate(
+                    [
+                      Container(
+                        padding: EdgeInsets.all(2.0),
+                      ),
+                    ],
+                  ),
+                ),
+                state.isRefreshing
+                    ? SliverPostGridPlaceHolder()
+                    : SliverPostGrid(
+                        key: gridKey,
+                        posts: state.posts,
+                      ),
+              ],
+            ),
+          ),
+        );
       },
-      child: Consumer(
-        builder: (context, watch, child) {
-          final state = watch(postSearchStateNotifierProvider.state);
-          return state.when(
-              initial: () => Center(child: CircularProgressIndicator()),
-              refreshing: () => Center(child: CircularProgressIndicator()),
-              loading: () => Center(child: CircularProgressIndicator()),
-              fetched: (_) {
-                return Scaffold(
-                  floatingActionButton: FloatingActionButton(
-                    onPressed: () => _downloadAllPosts(_posts, context),
-                    heroTag: null,
-                    child: Icon(Icons.download_sharp),
-                  ),
-                  body: SmartRefresher(
-                    controller: _refreshController,
-                    enablePullUp: true,
-                    footer: const ClassicFooter(),
-                    onLoading: () {
-                      _page = _page + 1;
-                      context
-                          .read(postSearchStateNotifierProvider)
-                          .getPosts(query, _page);
-                    },
-                    child: CustomScrollView(
-                      slivers: <Widget>[
-                        SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              Container(
-                                padding: EdgeInsets.all(2.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SliverPostGrid(
-                          posts: _posts,
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              });
-        },
-      ),
     );
   }
 
@@ -174,7 +155,7 @@ class SearchPage extends SearchDelegate {
 
   void _submit(BuildContext context) {
     showResults(context);
-    context.read(postSearchStateNotifierProvider).getPosts(query, 1);
+    context.read(postSearchStateNotifierProvider).refresh(query);
   }
 
   void _onTagItemSelected(String tag) {

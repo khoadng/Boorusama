@@ -8,7 +8,7 @@ import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 import 'bottom_bar_widget.dart';
 import 'curated/curated_view.dart';
-import 'latest/latest_view.dart';
+import 'latest/latest_posts_view.dart';
 import 'most_viewed/most_viewed_view.dart';
 import 'popular/popular_view.dart';
 import 'post_list_action.dart';
