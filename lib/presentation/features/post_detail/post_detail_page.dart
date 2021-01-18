@@ -76,7 +76,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     var postWidget;
     if (widget.post.isVideo) {
-      postWidget = PostVideo(post: widget.post);
+      postWidget = Container(
+          height: widget.post.aspectRatio > 1.0
+              ? widget.post.height / widget.post.aspectRatio
+              : widget.post.height,
+          child: PostVideo(post: widget.post));
     } else {
       postWidget = Hero(
         tag: widget.heroTag,
@@ -87,6 +91,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
+                  fit: BoxFit.fitWidth,
                   imageUrl: widget.post.normalImageUri.toString())),
         ),
       );
@@ -113,9 +118,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   Stack(
                     children: [
                       Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: FittedBox(
-                              fit: BoxFit.fitWidth, child: postWidget)),
+                        padding: EdgeInsets.all(8.0),
+                        child: postWidget,
+                      )
                       // Text("")
                     ],
                   ),
