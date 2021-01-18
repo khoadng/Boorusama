@@ -15,6 +15,7 @@ class TagSuggestionItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 4.0,
       borderRadius: BorderRadius.circular(8),
       child: ListView.builder(

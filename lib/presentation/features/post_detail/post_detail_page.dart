@@ -242,8 +242,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                   ],
                 ),
-                sliver: PostTagList(
-                    tagStringComma: widget.post.tagString.toCommaFormat()));
+                sliver: SliverPadding(
+                  padding: EdgeInsets.only(left: 4),
+                  sliver: PostTagList(
+                      tagStringComma: widget.post.tagString.toCommaFormat()),
+                ));
           },
           error: (e, m) => _buildCommandToolbarPlaceholder(context, post),
         );

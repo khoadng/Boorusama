@@ -55,30 +55,54 @@ class _PostTagListState extends State<PostTagList> {
         final tagKey = GlobalKey();
         _tagKeys[tag.rawName] = tagKey;
 
-        return ItemTags(
-          singleItem: true,
-          color: Color(tag.tagHexColor),
-          highlightColor: Color(tag.tagHexColor),
-          activeColor: Color(tag.tagHexColor),
-          textColor: Colors.white,
-          textActiveColor: Colors.white,
-          index: index,
-          onPressed: (i) => showSearch(
+        return InkWell(
+          onTap: () => showSearch(
             context: context,
             query: tag.rawName,
             delegate: SearchPage(
                 searchFieldStyle:
                     Theme.of(context).inputDecorationTheme.hintStyle),
           ),
-          onLongPressed: (i) {
+          onLongPress: () {
             if (_menu.isShow) {
               _menu.dismiss();
             }
             _currentPopupTag = tag;
             _menu.show(widgetKey: _tagKeys[tag.rawName]);
           },
-          title: tag.displayName,
-          key: tagKey,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            key: tagKey,
+            children: [
+              Chip(
+                  padding: EdgeInsets.all(4.0),
+                  labelPadding: EdgeInsets.all(1.0),
+                  visualDensity: VisualDensity.compact,
+                  backgroundColor: Color(tag.tagHexColor),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(8),
+                          bottomLeft: Radius.circular(8))),
+                  label: Text(
+                    tag.displayName,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+              Chip(
+                padding: EdgeInsets.all(2.0),
+                labelPadding: EdgeInsets.all(1.0),
+                visualDensity: VisualDensity.compact,
+                backgroundColor: Colors.grey[800],
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(8),
+                        bottomRight: Radius.circular(8))),
+                label: Text(
+                  tag.postCount.toString(),
+                  style: TextStyle(color: Colors.white60, fontSize: 12),
+                ),
+              )
+            ],
+          ),
         );
       },
     );
@@ -112,6 +136,7 @@ class _PostTagListState extends State<PostTagList> {
   @override
   Widget build(BuildContext context) {
     _menu ??= PopupMenu(
+      backgroundColor: Theme.of(context).cardColor,
       items: [
         MenuItem(
           title: 'Wiki',
