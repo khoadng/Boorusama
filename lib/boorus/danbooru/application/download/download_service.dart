@@ -2,21 +2,18 @@ import 'dart:io' as io;
 import 'dart:ui';
 import 'dart:isolate';
 
+import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'package:boorusama/core/infrastructure/IOHelper.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/all.dart';
 
-import 'file_name_generator.dart';
-import 'i_download_service.dart';
-
-final downloadServiceProvider = Provider<IDownloadService>(
-    (ref) => DownloadService(ref.watch(fileNameGeneratorProvider)));
+final downloadServiceProvider =
+    Provider<IDownloadService>((ref) => DownloadService());
 
 class DownloadService implements IDownloadService {
-  final FileNameGenerator fileNameGenerator;
-
-  DownloadService(this.fileNameGenerator);
+  DownloadService();
 
   ReceivePort _port = ReceivePort();
   bool _permissionReady;
@@ -24,16 +21,16 @@ class DownloadService implements IDownloadService {
   String _savedDir;
 
   @override
-  void download(String filePath, String url) async {
-    final exist =
-        await io.File(_savedDir + io.Platform.pathSeparator + filePath)
-            .exists();
+  void download(IDownloadable downloadable) async {
+    final exist = await io.File(
+            _savedDir + io.Platform.pathSeparator + downloadable.fileName)
+        .exists();
 
     if (exist) return;
 
     await FlutterDownloader.enqueue(
-        url: url,
-        fileName: filePath,
+        url: downloadable.downloadUrl,
+        fileName: downloadable.fileName,
         savedDir: _savedDir,
         showNotification: true,
         openFileFromNotification: true);

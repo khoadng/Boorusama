@@ -2,40 +2,57 @@ import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/rating.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/tag_string.dart';
+import 'package:boorusama/core/domain/i_downloadable.dart';
+import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
 
 import 'post_name.dart';
 
-import 'package:freezed_annotation/freezed_annotation.dart';
+class Post implements IDownloadable {
+  final int id;
+  final Uri previewImageUri;
+  final Uri normalImageUri;
+  final Uri fullImageUri;
+  final String tagStringCopyright;
+  final String tagStringCharacter;
+  final String tagStringArtist;
+  final TagString tagString;
+  final double width;
+  final double height;
+  final String format;
+  final DateTime lastCommentAt;
+  final ImageSource source;
+  final CreatedTime createdAt;
+  final int score;
+  final int upScore;
+  final int downScore;
+  final int favCount;
+  final int uploaderId;
+  final Rating rating;
 
-part 'post.freezed.dart';
+  Post({
+    @required this.id,
+    @required this.previewImageUri,
+    @required this.normalImageUri,
+    @required this.fullImageUri,
+    @required this.tagStringCopyright,
+    @required this.tagStringCharacter,
+    @required this.tagStringArtist,
+    @required this.tagString,
+    @required this.width,
+    @required this.height,
+    @required this.format,
+    @required this.lastCommentAt,
+    @required this.source,
+    @required this.createdAt,
+    @required this.score,
+    @required this.upScore,
+    @required this.downScore,
+    @required this.favCount,
+    @required this.uploaderId,
+    @required this.rating,
+  });
 
-@freezed
-abstract class Post with _$Post {
-  const factory Post({
-    @required int id,
-    @required Uri previewImageUri,
-    @required Uri normalImageUri,
-    @required Uri fullImageUri,
-    @required String tagStringCopyright,
-    @required String tagStringCharacter,
-    @required String tagStringArtist,
-    @required TagString tagString,
-    @required double width,
-    @required double height,
-    @required String format,
-    @required @nullable DateTime lastCommentAt,
-    @required ImageSource source,
-    @required CreatedTime createdAt,
-    @required int score,
-    @required int upScore,
-    @required int downScore,
-    @required int favCount,
-    @required int uploaderId,
-    @required Rating rating,
-  }) = _Post;
-}
-
-extension PostX on Post {
   bool containsBlacklistedTag(String blacklistedTagString) {
     final tagRule = blacklistedTagString.split("\n");
 
@@ -78,4 +95,18 @@ extension PostX on Post {
   bool get isTranslated => tagString.contains("translated");
 
   bool get hasComment => lastCommentAt != null;
+
+  @override
+  String get fileName => "${name.full} - ${path.basename(downloadUrl)}"
+      .fixInvalidCharacterForPathName();
+
+  @override
+  String get downloadUrl =>
+      isVideo ? normalImageUri.toString() : fullImageUri.toString();
+}
+
+extension InvalidFileCharsExtension on String {
+  String fixInvalidCharacterForPathName() {
+    return this.replaceAll(RegExp(r'[\\/*?:"<>|]'), "_");
+  }
 }
