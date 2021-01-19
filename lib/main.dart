@@ -1,10 +1,9 @@
 import 'package:bloc/bloc.dart';
-import 'package:boorusama/app_constants.dart';
-import 'package:boorusama/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/infrastructure/repositories/accounts/account_database.dart';
-import 'package:boorusama/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:boorusama/infrastructure/services/scrapper_service.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_database.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/scrapper_service.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +16,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'app.dart';
-import 'application/authentication/bloc/authentication_bloc.dart';
 import 'bloc_observer.dart';
-import 'infrastructure/repositories/settings/setting.dart';
-import 'infrastructure/repositories/users/user_repository.dart';
+import 'boorus/danbooru/application/authentication/bloc/authentication_bloc.dart';
+import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

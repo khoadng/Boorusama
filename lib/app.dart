@@ -1,21 +1,21 @@
-import 'package:boorusama/app_constants.dart';
-import 'package:boorusama/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' hide ReadContext;
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'application/authentication/bloc/authentication_bloc.dart';
-import 'application/download/download_service.dart';
-import 'application/themes/theme_state_notifier.dart';
-import 'application/users/user/bloc/user_bloc.dart';
-import 'domain/accounts/i_account_repository.dart';
-import 'domain/users/i_user_repository.dart';
+import 'app_constants.dart';
+import 'boorus/danbooru/application/authentication/bloc/authentication_bloc.dart';
+import 'boorus/danbooru/application/download/download_service.dart';
+import 'boorus/danbooru/application/themes/theme_state_notifier.dart';
+import 'boorus/danbooru/application/users/user/bloc/user_bloc.dart';
+import 'boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'boorus/danbooru/domain/users/i_user_repository.dart';
+import 'boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'core/app_theme.dart';
 import 'generated/i18n.dart';
-import 'infrastructure/repositories/settings/i_setting_repository.dart';
-import 'infrastructure/repositories/settings/setting.dart';
-import 'router.dart';
+import 'boorus/danbooru/router.dart';
 
 class App extends StatefulWidget {
   App({
