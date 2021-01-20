@@ -39,6 +39,8 @@ class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
 
   void refresh(DateTime date) async {
     try {
+      state = MostViewedState.loading();
+
       final dtos = await _postRepository.getMostViewedPosts(date);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);

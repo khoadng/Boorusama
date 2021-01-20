@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../sliver_post_grid_placeholder.dart';
+import '../../../shared/sliver_post_grid_placeholder.dart';
 
 final popularStateNotifierProvider =
     StateNotifierProvider<PopularStateNotifier>(

@@ -10,7 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../sliver_post_grid_placeholder.dart';
+import '../../../shared/sliver_post_grid_placeholder.dart';
 
 final mostViewedStateNotifierProvider =
     StateNotifierProvider<MostViewedStateNotifier>(
@@ -56,9 +56,10 @@ class MostViewedView extends HookWidget {
               theme: DatePickerTheme(),
               onConfirm: (time) {
                 selectedDate.value = time;
+                currentPosts.value.clear();
                 context
                     .read(mostViewedStateNotifierProvider)
-                    .getPosts(selectedDate.value);
+                    .refresh(selectedDate.value);
               },
               currentTime: DateTime.now(),
             ),
@@ -99,9 +100,10 @@ class MostViewedView extends HookWidget {
                                       selectedDate.value =
                                           Jiffy(selectedDate.value)
                                               .subtract(days: 1);
+                                      currentPosts.value.clear();
                                       context
                                           .read(mostViewedStateNotifierProvider)
-                                          .getPosts(selectedDate.value);
+                                          .refresh(selectedDate.value);
                                     },
                                   ),
                                   IconButton(
@@ -110,9 +112,10 @@ class MostViewedView extends HookWidget {
                                       selectedDate.value =
                                           Jiffy(selectedDate.value)
                                               .add(days: 1);
+                                      currentPosts.value.clear();
                                       context
                                           .read(mostViewedStateNotifierProvider)
-                                          .getPosts(selectedDate.value);
+                                          .refresh(selectedDate.value);
                                     },
                                   ),
                                 ],
@@ -127,7 +130,7 @@ class MostViewedView extends HookWidget {
                       loading: () => SliverPostGridPlaceHolder(),
                       fetched: (posts) => SliverPostGrid(
                         key: gridKey.value,
-                        posts: posts,
+                        posts: currentPosts.value,
                       ),
                       error: (name, message) => SliverPostGridPlaceHolder(),
                     ),

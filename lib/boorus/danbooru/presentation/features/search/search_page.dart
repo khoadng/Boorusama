@@ -4,7 +4,7 @@ import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_n
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/tag_query.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:flutter/material.dart';
@@ -94,21 +94,15 @@ class SearchPage extends SearchDelegate {
                 context.read(postSearchStateNotifierProvider).getMore(),
             child: CustomScrollView(
               slivers: <Widget>[
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Container(
-                        padding: EdgeInsets.all(2.0),
-                      ),
-                    ],
-                  ),
-                ),
-                state.isRefreshing
-                    ? SliverPostGridPlaceHolder()
-                    : SliverPostGrid(
-                        key: gridKey,
-                        posts: state.posts,
-                      ),
+                SliverPadding(
+                  padding: EdgeInsets.all(6.0),
+                  sliver: state.isRefreshing
+                      ? SliverPostGridPlaceHolder()
+                      : SliverPostGrid(
+                          key: gridKey,
+                          posts: state.posts,
+                        ),
+                )
               ],
             ),
           ),

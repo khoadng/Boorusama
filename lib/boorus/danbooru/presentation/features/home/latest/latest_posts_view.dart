@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import '../sliver_post_grid_placeholder.dart';
+import '../../../shared/sliver_post_grid_placeholder.dart';
 
 class LatestView extends HookWidget {
   const LatestView({Key key}) : super(key: key);
@@ -45,21 +45,15 @@ class LatestView extends HookWidget {
             context.read(latestPostsStateNotifierProvider).getMore(),
         child: CustomScrollView(
           slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Container(
-                    padding: EdgeInsets.all(2.0),
-                  ),
-                ],
-              ),
+            SliverPadding(
+              padding: EdgeInsets.all(6.0),
+              sliver: isRefreshing
+                  ? SliverPostGridPlaceHolder()
+                  : SliverPostGrid(
+                      key: gridKey.value,
+                      posts: latestPosts,
+                    ),
             ),
-            isRefreshing
-                ? SliverPostGridPlaceHolder()
-                : SliverPostGrid(
-                    key: gridKey.value,
-                    posts: latestPosts,
-                  ),
           ],
         ),
       ),
