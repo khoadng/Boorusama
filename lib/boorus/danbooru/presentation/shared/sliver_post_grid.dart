@@ -1,8 +1,11 @@
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/post_image.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:like_button/like_button.dart';
+import 'package:flutter_riverpod/all.dart';
 
 class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({
@@ -77,10 +80,37 @@ class SliverPostGrid extends StatelessWidget {
                   child:
                       Hero(tag: "${key.toString()}_${post.id}", child: image),
                 ),
-                Align(
-                  alignment: Alignment.topLeft,
+                _buildTopShadowGradient(),
+                Positioned(
+                  top: 6,
+                  left: 6,
                   child: Column(
                     children: items,
+                  ),
+                ),
+                Positioned(
+                  right: 6,
+                  top: 6,
+                  child: LikeButton(
+                    likeBuilder: (isLiked) => Icon(
+                      Icons.favorite_border_rounded,
+                      color: isLiked ? Colors.red : Colors.white,
+                    ),
+                    onTap: (isLiked) {
+                      //TODO: check for success here
+                      if (!isLiked) {
+                        context
+                            .read(postFavoriteStateNotifierProvider)
+                            .favorite(post.id);
+
+                        return Future(() => true);
+                      } else {
+                        context
+                            .read(postFavoriteStateNotifierProvider)
+                            .unfavorite(post.id);
+                        return Future(() => false);
+                      }
+                    },
                   ),
                 )
               ],
@@ -91,6 +121,28 @@ class SliverPostGrid extends StatelessWidget {
         },
         staggeredTileBuilder: (index) =>
             StaggeredTile.extent(1, MediaQuery.of(context).size.height * 0.3),
+      ),
+    );
+  }
+
+  Widget _buildTopShadowGradient() {
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              end: const Alignment(0.0, 0.4),
+              begin: const Alignment(0.0, -1),
+              colors: <Color>[
+                const Color(0x2F000000),
+                Colors.black12.withOpacity(0.0)
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
