@@ -2,11 +2,12 @@ import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:hooks_riverpod/all.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 import 'appearance_page.dart';
+import 'tag_settings_page.dart';
 
 class SettingsPage extends StatefulWidget {
   SettingsPage({Key key}) : super(key: key);
@@ -22,7 +23,7 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _settingRepository = Provider.of<SettingRepository>(context, listen: false);
+    _settingRepository = context.read(settingsProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final setting = await _settingRepository.load();
       setState(() {
@@ -62,13 +63,13 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.tag),
                 title: I18n.of(context).settingsAppSettingsBlacklistedTags,
                 onTap: () {
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (BuildContext context) => TagSettingsPage(
-                  //       settings: _setting,
-                  //     ),
-                  //   ),
-                  // );
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => TagSettingsPage(
+                        settings: _setting,
+                      ),
+                    ),
+                  );
                 },
               ),
               SettingsTile(

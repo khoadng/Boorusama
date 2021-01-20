@@ -1,8 +1,8 @@
-import 'package:boorusama/boorus/danbooru/application/authentication/bloc/authentication_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hooks_riverpod/all.dart';
 
 class AccountInfoPage extends StatefulWidget {
   const AccountInfoPage({
@@ -27,8 +27,7 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
             IconButton(
                 icon: Icon(Icons.logout),
                 onPressed: () {
-                  BlocProvider.of<AuthenticationBloc>(context)
-                      .add(UserLoggedOut(accountId: widget.accountId));
+                  context.read(authenticationStateNotifierProvider).logOut();
                   AppRouter.router.navigateTo(context, "/",
                       clearStack: true, replace: true);
                 }),
@@ -36,14 +35,12 @@ class _AccountInfoPageState extends State<AccountInfoPage> {
         ),
         body: Column(
           children: <Widget>[
-            BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state) {
-                if (state is Unauthenticated) {
-                  return Center();
-                } else {
-                  return Text(widget.accountId.toString());
-                }
-              },
+            Consumer(
+              builder: (context, watch, child) =>
+                  watch(accountStateProvider).maybeWhen(
+                loggedOut: () => Center(),
+                orElse: () => Text(widget.accountId.toString()),
+              ),
             ),
             Align(
               alignment: Alignment.bottomLeft,

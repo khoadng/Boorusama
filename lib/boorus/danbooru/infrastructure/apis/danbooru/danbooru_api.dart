@@ -12,6 +12,7 @@ part 'danbooru_api.g.dart';
 
 final apiProvider = Provider<IApi>((ref) {
   final dio = Dio();
+  final endPoint = ref.watch(apiEndpointProvider);
   dio.interceptors
     ..add(
       RetryOnConnectionChangeInterceptor(
@@ -21,12 +22,15 @@ final apiProvider = Provider<IApi>((ref) {
         ),
       ),
     )
-    ..add(DioCacheManager(CacheConfig(baseUrl: "https://danbooru.donmai.us/"))
-        .interceptor);
+    ..add(DioCacheManager(CacheConfig(baseUrl: endPoint)).interceptor);
   return DanbooruApi(
     dio,
-    baseUrl: "https://danbooru.donmai.us/",
+    baseUrl: endPoint,
   );
+});
+
+final apiEndpointProvider = Provider<String>((ref) {
+  return "https://danbooru.donmai.us/";
 });
 
 @RestApi()

@@ -1,18 +1,19 @@
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/add_account/add_account_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/all.dart';
 
-class SideBarMenu extends StatelessWidget {
-  final Account account;
-
-  SideBarMenu({this.account});
+class SideBarMenu extends HookWidget {
+  SideBarMenu();
 
   @override
   Widget build(BuildContext context) {
     final drawerChildren = <Widget>[];
+    final account = useProvider(currentAccountProvider);
 
     if (account == null) {
       drawerChildren.add(ListTile(
