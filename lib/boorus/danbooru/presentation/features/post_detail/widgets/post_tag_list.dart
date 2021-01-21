@@ -1,8 +1,8 @@
 import 'package:boorusama/boorus/danbooru/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/wiki/wiki_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
@@ -56,13 +56,9 @@ class _PostTagListState extends State<PostTagList> {
         _tagKeys[tag.rawName] = tagKey;
 
         return GestureDetector(
-          onTap: () => showSearch(
-            context: context,
-            query: tag.rawName,
-            delegate: SearchPage(
-                searchFieldStyle:
-                    Theme.of(context).inputDecorationTheme.hintStyle),
-          ),
+          onTap: () => AppRouter.router.navigateTo(
+              context, "/posts/search/${tag.rawName}",
+              replace: true, maintainState: false),
           onLongPress: () {
             if (_menu.isShow) {
               _menu.dismiss();
@@ -125,12 +121,12 @@ class _PostTagListState extends State<PostTagList> {
       tagNames.add(tag.rawName);
     }
 
-    showSearch(
-      context: context,
-      query: tagNames.join(" ") + " ",
-      delegate: SearchPage(
-          searchFieldStyle: Theme.of(context).inputDecorationTheme.hintStyle),
-    );
+    // showSearch(
+    //   context: context,
+    //   query: tagNames.join(" ") + " ",
+    //   delegate: SearchPage(
+    //       searchFieldStyle: Theme.of(context).inputDecorationTheme.hintStyle),
+    // );
   }
 
   @override

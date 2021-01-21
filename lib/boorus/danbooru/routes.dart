@@ -1,3 +1,4 @@
+import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,16 @@ import 'presentation/features/post_detail/post_image_page.dart';
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),
 );
+
+final postSearchHandler = Handler(handlerFunc: (
+  BuildContext context,
+  Map<String, List<String>> params,
+) {
+  final String query = params["query"][0];
+  return SearchPage(
+    initialQuery: query,
+  );
+});
 
 final postDetailHandler = Handler(handlerFunc: (
   BuildContext context,

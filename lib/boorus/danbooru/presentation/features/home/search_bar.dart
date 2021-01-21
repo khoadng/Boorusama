@@ -5,38 +5,55 @@ import 'package:flutter/material.dart';
 class SearchBar extends StatefulWidget {
   const SearchBar({
     Key key,
-    @required this.onMenuTap,
-    @required this.onTap,
-    @required this.onMoreSelected,
-    this.onRemoveTap,
-    @required this.controller,
-  })  : assert(controller != null),
-        super(key: key);
+    this.onTap,
+    this.controller,
+    this.leading,
+    this.trailing,
+    this.onChanged,
+    this.enabled = true,
+    this.autofocus = false,
+    this.initialQuery,
+  }) : super(key: key);
 
-  final VoidCallback onMenuTap;
-  final VoidCallback onRemoveTap;
   final VoidCallback onTap;
-  final ValueChanged<PostListAction> onMoreSelected;
   final SearchBarController controller;
+  final Widget leading;
+  final Widget trailing;
+  final bool enabled;
+  final bool autofocus;
+  final ValueChanged<String> onChanged;
+  final String initialQuery;
 
   @override
   _SearchBarState createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
-  String _currentQuery = "";
+  SearchBarController _controller;
+  TextEditingController _textEditingController;
 
   @override
   void initState() {
     super.initState();
-    widget.controller.searchBarState = this;
+    _controller = widget.controller ?? SearchBarController();
+    _textEditingController = TextEditingController(text: widget.initialQuery);
+    _controller.searchBarState = this;
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _textEditingController.dispose();
+    super.dispose();
   }
 
   set query(String query) {
-    setState(() {
-      _currentQuery = query;
-    });
+    _textEditingController.text = query;
+    _textEditingController.selection =
+        TextSelection.fromPosition(TextPosition(offset: query.length));
   }
+
+  get query => _textEditingController.text;
 
   @override
   Widget build(BuildContext context) {
@@ -52,15 +69,25 @@ class _SearchBarState extends State<SearchBar> {
         child: ListTile(
           tileColor: Colors.transparent,
           visualDensity: VisualDensity.compact,
-          onTap: () => widget.onTap(),
-          title: Text(
-            _currentQuery.isEmpty ? I18n.of(context).searchHint : _currentQuery,
+          onTap: () => widget.onTap?.call(),
+          title: TextFormField(
+            onChanged: (value) => widget.onChanged(value),
+            enabled: widget.enabled,
+            decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding: EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                hintText: I18n.of(context).searchHint),
+            autofocus: widget.autofocus,
+            controller: _textEditingController,
             style: Theme.of(context).inputDecorationTheme.hintStyle,
           ),
-          leading: IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: widget.onMenuTap,
-          ),
+          leading: widget.leading,
+          trailing: widget.trailing,
         ),
       ),
     );
@@ -70,9 +97,13 @@ class _SearchBarState extends State<SearchBar> {
 class SearchBarController {
   _SearchBarState searchBarState;
 
-  void assignQuery(String query) {
-    assert(searchBarState != null);
+  String get query {
+    // assert(searchBarState != null);
+    return searchBarState?.query ?? "";
+  }
 
+  set query(String query) {
+    assert(searchBarState != null);
     searchBarState.query = query;
   }
 

@@ -1,7 +1,6 @@
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
@@ -22,20 +21,6 @@ class HomePage extends HookWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final int tabLength = 4;
 
-  // Widget _buildTabView(int topTabIndex) {
-  //   return
-  // }
-
-  // //TODO: refactor
-  // Widget _getPage(int tabIndex, BuildContext context, int topTabIndex) {
-  //   switch (tabIndex) {
-  //     case 0:
-  //       return
-  //     // case 1:
-  //     // return PostDownloadGalleryPage();
-  //   }
-  // }
-
   void _handleMoreSelected(PostListAction action) {
     // switch (action) {
     //   case PostListAction.downloadAll:
@@ -50,8 +35,6 @@ class HomePage extends HookWidget {
     final tickerProvider = useSingleTickerProvider();
     final tabController =
         useTabController(initialLength: tabLength, vsync: tickerProvider);
-    //TODO: MEMORY LEAK HERE, CUSTOM HOOK NEEDED
-    final searchBarController = useState(SearchBarController());
 
     final bottomTabIndex = useState(0);
     final topTabIndex = useState(0);
@@ -92,21 +75,14 @@ class HomePage extends HookWidget {
                           top: false,
                           sliver: SliverAppBar(
                             title: SearchBar(
-                              controller: searchBarController.value,
-                              onRemoveTap: () {},
-                              onMenuTap: () =>
-                                  scaffoldKey.currentState.openDrawer(),
-                              onTap: () {
-                                showSearch(
-                                  context: context,
-                                  delegate: SearchPage(
-                                      searchFieldStyle: Theme.of(context)
-                                          .inputDecorationTheme
-                                          .hintStyle),
-                                );
-                              },
-                              onMoreSelected: (value) =>
-                                  _handleMoreSelected(value),
+                              enabled: false,
+                              leading: IconButton(
+                                icon: Icon(Icons.menu),
+                                onPressed: () =>
+                                    scaffoldKey.currentState.openDrawer(),
+                              ),
+                              onTap: () => AppRouter.router
+                                  .navigateTo(context, "/posts/search/"),
                             ),
                             shape: Border(
                               bottom: BorderSide(
@@ -171,80 +147,3 @@ class HomePage extends HookWidget {
     );
   }
 }
-
-// class HomePage extends StatefulWidget {
-//   HomePage({Key key}) : super(key: key);
-
-//   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-//   @override
-//   _HomePageState createState() => _HomePageState();
-// }
-
-// class _HomePageState extends State<HomePage>
-//     with SingleTickerProviderStateMixin {
-//   final int tabLength = 4;
-
-//   Account _account;
-//   int _currentBottomTab = 0;
-//   int _currentTopTab = 0;
-//   final SearchBarController _searchBarController = SearchBarController();
-//   TabController _tabController;
-
-//   @override
-//   void dispose() {
-//     _searchBarController.dispose();
-//     _tabController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     _tabController = TabController(length: tabLength, vsync: this);
-//   }
-
-//   void _handleMoreSelected(PostListAction action) {
-//     // switch (action) {
-//     //   case PostListAction.downloadAll:
-//     //     _downloadAllPosts();
-//     //     break;
-//     //   default:
-//     // }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocListener<AuthenticationBloc, AuthenticationState>(
-//       listener: (context, state) {
-//         if (state is Authenticated) {
-//           setState(() {
-//             _account = state.account;
-//           });
-//         } else if (state is Unauthenticated) {
-//           //TODO: dirty solution, unused parameter
-//           setState(() {
-//             _account = null;
-//           });
-//         }
-//       },
-//       child: SafeArea(
-//         child: Scaffold(
-//           key: widget.scaffoldKey,
-//           drawer: SideBarMenu(
-//             account: _account,
-//           ),
-//           resizeToAvoidBottomInset: false,
-//           body: _getPage(_currentBottomTab, context),
-//           bottomNavigationBar: BottomBar(
-//             onTabChanged: (value) {
-//               setState(() {
-//                 _currentBottomTab = value;
-//               });
-//             },
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }

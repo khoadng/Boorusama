@@ -21,7 +21,7 @@ class TagRepository implements ITagRepository {
 
     return _api
         .getTagsByNamePattern(account.username, account.apiKey, page, "yes",
-            stringPattern + "*", "count", 10)
+            stringPattern + "*", "count", 30)
         .then((value) {
       var tags = List<Tag>();
       for (var item in value.response.data) {

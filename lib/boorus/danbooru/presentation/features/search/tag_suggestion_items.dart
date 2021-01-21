@@ -18,23 +18,34 @@ class TagSuggestionItems extends StatelessWidget {
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 4.0,
       borderRadius: BorderRadius.circular(8),
-      child: ListView.builder(
-        // shrinkWrap: true,
-        // itemCount: _tags.length > 6 ? 6 : _tags.length,
-        // physics: const NeverScrollableScrollPhysics(),
-        itemCount: _tags.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            onTap: () => onItemTap(_tags[index].rawName),
-            trailing: Text(_tags[index].postCount.toString(),
-                style: TextStyle(color: Colors.grey)),
-            title: Text(
-              _tags[index].displayName,
-              style: TextStyle(color: Color(_tags[index].tagHexColor)),
-            ),
-          );
-        },
+      child: ScrollConfiguration(
+        behavior: NoGlowScrollBehavior(),
+        child: ListView.builder(
+          // shrinkWrap: true,
+          // itemCount: _tags.length > 6 ? 6 : _tags.length,
+          // physics: const NeverScrollableScrollPhysics(),
+          itemCount: _tags.length,
+          itemBuilder: (context, index) {
+            return ListTile(
+              onTap: () => onItemTap(_tags[index].rawName),
+              trailing: Text(_tags[index].postCount.toString(),
+                  style: TextStyle(color: Colors.grey)),
+              title: Text(
+                _tags[index].displayName,
+                style: TextStyle(color: Color(_tags[index].tagHexColor)),
+              ),
+            );
+          },
+        ),
       ),
     );
+  }
+}
+
+class NoGlowScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
