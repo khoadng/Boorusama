@@ -55,7 +55,7 @@ class _PostTagListState extends State<PostTagList> {
         final tagKey = GlobalKey();
         _tagKeys[tag.rawName] = tagKey;
 
-        return InkWell(
+        return GestureDetector(
           onTap: () => showSearch(
             context: context,
             query: tag.rawName,

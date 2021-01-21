@@ -3,6 +3,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repos
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:html/parser.dart' as html;
 
@@ -18,19 +19,10 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
   Future<ArtistCommentary> getCommentary(int postId) =>
       _api.getArtistCommentary(postId).then((value) {
         final data = value.response.data.toString();
-        final document = html.parse(data);
+        final Map<String, dynamic> payload = {"data": data};
+        final commentary = compute(parseCommentary, payload);
 
-        final original = document.documentElement
-            .querySelector("section[id='original-artist-commentary']")
-            // ?.querySelector("div[class='prose ']")
-            ?.innerHtml;
-
-        final translated = document.documentElement
-            .querySelector("section[id='translated-artist-commentary']")
-            // ?.querySelector("div[class='prose ']")
-            ?.innerHtml;
-
-        return ArtistCommentary(original: original, translated: translated);
+        return commentary;
       }).catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioError:
@@ -40,4 +32,24 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
         }
         return ArtistCommentary.empty();
       });
+}
+
+ArtistCommentary parseCommentary(Map<String, dynamic> data) {
+  final htmlString = data["data"];
+  final stopwatch = Stopwatch()..start();
+
+  final document = html.parse(htmlString);
+
+  final original = document.documentElement
+      .querySelector("section[id='original-artist-commentary']")
+      // ?.querySelector("div[class='prose ']")
+      ?.innerHtml;
+
+  final translated = document.documentElement
+      .querySelector("section[id='translated-artist-commentary']")
+      // ?.querySelector("div[class='prose ']")
+      ?.innerHtml;
+  print('parsed commentary in ${stopwatch.elapsed.inMilliseconds}ms'
+      .toUpperCase());
+  return ArtistCommentary(original: original, translated: translated);
 }

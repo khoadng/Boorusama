@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/a
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:html/parser.dart' as html;
 
@@ -31,28 +32,10 @@ class PostRepository implements IPostRepository {
 
     return _api.getPost(account.username, account.apiKey, id).then((value) {
       final data = value.response.data.toString();
-      final document = html.parse(data);
+      final Map<String, dynamic> payload = {"data": data, "postId": id};
+      final statistics = compute(parseStatistics, payload);
 
-      final contentNode =
-          document.documentElement.querySelector("section[id='content']");
-      final isFavorited = contentNode
-              .querySelector("div[class='fav-buttons fav-buttons-true']") !=
-          null;
-
-      final commentCount = contentNode
-          .querySelector("section[id='comments']")
-          .querySelector("div[class='list-of-comments list-of-messages']")
-          .querySelectorAll("article[class='comment message']")
-          .length;
-
-      final favCount = document.documentElement
-          .querySelector("span[id='favcount-for-post-$id']")
-          .text;
-
-      return PostStatistics(
-          favCount: int.parse(favCount),
-          commentCount: commentCount,
-          isFavorited: isFavorited);
+      return statistics;
     }).catchError((Object obj) {
       switch (obj.runtimeType) {
         case DioError:
@@ -71,9 +54,11 @@ class PostRepository implements IPostRepository {
 
     return _api
         .getPosts(account.username, account.apiKey, page,
-            settings.safeMode ? "$tagString rating:s" : tagString, 20)
+            settings.safeMode ? "$tagString rating:s" : tagString, 100)
         .then((value) {
       final posts = <PostDto>[];
+
+      final stopwatch = Stopwatch()..start();
 
       for (var item in value.response.data) {
         try {
@@ -83,7 +68,8 @@ class PostRepository implements IPostRepository {
           print("Cant parse ${item['id']}");
         }
       }
-
+      print('parsed posts in ${stopwatch.elapsed.inMilliseconds}ms'
+          .toUpperCase());
       return posts;
     }).catchError((Object obj) {
       switch (obj.runtimeType) {
@@ -119,7 +105,7 @@ class PostRepository implements IPostRepository {
             "${date.year}-${date.month}-${date.day}",
             scale.toString().split(".").last,
             page,
-            20)
+            100)
         .then((value) {
       final posts = <PostDto>[];
 
@@ -165,7 +151,7 @@ class PostRepository implements IPostRepository {
             "${date.year}-${date.month}-${date.day}",
             scale.toString().split(".").last,
             page,
-            20)
+            100)
         .then((value) {
       final posts = <PostDto>[];
 
@@ -234,6 +220,38 @@ class PostRepository implements IPostRepository {
       return List<Post>();
     });
   }
+}
+
+PostStatistics parseStatistics(Map<String, dynamic> data) {
+  final htmlString = data["data"];
+  final postId = data["postId"];
+
+  final stopwatch = Stopwatch()..start();
+
+  final document = html.parse(htmlString);
+
+  final contentNode =
+      document.documentElement.querySelector("section[id='content']");
+  final isFavorited =
+      contentNode.querySelector("div[class='fav-buttons fav-buttons-true']") !=
+          null;
+
+  final commentCount = contentNode
+      .querySelector("section[id='comments']")
+      .querySelector("div[class='list-of-comments list-of-messages']")
+      .querySelectorAll("article[class='comment message']")
+      .length;
+
+  final favCount = document.documentElement
+      .querySelector("span[id='favcount-for-post-$postId']")
+      .text;
+
+  print('parsed statistics in ${stopwatch.elapsed.inMilliseconds}ms'
+      .toUpperCase());
+  return PostStatistics(
+      favCount: int.parse(favCount),
+      commentCount: commentCount,
+      isFavorited: isFavorited);
 }
 
 class CannotSearchMoreThanTwoTags implements Exception {

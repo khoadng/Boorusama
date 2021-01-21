@@ -19,10 +19,8 @@ class ArtistCommentaryStateNotifier
   void getCommentary(int postId) async {
     try {
       state = ArtistCommentaryState.loading();
-
       final commentary =
           await _artistCommentaryRepository.getCommentary(postId);
-
       state = ArtistCommentaryState.fetched(commentary: commentary);
     } on Exception {
       state = ArtistCommentaryState.error(
