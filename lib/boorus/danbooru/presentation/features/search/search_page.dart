@@ -44,6 +44,7 @@ class SearchPage extends HookWidget {
   Widget build(BuildContext context) {
     //TODO: MEMORY LEAK HERE, CUSTOM HOOK NEEDED
     final searchBarController = useState(SearchBarController());
+    final scrollController = useScrollController();
     final refreshController =
         useState(RefreshController(initialRefresh: false));
     final suggestions = useProvider(suggestionsStateNotifier.state);
@@ -135,10 +136,12 @@ class SearchPage extends HookWidget {
                           SliverPadding(
                             padding: EdgeInsets.all(6.0),
                             sliver: state.isRefreshing
-                                ? SliverPostGridPlaceHolder()
+                                ? SliverPostGridPlaceHolder(
+                                    scrollController: scrollController)
                                 : SliverPostGrid(
                                     key: gridKey.value,
                                     posts: state.posts,
+                                    scrollController: scrollController,
                                   ),
                           )
                         ],

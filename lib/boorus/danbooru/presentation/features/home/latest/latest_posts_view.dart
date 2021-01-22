@@ -14,6 +14,7 @@ class LatestView extends HookWidget {
   Widget build(BuildContext context) {
     final refreshController =
         useState(RefreshController(initialRefresh: false));
+    final scrollController = useScrollController();
     final gridKey = useState(GlobalKey());
     useEffect(() {
       Future.microtask(
@@ -48,10 +49,12 @@ class LatestView extends HookWidget {
             SliverPadding(
               padding: EdgeInsets.all(6.0),
               sliver: isRefreshing
-                  ? SliverPostGridPlaceHolder()
+                  ? SliverPostGridPlaceHolder(
+                      scrollController: scrollController)
                   : SliverPostGrid(
                       key: gridKey.value,
                       posts: latestPosts,
+                      scrollController: scrollController,
                     ),
             ),
           ],

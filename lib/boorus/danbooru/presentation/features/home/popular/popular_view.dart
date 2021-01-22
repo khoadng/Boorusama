@@ -22,6 +22,7 @@ class PopularView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final gridKey = useState(GlobalKey());
+    final scrollController = useScrollController();
     final selectedDate = useState(DateTime.now());
     final selectedTimeScale = useState(TimeScale.day);
     final currentPosts = useState(<Post>[]);
@@ -211,16 +212,23 @@ class PopularView extends HookWidget {
                       ),
                     ),
                     popularState.when(
-                      initial: () => SliverPostGridPlaceHolder(),
+                      initial: () => SliverPostGridPlaceHolder(
+                          scrollController: scrollController),
                       refreshing: () {
-                        return SliverPostGridPlaceHolder();
+                        return SliverPostGridPlaceHolder(
+                            scrollController: scrollController);
                       },
-                      loading: () => SliverPostGrid(posts: currentPosts.value),
+                      loading: () => SliverPostGrid(
+                        posts: currentPosts.value,
+                        scrollController: scrollController,
+                      ),
                       fetched: (posts) => SliverPostGrid(
                         key: gridKey.value,
                         posts: currentPosts.value,
+                        scrollController: scrollController,
                       ),
-                      error: (name, message) => SliverPostGridPlaceHolder(),
+                      error: (name, message) => SliverPostGridPlaceHolder(
+                          scrollController: scrollController),
                     ),
                   ],
                 ),

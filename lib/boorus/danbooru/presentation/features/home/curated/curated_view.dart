@@ -22,6 +22,7 @@ class CuratedView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final gridKey = useState(GlobalKey());
+    final scrollController = useScrollController();
     final selectedDate = useState(DateTime.now());
     final selectedTimeScale = useState(TimeScale.day);
     final currentPosts = useState(<Post>[]);
@@ -211,14 +212,21 @@ class CuratedView extends HookWidget {
                       ),
                     ),
                     curatedState.when(
-                      initial: () => SliverPostGridPlaceHolder(),
-                      refreshing: () => SliverPostGridPlaceHolder(),
-                      loading: () => SliverPostGrid(posts: currentPosts.value),
+                      initial: () => SliverPostGridPlaceHolder(
+                          scrollController: scrollController),
+                      refreshing: () => SliverPostGridPlaceHolder(
+                          scrollController: scrollController),
+                      loading: () => SliverPostGrid(
+                        posts: currentPosts.value,
+                        scrollController: scrollController,
+                      ),
                       fetched: (posts) => SliverPostGrid(
                         key: gridKey.value,
                         posts: currentPosts.value,
+                        scrollController: scrollController,
                       ),
-                      error: (name, message) => SliverPostGridPlaceHolder(),
+                      error: (name, message) => SliverPostGridPlaceHolder(
+                          scrollController: scrollController),
                     ),
                   ],
                 ),
