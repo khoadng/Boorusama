@@ -42,6 +42,7 @@ class MostViewedView extends HookWidget {
         state.maybeWhen(
             fetched: (posts) {
               refreshController.value.refreshCompleted();
+              currentPosts.value.clear();
               currentPosts.value.addAll(posts);
             },
             orElse: () {});
@@ -50,22 +51,6 @@ class MostViewedView extends HookWidget {
         top: false,
         bottom: false,
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            heroTag: null,
-            onPressed: () => DatePicker.showDatePicker(
-              context,
-              theme: DatePickerTheme(),
-              onConfirm: (time) {
-                selectedDate.value = time;
-                currentPosts.value.clear();
-                context
-                    .read(mostViewedStateNotifierProvider)
-                    .refresh(selectedDate.value);
-              },
-              currentTime: DateTime.now(),
-            ),
-            child: Icon(Icons.calendar_today),
-          ),
           body: Builder(
             // This Builder is needed to provide a BuildContext that is "inside"
             // the NestedScrollView, so that sliverOverlapAbsorberHandleFor() can
@@ -86,12 +71,8 @@ class MostViewedView extends HookWidget {
                     SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(
-                                "${I18n.of(context).postCategoriesMostViewed}: ${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
-                          ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               ButtonBar(
                                 children: <Widget>[
@@ -106,6 +87,31 @@ class MostViewedView extends HookWidget {
                                           .read(mostViewedStateNotifierProvider)
                                           .refresh(selectedDate.value);
                                     },
+                                  ),
+                                  FlatButton(
+                                    color: Theme.of(context).cardColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                    ),
+                                    onPressed: () => DatePicker.showDatePicker(
+                                      context,
+                                      theme: DatePickerTheme(),
+                                      onConfirm: (time) {
+                                        selectedDate.value = time;
+                                        context
+                                            .read(
+                                                mostViewedStateNotifierProvider)
+                                            .getPosts(selectedDate.value);
+                                      },
+                                      currentTime: DateTime.now(),
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                            "${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
+                                        Icon(Icons.arrow_drop_down)
+                                      ],
+                                    ),
                                   ),
                                   IconButton(
                                     icon: Icon(Icons.keyboard_arrow_right),

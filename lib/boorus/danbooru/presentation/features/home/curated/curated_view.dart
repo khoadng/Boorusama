@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../../shared/sliver_post_grid_placeholder.dart';
@@ -57,21 +58,6 @@ class CuratedView extends HookWidget {
         top: false,
         bottom: false,
         child: Scaffold(
-          floatingActionButton: FloatingActionButton(
-            heroTag: null,
-            onPressed: () => DatePicker.showDatePicker(
-              context,
-              theme: DatePickerTheme(),
-              onConfirm: (time) {
-                selectedDate.value = time;
-                context
-                    .read(curatedStateNotifierProvider)
-                    .getPosts(selectedDate.value, 1, selectedTimeScale.value);
-              },
-              currentTime: DateTime.now(),
-            ),
-            child: Icon(Icons.calendar_today),
-          ),
           body: Builder(
             // This Builder is needed to provide a BuildContext that is "inside"
             // the NestedScrollView, so that sliverOverlapAbsorberHandleFor() can
@@ -99,45 +85,9 @@ class CuratedView extends HookWidget {
                     SliverList(
                       delegate: SliverChildListDelegate(
                         [
-                          Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text(
-                                "${I18n.of(context).postCategoriesCurated}: ${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
-                          ),
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Wrap(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: DropdownButton<TimeScale>(
-                                      value: selectedTimeScale.value,
-                                      icon: Icon(Icons.arrow_drop_down),
-                                      onChanged: (value) {
-                                        selectedTimeScale.value = value;
-                                        context
-                                            .read(curatedStateNotifierProvider)
-                                            .getPosts(selectedDate.value, 1,
-                                                selectedTimeScale.value);
-                                      },
-                                      items: <DropdownMenuItem<TimeScale>>[
-                                        DropdownMenuItem(
-                                            value: TimeScale.day,
-                                            child: Text(
-                                                I18n.of(context).dateRangeDay)),
-                                        DropdownMenuItem(
-                                            value: TimeScale.week,
-                                            child: Text(I18n.of(context)
-                                                .dateRangeWeek)),
-                                        DropdownMenuItem(
-                                            value: TimeScale.month,
-                                            child: Text(I18n.of(context)
-                                                .dateRangeMonth)),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
                               ButtonBar(
                                 children: <Widget>[
                                   IconButton(
@@ -172,6 +122,31 @@ class CuratedView extends HookWidget {
                                               selectedTimeScale.value);
                                     },
                                   ),
+                                  FlatButton(
+                                    color: Theme.of(context).cardColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(18.0),
+                                    ),
+                                    onPressed: () => DatePicker.showDatePicker(
+                                      context,
+                                      theme: DatePickerTheme(),
+                                      onConfirm: (time) {
+                                        selectedDate.value = time;
+                                        context
+                                            .read(curatedStateNotifierProvider)
+                                            .getPosts(selectedDate.value, 1,
+                                                selectedTimeScale.value);
+                                      },
+                                      currentTime: DateTime.now(),
+                                    ),
+                                    child: Row(
+                                      children: <Widget>[
+                                        Text(
+                                            "${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
+                                        Icon(Icons.arrow_drop_down)
+                                      ],
+                                    ),
+                                  ),
                                   IconButton(
                                     icon: Icon(Icons.keyboard_arrow_right),
                                     onPressed: () {
@@ -205,6 +180,67 @@ class CuratedView extends HookWidget {
                                     },
                                   ),
                                 ],
+                              ),
+                              FlatButton(
+                                color: Theme.of(context).cardColor,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                ),
+                                onPressed: () async {
+                                  selectedTimeScale.value =
+                                      await showMaterialModalBottomSheet(
+                                            context: context,
+                                            builder: (context, controller) =>
+                                                Material(
+                                              child: SafeArea(
+                                                top: false,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: <Widget>[
+                                                    ListTile(
+                                                      title: Text(
+                                                          I18n.of(context)
+                                                              .dateRangeDay),
+                                                      onTap: () => Navigator.of(
+                                                              context)
+                                                          .pop(TimeScale.day),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          I18n.of(context)
+                                                              .dateRangeWeek),
+                                                      onTap: () => Navigator.of(
+                                                              context)
+                                                          .pop(TimeScale.week),
+                                                    ),
+                                                    ListTile(
+                                                      title: Text(
+                                                          I18n.of(context)
+                                                              .dateRangeMonth),
+                                                      onTap: () => Navigator.of(
+                                                              context)
+                                                          .pop(TimeScale.month),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ) ??
+                                          selectedTimeScale.value;
+
+                                  context
+                                      .read(curatedStateNotifierProvider)
+                                      .getPosts(selectedDate.value, 1,
+                                          selectedTimeScale.value);
+                                },
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                        "${selectedTimeScale.value.toString().split('.').last.toUpperCase()}"),
+                                    Icon(Icons.arrow_drop_down)
+                                  ],
+                                ),
                               ),
                             ],
                           ),
