@@ -32,12 +32,14 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
     state = state.copyWith(
       monitoringState:
           SearchMonitoringState.inProgress(loadingType: LoadingType.refresh),
-      displayState: SearchDisplayState.results(),
       page: 1,
       posts: <Post>[],
     );
 
-    final query = _ref.watch(queryStateNotifierProvider.state).query;
+    final query = _ref
+        .watch(queryStateNotifierProvider.state)
+        .completedQueryItems
+        .join(' ');
     final dtos = await _postRepository.getPosts(query, 1);
     final settings = await _settingRepository.load();
     final filteredPosts = filter(dtos, settings);

@@ -10,6 +10,7 @@ class SearchBar extends StatefulWidget {
     this.onChanged,
     this.enabled = true,
     this.autofocus = false,
+    this.onFocusChanged,
     this.queryEditingController,
   }) : super(key: key);
 
@@ -20,6 +21,7 @@ class SearchBar extends StatefulWidget {
   final bool autofocus;
   final ValueChanged<String> onChanged;
   final TextEditingController queryEditingController;
+  final ValueChanged<bool> onFocusChanged;
 
   @override
   _SearchBarState createState() => _SearchBarState();
@@ -56,21 +58,27 @@ class _SearchBarState extends State<SearchBar> {
           tileColor: Colors.transparent,
           visualDensity: VisualDensity.compact,
           onTap: () => widget.onTap?.call(),
-          title: TextFormField(
-            onChanged: (value) => widget.onChanged(value),
-            enabled: widget.enabled,
-            decoration: InputDecoration(
-                floatingLabelBehavior: FloatingLabelBehavior.never,
-                border: InputBorder.none,
-                focusedBorder: InputBorder.none,
-                enabledBorder: InputBorder.none,
-                errorBorder: InputBorder.none,
-                disabledBorder: InputBorder.none,
-                contentPadding: EdgeInsets.only(bottom: 11, top: 11, right: 15),
-                hintText: I18n.of(context).searchHint),
-            autofocus: widget.autofocus,
-            controller: _textEditingController,
-            style: Theme.of(context).inputDecorationTheme.hintStyle,
+          title: FocusScope(
+            child: Focus(
+              onFocusChange: (isFocus) => widget.onFocusChanged?.call(isFocus),
+              child: TextFormField(
+                onChanged: (value) => widget.onChanged(value),
+                enabled: widget.enabled,
+                decoration: InputDecoration(
+                    floatingLabelBehavior: FloatingLabelBehavior.never,
+                    border: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    errorBorder: InputBorder.none,
+                    disabledBorder: InputBorder.none,
+                    contentPadding:
+                        EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                    hintText: I18n.of(context).searchHint),
+                autofocus: widget.autofocus,
+                controller: _textEditingController,
+                style: Theme.of(context).inputDecorationTheme.hintStyle,
+              ),
+            ),
           ),
           leading: widget.leading,
           trailing: widget.trailing,
