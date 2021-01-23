@@ -1,6 +1,8 @@
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/search/query_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
@@ -11,212 +13,239 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
-import 'tag_query.dart';
 import 'tag_suggestion_items.dart';
 
-final postDownloadStateNotifierProvider =
+final _postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
         (ref) => PostDownloadStateNotifier(ref));
 
-final postSearchStateNotifierProvider =
-    StateNotifierProvider<LatestStateNotifier>(
-        (ref) => LatestStateNotifier(ref));
-
-final suggestionsStateNotifier =
-    StateNotifierProvider<SuggestionsStateNotifier>(
-        (ref) => SuggestionsStateNotifier(ref));
-
-final searchPageStateProvider = StateProvider<SearchPageState>((ref) {
-  return SearchPageState.suggestion;
+final _displayState = Provider<SearchDisplayState>(
+    (ref) => ref.watch(searchStateNotifierProvider.state).displayState);
+final _searchDisplayProvider = Provider<SearchDisplayState>((ref) {
+  final status = ref.watch(_displayState);
+  print("Display status: $status");
+  return status;
 });
 
-enum SearchPageState {
-  suggestion,
-  result,
-}
+final _monitoringState = Provider<SearchMonitoringState>(
+    (ref) => ref.watch(searchStateNotifierProvider.state).monitoringState);
+final _searchMonitoringProvider = Provider<SearchMonitoringState>((ref) {
+  final status = ref.watch(_monitoringState);
+  print("Search monitoring status: $status");
+  return status;
+});
+
+final _posts = Provider<List<Post>>(
+    (ref) => ref.watch(searchStateNotifierProvider.state).posts);
+final _postProvider = Provider<List<Post>>((ref) {
+  final posts = ref.watch(_posts);
+  return posts;
+});
+
+final _query = Provider<String>(
+    (ref) => ref.watch(queryStateNotifierProvider.state).query);
+final _queryProvider = Provider<String>((ref) {
+  final query = ref.watch(_query);
+  print("Search query: $query");
+  return query;
+});
+
+final _tags = Provider<List<Tag>>(
+    (ref) => ref.watch(suggestionsStateNotifier.state).tags);
+final _tagProvider = Provider<List<Tag>>((ref) {
+  final tags = ref.watch(_tags);
+  return tags;
+});
+
+final _suggestionsMonitoring = Provider<SuggestionsMonitoringState>((ref) =>
+    ref.watch(suggestionsStateNotifier.state).suggestionsMonitoringState);
+final _suggestionsMonitoringStateProvider =
+    Provider<SuggestionsMonitoringState>((ref) {
+  final status = ref.watch(_suggestionsMonitoring);
+  print("Tag suggestion monitoring status: $status");
+  return status;
+});
 
 class SearchPage extends HookWidget {
   const SearchPage({Key key, this.initialQuery}) : super(key: key);
 
   final String initialQuery;
 
+  void _onTagItemTapped(BuildContext context, String tag) =>
+      context.read(queryStateNotifierProvider).add(tag);
+
+  void _onClearQueryButtonPressed(BuildContext context) {
+    context.read(searchStateNotifierProvider).clear();
+    context.read(suggestionsStateNotifier).clear();
+    context.read(queryStateNotifierProvider).clear();
+  }
+
+  void _onBackIconPressed(BuildContext context) {
+    context.read(searchStateNotifierProvider).clear();
+    context.read(suggestionsStateNotifier).clear();
+    context.read(queryStateNotifierProvider).clear();
+    Navigator.of(context).pop();
+  }
+
+  void _onDownloadButtonPressed(List<Post> posts, BuildContext context) {
+    return posts.forEach((post) =>
+        context.read(_postDownloadStateNotifierProvider).download(post));
+  }
+
+  void _onSearchButtonPressed(BuildContext context) {
+    FocusScope.of(context).unfocus();
+    context.read(searchStateNotifierProvider).search();
+  }
+
+  void _onQueryUpdated(BuildContext context, String value) {
+    context.read(queryStateNotifierProvider).update(value);
+  }
+
+  void _onLoadCompleted(ValueNotifier<RefreshController> refreshController) {
+    refreshController.value.refreshCompleted();
+    return refreshController.value.loadComplete();
+  }
+
+  void _onListLoading(BuildContext context) =>
+      context.read(searchStateNotifierProvider).getMoreResult();
+
   @override
   Widget build(BuildContext context) {
     //TODO: MEMORY LEAK HERE, CUSTOM HOOK NEEDED
-    final searchBarController = useState(SearchBarController());
-    final scrollController = useScrollController();
     final refreshController =
         useState(RefreshController(initialRefresh: false));
-    final suggestions = useProvider(suggestionsStateNotifier.state);
-    final tags = useState(List<Tag>());
-    final tagQuery = useState(TagQuery(
-      onTagInputCompleted: () => tags.value.clear(),
-      onCleared: null,
-    ));
+    final scrollController = useScrollController();
+    final queryEditingController = useTextEditingController();
+
     final gridKey = useState(GlobalKey());
-    final searchPageState = useProvider(searchPageStateProvider);
+
+    final searchDisplayState = useProvider(_searchDisplayProvider);
+    final searchMonitoringState = useProvider(_searchMonitoringProvider);
+    final posts = useProvider(_postProvider);
+    final query = useProvider(_queryProvider);
+
+    final suggestionsMonitoringState =
+        useProvider(_suggestionsMonitoringStateProvider);
+    final tags = useProvider(_tagProvider);
 
     useEffect(() {
-      Future.microtask(
-          () => searchPageState.state = SearchPageState.suggestion);
+      queryEditingController.text = query;
+      queryEditingController.selection =
+          TextSelection.fromPosition(TextPosition(offset: query.length));
       return () => {};
-    }, []);
+    }, [query]);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          title: SearchBar(
-            autofocus: true,
-            initialQuery: initialQuery,
-            controller: searchBarController.value,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                searchPageState.state = SearchPageState.suggestion;
-                tagQuery.value.update("");
-                searchBarController.value.query = "";
-                Navigator.of(context).pop();
-              },
+    return ProviderListener<SearchState>(
+      provider: searchStateNotifierProvider.state,
+      onChange: (context, state) => state.monitoringState.when(
+        none: () => true,
+        inProgress: (loadingType) => loadingType,
+        completed: () => _onLoadCompleted(refreshController),
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          floatingActionButton: searchDisplayState.when(
+            suggestions: () => FloatingActionButton(
+              onPressed: () => _onSearchButtonPressed(context),
+              heroTag: null,
+              child: Icon(Icons.search),
             ),
-            trailing: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                searchPageState.state = SearchPageState.suggestion;
-                tagQuery.value.update("");
-                searchBarController.value.query = "";
-              },
+            results: () => FloatingActionButton(
+              onPressed: () => _onDownloadButtonPressed(posts, context),
+              heroTag: null,
+              child: Icon(Icons.download_sharp),
             ),
-            onChanged: (value) {
-              tagQuery.value.update(searchBarController.value.query);
-
-              if (searchBarController.value.query.isNotEmpty) {
-                context.read(suggestionsStateNotifier).getSuggestions(value);
-              }
-            },
+          ),
+          appBar: AppBar(
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            title: SearchBar(
+              autofocus: true,
+              queryEditingController: queryEditingController,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () => _onBackIconPressed(context),
+              ),
+              trailing: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () => _onClearQueryButtonPressed(context),
+              ),
+              onChanged: (value) => _onQueryUpdated(context, value),
+            ),
+          ),
+          body: searchDisplayState.when(
+            suggestions: () => suggestionsMonitoringState.when(
+              none: () => Center(child: Text(I18n.of(context).searchNoResult)),
+              inProgress: () => Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: TagSuggestionItems(tags: tags, onItemTap: (tag) {}),
+              ),
+              completed: () => Padding(
+                padding: EdgeInsets.only(top: 8),
+                child: TagSuggestionItems(
+                    tags: tags,
+                    onItemTap: (tag) => _onTagItemTapped(context, tag)),
+              ),
+              error: () => Center(
+                child: Text("Something went wrong"),
+              ),
+            ),
+            results: () => searchMonitoringState.when(
+              none: () => CustomScrollView(
+                slivers: <Widget>[
+                  SliverPadding(
+                    padding: EdgeInsets.all(6.0),
+                    sliver: SliverPostGridPlaceHolder(
+                        scrollController: scrollController),
+                  )
+                ],
+              ),
+              inProgress: (loadingType) => loadingType == LoadingType.refresh
+                  ? CustomScrollView(
+                      slivers: <Widget>[
+                        SliverPadding(
+                          padding: EdgeInsets.all(6.0),
+                          sliver: SliverPostGridPlaceHolder(
+                              scrollController: scrollController),
+                        )
+                      ],
+                    )
+                  : CustomScrollView(
+                      slivers: <Widget>[
+                        SliverPadding(
+                          padding: EdgeInsets.all(6.0),
+                          sliver: SliverPostGrid(
+                            key: gridKey.value,
+                            posts: posts,
+                            scrollController: scrollController,
+                          ),
+                        )
+                      ],
+                    ),
+              completed: () => SmartRefresher(
+                controller: refreshController.value,
+                enablePullUp: true,
+                enablePullDown: false,
+                footer: const ClassicFooter(),
+                onLoading: () => _onListLoading(context),
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    SliverPadding(
+                      padding: EdgeInsets.all(6.0),
+                      sliver: SliverPostGrid(
+                        key: gridKey.value,
+                        posts: posts,
+                        scrollController: scrollController,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
           ),
         ),
-        body: searchPageState.state == SearchPageState.suggestion
-            ? _buildSuggestions(
-                context,
-                searchBarController.value.query,
-                tagQuery.value,
-                searchBarController.value,
-                suggestions,
-                searchPageState)
-            : Consumer(
-                builder: (context, watch, child) {
-                  final state = watch(postSearchStateNotifierProvider.state);
-
-                  if (!state.isLoadingMore)
-                    refreshController.value.loadComplete();
-                  if (!state.isRefreshing)
-                    refreshController.value.refreshCompleted();
-
-                  return Scaffold(
-                    floatingActionButton: FloatingActionButton(
-                      onPressed: () => state.posts.forEach((post) => context
-                          .read(postDownloadStateNotifierProvider)
-                          .download(post)),
-                      heroTag: null,
-                      child: Icon(Icons.download_sharp),
-                    ),
-                    body: SmartRefresher(
-                      controller: refreshController.value,
-                      enablePullUp: true,
-                      enablePullDown: false,
-                      footer: const ClassicFooter(),
-                      onLoading: () => context
-                          .read(postSearchStateNotifierProvider)
-                          .getMore(),
-                      child: CustomScrollView(
-                        slivers: <Widget>[
-                          SliverPadding(
-                            padding: EdgeInsets.all(6.0),
-                            sliver: state.isRefreshing
-                                ? SliverPostGridPlaceHolder(
-                                    scrollController: scrollController)
-                                : SliverPostGrid(
-                                    key: gridKey.value,
-                                    posts: state.posts,
-                                    scrollController: scrollController,
-                                  ),
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
       ),
     );
-  }
-
-  Widget _buildSuggestions(
-      BuildContext context,
-      String query,
-      TagQuery tagQuery,
-      SearchBarController searchBarController,
-      SuggestionsState suggestions,
-      StateController<SearchPageState> searchPageState) {
-    return query.isNotEmpty
-        ? suggestions.when(
-            empty: () => Center(child: Text(I18n.of(context).searchNoResult)),
-            loading: () => Center(),
-            fetched: (tags) => Padding(
-              padding: EdgeInsets.only(top: 8),
-              child: _SearchSuggestionsStack(
-                  child: TagSuggestionItems(
-                      tags: tags,
-                      onItemTap: (tag) {
-                        tagQuery.add(tag);
-                        searchBarController.query = tagQuery.currentQuery;
-                      }),
-                  onSearch: () {
-                    context
-                        .read(postSearchStateNotifierProvider)
-                        .refresh(searchBarController.query);
-                    searchPageState.state = SearchPageState.result;
-                    FocusScope.of(context).unfocus();
-                  }),
-            ),
-            error: (name, message) => Center(
-              child: Text(message),
-            ),
-          )
-        : Center(child: Text(I18n.of(context).searchNoResult));
-  }
-
-  // void _downloadAllPosts(List<Post> posts, BuildContext context) {
-  //   posts.forEach((post) =>
-  //       context.read(postDownloadStateNotifierProvider).download(post));
-  // }
-}
-
-class _SearchSuggestionsStack extends StatelessWidget {
-  const _SearchSuggestionsStack({
-    Key key,
-    @required this.child,
-    @required this.onSearch,
-  }) : super(key: key);
-
-  final Widget child;
-  final Function onSearch;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(children: <Widget>[
-      child,
-      Positioned(
-        bottom: 30.0,
-        right: 30.0,
-        child: FloatingActionButton(
-          onPressed: () => onSearch(),
-          child: Icon(Icons.search),
-        ),
-      )
-    ]);
   }
 }

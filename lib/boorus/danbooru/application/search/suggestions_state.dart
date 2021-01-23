@@ -2,13 +2,21 @@ part of 'suggestions_state_notifier.dart';
 
 @freezed
 abstract class SuggestionsState with _$SuggestionsState {
-  const factory SuggestionsState.empty() = _Empty;
-  const factory SuggestionsState.loading() = _Loading;
-  const factory SuggestionsState.fetched({
+  const factory SuggestionsState({
     @required List<Tag> tags,
-  }) = _Fetched;
-  const factory SuggestionsState.error({
-    @required String name,
-    @required String message,
-  }) = _Error;
+    @required SuggestionsMonitoringState suggestionsMonitoringState,
+  }) = _SuggestionsState;
+
+  factory SuggestionsState.initial() => SuggestionsState(
+        tags: <Tag>[],
+        suggestionsMonitoringState: SuggestionsMonitoringState.none(),
+      );
+}
+
+@freezed
+abstract class SuggestionsMonitoringState with _$SuggestionsMonitoringState {
+  const factory SuggestionsMonitoringState.none() = _None;
+  const factory SuggestionsMonitoringState.inProgress() = _InProgress;
+  const factory SuggestionsMonitoringState.completed() = _Completed;
+  const factory SuggestionsMonitoringState.error() = _Error;
 }

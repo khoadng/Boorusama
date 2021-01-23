@@ -7,26 +7,46 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'suggestions_state.dart';
 part 'suggestions_state_notifier.freezed.dart';
 
+final suggestionsStateNotifier =
+    StateNotifierProvider<SuggestionsStateNotifier>((ref) {
+  return SuggestionsStateNotifier(ref);
+});
+
 class SuggestionsStateNotifier extends StateNotifier<SuggestionsState> {
   final ITagRepository _tagRepository;
 
   SuggestionsStateNotifier(ProviderReference ref)
       : _tagRepository = ref.read(tagProvider),
-        super(SuggestionsState.empty());
+        super(SuggestionsState.initial());
 
   void getSuggestions(String query) async {
-    try {
-      state = SuggestionsState.loading();
+    if (query.isEmpty) {
+      state = state.copyWith(
+        tags: [],
+        suggestionsMonitoringState: SuggestionsMonitoringState.completed(),
+      );
+      return;
+    }
 
-      final tags = await _tagRepository.getTagsByNamePattern(
-        query,
-        1,
+    try {
+      state = state.copyWith(
+        suggestionsMonitoringState: SuggestionsMonitoringState.inProgress(),
       );
 
-      state = SuggestionsState.fetched(tags: tags);
+      final tags = await _tagRepository.getTagsByNamePattern(query, 1);
+
+      state = state.copyWith(
+        tags: tags,
+        suggestionsMonitoringState: SuggestionsMonitoringState.completed(),
+      );
     } on Exception {
-      state = SuggestionsState.error(
-          name: "Unknown", message: "Something went wrong");
+      state = state.copyWith(
+        suggestionsMonitoringState: SuggestionsMonitoringState.error(),
+      );
     }
+  }
+
+  void clear() {
+    state = SuggestionsState.initial();
   }
 }
