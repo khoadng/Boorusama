@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'widgets/login_box_widget.dart';
 
-class AddAccountPage extends StatefulWidget {
-  AddAccountPage({Key key}) : super(key: key);
+class LoginPage extends StatefulWidget {
+  LoginPage({Key key}) : super(key: key);
 
   @override
-  _AddAccountPageState createState() => _AddAccountPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _AddAccountPageState extends State<AddAccountPage> {
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(

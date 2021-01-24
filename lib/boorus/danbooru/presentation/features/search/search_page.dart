@@ -4,7 +4,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search_state_notifi
 import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/search_bar.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:flutter/material.dart';
