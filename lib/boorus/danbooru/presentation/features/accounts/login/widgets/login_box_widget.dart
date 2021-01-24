@@ -13,6 +13,9 @@ class LoginBox extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final tickerProvider = useSingleTickerProvider();
+    final animationController = useAnimationController(
+        vsync: tickerProvider, duration: Duration(milliseconds: 150));
     final _formKey = useState(GlobalKey<FormState>());
     final _isValidUsernameAndPassword = useState(true);
 
@@ -22,8 +25,14 @@ class LoginBox extends HookWidget {
     final showPassword = useProvider(_showPasswordProvider);
     final usernameHasText = useProvider(_userNameHasTextProvider);
 
-    usernameTextController.addListener(
-        () => usernameHasText.state = usernameTextController.text.isNotEmpty);
+    usernameTextController.addListener(() {
+      if (usernameTextController.text.isNotEmpty) {
+        animationController.forward();
+        usernameHasText.state = usernameTextController.text.isNotEmpty;
+      } else {
+        animationController.reverse();
+      }
+    });
     return ProviderListener<AccountState>(
       provider: accountStateProvider,
       onChange: (context, status) => status.maybeWhen(
@@ -65,11 +74,18 @@ class LoginBox extends HookWidget {
                 controller: usernameTextController,
                 decoration: InputDecoration(
                   suffixIcon: usernameHasText.state
-                      ? IconButton(
-                          splashColor: Colors.transparent,
-                          color: Theme.of(context).appBarTheme.iconTheme.color,
-                          icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
-                          onPressed: () => usernameTextController.clear())
+                      ? ScaleTransition(
+                          scale: CurvedAnimation(
+                            parent: animationController,
+                            curve: Interval(0.0, 1.0, curve: Curves.linear),
+                          ),
+                          child: IconButton(
+                              splashColor: Colors.transparent,
+                              color:
+                                  Theme.of(context).appBarTheme.iconTheme.color,
+                              icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
+                              onPressed: () => usernameTextController.clear()),
+                        )
                       : null,
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
@@ -97,7 +113,7 @@ class LoginBox extends HookWidget {
               ),
               SizedBox(height: 20),
               TextFormField(
-                obscureText: showPassword.state,
+                obscureText: !showPassword.state,
                 validator: (value) {
                   if (value.isEmpty) {
                     return I18n.of(context).loginErrorsMissingPassword;

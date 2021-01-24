@@ -21,6 +21,10 @@ class AppTheme {
         ),
   );
   static final darkTheme = ThemeData.dark().copyWith(
+      primaryColor: Color.fromARGB(255, 114, 137, 218),
+      floatingActionButtonTheme: ThemeData.dark()
+          .floatingActionButtonTheme
+          .copyWith(backgroundColor: Color.fromARGB(255, 114, 137, 218)),
       accentColor: Color.fromARGB(255, 114, 137, 218),
       // canvasColor: Color(0xff323232),
       primaryTextTheme: ThemeData.dark()
