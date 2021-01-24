@@ -105,13 +105,6 @@ class SearchPage extends HookWidget {
         context.read(_postDownloadStateNotifierProvider).download(post));
   }
 
-  void _onSearchButtonPressed(BuildContext context,
-      StateController<SearchDisplayState> searchDisplayState) {
-    FocusScope.of(context).unfocus();
-    searchDisplayState.state = SearchDisplayState.results();
-    context.read(searchStateNotifierProvider).search();
-  }
-
   void _onQueryUpdated(BuildContext context, String value,
       StateController<SearchDisplayState> searchDisplayState) {
     if (searchDisplayState.state == SearchDisplayState.results()) {
@@ -179,8 +172,15 @@ class SearchPage extends HookWidget {
         child: Scaffold(
           floatingActionButton: searchDisplayState.state.when(
             suggestions: () => FloatingActionButton(
-              onPressed: () =>
-                  _onSearchButtonPressed(context, searchDisplayState),
+              onPressed: () {
+                if (completedQueryItems.isEmpty) {
+                  context.read(queryStateNotifierProvider).add(query);
+                }
+
+                FocusScope.of(context).unfocus();
+                searchDisplayState.state = SearchDisplayState.results();
+                context.read(searchStateNotifierProvider).search();
+              },
               heroTag: null,
               child: Icon(Icons.search),
             ),
@@ -235,10 +235,17 @@ class SearchPage extends HookWidget {
                 ),
               ],
               Expanded(
-                child: searchDisplayState.state.when(
-                  suggestions: () => CustomScrollView(
-                    slivers: <Widget>[
-                      suggestionsMonitoringState.when(
+                  child: SmartRefresher(
+                controller: refreshController.value,
+                enablePullUp:
+                    searchDisplayState.state == SearchDisplayState.results(),
+                enablePullDown: false,
+                footer: const ClassicFooter(),
+                onLoading: () => _onListLoading(context),
+                child: CustomScrollView(
+                  slivers: <Widget>[
+                    searchDisplayState.state.when(
+                      suggestions: () => suggestionsMonitoringState.when(
                         none: () => SliverList(
                           delegate: SliverChildListDelegate([
                             Center(child: Center()),
@@ -264,32 +271,15 @@ class SearchPage extends HookWidget {
                           ]),
                         ),
                       ),
-                    ],
-                  ),
-                  results: () => searchMonitoringState.when(
-                    none: () => CustomScrollView(
-                      slivers: <Widget>[
-                        SliverPadding(
+                      results: () => searchMonitoringState.when(
+                        none: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGridPlaceHolder(
                               scrollController: scrollController),
-                        )
-                      ],
-                    ),
-                    inProgress: (loadingType) =>
-                        loadingType == LoadingType.refresh
-                            ? CustomScrollView(
-                                slivers: <Widget>[
-                                  SliverPadding(
-                                    padding: EdgeInsets.all(6.0),
-                                    sliver: SliverPostGridPlaceHolder(
-                                        scrollController: scrollController),
-                                  )
-                                ],
-                              )
-                            : CustomScrollView(
-                                slivers: <Widget>[
-                                  SliverPadding(
+                        ),
+                        inProgress: (loadingType) =>
+                            loadingType == LoadingType.more
+                                ? SliverPadding(
                                     padding: EdgeInsets.all(6.0),
                                     sliver: SliverPostGrid(
                                       key: gridKey.value,
@@ -297,30 +287,24 @@ class SearchPage extends HookWidget {
                                       scrollController: scrollController,
                                     ),
                                   )
-                                ],
-                              ),
-                    completed: () => SmartRefresher(
-                      controller: refreshController.value,
-                      enablePullUp: true,
-                      enablePullDown: false,
-                      footer: const ClassicFooter(),
-                      onLoading: () => _onListLoading(context),
-                      child: CustomScrollView(
-                        slivers: <Widget>[
-                          SliverPadding(
-                            padding: EdgeInsets.all(6.0),
-                            sliver: SliverPostGrid(
-                              key: gridKey.value,
-                              posts: posts,
-                              scrollController: scrollController,
-                            ),
-                          )
-                        ],
+                                : SliverPadding(
+                                    padding: EdgeInsets.all(6.0),
+                                    sliver: SliverPostGridPlaceHolder(
+                                        scrollController: scrollController),
+                                  ),
+                        completed: () => SliverPadding(
+                          padding: EdgeInsets.all(6.0),
+                          sliver: SliverPostGrid(
+                            key: gridKey.value,
+                            posts: posts,
+                            scrollController: scrollController,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ),
+              )),
             ],
           ),
         ),

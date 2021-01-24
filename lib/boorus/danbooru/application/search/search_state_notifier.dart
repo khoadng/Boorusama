@@ -36,10 +36,10 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
       posts: <Post>[],
     );
 
-    final query = _ref
-        .watch(queryStateNotifierProvider.state)
-        .completedQueryItems
-        .join(' ');
+    final completedQueryItems =
+        _ref.watch(queryStateNotifierProvider.state).completedQueryItems;
+    final query = completedQueryItems.join(' ');
+
     final dtos = await _postRepository.getPosts(query, 1);
     final settings = await _settingRepository.load();
     final filteredPosts = filter(dtos, settings);
@@ -59,7 +59,9 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
       page: nextPage,
     );
 
-    final query = _ref.watch(queryStateNotifierProvider.state).query;
+    final completedQueryItems =
+        _ref.watch(queryStateNotifierProvider.state).completedQueryItems;
+    final query = completedQueryItems.join(' ');
     final dtos = await _postRepository.getPosts(query, nextPage);
     final settings = await _settingRepository.load();
     final filteredPosts = filter(dtos, settings);
