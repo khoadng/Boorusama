@@ -74,7 +74,18 @@ final _completedQueryItems = Provider.autoDispose<List<String>>((ref) {
   return ref.watch(queryStateNotifierProvider.state).completedQueryItems;
 });
 final _completedQueryItemsProvider = Provider.autoDispose<List<String>>((ref) {
-  return ref.watch(_completedQueryItems);
+  final completedQueryItems = ref.watch(_completedQueryItems);
+
+  if (completedQueryItems.isEmpty) {
+    final searchDisplay = ref.watch(_searchDisplayProvider);
+    Future.delayed(Duration.zero, () {
+      if (searchDisplay.mounted) {
+        searchDisplay.state = SearchDisplayState.suggestions();
+      }
+    });
+  }
+
+  return completedQueryItems;
 });
 
 class SearchPage extends HookWidget {
@@ -90,7 +101,6 @@ class SearchPage extends HookWidget {
     context.read(searchStateNotifierProvider).clear();
     context.read(suggestionsStateNotifier).clear();
     context.read(queryStateNotifierProvider).clear();
-    searchDisplayState.state = SearchDisplayState.suggestions();
   }
 
   void _onBackIconPressed(BuildContext context) {
@@ -120,11 +130,6 @@ class SearchPage extends HookWidget {
 
   void _onListLoading(BuildContext context) =>
       context.read(searchStateNotifierProvider).getMoreResult();
-
-  void _onSearchBarTapped(
-      StateController<SearchDisplayState> searchDisplayState) {
-    searchDisplayState.state = SearchDisplayState.suggestions();
-  }
 
   bool _onTagRemoveButtonTap(
       BuildContext context, List<String> completedQueryItems, int index) {
