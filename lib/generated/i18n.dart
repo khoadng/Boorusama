@@ -42,6 +42,8 @@ class I18n implements WidgetsLocalizations {
   String get loginFormPassword => "Password";
   /// "Login"
   String get loginFormLogin => "Login";
+  /// "Hi there!"
+  String get loginFormGreeting => "Hi there!";
   /// "Invalid username or password"
   String get loginErrorsInvalidUsernameOrPassword => "Invalid username or password";
   /// "Please enter your username"
@@ -139,6 +141,9 @@ class _I18n_vi_VN extends I18n {
   /// "Đăng nhập"
   @override
   String get loginFormLogin => "Đăng nhập";
+  /// "Khỏe không bạn gì ơi!"
+  @override
+  String get loginFormGreeting => "Khỏe không bạn gì ơi!";
   /// "Tài khoản hoặc mật khẩu không chính xác"
   @override
   String get loginErrorsInvalidUsernameOrPassword => "Tài khoản hoặc mật khẩu không chính xác";

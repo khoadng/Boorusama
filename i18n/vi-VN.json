@@ -9,7 +9,8 @@
         "form" : {
             "username" : "Tài khoản",
             "password" : "Mật khẩu",
-            "login" : "Đăng nhập"
+            "login" : "Đăng nhập",
+            "greeting": "Khỏe không bạn gì ơi!"
         },
         "errors" : {
             "invalidUsernameOrPassword" : "Tài khoản hoặc mật khẩu không chính xác",

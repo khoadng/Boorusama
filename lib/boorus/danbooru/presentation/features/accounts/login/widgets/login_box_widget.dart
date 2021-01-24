@@ -2,7 +2,11 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/generated/i18n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/all.dart';
+
+final _showPasswordProvider = StateProvider<bool>((ref) => false);
+final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
 
 class LoginBox extends HookWidget {
   const LoginBox({Key key}) : super(key: key);
@@ -11,10 +15,15 @@ class LoginBox extends HookWidget {
   Widget build(BuildContext context) {
     final _formKey = useState(GlobalKey<FormState>());
     final _isValidUsernameAndPassword = useState(true);
+
     final usernameTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();
     final authStatus = useProvider(accountStateProvider);
+    final showPassword = useProvider(_showPasswordProvider);
+    final usernameHasText = useProvider(_userNameHasTextProvider);
 
+    usernameTextController.addListener(
+        () => usernameHasText.state = usernameTextController.text.isNotEmpty);
     return ProviderListener<AccountState>(
       provider: accountStateProvider,
       onChange: (context, status) => status.maybeWhen(
@@ -32,16 +41,16 @@ class LoginBox extends HookWidget {
           // ignore: missing_return
           orElse: () {}),
       child: Form(
-        // margin: EdgeInsets.symmetric(horizontal: 20.0),
         autovalidateMode: AutovalidateMode.disabled,
         key: _formKey.value,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(10),
-              child: TextFormField(
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          height: MediaQuery.of(context).size.height * 0.5,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              TextFormField(
                 validator: (value) {
                   if (value.isEmpty) {
                     return I18n.of(context).loginErrorsMissingUsername;
@@ -55,14 +64,40 @@ class LoginBox extends HookWidget {
                 },
                 controller: usernameTextController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  suffixIcon: usernameHasText.state
+                      ? IconButton(
+                          splashColor: Colors.transparent,
+                          color: Theme.of(context).appBarTheme.iconTheme.color,
+                          icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
+                          onPressed: () => usernameTextController.clear())
+                      : null,
+                  filled: true,
+                  fillColor: Theme.of(context).cardColor,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).accentColor, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).errorColor),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).errorColor, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  contentPadding: EdgeInsets.all(12.0),
                   labelText: I18n.of(context).loginFormUsername,
                 ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(10),
-              child: TextFormField(
+              SizedBox(height: 20),
+              TextFormField(
+                obscureText: showPassword.state,
                 validator: (value) {
                   if (value.isEmpty) {
                     return I18n.of(context).loginErrorsMissingPassword;
@@ -75,19 +110,45 @@ class LoginBox extends HookWidget {
                 },
                 controller: passwordTextController,
                 decoration: InputDecoration(
-                  border: OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                      splashColor: Colors.transparent,
+                      color: Theme.of(context).appBarTheme.iconTheme.color,
+                      icon: showPassword.state
+                          ? FaIcon(FontAwesomeIcons.solidEyeSlash)
+                          : FaIcon(FontAwesomeIcons.solidEye),
+                      onPressed: () =>
+                          showPassword.state = !showPassword.state),
+                  filled: true,
+                  fillColor: Theme.of(context).cardColor,
+                  enabledBorder: OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).accentColor, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  errorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(color: Theme.of(context).errorColor),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  focusedErrorBorder: OutlineInputBorder(
+                    borderSide: BorderSide(
+                        color: Theme.of(context).errorColor, width: 2.0),
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                  contentPadding: EdgeInsets.all(12.0),
                   labelText: I18n.of(context).loginFormPassword,
                 ),
               ),
-            ),
-            authStatus.maybeWhen(
-              authenticating: () => CircularProgressIndicator(),
-              orElse: () => Container(
-                height: 50,
-                padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                child: RaisedButton(
-                  textColor: Colors.white70,
-                  color: Colors.blue,
+              SizedBox(height: 20),
+              authStatus.maybeWhen(
+                authenticating: () => CircularProgressIndicator(),
+                orElse: () => RaisedButton(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0)),
+                  color: Theme.of(context).accentColor,
                   child: Text(I18n.of(context).loginFormLogin),
                   onPressed: () {
                     if (_formKey.value.currentState.validate()) {
@@ -101,8 +162,8 @@ class LoginBox extends HookWidget {
                   },
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

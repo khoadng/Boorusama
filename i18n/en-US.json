@@ -9,7 +9,8 @@
         "form" : {
             "username" : "Name",
             "password" : "Password",
-            "login" : "Login"
+            "login" : "Login",
+            "greeting" : "Hi there!"
         },
         "errors" : {
             "invalidUsernameOrPassword" : "Invalid username or password",

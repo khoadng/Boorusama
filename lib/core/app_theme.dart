@@ -21,6 +21,7 @@ class AppTheme {
         ),
   );
   static final darkTheme = ThemeData.dark().copyWith(
+      accentColor: Color.fromARGB(255, 114, 137, 218),
       // canvasColor: Color(0xff323232),
       primaryTextTheme: ThemeData.dark()
           .textTheme
