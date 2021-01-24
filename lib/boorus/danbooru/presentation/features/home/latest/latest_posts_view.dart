@@ -8,19 +8,21 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import '../../../shared/sliver_post_grid_placeholder.dart';
 
 class LatestView extends HookWidget {
-  const LatestView({Key key}) : super(key: key);
+  LatestView({Key key}) : super(key: key);
+
+  final gridKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     final refreshController =
         useState(RefreshController(initialRefresh: false));
     final scrollController = useScrollController();
-    final gridKey = useState(GlobalKey());
     useEffect(() {
       Future.microtask(
           () => context.read(latestPostsStateNotifierProvider).refresh());
       return () => {};
     }, []);
+
     final latestPosts = useProvider(latestPostsProvider);
     final isRefreshing = useProvider(isRefreshingProvider);
     final isLoadingMore = useProvider(isLoadingMoreProvider);
@@ -52,7 +54,7 @@ class LatestView extends HookWidget {
                   ? SliverPostGridPlaceHolder(
                       scrollController: scrollController)
                   : SliverPostGrid(
-                      key: gridKey.value,
+                      key: gridKey,
                       posts: latestPosts,
                       scrollController: scrollController,
                     ),
