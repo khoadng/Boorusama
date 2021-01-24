@@ -26,7 +26,7 @@ class PostStatisticsCache implements IPostStatisticsCache {
   @override
   Future<PostStatistics> get(String key) async {
     final box = await _cache;
-    Map<String, dynamic> data = box.get(key);
+    final data = box.get(key);
     if (data == null) {
       return PostStatistics.empty();
     } else {
@@ -43,7 +43,7 @@ class PostStatisticsCache implements IPostStatisticsCache {
   @override
   Future<bool> isExpired(String key) async {
     final box = await _cache;
-    Map<String, dynamic> data = box.get(key);
+    final data = box.get(key);
     final expire = DateTime.parse(data["expire"]);
 
     return DateTime.now().isAfter(expire);

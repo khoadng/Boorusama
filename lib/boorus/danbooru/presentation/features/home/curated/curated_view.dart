@@ -67,7 +67,7 @@ class CuratedView extends HookWidget {
                 controller: refreshController.value,
                 enablePullDown: true,
                 enablePullUp: true,
-                header: const WaterDropMaterialHeader(),
+                header: const MaterialClassicHeader(),
                 footer: const ClassicFooter(),
                 onRefresh: () {
                   currentPosts.value.clear();

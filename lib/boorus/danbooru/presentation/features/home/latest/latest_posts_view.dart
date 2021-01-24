@@ -38,7 +38,7 @@ class LatestView extends HookWidget {
         controller: refreshController.value,
         enablePullUp: true,
         enablePullDown: true,
-        header: const WaterDropMaterialHeader(),
+        header: const MaterialClassicHeader(),
         footer: const ClassicFooter(),
         onRefresh: () =>
             context.read(latestPostsStateNotifierProvider).refresh(),

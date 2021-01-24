@@ -59,7 +59,7 @@ class MostViewedView extends HookWidget {
               return SmartRefresher(
                 controller: refreshController.value,
                 enablePullDown: true,
-                header: const WaterDropMaterialHeader(),
+                header: const MaterialClassicHeader(),
                 onRefresh: () {
                   currentPosts.value.clear();
                   context
