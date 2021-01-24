@@ -67,8 +67,9 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
 }
 
 final latestPostsStateNotifierProvider =
-    StateNotifierProvider<LatestStateNotifier>(
-        (ref) => LatestStateNotifier(ref));
+    StateNotifierProvider<LatestStateNotifier>((ref) {
+  return LatestStateNotifier(ref)..refresh();
+});
 
 final _posts = Provider<List<Post>>(
     (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);

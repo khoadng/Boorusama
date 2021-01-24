@@ -20,8 +20,8 @@ class SliverPostGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LiveSliverGrid(
-      showItemDuration: Duration(milliseconds: 20),
-      showItemInterval: Duration(milliseconds: 20),
+      showItemDuration: Duration(milliseconds: 15),
+      showItemInterval: Duration(milliseconds: 15),
       itemBuilder: (context, index, animation) {
         if (index != null) {
           final post = posts[index];

@@ -90,12 +90,6 @@ class CuratedView extends HookWidget {
     final posts = useProvider(_curatedPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    useEffect(() {
-      Future.microtask(
-          () => context.read(curatedStateNotifierProvider).refresh());
-      return () => {};
-    }, []);
-
     return ProviderListener<PostState>(
       provider: _postsState,
       onChange: (context, state) {
@@ -109,102 +103,114 @@ class CuratedView extends HookWidget {
           orElse: () {},
         );
       },
-      child: SmartRefresher(
-        controller: refreshController.value,
-        enablePullDown: true,
-        enablePullUp: true,
-        header: const MaterialClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () => context.read(curatedStateNotifierProvider).refresh(),
-        onLoading: () =>
-            context.read(curatedStateNotifierProvider).getMorePosts(),
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ButtonBar(
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.keyboard_arrow_left),
-                            onPressed: () => context
-                                .read(curatedStateNotifierProvider)
-                                .reverseOneTimeUnit(),
-                          ),
-                          FlatButton(
-                            color: Theme.of(context).cardColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                            onPressed: () => DatePicker.showDatePicker(
-                              context,
-                              theme: DatePickerTheme(),
-                              onConfirm: (time) {
-                                context
-                                    .read(curatedStateNotifierProvider)
-                                    .updateDate(time);
-                              },
-                              currentTime: DateTime.now(),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                    "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
-                                Icon(Icons.arrow_drop_down)
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.keyboard_arrow_right),
-                            onPressed: () => context
-                                .read(curatedStateNotifierProvider)
-                                .forwardOneTimeUnit(),
-                          ),
-                        ],
-                      ),
-                      FlatButton(
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                        ),
-                        onPressed: () async {
-                          final timeScale = await showMaterialModalBottomSheet(
-                                  context: context,
-                                  builder: (context, controller) =>
-                                      _buildModalTimeScalePicker(context)) ??
-                              selectedTimeScale;
-
-                          context
-                              .read(curatedStateNotifierProvider)
-                              .updateTimeScale(timeScale);
-                        },
-                        child: Row(
+      child: SafeArea(
+        top: false,
+        bottom: false,
+        child: SmartRefresher(
+          controller: refreshController.value,
+          enablePullDown: true,
+          enablePullUp: true,
+          header: const MaterialClassicHeader(),
+          footer: const ClassicFooter(),
+          onRefresh: () => context.read(curatedStateNotifierProvider).refresh(),
+          onLoading: () =>
+              context.read(curatedStateNotifierProvider).getMorePosts(),
+          child: CustomScrollView(
+            key: PageStorageKey<String>("curated"),
+            slivers: <Widget>[
+              SliverOverlapInjector(
+                // This is the flip side of the SliverOverlapAbsorber
+                // above.
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        ButtonBar(
                           children: <Widget>[
-                            Text(
-                                "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
-                            Icon(Icons.arrow_drop_down)
+                            IconButton(
+                              icon: Icon(Icons.keyboard_arrow_left),
+                              onPressed: () => context
+                                  .read(curatedStateNotifierProvider)
+                                  .reverseOneTimeUnit(),
+                            ),
+                            FlatButton(
+                              color: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                              onPressed: () => DatePicker.showDatePicker(
+                                context,
+                                theme: DatePickerTheme(),
+                                onConfirm: (time) {
+                                  context
+                                      .read(curatedStateNotifierProvider)
+                                      .updateDate(time);
+                                },
+                                currentTime: DateTime.now(),
+                              ),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                      "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
+                                  Icon(Icons.arrow_drop_down)
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.keyboard_arrow_right),
+                              onPressed: () => context
+                                  .read(curatedStateNotifierProvider)
+                                  .forwardOneTimeUnit(),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        FlatButton(
+                          color: Theme.of(context).cardColor,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18.0),
+                          ),
+                          onPressed: () async {
+                            final timeScale =
+                                await showMaterialModalBottomSheet(
+                                        context: context,
+                                        builder: (context, controller) =>
+                                            _buildModalTimeScalePicker(
+                                                context)) ??
+                                    selectedTimeScale;
+
+                            context
+                                .read(curatedStateNotifierProvider)
+                                .updateTimeScale(timeScale);
+                          },
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                  "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
+                              Icon(Icons.arrow_drop_down)
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-            postsState.maybeWhen(
-              refreshing: () =>
-                  SliverPostGridPlaceHolder(scrollController: scrollController),
-              orElse: () => SliverPostGrid(
-                key: gridKey.value,
-                posts: posts,
-                scrollController: scrollController,
+              postsState.maybeWhen(
+                refreshing: () => SliverPostGridPlaceHolder(
+                    scrollController: scrollController),
+                orElse: () => SliverPostGrid(
+                  key: gridKey.value,
+                  posts: posts,
+                  scrollController: scrollController,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
