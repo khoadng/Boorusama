@@ -18,12 +18,11 @@ final curatedStateNotifierProvider =
         (ref) => CuratedStateNotifier(ref));
 
 class CuratedView extends HookWidget {
-  CuratedView({Key key}) : super(key: key);
-
-  final gridKey = GlobalKey();
+  const CuratedView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final gridKey = useState(GlobalKey());
     final scrollController = useScrollController();
     final selectedDate = useState(DateTime.now());
     final selectedTimeScale = useState(TimeScale.day);
@@ -258,7 +257,7 @@ class CuratedView extends HookWidget {
                         scrollController: scrollController,
                       ),
                       fetched: (posts) => SliverPostGrid(
-                        key: gridKey,
+                        key: gridKey.value,
                         posts: currentPosts.value,
                         scrollController: scrollController,
                       ),

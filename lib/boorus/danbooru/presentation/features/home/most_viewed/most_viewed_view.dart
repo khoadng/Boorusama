@@ -17,12 +17,11 @@ final mostViewedStateNotifierProvider =
         (ref) => MostViewedStateNotifier(ref));
 
 class MostViewedView extends HookWidget {
-  MostViewedView({Key key}) : super(key: key);
-
-  final gridKey = GlobalKey();
+  const MostViewedView({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final gridKey = useState(GlobalKey());
     final scrollController = useScrollController();
     final selectedDate = useState(DateTime.now());
     final currentPosts = useState(<Post>[]);
@@ -139,7 +138,7 @@ class MostViewedView extends HookWidget {
                       loading: () => SliverPostGridPlaceHolder(
                           scrollController: scrollController),
                       fetched: (posts) => SliverPostGrid(
-                        key: gridKey,
+                        key: gridKey.value,
                         posts: currentPosts.value,
                         scrollController: scrollController,
                       ),
