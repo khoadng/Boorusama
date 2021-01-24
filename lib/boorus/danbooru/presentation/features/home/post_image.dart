@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:time/time.dart';
 
 class PostImage extends StatefulWidget {
   const PostImage({
@@ -64,7 +63,7 @@ class _PostImageState extends State<PostImage> {
         ),
       ),
       errorWidget: (context, url, error) => Icon(Icons.error),
-      fadeInDuration: 10.milliseconds,
+      fadeInDuration: Duration(microseconds: 10),
     );
   }
 }

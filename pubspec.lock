@@ -127,13 +127,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.5.0"
-  carousel_slider:
-    dependency: "direct main"
-    description:
-      name: carousel_slider
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.3.1"
   characters:
     dependency: transitive
     description:
@@ -295,13 +288,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.11"
-  equatable:
-    dependency: "direct main"
-    description:
-      name: equatable
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.2.5"
   fake_async:
     dependency: transitive
     description:
@@ -397,7 +383,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_riverpod:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: flutter_riverpod
       url: "https://pub.dartlang.org"
@@ -908,15 +894,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliding_up_panel:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: body-size
-      resolved-ref: "3caa58890c8d58ee32134fd92ea18cc453ef5fa5"
-      url: "https://github.com/AndroidNils/sliding_up_panel"
-    source: git
-    version: "1.0.2"
   source_gen:
     dependency: transitive
     description:
@@ -1008,13 +985,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
-  time:
-    dependency: "direct main"
-    description:
-      name: time
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.4.0"
   timing:
     dependency: transitive
     description:
@@ -1113,13 +1083,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.24"
-  widget_view:
-    dependency: "direct main"
-    description:
-      name: widget_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.2+1"
   win32:
     dependency: transitive
     description:
