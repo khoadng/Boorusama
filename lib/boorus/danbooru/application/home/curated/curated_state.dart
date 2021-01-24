@@ -2,15 +2,19 @@ part of 'curated_state_notifier.dart';
 
 @freezed
 abstract class CuratedState with _$CuratedState {
-  const factory CuratedState.initial() = _Initial;
-  const factory CuratedState.loading() = _Loading;
-  const factory CuratedState.refreshing() = _Refreshing;
-
-  const factory CuratedState.fetched({
+  const factory CuratedState({
     @required List<Post> posts,
-  }) = _Fetched;
-  const factory CuratedState.error({
-    @required String name,
-    @required String message,
-  }) = _Error;
+    @required int page,
+    @required DateTime selectedDate,
+    @required TimeScale selectedTimeScale,
+    @required PostState postsState,
+  }) = _CuratedState;
+
+  factory CuratedState.initial() => CuratedState(
+        posts: [],
+        page: 1,
+        selectedDate: DateTime.now(),
+        selectedTimeScale: TimeScale.day,
+        postsState: PostState.empty(),
+      );
 }

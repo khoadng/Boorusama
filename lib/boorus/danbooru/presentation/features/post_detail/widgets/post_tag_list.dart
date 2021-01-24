@@ -79,9 +79,14 @@ class _PostTagListState extends State<PostTagList> {
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomLeft: Radius.circular(8))),
-                  label: Text(
-                    tag.displayName,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  label: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                    child: Text(
+                      tag.displayName,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   )),
               Chip(
                 padding: EdgeInsets.all(2.0),

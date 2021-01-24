@@ -30,7 +30,7 @@ class PostStatisticsCache implements IPostStatisticsCache {
     if (data == null) {
       return PostStatistics.empty();
     } else {
-      return PostStatistics.fromJson(data);
+      return PostStatistics.fromJson(data..remove("expire"));
     }
   }
 

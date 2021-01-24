@@ -2,13 +2,19 @@ part of 'most_viewed_state_notifier.dart';
 
 @freezed
 abstract class MostViewedState with _$MostViewedState {
-  const factory MostViewedState.initial() = _Initial;
-  const factory MostViewedState.loading() = _Loading;
-  const factory MostViewedState.fetched({
+  const factory MostViewedState({
     @required List<Post> posts,
-  }) = _Fetched;
-  const factory MostViewedState.error({
-    @required String name,
-    @required String message,
-  }) = _Error;
+    @required int page,
+    @required DateTime selectedDate,
+    @required TimeScale selectedTimeScale,
+    @required PostState postsState,
+  }) = _MostViewedState;
+
+  factory MostViewedState.initial() => MostViewedState(
+        posts: [],
+        page: 1,
+        selectedDate: DateTime.now(),
+        selectedTimeScale: TimeScale.day,
+        postsState: PostState.empty(),
+      );
 }

@@ -30,7 +30,7 @@ class ArtistCommentaryCache implements IArtistCommentaryCache {
     if (data == null) {
       return ArtistCommentary.empty();
     } else {
-      return ArtistCommentary.fromJson(data);
+      return ArtistCommentary.fromJson(data..remove("expire"));
     }
   }
 
