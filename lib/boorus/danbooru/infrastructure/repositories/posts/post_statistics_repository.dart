@@ -17,7 +17,8 @@ final postStatisticsProvider = Provider<IPostStatisticsRepository>((ref) {
   final repo = PostStatisticsRepository(
       ref.watch(apiProvider), ref.watch(accountProvider));
 
-  return PostStatisticsCacheDecorator(repo, cache, endpoint);
+  //TODO: caching is broken, re-add later
+  return repo;
 });
 
 class PostStatisticsRepository implements IPostStatisticsRepository {

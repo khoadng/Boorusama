@@ -1,4 +1,7 @@
+import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
@@ -50,4 +53,14 @@ final userHandler = Handler(
   final String userId = params["id"][0];
 
   return AccountInfoPage(accountId: int.parse(userId));
+});
+
+final loginHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return LoginPage();
+});
+
+final settingsHandler = Handler(
+    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+  return SettingsPage();
 });

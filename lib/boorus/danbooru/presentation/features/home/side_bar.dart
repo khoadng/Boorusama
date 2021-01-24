@@ -1,7 +1,5 @@
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,8 +19,7 @@ class SideBarMenu extends HookWidget {
         title: Text(I18n.of(context).sideMenuLogin),
         onTap: () {
           Navigator.of(context).pop();
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => LoginPage()));
+          AppRouter.router.navigateTo(context, "/login");
         },
       ));
     } else {
@@ -43,8 +40,7 @@ class SideBarMenu extends HookWidget {
       title: Text(I18n.of(context).sideMenuSettings),
       onTap: () {
         Navigator.of(context).pop();
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => SettingsPage()));
+        AppRouter.router.navigateTo(context, "/settings");
       },
     ));
 

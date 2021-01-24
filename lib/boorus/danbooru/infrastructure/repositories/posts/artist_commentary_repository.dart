@@ -16,7 +16,9 @@ final artistCommentaryProvider = Provider<IArtistCommentaryRepository>((ref) {
       ref.watch(apiProvider), ref.watch(accountProvider));
   final cache = ref.watch(artistCommentaryCacheProvider);
   final endpoint = ref.watch(apiEndpointProvider);
-  return ArtistCommentaryCacheDecorator(repo, cache, endpoint);
+
+  //TODO: caching is broken, re-add later
+  return repo;
 });
 
 class ArtistCommentaryRepository implements IArtistCommentaryRepository {

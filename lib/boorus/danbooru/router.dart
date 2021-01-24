@@ -18,6 +18,13 @@ class AppRouter {
     router.define("/posts/image",
         handler: postDetailImageHandler, transitionType: TransitionType.fadeIn);
 
-    router.define("/users/:id", handler: userHandler);
+    router.define("/users/:id",
+        handler: userHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/login",
+        handler: loginHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/settings",
+        handler: settingsHandler, transitionType: TransitionType.inFromRight);
   }
 }
