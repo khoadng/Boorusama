@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
@@ -11,6 +12,10 @@ import '../post_filter.dart';
 
 part 'latest_posts_state.dart';
 part 'latest_posts_state_notifier.freezed.dart';
+
+final latestPostsStateNotifierProvider =
+    StateNotifierProvider<LatestStateNotifier>(
+        (ref) => LatestStateNotifier(ref));
 
 class LatestStateNotifier extends StateNotifier<LatestPostsState> {
   LatestStateNotifier(ProviderReference ref)
@@ -21,69 +26,56 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
   final IPostRepository _postRepository;
   final ISettingRepository _settingRepository;
 
-  Future<List<Post>> getMore() async {
+  void getMorePosts() async {
     try {
       final nextPage = state.page + 1;
       state = state.copyWith(
-        isLoadingMore: true,
+        postsState: PostState.loading(),
       );
 
-      final dtos = await _postRepository.getPosts(state.query, nextPage);
+      final dtos = await _postRepository.getPosts("", nextPage);
       final settings = await _settingRepository.load();
-      final filteredPosts = filter(dtos, settings);
+      final filteredPosts = filter(dtos, settings)
+        ..removeWhere((post) {
+          final p = state.posts.firstWhere(
+            (sPost) => sPost.id == post.id,
+            orElse: () => null,
+          );
+          return p?.id == post.id;
+        });
 
       state = state.copyWith(
-        isLoadingMore: false,
+        postsState: PostState.fetched(),
         posts: [...state.posts, ...filteredPosts],
         page: nextPage,
       );
-
-      return filteredPosts;
     } on DatabaseTimeOut {
-      return [];
+      state = state.copyWith(
+        postsState: PostState.error(),
+      );
     }
   }
 
-  Future<List<Post>> refresh([String query = ""]) async {
+  void refresh() async {
     try {
       state = state.copyWith(
-        isRefreshing: true,
+        page: 1,
         posts: [],
-        query: query,
+        postsState: PostState.refreshing(),
       );
 
-      final dtos = await _postRepository.getPosts(query, 1);
+      final dtos = await _postRepository.getPosts("", state.page);
       final settings = await _settingRepository.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(
-        isRefreshing: false,
         posts: filteredPosts,
-        page: 1,
+        postsState: PostState.fetched(),
       );
-      return filteredPosts;
     } on DatabaseTimeOut {
-      return [];
+      state = state.copyWith(
+        postsState: PostState.error(),
+      );
     }
   }
 }
-
-final latestPostsStateNotifierProvider =
-    StateNotifierProvider<LatestStateNotifier>(
-        (ref) => LatestStateNotifier(ref));
-
-final _posts = Provider<List<Post>>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);
-
-final latestPostsProvider = Provider<List<Post>>((ref) => ref.watch(_posts));
-
-final _isLoadingMore = Provider<bool>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).isLoadingMore);
-
-final isLoadingMoreProvider =
-    Provider<bool>((ref) => ref.watch(_isLoadingMore));
-
-final _isRefreshing = Provider<bool>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).isRefreshing);
-
-final isRefreshingProvider = Provider<bool>((ref) => ref.watch(_isRefreshing));
