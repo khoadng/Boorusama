@@ -33,32 +33,28 @@ class LatestView extends HookWidget {
       refreshController.value.refreshCompleted();
     }
 
-    return Scaffold(
-      body: SmartRefresher(
-        controller: refreshController.value,
-        enablePullUp: true,
-        enablePullDown: true,
-        header: const MaterialClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () =>
-            context.read(latestPostsStateNotifierProvider).refresh(),
-        onLoading: () =>
-            context.read(latestPostsStateNotifierProvider).getMore(),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverPadding(
-              padding: EdgeInsets.all(6.0),
-              sliver: isRefreshing
-                  ? SliverPostGridPlaceHolder(
-                      scrollController: scrollController)
-                  : SliverPostGrid(
-                      key: gridKey.value,
-                      posts: latestPosts,
-                      scrollController: scrollController,
-                    ),
-            ),
-          ],
-        ),
+    return SmartRefresher(
+      controller: refreshController.value,
+      enablePullUp: true,
+      enablePullDown: true,
+      header: const MaterialClassicHeader(),
+      footer: const ClassicFooter(),
+      onRefresh: () => context.read(latestPostsStateNotifierProvider).refresh(),
+      onLoading: () => context.read(latestPostsStateNotifierProvider).getMore(),
+      child: CustomScrollView(
+        controller: scrollController,
+        slivers: <Widget>[
+          SliverPadding(
+            padding: EdgeInsets.all(6.0),
+            sliver: isRefreshing
+                ? SliverPostGridPlaceHolder(scrollController: scrollController)
+                : SliverPostGrid(
+                    key: gridKey.value,
+                    posts: latestPosts,
+                    scrollController: scrollController,
+                  ),
+          ),
+        ],
       ),
     );
   }
