@@ -1,3 +1,4 @@
+// Project imports:
 import 'note_coordinate.dart';
 
 class Note {

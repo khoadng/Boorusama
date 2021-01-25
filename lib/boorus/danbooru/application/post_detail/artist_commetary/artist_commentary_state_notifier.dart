@@ -1,9 +1,11 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 
 part 'artist_commentary_state.dart';
 part 'artist_commentary_state_notifier.freezed.dart';

@@ -1,15 +1,19 @@
+// Package imports:
+import 'package:flutter_riverpod/all.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/user.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/user_level.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart'
-    as domain;
 import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+
+import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart'
+    as domain;
 
 part 'comment_state.dart';
 part 'comment_state_notifier.freezed.dart';

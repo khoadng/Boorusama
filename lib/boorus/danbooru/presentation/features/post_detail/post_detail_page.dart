@@ -1,5 +1,20 @@
+// Dart imports:
 import 'dart:math';
 
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:like_button/like_button.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
@@ -8,16 +23,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
-import 'package:like_button/like_button.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:shimmer/shimmer.dart';
-
 import 'post_image_page.dart';
 import 'widgets/post_tag_list.dart';
 import 'widgets/post_video.dart';

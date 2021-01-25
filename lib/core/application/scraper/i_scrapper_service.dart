@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 
 abstract class IScrapperService {

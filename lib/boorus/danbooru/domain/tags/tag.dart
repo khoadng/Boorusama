@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 

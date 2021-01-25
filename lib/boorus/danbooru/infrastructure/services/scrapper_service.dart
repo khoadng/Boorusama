@@ -1,12 +1,15 @@
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/core/application/scraper/i_scrapper_service.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+// Package imports:
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:html/parser.dart' as html;
-import 'package:dio_cookie_manager/dio_cookie_manager.dart';
-import 'package:cookie_jar/cookie_jar.dart';
 import 'package:meta/meta.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
+import 'package:boorusama/core/application/scraper/i_scrapper_service.dart';
 
 final scrapperProvider = Provider<IScrapperService>((ref) {
   final cookieJar = CookieJar();

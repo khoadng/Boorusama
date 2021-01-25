@@ -1,8 +1,11 @@
+// Package imports:
+import 'package:flutter_riverpod/all.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/wikis/i_wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wiki.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wikis/wiki_repository.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'wiki_state.dart';
 part 'wiki_state_notifier.freezed.dart';

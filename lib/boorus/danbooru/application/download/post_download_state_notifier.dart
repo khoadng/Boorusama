@@ -1,9 +1,13 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'download_service.dart';
 
 part 'post_download_state.dart';

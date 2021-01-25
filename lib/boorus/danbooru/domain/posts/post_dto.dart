@@ -1,7 +1,9 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
+// Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
 import 'post.dart';
 import 'rating.dart';
 import 'tag_string.dart';

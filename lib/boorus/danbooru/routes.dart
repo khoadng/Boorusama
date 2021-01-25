@@ -1,10 +1,13 @@
-import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'package:fluro/fluro.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:fluro/fluro.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'presentation/features/accounts/account_info/account_info_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_detail_page.dart';

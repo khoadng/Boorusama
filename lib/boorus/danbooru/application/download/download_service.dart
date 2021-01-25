@@ -1,13 +1,19 @@
+// Dart imports:
 import 'dart:io' as io;
-import 'dart:ui';
 import 'dart:isolate';
+import 'dart:ui';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'package:boorusama/core/infrastructure/IOHelper.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_riverpod/all.dart';
 
 final downloadServiceProvider =
     Provider<IDownloadService>((ref) => DownloadService());

@@ -1,8 +1,11 @@
+// Package imports:
+import 'package:flutter_riverpod/all.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'suggestions_state.dart';
 part 'suggestions_state_notifier.freezed.dart';

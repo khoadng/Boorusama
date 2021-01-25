@@ -1,6 +1,11 @@
-import 'package:boorusama/boorus/danbooru/application/wiki/wiki_state_notifier.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_state_notifier.dart';
 
 final wikiStateNotifierProvider =
     StateNotifierProvider<WikiStateNotifier>((ref) => WikiStateNotifier(ref));

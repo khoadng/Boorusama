@@ -1,8 +1,13 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/all.dart';
 
 class AccountInfoPage extends StatefulWidget {
   const AccountInfoPage({

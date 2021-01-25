@@ -1,11 +1,15 @@
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
 import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 

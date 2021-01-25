@@ -1,10 +1,13 @@
+// Package imports:
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
 
 final favoriteProvider = Provider<FavoritePostRepository>((ref) =>
     FavoritePostRepository(ref.watch(apiProvider), ref.watch(accountProvider)));

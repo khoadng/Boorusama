@@ -1,5 +1,8 @@
-import 'package:boorusama/generated/i18n.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:boorusama/generated/i18n.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({

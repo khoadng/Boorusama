@@ -1,8 +1,12 @@
+// Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Package imports:
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 
 class DioConnectivityRequestRetrier {
   final Dio dio;

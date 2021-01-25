@@ -1,8 +1,13 @@
+// Dart imports:
 import 'dart:io';
 
-import 'package:dio/dio.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
+import 'package:dio/dio.dart';
+
+// Project imports:
 import 'dio_connectivity_request_retrier.dart';
 
 class RetryOnConnectionChangeInterceptor extends Interceptor {

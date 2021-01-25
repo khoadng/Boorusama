@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/danbooru/application/comment/user.dart';
+// Package imports:
 import 'package:meta/meta.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/comment/user.dart';
 
 class Comment {
   final int id;

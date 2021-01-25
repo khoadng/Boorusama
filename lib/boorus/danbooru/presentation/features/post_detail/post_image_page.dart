@@ -1,12 +1,16 @@
-import 'package:boorusama/boorus/danbooru/application/post_detail/notes/notes_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:photo_view/photo_view.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/post_detail/notes/notes_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'widgets/post_note.dart';
 
 final notesStateNotifierProvider =

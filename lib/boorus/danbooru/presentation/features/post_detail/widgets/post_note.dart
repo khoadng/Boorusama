@@ -1,7 +1,12 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_html/flutter_html.dart';
 import 'package:super_tooltip/super_tooltip.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 
 class PostNote extends StatelessWidget {
   const PostNote({

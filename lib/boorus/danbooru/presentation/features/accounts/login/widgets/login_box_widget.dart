@@ -1,9 +1,14 @@
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/generated/i18n.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 
 final _showPasswordProvider = StateProvider<bool>((ref) => false);
 final _userNameHasTextProvider = StateProvider<bool>((ref) => false);

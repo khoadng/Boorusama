@@ -1,15 +1,19 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 
+// Package imports:
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
 import 'app_constants.dart';
-import 'generated/i18n.dart';
-import 'core/app_theme.dart';
 import 'boorus/danbooru/application/download/download_service.dart';
 import 'boorus/danbooru/application/themes/theme_state_notifier.dart';
 import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 import 'boorus/danbooru/router.dart';
+import 'core/app_theme.dart';
+import 'generated/i18n.dart';
 
 class App extends StatefulWidget {
   App({this.settings});

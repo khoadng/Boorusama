@@ -1,3 +1,8 @@
+// Package imports:
+import 'package:flutter_riverpod/all.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/post_filter.dart';
 import 'package:boorusama/boorus/danbooru/application/search/query_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
@@ -5,8 +10,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'search_state.dart';
 part 'search_state_notifier.freezed.dart';

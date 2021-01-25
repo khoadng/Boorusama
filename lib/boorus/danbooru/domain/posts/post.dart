@@ -1,11 +1,13 @@
+// Package imports:
+import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/rating.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/tag_string.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'package:meta/meta.dart';
-import 'package:path/path.dart' as path;
-
 import 'post_name.dart';
 
 class Post implements IDownloadable {

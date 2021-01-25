@@ -1,6 +1,6 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repository.dart';
-
 import 'artist_commentary_cache.dart';
 
 class ArtistCommentaryCacheDecorator implements IArtistCommentaryRepository {

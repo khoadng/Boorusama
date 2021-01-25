@@ -1,8 +1,11 @@
+// Dart imports:
 import 'dart:collection';
 
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+// Project imports:
 import 'suggestions_state_notifier.dart';
 
 part 'query_state.dart';

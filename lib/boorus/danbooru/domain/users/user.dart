@@ -1,5 +1,3 @@
-import '../../application/comment/user_level.dart';
-
 class User {
   int _id;
   String _name;

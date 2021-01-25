@@ -1,8 +1,13 @@
-import 'package:boorusama/boorus/danbooru/application/themes/theme_state_notifier.dart';
-import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/themes/theme_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'package:boorusama/generated/i18n.dart';
 
 class AppearancePage extends StatefulWidget {
   AppearancePage({Key key, @required this.settings}) : super(key: key);

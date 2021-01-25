@@ -1,11 +1,14 @@
+// Package imports:
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/all.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
 
 final commentProvider = Provider<CommentRepository>((ref) =>
     CommentRepository(ref.watch(apiProvider), ref.watch(accountProvider)));

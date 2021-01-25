@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({

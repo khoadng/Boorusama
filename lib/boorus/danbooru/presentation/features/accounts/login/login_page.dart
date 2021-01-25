@@ -1,7 +1,11 @@
-import 'package:boorusama/generated/i18n.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_html/style.dart';
 
+// Project imports:
+import 'package:boorusama/generated/i18n.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {

@@ -1,8 +1,10 @@
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:sqflite/sqflite.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'account_database.dart';
 
 final accountProvider = Provider<IAccountRepository>((ref) {

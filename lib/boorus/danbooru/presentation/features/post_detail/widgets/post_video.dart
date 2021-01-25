@@ -1,7 +1,12 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+
+// Package imports:
 import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {

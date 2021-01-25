@@ -1,13 +1,18 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:popup_menu/popup_menu.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/wiki/wiki_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:popup_menu/popup_menu.dart';
 
 final tagsStateNotifierProvider =
     StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));

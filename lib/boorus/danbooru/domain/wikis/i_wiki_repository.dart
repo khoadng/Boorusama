@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/wikis/wiki.dart';
 
 abstract class IWikiRepository {

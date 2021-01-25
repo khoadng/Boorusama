@@ -1,11 +1,16 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:auto_animated/auto_animated.dart';
+import 'package:flutter_riverpod/all.dart';
+import 'package:like_button/like_button.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/post_image.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
-import 'package:flutter_riverpod/all.dart';
 
 class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({

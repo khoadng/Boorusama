@@ -1,10 +1,14 @@
-import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import '../../../shared/sliver_post_grid_placeholder.dart';
 
 class LatestView extends HookWidget {

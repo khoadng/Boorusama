@@ -1,5 +1,8 @@
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key key, @required this.onTabChanged}) : super(key: key);

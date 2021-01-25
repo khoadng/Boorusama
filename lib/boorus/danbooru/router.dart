@@ -1,6 +1,11 @@
-import 'package:boorusama/boorus/danbooru/routes.dart';
-import 'package:fluro/fluro.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:fluro/fluro.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/routes.dart';
 
 @immutable
 class AppRouter {

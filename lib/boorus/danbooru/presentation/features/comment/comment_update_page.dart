@@ -1,9 +1,13 @@
-import 'package:boorusama/boorus/danbooru/application/comment/comment_state_notifier.dart';
-import 'package:boorusama/generated/i18n.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/comment/comment_state_notifier.dart';
+import 'package:boorusama/generated/i18n.dart';
 import 'comment_page.dart';
 import 'widgets/editor_spacer.dart';
 

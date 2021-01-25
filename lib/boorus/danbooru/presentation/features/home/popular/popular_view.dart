@@ -1,16 +1,21 @@
-import 'package:boorusama/boorus/danbooru/application/home/popular/popular_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/home/popular/popular_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/generated/i18n.dart';
 
 final _posts = Provider<List<Post>>((ref) {
   return ref.watch(popularStateNotifierProvider.state).posts;

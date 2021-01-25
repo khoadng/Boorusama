@@ -1,9 +1,14 @@
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/generated/i18n.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/generated/i18n.dart';
 
 class SideBarMenu extends HookWidget {
   SideBarMenu();

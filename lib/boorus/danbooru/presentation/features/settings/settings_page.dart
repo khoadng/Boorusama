@@ -1,11 +1,15 @@
-import 'package:boorusama/generated/i18n.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:hooks_riverpod/all.dart';
+import 'package:settings_ui/settings_ui.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:hooks_riverpod/all.dart';
-import 'package:flutter/material.dart';
-import 'package:settings_ui/settings_ui.dart';
-
+import 'package:boorusama/generated/i18n.dart';
 import 'appearance_page.dart';
 import 'tag_settings_page.dart';
 

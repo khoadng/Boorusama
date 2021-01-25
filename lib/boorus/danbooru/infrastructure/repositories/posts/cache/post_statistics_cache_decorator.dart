@@ -1,6 +1,6 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_statistics_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_statistics.dart';
-
 import 'post_statistics_cache.dart';
 
 class PostStatisticsCacheDecorator implements IPostStatisticsRepository {

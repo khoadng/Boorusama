@@ -1,8 +1,11 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+// Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 
 part 'notes_state.dart';
 part 'notes_state_notifier.freezed.dart';

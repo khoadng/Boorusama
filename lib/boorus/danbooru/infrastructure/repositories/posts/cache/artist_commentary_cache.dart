@@ -1,7 +1,10 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
-import 'package:boorusama/core/infrastructure/caching/i_cache.dart';
+// Package imports:
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
+import 'package:boorusama/core/infrastructure/caching/i_cache.dart';
 
 final artistCommentaryCacheProvider = Provider<IArtistCommentaryCache>((ref) {
   final box = Hive.openBox("artist_commentary");

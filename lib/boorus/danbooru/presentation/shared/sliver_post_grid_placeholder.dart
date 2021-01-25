@@ -1,5 +1,8 @@
-import 'package:auto_animated/auto_animated.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:auto_animated/auto_animated.dart';
 import 'package:shimmer/shimmer.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {
