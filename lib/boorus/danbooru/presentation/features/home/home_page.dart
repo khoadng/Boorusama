@@ -8,6 +8,7 @@ import 'package:md2_tab_indicator/md2_tab_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
@@ -54,71 +55,81 @@ class HomePage extends HookWidget {
       key: scaffoldKey,
       drawer: SideBarMenu(),
       resizeToAvoidBottomInset: false,
-      body: DefaultTabController(
-        length: tabLength,
-        child: NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (context, innerBoxIsScrolled) {
-            return <Widget>[
-              SliverSafeArea(
-                top: false,
-                sliver: SliverAppBar(
-                  toolbarHeight: kToolbarHeight * 1.2,
-                  title: SearchBar(
-                    enabled: false,
-                    leading: IconButton(
-                      icon: Icon(Icons.menu),
-                      onPressed: () => scaffoldKey.currentState.openDrawer(),
-                    ),
-                    onTap: () =>
-                        AppRouter.router.navigateTo(context, "/posts/search/"),
-                  ),
-                  shape: Border(
-                    bottom: BorderSide(color: Colors.grey[400], width: 1.0),
-                  ),
-                  floating: true,
-                  pinned: true,
-                  snap: true,
-                  primary: true,
-                  forceElevated: true,
-                  automaticallyImplyLeading: false,
-                  bottom: TabBar(
-                    onTap: (value) => topTabIndex.value = value,
-                    isScrollable: true,
-                    controller: tabController,
-                    unselectedLabelColor:
-                        Theme.of(context).unselectedWidgetColor,
-                    labelColor: Theme.of(context).accentColor,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    indicator: MD2Indicator(
-                      indicatorHeight: 4,
-                      indicatorColor: Theme.of(context).accentColor,
-                      indicatorSize: MD2IndicatorSize.full,
-                    ),
-                    tabs: [
-                      Tab(text: I18n.of(context).postCategoriesLatest),
-                      Tab(text: I18n.of(context).postCategoriesPopular),
-                      Tab(text: I18n.of(context).postCategoriesCurated),
-                      Tab(text: I18n.of(context).postCategoriesMostViewed),
-                    ],
-                  ),
-                ),
-              ),
-            ];
-          },
-          body: AnimatedIndexedStack(
-            index: topTabIndex.value,
-            children: <Widget>[
-              LatestView(),
-              PopularView(),
-              CuratedView(),
-              MostViewedView(),
-            ],
-          ),
-        ),
+      body: IndexedStack(
+        index: bottomTabIndex.value,
+        children: <Widget>[
+          _buildHomeTabBottomBar(topTabIndex, tabController),
+          FavoritesPage(),
+        ],
       ),
       bottomNavigationBar: BottomBar(
         onTabChanged: (value) => bottomTabIndex.value = value,
+      ),
+    );
+  }
+
+  Widget _buildHomeTabBottomBar(
+      ValueNotifier<int> topTabIndex, TabController tabController) {
+    return DefaultTabController(
+      length: tabLength,
+      child: NestedScrollView(
+        floatHeaderSlivers: true,
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return <Widget>[
+            SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar(
+                toolbarHeight: kToolbarHeight * 1.2,
+                title: SearchBar(
+                  enabled: false,
+                  leading: IconButton(
+                    icon: Icon(Icons.menu),
+                    onPressed: () => scaffoldKey.currentState.openDrawer(),
+                  ),
+                  onTap: () =>
+                      AppRouter.router.navigateTo(context, "/posts/search/"),
+                ),
+                shape: Border(
+                  bottom: BorderSide(color: Colors.grey[400], width: 1.0),
+                ),
+                floating: true,
+                pinned: true,
+                snap: true,
+                primary: true,
+                forceElevated: true,
+                automaticallyImplyLeading: false,
+                bottom: TabBar(
+                  onTap: (value) => topTabIndex.value = value,
+                  isScrollable: true,
+                  controller: tabController,
+                  unselectedLabelColor: Theme.of(context).unselectedWidgetColor,
+                  labelColor: Theme.of(context).accentColor,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  indicator: MD2Indicator(
+                    indicatorHeight: 4,
+                    indicatorColor: Theme.of(context).accentColor,
+                    indicatorSize: MD2IndicatorSize.full,
+                  ),
+                  tabs: [
+                    Tab(text: I18n.of(context).postCategoriesLatest),
+                    Tab(text: I18n.of(context).postCategoriesPopular),
+                    Tab(text: I18n.of(context).postCategoriesCurated),
+                    Tab(text: I18n.of(context).postCategoriesMostViewed),
+                  ],
+                ),
+              ),
+            ),
+          ];
+        },
+        body: AnimatedIndexedStack(
+          index: topTabIndex.value,
+          children: <Widget>[
+            LatestView(),
+            PopularView(),
+            CuratedView(),
+            MostViewedView(),
+          ],
+        ),
       ),
     );
   }

@@ -95,12 +95,6 @@ class PopularView extends HookWidget {
     final posts = useProvider(_popularPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    useEffect(() {
-      Future.microtask(
-          () => context.read(popularStateNotifierProvider).refresh());
-      return () => {};
-    }, []);
-
     return ProviderListener<PostState>(
       provider: _postsState,
       onChange: (context, state) {

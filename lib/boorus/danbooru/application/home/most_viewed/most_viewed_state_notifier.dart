@@ -21,7 +21,7 @@ part 'most_viewed_state_notifier.freezed.dart';
 
 final mostViewedStateNotifierProvider =
     StateNotifierProvider<MostViewedStateNotifier>((ref) {
-  return MostViewedStateNotifier(ref);
+  return MostViewedStateNotifier(ref)..refresh();
 });
 
 class MostViewedStateNotifier extends StateNotifier<MostViewedState> {

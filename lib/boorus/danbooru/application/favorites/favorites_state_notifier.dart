@@ -1,30 +1,36 @@
 // Package imports:
-import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hooks_riverpod/all.dart';
+import 'package:meta/meta.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/home/post_filter.dart';
 import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import '../post_filter.dart';
 
-part 'latest_posts_state.dart';
-part 'latest_posts_state_notifier.freezed.dart';
+part 'favorites_state.dart';
+part 'favorites_state_notifier.freezed.dart';
 
-final latestPostsStateNotifierProvider =
-    StateNotifierProvider<LatestStateNotifier>(
-        (ref) => LatestStateNotifier(ref)..refresh());
+final favoritesStateNotifierProvider =
+    StateNotifierProvider<FavoritesStateNotifier>((ref) {
+  return FavoritesStateNotifier(ref);
+});
 
-class LatestStateNotifier extends StateNotifier<LatestPostsState> {
-  LatestStateNotifier(ProviderReference ref)
+class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
+  FavoritesStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
         _settingRepository = ref.read(settingsProvider.future),
-        super(LatestPostsState.initial());
+        _accountRepository = ref.read(accountProvider),
+        super(FavoritesState.initial());
 
   final IPostRepository _postRepository;
   final Future<ISettingRepository> _settingRepository;
+  final IAccountRepository _accountRepository;
 
   void getMorePosts() async {
     try {
@@ -33,17 +39,12 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
         postsState: PostState.loading(),
       );
 
-      final dtos = await _postRepository.getPosts("", nextPage);
+      final account = await _accountRepository.get();
+      final dtos =
+          await _postRepository.getPosts("fav:${account.username}", nextPage);
       final settingsRepo = await _settingRepository;
       final settings = await settingsRepo.load();
-      final filteredPosts = filter(dtos, settings)
-        ..removeWhere((post) {
-          final p = state.posts.firstWhere(
-            (sPost) => sPost.id == post.id,
-            orElse: () => null,
-          );
-          return p?.id == post.id;
-        });
+      final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(
         postsState: PostState.fetched(),
@@ -65,7 +66,8 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
         postsState: PostState.refreshing(),
       );
 
-      final dtos = await _postRepository.getPosts("", state.page);
+      final account = await _accountRepository.get();
+      final dtos = await _postRepository.getPosts("fav:${account.username}", 1);
       final settingsRepo = await _settingRepository;
       final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);

@@ -7,27 +7,27 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 
 final _posts = Provider<List<Post>>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);
+    (ref) => ref.watch(favoritesStateNotifierProvider.state).posts);
 final _postProvider = Provider<List<Post>>((ref) {
   return ref.watch(_posts);
 });
 
 final _postsState = Provider<PostState>((ref) {
-  return ref.watch(latestPostsStateNotifierProvider.state).postsState;
+  return ref.watch(favoritesStateNotifierProvider.state).postsState;
 });
 final _postsStateProvider = Provider<PostState>((ref) {
   return ref.watch(_postsState);
 });
 
-class LatestView extends HookWidget {
-  const LatestView({Key key}) : super(key: key);
+class FavoritesPage extends HookWidget {
+  const FavoritesPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -52,31 +52,33 @@ class LatestView extends HookWidget {
           orElse: () {},
         );
       },
-      child: SmartRefresher(
-        controller: refreshController.value,
-        enablePullUp: true,
-        enablePullDown: true,
-        header: const MaterialClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () =>
-            context.read(latestPostsStateNotifierProvider).refresh(),
-        onLoading: () =>
-            context.read(latestPostsStateNotifierProvider).getMorePosts(),
-        child: CustomScrollView(
-          controller: scrollController,
-          slivers: <Widget>[
-            SliverPadding(
-              padding: EdgeInsets.all(6.0),
-              sliver: postsState.maybeWhen(
-                fetched: () => SliverPostGrid(
-                    key: gridKey.value,
-                    posts: posts,
-                    scrollController: scrollController),
-                orElse: () => SliverPostGridPlaceHolder(
-                    scrollController: scrollController),
+      child: SafeArea(
+        child: SmartRefresher(
+          controller: refreshController.value,
+          enablePullUp: true,
+          enablePullDown: true,
+          header: const MaterialClassicHeader(),
+          footer: const ClassicFooter(),
+          onRefresh: () =>
+              context.read(favoritesStateNotifierProvider).refresh(),
+          onLoading: () =>
+              context.read(favoritesStateNotifierProvider).getMorePosts(),
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: <Widget>[
+              SliverPadding(
+                padding: EdgeInsets.all(6.0),
+                sliver: postsState.maybeWhen(
+                  fetched: () => SliverPostGrid(
+                      key: gridKey.value,
+                      posts: posts,
+                      scrollController: scrollController),
+                  orElse: () => SliverPostGridPlaceHolder(
+                      scrollController: scrollController),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -55,12 +55,6 @@ class MostViewedView extends HookWidget {
     final posts = useProvider(_mostViewedPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    useEffect(() {
-      Future.microtask(
-          () => context.read(mostViewedStateNotifierProvider).refresh());
-      return () => {};
-    }, []);
-
     return ProviderListener<PostState>(
       provider: _postsState,
       onChange: (context, state) {

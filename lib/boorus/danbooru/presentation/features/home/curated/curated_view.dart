@@ -95,12 +95,6 @@ class CuratedView extends HookWidget {
     final posts = useProvider(_curatedPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    useEffect(() {
-      Future.microtask(
-          () => context.read(curatedStateNotifierProvider).refresh());
-      return () => {};
-    }, []);
-
     return ProviderListener<PostState>(
       provider: _postsState,
       onChange: (context, state) {

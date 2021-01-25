@@ -21,7 +21,7 @@ part 'popular_state_notifier.freezed.dart';
 
 final popularStateNotifierProvider =
     StateNotifierProvider<PopularStateNotifier>((ref) {
-  return PopularStateNotifier(ref);
+  return PopularStateNotifier(ref)..refresh();
 });
 
 class PopularStateNotifier extends StateNotifier<PopularState> {
