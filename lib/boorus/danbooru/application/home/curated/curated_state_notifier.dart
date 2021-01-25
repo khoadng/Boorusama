@@ -17,7 +17,7 @@ part 'curated_state_notifier.freezed.dart';
 
 final curatedStateNotifierProvider =
     StateNotifierProvider<CuratedStateNotifier>((ref) {
-  return CuratedStateNotifier(ref)..refresh();
+  return CuratedStateNotifier(ref);
 });
 
 class CuratedStateNotifier extends StateNotifier<CuratedState> {

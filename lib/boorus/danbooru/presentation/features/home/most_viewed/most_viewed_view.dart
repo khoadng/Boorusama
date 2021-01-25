@@ -50,6 +50,12 @@ class MostViewedView extends HookWidget {
     final posts = useProvider(_mostViewedPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
+    useEffect(() {
+      Future.microtask(
+          () => context.read(mostViewedStateNotifierProvider).refresh());
+      return () => {};
+    }, []);
+
     return ProviderListener<PostState>(
       provider: _postsState,
       onChange: (context, state) {
@@ -62,85 +68,75 @@ class MostViewedView extends HookWidget {
           orElse: () {},
         );
       },
-      child: SafeArea(
-        top: false,
-        bottom: false,
-        child: SmartRefresher(
-          controller: refreshController.value,
-          enablePullDown: true,
-          header: const MaterialClassicHeader(),
-          onRefresh: () =>
-              context.read(mostViewedStateNotifierProvider).refresh(),
-          child: CustomScrollView(
-            key: PageStorageKey<String>("mostviewed"),
-            slivers: <Widget>[
-              SliverOverlapInjector(
-                // This is the flip side of the SliverOverlapAbsorber
-                // above.
-                handle:
-                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate(
-                  [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ButtonBar(
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.keyboard_arrow_left),
-                              onPressed: () => context
-                                  .read(mostViewedStateNotifierProvider)
-                                  .reverseOneTimeUnit(),
+      child: SmartRefresher(
+        controller: refreshController.value,
+        enablePullDown: true,
+        header: const MaterialClassicHeader(),
+        onRefresh: () =>
+            context.read(mostViewedStateNotifierProvider).refresh(),
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      ButtonBar(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.keyboard_arrow_left),
+                            onPressed: () => context
+                                .read(mostViewedStateNotifierProvider)
+                                .reverseOneTimeUnit(),
+                          ),
+                          FlatButton(
+                            color: Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
                             ),
-                            FlatButton(
-                              color: Theme.of(context).cardColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              onPressed: () => DatePicker.showDatePicker(
-                                context,
-                                theme: DatePickerTheme(),
-                                onConfirm: (time) {
-                                  context
-                                      .read(mostViewedStateNotifierProvider)
-                                      .updateDate(time);
-                                },
-                                currentTime: DateTime.now(),
-                              ),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                      "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
-                                  Icon(Icons.arrow_drop_down)
-                                ],
-                              ),
+                            onPressed: () => DatePicker.showDatePicker(
+                              context,
+                              theme: DatePickerTheme(),
+                              onConfirm: (time) {
+                                context
+                                    .read(mostViewedStateNotifierProvider)
+                                    .updateDate(time);
+                              },
+                              currentTime: DateTime.now(),
                             ),
-                            IconButton(
-                              icon: Icon(Icons.keyboard_arrow_right),
-                              onPressed: () => context
-                                  .read(mostViewedStateNotifierProvider)
-                                  .forwardOneTimeUnit(),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                    "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
+                                Icon(Icons.arrow_drop_down)
+                              ],
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.keyboard_arrow_right),
+                            onPressed: () => context
+                                .read(mostViewedStateNotifierProvider)
+                                .forwardOneTimeUnit(),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
               ),
-              postsState.maybeWhen(
-                refreshing: () => SliverPostGridPlaceHolder(
-                    scrollController: scrollController),
-                orElse: () => SliverPostGrid(
-                  key: gridKey.value,
-                  posts: posts,
-                  scrollController: scrollController,
-                ),
+            ),
+            postsState.maybeWhen(
+              refreshing: () =>
+                  SliverPostGridPlaceHolder(scrollController: scrollController),
+              orElse: () => SliverPostGrid(
+                key: gridKey.value,
+                posts: posts,
+                scrollController: scrollController,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

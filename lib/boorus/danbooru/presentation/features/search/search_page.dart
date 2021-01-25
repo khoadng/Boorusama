@@ -196,7 +196,6 @@ class SearchPage extends HookWidget {
             ),
           ),
           appBar: AppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
             elevation: 0,
             shadowColor: Colors.transparent,
             automaticallyImplyLeading: false,

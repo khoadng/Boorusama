@@ -16,6 +16,11 @@ class LatestView extends HookWidget {
         useState(RefreshController(initialRefresh: false));
     final scrollController = useScrollController();
     final gridKey = useState(GlobalKey());
+    useEffect(() {
+      Future.microtask(
+          () => context.read(latestPostsStateNotifierProvider).refresh());
+      return () => {};
+    }, []);
     final latestPosts = useProvider(latestPostsProvider);
     final isRefreshing = useProvider(isRefreshingProvider);
     final isLoadingMore = useProvider(isLoadingMoreProvider);
@@ -28,10 +33,8 @@ class LatestView extends HookWidget {
       refreshController.value.refreshCompleted();
     }
 
-    return SafeArea(
-      top: false,
-      bottom: false,
-      child: SmartRefresher(
+    return Scaffold(
+      body: SmartRefresher(
         controller: refreshController.value,
         enablePullUp: true,
         enablePullDown: true,
@@ -42,13 +45,7 @@ class LatestView extends HookWidget {
         onLoading: () =>
             context.read(latestPostsStateNotifierProvider).getMore(),
         child: CustomScrollView(
-          key: PageStorageKey<String>("latest"),
           slivers: <Widget>[
-            SliverOverlapInjector(
-              // This is the flip side of the SliverOverlapAbsorber
-              // above.
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            ),
             SliverPadding(
               padding: EdgeInsets.all(6.0),
               sliver: isRefreshing
