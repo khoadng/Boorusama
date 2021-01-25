@@ -27,11 +27,13 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   void initState() {
     super.initState();
-    _settingRepository = context.read(settingsProvider);
+
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final setting = await _settingRepository.load();
-      setState(() {
-        _setting = setting;
+      context.read(settingsProvider).whenData((repo) async {
+        final setting = await _settingRepository.load();
+        setState(() {
+          _setting = setting;
+        });
       });
     });
   }

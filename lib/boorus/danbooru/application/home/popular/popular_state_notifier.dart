@@ -25,13 +25,13 @@ final popularStateNotifierProvider =
 });
 
 class PopularStateNotifier extends StateNotifier<PopularState> {
-  final IPostRepository _postRepository;
-  final ISettingRepository _settingRepository;
-
   PopularStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider),
+        _settingRepository = ref.read(settingsProvider.future),
         super(PopularState.initial());
+
+  final IPostRepository _postRepository;
+  final Future<ISettingRepository> _settingRepository;
 
   void getMorePosts() async {
     try {
@@ -42,7 +42,8 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
 
       final dtos = await _postRepository.getPopularPosts(
           state.selectedDate, nextPage, state.selectedTimeScale);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(
@@ -66,7 +67,8 @@ class PopularStateNotifier extends StateNotifier<PopularState> {
 
       final dtos = await _postRepository.getPopularPosts(
           state.selectedDate, state.page, state.selectedTimeScale);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(

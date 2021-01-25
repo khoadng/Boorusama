@@ -13,10 +13,10 @@ final userProvider = Provider<UserRepository>((ref) =>
     UserRepository(ref.watch(apiProvider), ref.watch(accountProvider)));
 
 class UserRepository implements IUserRepository {
-  final IApi _api;
-  final IAccountRepository _accountRepository;
-
   UserRepository(this._api, this._accountRepository);
+
+  final IAccountRepository _accountRepository;
+  final IApi _api;
 
   @override
   Future<List<User>> getUsersByIdStringComma(String idComma) async =>
@@ -39,14 +39,7 @@ class UserRepository implements IUserRepository {
   Future<User> getUserById(int id) async {
     final account = await _accountRepository.get();
     return _api.getUserById(account.username, account.apiKey, id).then((value) {
-      //TODO: why did I use a list of users??
-      var users = List<User>();
-      try {
-        users.add(User.fromJson(value.response.data));
-      } catch (e) {
-        print("Cant parse $id");
-      }
-      return users.first;
+      return User.fromJson(value.response.data);
     }).catchError((Object obj) {
       throw Exception("Failed to get user info for $id");
     });

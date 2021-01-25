@@ -25,13 +25,13 @@ final curatedStateNotifierProvider =
 });
 
 class CuratedStateNotifier extends StateNotifier<CuratedState> {
-  final IPostRepository _postRepository;
-  final ISettingRepository _settingRepository;
-
   CuratedStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider),
+        _settingRepository = ref.read(settingsProvider.future),
         super(CuratedState.initial());
+
+  final IPostRepository _postRepository;
+  final Future<ISettingRepository> _settingRepository;
 
   void getMorePosts() async {
     try {
@@ -42,7 +42,8 @@ class CuratedStateNotifier extends StateNotifier<CuratedState> {
 
       final dtos = await _postRepository.getCuratedPosts(
           state.selectedDate, nextPage, state.selectedTimeScale);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(
@@ -66,7 +67,8 @@ class CuratedStateNotifier extends StateNotifier<CuratedState> {
 
       final dtos = await _postRepository.getCuratedPosts(
           state.selectedDate, state.page, state.selectedTimeScale);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(

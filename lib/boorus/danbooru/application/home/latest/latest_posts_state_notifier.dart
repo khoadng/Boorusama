@@ -20,11 +20,11 @@ final latestPostsStateNotifierProvider =
 class LatestStateNotifier extends StateNotifier<LatestPostsState> {
   LatestStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider),
+        _settingRepository = ref.read(settingsProvider.future),
         super(LatestPostsState.initial());
 
   final IPostRepository _postRepository;
-  final ISettingRepository _settingRepository;
+  final Future<ISettingRepository> _settingRepository;
 
   void getMorePosts() async {
     try {
@@ -34,7 +34,8 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
       );
 
       final dtos = await _postRepository.getPosts("", nextPage);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings)
         ..removeWhere((post) {
           final p = state.posts.firstWhere(
@@ -65,7 +66,8 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
       );
 
       final dtos = await _postRepository.getPosts("", state.page);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(

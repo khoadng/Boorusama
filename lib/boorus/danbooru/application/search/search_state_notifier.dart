@@ -20,16 +20,15 @@ final searchStateNotifierProvider =
 });
 
 class SearchStateNotifier extends StateNotifier<SearchState> {
-  final IPostRepository _postRepository;
-  final ISettingRepository _settingRepository;
-
-  final ProviderReference _ref;
-
   SearchStateNotifier(ProviderReference ref)
       : _postRepository = ref.watch(postProvider),
-        _settingRepository = ref.watch(settingsProvider),
+        _settingRepository = ref.watch(settingsProvider.future),
         _ref = ref,
         super(SearchState.initial());
+
+  final IPostRepository _postRepository;
+  final ProviderReference _ref;
+  final Future<ISettingRepository> _settingRepository;
 
   void search() async {
     state = state.copyWith(
@@ -44,7 +43,8 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
     final query = completedQueryItems.join(' ');
 
     final dtos = await _postRepository.getPosts(query, 1);
-    final settings = await _settingRepository.load();
+    final settingsRepo = await _settingRepository;
+    final settings = await settingsRepo.load();
     final filteredPosts = filter(dtos, settings);
 
     state = state.copyWith(
@@ -66,7 +66,8 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
         _ref.watch(queryStateNotifierProvider.state).completedQueryItems;
     final query = completedQueryItems.join(' ');
     final dtos = await _postRepository.getPosts(query, nextPage);
-    final settings = await _settingRepository.load();
+    final settingsRepo = await _settingRepository;
+    final settings = await settingsRepo.load();
     final filteredPosts = filter(dtos, settings);
 
     state = state.copyWith(

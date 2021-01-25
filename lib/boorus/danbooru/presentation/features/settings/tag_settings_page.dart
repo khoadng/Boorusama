@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 
 class TagSettingsPage extends HookWidget {
   TagSettingsPage({

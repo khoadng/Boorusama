@@ -25,13 +25,13 @@ final mostViewedStateNotifierProvider =
 });
 
 class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
-  final IPostRepository _postRepository;
-  final ISettingRepository _settingRepository;
-
   MostViewedStateNotifier(ProviderReference ref)
       : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider),
+        _settingRepository = ref.read(settingsProvider.future),
         super(MostViewedState.initial());
+
+  final IPostRepository _postRepository;
+  final Future<ISettingRepository> _settingRepository;
 
   void refresh() async {
     try {
@@ -42,7 +42,8 @@ class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
       );
 
       final dtos = await _postRepository.getMostViewedPosts(state.selectedDate);
-      final settings = await _settingRepository.load();
+      final settingsRepo = await _settingRepository;
+      final settings = await settingsRepo.load();
       final filteredPosts = filter(dtos, settings);
 
       state = state.copyWith(

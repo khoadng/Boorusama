@@ -1,6 +1,3 @@
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -16,46 +13,27 @@ import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 
 final postProvider = Provider<IPostRepository>((ref) {
-  return PostRepository(ref.watch(apiProvider), ref.watch(accountProvider),
-      ref.watch(settingsProvider));
+  return PostRepository(ref);
 });
 
 class PostRepository implements IPostRepository {
   final IApi _api;
   final IAccountRepository _accountRepository;
-  final ISettingRepository _settingRepository;
+  final ProviderReference _ref;
 
-  PostRepository(this._api, this._accountRepository, this._settingRepository);
-
-  @override
-  Future<PostStatistics> getPostStatistics(int id) async {
-    final account = await _accountRepository.get();
-
-    return _api.getPost(account.username, account.apiKey, id).then((value) {
-      final data = value.response.data.toString();
-      final Map<String, dynamic> payload = {"data": data, "postId": id};
-      final statistics = compute(parseStatistics, payload);
-
-      return statistics;
-    }).catchError((Object obj) {
-      switch (obj.runtimeType) {
-        case DioError:
-          throw Exception("Failed to get post for $id");
-          break;
-        default:
-      }
-      return null;
-    });
-  }
+  PostRepository(ProviderReference ref)
+      : _api = ref.watch(apiProvider),
+        _accountRepository = ref.watch(accountProvider),
+        _ref = ref;
 
   @override
   Future<List<PostDto>> getPosts(String tagString, int page) async {
     final account = await _accountRepository.get();
-    final settings = await _settingRepository.load();
+    final settingsRepository = await _ref.watch(settingsProvider.future);
+    final settings = await settingsRepository.load();
 
     return _api
         .getPosts(account.username, account.apiKey, page,

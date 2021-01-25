@@ -32,29 +32,14 @@ final accountStateProvider = Provider<AccountState>((ref) {
   return state;
 });
 
-final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
-  final account = ref.watch(_account);
-  final userRepository = ref.watch(userProvider);
-  final settingRepository = ref.watch(settingsProvider);
-
-  final user = await userRepository.getUserById(account.id);
-  //TODO: WARNING error prone code, need serialization
-  final settings = await settingRepository.load();
-  final blacklistedTags = user.blacklistedTags.join("\n");
-  settings.blacklistedTags = blacklistedTags;
-  await settingRepository.save(settings);
-
-  return user.blacklistedTags;
-});
-
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
-  final IScrapperService _scrapperService;
-  final IAccountRepository _accountRepository;
-
   AuthenticationNotifier(ProviderReference ref)
       : _scrapperService = ref.read(scrapperProvider),
         _accountRepository = ref.read(accountProvider),
         super(AuthenticationState.initial());
+
+  final IAccountRepository _accountRepository;
+  final IScrapperService _scrapperService;
 
   void logIn([String username, String password]) async {
     return state.state.when(
