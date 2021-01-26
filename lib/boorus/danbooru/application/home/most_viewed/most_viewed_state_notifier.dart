@@ -7,31 +7,33 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:jiffy/jiffy.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
+import 'package:boorusama/boorus/danbooru/application/post_state.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import '../post_filter.dart';
+import '../../black_listed_filter_decorator.dart';
+import '../../no_image_filter_decorator.dart';
 
 part 'most_viewed_state.dart';
 part 'most_viewed_state_notifier.freezed.dart';
 
 final mostViewedStateNotifierProvider =
     StateNotifierProvider<MostViewedStateNotifier>((ref) {
-  return MostViewedStateNotifier(ref)..refresh();
+  final postRepo = ref.watch(postProvider);
+  final settingsRepo = ref.watch(settingsProvider.future);
+  final filteredPostRepo = BlackListedFilterDecorator(
+      postRepository: postRepo, settingRepository: settingsRepo);
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
+  return MostViewedStateNotifier(removedNullImageRepo)..refresh();
 });
 
 class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
-  MostViewedStateNotifier(ProviderReference ref)
-      : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider.future),
+  MostViewedStateNotifier(IPostRepository postRepository)
+      : _postRepository = postRepository,
         super(MostViewedState.initial());
 
   final IPostRepository _postRepository;
-  final Future<ISettingRepository> _settingRepository;
 
   void refresh() async {
     try {
@@ -42,14 +44,14 @@ class MostViewedStateNotifier extends StateNotifier<MostViewedState> {
       );
 
       final dtos = await _postRepository.getMostViewedPosts(state.selectedDate);
-      final settingsRepo = await _settingRepository;
-      final settings = await settingsRepo.load();
-      final filteredPosts = filter(dtos, settings);
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-      state = state.copyWith(
-        posts: filteredPosts,
-        postsState: PostState.fetched(),
-      );
+      if (mounted) {
+        state = state.copyWith(
+          posts: posts,
+          postsState: PostState.fetched(),
+        );
+      }
     } on DatabaseTimeOut {
       state = state.copyWith(
         postsState: PostState.error(),

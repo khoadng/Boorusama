@@ -10,7 +10,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/most_viewed/most_viewed_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
+import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';

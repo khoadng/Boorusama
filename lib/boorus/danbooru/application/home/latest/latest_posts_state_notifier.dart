@@ -3,28 +3,33 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/post_state.dart';
+import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import '../post_filter.dart';
+import '../../black_listed_filter_decorator.dart';
+import '../../no_image_filter_decorator.dart';
 
 part 'latest_posts_state.dart';
 part 'latest_posts_state_notifier.freezed.dart';
 
 final latestPostsStateNotifierProvider =
-    StateNotifierProvider<LatestStateNotifier>(
-        (ref) => LatestStateNotifier(ref)..refresh());
+    StateNotifierProvider<LatestStateNotifier>((ref) {
+  final postRepo = ref.watch(postProvider);
+  final settingsRepo = ref.watch(settingsProvider.future);
+  final filteredPostRepo = BlackListedFilterDecorator(
+      postRepository: postRepo, settingRepository: settingsRepo);
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
+  return LatestStateNotifier(removedNullImageRepo)..refresh();
+});
 
 class LatestStateNotifier extends StateNotifier<LatestPostsState> {
-  LatestStateNotifier(ProviderReference ref)
-      : _postRepository = ref.read(postProvider),
-        _settingRepository = ref.read(settingsProvider.future),
+  LatestStateNotifier(IPostRepository postRepository)
+      : _postRepository = postRepository,
         super(LatestPostsState.initial());
 
   final IPostRepository _postRepository;
-  final Future<ISettingRepository> _settingRepository;
 
   void getMorePosts() async {
     try {
@@ -34,9 +39,9 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
       );
 
       final dtos = await _postRepository.getPosts("", nextPage);
-      final settingsRepo = await _settingRepository;
-      final settings = await settingsRepo.load();
-      final filteredPosts = filter(dtos, settings)
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
+
+      posts
         ..removeWhere((post) {
           final p = state.posts.firstWhere(
             (sPost) => sPost.id == post.id,
@@ -47,7 +52,7 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
 
       state = state.copyWith(
         postsState: PostState.fetched(),
-        posts: [...state.posts, ...filteredPosts],
+        posts: [...state.posts, ...posts],
         page: nextPage,
       );
     } on DatabaseTimeOut {
@@ -66,14 +71,15 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
       );
 
       final dtos = await _postRepository.getPosts("", state.page);
-      final settingsRepo = await _settingRepository;
-      final settings = await settingsRepo.load();
-      final filteredPosts = filter(dtos, settings);
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-      state = state.copyWith(
-        posts: filteredPosts,
-        postsState: PostState.fetched(),
-      );
+      //TODO: workaround, cause Bad state error somehow...
+      if (mounted) {
+        state = state.copyWith(
+          posts: posts,
+          postsState: PostState.fetched(),
+        );
+      }
     } on DatabaseTimeOut {
       state = state.copyWith(
         postsState: PostState.error(),

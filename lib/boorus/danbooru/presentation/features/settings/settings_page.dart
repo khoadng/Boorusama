@@ -30,6 +30,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       context.read(settingsProvider).whenData((repo) async {
+        _settingRepository = repo;
         final setting = await _settingRepository.load();
         setState(() {
           _setting = setting;
