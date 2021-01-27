@@ -36,6 +36,8 @@ final postDetailHandler = Handler(handlerFunc: (
   return PostDetailPage(
     post: args[0],
     heroTag: args[1],
+    posts: args[2],
+    intitialIndex: args[3],
   );
 });
 

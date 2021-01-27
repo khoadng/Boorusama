@@ -27,6 +27,7 @@ dependencies:
   auto_animated: ^2.1.0
   bubble_bottom_bar: ^1.2.0
   cached_network_image: ^2.3.3
+  carousel_slider: ^2.3.1
   chewie: ^0.9.10
   connectivity: ^2.0.2
   cupertino_icons: ^0.1.3

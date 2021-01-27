@@ -2,6 +2,12 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/black_listed_filter_decorator.dart';
+import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/no_image_filter_decorator.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -42,14 +48,31 @@ final artistCommentaryStateNotifierProvider =
 final postDetailStateNotifier = StateNotifierProvider<PostDetailStateNotifier>(
     (ref) => PostDetailStateNotifier(ref));
 
+final latestPostsStateNotifierProvider =
+    StateNotifierProvider<LatestStateNotifier>((ref) {
+  final postRepo = ref.watch(postProvider);
+  final settingsRepo = ref.watch(settingsProvider.future);
+  final filteredPostRepo = BlackListedFilterDecorator(
+      postRepository: postRepo, settingRepository: settingsRepo);
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
+  return LatestStateNotifier(removedNullImageRepo)..refresh();
+});
+
 class PostDetailPage extends StatefulWidget {
   PostDetailPage({
     Key key,
     @required this.post,
     @required this.heroTag,
+    @required this.posts,
+    @required this.intitialIndex,
   }) : super(key: key);
 
   final Post post;
+
+  final List<Post> posts;
+  final int intitialIndex;
+
   final String heroTag;
 
   @override
@@ -57,13 +80,80 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () {
+        context.read(notesStateNotifierProvider).clearNotes();
+        return Future.value(true);
+      },
+      child: CarouselSlider.builder(
+          itemCount: widget.posts.length,
+          itemBuilder: (context, index) {
+            var postWidget;
+            final post = widget.posts[index];
+            if (post.isVideo) {
+              postWidget = Container(
+                  height: post.aspectRatio > 1.0
+                      ? post.height / post.aspectRatio
+                      : post.height,
+                  child: PostVideo(post: post));
+            } else {
+              postWidget = Hero(
+                tag: widget.heroTag,
+                child: GestureDetector(
+                  onTap: () => AppRouter.router.navigateTo(
+                      context, "/posts/image",
+                      routeSettings:
+                          RouteSettings(arguments: [post, widget.heroTag])),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                          fit: BoxFit.fitWidth,
+                          imageUrl: post.normalImageUri.toString())),
+                ),
+              );
+            }
+
+            return _DetailPageChild(
+              post: widget.posts[index],
+              postWidget: postWidget,
+            );
+          },
+          options: CarouselOptions(
+            height: MediaQuery.of(context).size.height,
+            viewportFraction: 1,
+            initialPage: widget.intitialIndex,
+            reverse: false,
+            autoPlayCurve: Curves.fastOutSlowIn,
+            scrollDirection: Axis.horizontal,
+          )),
+    );
+  }
+}
+
+class _DetailPageChild extends StatefulWidget {
+  const _DetailPageChild({
+    Key key,
+    @required this.post,
+    @required this.postWidget,
+  }) : super(key: key);
+
+  final Post post;
+  final Widget postWidget;
+
+  @override
+  __DetailPageChildState createState() => __DetailPageChildState();
+}
+
+class __DetailPageChildState extends State<_DetailPageChild> {
   int _favCount = 0;
+
   bool _showTranslated = true;
 
   @override
   void initState() {
     super.initState();
-    _favCount = widget.post.favCount;
     Future.delayed(
         Duration.zero,
         () => context
@@ -79,78 +169,108 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    var postWidget;
-    if (widget.post.isVideo) {
-      postWidget = Container(
-          height: widget.post.aspectRatio > 1.0
-              ? widget.post.height / widget.post.aspectRatio
-              : widget.post.height,
-          child: PostVideo(post: widget.post));
-    } else {
-      postWidget = Hero(
-        tag: widget.heroTag,
-        child: GestureDetector(
-          onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings:
-                  RouteSettings(arguments: [widget.post, widget.heroTag])),
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: CachedNetworkImage(
-                  fit: BoxFit.fitWidth,
-                  imageUrl: widget.post.normalImageUri.toString())),
-        ),
-      );
-    }
-
-    return WillPopScope(
-      onWillPop: () {
-        context.read(notesStateNotifierProvider).clearNotes();
-        return Future.value(true);
-      },
-      child: _buildPage(context, widget.post, postWidget),
-    );
-  }
-
-  Widget _buildPage(BuildContext context, Post post, Widget postWidget) {
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
-            _buildSliverAppBar(context),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: postWidget,
-                      )
-                      // Text("")
-                    ],
-                  ),
-                ],
-              ),
+            SliverToBoxAdapter(
+              child: Stack(children: <Widget>[
+                widget.postWidget,
+                _buildTopShadowGradient(),
+                _buildBackButton(context),
+                _buildMoreVertButton(),
+              ]),
+            ),
+            SliverToBoxAdapter(
+              child: SizedBox(height: 10),
             ),
             Consumer(builder: (context, watch, child) {
               final state = watch(artistCommentaryStateNotifierProvider.state);
               return state.when(
-                initial: () => _buildLoading(),
-                loading: () => _buildLoading(),
+                initial: () => SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator())),
+                loading: () => SliverToBoxAdapter(
+                    child: Center(child: CircularProgressIndicator())),
                 fetched: (commentary) {
                   if (!commentary.hasCommentary) {
                     // No artist comment, skip building this widget
-                    return SliverList(
-                        delegate: SliverChildListDelegate([Center()]));
+                    return SliverToBoxAdapter(child: Center());
                   }
 
-                  return _buildArtistCommentSection(context, post, commentary);
+                  return _buildArtistCommentSection(
+                      context, widget.post, commentary);
                 },
                 error: (name, message) => Text("Failed to load commentary"),
               );
             }),
             _buildSliverSpace(),
-            _buildCommandToolBar(context, post),
+            _buildCommandToolBar(context, widget.post),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopShadowGradient() {
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              end: const Alignment(0.0, 0.4),
+              begin: const Alignment(0.0, -1),
+              colors: <Color>[
+                const Color(0x2F000000),
+                Colors.black12.withOpacity(0.0)
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMoreVertButton() {
+    return Align(
+      alignment: Alignment.topRight,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PopupMenuButton<PostAction>(
+          onSelected: (value) {
+            switch (value) {
+              case PostAction.download:
+                // context
+                //     .read(postDownloadStateNotifierProvider)
+                //     .download(
+                //         post.downloadLink, post.descriptiveName);
+                break;
+              default:
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
+            PopupMenuItem<PostAction>(
+              value: PostAction.download,
+              child: ListTile(
+                // leading: const Icon(Icons.download_rounded),
+                title: Text("Placeholder"),
+              ),
+            ),
           ],
         ),
       ),
@@ -175,8 +295,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
         final state = watch(postDetailStateNotifier.state);
 
         return state.when(
-          initial: () => _buildCommandToolbarPlaceholder(context, post),
-          loading: () => _buildCommandToolbarPlaceholder(context, post),
+          initial: () => SliverToBoxAdapter(
+              child: Center(child: CircularProgressIndicator())),
+          loading: () => SliverToBoxAdapter(
+              child: Center(child: CircularProgressIndicator())),
           fetched: (statistics) {
             return SliverStickyHeader(
                 header: Column(
@@ -209,7 +331,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               expand: false,
                               context: context,
                               builder: (context, controller) => CommentPage(
-                                postId: widget.post.id,
+                                postId: post.id,
                               ),
                             ),
                           ),
@@ -227,13 +349,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               if (!isLiked) {
                                 context
                                     .read(postFavoriteStateNotifierProvider)
-                                    .favorite(widget.post.id);
+                                    .favorite(post.id);
 
                                 return Future(() => true);
                               } else {
                                 context
                                     .read(postFavoriteStateNotifierProvider)
-                                    .unfavorite(widget.post.id);
+                                    .unfavorite(post.id);
                                 return Future(() => false);
                               }
                             },
@@ -250,80 +372,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 sliver: SliverPadding(
                   padding: EdgeInsets.only(left: 4),
                   sliver: PostTagList(
-                      tagStringComma: widget.post.tagString.toCommaFormat()),
+                      tagStringComma: post.tagString.toCommaFormat()),
                 ));
           },
-          error: (e, m) => _buildCommandToolbarPlaceholder(context, post),
+          error: (e, m) => SliverToBoxAdapter(
+              child: Center(child: CircularProgressIndicator())),
         );
       },
     );
-  }
-
-  Widget _buildCommandToolbarPlaceholder(BuildContext context, Post post) {
-    return SliverStickyHeader(
-        header: Container(
-          decoration:
-              BoxDecoration(color: Theme.of(context).scaffoldBackgroundColor),
-          child: ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                  color: Colors.white,
-                  icon: Icon(
-                    Icons.download_rounded,
-                    color: Colors.white,
-                    size: 30,
-                  ),
-                  onPressed: () => context
-                      .read(postDownloadStateNotifierProvider)
-                      .download(post)),
-              LikeButton(
-                size: 40,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                likeBuilder: (isLiked) => Icon(
-                  Icons.comment,
-                  color: Colors.white,
-                ),
-                countBuilder: (likeCount, isLiked, text) =>
-                    CircularProgressIndicator(),
-                onTap: (isLiked) => showBarModalBottomSheet(
-                  expand: false,
-                  context: context,
-                  builder: (context, controller) => CommentPage(
-                    postId: widget.post.id,
-                  ),
-                ),
-              ),
-              LikeButton(
-                size: 40,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                likeBuilder: (isLiked) => Icon(
-                  Icons.favorite,
-                  color: isLiked ? Colors.red : Colors.white,
-                ),
-                countBuilder: (likeCount, isLiked, text) =>
-                    CircularProgressIndicator(),
-                onTap: (isLiked) {
-                  //TODO: check for success here
-                  if (!isLiked) {
-                    context
-                        .read(postFavoriteStateNotifierProvider)
-                        .favorite(widget.post.id);
-
-                    return Future(() => true);
-                  } else {
-                    context
-                        .read(postFavoriteStateNotifierProvider)
-                        .unfavorite(widget.post.id);
-                    return Future(() => false);
-                  }
-                },
-              ),
-            ],
-          ),
-        ),
-        sliver:
-            PostTagList(tagStringComma: widget.post.tagString.toCommaFormat()));
   }
 
   Widget _buildArtistCommentSection(
@@ -333,9 +389,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
       Container(
         decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(10.0)),
-        margin: EdgeInsets.symmetric(horizontal: 8.0),
-        padding: EdgeInsets.symmetric(horizontal: 8.0),
+            borderRadius: BorderRadius.circular(8.0)),
+        margin: EdgeInsets.symmetric(horizontal: 4.0),
+        padding: EdgeInsets.symmetric(horizontal: 4.0),
         child: Column(children: [
           ListTile(
             title: Text(post.tagStringArtist.pretty),
@@ -373,89 +429,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ),
     ]));
   }
-
-  Widget _buildSliverAppBar(BuildContext context) {
-    return SliverAppBar(
-      pinned: true,
-      flexibleSpace: FlexibleSpaceBar(
-        title: Padding(
-          padding: EdgeInsets.only(top: 5.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(widget.post.name.characterOnly.pretty.capitalizeFirstofEach,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.subtitle1),
-              Text(widget.post.name.copyRightOnly.pretty.capitalizeFirstofEach,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.caption),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoading() => SliverList(
-        delegate: SliverChildListDelegate([
-          Container(
-            decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(10.0)),
-            margin: EdgeInsets.symmetric(horizontal: 8.0),
-            padding: EdgeInsets.symmetric(horizontal: 8.0),
-            child: Shimmer.fromColors(
-              highlightColor: Colors.grey[500],
-              baseColor: Colors.grey[700],
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    leading: CircleAvatar(),
-                    title: Container(
-                      margin: EdgeInsets.only(
-                          right: MediaQuery.of(context).size.width * 0.6),
-                      width: 10,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          color: Colors.grey[400],
-                          borderRadius: BorderRadius.circular(8.0)),
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    width: Random().nextDouble() * 100 +
-                        MediaQuery.of(context).size.width * 0.3,
-                    height: 20,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    width: Random().nextDouble() * 100 +
-                        MediaQuery.of(context).size.width * 0.3,
-                    height: 20,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(bottom: 10.0),
-                    width: Random().nextDouble() * 100 +
-                        MediaQuery.of(context).size.width * 0.3,
-                    height: 20,
-                    decoration: BoxDecoration(
-                        color: Colors.grey[400],
-                        borderRadius: BorderRadius.circular(8.0)),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ]),
-      );
 }
 
 enum ArtistCommentaryAction { translate }
