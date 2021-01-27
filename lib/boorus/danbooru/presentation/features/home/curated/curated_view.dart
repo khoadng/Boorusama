@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 final _posts = Provider<List<Post>>((ref) {
@@ -198,6 +199,16 @@ class CuratedView extends HookWidget {
               refreshing: () =>
                   SliverPostGridPlaceHolder(scrollController: scrollController),
               orElse: () => SliverPostGrid(
+                onTap: (post, index) => AppRouter.router.navigateTo(
+                  context,
+                  "/posts",
+                  routeSettings: RouteSettings(arguments: [
+                    post,
+                    "${gridKey.toString()}_${post.id}",
+                    index,
+                    posts,
+                  ]),
+                ),
                 key: gridKey.value,
                 posts: posts,
                 scrollController: scrollController,

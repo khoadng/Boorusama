@@ -10,17 +10,18 @@ import 'package:like_button/like_button.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/post_image.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 
 class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({
     Key key,
     @required this.posts,
     @required this.scrollController,
+    @required this.onTap,
   }) : super(key: key);
 
   final List<Post> posts;
   final ScrollController scrollController;
+  final Function(Post, int) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +32,6 @@ class SliverPostGrid extends StatelessWidget {
         if (index != null) {
           final post = posts[index];
           final items = <Widget>[];
-          final image = PostImage(
-            imageUrl: post.isAnimated
-                ? post.previewImageUri.toString()
-                : post.normalImageUri.toString(),
-            placeholderUrl: post.previewImageUri.toString(),
-          );
 
           // if (post.isFavorited) {
           //   items.add(
@@ -87,15 +82,16 @@ class SliverPostGrid extends StatelessWidget {
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () => AppRouter.router.navigateTo(context, "/posts",
-                        routeSettings: RouteSettings(arguments: [
-                          post,
-                          "${key.toString()}_${post.id}",
-                          posts,
-                          index,
-                        ])),
-                    child:
-                        Hero(tag: "${key.toString()}_${post.id}", child: image),
+                    onTap: () => onTap(post, index),
+                    child: Hero(
+                      tag: "${key.toString()}_${post.id}",
+                      child: PostImage(
+                        imageUrl: post.isAnimated
+                            ? post.previewImageUri.toString()
+                            : post.normalImageUri.toString(),
+                        placeholderUrl: post.previewImageUri.toString(),
+                      ),
+                    ),
                   ),
                   _buildTopShadowGradient(),
                   Positioned(

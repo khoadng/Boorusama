@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
 final _posts = Provider<List<Post>>(
     (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);
@@ -69,9 +70,24 @@ class LatestView extends HookWidget {
               padding: EdgeInsets.all(6.0),
               sliver: postsState.maybeWhen(
                 fetched: () => SliverPostGrid(
-                    key: gridKey.value,
-                    posts: posts,
-                    scrollController: scrollController),
+                  onTap: (post, index) {
+                    context
+                        .read(latestPostsStateNotifierProvider)
+                        .viewPost(post);
+                    AppRouter.router.navigateTo(
+                      context,
+                      "/posts/latest",
+                      routeSettings: RouteSettings(arguments: [
+                        post,
+                        "${gridKey.toString()}_${post.id}",
+                        index,
+                      ]),
+                    );
+                  },
+                  key: gridKey.value,
+                  posts: posts,
+                  scrollController: scrollController,
+                ),
                 orElse: () => SliverPostGridPlaceHolder(
                     scrollController: scrollController),
               ),

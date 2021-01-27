@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'tag_suggestion_items.dart';
 
 part 'search_page.freezed.dart';
@@ -292,6 +293,7 @@ class SearchPage extends HookWidget {
                                 ? SliverPadding(
                                     padding: EdgeInsets.all(6.0),
                                     sliver: SliverPostGrid(
+                                      onTap: (value, index) {},
                                       key: gridKey.value,
                                       posts: posts,
                                       scrollController: scrollController,
@@ -305,6 +307,15 @@ class SearchPage extends HookWidget {
                         completed: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGrid(
+                            onTap: (post, index) => AppRouter.router.navigateTo(
+                              context,
+                              "/posts",
+                              routeSettings: RouteSettings(arguments: [
+                                post,
+                                "${gridKey.toString()}_${post.id}",
+                                index,
+                              ]),
+                            ),
                             key: gridKey.value,
                             posts: posts,
                             scrollController: scrollController,

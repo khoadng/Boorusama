@@ -8,30 +8,33 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:hooks_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:shimmer/shimmer.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/black_listed_filter_decorator.dart';
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/no_image_filter_decorator.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'post_image_page.dart';
-import 'widgets/post_tag_list.dart';
-import 'widgets/post_video.dart';
+
+final _posts = Provider<List<Post>>(
+    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);
+final _postProvider = Provider<List<Post>>((ref) {
+  return ref.watch(_posts);
+});
 
 final postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
@@ -48,71 +51,50 @@ final artistCommentaryStateNotifierProvider =
 final postDetailStateNotifier = StateNotifierProvider<PostDetailStateNotifier>(
     (ref) => PostDetailStateNotifier(ref));
 
-class PostDetailPage extends StatefulWidget {
-  PostDetailPage({
+class LatestPostsDetailPage extends HookWidget {
+  LatestPostsDetailPage({
     Key key,
     @required this.post,
     @required this.heroTag,
-    @required this.posts,
+    // @required this.posts,
     @required this.intitialIndex,
   }) : super(key: key);
 
   final Post post;
 
-  final List<Post> posts;
+  // final List<Post> posts;
   final int intitialIndex;
 
   final String heroTag;
-
-  @override
-  _PostDetailPageState createState() => _PostDetailPageState();
-}
-
-class _PostDetailPageState extends State<PostDetailPage> {
-  @override
   Widget build(BuildContext context) {
+    final posts = useProvider(_postProvider);
+
     return WillPopScope(
       onWillPop: () {
-        context.read(notesStateNotifierProvider).clearNotes();
+        context.read(latestPostsStateNotifierProvider).stopViewing();
         return Future.value(true);
       },
       child: CarouselSlider.builder(
-          itemCount: widget.posts.length,
+          itemCount: posts.length,
           itemBuilder: (context, index) {
-            var postWidget;
-            final post = widget.posts[index];
-            if (post.isVideo) {
-              postWidget = Container(
-                  height: post.aspectRatio > 1.0
-                      ? post.height / post.aspectRatio
-                      : post.height,
-                  child: PostVideo(post: post));
-            } else {
-              postWidget = Hero(
-                tag: widget.heroTag,
-                child: GestureDetector(
-                  onTap: () => AppRouter.router.navigateTo(
-                      context, "/posts/image",
-                      routeSettings:
-                          RouteSettings(arguments: [post, widget.heroTag])),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: CachedNetworkImage(
-                          fit: BoxFit.fitWidth,
-                          imageUrl: post.normalImageUri.toString())),
-                ),
-              );
-            }
-
             return _DetailPageChild(
-              post: widget.posts[index],
-              postWidget: postWidget,
+              post: posts[index],
+              heroTag: heroTag,
             );
           },
           options: CarouselOptions(
+            onPageChanged: (index, reason) {
+              context
+                  .read(latestPostsStateNotifierProvider)
+                  .viewPost(posts[index]);
+
+              if (index > posts.length * 0.8) {
+                context.read(latestPostsStateNotifierProvider).getMorePosts();
+              }
+            },
             height: MediaQuery.of(context).size.height,
             viewportFraction: 1,
-            initialPage: widget.intitialIndex,
+            initialPage: intitialIndex,
             reverse: false,
             autoPlayCurve: Curves.fastOutSlowIn,
             scrollDirection: Axis.horizontal,
@@ -125,11 +107,11 @@ class _DetailPageChild extends StatefulWidget {
   const _DetailPageChild({
     Key key,
     @required this.post,
-    @required this.postWidget,
+    @required this.heroTag,
   }) : super(key: key);
 
   final Post post;
-  final Widget postWidget;
+  final String heroTag;
 
   @override
   __DetailPageChildState createState() => __DetailPageChildState();
@@ -158,13 +140,35 @@ class __DetailPageChildState extends State<_DetailPageChild> {
 
   @override
   Widget build(BuildContext context) {
+    Widget postWidget;
+    if (widget.post.isVideo) {
+      postWidget = Container(
+          height: widget.post.aspectRatio > 1.0
+              ? widget.post.height / widget.post.aspectRatio
+              : widget.post.height,
+          child: PostVideo(post: widget.post));
+    } else {
+      postWidget = Hero(
+        tag: widget.heroTag,
+        child: GestureDetector(
+          onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings:
+                  RouteSettings(arguments: [widget.post, widget.heroTag])),
+          child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: CachedNetworkImage(
+                  fit: BoxFit.fitWidth,
+                  imageUrl: widget.post.normalImageUri.toString())),
+        ),
+      );
+    }
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
               child: Stack(children: <Widget>[
-                widget.postWidget,
+                postWidget,
                 _buildTopShadowGradient(),
                 _buildBackButton(context),
                 _buildMoreVertButton(),
