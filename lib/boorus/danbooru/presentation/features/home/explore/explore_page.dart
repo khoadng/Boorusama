@@ -10,54 +10,61 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/popular/popular_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_state.dart';
+import 'package:boorusama/boorus/danbooru/application/home/explore/explore_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/list_item_status.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 final _posts = Provider<List<Post>>((ref) {
-  return ref.watch(popularStateNotifierProvider.state).posts;
+  return ref.watch(exploreStateNotifierProvider.state).posts.items;
 });
-final _popularPostProvider = Provider<List<Post>>((ref) {
+final _curatedPostProvider = Provider<List<Post>>((ref) {
   return ref.watch(_posts);
 });
 
-final _postsState = Provider<PostState>((ref) {
-  return ref.watch(popularStateNotifierProvider.state).postsState;
+final _postsState = Provider<ListItemStatus<Post>>((ref) {
+  return ref.watch(exploreStateNotifierProvider.state).posts.status;
 });
-final _postsStateProvider = Provider<PostState>((ref) {
+final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
   return ref.watch(_postsState);
 });
 
 final _timeScale = Provider<TimeScale>((ref) {
-  return ref.watch(popularStateNotifierProvider.state).selectedTimeScale;
+  return ref.watch(exploreStateNotifierProvider.state).selectedTimeScale;
 });
 final _timeScaleProvider = Provider<TimeScale>((ref) {
   final timeScale = ref.watch(_timeScale);
 
   Future.delayed(
-      Duration.zero, () => ref.watch(popularStateNotifierProvider).refresh());
+      Duration.zero, () => ref.watch(exploreStateNotifierProvider).refresh());
 
   return timeScale;
 });
 
 final _date = Provider<DateTime>((ref) {
-  return ref.watch(popularStateNotifierProvider.state).selectedDate;
+  return ref.watch(exploreStateNotifierProvider.state).selectedDate;
 });
 final _dateProvider = Provider<DateTime>((ref) {
   final date = ref.watch(_date);
 
   Future.delayed(
-      Duration.zero, () => ref.watch(popularStateNotifierProvider).refresh());
+      Duration.zero, () => ref.watch(exploreStateNotifierProvider).refresh());
 
   return date;
 });
 
-class PopularView extends HookWidget {
-  const PopularView({Key key}) : super(key: key);
+final _category = Provider<ExploreCategory>((ref) {
+  return ref.watch(exploreStateNotifierProvider.state).category;
+});
+final _categoryProvider = Provider<ExploreCategory>((ref) {
+  return ref.watch(_category);
+});
+
+class ExplorePage extends HookWidget {
+  const ExplorePage({Key key}) : super(key: key);
 
   Widget _buildModalTimeScalePicker(BuildContext context) {
     return Material(
@@ -84,6 +91,32 @@ class PopularView extends HookWidget {
     );
   }
 
+  Widget _buildModalCategoryPicker(BuildContext context) {
+    return Material(
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: Text(I18n.of(context).postCategoriesPopular),
+              onTap: () => Navigator.of(context).pop(ExploreCategory.popular()),
+            ),
+            ListTile(
+              title: Text(I18n.of(context).postCategoriesCurated),
+              onTap: () => Navigator.of(context).pop(ExploreCategory.curated()),
+            ),
+            ListTile(
+              title: Text(I18n.of(context).postCategoriesMostViewed),
+              onTap: () =>
+                  Navigator.of(context).pop(ExploreCategory.mostViewed()),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final gridKey = useState(GlobalKey());
@@ -93,10 +126,11 @@ class PopularView extends HookWidget {
 
     final selectedDate = useProvider(_dateProvider);
     final selectedTimeScale = useProvider(_timeScaleProvider);
-    final posts = useProvider(_popularPostProvider);
+    final selectedCategory = useProvider(_categoryProvider);
+    final posts = useProvider(_curatedPostProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    return ProviderListener<PostState>(
+    return ProviderListener<ListItemStatus<Post>>(
       provider: _postsState,
       onChange: (context, state) {
         state.maybeWhen(
@@ -115,24 +149,24 @@ class PopularView extends HookWidget {
         enablePullUp: true,
         header: const MaterialClassicHeader(),
         footer: const ClassicFooter(),
-        onRefresh: () => context.read(popularStateNotifierProvider).refresh(),
+        onRefresh: () => context.read(exploreStateNotifierProvider).refresh(),
         onLoading: () =>
-            context.read(popularStateNotifierProvider).getMorePosts(),
+            context.read(exploreStateNotifierProvider).getMorePosts(),
         child: CustomScrollView(
           controller: scrollController,
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(
                 [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Column(
                     children: [
                       ButtonBar(
+                        alignment: MainAxisAlignment.center,
                         children: <Widget>[
                           IconButton(
                             icon: Icon(Icons.keyboard_arrow_left),
                             onPressed: () => context
-                                .read(popularStateNotifierProvider)
+                                .read(exploreStateNotifierProvider)
                                 .reverseOneTimeUnit(),
                           ),
                           FlatButton(
@@ -145,7 +179,7 @@ class PopularView extends HookWidget {
                               theme: DatePickerTheme(),
                               onConfirm: (time) {
                                 context
-                                    .read(popularStateNotifierProvider)
+                                    .read(exploreStateNotifierProvider)
                                     .updateDate(time);
                               },
                               currentTime: DateTime.now(),
@@ -161,34 +195,70 @@ class PopularView extends HookWidget {
                           IconButton(
                             icon: Icon(Icons.keyboard_arrow_right),
                             onPressed: () => context
-                                .read(popularStateNotifierProvider)
+                                .read(exploreStateNotifierProvider)
                                 .forwardOneTimeUnit(),
                           ),
                         ],
                       ),
-                      FlatButton(
-                        color: Theme.of(context).cardColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(18.0),
-                        ),
-                        onPressed: () async {
-                          final timeScale = await showMaterialModalBottomSheet(
-                                  context: context,
-                                  builder: (context, controller) =>
-                                      _buildModalTimeScalePicker(context)) ??
-                              selectedTimeScale;
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          FlatButton(
+                            color: Theme.of(context).cardColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            onPressed: () async {
+                              final category =
+                                  await showMaterialModalBottomSheet(
+                                          context: context,
+                                          builder: (context, controller) =>
+                                              _buildModalCategoryPicker(
+                                                  context)) ??
+                                      selectedCategory;
 
-                          context
-                              .read(popularStateNotifierProvider)
-                              .updateTimeScale(timeScale);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Text(
-                                "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
-                            Icon(Icons.arrow_drop_down)
-                          ],
-                        ),
+                              context
+                                  .read(exploreStateNotifierProvider)
+                                  .changeCategory(category);
+                            },
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                    "${selectedCategory.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
+                                Icon(Icons.arrow_drop_down)
+                              ],
+                            ),
+                          ),
+                          selectedCategory.maybeWhen(
+                            mostViewed: () => Center(),
+                            orElse: () => FlatButton(
+                              color: Theme.of(context).cardColor,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(18.0),
+                              ),
+                              onPressed: () async {
+                                final timeScale =
+                                    await showMaterialModalBottomSheet(
+                                            context: context,
+                                            builder: (context, controller) =>
+                                                _buildModalTimeScalePicker(
+                                                    context)) ??
+                                        selectedTimeScale;
+
+                                context
+                                    .read(exploreStateNotifierProvider)
+                                    .updateTimeScale(timeScale);
+                              },
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                      "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
+                                  Icon(Icons.arrow_drop_down)
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),

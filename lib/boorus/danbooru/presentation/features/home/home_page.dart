@@ -14,10 +14,8 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'bottom_bar_widget.dart';
-import 'curated/curated_view.dart';
+import 'explore/explore_page.dart';
 import 'latest/latest_posts_view.dart';
-import 'most_viewed/most_viewed_view.dart';
-import 'popular/popular_view.dart';
 import 'post_list_action.dart';
 import 'side_bar.dart';
 
@@ -25,7 +23,7 @@ class HomePage extends HookWidget {
   HomePage({Key key}) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final int tabLength = 4;
+  final int tabLength = 2;
 
   void _handleMoreSelected(PostListAction action) {
     // switch (action) {
@@ -112,9 +110,7 @@ class HomePage extends HookWidget {
                   ),
                   tabs: [
                     Tab(text: I18n.of(context).postCategoriesLatest),
-                    Tab(text: I18n.of(context).postCategoriesPopular),
-                    Tab(text: I18n.of(context).postCategoriesCurated),
-                    Tab(text: I18n.of(context).postCategoriesMostViewed),
+                    Tab(text: "Explore"),
                   ],
                 ),
               ),
@@ -125,9 +121,7 @@ class HomePage extends HookWidget {
           index: topTabIndex.value,
           children: <Widget>[
             LatestView(),
-            PopularView(),
-            CuratedView(),
-            MostViewedView(),
+            ExplorePage(),
           ],
         ),
       ),
