@@ -78,11 +78,26 @@ class LatestView extends HookWidget {
                         .viewPost(post);
                     AppRouter.router.navigateTo(
                       context,
-                      "/posts/latest",
+                      "/posts",
                       routeSettings: RouteSettings(arguments: [
                         post,
                         "${gridKey.toString()}_${post.id}",
                         index,
+                        posts,
+                        () => context
+                            .read(latestPostsStateNotifierProvider)
+                            .stopViewing(),
+                        (index) {
+                          context
+                              .read(latestPostsStateNotifierProvider)
+                              .viewPost(posts[index]);
+
+                          if (index > posts.length * 0.8) {
+                            context
+                                .read(latestPostsStateNotifierProvider)
+                                .getMorePosts();
+                          }
+                        }
                       ]),
                     );
                   },

@@ -286,16 +286,35 @@ class SearchPage extends HookWidget {
                         orElse: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGrid(
-                            onTap: (post, index) => AppRouter.router.navigateTo(
-                              context,
-                              "/posts",
-                              routeSettings: RouteSettings(arguments: [
-                                post,
-                                "${gridKey.toString()}_${post.id}",
-                                index,
-                                posts,
-                              ]),
-                            ),
+                            onTap: (post, index) {
+                              context
+                                  .read(searchStateNotifierProvider)
+                                  .viewPost(post);
+                              AppRouter.router.navigateTo(
+                                context,
+                                "/posts",
+                                routeSettings: RouteSettings(arguments: [
+                                  post,
+                                  "${gridKey.toString()}_${post.id}",
+                                  index,
+                                  posts,
+                                  () => context
+                                      .read(searchStateNotifierProvider)
+                                      .stopViewing(),
+                                  (index) {
+                                    context
+                                        .read(searchStateNotifierProvider)
+                                        .viewPost(posts[index]);
+
+                                    if (index > posts.length * 0.8) {
+                                      context
+                                          .read(searchStateNotifierProvider)
+                                          .getMoreResult();
+                                    }
+                                  }
+                                ]),
+                              );
+                            },
                             key: gridKey.value,
                             posts: posts,
                             scrollController: scrollController,

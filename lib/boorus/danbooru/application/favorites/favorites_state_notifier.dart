@@ -82,4 +82,18 @@ class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
       },
     );
   }
+
+  void viewPost(Post post) {
+    state = state.copyWith(
+      lastViewedPost: state.currentViewingPost,
+      currentViewingPost: post,
+    );
+  }
+
+  void stopViewing() {
+    state = state.copyWith(
+      lastViewedPost: state.currentViewingPost,
+      currentViewingPost: null,
+    );
+  }
 }

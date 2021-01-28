@@ -269,16 +269,33 @@ class ExplorePage extends HookWidget {
               refreshing: () =>
                   SliverPostGridPlaceHolder(scrollController: scrollController),
               orElse: () => SliverPostGrid(
-                onTap: (post, index) => AppRouter.router.navigateTo(
-                  context,
-                  "/posts",
-                  routeSettings: RouteSettings(arguments: [
-                    post,
-                    "${gridKey.toString()}_${post.id}",
-                    index,
-                    posts,
-                  ]),
-                ),
+                onTap: (post, index) {
+                  context.read(exploreStateNotifierProvider).viewPost(post);
+                  AppRouter.router.navigateTo(
+                    context,
+                    "/posts",
+                    routeSettings: RouteSettings(arguments: [
+                      post,
+                      "${gridKey.toString()}_${post.id}",
+                      index,
+                      posts,
+                      () => context
+                          .read(exploreStateNotifierProvider)
+                          .stopViewing(),
+                      (index) {
+                        context
+                            .read(exploreStateNotifierProvider)
+                            .viewPost(posts[index]);
+
+                        if (index > posts.length * 0.8) {
+                          context
+                              .read(exploreStateNotifierProvider)
+                              .getMorePosts();
+                        }
+                      }
+                    ]),
+                  );
+                },
                 key: gridKey.value,
                 posts: posts,
                 scrollController: scrollController,

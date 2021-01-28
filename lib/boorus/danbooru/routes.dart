@@ -6,7 +6,6 @@ import 'package:fluro/fluro.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/latest_posts_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'presentation/features/accounts/account_info/account_info_page.dart';
@@ -39,19 +38,8 @@ final postDetailHandler = Handler(handlerFunc: (
     heroTag: args[1],
     intitialIndex: args[2],
     posts: args[3],
-  );
-});
-
-final postLatestDetailHandler = Handler(handlerFunc: (
-  BuildContext context,
-  Map<String, List<String>> params,
-) {
-  final args = context.settings.arguments as List;
-
-  return LatestPostsDetailPage(
-    post: args[0],
-    heroTag: args[1],
-    intitialIndex: args[2],
+    onExit: args[4],
+    onPostChanged: args[5],
   );
 });
 
