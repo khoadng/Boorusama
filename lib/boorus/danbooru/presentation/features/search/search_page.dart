@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/list_item_status.dart';
 import 'tag_suggestion_items.dart';
 
 part 'search_page.freezed.dart';
@@ -34,17 +35,16 @@ final _searchDisplayProvider =
   return status;
 });
 
-final _monitoringState = Provider.autoDispose<SearchMonitoringState>(
-    (ref) => ref.watch(searchStateNotifierProvider.state).monitoringState);
-final _searchMonitoringProvider =
-    Provider.autoDispose<SearchMonitoringState>((ref) {
-  final status = ref.watch(_monitoringState);
+final _itemStatus = Provider.autoDispose<ListItemStatus<Post>>(
+    (ref) => ref.watch(searchStateNotifierProvider.state).posts.status);
+final _postStatusProvider = Provider.autoDispose<ListItemStatus<Post>>((ref) {
+  final status = ref.watch(_itemStatus);
   print("Search monitoring status: $status");
   return status;
 });
 
 final _posts = Provider.autoDispose<List<Post>>(
-    (ref) => ref.watch(searchStateNotifierProvider.state).posts);
+    (ref) => ref.watch(searchStateNotifierProvider.state).posts.items);
 final _postProvider = Provider.autoDispose<List<Post>>((ref) {
   final posts = ref.watch(_posts);
   return posts;
@@ -154,7 +154,7 @@ class SearchPage extends HookWidget {
     final gridKey = useState(GlobalKey());
 
     final searchDisplayState = useProvider(_searchDisplayProvider);
-    final searchMonitoringState = useProvider(_searchMonitoringProvider);
+    final postStatus = useProvider(_postStatusProvider);
     final posts = useProvider(_postProvider);
     final query = useProvider(_queryProvider);
 
@@ -171,13 +171,13 @@ class SearchPage extends HookWidget {
       return () => {};
     }, [query]);
 
-    return ProviderListener<SearchState>(
-      provider: searchStateNotifierProvider.state,
-      onChange: (context, state) => state.monitoringState.when(
-        none: () => true,
-        inProgress: (loadingType) => loadingType,
-        completed: () => _onLoadCompleted(refreshController),
-      ),
+    return ProviderListener<ListItemStatus<Post>>(
+      provider: _postStatusProvider,
+      onChange: (context, state) {
+        if (state == ListItemStatus.fetched()) {
+          _onLoadCompleted(refreshController);
+        }
+      },
       child: SafeArea(
         child: Scaffold(
           floatingActionButton: searchDisplayState.state.when(
@@ -282,29 +282,8 @@ class SearchPage extends HookWidget {
                           ]),
                         ),
                       ),
-                      results: () => searchMonitoringState.when(
-                        none: () => SliverPadding(
-                          padding: EdgeInsets.all(6.0),
-                          sliver: SliverPostGridPlaceHolder(
-                              scrollController: scrollController),
-                        ),
-                        inProgress: (loadingType) =>
-                            loadingType == LoadingType.more
-                                ? SliverPadding(
-                                    padding: EdgeInsets.all(6.0),
-                                    sliver: SliverPostGrid(
-                                      onTap: (value, index) {},
-                                      key: gridKey.value,
-                                      posts: posts,
-                                      scrollController: scrollController,
-                                    ),
-                                  )
-                                : SliverPadding(
-                                    padding: EdgeInsets.all(6.0),
-                                    sliver: SliverPostGridPlaceHolder(
-                                        scrollController: scrollController),
-                                  ),
-                        completed: () => SliverPadding(
+                      results: () => postStatus.maybeWhen(
+                        orElse: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGrid(
                             onTap: (post, index) => AppRouter.router.navigateTo(
@@ -314,12 +293,18 @@ class SearchPage extends HookWidget {
                                 post,
                                 "${gridKey.toString()}_${post.id}",
                                 index,
+                                posts,
                               ]),
                             ),
                             key: gridKey.value,
                             posts: posts,
                             scrollController: scrollController,
                           ),
+                        ),
+                        refreshing: () => SliverPadding(
+                          padding: EdgeInsets.all(6.0),
+                          sliver: SliverPostGridPlaceHolder(
+                              scrollController: scrollController),
                         ),
                       ),
                     ),

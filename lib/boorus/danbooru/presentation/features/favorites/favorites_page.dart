@@ -8,22 +8,22 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/list_item_status.dart';
 
 final _posts = Provider<List<Post>>(
-    (ref) => ref.watch(favoritesStateNotifierProvider.state).posts);
+    (ref) => ref.watch(favoritesStateNotifierProvider.state).posts.items);
 final _postProvider = Provider<List<Post>>((ref) {
   return ref.watch(_posts);
 });
 
-final _postsState = Provider<PostState>((ref) {
-  return ref.watch(favoritesStateNotifierProvider.state).postsState;
+final _postsState = Provider<ListItemStatus<Post>>((ref) {
+  return ref.watch(favoritesStateNotifierProvider.state).posts.status;
 });
-final _postsStateProvider = Provider<PostState>((ref) {
+final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
   return ref.watch(_postsState);
 });
 
@@ -40,7 +40,7 @@ class FavoritesPage extends HookWidget {
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
 
-    return ProviderListener<PostState>(
+    return ProviderListener<ListItemStatus<Post>>(
       provider: _postsStateProvider,
       onChange: (context, state) {
         state.maybeWhen(
@@ -70,7 +70,9 @@ class FavoritesPage extends HookWidget {
               SliverPadding(
                 padding: EdgeInsets.all(6.0),
                 sliver: postsState.maybeWhen(
-                  fetched: () => SliverPostGrid(
+                  refreshing: () => SliverPostGridPlaceHolder(
+                      scrollController: scrollController),
+                  orElse: () => SliverPostGrid(
                     onTap: (post, index) => AppRouter.router.navigateTo(
                       context,
                       "/posts",
@@ -78,14 +80,13 @@ class FavoritesPage extends HookWidget {
                         post,
                         "${gridKey.toString()}_${post.id}",
                         index,
+                        posts,
                       ]),
                     ),
                     key: gridKey.value,
                     posts: posts,
                     scrollController: scrollController,
                   ),
-                  orElse: () => SliverPostGridPlaceHolder(
-                      scrollController: scrollController),
                 ),
               ),
             ],
