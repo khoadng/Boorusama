@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post_state.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/core/application/list_state_notifier.dart';
 import '../../black_listed_filter_decorator.dart';
 import '../../no_image_filter_decorator.dart';
 
@@ -21,70 +21,62 @@ final latestPostsStateNotifierProvider =
       postRepository: postRepo, settingRepository: settingsRepo);
   final removedNullImageRepo =
       NoImageFilterDecorator(postRepository: filteredPostRepo);
-  return LatestStateNotifier(removedNullImageRepo)..refresh();
+  final listStateNotifier = ListStateNotifier<Post>();
+  return LatestStateNotifier(removedNullImageRepo, listStateNotifier)
+    ..refresh();
 });
 
 class LatestStateNotifier extends StateNotifier<LatestPostsState> {
-  LatestStateNotifier(IPostRepository postRepository)
+  LatestStateNotifier(
+      IPostRepository postRepository, ListStateNotifier<Post> listStateNotifier)
       : _postRepository = postRepository,
+        _listStateNotifier = listStateNotifier,
         super(LatestPostsState.initial());
 
+  final ListStateNotifier<Post> _listStateNotifier;
   final IPostRepository _postRepository;
 
   void getMorePosts() async {
-    try {
-      final nextPage = state.page + 1;
-      state = state.copyWith(
-        postsState: PostState.loading(),
-      );
+    _listStateNotifier.getMoreItems(
+      callback: () async {
+        final nextPage = state.posts.page + 1;
 
-      final dtos = await _postRepository.getPosts("", nextPage);
-      final posts = dtos.map((dto) => dto.toEntity()).toList();
+        final dtos = await _postRepository.getPosts("", nextPage);
+        final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-      posts
-        ..removeWhere((post) {
-          final p = state.posts.firstWhere(
-            (sPost) => sPost.id == post.id,
-            orElse: () => null,
-          );
-          return p?.id == post.id;
-        });
+        posts
+          ..removeWhere((post) {
+            final p = state.posts.items.firstWhere(
+              (sPost) => sPost.id == post.id,
+              orElse: () => null,
+            );
+            return p?.id == post.id;
+          });
 
-      state = state.copyWith(
-        postsState: PostState.fetched(),
-        posts: [...state.posts, ...posts],
-        page: nextPage,
-      );
-    } on DatabaseTimeOut {
-      state = state.copyWith(
-        postsState: PostState.error(),
-      );
-    }
+        return posts;
+      },
+      onStateChanged: (state) => this.state = this.state.copyWith(
+            posts: state,
+          ),
+    );
   }
 
   void refresh() async {
-    try {
-      state = state.copyWith(
-        page: 1,
-        posts: [],
-        postsState: PostState.refreshing(),
-      );
+    _listStateNotifier.refresh(
+      callback: () async {
+        final dtos = await _postRepository.getPosts("", 1);
+        final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-      final dtos = await _postRepository.getPosts("", state.page);
-      final posts = dtos.map((dto) => dto.toEntity()).toList();
-
-      //TODO: workaround, cause Bad state error somehow...
-      if (mounted) {
-        state = state.copyWith(
-          posts: posts,
-          postsState: PostState.fetched(),
-        );
-      }
-    } on DatabaseTimeOut {
-      state = state.copyWith(
-        postsState: PostState.error(),
-      );
-    }
+        return posts;
+      },
+      onStateChanged: (state) {
+        if (mounted) {
+          this.state = this.state.copyWith(
+                posts: state,
+              );
+        }
+      },
+    );
   }
 
   void viewPost(Post post) {

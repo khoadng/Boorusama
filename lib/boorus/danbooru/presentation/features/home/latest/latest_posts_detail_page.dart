@@ -31,7 +31,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widg
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 final _posts = Provider<List<Post>>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts);
+    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts.items);
 final _postProvider = Provider<List<Post>>((ref) {
   return ref.watch(_posts);
 });
