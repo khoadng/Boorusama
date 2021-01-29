@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_state_notifier.dart';
@@ -27,6 +28,17 @@ final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
   return ref.watch(_postsState);
 });
 
+final _lastViewedPostIndex = Provider<int>((ref) {
+  return ref
+      .watch(favoritesStateNotifierProvider.state)
+      .posts
+      .lastViewedItemIndex;
+});
+final _lastViewedPostIndexProvider = Provider<int>((ref) {
+  final lastViewedPost = ref.watch(_lastViewedPostIndex);
+  return lastViewedPost;
+});
+
 class FavoritesPage extends HookWidget {
   const FavoritesPage({Key key}) : super(key: key);
 
@@ -34,11 +46,23 @@ class FavoritesPage extends HookWidget {
   Widget build(BuildContext context) {
     final refreshController =
         useState(RefreshController(initialRefresh: false));
-    final scrollController = useScrollController();
+    // final scrollController = useScrollController();
     final gridKey = useState(GlobalKey());
 
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
+    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
+
+    final scrollController = useState(AutoScrollController());
+
+    useEffect(() {
+      return () => scrollController.value.dispose;
+    }, []);
+
+    useEffect(() {
+      scrollController.value.scrollToIndex(lastViewedPostIndex);
+      return () => null;
+    }, [lastViewedPostIndex]);
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postsStateProvider,
@@ -65,13 +89,13 @@ class FavoritesPage extends HookWidget {
           onLoading: () =>
               context.read(favoritesStateNotifierProvider).getMorePosts(),
           child: CustomScrollView(
-            controller: scrollController,
+            controller: scrollController.value,
             slivers: <Widget>[
               SliverPadding(
                 padding: EdgeInsets.all(6.0),
                 sliver: postsState.maybeWhen(
                   refreshing: () => SliverPostGridPlaceHolder(
-                      scrollController: scrollController),
+                      scrollController: scrollController.value),
                   orElse: () => SliverPostGrid(
                     onTap: (post, index) {
                       context
@@ -104,7 +128,7 @@ class FavoritesPage extends HookWidget {
                     },
                     key: gridKey.value,
                     posts: posts,
-                    scrollController: scrollController,
+                    scrollController: scrollController.value,
                   ),
                 ),
               ),

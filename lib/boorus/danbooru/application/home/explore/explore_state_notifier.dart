@@ -158,16 +158,19 @@ class ExploreStateNotifier extends StateNotifier<ExploreState> {
   }
 
   void viewPost(Post post) {
-    state = state.copyWith(
-      lastViewedPost: state.currentViewingPost,
-      currentViewingPost: post,
-    );
+    _listStateNotifier.view(
+        item: post,
+        onStateChanged: (state) => this.state = this.state.copyWith(
+              posts: state,
+            ));
   }
 
   void stopViewing() {
-    state = state.copyWith(
-      lastViewedPost: state.currentViewingPost,
-      currentViewingPost: null,
-    );
+    _listStateNotifier.stopViewing(
+        lastIndexBuilder: () => state.posts.items
+            .indexWhere((p) => p.id == state.posts.currentViewingItem.id),
+        onStateChanged: (state) => this.state = this.state.copyWith(
+              posts: state,
+            ));
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
@@ -20,65 +21,63 @@ class SliverPostGrid extends StatelessWidget {
   }) : super(key: key);
 
   final List<Post> posts;
-  final ScrollController scrollController;
+  final AutoScrollController scrollController;
   final Function(Post, int) onTap;
 
   @override
   Widget build(BuildContext context) {
-    return LiveSliverGrid(
-      showItemDuration: Duration(milliseconds: 20),
-      showItemInterval: Duration(milliseconds: 20),
-      itemBuilder: (context, index, animation) {
-        if (index != null) {
-          final post = posts[index];
-          final items = <Widget>[];
+    return SliverGrid(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        mainAxisSpacing: 10.0,
+        crossAxisSpacing: 10.0,
+      ),
+      delegate: SliverChildBuilderDelegate(
+        (BuildContext context, int index) {
+          if (index != null) {
+            final post = posts[index];
+            final items = <Widget>[];
 
-          // if (post.isFavorited) {
-          //   items.add(
-          //     Icon(
-          //       Icons.favorite,
-          //       color: Colors.redAccent,
-          //     ),
-          //   );
-          // }
+            // if (post.isFavorited) {
+            //   items.add(
+            //     Icon(
+            //       Icons.favorite,
+            //       color: Colors.redAccent,
+            //     ),
+            //   );
+            // }
 
-          if (post.isAnimated) {
-            items.add(
-              Icon(
-                Icons.play_circle_outline,
-                color: Colors.white70,
-              ),
-            );
-          }
+            if (post.isAnimated) {
+              items.add(
+                Icon(
+                  Icons.play_circle_outline,
+                  color: Colors.white70,
+                ),
+              );
+            }
 
-          if (post.isTranslated) {
-            items.add(
-              Icon(
-                Icons.g_translate_outlined,
-                color: Colors.white70,
-              ),
-            );
-          }
+            if (post.isTranslated) {
+              items.add(
+                Icon(
+                  Icons.g_translate_outlined,
+                  color: Colors.white70,
+                ),
+              );
+            }
 
-          if (post.hasComment) {
-            items.add(
-              Icon(
-                Icons.comment,
-                color: Colors.white70,
-              ),
-            );
-          }
+            if (post.hasComment) {
+              items.add(
+                Icon(
+                  Icons.comment,
+                  color: Colors.white70,
+                ),
+              );
+            }
 
-          return FadeTransition(
-            opacity: Tween<double>(
-              begin: 0,
-              end: 1,
-            ).animate(animation),
-            child: SlideTransition(
-              position: Tween<Offset>(
-                begin: Offset(0, -0.1),
-                end: Offset.zero,
-              ).animate(animation),
+            return AutoScrollTag(
+              index: index,
+              controller: scrollController,
+              key: ValueKey(index),
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
@@ -128,20 +127,13 @@ class SliverPostGrid extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-          );
-        } else {
-          return Center();
-        }
-      },
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        // childAspectRatio: itemHeight / itemWidth,
+            );
+          } else {
+            return Center();
+          }
+        },
+        childCount: posts.length,
       ),
-      itemCount: posts.length,
-      controller: scrollController,
     );
   }
 

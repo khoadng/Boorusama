@@ -7,6 +7,7 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
@@ -93,6 +94,14 @@ final _completedQueryItemsProvider = Provider.autoDispose<List<String>>((ref) {
   return completedQueryItems;
 });
 
+final _lastViewedPostIndex = Provider<int>((ref) {
+  return ref.watch(searchStateNotifierProvider.state).posts.lastViewedItemIndex;
+});
+final _lastViewedPostIndexProvider = Provider<int>((ref) {
+  final lastViewedPost = ref.watch(_lastViewedPostIndex);
+  return lastViewedPost;
+});
+
 class SearchPage extends HookWidget {
   const SearchPage({Key key, this.initialQuery}) : super(key: key);
 
@@ -148,7 +157,6 @@ class SearchPage extends HookWidget {
     //TODO: MEMORY LEAK HERE, CUSTOM HOOK NEEDED
     final refreshController =
         useState(RefreshController(initialRefresh: false));
-    final scrollController = useScrollController();
     final queryEditingController = useTextEditingController();
 
     final gridKey = useState(GlobalKey());
@@ -164,12 +172,23 @@ class SearchPage extends HookWidget {
 
     final completedQueryItems = useProvider(_completedQueryItemsProvider);
 
+    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
+    final scrollController = useState(AutoScrollController());
     useEffect(() {
       queryEditingController.text = query;
       queryEditingController.selection =
           TextSelection.fromPosition(TextPosition(offset: query.length));
       return () => {};
     }, [query]);
+
+    useEffect(() {
+      return () => scrollController.value.dispose;
+    }, []);
+
+    useEffect(() {
+      scrollController.value.scrollToIndex(lastViewedPostIndex);
+      return () => null;
+    }, [lastViewedPostIndex]);
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postStatusProvider,
@@ -254,6 +273,7 @@ class SearchPage extends HookWidget {
                 footer: const ClassicFooter(),
                 onLoading: () => _onListLoading(context),
                 child: CustomScrollView(
+                  controller: scrollController.value,
                   slivers: <Widget>[
                     searchDisplayState.state.when(
                       suggestions: () => suggestionsMonitoringState.when(
@@ -317,13 +337,13 @@ class SearchPage extends HookWidget {
                             },
                             key: gridKey.value,
                             posts: posts,
-                            scrollController: scrollController,
+                            scrollController: scrollController.value,
                           ),
                         ),
                         refreshing: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGridPlaceHolder(
-                              scrollController: scrollController),
+                              scrollController: scrollController.value),
                         ),
                       ),
                     ),

@@ -68,4 +68,29 @@ class ListStateNotifier<T> extends StateNotifier<ListState<T>> {
       onStateChanged(state);
     }
   }
+
+  void view({
+    @required T item,
+    @required StateChangedCallback<T> onStateChanged,
+  }) {
+    state = state.copyWith(
+      lastViewedItem: state.currentViewingItem,
+      currentViewingItem: item,
+    );
+    onStateChanged(state);
+  }
+
+  void stopViewing({
+    @required Function() lastIndexBuilder,
+    @required StateChangedCallback<T> onStateChanged,
+  }) {
+    final index = lastIndexBuilder();
+
+    state = state.copyWith(
+      lastViewedItemIndex: index,
+      lastViewedItem: state.currentViewingItem,
+      currentViewingItem: null,
+    );
+    onStateChanged(state);
+  }
 }

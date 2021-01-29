@@ -8,6 +8,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/explore/explore_state_notifier.dart';
@@ -61,6 +62,17 @@ final _category = Provider<ExploreCategory>((ref) {
 });
 final _categoryProvider = Provider<ExploreCategory>((ref) {
   return ref.watch(_category);
+});
+
+final _lastViewedPostIndex = Provider<int>((ref) {
+  return ref
+      .watch(exploreStateNotifierProvider.state)
+      .posts
+      .lastViewedItemIndex;
+});
+final _lastViewedPostIndexProvider = Provider<int>((ref) {
+  final lastViewedPost = ref.watch(_lastViewedPostIndex);
+  return lastViewedPost;
 });
 
 class ExplorePage extends HookWidget {
@@ -120,7 +132,6 @@ class ExplorePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final gridKey = useState(GlobalKey());
-    final scrollController = useScrollController();
     final refreshController =
         useState(RefreshController(initialRefresh: false));
 
@@ -128,7 +139,18 @@ class ExplorePage extends HookWidget {
     final selectedTimeScale = useProvider(_timeScaleProvider);
     final selectedCategory = useProvider(_categoryProvider);
     final posts = useProvider(_curatedPostProvider);
+    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final postsState = useProvider(_postsStateProvider);
+
+    final scrollController = useState(AutoScrollController());
+    useEffect(() {
+      return () => scrollController.dispose;
+    }, []);
+
+    useEffect(() {
+      scrollController.value.scrollToIndex(lastViewedPostIndex);
+      return () => null;
+    }, [lastViewedPostIndex]);
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postsState,
@@ -153,7 +175,7 @@ class ExplorePage extends HookWidget {
         onLoading: () =>
             context.read(exploreStateNotifierProvider).getMorePosts(),
         child: CustomScrollView(
-          controller: scrollController,
+          controller: scrollController.value,
           slivers: <Widget>[
             SliverList(
               delegate: SliverChildListDelegate(
@@ -266,8 +288,8 @@ class ExplorePage extends HookWidget {
               ),
             ),
             postsState.maybeWhen(
-              refreshing: () =>
-                  SliverPostGridPlaceHolder(scrollController: scrollController),
+              refreshing: () => SliverPostGridPlaceHolder(
+                  scrollController: scrollController.value),
               orElse: () => SliverPostGrid(
                 onTap: (post, index) {
                   context.read(exploreStateNotifierProvider).viewPost(post);
@@ -298,7 +320,7 @@ class ExplorePage extends HookWidget {
                 },
                 key: gridKey.value,
                 posts: posts,
-                scrollController: scrollController,
+                scrollController: scrollController.value,
               ),
             ),
           ],
