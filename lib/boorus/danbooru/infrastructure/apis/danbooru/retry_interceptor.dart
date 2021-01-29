@@ -19,13 +19,13 @@ class RetryOnConnectionChangeInterceptor extends Interceptor {
 
   @override
   Future onError(DioError err) async {
-    if (_shouldRetry(err)) {
-      try {
-        return requestRetrier.scheduleRequestRetry(err.request);
-      } catch (e) {
-        return e;
-      }
-    }
+    // if (_shouldRetry(err)) {
+    //   try {
+    //     return requestRetrier.scheduleRequestRetry(err.request);
+    //   } catch (e) {
+    //     return e;
+    //   }
+    // }
     return err;
   }
 

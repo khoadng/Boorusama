@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/infrastructure/networking/network_info.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'bottom_bar_widget.dart';
@@ -43,25 +44,56 @@ class HomePage extends HookWidget {
     final bottomTabIndex = useState(0);
     final topTabIndex = useState(0);
 
+    final networkStatus = useProvider(networkStatusProvider);
+
     useEffect(() {
       Future.microtask(
           () => context.read(authenticationStateNotifierProvider).logIn());
       return () => {};
     }, []);
 
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: SideBarMenu(),
-      resizeToAvoidBottomInset: false,
-      body: IndexedStack(
-        index: bottomTabIndex.value,
-        children: <Widget>[
-          _buildHomeTabBottomBar(topTabIndex, tabController),
-          FavoritesPage(),
-        ],
-      ),
-      bottomNavigationBar: BottomBar(
-        onTabChanged: (value) => bottomTabIndex.value = value,
+    return Container(
+      color: Theme.of(context).appBarTheme.color,
+      child: SafeArea(
+        child: Column(
+          children: <Widget>[
+            networkStatus.when(
+              data: (value) => value.when(
+                unknown: () => SizedBox.shrink(),
+                available: () => SizedBox.shrink(),
+                unavailable: () => Material(
+                  color: Theme.of(context).appBarTheme.color,
+                  child: Text("Network unavailable"),
+                ),
+              ),
+              loading: () => Material(
+                color: Theme.of(context).appBarTheme.color,
+                child: Text("Connecting"),
+              ),
+              error: (error, stackTrace) => Material(
+                color: Theme.of(context).appBarTheme.color,
+                child: Text("Something went wrong"),
+              ),
+            ),
+            Expanded(
+              child: Scaffold(
+                key: scaffoldKey,
+                drawer: SideBarMenu(),
+                resizeToAvoidBottomInset: false,
+                body: IndexedStack(
+                  index: bottomTabIndex.value,
+                  children: <Widget>[
+                    _buildHomeTabBottomBar(topTabIndex, tabController),
+                    FavoritesPage(),
+                  ],
+                ),
+                bottomNavigationBar: BottomBar(
+                  onTabChanged: (value) => bottomTabIndex.value = value,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -90,9 +122,9 @@ class HomePage extends HookWidget {
                 shape: Border(
                   bottom: BorderSide(color: Colors.grey[400], width: 1.0),
                 ),
-                floating: true,
+                floating: false,
                 pinned: true,
-                snap: true,
+                snap: false,
                 primary: true,
                 forceElevated: true,
                 automaticallyImplyLeading: false,
