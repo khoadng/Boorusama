@@ -18,7 +18,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_detail/artist_commetary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
@@ -37,12 +36,10 @@ final postFavoriteStateNotifierProvider =
     StateNotifierProvider<PostFavoriteStateNotifier>(
         (ref) => PostFavoriteStateNotifier(ref));
 
-final artistCommentaryStateNotifierProvider =
-    StateNotifierProvider<ArtistCommentaryStateNotifier>(
-        (ref) => ArtistCommentaryStateNotifier(ref));
-
-final postDetailStateNotifier = StateNotifierProvider<PostDetailStateNotifier>(
-    (ref) => PostDetailStateNotifier(ref));
+final _postDetailStateNotifierProvider =
+    StateNotifierProvider<PostDetailStateNotifier>((ref) {
+  return PostDetailStateNotifier(ref);
+});
 
 class PostDetailPage extends HookWidget {
   PostDetailPage({
@@ -64,8 +61,6 @@ class PostDetailPage extends HookWidget {
 
   final String heroTag;
   Widget build(BuildContext context) {
-    // final posts = useProvider(_postProvider);
-
     return WillPopScope(
       onWillPop: () {
         onExit();
@@ -124,14 +119,8 @@ class __DetailPageChildState extends State<_DetailPageChild> {
     Future.delayed(
         Duration.zero,
         () => context
-            .read(artistCommentaryStateNotifierProvider)
-            .getCommentary(widget.post.id));
-
-    Future.delayed(
-        Duration.zero,
-        () => context
-            .read(postDetailStateNotifier)
-            .getPostStatistics(widget.post.id));
+            .read(_postDetailStateNotifierProvider)
+            .getDetails(widget.post.id));
   }
 
   @override
@@ -174,20 +163,20 @@ class __DetailPageChildState extends State<_DetailPageChild> {
               child: SizedBox(height: 10),
             ),
             Consumer(builder: (context, watch, child) {
-              final state = watch(artistCommentaryStateNotifierProvider.state);
+              final state = watch(_postDetailStateNotifierProvider.state);
               return state.when(
                 initial: () => SliverToBoxAdapter(
                     child: Center(child: CircularProgressIndicator())),
                 loading: () => SliverToBoxAdapter(
                     child: Center(child: CircularProgressIndicator())),
-                fetched: (commentary) {
-                  if (!commentary.hasCommentary) {
+                fetched: (detail) {
+                  if (!detail.artistCommentary.hasCommentary) {
                     // No artist comment, skip building this widget
                     return SliverToBoxAdapter(child: Center());
                   }
 
                   return _buildArtistCommentSection(
-                      context, widget.post, commentary);
+                      context, widget.post, detail.artistCommentary);
                 },
                 error: (name, message) => Text("Failed to load commentary"),
               );
@@ -284,14 +273,14 @@ class __DetailPageChildState extends State<_DetailPageChild> {
   Widget _buildCommandToolBar(BuildContext context, Post post) {
     return Consumer(
       builder: (context, watch, child) {
-        final state = watch(postDetailStateNotifier.state);
+        final state = watch(_postDetailStateNotifierProvider.state);
 
         return state.when(
           initial: () => SliverToBoxAdapter(
               child: Center(child: CircularProgressIndicator())),
           loading: () => SliverToBoxAdapter(
               child: Center(child: CircularProgressIndicator())),
-          fetched: (statistics) {
+          fetched: (detail) {
             return SliverStickyHeader(
                 header: Column(
                   children: [
@@ -314,7 +303,7 @@ class __DetailPageChildState extends State<_DetailPageChild> {
                           LikeButton(
                             size: 40,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            likeCount: statistics.commentCount,
+                            likeCount: detail.postStatistics.commentCount,
                             likeBuilder: (isLiked) => Icon(
                               Icons.comment,
                               color: Colors.white,
@@ -329,9 +318,9 @@ class __DetailPageChildState extends State<_DetailPageChild> {
                           ),
                           LikeButton(
                             size: 40,
-                            isLiked: statistics.isFavorited,
+                            isLiked: detail.postStatistics.isFavorited,
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            likeCount: statistics.favCount,
+                            likeCount: detail.postStatistics.favCount,
                             likeBuilder: (isLiked) => Icon(
                               Icons.favorite,
                               color: isLiked ? Colors.red : Colors.white,
