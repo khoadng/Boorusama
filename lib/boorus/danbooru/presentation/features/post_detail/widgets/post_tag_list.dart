@@ -168,20 +168,8 @@ class _PostTagListState extends State<PostTagList> {
       builder: (context, watch, child) {
         final state = watch(tagsStateNotifierProvider.state);
         return state.when(
-          initial: () => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
-          loading: () => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
+          initial: () => Center(child: CircularProgressIndicator()),
+          loading: () => Center(child: CircularProgressIndicator()),
           fetched: (tags) {
             tags.sort((a, b) => a.rawName.compareTo(b.rawName));
             _artistTags = tags
@@ -216,21 +204,14 @@ class _PostTagListState extends State<PostTagList> {
               widgets.add(_buildTags(header[1]));
             }
 
-            return SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  ...widgets,
-                ],
-              ),
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...widgets,
+              ],
             );
           },
-          error: (e, m) => SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                Center(child: CircularProgressIndicator()),
-              ],
-            ),
-          ),
+          error: (e, m) => Center(child: CircularProgressIndicator()),
         );
       },
     );

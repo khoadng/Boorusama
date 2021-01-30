@@ -9,8 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/post_image.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 
 class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({

@@ -30,14 +30,15 @@ class PostRepository implements IPostRepository {
         _ref = ref;
 
   @override
-  Future<List<PostDto>> getPosts(String tagString, int page) async {
+  Future<List<PostDto>> getPosts(String tagString, int page,
+      {int limit = 100}) async {
     final account = await _accountRepository.get();
     final settingsRepository = await _ref.watch(settingsProvider.future);
     final settings = await settingsRepository.load();
 
     return _api
         .getPosts(account.username, account.apiKey, page,
-            settings.safeMode ? "$tagString rating:s" : tagString, 100)
+            settings.safeMode ? "$tagString rating:s" : tagString, limit)
         .then((value) {
       final posts = <PostDto>[];
 

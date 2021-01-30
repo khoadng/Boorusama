@@ -50,8 +50,9 @@ class NoImageFilterDecorator implements IPostRepository {
   }
 
   @override
-  Future<List<PostDto>> getPosts(String tagString, int page) async {
-    final dtos = await _postRepository.getPosts(tagString, page);
+  Future<List<PostDto>> getPosts(String tagString, int page,
+      {int limit = 100}) async {
+    final dtos = await _postRepository.getPosts(tagString, page, limit: limit);
     return dtos
         .where((dto) =>
             dto.file_url != null &&
