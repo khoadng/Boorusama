@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -58,9 +59,23 @@ class PostDetailPage extends HookWidget {
   final int intitialIndex;
   final VoidCallback onExit;
   final ValueChanged<int> onPostChanged;
+  final Debouncer<int> _debouncer = Debouncer<int>(Duration(milliseconds: 500));
 
   final String heroTag;
   Widget build(BuildContext context) {
+    useEffect(() {
+      // Prevent server spamming when user swiping so fast
+      _debouncer.values.listen((index) {
+        onPostChanged(index);
+
+        context
+            .read(_postDetailStateNotifierProvider)
+            .getDetails(posts[index].id);
+        print("Get details for ${posts[index].id}");
+      });
+      return () => [];
+    }, []);
+
     return WillPopScope(
       onWillPop: () {
         onExit();
@@ -77,7 +92,7 @@ class PostDetailPage extends HookWidget {
           },
           options: CarouselOptions(
             onPageChanged: (index, reason) {
-              onPostChanged(index);
+              _debouncer.value = index;
             },
             height: MediaQuery.of(context).size.height,
             viewportFraction: 1,
@@ -112,16 +127,6 @@ class __DetailPageChildState extends State<_DetailPageChild> {
   int _favCount = 0;
 
   bool _showTranslated = true;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(
-        Duration.zero,
-        () => context
-            .read(_postDetailStateNotifierProvider)
-            .getDetails(widget.post.id));
-  }
 
   @override
   Widget build(BuildContext context) {
