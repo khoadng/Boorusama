@@ -18,7 +18,7 @@ class AppRouter {
         handler: postSearchHandler, transitionType: TransitionType.fadeIn);
 
     router.define("/posts",
-        handler: postDetailHandler, transitionType: TransitionType.fadeIn);
+        handler: postDetailHandler, transitionType: TransitionType.inFromRight);
 
     router.define("/posts/image",
         handler: postDetailImageHandler, transitionType: TransitionType.fadeIn);

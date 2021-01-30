@@ -131,7 +131,6 @@ class ExplorePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridKey = useState(GlobalKey());
     final refreshController =
         useState(RefreshController(initialRefresh: false));
 
@@ -298,7 +297,6 @@ class ExplorePage extends HookWidget {
                     "/posts",
                     routeSettings: RouteSettings(arguments: [
                       post,
-                      "${gridKey.toString()}_${post.id}",
                       index,
                       posts,
                       () => context
@@ -318,7 +316,6 @@ class ExplorePage extends HookWidget {
                     ]),
                   );
                 },
-                key: gridKey.value,
                 posts: posts,
                 scrollController: scrollController.value,
               ),

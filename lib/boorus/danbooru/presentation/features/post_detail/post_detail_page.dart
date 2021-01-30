@@ -2,13 +2,13 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:debounce_throttle/debounce_throttle.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -46,7 +46,6 @@ class PostDetailPage extends HookWidget {
   PostDetailPage({
     Key key,
     @required this.post,
-    @required this.heroTag,
     @required this.posts,
     @required this.intitialIndex,
     @required this.onExit,
@@ -61,9 +60,12 @@ class PostDetailPage extends HookWidget {
   final ValueChanged<int> onPostChanged;
   final Debouncer<int> _debouncer = Debouncer<int>(Duration(milliseconds: 500));
 
-  final String heroTag;
   Widget build(BuildContext context) {
     useEffect(() {
+      context
+          .read(_postDetailStateNotifierProvider)
+          .getDetails(posts[intitialIndex].id);
+
       // Prevent server spamming when user swiping so fast
       _debouncer.values.listen((index) {
         onPostChanged(index);
@@ -86,7 +88,6 @@ class PostDetailPage extends HookWidget {
           itemBuilder: (context, index) {
             return _DetailPageChild(
               post: posts[index],
-              heroTag: heroTag,
               onExit: () => onExit(),
             );
           },
@@ -109,12 +110,10 @@ class _DetailPageChild extends StatefulWidget {
   const _DetailPageChild({
     Key key,
     @required this.post,
-    @required this.heroTag,
     @required this.onExit,
   }) : super(key: key);
 
   final Post post;
-  final String heroTag;
 
   //TODO: callback hell, i don't like it
   final VoidCallback onExit;
@@ -139,11 +138,10 @@ class __DetailPageChildState extends State<_DetailPageChild> {
           child: PostVideo(post: widget.post));
     } else {
       postWidget = Hero(
-        tag: widget.heroTag,
+        tag: widget.post.id,
         child: GestureDetector(
           onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings:
-                  RouteSettings(arguments: [widget.post, widget.heroTag])),
+              routeSettings: RouteSettings(arguments: [widget.post])),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(

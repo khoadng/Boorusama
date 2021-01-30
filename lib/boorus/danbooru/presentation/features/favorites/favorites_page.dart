@@ -46,9 +46,6 @@ class FavoritesPage extends HookWidget {
   Widget build(BuildContext context) {
     final refreshController =
         useState(RefreshController(initialRefresh: false));
-    // final scrollController = useScrollController();
-    final gridKey = useState(GlobalKey());
-
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
     final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
@@ -106,7 +103,6 @@ class FavoritesPage extends HookWidget {
                         "/posts",
                         routeSettings: RouteSettings(arguments: [
                           post,
-                          "${gridKey.toString()}_${post.id}",
                           index,
                           posts,
                           () => context
@@ -126,7 +122,6 @@ class FavoritesPage extends HookWidget {
                         ]),
                       );
                     },
-                    key: gridKey.value,
                     posts: posts,
                     scrollController: scrollController.value,
                   ),

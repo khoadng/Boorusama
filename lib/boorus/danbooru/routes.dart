@@ -35,11 +35,10 @@ final postDetailHandler = Handler(handlerFunc: (
 
   return PostDetailPage(
     post: args[0],
-    heroTag: args[1],
-    intitialIndex: args[2],
-    posts: args[3],
-    onExit: args[4],
-    onPostChanged: args[5],
+    intitialIndex: args[1],
+    posts: args[2],
+    onExit: args[3],
+    onPostChanged: args[4],
   );
 });
 
@@ -51,7 +50,6 @@ final postDetailImageHandler = Handler(handlerFunc: (
 
   return PostImagePage(
     post: args[0],
-    heroTag: args[1],
   );
 });
 

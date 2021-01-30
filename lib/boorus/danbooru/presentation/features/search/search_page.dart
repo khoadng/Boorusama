@@ -159,8 +159,6 @@ class SearchPage extends HookWidget {
         useState(RefreshController(initialRefresh: false));
     final queryEditingController = useTextEditingController();
 
-    final gridKey = useState(GlobalKey());
-
     final searchDisplayState = useProvider(_searchDisplayProvider);
     final postStatus = useProvider(_postStatusProvider);
     final posts = useProvider(_postProvider);
@@ -315,7 +313,6 @@ class SearchPage extends HookWidget {
                                 "/posts",
                                 routeSettings: RouteSettings(arguments: [
                                   post,
-                                  "${gridKey.toString()}_${post.id}",
                                   index,
                                   posts,
                                   () => context
@@ -335,7 +332,6 @@ class SearchPage extends HookWidget {
                                 ]),
                               );
                             },
-                            key: gridKey.value,
                             posts: posts,
                             scrollController: scrollController.value,
                           ),
