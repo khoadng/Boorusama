@@ -13,21 +13,24 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:shimmer/shimmer.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/post/post_detail_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+
+part 'post_detail_page.freezed.dart';
 
 final postDownloadStateNotifierProvider =
     StateNotifierProvider<PostDownloadStateNotifier>(
@@ -62,9 +65,9 @@ class PostDetailPage extends HookWidget {
 
   Widget build(BuildContext context) {
     useEffect(() {
-      context
+      Future.microtask(() => context
           .read(_postDetailStateNotifierProvider)
-          .getDetails(posts[intitialIndex].id);
+          .getDetails(posts[intitialIndex].id));
 
       // Prevent server spamming when user swiping so fast
       _debouncer.values.listen((index) {
@@ -106,7 +109,12 @@ class PostDetailPage extends HookWidget {
   }
 }
 
-class _DetailPageChild extends StatefulWidget {
+final _artistCommentaryTranlationStateProvider =
+    StateProvider<ArtistCommentaryTranlationState>((ref) {
+  return ArtistCommentaryTranlationState.original();
+});
+
+class _DetailPageChild extends HookWidget {
   const _DetailPageChild({
     Key key,
     @required this.post,
@@ -119,34 +127,29 @@ class _DetailPageChild extends StatefulWidget {
   final VoidCallback onExit;
 
   @override
-  __DetailPageChildState createState() => __DetailPageChildState();
-}
-
-class __DetailPageChildState extends State<_DetailPageChild> {
-  int _favCount = 0;
-
-  bool _showTranslated = true;
-
-  @override
   Widget build(BuildContext context) {
+    final artistCommentaryDisplay =
+        useProvider(_artistCommentaryTranlationStateProvider);
+    final details = useProvider(_postDetailStateNotifierProvider.state);
+
     Widget postWidget;
-    if (widget.post.isVideo) {
+    if (post.isVideo) {
       postWidget = Container(
-          height: widget.post.aspectRatio > 1.0
-              ? widget.post.height / widget.post.aspectRatio
-              : widget.post.height,
-          child: PostVideo(post: widget.post));
+          height: post.aspectRatio > 1.0
+              ? post.height / post.aspectRatio
+              : post.height,
+          child: PostVideo(post: post));
     } else {
       postWidget = Hero(
-        tag: widget.post.id,
+        tag: post.id,
         child: GestureDetector(
           onTap: () => AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: [widget.post])),
+              routeSettings: RouteSettings(arguments: [post])),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
               child: CachedNetworkImage(
                   fit: BoxFit.fitWidth,
-                  imageUrl: widget.post.normalImageUri.toString())),
+                  imageUrl: post.normalImageUri.toString())),
         ),
       );
     }
@@ -165,27 +168,72 @@ class __DetailPageChildState extends State<_DetailPageChild> {
             SliverToBoxAdapter(
               child: SizedBox(height: 10),
             ),
-            Consumer(builder: (context, watch, child) {
-              final state = watch(_postDetailStateNotifierProvider.state);
-              return state.when(
-                initial: () => SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator())),
-                loading: () => SliverToBoxAdapter(
-                    child: Center(child: CircularProgressIndicator())),
-                fetched: (detail) {
-                  if (!detail.artistCommentary.hasCommentary) {
-                    // No artist comment, skip building this widget
-                    return SliverToBoxAdapter(child: Center());
-                  }
-
-                  return _buildArtistCommentSection(
-                      context, widget.post, detail.artistCommentary);
-                },
-                error: (name, message) => Text("Failed to load commentary"),
-              );
-            }),
+            SliverToBoxAdapter(
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(8.0)),
+                margin: EdgeInsets.symmetric(horizontal: 4.0),
+                padding: EdgeInsets.symmetric(horizontal: 4.0),
+                child: details.when(
+                  initial: () => _buildLoading(context),
+                  loading: () => _buildLoading(context),
+                  fetched: (details) => details.artistCommentary.hasCommentary
+                      ? Column(
+                          children: <Widget>[
+                            ListTile(
+                              title: Text(post.tagStringArtist.pretty),
+                              leading: CircleAvatar(),
+                              trailing: details.artistCommentary.isTranslated
+                                  ? PopupMenuButton<
+                                      ArtistCommentaryTranlationState>(
+                                      icon: Icon(Icons.keyboard_arrow_down),
+                                      onSelected: (value) {
+                                        artistCommentaryDisplay.state = value;
+                                      },
+                                      itemBuilder: (BuildContext context) => <
+                                          PopupMenuEntry<
+                                              ArtistCommentaryTranlationState>>[
+                                        PopupMenuItem<
+                                            ArtistCommentaryTranlationState>(
+                                          value: artistCommentaryDisplay.state
+                                              .when(
+                                            translated: () =>
+                                                ArtistCommentaryTranlationState
+                                                    .original(),
+                                            original: () =>
+                                                ArtistCommentaryTranlationState
+                                                    .translated(),
+                                          ),
+                                          child: ListTile(
+                                            title: artistCommentaryDisplay.state
+                                                .when(
+                                              translated: () =>
+                                                  Text("Show Original"),
+                                              original: () =>
+                                                  Text("Show Translated"),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  : null,
+                            ),
+                            Html(
+                                data: artistCommentaryDisplay.state.when(
+                                    translated: () =>
+                                        details.artistCommentary.translated,
+                                    original: () =>
+                                        details.artistCommentary.original)),
+                          ],
+                        )
+                      : SizedBox.shrink(),
+                  error: (name, message) => Text("Failed to load commentary"),
+                ),
+              ),
+            ),
             _buildSliverSpace(),
-            _buildCommandToolBar(context, widget.post),
+            _buildCommandToolBar(context, post),
           ],
         ),
       ),
@@ -222,7 +270,7 @@ class __DetailPageChildState extends State<_DetailPageChild> {
         child: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () {
-            widget.onExit();
+            onExit();
             AppRouter.router.pop(context);
           },
         ),
@@ -261,16 +309,50 @@ class __DetailPageChildState extends State<_DetailPageChild> {
     );
   }
 
-  Widget _buildSliverSpace() {
-    return SliverList(
-      delegate: SliverChildListDelegate(
-        [
-          Container(
-            padding: EdgeInsets.all(5.0),
+  Widget _buildLoading(BuildContext context) => Container(
+        decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: BorderRadius.circular(10.0)),
+        margin: EdgeInsets.symmetric(horizontal: 8.0),
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Shimmer.fromColors(
+          highlightColor: Colors.grey[500],
+          baseColor: Colors.grey[700],
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: CircleAvatar(),
+                title: Container(
+                  margin: EdgeInsets.only(
+                      right: MediaQuery.of(context).size.width * 0.4),
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
+              ),
+              ...List.generate(
+                4,
+                (index) => Container(
+                  margin: EdgeInsets.only(bottom: 10.0),
+                  width: Random().nextDouble() *
+                      MediaQuery.of(context).size.width *
+                      0.9,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: Colors.grey[400],
+                      borderRadius: BorderRadius.circular(8.0)),
+                ),
+              ),
+            ],
           ),
-        ],
-      ),
-    );
+        ),
+      );
+
+  Widget _buildSliverSpace() {
+    return SliverToBoxAdapter(child: Container(padding: EdgeInsets.all(5.0)));
   }
 
   Widget _buildCommandToolBar(BuildContext context, Post post) {
@@ -365,54 +447,11 @@ class __DetailPageChildState extends State<_DetailPageChild> {
       },
     );
   }
-
-  Widget _buildArtistCommentSection(
-      BuildContext context, Post post, ArtistCommentary commentary) {
-    return SliverList(
-        delegate: SliverChildListDelegate([
-      Container(
-        decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(8.0)),
-        margin: EdgeInsets.symmetric(horizontal: 4.0),
-        padding: EdgeInsets.symmetric(horizontal: 4.0),
-        child: Column(children: [
-          ListTile(
-            title: Text(post.tagStringArtist.pretty),
-            leading: CircleAvatar(),
-            trailing: PopupMenuButton<ArtistCommentaryAction>(
-              icon: Icon(Icons.keyboard_arrow_down),
-              onSelected: (value) {
-                switch (value) {
-                  case ArtistCommentaryAction.translate:
-                    setState(() {
-                      _showTranslated = !_showTranslated;
-                    });
-                    break;
-                  default:
-                }
-              },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<ArtistCommentaryAction>>[
-                PopupMenuItem<ArtistCommentaryAction>(
-                  value: ArtistCommentaryAction.translate,
-                  child: ListTile(
-                    // leading: const Icon(Icons.download_rounded),
-                    title: Text(
-                        _showTranslated ? "Show Original" : "Show Translated"),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Html(
-              data: commentary.isTranslated && _showTranslated
-                  ? commentary.translated
-                  : commentary.original),
-        ]),
-      ),
-    ]));
-  }
 }
 
-enum ArtistCommentaryAction { translate }
+@freezed
+abstract class ArtistCommentaryTranlationState
+    with _$ArtistCommentaryTranlationState {
+  const factory ArtistCommentaryTranlationState.translated() = _Translated;
+  const factory ArtistCommentaryTranlationState.original() = _Original;
+}
