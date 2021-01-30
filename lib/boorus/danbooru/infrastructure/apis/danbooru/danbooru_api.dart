@@ -57,6 +57,15 @@ abstract class DanbooruApi implements IApi {
     @Field("_method") String method,
   );
 
+  @GET("/favorites.json")
+  @override
+  Future<HttpResponse> filterFavoritesFromUserId(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("search[post_id]") String postIdsString,
+    @Query("search[user_id]") int userId,
+  );
+
   @GET("/comments.json")
   @override
   Future<HttpResponse> getComments(

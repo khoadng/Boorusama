@@ -3,8 +3,8 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_favorite_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 
 part 'post_favorite_state.dart';
 part 'post_favorite_state_notifier.freezed.dart';

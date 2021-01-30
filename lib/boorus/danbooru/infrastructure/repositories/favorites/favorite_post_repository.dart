@@ -4,7 +4,8 @@ import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
@@ -65,6 +66,31 @@ class FavoritePostRepository implements IFavoritePostRepository {
           break;
         default:
       }
+    });
+  }
+
+  @override
+  Future<List<FavoriteDto>> filterFavoritesFromUserId(
+      List<int> postIds, int userId) async {
+    final account = await _accountRepository.get();
+    final postIdsStringComma = postIds.join(',');
+    return _api
+        .filterFavoritesFromUserId(
+            account.username, account.apiKey, postIdsStringComma, userId)
+        .then((value) {
+      final favorites = <FavoriteDto>[];
+
+      for (var item in value.response.data) {
+        try {
+          var post = FavoriteDto.fromJson(item);
+          favorites.add(post);
+        } catch (e) {
+          print("Cant parse ${item['id']}");
+        }
+      }
+      return favorites;
+    }).catchError((Object obj) {
+      return <FavoriteDto>[];
     });
   }
 }

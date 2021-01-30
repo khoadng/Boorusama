@@ -38,15 +38,6 @@ class SliverPostGrid extends StatelessWidget {
             final post = posts[index];
             final items = <Widget>[];
 
-            // if (post.isFavorited) {
-            //   items.add(
-            //     Icon(
-            //       Icons.favorite,
-            //       color: Colors.redAccent,
-            //     ),
-            //   );
-            // }
-
             if (post.isAnimated) {
               items.add(
                 Icon(
@@ -82,14 +73,11 @@ class SliverPostGrid extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () => onTap(post, index),
-                    child: Hero(
-                      tag: "${key.toString()}_${post.id}",
-                      child: PostImage(
-                        imageUrl: post.isAnimated
-                            ? post.previewImageUri.toString()
-                            : post.normalImageUri.toString(),
-                        placeholderUrl: post.previewImageUri.toString(),
-                      ),
+                    child: PostImage(
+                      imageUrl: post.isAnimated
+                          ? post.previewImageUri.toString()
+                          : post.normalImageUri.toString(),
+                      placeholderUrl: post.previewImageUri.toString(),
                     ),
                   ),
                   _buildTopShadowGradient(),
@@ -102,10 +90,13 @@ class SliverPostGrid extends StatelessWidget {
                   ),
                   Positioned(
                     right: 6,
-                    top: 6,
+                    bottom: 6,
                     child: LikeButton(
+                      isLiked: post.isFavorited,
                       likeBuilder: (isLiked) => Icon(
-                        Icons.favorite_border_rounded,
+                        isLiked
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline_rounded,
                         color: isLiked ? Colors.red : Colors.white,
                       ),
                       onTap: (isLiked) {

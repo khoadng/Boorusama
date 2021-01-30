@@ -32,6 +32,8 @@ class Post implements IDownloadable {
   final int uploaderId;
   final Rating rating;
 
+  final bool isFavorited;
+
   Post({
     @required this.id,
     @required this.previewImageUri,
@@ -53,6 +55,8 @@ class Post implements IDownloadable {
     @required this.favCount,
     @required this.uploaderId,
     @required this.rating,
+    //TODO: workaround
+    this.isFavorited = false,
   });
 
   double get aspectRatio => this.width / this.height;

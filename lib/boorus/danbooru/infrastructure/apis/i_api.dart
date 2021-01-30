@@ -15,6 +15,13 @@ abstract class IApi {
     String method,
   );
 
+  Future<HttpResponse> filterFavoritesFromUserId(
+    String login,
+    String apiKey,
+    String postIdsStringComma,
+    int userId,
+  );
+
   Future<HttpResponse> getComments(
     int postId,
     int limit,
