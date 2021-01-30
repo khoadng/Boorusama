@@ -226,38 +226,6 @@ class PostRepository implements IPostRepository {
   }
 }
 
-PostStatistics parseStatistics(Map<String, dynamic> data) {
-  final htmlString = data["data"];
-  final postId = data["postId"];
-
-  final stopwatch = Stopwatch()..start();
-
-  final document = html.parse(htmlString);
-
-  final contentNode =
-      document.documentElement.querySelector("section[id='content']");
-  final isFavorited =
-      contentNode.querySelector("div[class='fav-buttons fav-buttons-true']") !=
-          null;
-
-  final commentCount = contentNode
-      .querySelector("section[id='comments']")
-      .querySelector("div[class='list-of-comments list-of-messages']")
-      .querySelectorAll("article[class='comment message']")
-      .length;
-
-  final favCount = document.documentElement
-      .querySelector("span[id='favcount-for-post-$postId']")
-      .text;
-
-  print('parsed statistics in ${stopwatch.elapsed.inMilliseconds}ms'
-      .toUpperCase());
-  return PostStatistics(
-      favCount: int.parse(favCount),
-      commentCount: commentCount,
-      isFavorited: isFavorited);
-}
-
 class CannotSearchMoreThanTwoTags implements Exception {
   final String message;
   CannotSearchMoreThanTwoTags(this.message);

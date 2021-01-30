@@ -126,10 +126,12 @@ abstract class DanbooruApi implements IApi {
     @Path() int postId,
   );
 
-  @GET("/posts/{postId}")
+  @GET("/artist_commentaries.json")
   @override
   Future<HttpResponse> getArtistCommentary(
-    @Path() int postId,
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("search[post_id]") int postId,
   );
 
   @GET("/explore/posts/popular.json")

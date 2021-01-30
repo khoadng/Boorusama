@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
+import 'artist_commentary_dto.dart';
 
 abstract class IArtistCommentaryRepository {
-  Future<ArtistCommentary> getCommentary(int postId);
+  Future<ArtistCommentaryDto> getCommentary(int postId);
 }

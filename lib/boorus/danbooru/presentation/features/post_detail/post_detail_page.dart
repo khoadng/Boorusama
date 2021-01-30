@@ -21,15 +21,14 @@ import 'package:shimmer/shimmer.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/post_detail/artist_commentary/artist_commentary_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/artist_posts/artist_posts_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_detail/post/post_detail_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 part 'post_detail_page.freezed.dart';
@@ -42,9 +41,9 @@ final postFavoriteStateNotifierProvider =
     StateNotifierProvider<PostFavoriteStateNotifier>(
         (ref) => PostFavoriteStateNotifier(ref));
 
-final _postDetailStateNotifierProvider =
-    StateNotifierProvider<PostDetailStateNotifier>((ref) {
-  return PostDetailStateNotifier(ref);
+final _artistCommentaryStateNotifierProvider =
+    StateNotifierProvider<ArtistCommentaryStateNotifier>((ref) {
+  return ArtistCommentaryStateNotifier(ref);
 });
 
 class PostDetailPage extends HookWidget {
@@ -68,17 +67,17 @@ class PostDetailPage extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       Future.microtask(() => context
-          .read(_postDetailStateNotifierProvider)
-          .getDetails(posts[intitialIndex].id));
+          .read(_artistCommentaryStateNotifierProvider)
+          .getArtistCommentary(posts[intitialIndex].id));
 
       // Prevent server spamming when user swiping so fast
       _debouncer.values.listen((index) {
         onPostChanged(index);
 
         context
-            .read(_postDetailStateNotifierProvider)
-            .getDetails(posts[index].id);
-        print("Get details for ${posts[index].id}");
+            .read(_artistCommentaryStateNotifierProvider)
+            .getArtistCommentary(posts[index].id);
+        print("Get artist's commentary for ${posts[index].id}");
       });
       return () => [];
     }, []);
@@ -132,7 +131,7 @@ class _DetailPageChild extends HookWidget {
   Widget build(BuildContext context) {
     final artistCommentaryDisplay =
         useProvider(_artistCommentaryTranlationStateProvider);
-    final details = useProvider(_postDetailStateNotifierProvider.state);
+    final details = useProvider(_artistCommentaryStateNotifierProvider.state);
     final artistPosts = useProvider(artistPostsStateNotifierProvider.state);
 
     useEffect(() {
@@ -188,13 +187,13 @@ class _DetailPageChild extends HookWidget {
                 child: details.when(
                   initial: () => _buildLoading(context),
                   loading: () => _buildLoading(context),
-                  fetched: (details) => details.artistCommentary.hasCommentary
+                  fetched: (artistCommentary) => artistCommentary.hasCommentary
                       ? Column(
                           children: <Widget>[
                             ListTile(
                               title: Text(post.tagStringArtist.pretty),
                               leading: CircleAvatar(),
-                              trailing: details.artistCommentary.isTranslated
+                              trailing: artistCommentary.isTranslated
                                   ? PopupMenuButton<
                                       ArtistCommentaryTranlationState>(
                                       icon: Icon(Icons.keyboard_arrow_down),
@@ -229,12 +228,14 @@ class _DetailPageChild extends HookWidget {
                                     )
                                   : null,
                             ),
-                            Html(
-                                data: artistCommentaryDisplay.state.when(
-                                    translated: () =>
-                                        details.artistCommentary.translated,
-                                    original: () =>
-                                        details.artistCommentary.original)),
+                            artistCommentaryDisplay.state.when(
+                              translated: () => Html(
+                                  data:
+                                      "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
+                              original: () => Html(
+                                  data:
+                                      "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
+                            ),
                           ],
                         )
                       : SizedBox.shrink(),
@@ -245,7 +246,8 @@ class _DetailPageChild extends HookWidget {
             _buildSliverSpace(),
             Consumer(
               builder: (context, watch, child) {
-                final state = watch(_postDetailStateNotifierProvider.state);
+                final state =
+                    watch(_artistCommentaryStateNotifierProvider.state);
 
                 return state.when(
                   initial: () => SliverToBoxAdapter(
@@ -277,7 +279,7 @@ class _DetailPageChild extends HookWidget {
                                   size: 40,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
-                                  likeCount: detail.postStatistics.commentCount,
+                                  // likeCount: detail.postStatistics.commentCount,
                                   likeBuilder: (isLiked) => Icon(
                                     Icons.comment,
                                     color: Colors.white,
@@ -293,10 +295,10 @@ class _DetailPageChild extends HookWidget {
                                 ),
                                 LikeButton(
                                   size: 40,
-                                  isLiked: detail.postStatistics.isFavorited,
+                                  isLiked: post.isFavorited,
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
-                                  likeCount: detail.postStatistics.favCount,
+                                  likeCount: post.favCount,
                                   likeBuilder: (isLiked) => Icon(
                                     Icons.favorite,
                                     color: isLiked ? Colors.red : Colors.white,

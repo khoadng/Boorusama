@@ -6,16 +6,27 @@ part 'artist_commentary.g.dart';
 
 @JsonSerializable()
 class ArtistCommentary {
-  final String original;
-  final String translated;
-  final String profileUrl;
+  final String originalTitle;
+  final String originalDescription;
+  final String translatedTitle;
+  final String translatedDescription;
 
-  ArtistCommentary({@required this.original, this.translated, this.profileUrl});
+  ArtistCommentary(
+      {@required this.originalTitle,
+      @required this.originalDescription,
+      @required this.translatedTitle,
+      @required this.translatedDescription});
 
-  bool get isTranslated => translated != null;
-  bool get hasCommentary => original != null;
+  bool get isTranslated =>
+      translatedTitle.isNotEmpty || translatedDescription.isNotEmpty;
+  bool get hasCommentary =>
+      originalTitle.isNotEmpty || originalDescription.isNotEmpty;
 
-  factory ArtistCommentary.empty() => ArtistCommentary(original: "");
+  factory ArtistCommentary.empty() => ArtistCommentary(
+      originalTitle: "",
+      originalDescription: "",
+      translatedTitle: "",
+      translatedDescription: "");
 
   factory ArtistCommentary.fromJson(Map<String, dynamic> json) =>
       _$ArtistCommentaryFromJson(json);

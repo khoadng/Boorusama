@@ -53,6 +53,8 @@ abstract class IApi {
   );
 
   Future<HttpResponse> getArtistCommentary(
+    String login,
+    String apiKey,
     int postId,
   );
 
