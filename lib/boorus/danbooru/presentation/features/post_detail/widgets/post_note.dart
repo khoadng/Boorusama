@@ -2,54 +2,71 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:super_tooltip/super_tooltip.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 
-class PostNote extends StatelessWidget {
+class PostNote extends HookWidget {
   const PostNote({
     Key key,
     @required this.coordinate,
     @required this.content,
-    @required this.targetContext,
   }) : super(key: key);
 
   final NoteCoordinate coordinate;
   final String content;
-  final BuildContext targetContext;
 
   @override
   Widget build(BuildContext context) {
-    TooltipDirection direction;
+    final visible = useState(false);
+    Alignment portalAlignment;
+    Alignment childAlignment;
+
     if (coordinate.x > MediaQuery.of(context).size.width / 2) {
-      direction = TooltipDirection.left;
+      portalAlignment = Alignment.topRight;
+      childAlignment = Alignment.bottomRight;
     } else {
-      direction = TooltipDirection.right;
+      portalAlignment = Alignment.topLeft;
+      childAlignment = Alignment.bottomLeft;
     }
 
-    var tooltip = SuperTooltip(
-      backgroundColor: Theme.of(context).cardColor,
-      arrowTipDistance: 0,
-      arrowBaseWidth: 0,
-      arrowLength: 0,
-      popupDirection: direction,
-      content: Material(
-        child: Html(data: content),
-        color: Theme.of(context).cardColor,
+    return PortalEntry(
+      visible: visible.value,
+      portal: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => visible.value = false,
       ),
-    );
-    return Builder(
-      builder: (context) => GestureDetector(
-        onTap: () => tooltip.show(targetContext),
-        child: Container(
-          margin: EdgeInsets.only(left: coordinate.x, top: coordinate.y),
-          width: coordinate.width,
-          height: coordinate.height,
-          decoration: BoxDecoration(
-              color: Colors.white54,
-              border: Border.all(color: Colors.red, width: 1)),
+      child: Container(
+        margin: EdgeInsets.only(left: coordinate.x, top: coordinate.y),
+        child: PortalEntry(
+          portalAnchor: portalAlignment,
+          childAnchor: childAlignment,
+          visible: visible.value,
+          portal: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.5),
+            child: IntrinsicWidth(
+              child: Material(
+                child: Html(
+                  shrinkWrap: true,
+                  data: content,
+                ),
+              ),
+            ),
+          ),
+          child: GestureDetector(
+            onTap: () => visible.value = true,
+            child: Container(
+              width: coordinate.width,
+              height: coordinate.height,
+              decoration: BoxDecoration(
+                  color: Colors.white54,
+                  border: Border.all(color: Colors.red, width: 1)),
+            ),
+          ),
         ),
       ),
     );

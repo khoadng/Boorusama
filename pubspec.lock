@@ -403,6 +403,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_portal:
+    dependency: "direct main"
+    description:
+      name: flutter_portal
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   flutter_riverpod:
     dependency: transitive
     description:
@@ -1006,13 +1013,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.1"
-  super_tooltip:
-    dependency: "direct main"
-    description:
-      name: super_tooltip
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.6"
   synchronized:
     dependency: transitive
     description:

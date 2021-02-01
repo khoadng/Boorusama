@@ -68,46 +68,49 @@ class _PostImagePageState extends State<PostImagePage> {
           ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ));
-    return SafeArea(
-      child: Scaffold(
-        body: Consumer(
-          builder: (context, watch, child) {
-            final state = watch(_notesProvider(widget.post.id));
-            final imageAndOverlay = Stack(
-              children: [
-                image,
-                if (!_hideOverlay) _buildTopShadowGradient(),
-                if (!_hideOverlay) _buildBackButton(context),
-                if (!_hideOverlay) _buildMoreVertButton(),
-              ],
-            );
-            return state.when(
-              loading: () => imageAndOverlay,
-              data: (notes) => Stack(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      child: SafeArea(
+        child: Scaffold(
+          body: Consumer(
+            builder: (context, watch, child) {
+              final state = watch(_notesProvider(widget.post.id));
+              final imageAndOverlay = Stack(
                 children: [
-                  InkWell(
-                      onTap: () {
-                        setState(() {
-                          _hideOverlay = !_hideOverlay;
-                        });
-
-                        if (_hideOverlay) {
-                          SystemChrome.setEnabledSystemUIOverlays([]);
-                        } else {
-                          SystemChrome.setEnabledSystemUIOverlays(
-                              SystemUiOverlay.values);
-                        }
-                      },
-                      child: image),
+                  image,
                   if (!_hideOverlay) _buildTopShadowGradient(),
-                  if (!_hideOverlay) ...buildNotes(notes, widget.post),
                   if (!_hideOverlay) _buildBackButton(context),
                   if (!_hideOverlay) _buildMoreVertButton(),
                 ],
-              ),
-              error: (name, message) => imageAndOverlay,
-            );
-          },
+              );
+              return state.when(
+                loading: () => imageAndOverlay,
+                data: (notes) => Stack(
+                  children: [
+                    InkWell(
+                        onTap: () {
+                          setState(() {
+                            _hideOverlay = !_hideOverlay;
+                          });
+
+                          // if (_hideOverlay) {
+                          //   SystemChrome.setEnabledSystemUIOverlays([]);
+                          // } else {
+                          //   SystemChrome.setEnabledSystemUIOverlays(
+                          //       SystemUiOverlay.values);
+                          // }
+                        },
+                        child: image),
+                    if (!_hideOverlay) _buildTopShadowGradient(),
+                    if (!_hideOverlay) ...buildNotes(notes, widget.post),
+                    if (!_hideOverlay) _buildBackButton(context),
+                    if (!_hideOverlay) _buildMoreVertButton(),
+                  ],
+                ),
+                error: (name, message) => imageAndOverlay,
+              );
+            },
+          ),
         ),
       ),
     );
@@ -195,7 +198,6 @@ class _PostImagePageState extends State<PostImagePage> {
         PostNote(
           coordinate: coordinate,
           content: note.content,
-          targetContext: context,
         ),
       );
     }

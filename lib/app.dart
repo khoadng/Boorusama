@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
@@ -78,26 +79,28 @@ class _AppState extends State<App> {
       child: Consumer(
         builder: (context, watch, child) {
           final state = watch(themeStateNotifierProvider.state);
-          return MaterialApp(
-            theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
-            themeMode: state.when(
-              darkMode: () => ThemeMode.dark,
-              lightMode: () => ThemeMode.light,
+          return Portal(
+            child: MaterialApp(
+              theme: AppTheme.lightTheme,
+              darkTheme: AppTheme.darkTheme,
+              themeMode: state.when(
+                darkMode: () => ThemeMode.dark,
+                lightMode: () => ThemeMode.light,
+              ),
+              localizationsDelegates: [
+                i18n,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate
+              ],
+              locale: Locale(widget.settings.language),
+              supportedLocales: i18n.supportedLocales,
+              localeResolutionCallback:
+                  i18n.resolution(fallback: Locale("en", "US")),
+              debugShowCheckedModeBanner: false,
+              onGenerateRoute: AppRouter.router.generator,
+              title: AppConstants.appName,
             ),
-            localizationsDelegates: [
-              i18n,
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate
-            ],
-            locale: Locale(widget.settings.language),
-            supportedLocales: i18n.supportedLocales,
-            localeResolutionCallback:
-                i18n.resolution(fallback: Locale("en", "US")),
-            debugShowCheckedModeBanner: false,
-            onGenerateRoute: AppRouter.router.generator,
-            title: AppConstants.appName,
           );
         },
       ),
