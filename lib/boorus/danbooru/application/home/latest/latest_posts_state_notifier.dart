@@ -5,10 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/core/application/list_state_notifier.dart';
-import '../../black_listed_filter_decorator.dart';
-import '../../no_image_filter_decorator.dart';
 
 part 'latest_posts_state.dart';
 part 'latest_posts_state_notifier.freezed.dart';
@@ -16,21 +13,13 @@ part 'latest_posts_state_notifier.freezed.dart';
 final latestPostsStateNotifierProvider =
     StateNotifierProvider<LatestStateNotifier>((ref) {
   final postRepo = ref.watch(postProvider);
-  final settingsRepo = ref.watch(settingsProvider.future);
-  final filteredPostRepo = BlackListedFilterDecorator(
-      postRepository: postRepo, settingRepository: settingsRepo);
-  final removedNullImageRepo =
-      NoImageFilterDecorator(postRepository: filteredPostRepo);
-  final listStateNotifier = ListStateNotifier<Post>();
-  return LatestStateNotifier(removedNullImageRepo, listStateNotifier)
-    ..refresh();
+  return LatestStateNotifier(postRepo)..refresh();
 });
 
 class LatestStateNotifier extends StateNotifier<LatestPostsState> {
-  LatestStateNotifier(
-      IPostRepository postRepository, ListStateNotifier<Post> listStateNotifier)
+  LatestStateNotifier(IPostRepository postRepository)
       : _postRepository = postRepository,
-        _listStateNotifier = listStateNotifier,
+        _listStateNotifier = ListStateNotifier<Post>(),
         super(LatestPostsState.initial());
 
   final ListStateNotifier<Post> _listStateNotifier;

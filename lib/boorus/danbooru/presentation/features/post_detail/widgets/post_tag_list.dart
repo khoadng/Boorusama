@@ -2,20 +2,38 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:popup_menu/popup_menu.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post_detail/tags/tags_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/wiki/wiki_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
-final tagsStateNotifierProvider =
-    StateNotifierProvider<TagsStateNotifier>((ref) => TagsStateNotifier(ref));
+final _tagsProvider = FutureProvider.autoDispose
+    .family<List<Tag>, String>((ref, tagStringComma) async {
+  // Cancel the HTTP request if the user leaves the detail page before
+  // the request completes.
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(tagProvider);
+  final tags = await repo.getTagsByNameComma(
+    tagStringComma,
+    1,
+    cancelToken: cancelToken,
+  );
+
+  /// Cache the tags once it was successfully obtained.
+  ref.maintainState = true;
+
+  return tags;
+});
 
 class PostTagList extends StatefulWidget {
   PostTagList({
@@ -42,11 +60,6 @@ class _PostTagListState extends State<PostTagList> {
 
   @override
   void initState() {
-    Future.delayed(
-        Duration.zero,
-        () => context
-            .read(tagsStateNotifierProvider)
-            .getTags(widget.tagStringComma));
     PopupMenu.context = context;
     super.initState();
   }
@@ -166,11 +179,10 @@ class _PostTagListState extends State<PostTagList> {
 
     return Consumer(
       builder: (context, watch, child) {
-        final state = watch(tagsStateNotifierProvider.state);
+        final state = watch(_tagsProvider(widget.tagStringComma));
         return state.when(
-          initial: () => Center(child: CircularProgressIndicator()),
           loading: () => Center(child: CircularProgressIndicator()),
-          fetched: (tags) {
+          data: (tags) {
             tags.sort((a, b) => a.rawName.compareTo(b.rawName));
             _artistTags = tags
                 .where((tag) => tag.category == TagCategory.artist)

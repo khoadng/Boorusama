@@ -10,12 +10,12 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/search/query_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
@@ -24,10 +24,6 @@ import 'package:boorusama/core/application/list_item_status.dart';
 import 'tag_suggestion_items.dart';
 
 part 'search_page.freezed.dart';
-
-final _postDownloadStateNotifierProvider =
-    StateNotifierProvider<PostDownloadStateNotifier>(
-        (ref) => PostDownloadStateNotifier(ref));
 
 final _searchDisplayProvider =
     StateProvider.autoDispose<SearchDisplayState>((ref) {
@@ -125,8 +121,8 @@ class SearchPage extends HookWidget {
   }
 
   void _onDownloadButtonPressed(List<Post> posts, BuildContext context) {
-    return posts.forEach((post) =>
-        context.read(_postDownloadStateNotifierProvider).download(post));
+    return posts
+        .forEach((post) => useProvider(downloadServiceProvider).download(post));
   }
 
   void _onQueryUpdated(BuildContext context, String value,

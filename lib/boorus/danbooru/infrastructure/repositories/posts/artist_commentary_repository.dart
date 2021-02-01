@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
@@ -24,12 +23,16 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
   ArtistCommentaryRepository(this._api, this._accountRepository);
 
   @override
-  Future<ArtistCommentaryDto> getCommentary(int postId) async {
+  Future<ArtistCommentaryDto> getCommentary(
+    int postId, {
+    CancelToken cancelToken,
+  }) async {
     final account = await _accountRepository.get();
 
-    return _api
-        .getArtistCommentary(account.username, account.apiKey, postId)
-        .then((value) {
+    try {
+      final value = await _api.getArtistCommentary(
+          account.username, account.apiKey, postId,
+          cancelToken: cancelToken);
       final commentaries = <ArtistCommentaryDto>[];
 
       for (var item in value.response.data) {
@@ -44,13 +47,13 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
       return commentaries.isNotEmpty
           ? commentaries.first
           : ArtistCommentaryDto();
-    }).catchError((Object obj) {
-      switch (obj.runtimeType) {
-        case DioError:
-          throw Exception("Failed to get artist commentary from $postId");
-          break;
-        default:
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.CANCEL) {
+        // Cancel token triggered, skip this request
+        return ArtistCommentaryDto();
+      } else {
+        throw Exception("Failed to get artist's comment for $postId");
       }
-    });
+    }
   }
 }

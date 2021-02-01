@@ -8,38 +8,21 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.d
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/core/application/list_state_notifier.dart';
-import '../black_listed_filter_decorator.dart';
-import '../no_image_filter_decorator.dart';
 
 part 'favorites_state.dart';
 part 'favorites_state_notifier.freezed.dart';
 
 final favoritesStateNotifierProvider =
     StateNotifierProvider<FavoritesStateNotifier>((ref) {
-  final postRepo = ref.watch(postProvider);
-  final settingsRepo = ref.watch(settingsProvider.future);
-  final accountRepo = ref.watch(accountProvider);
-
-  final filteredPostRepo = BlackListedFilterDecorator(
-      postRepository: postRepo, settingRepository: settingsRepo);
-  final removedNullImageRepo =
-      NoImageFilterDecorator(postRepository: filteredPostRepo);
-  final listStateNotifier = ListStateNotifier<Post>();
-  return FavoritesStateNotifier(
-      removedNullImageRepo, accountRepo, listStateNotifier)
-    ..refresh();
+  return FavoritesStateNotifier(ref)..refresh();
 });
 
 class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
-  FavoritesStateNotifier(
-    IPostRepository postRepository,
-    IAccountRepository accountRepository,
-    ListStateNotifier<Post> listStateNotifier,
-  )   : _postRepository = postRepository,
-        _accountRepository = accountRepository,
-        _listStateNotifier = listStateNotifier,
+  FavoritesStateNotifier(ProviderReference ref)
+      : _postRepository = ref.watch(postProvider),
+        _listStateNotifier = ListStateNotifier<Post>(),
+        _accountRepository = ref.watch(accountProvider),
         super(FavoritesState.initial());
 
   final IPostRepository _postRepository;

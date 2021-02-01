@@ -101,8 +101,9 @@ abstract class DanbooruApi implements IApi {
   @GET("/posts/{postId}")
   @override
   Future<HttpResponse> getNotes(
-    @Path() int postId,
-  );
+    @Path() int postId, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @GET("/posts.json")
   @override
@@ -111,8 +112,9 @@ abstract class DanbooruApi implements IApi {
     @Query("api_key") String apiKey,
     @Query("page") int page,
     @Query("tags") String tags,
-    @Query("limit") int limit,
-  );
+    @Query("limit") int limit, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,
@@ -131,8 +133,9 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getArtistCommentary(
     @Query("login") String login,
     @Query("api_key") String apiKey,
-    @Query("search[post_id]") int postId,
-  );
+    @Query("search[post_id]") int postId, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @GET("/explore/posts/popular.json")
   @override
@@ -193,8 +196,9 @@ abstract class DanbooruApi implements IApi {
     @Query("search[hide_empty]") String hideEmpty,
     @Query("search[name_comma]") String stringComma,
     @Query("search[order]") String order,
-    @Query("limit") int limit,
-  );
+    @Query("limit") int limit, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,

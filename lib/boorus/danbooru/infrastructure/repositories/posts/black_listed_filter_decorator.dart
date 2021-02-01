@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 // Project imports:
@@ -88,9 +89,14 @@ class BlackListedFilterDecorator implements IPostRepository {
   }
 
   @override
-  Future<List<PostDto>> getPosts(String tagString, int page,
-      {int limit = 100}) async {
-    final dtos = await _postRepository.getPosts(tagString, page, limit: limit);
+  Future<List<PostDto>> getPosts(
+    String tagString,
+    int page, {
+    int limit = 100,
+    CancelToken cancelToken,
+  }) async {
+    final dtos = await _postRepository.getPosts(tagString, page,
+        limit: limit, cancelToken: cancelToken);
     final settingsRepo = await _settingRepository;
     final settings = await settingsRepo.load();
 

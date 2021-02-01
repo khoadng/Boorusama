@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
@@ -41,13 +42,24 @@ class TagRepository implements ITagRepository {
   }
 
   @override
-  Future<List<Tag>> getTagsByNameComma(String stringComma, int page) async {
+  Future<List<Tag>> getTagsByNameComma(
+    String stringComma,
+    int page, {
+    CancelToken cancelToken,
+  }) async {
     final account = await _accountRepository.get();
 
-    return _api
-        .getTagsByNameComma(account.username, account.apiKey, page, "yes",
-            stringComma, "count", 1000)
-        .then((value) {
+    try {
+      final value = await _api.getTagsByNameComma(
+        account.username,
+        account.apiKey,
+        page,
+        "yes",
+        stringComma,
+        "count",
+        1000,
+        cancelToken: cancelToken,
+      );
       var tags = List<Tag>();
       for (var item in value.response.data) {
         try {
@@ -57,8 +69,13 @@ class TagRepository implements ITagRepository {
         }
       }
       return tags;
-    }).catchError((Object obj) {
-      throw Exception("Failed to get tags for $stringComma");
-    });
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.CANCEL) {
+        // Cancel token triggered, skip this request
+        return [];
+      } else {
+        throw Exception("Failed to get posts for $stringComma");
+      }
+    }
   }
 }

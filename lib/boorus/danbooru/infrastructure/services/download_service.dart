@@ -15,8 +15,11 @@ import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'package:boorusama/core/infrastructure/IOHelper.dart';
 
-final downloadServiceProvider =
-    Provider<IDownloadService>((ref) => DownloadService());
+final downloadServiceProvider = Provider<IDownloadService>((ref) {
+  final downloader = DownloadService();
+
+  return downloader;
+});
 
 class DownloadService implements IDownloadService {
   DownloadService();
@@ -82,13 +85,13 @@ class DownloadService implements IDownloadService {
   }
 
   @override
-  Future<Null> init(TargetPlatform platform) async {
+  Future<Null> init() async {
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
 
     _permissionReady = false;
-    _localPath = await IOHelper.getLocalPath('Download', platform);
-    _permissionReady = await IOHelper.checkPermission(platform);
+    _localPath = await IOHelper.getLocalPath('Download');
+    _permissionReady = await IOHelper.checkPermission();
 
     _prepare();
     print("Download service initialized");

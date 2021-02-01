@@ -4,17 +4,31 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post_detail/notes/notes_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 import 'widgets/post_note.dart';
 
-final notesStateNotifierProvider =
-    StateNotifierProvider<NotesStateNotifier>((ref) => NotesStateNotifier(ref));
+final _notesProvider =
+    FutureProvider.autoDispose.family<List<Note>, int>((ref, postId) async {
+  // Cancel the HTTP request if the user leaves the detail page before
+  // the request completes.
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(noteProvider);
+  final notes = await repo.getNotesFrom(postId, cancelToken: cancelToken);
+
+  /// Cache the artist posts once it was successfully obtained.
+  ref.maintainState = true;
+
+  return notes;
+});
 
 class PostImagePage extends StatefulWidget {
   const PostImagePage({
@@ -30,15 +44,6 @@ class PostImagePage extends StatefulWidget {
 
 class _PostImagePageState extends State<PostImagePage> {
   bool _hideOverlay = false;
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(
-        Duration.zero,
-        () =>
-            context.read(notesStateNotifierProvider).getNotes(widget.post.id));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +72,7 @@ class _PostImagePageState extends State<PostImagePage> {
       child: Scaffold(
         body: Consumer(
           builder: (context, watch, child) {
-            final state = watch(notesStateNotifierProvider.state);
+            final state = watch(_notesProvider(widget.post.id));
             final imageAndOverlay = Stack(
               children: [
                 image,
@@ -77,9 +82,8 @@ class _PostImagePageState extends State<PostImagePage> {
               ],
             );
             return state.when(
-              initial: () => imageAndOverlay,
               loading: () => imageAndOverlay,
-              fetched: (notes) => Stack(
+              data: (notes) => Stack(
                 children: [
                   InkWell(
                       onTap: () {

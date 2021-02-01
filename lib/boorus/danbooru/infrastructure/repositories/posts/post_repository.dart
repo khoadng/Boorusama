@@ -11,16 +11,23 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repos
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_statistics.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'black_listed_filter_decorator.dart';
+import 'no_image_filter_decorator.dart';
 
 final postProvider = Provider<IPostRepository>((ref) {
-  return PostRepository(ref);
+  final postRepo = PostRepository(ref);
+  final settingsRepo = ref.watch(settingsProvider.future);
+  final filteredPostRepo = BlackListedFilterDecorator(
+      postRepository: postRepo, settingRepository: settingsRepo);
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
+  return removedNullImageRepo;
 });
 
 class PostRepository implements IPostRepository {
@@ -36,15 +43,20 @@ class PostRepository implements IPostRepository {
         _ref = ref;
 
   @override
-  Future<List<PostDto>> getPosts(String tagString, int page,
-      {int limit = 100}) async {
+  Future<List<PostDto>> getPosts(
+    String tagString,
+    int page, {
+    int limit = 100,
+    CancelToken cancelToken,
+  }) async {
     final account = await _accountRepository.get();
     final settingsRepository = await _ref.watch(settingsProvider.future);
     final settings = await settingsRepository.load();
 
     try {
       final value = await _api.getPosts(account.username, account.apiKey, page,
-          settings.safeMode ? "$tagString rating:s" : tagString, 100);
+          settings.safeMode ? "$tagString rating:s" : tagString, limit,
+          cancelToken: cancelToken);
 
       final posts = <PostDto>[];
       final stopwatch = Stopwatch()..start();
@@ -63,7 +75,10 @@ class PostRepository implements IPostRepository {
 
       return posts;
     } on DioError catch (e) {
-      if (e.response.statusCode == 422) {
+      if (e.type == DioErrorType.CANCEL) {
+        // Cancel token triggered, skip this request
+        return [];
+      } else if (e.response.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
             "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
       } else if (e.response.statusCode == 500) {

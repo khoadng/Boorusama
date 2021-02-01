@@ -3,24 +3,20 @@
 // Dart imports:
 import 'dart:io';
 
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class IOHelper {
-  static Future<String> getLocalPath(
-      String folderName, TargetPlatform platform) async {
-    final directory = platform == TargetPlatform.android
+  static Future<String> getLocalPath(String folderName) async {
+    final directory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
     return directory.path + Platform.pathSeparator + folderName;
   }
 
-  static Future<bool> checkPermission(TargetPlatform platform) async {
-    if (platform == TargetPlatform.android) {
+  static Future<bool> checkPermission() async {
+    if (Platform.isAndroid) {
       final status = await Permission.storage.status;
       if (status != PermissionStatus.granted) {
         final result = await Permission.storage.request();
@@ -31,6 +27,7 @@ class IOHelper {
         return true;
       }
     } else {
+      //TODO: check permission for iOS and other platforms
       return true;
     }
     return false;

@@ -9,33 +9,20 @@ import 'package:jiffy/jiffy.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/core/application/list_state_notifier.dart';
-import '../../black_listed_filter_decorator.dart';
-import '../../no_image_filter_decorator.dart';
 
 part 'explore_state.dart';
 part 'explore_state_notifier.freezed.dart';
 
 final exploreStateNotifierProvider =
     StateNotifierProvider<ExploreStateNotifier>((ref) {
-  final postRepo = ref.watch(postProvider);
-  final settingsRepo = ref.watch(settingsProvider.future);
-  final filteredPostRepo = BlackListedFilterDecorator(
-      postRepository: postRepo, settingRepository: settingsRepo);
-  final removedNullImageRepo =
-      NoImageFilterDecorator(postRepository: filteredPostRepo);
-  final listStateNotifier = ListStateNotifier<Post>();
-  return ExploreStateNotifier(removedNullImageRepo, listStateNotifier)
-    ..refresh();
+  return ExploreStateNotifier(ref)..refresh();
 });
 
 class ExploreStateNotifier extends StateNotifier<ExploreState> {
-  ExploreStateNotifier(
-    IPostRepository postRepository,
-    ListStateNotifier<Post> listStateNotifier,
-  )   : _postRepository = postRepository,
-        _listStateNotifier = listStateNotifier,
+  ExploreStateNotifier(ProviderReference ref)
+      : _postRepository = ref.watch(postProvider),
+        _listStateNotifier = ListStateNotifier<Post>(),
         super(ExploreState.initial());
 
   final ListStateNotifier<Post> _listStateNotifier;

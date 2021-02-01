@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
 import 'app_constants.dart';
-import 'boorus/danbooru/application/download/download_service.dart';
 import 'boorus/danbooru/application/themes/theme_state_notifier.dart';
 import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'boorus/danbooru/infrastructure/services/download_service.dart';
 import 'boorus/danbooru/router.dart';
 import 'core/app_theme.dart';
 import 'generated/i18n.dart';
@@ -34,10 +34,7 @@ class _AppState extends State<App> {
     AppRouter().setupRoutes();
 
     Future.delayed(
-        Duration.zero,
-        () => context
-            .read(downloadServiceProvider)
-            .init(Theme.of(context).platform));
+        Duration.zero, () => context.read(downloadServiceProvider).init());
 
     Future.delayed(
         Duration.zero,

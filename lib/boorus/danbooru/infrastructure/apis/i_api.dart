@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 abstract class IApi {
@@ -43,8 +44,9 @@ abstract class IApi {
   );
 
   Future<HttpResponse> getNotes(
-    int postId,
-  );
+    int postId, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> getPost(
     String login,
@@ -55,16 +57,18 @@ abstract class IApi {
   Future<HttpResponse> getArtistCommentary(
     String login,
     String apiKey,
-    int postId,
-  );
+    int postId, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> getPosts(
     String login,
     String apiKey,
     int page,
     String tags,
-    int limit,
-  );
+    int limit, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> getPopularPosts(
     String login,
@@ -107,8 +111,9 @@ abstract class IApi {
     String hideEmpty,
     String stringComma,
     String order,
-    int limit,
-  );
+    int limit, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> getUsersByIdStringComma(
     String idComma,

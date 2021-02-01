@@ -7,33 +7,21 @@ import 'package:boorusama/boorus/danbooru/application/search/query_state_notifie
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/core/application/list_state_notifier.dart';
-import '../black_listed_filter_decorator.dart';
-import '../no_image_filter_decorator.dart';
 
 part 'search_state.dart';
 part 'search_state_notifier.freezed.dart';
 
 final searchStateNotifierProvider =
     StateNotifierProvider<SearchStateNotifier>((ref) {
-  final postRepo = ref.watch(postProvider);
-  final settingsRepo = ref.watch(settingsProvider.future);
-  final filteredPostRepo = BlackListedFilterDecorator(
-      postRepository: postRepo, settingRepository: settingsRepo);
-  final removedNullImageRepo =
-      NoImageFilterDecorator(postRepository: filteredPostRepo);
-  final listStateNotifier = ListStateNotifier<Post>();
-  return SearchStateNotifier(ref, removedNullImageRepo, listStateNotifier);
+  return SearchStateNotifier(ref);
 });
 
 class SearchStateNotifier extends StateNotifier<SearchState> {
   SearchStateNotifier(
     ProviderReference ref,
-    IPostRepository postRepository,
-    ListStateNotifier<Post> listStateNotifier,
-  )   : _postRepository = postRepository,
-        _listStateNotifier = listStateNotifier,
+  )   : _postRepository = ref.watch(postProvider),
+        _listStateNotifier = ListStateNotifier<Post>(),
         _ref = ref,
         super(SearchState.initial());
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:debounce_throttle/debounce_throttle.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
@@ -20,11 +20,11 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/download/post_download_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_detail/artist_commentary/artist_commentary_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_detail/artist_posts/artist_posts_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/application/post_detail/favorite/post_favorite_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
@@ -32,19 +32,6 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widg
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 part 'post_detail_page.freezed.dart';
-
-final postDownloadStateNotifierProvider =
-    StateNotifierProvider<PostDownloadStateNotifier>(
-        (ref) => PostDownloadStateNotifier(ref));
-
-final postFavoriteStateNotifierProvider =
-    StateNotifierProvider<PostFavoriteStateNotifier>(
-        (ref) => PostFavoriteStateNotifier(ref));
-
-final _artistCommentaryStateNotifierProvider =
-    StateNotifierProvider<ArtistCommentaryStateNotifier>((ref) {
-  return ArtistCommentaryStateNotifier(ref);
-});
 
 class PostDetailPage extends HookWidget {
   PostDetailPage({
@@ -62,26 +49,8 @@ class PostDetailPage extends HookWidget {
   final int intitialIndex;
   final VoidCallback onExit;
   final ValueChanged<int> onPostChanged;
-  final Debouncer<int> _debouncer = Debouncer<int>(Duration(milliseconds: 500));
 
   Widget build(BuildContext context) {
-    useEffect(() {
-      Future.microtask(() => context
-          .read(_artistCommentaryStateNotifierProvider)
-          .getArtistCommentary(posts[intitialIndex].id));
-
-      // Prevent server spamming when user swiping so fast
-      _debouncer.values.listen((index) {
-        onPostChanged(index);
-
-        context
-            .read(_artistCommentaryStateNotifierProvider)
-            .getArtistCommentary(posts[index].id);
-        print("Get artist's commentary for ${posts[index].id}");
-      });
-      return () => [];
-    }, []);
-
     return WillPopScope(
       onWillPop: () {
         onExit();
@@ -97,7 +66,7 @@ class PostDetailPage extends HookWidget {
           },
           options: CarouselOptions(
             onPageChanged: (index, reason) {
-              _debouncer.value = index;
+              onPostChanged(index);
             },
             height: MediaQuery.of(context).size.height,
             viewportFraction: 1,
@@ -110,13 +79,47 @@ class PostDetailPage extends HookWidget {
   }
 }
 
-final _artistCommentaryTranlationStateProvider =
-    StateProvider<ArtistCommentaryTranlationState>((ref) {
-  return ArtistCommentaryTranlationState.original();
+final _artistCommentaryProvider = FutureProvider.autoDispose
+    .family<ArtistCommentary, int>((ref, postId) async {
+  // Cancel the HTTP request if the user leaves the detail page before
+  // the request completes.
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(artistCommentaryProvider);
+  final dto = await repo.getCommentary(
+    postId,
+    cancelToken: cancelToken,
+  );
+  final artistCommentary = dto.toEntity();
+
+  /// Cache the artist Commentary once it was successfully obtained.
+  ref.maintainState = true;
+
+  return artistCommentary;
+});
+
+final _artistPostsProvider = FutureProvider.autoDispose
+    .family<List<Post>, String>((ref, artistString) async {
+  // Cancel the HTTP request if the user leaves the detail page before
+  // the request completes.
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(postProvider);
+  final artist = artistString.split(' ').map((e) => "~$e").toList().join(' ');
+  final dtos =
+      await repo.getPosts(artist, 1, limit: 10, cancelToken: cancelToken);
+  final posts = dtos.map((dto) => dto.toEntity()).toList();
+
+  /// Cache the artist posts once it was successfully obtained.
+  ref.maintainState = true;
+
+  return posts;
 });
 
 class _DetailPageChild extends HookWidget {
-  const _DetailPageChild({
+  _DetailPageChild({
     Key key,
     @required this.post,
     @required this.onExit,
@@ -130,16 +133,9 @@ class _DetailPageChild extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final artistCommentaryDisplay =
-        useProvider(_artistCommentaryTranlationStateProvider);
-    final details = useProvider(_artistCommentaryStateNotifierProvider.state);
-    final artistPosts = useProvider(artistPostsStateNotifierProvider.state);
-
-    useEffect(() {
-      Future.microtask(() => context
-          .read(artistPostsStateNotifierProvider)
-          .getPostsFromArtists(post.tagStringArtist));
-      return null;
-    }, []);
+        useState(ArtistCommentaryTranlationState.original());
+    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
+    final artistPosts = useProvider(_artistPostsProvider(post.tagStringArtist));
 
     Widget postWidget;
     if (post.isVideo) {
@@ -171,7 +167,7 @@ class _DetailPageChild extends HookWidget {
                 postWidget,
                 _buildTopShadowGradient(),
                 _buildBackButton(context),
-                _buildMoreVertButton(),
+                _buildMoreVertButton(context),
               ]),
             ),
             SliverToBoxAdapter(
@@ -184,10 +180,9 @@ class _DetailPageChild extends HookWidget {
                     borderRadius: BorderRadius.circular(8.0)),
                 margin: EdgeInsets.symmetric(horizontal: 4.0),
                 padding: EdgeInsets.symmetric(horizontal: 4.0),
-                child: details.when(
-                  initial: () => _buildLoading(context),
+                child: artistCommentary.when(
                   loading: () => _buildLoading(context),
-                  fetched: (artistCommentary) => artistCommentary.hasCommentary
+                  data: (artistCommentary) => artistCommentary.hasCommentary
                       ? Column(
                           children: <Widget>[
                             ListTile(
@@ -198,14 +193,14 @@ class _DetailPageChild extends HookWidget {
                                       ArtistCommentaryTranlationState>(
                                       icon: Icon(Icons.keyboard_arrow_down),
                                       onSelected: (value) {
-                                        artistCommentaryDisplay.state = value;
+                                        artistCommentaryDisplay.value = value;
                                       },
                                       itemBuilder: (BuildContext context) => <
                                           PopupMenuEntry<
                                               ArtistCommentaryTranlationState>>[
                                         PopupMenuItem<
                                             ArtistCommentaryTranlationState>(
-                                          value: artistCommentaryDisplay.state
+                                          value: artistCommentaryDisplay.value
                                               .when(
                                             translated: () =>
                                                 ArtistCommentaryTranlationState
@@ -215,7 +210,7 @@ class _DetailPageChild extends HookWidget {
                                                     .translated(),
                                           ),
                                           child: ListTile(
-                                            title: artistCommentaryDisplay.state
+                                            title: artistCommentaryDisplay.value
                                                 .when(
                                               translated: () =>
                                                   Text("Show Original"),
@@ -228,7 +223,7 @@ class _DetailPageChild extends HookWidget {
                                     )
                                   : null,
                             ),
-                            artistCommentaryDisplay.state.when(
+                            artistCommentaryDisplay.value.when(
                               translated: () => Html(
                                   data:
                                       "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
@@ -244,145 +239,115 @@ class _DetailPageChild extends HookWidget {
               ),
             ),
             _buildSliverSpace(),
-            Consumer(
-              builder: (context, watch, child) {
-                final state =
-                    watch(_artistCommentaryStateNotifierProvider.state);
-
-                return state.when(
-                  initial: () => SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator())),
-                  loading: () => SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator())),
-                  fetched: (detail) {
-                    return SliverStickyHeader(
-                      header: Column(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor),
-                            child: ButtonBar(
-                              alignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                IconButton(
-                                    color: Colors.white,
-                                    icon: Icon(
-                                      Icons.download_rounded,
-                                      color: Colors.white,
-                                      size: 30,
-                                    ),
-                                    onPressed: () => context
-                                        .read(postDownloadStateNotifierProvider)
-                                        .download(post)),
-                                LikeButton(
-                                  size: 40,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  // likeCount: detail.postStatistics.commentCount,
-                                  likeBuilder: (isLiked) => Icon(
-                                    Icons.comment,
-                                    color: Colors.white,
-                                  ),
-                                  onTap: (isLiked) => showBarModalBottomSheet(
-                                    expand: false,
-                                    context: context,
-                                    builder: (context, controller) =>
-                                        CommentPage(
-                                      postId: post.id,
-                                    ),
-                                  ),
-                                ),
-                                LikeButton(
-                                  size: 40,
-                                  isLiked: post.isFavorited,
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  likeCount: post.favCount,
-                                  likeBuilder: (isLiked) => Icon(
-                                    Icons.favorite,
-                                    color: isLiked ? Colors.red : Colors.white,
-                                  ),
-                                  onTap: (isLiked) {
-                                    //TODO: check for success here
-                                    if (!isLiked) {
-                                      context
-                                          .read(
-                                              postFavoriteStateNotifierProvider)
-                                          .favorite(post.id);
-
-                                      return Future(() => true);
-                                    } else {
-                                      context
-                                          .read(
-                                              postFavoriteStateNotifierProvider)
-                                          .unfavorite(post.id);
-                                      return Future(() => false);
-                                    }
-                                  },
-                                ),
-                              ],
+            SliverStickyHeader(
+              header: Column(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).scaffoldBackgroundColor),
+                    child: ButtonBar(
+                      alignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        // IconButton(
+                        //   color: Colors.white,
+                        //   icon: Icon(
+                        //     Icons.download_rounded,
+                        //     color: Colors.white,
+                        //     size: 30,
+                        //   ),
+                        //   onPressed: () => useProvider(downloadServiceProvider)
+                        //       .download(post),
+                        // ),
+                        LikeButton(
+                          size: 40,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          // likeCount: detail.postStatistics.commentCount,
+                          likeBuilder: (isLiked) => Icon(
+                            Icons.comment,
+                            color: Colors.white,
+                          ),
+                          onTap: (isLiked) => showBarModalBottomSheet(
+                            expand: false,
+                            context: context,
+                            builder: (context, controller) => CommentPage(
+                              postId: post.id,
                             ),
                           ),
-                          Divider(
-                            height: 0,
-                            thickness: 1.0,
+                        ),
+                        LikeButton(
+                          size: 40,
+                          isLiked: post.isFavorited,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          likeCount: post.favCount,
+                          likeBuilder: (isLiked) => Icon(
+                            Icons.favorite,
+                            color: isLiked ? Colors.red : Colors.white,
                           ),
-                        ],
-                      ),
-                      sliver: SliverToBoxAdapter(
-                        child: Column(
-                          children: <Widget>[
-                            ListTile(
-                              title: Text(post.tagStringArtist.pretty),
-                              leading: CircleAvatar(),
-                            ),
-                            artistPosts.maybeWhen(
-                                fetched: (posts) => Container(
-                                      padding: EdgeInsets.all(8),
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.2,
-                                      child: ListView.builder(
-                                        scrollDirection: Axis.horizontal,
-                                        itemCount: posts.length,
-                                        itemBuilder: (context, index) =>
-                                            Padding(
-                                          padding: EdgeInsets.all(1.0),
-                                          child: CachedNetworkImage(
-                                            imageUrl: posts[index]
-                                                .normalImageUri
-                                                .toString(),
-                                            placeholder: (context, url) =>
-                                                Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(8.0),
-                                                color:
-                                                    Theme.of(context).cardColor,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                          onTap: (isLiked) {
+                            //TODO: check for success here
+                            if (!isLiked) {
+                              context
+                                  .read(favoriteProvider)
+                                  .addToFavorites(post.id);
+
+                              return Future(() => true);
+                            } else {
+                              context
+                                  .read(favoriteProvider)
+                                  .removeFromFavorites(post.id);
+                              return Future(() => false);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    height: 0,
+                    thickness: 1.0,
+                  ),
+                ],
+              ),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(post.tagStringArtist.pretty),
+                      leading: CircleAvatar(),
+                    ),
+                    artistPosts.maybeWhen(
+                        data: (posts) => Container(
+                              padding: EdgeInsets.all(8),
+                              height: MediaQuery.of(context).size.height * 0.2,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: posts.length,
+                                itemBuilder: (context, index) => Padding(
+                                  padding: EdgeInsets.all(1.0),
+                                  child: CachedNetworkImage(
+                                    imageUrl:
+                                        posts[index].previewImageUri.toString(),
+                                    placeholder: (context, url) => Container(
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        color: Theme.of(context).cardColor,
                                       ),
                                     ),
-                                orElse: () =>
-                                    Center(child: CircularProgressIndicator())),
-                            Padding(
-                              padding: EdgeInsets.only(left: 4),
-                              child: PostTagList(
-                                  tagStringComma:
-                                      post.tagString.toCommaFormat()),
-                            )
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                  error: (e, m) => SliverToBoxAdapter(
-                      child: Center(child: CircularProgressIndicator())),
-                );
-              },
+                                  ),
+                                ),
+                              ),
+                            ),
+                        orElse: () =>
+                            Center(child: CircularProgressIndicator())),
+                    Padding(
+                      padding: EdgeInsets.only(left: 4),
+                      child: PostTagList(
+                          tagStringComma: post.tagString.toCommaFormat()),
+                    )
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -428,7 +393,7 @@ class _DetailPageChild extends HookWidget {
     );
   }
 
-  Widget _buildMoreVertButton() {
+  Widget _buildMoreVertButton(BuildContext context) {
     return Align(
       alignment: Alignment.topRight,
       child: Padding(
@@ -437,10 +402,7 @@ class _DetailPageChild extends HookWidget {
           onSelected: (value) {
             switch (value) {
               case PostAction.download:
-                // context
-                //     .read(postDownloadStateNotifierProvider)
-                //     .download(
-                //         post.downloadLink, post.descriptiveName);
+                context.read(downloadServiceProvider).download(post);
                 break;
               default:
             }
@@ -449,8 +411,8 @@ class _DetailPageChild extends HookWidget {
             PopupMenuItem<PostAction>(
               value: PostAction.download,
               child: ListTile(
-                // leading: const Icon(Icons.download_rounded),
-                title: Text("Placeholder"),
+                leading: const Icon(Icons.download_rounded),
+                title: Text("Download"),
               ),
             ),
           ],

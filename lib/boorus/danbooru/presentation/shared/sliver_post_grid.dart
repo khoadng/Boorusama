@@ -2,14 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:auto_animated/auto_animated.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 
 class SliverPostGrid extends StatelessWidget {
@@ -103,14 +102,14 @@ class SliverPostGrid extends StatelessWidget {
                         //TODO: check for success here
                         if (!isLiked) {
                           context
-                              .read(postFavoriteStateNotifierProvider)
-                              .favorite(post.id);
+                              .read(favoriteProvider)
+                              .addToFavorites(post.id);
 
                           return Future(() => true);
                         } else {
                           context
-                              .read(postFavoriteStateNotifierProvider)
-                              .unfavorite(post.id);
+                              .read(favoriteProvider)
+                              .removeFromFavorites(post.id);
                           return Future(() => false);
                         }
                       },
