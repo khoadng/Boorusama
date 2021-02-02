@@ -72,11 +72,14 @@ class SliverPostGrid extends StatelessWidget {
                 children: <Widget>[
                   GestureDetector(
                     onTap: () => onTap(post, index),
-                    child: PostImage(
-                      imageUrl: post.isAnimated
-                          ? post.previewImageUri.toString()
-                          : post.normalImageUri.toString(),
-                      placeholderUrl: post.previewImageUri.toString(),
+                    child: Hero(
+                      tag: post.id,
+                      child: PostImage(
+                        imageUrl: post.isAnimated
+                            ? post.previewImageUri.toString()
+                            : post.normalImageUri.toString(),
+                        placeholderUrl: post.previewImageUri.toString(),
+                      ),
                     ),
                   ),
                   _buildTopShadowGradient(),
