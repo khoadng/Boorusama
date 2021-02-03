@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
@@ -19,21 +20,33 @@ class UserRepository implements IUserRepository {
   final IApi _api;
 
   @override
-  Future<List<User>> getUsersByIdStringComma(String idComma) async =>
-      _api.getUsersByIdStringComma(idComma, 1000).then((value) {
-        var users = List<User>();
-        print(idComma);
-        for (var item in value.response.data) {
-          try {
-            users.add(User.fromJson(item));
-          } catch (e) {
-            print("Cant parse ${item['id']}");
-          }
+  Future<List<User>> getUsersByIdStringComma(
+    String idComma, {
+    CancelToken cancelToken,
+  }) async {
+    try {
+      final value = await _api.getUsersByIdStringComma(idComma, 1000,
+          cancelToken: cancelToken);
+
+      var users = List<User>();
+      print(idComma);
+      for (var item in value.response.data) {
+        try {
+          users.add(User.fromJson(item));
+        } catch (e) {
+          print("Cant parse ${item['id']}");
         }
-        return users;
-      }).catchError((Object obj) {
+      }
+      return users;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.CANCEL) {
+        // Cancel token triggered, skip this request
+        return [];
+      } else {
         throw Exception("Failed to get users for $idComma");
-      });
+      }
+    }
+  }
 
   @override
   Future<User> getUserById(int id) async {

@@ -2,7 +2,7 @@
 import 'package:meta/meta.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/user_level.dart';
 
 class User {
   final String name;

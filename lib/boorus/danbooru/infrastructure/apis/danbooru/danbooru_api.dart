@@ -70,8 +70,9 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getComments(
     @Query("search[post_id]") int postId,
-    @Query("limit") int limit,
-  );
+    @Query("limit") int limit, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @POST("/comments.json")
   @FormUrlEncoded()
@@ -208,8 +209,9 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getUsersByIdStringComma(
     @Query("search[id]") String idComma,
-    @Query("limit") int limit,
-  );
+    @Query("limit") int limit, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,

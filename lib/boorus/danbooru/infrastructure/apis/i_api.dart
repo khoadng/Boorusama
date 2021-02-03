@@ -25,8 +25,9 @@ abstract class IApi {
 
   Future<HttpResponse> getComments(
     int postId,
-    int limit,
-  );
+    int limit, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> postComment(
     String login,
@@ -117,8 +118,9 @@ abstract class IApi {
 
   Future<HttpResponse> getUsersByIdStringComma(
     String idComma,
-    int limit,
-  );
+    int limit, {
+    CancelToken cancelToken,
+  });
 
   Future<HttpResponse> getUserById(
     String login,

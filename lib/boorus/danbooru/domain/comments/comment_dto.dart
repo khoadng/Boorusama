@@ -16,13 +16,13 @@ abstract class CommentDto with _$CommentDto {
     // ignore: non_constant_identifier_names
     int post_id,
     // ignore: non_constant_identifier_names
-    int creator_id,
-    String body,
+    @nullable int creator_id,
+    @nullable String body,
     int score,
     // ignore: non_constant_identifier_names
     String updated_at,
     // ignore: non_constant_identifier_names
-    int updater_id,
+    @nullable int updater_id,
     // ignore: non_constant_identifier_names
     bool do_not_bump_post,
     // ignore: non_constant_identifier_names
@@ -37,6 +37,9 @@ abstract class CommentDto with _$CommentDto {
 
 extension CommentDtoX on CommentDto {
   Comment toEntity() {
+    if (creator_id == null) {
+      print("creator_id is null: $id");
+    }
     return Comment(
       id: id,
       createdAt: DateTime.parse(created_at),

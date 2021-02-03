@@ -6,8 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'comment_page.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentCreatePage extends HookWidget {
@@ -48,15 +48,12 @@ class CommentCreatePage extends HookWidget {
                           ),
                         ),
                         Expanded(child: Center()),
-                        ProviderListener(
-                          provider: commentStateNotifierProvider.state,
-                          onChange: (context, state) =>
-                              _handleCommentStateChanged(state, context),
-                          child: IconButton(
-                              onPressed: () => _handleSend(
-                                  context, textEditingController.text),
-                              icon: Icon(Icons.send)),
-                        ),
+                        IconButton(
+                            onPressed: () {
+                              _handleSend(context, textEditingController.text);
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.send)),
                       ],
                     ),
                   ),
@@ -84,20 +81,6 @@ class CommentCreatePage extends HookWidget {
 
   void _handleSend(BuildContext context, String content) {
     FocusScope.of(context).unfocus();
-    context.read(commentStateNotifierProvider).addComment(postId, content);
-  }
-
-  void _handleCommentStateChanged(state, BuildContext context) {
-    state.maybeWhen(
-      addedSuccess: () {
-        context.read(commentStateNotifierProvider).getComments(postId);
-        Navigator.of(context).pop();
-      },
-      loading: () => Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text(I18n.of(context).commentCreateLoading))),
-      error: () => Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text(I18n.of(context).commentCreateError))),
-      orElse: () {},
-    );
+    context.read(commentProvider).postComment(postId, content);
   }
 }

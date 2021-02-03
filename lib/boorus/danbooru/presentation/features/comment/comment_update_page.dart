@@ -6,9 +6,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/comment_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'comment_page.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends HookWidget {
@@ -19,9 +18,14 @@ class CommentUpdatePage extends HookWidget {
     this.initialContent,
   }) : super(key: key);
 
-  final int postId;
   final int commentId;
   final String initialContent;
+  final int postId;
+
+  void _handleSave(BuildContext context, String content) {
+    FocusScope.of(context).unfocus();
+    context.read(commentProvider).updateComment(commentId, content);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -53,15 +57,12 @@ class CommentUpdatePage extends HookWidget {
                         Expanded(
                           child: Center(),
                         ),
-                        ProviderListener<CommentState>(
-                          provider: commentStateNotifierProvider.state,
-                          onChange: (context, state) =>
-                              _handleCommentStateChanged(state, context),
-                          child: IconButton(
-                              onPressed: () => _handleSave(
-                                  context, textEditingController.text),
-                              icon: Icon(Icons.save)),
-                        ),
+                        IconButton(
+                            onPressed: () {
+                              _handleSave(context, textEditingController.text);
+                              Navigator.of(context).pop();
+                            },
+                            icon: Icon(Icons.save)),
                       ],
                     ),
                   ),
@@ -85,27 +86,5 @@ class CommentUpdatePage extends HookWidget {
         ),
       ),
     );
-  }
-
-  void _handleCommentStateChanged(CommentState state, BuildContext context) {
-    state.maybeWhen(
-      updatedSuccess: () {
-        context.read(commentStateNotifierProvider).getComments(postId);
-
-        Navigator.of(context).pop();
-      },
-      loading: () => Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text(I18n.of(context).commentCreateLoading))),
-      error: () => Scaffold.of(context).showSnackBar(
-          SnackBar(content: Text(I18n.of(context).commentCreateError))),
-      orElse: () {},
-    );
-  }
-
-  void _handleSave(BuildContext context, String content) {
-    FocusScope.of(context).unfocus();
-    context
-        .read(commentStateNotifierProvider)
-        .updateComment(commentId, postId, content);
   }
 }

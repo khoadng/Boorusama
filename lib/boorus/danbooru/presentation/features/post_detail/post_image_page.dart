@@ -34,9 +34,11 @@ class PostImagePage extends StatefulWidget {
   const PostImagePage({
     Key key,
     @required this.post,
+    @required this.imageHeroTag,
   }) : super(key: key);
 
   final Post post;
+  final String imageHeroTag;
 
   @override
   _PostImagePageState createState() => _PostImagePageState();
@@ -48,7 +50,7 @@ class _PostImagePageState extends State<PostImagePage> {
   @override
   Widget build(BuildContext context) {
     final image = Hero(
-        tag: widget.post.id,
+        tag: widget.imageHeroTag,
         child: CachedNetworkImage(
           fit: BoxFit.fitWidth,
           imageUrl: widget.post.normalImageUri.toString(),

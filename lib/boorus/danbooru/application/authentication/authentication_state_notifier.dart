@@ -6,8 +6,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/scrapper_service.dart';
 import 'package:boorusama/core/application/scraper/i_scrapper_service.dart';
 

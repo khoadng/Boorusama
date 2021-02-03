@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/application/comment/user_level.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/user_level.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
 
 class CommentItem extends StatelessWidget {

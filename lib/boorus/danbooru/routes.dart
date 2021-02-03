@@ -39,7 +39,7 @@ final postDetailHandler = Handler(handlerFunc: (
     posts: args[2],
     onExit: args[3],
     onPostChanged: args[4],
-    imageHeroTag: "${args[5]}_${args[0].id}",
+    gridKey: args[5],
   );
 });
 
@@ -51,6 +51,7 @@ final postDetailImageHandler = Handler(handlerFunc: (
 
   return PostImagePage(
     post: args[0],
+    imageHeroTag: args[1],
   );
 });
 

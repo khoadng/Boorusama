@@ -2,7 +2,7 @@
 import 'package:meta/meta.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/user.dart';
 
 class Comment {
   final int id;

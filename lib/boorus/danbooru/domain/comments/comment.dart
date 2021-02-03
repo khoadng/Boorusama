@@ -9,10 +9,10 @@ abstract class Comment with _$Comment {
       {@required int id,
       @required DateTime createdAt,
       @required int postId,
-      @required int creatorId,
-      @required String body,
+      @required @nullable int creatorId,
+      @required @nullable String body,
       @required int score,
       @required String updatedAt,
-      @required int updaterId,
+      @required @nullable int updaterId,
       @required bool isDeleted}) = _Comment;
 }

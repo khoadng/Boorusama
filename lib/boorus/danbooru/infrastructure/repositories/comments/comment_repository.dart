@@ -20,28 +20,34 @@ class CommentRepository implements ICommentRepository {
   CommentRepository(this._api, this._accountRepository);
 
   @override
-  Future<List<CommentDto>> getCommentsFromPostId(int postId) =>
-      _api.getComments(postId, 1000).then((value) {
-        final data = value.response.data;
-        var comments = List<CommentDto>();
+  Future<List<CommentDto>> getCommentsFromPostId(
+    int postId, {
+    CancelToken cancelToken,
+  }) async {
+    try {
+      final value =
+          await _api.getComments(postId, 1000, cancelToken: cancelToken);
+      final data = value.response.data;
+      var comments = List<CommentDto>();
 
-        for (var item in data) {
-          try {
-            comments.add(CommentDto.fromJson(item));
-          } catch (e) {
-            print("Cant parse ${item['id']}");
-          }
+      for (var item in data) {
+        try {
+          comments.add(CommentDto.fromJson(item));
+        } catch (e) {
+          print("Cant parse ${item['id']}");
         }
-        return comments;
-      }).catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-            throw Exception("Failed to get comments from $postId");
-            break;
-          default:
-        }
-        return List<CommentDto>();
-      });
+      }
+
+      return comments;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.CANCEL) {
+        // Cancel token triggered, skip this request
+        return [];
+      } else {
+        throw Exception("Failed to get comments for $postId");
+      }
+    }
+  }
 
   @override
   Future<bool> postComment(int postId, String content) async {
