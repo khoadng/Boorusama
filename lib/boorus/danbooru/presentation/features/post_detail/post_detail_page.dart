@@ -18,6 +18,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -30,7 +31,6 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 part 'post_detail_page.freezed.dart';
 
