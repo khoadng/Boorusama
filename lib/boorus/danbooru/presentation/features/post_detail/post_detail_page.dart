@@ -20,9 +20,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/user.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/user_level.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
@@ -30,15 +29,11 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/arti
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart'
-    as domain;
 
 part 'post_detail_page.freezed.dart';
 
@@ -141,32 +136,25 @@ final _commentsProvider =
   final commentRepo = ref.watch(commentProvider);
   final userRepo = ref.watch(userProvider);
   final dtos = await commentRepo.getCommentsFromPostId(postId);
-  final List<domain.Comment> domainComments = dtos
+  final comments = dtos
       .where((e) => e.creator_id != null)
       .toList()
       .map((dto) => dto.toEntity())
       .toList();
 
-  final userList = domainComments.map((e) => e.creatorId).toSet().toList();
+  final userList = comments.map((e) => e.creatorId).toSet().toList();
   final users = await userRepo.getUsersByIdStringComma(userList.join(","));
 
-  final comments =
-      (domainComments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
+  final commentsWithAuthor =
+      (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
     final author = users.where((user) => user.id == comment.creatorId).first;
-    return Comment(
-      id: comment.id,
-      author:
-          User(level: UserLevel(author.level).level, name: author.displayName),
-      content: comment.body,
-      isDeleted: comment.isDeleted,
-      createdAt: comment.createdAt,
-    );
+    return comment.copyWith(author: author);
   }).toList();
 
   /// Cache the artist posts once it was successfully obtained.
   ref.maintainState = true;
 
-  return comments;
+  return commentsWithAuthor;
 });
 
 class _DetailPageChild extends HookWidget {

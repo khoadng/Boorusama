@@ -2,6 +2,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'comment.dart';
 
 part 'comment_dto.freezed.dart';
@@ -37,9 +38,6 @@ abstract class CommentDto with _$CommentDto {
 
 extension CommentDtoX on CommentDto {
   Comment toEntity() {
-    if (creator_id == null) {
-      print("creator_id is null: $id");
-    }
     return Comment(
       id: id,
       createdAt: DateTime.parse(created_at),
@@ -50,6 +48,7 @@ extension CommentDtoX on CommentDto {
       updatedAt: updated_at,
       updaterId: updater_id,
       isDeleted: is_deleted,
+      author: User.placeholder(),
     );
   }
 }

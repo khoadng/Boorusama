@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/user_level.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
 
 class CommentItem extends StatelessWidget {
@@ -26,9 +26,9 @@ class CommentItem extends StatelessWidget {
           Row(
             children: [
               Text(
-                comment.author.name,
+                comment.author.displayName,
                 style: TextStyle(
-                  color: Color(comment.author.level.hexColor),
+                  color: Color(comment.author.level.level.hexColor),
                 ),
               ),
               SizedBox(
@@ -41,7 +41,7 @@ class CommentItem extends StatelessWidget {
             ],
           ),
           Dtext.parse(
-            comment.content,
+            comment.body,
             "[quote]",
             "[/quote]",
           ),

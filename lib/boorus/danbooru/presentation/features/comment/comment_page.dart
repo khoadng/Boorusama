@@ -8,7 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'comment_create_page.dart';
 import 'comment_update_page.dart';
@@ -99,7 +99,7 @@ class _CommentPageState extends State<CommentPage> {
             CommentUpdatePage(
           postId: widget.postId,
           commentId: comment.id,
-          initialContent: comment.content,
+          initialContent: comment.body,
         ),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>
             SharedAxisTransition(
@@ -116,7 +116,7 @@ class _CommentPageState extends State<CommentPage> {
   void _handleReplyTap(
       BuildContext context, Comment comment, int postId) async {
     final content =
-        "[quote]\n${comment.author.name} said:\n\n${comment.content}\n[/quote]\n\n";
+        "[quote]\n${comment.author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
 
     Navigator.of(context).pop();
     await Navigator.of(context).push(

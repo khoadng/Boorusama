@@ -1,7 +1,10 @@
+// Project imports:
+import 'user_level.dart';
+
 class User {
   int _id;
   String _name;
-  int level;
+  UserLevel level;
   String _blacklistedTagString;
 
   User(this._id, this._name, this.level, this._blacklistedTagString);
@@ -15,10 +18,10 @@ class User {
     return User(
       json["id"],
       json["name"],
-      json["level"],
+      UserLevel(json["level"]),
       json["blacklisted_tags"],
     );
   }
 
-  // factory User.placeholder() => User(0, "User", UserLevel(20), "");
+  factory User.placeholder() => User(0, "User", UserLevel(20), "");
 }
