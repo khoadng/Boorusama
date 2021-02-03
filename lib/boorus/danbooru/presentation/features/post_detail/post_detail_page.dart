@@ -20,10 +20,9 @@ import 'package:shimmer/shimmer.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/user.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/user_level.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
@@ -31,6 +30,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/arti
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
@@ -184,6 +184,7 @@ class _DetailPageChild extends HookWidget {
   final VoidCallback onExit;
 
   final double _panelOverImageOffset = 30;
+  final double _minPanelHeight = 80;
 
   double _calculatePanelMinHeight(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 24;
@@ -265,8 +266,8 @@ class _DetailPageChild extends HookWidget {
             child: SlidingUpPanel(
               boxShadow: null,
               color: Colors.transparent,
-              minHeight:
-                  _calculatePanelMinHeight(context) + _panelOverImageOffset,
+              minHeight: max(_minPanelHeight,
+                  _calculatePanelMinHeight(context) + _panelOverImageOffset),
               maxHeight:
                   MediaQuery.of(context).size.height - 24 - kToolbarHeight,
               panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
