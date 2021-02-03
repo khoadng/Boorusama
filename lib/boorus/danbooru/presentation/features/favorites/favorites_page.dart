@@ -52,6 +52,8 @@ class FavoritesPage extends HookWidget {
 
     final scrollController = useState(AutoScrollController());
 
+    final gridKey = useState(GlobalKey());
+
     useEffect(() {
       return () => scrollController.value.dispose;
     }, []);
@@ -94,6 +96,7 @@ class FavoritesPage extends HookWidget {
                   refreshing: () => SliverPostGridPlaceHolder(
                       scrollController: scrollController.value),
                   orElse: () => SliverPostGrid(
+                    key: gridKey.value,
                     onTap: (post, index) {
                       context
                           .read(favoritesStateNotifierProvider)
@@ -118,7 +121,8 @@ class FavoritesPage extends HookWidget {
                                   .read(favoritesStateNotifierProvider)
                                   .getMorePosts();
                             }
-                          }
+                          },
+                          gridKey.value,
                         ]),
                       );
                     },

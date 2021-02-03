@@ -42,6 +42,7 @@ class PostDetailPage extends HookWidget {
     @required this.intitialIndex,
     @required this.onExit,
     @required this.onPostChanged,
+    @required this.imageHeroTag,
   }) : super(key: key);
 
   final Post post;
@@ -50,6 +51,7 @@ class PostDetailPage extends HookWidget {
   final int intitialIndex;
   final VoidCallback onExit;
   final ValueChanged<int> onPostChanged;
+  final String imageHeroTag;
 
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -63,6 +65,7 @@ class PostDetailPage extends HookWidget {
             return _DetailPageChild(
               post: posts[index],
               onExit: () => onExit(),
+              imageHeroTag: imageHeroTag,
             );
           },
           options: CarouselOptions(
@@ -124,9 +127,11 @@ class _DetailPageChild extends HookWidget {
     Key key,
     @required this.post,
     @required this.onExit,
+    @required this.imageHeroTag,
   }) : super(key: key);
 
   final Post post;
+  final String imageHeroTag;
 
   //TODO: callback hell, i don't like it
   final VoidCallback onExit;
@@ -181,27 +186,29 @@ class _DetailPageChild extends HookWidget {
               : post.height,
           child: PostVideo(post: post));
     } else {
-      postWidget = Hero(
-        tag: post.id,
-        child: GestureDetector(
-          onTap: () async {
-            animationController.reverse();
-            await AppRouter.router.navigateTo(context, "/posts/image",
-                routeSettings: RouteSettings(arguments: [post]));
-            animationController.forward();
-          },
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child:
-                  CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
-        ),
+      postWidget = GestureDetector(
+        onTap: () async {
+          animationController.reverse();
+          await AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: [post]));
+          animationController.forward();
+        },
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child:
+                CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
       );
     }
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(children: <Widget>[
-          FittedBox(child: postWidget, fit: BoxFit.contain),
+          FittedBox(
+              child: Hero(
+                tag: imageHeroTag,
+                child: postWidget,
+              ),
+              fit: BoxFit.contain),
           _buildTopShadowGradient(),
           _buildBackButton(context),
           _buildMoreVertButton(context),

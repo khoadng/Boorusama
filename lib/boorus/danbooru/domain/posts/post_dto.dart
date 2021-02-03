@@ -81,6 +81,7 @@ extension PostDtoX on PostDto {
       tagStringCopyright: tag_string_copyright,
       tagStringCharacter: tag_string_character,
       tagStringArtist: tag_string_artist,
+      tagStringGeneral: tag_string_general,
       tagString: TagString(tag_string),
       width: image_width.toDouble(),
       height: image_height.toDouble(),

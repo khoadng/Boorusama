@@ -141,6 +141,8 @@ class ExplorePage extends HookWidget {
     final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final postsState = useProvider(_postsStateProvider);
 
+    final gridKey = useState(GlobalKey());
+
     final scrollController = useState(AutoScrollController());
     useEffect(() {
       return () => scrollController.dispose;
@@ -290,6 +292,7 @@ class ExplorePage extends HookWidget {
               refreshing: () => SliverPostGridPlaceHolder(
                   scrollController: scrollController.value),
               orElse: () => SliverPostGrid(
+                key: gridKey.value,
                 onTap: (post, index) {
                   context.read(exploreStateNotifierProvider).viewPost(post);
                   AppRouter.router.navigateTo(
@@ -312,7 +315,8 @@ class ExplorePage extends HookWidget {
                               .read(exploreStateNotifierProvider)
                               .getMorePosts();
                         }
-                      }
+                      },
+                      gridKey.value,
                     ]),
                   );
                 },

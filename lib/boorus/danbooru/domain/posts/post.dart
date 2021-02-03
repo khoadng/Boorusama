@@ -18,6 +18,7 @@ class Post implements IDownloadable {
   final String tagStringCopyright;
   final String tagStringCharacter;
   final String tagStringArtist;
+  final String tagStringGeneral;
   final TagString tagString;
   final double width;
   final double height;
@@ -42,6 +43,7 @@ class Post implements IDownloadable {
     @required this.tagStringCopyright,
     @required this.tagStringCharacter,
     @required this.tagStringArtist,
+    @required this.tagStringGeneral,
     @required this.tagString,
     @required this.width,
     @required this.height,

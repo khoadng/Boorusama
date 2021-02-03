@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+
 // Package imports:
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';

@@ -160,6 +160,8 @@ class SearchPage extends HookWidget {
     final posts = useProvider(_postProvider);
     final query = useProvider(_queryProvider);
 
+    final gridKey = useState(GlobalKey());
+
     final suggestionsMonitoringState =
         useProvider(_suggestionsMonitoringStateProvider);
     final tags = useProvider(_tagProvider);
@@ -300,6 +302,7 @@ class SearchPage extends HookWidget {
                         orElse: () => SliverPadding(
                           padding: EdgeInsets.all(6.0),
                           sliver: SliverPostGrid(
+                            key: gridKey.value,
                             onTap: (post, index) {
                               context
                                   .read(searchStateNotifierProvider)
@@ -324,7 +327,8 @@ class SearchPage extends HookWidget {
                                           .read(searchStateNotifierProvider)
                                           .getMoreResult();
                                     }
-                                  }
+                                  },
+                                  gridKey.value,
                                 ]),
                               );
                             },

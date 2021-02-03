@@ -51,6 +51,8 @@ class LatestView extends HookWidget {
     final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final scrollController = useState(AutoScrollController());
 
+    final gridKey = useState(GlobalKey());
+
     useEffect(() {
       return () => scrollController.value.dispose;
     }, []);
@@ -92,6 +94,7 @@ class LatestView extends HookWidget {
                 refreshing: () => SliverPostGridPlaceHolder(
                     scrollController: scrollController.value),
                 orElse: () => SliverPostGrid(
+                  key: gridKey.value,
                   onTap: (post, index) {
                     context
                         .read(latestPostsStateNotifierProvider)
@@ -118,7 +121,8 @@ class LatestView extends HookWidget {
                                 .read(latestPostsStateNotifierProvider)
                                 .getMorePosts();
                           }
-                        }
+                        },
+                        gridKey.value,
                       ]),
                     );
                   },
