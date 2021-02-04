@@ -208,4 +208,7 @@ class _PostImagePageState extends State<PostImagePage> {
   }
 }
 
-enum PostAction { download }
+enum PostAction {
+  download,
+  slideShow,
+}

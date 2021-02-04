@@ -57,32 +57,120 @@ class PostDetailPage extends HookWidget {
   final GlobalKey gridKey;
 
   Widget build(BuildContext context) {
+    final slideShow = useState(false);
+
     return WillPopScope(
       onWillPop: () {
         onExit();
         return Future.value(true);
       },
-      child: CarouselSlider.builder(
-          itemCount: posts.length,
-          itemBuilder: (context, index) {
-            return _DetailPageChild(
-              post: posts[index],
-              onExit: () => onExit(),
-              imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
-            );
+      child: Scaffold(
+        body: Stack(
+          children: [
+            CarouselSlider.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                return _DetailPageChild(
+                  post: posts[index],
+                  onExit: () => onExit(),
+                  imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
+                  slideShowMode: slideShow.value,
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  onPostChanged(index);
+                },
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: intitialIndex,
+                reverse: false,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlay: slideShow.value,
+                scrollDirection: Axis.horizontal,
+              ),
+            ),
+            _buildTopShadowGradient(),
+            _buildBackButton(context),
+            Align(
+              alignment: Alignment(0.9, -0.9),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: PopupMenuButton<PostAction>(
+                  onSelected: (value) {
+                    switch (value) {
+                      case PostAction.download:
+                        context.read(downloadServiceProvider).download(post);
+                        break;
+                      case PostAction.slideShow:
+                        slideShow.value = !slideShow.value;
+
+                        break;
+                      default:
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<PostAction>>[
+                    PopupMenuItem<PostAction>(
+                      value: PostAction.download,
+                      child: ListTile(
+                        leading: const Icon(Icons.download_rounded),
+                        title: Text("Download"),
+                      ),
+                    ),
+                    PopupMenuItem<PostAction>(
+                      value: PostAction.slideShow,
+                      child: ListTile(
+                        leading: const Icon(Icons.slideshow),
+                        title: Text("Slide show"),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTopShadowGradient() {
+    return IgnorePointer(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Container(
+          height: 200,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              end: const Alignment(0.0, 0.4),
+              begin: const Alignment(0.0, -1),
+              colors: <Color>[
+                const Color(0x2F000000),
+                Colors.black12.withOpacity(0.0)
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBackButton(BuildContext context) {
+    return Align(
+      alignment: Alignment(-0.9, -0.9),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            onExit();
+            AppRouter.router.pop(context);
           },
-          options: CarouselOptions(
-            onPageChanged: (index, reason) {
-              onPostChanged(index);
-            },
-            height: MediaQuery.of(context).size.height,
-            viewportFraction: 1,
-            enableInfiniteScroll: false,
-            initialPage: intitialIndex,
-            reverse: false,
-            autoPlayCurve: Curves.fastOutSlowIn,
-            scrollDirection: Axis.horizontal,
-          )),
+        ),
+      ),
     );
   }
 }
@@ -163,10 +251,12 @@ class _DetailPageChild extends HookWidget {
     @required this.post,
     @required this.onExit,
     @required this.imageHeroTag,
+    this.slideShowMode,
   }) : super(key: key);
 
   final Post post;
   final String imageHeroTag;
+  final bool slideShowMode;
 
   //TODO: callback hell, i don't like it
   final VoidCallback onExit;
@@ -210,9 +300,14 @@ class _DetailPageChild extends HookWidget {
         vsync: tickerProvider, duration: Duration(milliseconds: 250));
 
     useEffect(() {
-      animationController.forward();
       return null;
     }, []);
+
+    if (slideShowMode) {
+      animationController.reverse();
+    } else {
+      animationController.forward();
+    }
 
     Widget postWidget;
     if (post.isVideo) {
@@ -239,15 +334,19 @@ class _DetailPageChild extends HookWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(children: <Widget>[
-          FittedBox(
-              child: Hero(
-                tag: imageHeroTag,
-                child: postWidget,
-              ),
-              fit: BoxFit.contain),
-          _buildTopShadowGradient(),
-          _buildBackButton(context),
-          _buildMoreVertButton(context),
+          slideShowMode
+              ? Center(
+                  child: Hero(
+                    tag: imageHeroTag,
+                    child: postWidget,
+                  ),
+                )
+              : FittedBox(
+                  child: Hero(
+                    tag: imageHeroTag,
+                    child: postWidget,
+                  ),
+                  fit: BoxFit.contain),
           SlideTransition(
             position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
                 .animate(animationController),
@@ -435,72 +534,6 @@ class _DetailPageChild extends HookWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTopShadowGradient() {
-    return IgnorePointer(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          height: 200,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              end: const Alignment(0.0, 0.4),
-              begin: const Alignment(0.0, -1),
-              colors: <Color>[
-                const Color(0x2F000000),
-                Colors.black12.withOpacity(0.0)
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            onExit();
-            AppRouter.router.pop(context);
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMoreVertButton(BuildContext context) {
-    return Align(
-      alignment: Alignment.topRight,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: PopupMenuButton<PostAction>(
-          onSelected: (value) {
-            switch (value) {
-              case PostAction.download:
-                context.read(downloadServiceProvider).download(post);
-                break;
-              default:
-            }
-          },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-            PopupMenuItem<PostAction>(
-              value: PostAction.download,
-              child: ListTile(
-                leading: const Icon(Icons.download_rounded),
-                title: Text("Download"),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
