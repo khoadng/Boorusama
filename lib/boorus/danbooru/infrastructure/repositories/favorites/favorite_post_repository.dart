@@ -71,12 +71,12 @@ class FavoritePostRepository implements IFavoritePostRepository {
 
   @override
   Future<List<FavoriteDto>> filterFavoritesFromUserId(
-      List<int> postIds, int userId) async {
+      List<int> postIds, int userId, int limit) async {
     final account = await _accountRepository.get();
     final postIdsStringComma = postIds.join(',');
     return _api
         .filterFavoritesFromUserId(
-            account.username, account.apiKey, postIdsStringComma, userId)
+            account.username, account.apiKey, postIdsStringComma, userId, limit)
         .then((value) {
       final favorites = <FavoriteDto>[];
 

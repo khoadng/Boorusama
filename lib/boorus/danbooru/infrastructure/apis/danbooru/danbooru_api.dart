@@ -64,6 +64,7 @@ abstract class DanbooruApi implements IApi {
     @Query("api_key") String apiKey,
     @Query("search[post_id]") String postIdsString,
     @Query("search[user_id]") int userId,
+    @Query("limit") int limit,
   );
 
   @GET("/comments.json")

@@ -21,6 +21,7 @@ abstract class IApi {
     String apiKey,
     String postIdsStringComma,
     int userId,
+    int limit,
   );
 
   Future<HttpResponse> getComments(
