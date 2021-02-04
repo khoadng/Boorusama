@@ -30,10 +30,13 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
+import 'providers/slide_show_providers.dart';
 
 part 'post_detail_page.freezed.dart';
 
@@ -48,16 +51,51 @@ class PostDetailPage extends HookWidget {
     @required this.gridKey,
   }) : super(key: key);
 
-  final Post post;
-
-  final List<Post> posts;
+  final GlobalKey gridKey;
   final int intitialIndex;
   final VoidCallback onExit;
   final ValueChanged<int> onPostChanged;
-  final GlobalKey gridKey;
+  final Post post;
+  final List<Post> posts;
 
   Widget build(BuildContext context) {
-    final slideShow = useState(false);
+    final tickerProvider = useSingleTickerProvider();
+    final spinningIconAnimationController = useAnimationController(
+        vsync: tickerProvider, duration: Duration(seconds: 200));
+    final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0)
+        .animate(spinningIconAnimationController);
+    final showSlideShowConfig = useState(false);
+    final autoPlay = useState(false);
+    final showBottomInfoPanel = useState(true);
+    final slideShowConfig =
+        useProvider(slideShowConfigurationStateProvider).state;
+    useValueChanged(showSlideShowConfig.value, (_, __) {
+      if (showSlideShowConfig.value) {
+        showBottomInfoPanel.value = false;
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          final confirm = await showMaterialModalBottomSheet(
+                backgroundColor: Colors.transparent,
+                expand: false,
+                context: context,
+                builder: (context, controller) => SlideShowConfigBottomModal(),
+              ) ??
+              false;
+          showSlideShowConfig.value = false;
+          autoPlay.value = confirm;
+          if (!confirm) showBottomInfoPanel.value = true;
+        });
+      }
+    });
+
+    useValueChanged(autoPlay.value, (_, __) {
+      if (autoPlay.value) {
+        spinningIconAnimationController.repeat();
+      } else {
+        spinningIconAnimationController.stop();
+        spinningIconAnimationController.reset();
+        showBottomInfoPanel.value = true;
+      }
+    });
 
     return WillPopScope(
       onWillPop: () {
@@ -74,7 +112,7 @@ class PostDetailPage extends HookWidget {
                   post: posts[index],
                   onExit: () => onExit(),
                   imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
-                  slideShowMode: slideShow.value,
+                  showBottomPanel: showBottomInfoPanel.value,
                 );
               },
               options: CarouselOptions(
@@ -87,7 +125,11 @@ class PostDetailPage extends HookWidget {
                 initialPage: intitialIndex,
                 reverse: false,
                 autoPlayCurve: Curves.fastOutSlowIn,
-                autoPlay: slideShow.value,
+                autoPlay: autoPlay.value,
+                autoPlayAnimationDuration: slideShowConfig.skipAnimation
+                    ? Duration(microseconds: 1)
+                    : Duration(milliseconds: 600),
+                autoPlayInterval: Duration(seconds: slideShowConfig.interval),
                 scrollDirection: Axis.horizontal,
               ),
             ),
@@ -95,39 +137,39 @@ class PostDetailPage extends HookWidget {
             _buildBackButton(context),
             Align(
               alignment: Alignment(0.9, -0.9),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: PopupMenuButton<PostAction>(
-                  onSelected: (value) {
-                    switch (value) {
-                      case PostAction.download:
-                        context.read(downloadServiceProvider).download(post);
-                        break;
-                      case PostAction.slideShow:
-                        slideShow.value = !slideShow.value;
-
-                        break;
-                      default:
-                    }
-                  },
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<PostAction>>[
-                    PopupMenuItem<PostAction>(
-                      value: PostAction.download,
-                      child: ListTile(
-                        leading: const Icon(Icons.download_rounded),
-                        title: Text("Download"),
+              child: ButtonBar(
+                children: [
+                  autoPlay.value
+                      ? AnimatedSpinningIcon(
+                          icon: Icon(Icons.sync),
+                          animation: rotateAnimation,
+                          onPressed: () => autoPlay.value = false,
+                        )
+                      : IconButton(
+                          icon: Icon(Icons.slideshow),
+                          onPressed: () => showSlideShowConfig.value = true,
+                        ),
+                  PopupMenuButton<PostAction>(
+                    onSelected: (value) async {
+                      switch (value) {
+                        case PostAction.download:
+                          context.read(downloadServiceProvider).download(post);
+                          break;
+                        default:
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<PostAction>>[
+                      PopupMenuItem<PostAction>(
+                        value: PostAction.download,
+                        child: ListTile(
+                          leading: const Icon(Icons.download_rounded),
+                          title: Text("Download"),
+                        ),
                       ),
-                    ),
-                    PopupMenuItem<PostAction>(
-                      value: PostAction.slideShow,
-                      child: ListTile(
-                        leading: const Icon(Icons.slideshow),
-                        title: Text("Slide show"),
-                      ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
@@ -148,7 +190,7 @@ class PostDetailPage extends HookWidget {
               end: const Alignment(0.0, 0.4),
               begin: const Alignment(0.0, -1),
               colors: <Color>[
-                const Color(0x2F000000),
+                const Color(0x5D000000),
                 Colors.black12.withOpacity(0.0)
               ],
             ),
@@ -251,18 +293,18 @@ class _DetailPageChild extends HookWidget {
     @required this.post,
     @required this.onExit,
     @required this.imageHeroTag,
-    this.slideShowMode,
+    this.showBottomPanel,
   }) : super(key: key);
 
-  final Post post;
   final String imageHeroTag;
-  final bool slideShowMode;
-
   //TODO: callback hell, i don't like it
   final VoidCallback onExit;
 
-  final double _panelOverImageOffset = 30;
+  final Post post;
+  final bool showBottomPanel;
+
   final double _minPanelHeight = 80;
+  final double _panelOverImageOffset = 30;
 
   double _calculatePanelMinHeight(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 24;
@@ -286,84 +328,6 @@ class _DetailPageChild extends HookWidget {
       }
     }
     return screenHeight - (aspectRatio * post.height);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final artistCommentaryDisplay =
-        useState(ArtistCommentaryTranlationState.original());
-    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
-    final artistPosts = useProvider(_artistPostsProvider(post.tagStringArtist));
-    final comments = useProvider(_commentsProvider(post.id));
-    final tickerProvider = useSingleTickerProvider();
-    final animationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(milliseconds: 250));
-
-    useEffect(() {
-      return null;
-    }, []);
-
-    if (slideShowMode) {
-      animationController.reverse();
-    } else {
-      animationController.forward();
-    }
-
-    Widget postWidget;
-    if (post.isVideo) {
-      postWidget = Container(
-          height: post.aspectRatio > 1.0
-              ? post.height / post.aspectRatio
-              : post.height,
-          child: PostVideo(post: post));
-    } else {
-      postWidget = GestureDetector(
-        onTap: () async {
-          animationController.reverse();
-          await AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
-          animationController.forward();
-        },
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child:
-                CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
-      );
-    }
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(children: <Widget>[
-          slideShowMode
-              ? Center(
-                  child: Hero(
-                    tag: imageHeroTag,
-                    child: postWidget,
-                  ),
-                )
-              : FittedBox(
-                  child: Hero(
-                    tag: imageHeroTag,
-                    child: postWidget,
-                  ),
-                  fit: BoxFit.contain),
-          SlideTransition(
-            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
-                .animate(animationController),
-            child: SlidingUpPanel(
-              boxShadow: null,
-              color: Colors.transparent,
-              minHeight: max(_minPanelHeight,
-                  _calculatePanelMinHeight(context) + _panelOverImageOffset),
-              maxHeight:
-                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-              panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
-                  artistCommentaryDisplay, artistPosts, comments),
-            ),
-          ),
-        ]),
-      ),
-    );
   }
 
   Widget _buildContent(
@@ -578,11 +542,86 @@ class _DetailPageChild extends HookWidget {
   Widget _buildSliverSpace() {
     return SliverToBoxAdapter(child: Container(padding: EdgeInsets.all(5.0)));
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final artistCommentaryDisplay =
+        useState(ArtistCommentaryTranlationState.original());
+    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
+    final artistPosts = useProvider(_artistPostsProvider(post.tagStringArtist));
+    final comments = useProvider(_commentsProvider(post.id));
+    final tickerProvider = useSingleTickerProvider();
+    final animationController = useAnimationController(
+        vsync: tickerProvider, duration: Duration(milliseconds: 250));
+
+    if (showBottomPanel) {
+      animationController.forward();
+    } else {
+      animationController.reverse();
+    }
+
+    Widget postWidget;
+    if (post.isVideo) {
+      postWidget = Container(
+          height: post.aspectRatio > 1.0
+              ? post.height / post.aspectRatio
+              : post.height,
+          child: PostVideo(post: post));
+    } else {
+      postWidget = GestureDetector(
+        onTap: () async {
+          animationController.reverse();
+          await AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
+          animationController.forward();
+        },
+        child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child:
+                CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
+      );
+    }
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(children: <Widget>[
+          showBottomPanel
+              ? FittedBox(
+                  child: Hero(
+                    tag: imageHeroTag,
+                    child: postWidget,
+                  ),
+                  fit: BoxFit.contain)
+              : Center(
+                  child: Hero(
+                    tag: imageHeroTag,
+                    child: postWidget,
+                  ),
+                ),
+          SlideTransition(
+            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
+                .animate(animationController),
+            child: SlidingUpPanel(
+              boxShadow: null,
+              color: Colors.transparent,
+              minHeight: max(_minPanelHeight,
+                  _calculatePanelMinHeight(context) + _panelOverImageOffset),
+              maxHeight:
+                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
+              panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
+                  artistCommentaryDisplay, artistPosts, comments),
+            ),
+          ),
+        ]),
+      ),
+    );
+  }
 }
 
 @freezed
 abstract class ArtistCommentaryTranlationState
     with _$ArtistCommentaryTranlationState {
-  const factory ArtistCommentaryTranlationState.translated() = _Translated;
   const factory ArtistCommentaryTranlationState.original() = _Original;
+
+  const factory ArtistCommentaryTranlationState.translated() = _Translated;
 }

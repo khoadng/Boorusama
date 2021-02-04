@@ -61,6 +61,7 @@ dependencies:
   md2_tab_indicator: ^1.0.2
   meta: ^1.2.3
   modal_bottom_sheet: ^0.2.2
+  number_inc_dec: ^0.6.6
   path: ^1.7.0
   path_provider: ^1.6.18
   permission_handler: ^5.0.1+1
