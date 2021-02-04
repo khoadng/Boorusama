@@ -4,6 +4,7 @@ import 'dart:math';
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -34,6 +35,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/moda
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_tag_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'providers/slide_show_providers.dart';
@@ -303,8 +305,8 @@ class _DetailPageChild extends HookWidget {
   final Post post;
   final bool showBottomPanel;
 
-  final double _minPanelHeight = 80;
-  final double _panelOverImageOffset = 30;
+  final double _minPanelHeight = 80.0;
+  final double _panelOverImageOffset = 30.0 + 24.0;
 
   double _calculatePanelMinHeight(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 24;
@@ -338,14 +340,7 @@ class _DetailPageChild extends HookWidget {
     AsyncValue<List<Post>> artistPosts,
     AsyncValue<List<Comment>> comments,
   ) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).appBarTheme.color,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
+    return Modal(
       child: Column(
         children: [
           ButtonBar(
@@ -582,36 +577,43 @@ class _DetailPageChild extends HookWidget {
                 CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
       );
     }
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: Stack(children: <Widget>[
-        showBottomPanel
-            ? FittedBox(
-                child: Hero(
-                  tag: imageHeroTag,
-                  child: postWidget,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(children: <Widget>[
+          showBottomPanel
+              ? Align(
+                  alignment: Alignment.topCenter,
+                  child: FittedBox(
+                      child: Hero(
+                        tag: imageHeroTag,
+                        child: postWidget,
+                      ),
+                      fit: BoxFit.fitWidth),
+                )
+              : Center(
+                  child: Hero(
+                    tag: imageHeroTag,
+                    child: postWidget,
+                  ),
                 ),
-                fit: BoxFit.contain)
-            : Center(
-                child: Hero(
-                  tag: imageHeroTag,
-                  child: postWidget,
-                ),
-              ),
-        SlideTransition(
-          position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
-              .animate(animationController),
-          child: SlidingUpPanel(
-            boxShadow: null,
-            color: Colors.transparent,
-            minHeight: max(_minPanelHeight,
-                _calculatePanelMinHeight(context) + _panelOverImageOffset),
-            maxHeight: MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-            panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
-                artistCommentaryDisplay, artistPosts, comments),
+          SlideTransition(
+            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
+                .animate(animationController),
+            child: SlidingUpPanel(
+              boxShadow: null,
+              color: Colors.transparent,
+              minHeight: max(_minPanelHeight,
+                  _calculatePanelMinHeight(context) + _panelOverImageOffset),
+              maxHeight:
+                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
+              panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
+                  artistCommentaryDisplay, artistPosts, comments),
+            ),
           ),
-        ),
-      ]),
+        ]),
+      ),
     );
   }
 }

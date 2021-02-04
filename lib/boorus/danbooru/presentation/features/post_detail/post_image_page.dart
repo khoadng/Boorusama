@@ -1,11 +1,12 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
+import 'package:hooks_riverpod/all.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
@@ -30,88 +31,15 @@ final _notesProvider =
   return notes;
 });
 
-class PostImagePage extends StatefulWidget {
+class PostImagePage extends HookWidget {
   const PostImagePage({
     Key key,
     @required this.post,
     @required this.imageHeroTag,
   }) : super(key: key);
 
-  final Post post;
   final String imageHeroTag;
-
-  @override
-  _PostImagePageState createState() => _PostImagePageState();
-}
-
-class _PostImagePageState extends State<PostImagePage> {
-  bool _hideOverlay = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final image = Hero(
-        tag: widget.imageHeroTag,
-        child: CachedNetworkImage(
-          fit: BoxFit.fitWidth,
-          imageUrl: widget.post.normalImageUri.toString(),
-          imageBuilder: (context, imageProvider) {
-            precacheImage(imageProvider, context);
-            return PhotoView(
-              imageProvider: imageProvider,
-              backgroundDecoration: BoxDecoration(
-                color: Theme.of(context).appBarTheme.color,
-              ),
-            );
-          },
-          progressIndicatorBuilder: (context, url, progress) => Center(
-            child: CircularProgressIndicator(
-              value: progress.progress,
-            ),
-          ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ));
-    return Scaffold(
-      body: Consumer(
-        builder: (context, watch, child) {
-          final state = watch(_notesProvider(widget.post.id));
-          final imageAndOverlay = Stack(
-            children: [
-              image,
-              if (!_hideOverlay) _buildTopShadowGradient(),
-              if (!_hideOverlay) _buildBackButton(context),
-              if (!_hideOverlay) _buildMoreVertButton(),
-            ],
-          );
-          return state.when(
-            loading: () => imageAndOverlay,
-            data: (notes) => Stack(
-              children: [
-                InkWell(
-                    onTap: () {
-                      setState(() {
-                        _hideOverlay = !_hideOverlay;
-                      });
-
-                      // if (_hideOverlay) {
-                      //   SystemChrome.setEnabledSystemUIOverlays([]);
-                      // } else {
-                      //   SystemChrome.setEnabledSystemUIOverlays(
-                      //       SystemUiOverlay.values);
-                      // }
-                    },
-                    child: image),
-                if (!_hideOverlay) _buildTopShadowGradient(),
-                if (!_hideOverlay) ...buildNotes(notes, widget.post),
-                if (!_hideOverlay) _buildBackButton(context),
-                if (!_hideOverlay) _buildMoreVertButton(),
-              ],
-            ),
-            error: (name, message) => imageAndOverlay,
-          );
-        },
-      ),
-    );
-  }
+  final Post post;
 
   Widget _buildTopShadowGradient() {
     return Align(
@@ -177,7 +105,7 @@ class _PostImagePageState extends State<PostImagePage> {
     );
   }
 
-  List<Widget> buildNotes(List<Note> notes, Post post) {
+  List<Widget> buildNotes(BuildContext context, List<Note> notes, Post post) {
     final widgets = List<Widget>();
 
     final screenWidth = MediaQuery.of(context).size.width;
@@ -200,6 +128,55 @@ class _PostImagePageState extends State<PostImagePage> {
     }
 
     return widgets;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final hideOverlay = useState(false);
+    final notes = useProvider(_notesProvider(post.id));
+
+    final image = Hero(
+        tag: imageHeroTag,
+        child: CachedNetworkImage(
+          fit: BoxFit.fitWidth,
+          imageUrl: post.normalImageUri.toString(),
+          imageBuilder: (context, imageProvider) {
+            precacheImage(imageProvider, context);
+            return PhotoView(
+              imageProvider: imageProvider,
+              backgroundDecoration: BoxDecoration(
+                color: Theme.of(context).appBarTheme.color,
+              ),
+            );
+          },
+          progressIndicatorBuilder: (context, url, progress) => Center(
+            child: CircularProgressIndicator(
+              value: progress.progress,
+            ),
+          ),
+          errorWidget: (context, url, error) => Icon(Icons.error),
+        ));
+    return Scaffold(
+      body: Stack(
+        children: [
+          InkWell(
+              onTap: () {
+                hideOverlay.value = !hideOverlay.value;
+              },
+              child: image),
+          if (!hideOverlay.value) ...[
+            _buildTopShadowGradient(),
+            _buildBackButton(context),
+            _buildMoreVertButton(),
+            ...notes.when(
+              loading: () => [SizedBox.shrink()],
+              data: (notes) => buildNotes(context, notes, post),
+              error: (name, message) => [SizedBox.shrink()],
+            ),
+          ],
+        ],
+      ),
+    );
   }
 }
 

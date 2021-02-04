@@ -28,7 +28,7 @@ class Modal extends StatelessWidget {
         children: <Widget>[
           _DragLine(),
           _Title(title),
-          child,
+          Flexible(child: child),
         ],
       ),
     );

@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -53,64 +52,61 @@ class HomePage extends HookWidget {
       return () => {};
     }, []);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.black),
-      child: Container(
-        color: Colors.black,
-        child: SafeArea(
-          child: Column(
-            children: <Widget>[
-              networkStatus.when(
-                data: (value) => value.when(
-                  unknown: () => SizedBox.shrink(),
-                  available: () => SizedBox.shrink(),
-                  unavailable: () => Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Material(
-                      color: Colors.black,
-                      child: Text("Network unavailable"),
-                    ),
-                  ),
-                ),
-                loading: () => Padding(
+    return Container(
+      color: Colors.black,
+      child: SafeArea(
+        child: Column(
+          children: <Widget>[
+            networkStatus.when(
+              data: (value) => value.when(
+                unknown: () => SizedBox.shrink(),
+                available: () => SizedBox.shrink(),
+                unavailable: () => Padding(
                   padding: EdgeInsets.only(bottom: 10),
                   child: Material(
-                    color: Theme.of(context).appBarTheme.color,
-                    child: Text("Connecting"),
+                    color: Colors.black,
+                    child: Text("Network unavailable"),
                   ),
                 ),
-                error: (error, stackTrace) => Material(
+              ),
+              loading: () => Padding(
+                padding: EdgeInsets.only(bottom: 10),
+                child: Material(
                   color: Theme.of(context).appBarTheme.color,
-                  child: Padding(
-                      padding: EdgeInsets.only(bottom: 10),
-                      child: Text("Something went wrong")),
+                  child: Text("Connecting"),
                 ),
               ),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
+              error: (error, stackTrace) => Material(
+                color: Theme.of(context).appBarTheme.color,
+                child: Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Text("Something went wrong")),
+              ),
+            ),
+            Expanded(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
+                ),
+                child: Scaffold(
+                  key: scaffoldKey,
+                  drawer: SideBarMenu(),
+                  resizeToAvoidBottomInset: false,
+                  body: IndexedStack(
+                    index: bottomTabIndex.value,
+                    children: <Widget>[
+                      _buildHomeTabBottomBar(topTabIndex, tabController),
+                      FavoritesPage(),
+                    ],
                   ),
-                  child: Scaffold(
-                    key: scaffoldKey,
-                    drawer: SideBarMenu(),
-                    resizeToAvoidBottomInset: false,
-                    body: IndexedStack(
-                      index: bottomTabIndex.value,
-                      children: <Widget>[
-                        _buildHomeTabBottomBar(topTabIndex, tabController),
-                        FavoritesPage(),
-                      ],
-                    ),
-                    bottomNavigationBar: BottomBar(
-                      onTabChanged: (value) => bottomTabIndex.value = value,
-                    ),
+                  bottomNavigationBar: BottomBar(
+                    onTabChanged: (value) => bottomTabIndex.value = value,
                   ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
