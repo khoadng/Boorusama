@@ -19,6 +19,7 @@ class SlideShowConfigBottomModal extends HookWidget {
     final config = useProvider(slideShowConfigurationStateProvider);
 
     return Modal(
+      title: "Slide Show",
       child: Padding(
         padding: EdgeInsets.only(
           left: 26,

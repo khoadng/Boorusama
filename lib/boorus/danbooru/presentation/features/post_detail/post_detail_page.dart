@@ -136,7 +136,7 @@ class PostDetailPage extends HookWidget {
             _buildTopShadowGradient(),
             _buildBackButton(context),
             Align(
-              alignment: Alignment(0.9, -0.9),
+              alignment: Alignment(0.9, -0.96),
               child: ButtonBar(
                 children: [
                   autoPlay.value
@@ -202,7 +202,7 @@ class PostDetailPage extends HookWidget {
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
-      alignment: Alignment(-0.9, -0.9),
+      alignment: Alignment(-0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IconButton(
@@ -247,7 +247,7 @@ final _artistPostsProvider = FutureProvider.autoDispose
   final repo = ref.watch(postProvider);
   final artist = artistString.split(' ').map((e) => "~$e").toList().join(' ');
   final dtos =
-      await repo.getPosts(artist, 1, limit: 10, cancelToken: cancelToken);
+      await repo.getPosts(artist, 1, limit: 5, cancelToken: cancelToken);
   final posts = dtos.map((dto) => dto.toEntity()).toList();
 
   /// Cache the artist posts once it was successfully obtained.
@@ -471,6 +471,7 @@ class _DetailPageChild extends HookWidget {
                           padding: EdgeInsets.all(8),
                           height: MediaQuery.of(context).size.height * 0.2,
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             itemCount: posts.length,
                             itemBuilder: (context, index) => Padding(
@@ -581,39 +582,36 @@ class _DetailPageChild extends HookWidget {
                 CachedNetworkImage(imageUrl: post.normalImageUri.toString())),
       );
     }
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(children: <Widget>[
-          showBottomPanel
-              ? FittedBox(
-                  child: Hero(
-                    tag: imageHeroTag,
-                    child: postWidget,
-                  ),
-                  fit: BoxFit.contain)
-              : Center(
-                  child: Hero(
-                    tag: imageHeroTag,
-                    child: postWidget,
-                  ),
+    return Scaffold(
+      backgroundColor: Colors.transparent,
+      body: Stack(children: <Widget>[
+        showBottomPanel
+            ? FittedBox(
+                child: Hero(
+                  tag: imageHeroTag,
+                  child: postWidget,
                 ),
-          SlideTransition(
-            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
-                .animate(animationController),
-            child: SlidingUpPanel(
-              boxShadow: null,
-              color: Colors.transparent,
-              minHeight: max(_minPanelHeight,
-                  _calculatePanelMinHeight(context) + _panelOverImageOffset),
-              maxHeight:
-                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-              panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
-                  artistCommentaryDisplay, artistPosts, comments),
-            ),
+                fit: BoxFit.contain)
+            : Center(
+                child: Hero(
+                  tag: imageHeroTag,
+                  child: postWidget,
+                ),
+              ),
+        SlideTransition(
+          position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
+              .animate(animationController),
+          child: SlidingUpPanel(
+            boxShadow: null,
+            color: Colors.transparent,
+            minHeight: max(_minPanelHeight,
+                _calculatePanelMinHeight(context) + _panelOverImageOffset),
+            maxHeight: MediaQuery.of(context).size.height - 24 - kToolbarHeight,
+            panelBuilder: (sc) => _buildContent(sc, context, artistCommentary,
+                artistCommentaryDisplay, artistPosts, comments),
           ),
-        ]),
-      ),
+        ),
+      ]),
     );
   }
 }

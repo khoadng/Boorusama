@@ -70,50 +70,45 @@ class _PostImagePageState extends State<PostImagePage> {
           ),
           errorWidget: (context, url, error) => Icon(Icons.error),
         ));
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      child: SafeArea(
-        child: Scaffold(
-          body: Consumer(
-            builder: (context, watch, child) {
-              final state = watch(_notesProvider(widget.post.id));
-              final imageAndOverlay = Stack(
-                children: [
-                  image,
-                  if (!_hideOverlay) _buildTopShadowGradient(),
-                  if (!_hideOverlay) _buildBackButton(context),
-                  if (!_hideOverlay) _buildMoreVertButton(),
-                ],
-              );
-              return state.when(
-                loading: () => imageAndOverlay,
-                data: (notes) => Stack(
-                  children: [
-                    InkWell(
-                        onTap: () {
-                          setState(() {
-                            _hideOverlay = !_hideOverlay;
-                          });
+    return Scaffold(
+      body: Consumer(
+        builder: (context, watch, child) {
+          final state = watch(_notesProvider(widget.post.id));
+          final imageAndOverlay = Stack(
+            children: [
+              image,
+              if (!_hideOverlay) _buildTopShadowGradient(),
+              if (!_hideOverlay) _buildBackButton(context),
+              if (!_hideOverlay) _buildMoreVertButton(),
+            ],
+          );
+          return state.when(
+            loading: () => imageAndOverlay,
+            data: (notes) => Stack(
+              children: [
+                InkWell(
+                    onTap: () {
+                      setState(() {
+                        _hideOverlay = !_hideOverlay;
+                      });
 
-                          // if (_hideOverlay) {
-                          //   SystemChrome.setEnabledSystemUIOverlays([]);
-                          // } else {
-                          //   SystemChrome.setEnabledSystemUIOverlays(
-                          //       SystemUiOverlay.values);
-                          // }
-                        },
-                        child: image),
-                    if (!_hideOverlay) _buildTopShadowGradient(),
-                    if (!_hideOverlay) ...buildNotes(notes, widget.post),
-                    if (!_hideOverlay) _buildBackButton(context),
-                    if (!_hideOverlay) _buildMoreVertButton(),
-                  ],
-                ),
-                error: (name, message) => imageAndOverlay,
-              );
-            },
-          ),
-        ),
+                      // if (_hideOverlay) {
+                      //   SystemChrome.setEnabledSystemUIOverlays([]);
+                      // } else {
+                      //   SystemChrome.setEnabledSystemUIOverlays(
+                      //       SystemUiOverlay.values);
+                      // }
+                    },
+                    child: image),
+                if (!_hideOverlay) _buildTopShadowGradient(),
+                if (!_hideOverlay) ...buildNotes(notes, widget.post),
+                if (!_hideOverlay) _buildBackButton(context),
+                if (!_hideOverlay) _buildMoreVertButton(),
+              ],
+            ),
+            error: (name, message) => imageAndOverlay,
+          );
+        },
       ),
     );
   }
@@ -140,7 +135,7 @@ class _PostImagePageState extends State<PostImagePage> {
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
-      alignment: Alignment.topLeft,
+      alignment: Alignment(-0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IconButton(
@@ -153,7 +148,7 @@ class _PostImagePageState extends State<PostImagePage> {
 
   Widget _buildMoreVertButton() {
     return Align(
-      alignment: Alignment.topRight,
+      alignment: Alignment(0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: PopupMenuButton<PostAction>(
