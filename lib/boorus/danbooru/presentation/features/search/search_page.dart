@@ -194,159 +194,165 @@ class SearchPage extends HookWidget {
         }
       },
       child: SafeArea(
-        child: Scaffold(
-          floatingActionButton: searchDisplayState.state.when(
-            suggestions: () => FloatingActionButton(
-              onPressed: () {
-                if (completedQueryItems.isEmpty) {
-                  context.read(queryStateNotifierProvider).add(query);
-                }
+        child: ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+          child: Scaffold(
+            floatingActionButton: searchDisplayState.state.when(
+              suggestions: () => FloatingActionButton(
+                onPressed: () {
+                  if (completedQueryItems.isEmpty) {
+                    context.read(queryStateNotifierProvider).add(query);
+                  }
 
-                FocusScope.of(context).unfocus();
-                searchDisplayState.state = SearchDisplayState.results();
-                context.read(searchStateNotifierProvider).search();
-              },
-              heroTag: null,
-              child: Icon(Icons.search),
-            ),
-            results: () => FloatingActionButton(
-              onPressed: () => _onDownloadButtonPressed(posts, context),
-              heroTag: null,
-              child: Icon(Icons.download_sharp),
-            ),
-          ),
-          appBar: AppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            title: SearchBar(
-              autofocus: true,
-              queryEditingController: queryEditingController,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => _onBackIconPressed(context),
+                  FocusScope.of(context).unfocus();
+                  searchDisplayState.state = SearchDisplayState.results();
+                  context.read(searchStateNotifierProvider).search();
+                },
+                heroTag: null,
+                child: Icon(Icons.search),
               ),
-              trailing: IconButton(
-                icon: Icon(Icons.close),
-                onPressed: () =>
-                    _onClearQueryButtonPressed(context, searchDisplayState),
+              results: () => FloatingActionButton(
+                onPressed: () => _onDownloadButtonPressed(posts, context),
+                heroTag: null,
+                child: Icon(Icons.download_sharp),
               ),
-              onChanged: (value) =>
-                  _onQueryUpdated(context, value, searchDisplayState),
             ),
-          ),
-          body: Column(
-            children: [
-              if (completedQueryItems.length > 0) ...[
-                Tags(
-                  horizontalScroll: true,
-                  alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.start,
-                  itemCount: completedQueryItems.length,
-                  itemBuilder: (index) => ItemTags(
-                    index: index,
-                    title: completedQueryItems[index].replaceAll('_', ' '),
-                    pressEnabled: false,
-                    removeButton: ItemTagsRemoveButton(
-                        onRemoved: () => _onTagRemoveButtonTap(
-                            context, completedQueryItems, index)),
+            appBar: AppBar(
+              toolbarHeight: kToolbarHeight * 1.2,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              automaticallyImplyLeading: false,
+              title: SearchBar(
+                autofocus: true,
+                queryEditingController: queryEditingController,
+                leading: IconButton(
+                  icon: Icon(Icons.arrow_back),
+                  onPressed: () => _onBackIconPressed(context),
+                ),
+                trailing: IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () =>
+                      _onClearQueryButtonPressed(context, searchDisplayState),
+                ),
+                onChanged: (value) =>
+                    _onQueryUpdated(context, value, searchDisplayState),
+              ),
+            ),
+            body: Column(
+              children: [
+                if (completedQueryItems.length > 0) ...[
+                  Tags(
+                    horizontalScroll: true,
+                    alignment: WrapAlignment.start,
+                    runAlignment: WrapAlignment.start,
+                    itemCount: completedQueryItems.length,
+                    itemBuilder: (index) => ItemTags(
+                      index: index,
+                      title: completedQueryItems[index].replaceAll('_', ' '),
+                      pressEnabled: false,
+                      removeButton: ItemTagsRemoveButton(
+                          onRemoved: () => _onTagRemoveButtonTap(
+                              context, completedQueryItems, index)),
+                    ),
                   ),
-                ),
-                Divider(
-                  height: 0,
-                  thickness: 3,
-                  indent: 10,
-                  endIndent: 10,
-                ),
-              ],
-              Expanded(
-                  child: SmartRefresher(
-                controller: refreshController.value,
-                enablePullUp:
-                    searchDisplayState.state == SearchDisplayState.results(),
-                enablePullDown: false,
-                footer: const ClassicFooter(),
-                onLoading: () => _onListLoading(context),
-                child: CustomScrollView(
-                  controller: scrollController.value,
-                  slivers: <Widget>[
-                    searchDisplayState.state.when(
-                      suggestions: () => suggestionsMonitoringState.when(
-                        none: () => SliverList(
-                          delegate: SliverChildListDelegate([
-                            Center(child: Center()),
-                          ]),
-                        ),
-                        inProgress: () => SliverPadding(
-                          padding: EdgeInsets.only(top: 8),
-                          sliver: TagSuggestionItems(
-                              tags: tags, onItemTap: (tag) {}),
-                        ),
-                        completed: () => SliverPadding(
-                          padding: EdgeInsets.only(top: 8),
-                          sliver: TagSuggestionItems(
-                              tags: tags,
-                              onItemTap: (tag) =>
-                                  _onTagItemTapped(context, tag)),
-                        ),
-                        error: () => SliverList(
-                          delegate: SliverChildListDelegate([
-                            Center(
-                              child: Text("Something went wrong"),
-                            ),
-                          ]),
-                        ),
-                      ),
-                      results: () => postStatus.maybeWhen(
-                        orElse: () => SliverPadding(
-                          padding: EdgeInsets.all(6.0),
-                          sliver: SliverPostGrid(
-                            key: gridKey.value,
-                            onTap: (post, index) {
-                              context
-                                  .read(searchStateNotifierProvider)
-                                  .viewPost(post);
-                              AppRouter.router.navigateTo(
-                                context,
-                                "/posts",
-                                routeSettings: RouteSettings(arguments: [
-                                  post,
-                                  index,
-                                  posts,
-                                  () => context
-                                      .read(searchStateNotifierProvider)
-                                      .stopViewing(),
-                                  (index) {
-                                    context
-                                        .read(searchStateNotifierProvider)
-                                        .viewPost(posts[index]);
-
-                                    if (index > posts.length * 0.8) {
-                                      context
-                                          .read(searchStateNotifierProvider)
-                                          .getMoreResult();
-                                    }
-                                  },
-                                  gridKey.value,
-                                ]),
-                              );
-                            },
-                            posts: posts,
-                            scrollController: scrollController.value,
+                  Divider(
+                    height: 0,
+                    thickness: 3,
+                    indent: 10,
+                    endIndent: 10,
+                  ),
+                ],
+                Expanded(
+                    child: SmartRefresher(
+                  controller: refreshController.value,
+                  enablePullUp:
+                      searchDisplayState.state == SearchDisplayState.results(),
+                  enablePullDown: false,
+                  footer: const ClassicFooter(),
+                  onLoading: () => _onListLoading(context),
+                  child: CustomScrollView(
+                    controller: scrollController.value,
+                    slivers: <Widget>[
+                      searchDisplayState.state.when(
+                        suggestions: () => suggestionsMonitoringState.when(
+                          none: () => SliverList(
+                            delegate: SliverChildListDelegate([
+                              Center(child: Center()),
+                            ]),
+                          ),
+                          inProgress: () => SliverPadding(
+                            padding: EdgeInsets.only(top: 8),
+                            sliver: TagSuggestionItems(
+                                tags: tags, onItemTap: (tag) {}),
+                          ),
+                          completed: () => SliverPadding(
+                            padding: EdgeInsets.only(top: 8),
+                            sliver: TagSuggestionItems(
+                                tags: tags,
+                                onItemTap: (tag) =>
+                                    _onTagItemTapped(context, tag)),
+                          ),
+                          error: () => SliverList(
+                            delegate: SliverChildListDelegate([
+                              Center(
+                                child: Text("Something went wrong"),
+                              ),
+                            ]),
                           ),
                         ),
-                        refreshing: () => SliverPadding(
-                          padding: EdgeInsets.all(6.0),
-                          sliver: SliverPostGridPlaceHolder(
-                              scrollController: scrollController.value),
+                        results: () => postStatus.maybeWhen(
+                          orElse: () => SliverPadding(
+                            padding: EdgeInsets.all(6.0),
+                            sliver: SliverPostGrid(
+                              key: gridKey.value,
+                              onTap: (post, index) {
+                                context
+                                    .read(searchStateNotifierProvider)
+                                    .viewPost(post);
+                                AppRouter.router.navigateTo(
+                                  context,
+                                  "/posts",
+                                  routeSettings: RouteSettings(arguments: [
+                                    post,
+                                    index,
+                                    posts,
+                                    () => context
+                                        .read(searchStateNotifierProvider)
+                                        .stopViewing(),
+                                    (index) {
+                                      context
+                                          .read(searchStateNotifierProvider)
+                                          .viewPost(posts[index]);
+
+                                      if (index > posts.length * 0.8) {
+                                        context
+                                            .read(searchStateNotifierProvider)
+                                            .getMoreResult();
+                                      }
+                                    },
+                                    gridKey.value,
+                                  ]),
+                                );
+                              },
+                              posts: posts,
+                              scrollController: scrollController.value,
+                            ),
+                          ),
+                          refreshing: () => SliverPadding(
+                            padding: EdgeInsets.all(6.0),
+                            sliver: SliverPostGridPlaceHolder(
+                                scrollController: scrollController.value),
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              )),
-            ],
+                    ],
+                  ),
+                )),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -52,47 +53,64 @@ class HomePage extends HookWidget {
       return () => {};
     }, []);
 
-    return Container(
-      color: Theme.of(context).appBarTheme.color,
-      child: SafeArea(
-        child: Column(
-          children: <Widget>[
-            networkStatus.when(
-              data: (value) => value.when(
-                unknown: () => SizedBox.shrink(),
-                available: () => SizedBox.shrink(),
-                unavailable: () => Material(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(statusBarColor: Colors.black),
+      child: Container(
+        color: Colors.black,
+        child: SafeArea(
+          child: Column(
+            children: <Widget>[
+              networkStatus.when(
+                data: (value) => value.when(
+                  unknown: () => SizedBox.shrink(),
+                  available: () => SizedBox.shrink(),
+                  unavailable: () => Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Material(
+                      color: Colors.black,
+                      child: Text("Network unavailable"),
+                    ),
+                  ),
+                ),
+                loading: () => Padding(
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Material(
+                    color: Theme.of(context).appBarTheme.color,
+                    child: Text("Connecting"),
+                  ),
+                ),
+                error: (error, stackTrace) => Material(
                   color: Theme.of(context).appBarTheme.color,
-                  child: Text("Network unavailable"),
+                  child: Padding(
+                      padding: EdgeInsets.only(bottom: 10),
+                      child: Text("Something went wrong")),
                 ),
               ),
-              loading: () => Material(
-                color: Theme.of(context).appBarTheme.color,
-                child: Text("Connecting"),
-              ),
-              error: (error, stackTrace) => Material(
-                color: Theme.of(context).appBarTheme.color,
-                child: Text("Something went wrong"),
-              ),
-            ),
-            Expanded(
-              child: Scaffold(
-                key: scaffoldKey,
-                drawer: SideBarMenu(),
-                resizeToAvoidBottomInset: false,
-                body: IndexedStack(
-                  index: bottomTabIndex.value,
-                  children: <Widget>[
-                    _buildHomeTabBottomBar(topTabIndex, tabController),
-                    FavoritesPage(),
-                  ],
-                ),
-                bottomNavigationBar: BottomBar(
-                  onTabChanged: (value) => bottomTabIndex.value = value,
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: Scaffold(
+                    key: scaffoldKey,
+                    drawer: SideBarMenu(),
+                    resizeToAvoidBottomInset: false,
+                    body: IndexedStack(
+                      index: bottomTabIndex.value,
+                      children: <Widget>[
+                        _buildHomeTabBottomBar(topTabIndex, tabController),
+                        FavoritesPage(),
+                      ],
+                    ),
+                    bottomNavigationBar: BottomBar(
+                      onTabChanged: (value) => bottomTabIndex.value = value,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
