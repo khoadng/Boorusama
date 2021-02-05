@@ -94,9 +94,12 @@ class BlackListedFilterDecorator implements IPostRepository {
     int page, {
     int limit = 100,
     CancelToken cancelToken,
+    bool skipFavoriteCheck = false,
   }) async {
     final dtos = await _postRepository.getPosts(tagString, page,
-        limit: limit, cancelToken: cancelToken);
+        limit: limit,
+        cancelToken: cancelToken,
+        skipFavoriteCheck: skipFavoriteCheck);
     final settingsRepo = await _settingRepository;
     final settings = await settingsRepo.load();
 

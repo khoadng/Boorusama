@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_riverpod/all.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
@@ -63,13 +63,14 @@ class PostDetailPage extends HookWidget {
 
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
-    final spinningIconAnimationController = useAnimationController(
+    final spinningIconpanelAnimationController = useAnimationController(
         vsync: tickerProvider, duration: Duration(seconds: 200));
     final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0)
-        .animate(spinningIconAnimationController);
+        .animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
     final showBottomInfoPanel = useState(true);
+    final showTopOverlay = useState(true);
     final slideShowConfig =
         useProvider(slideShowConfigurationStateProvider).state;
     useValueChanged(showSlideShowConfig.value, (_, __) {
@@ -92,17 +93,59 @@ class PostDetailPage extends HookWidget {
 
     useValueChanged(autoPlay.value, (_, __) {
       if (autoPlay.value) {
-        spinningIconAnimationController.repeat();
+        spinningIconpanelAnimationController.repeat();
       } else {
-        spinningIconAnimationController.stop();
-        spinningIconAnimationController.reset();
+        spinningIconpanelAnimationController.stop();
+        spinningIconpanelAnimationController.reset();
         showBottomInfoPanel.value = true;
       }
     });
 
+    Widget _buildSlideShowButton() {
+      return Align(
+        alignment: Alignment(0.9, -0.96),
+        child: ButtonBar(
+          children: [
+            autoPlay.value
+                ? AnimatedSpinningIcon(
+                    icon: Icon(Icons.sync),
+                    animation: rotateAnimation,
+                    onPressed: () => autoPlay.value = false,
+                  )
+                : IconButton(
+                    icon: Icon(Icons.slideshow),
+                    onPressed: () => showSlideShowConfig.value = true,
+                  ),
+            PopupMenuButton<PostAction>(
+              onSelected: (value) async {
+                switch (value) {
+                  case PostAction.download:
+                    context.read(downloadServiceProvider).download(post);
+                    break;
+                  default:
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<PostAction>>[
+                PopupMenuItem<PostAction>(
+                  value: PostAction.download,
+                  child: ListTile(
+                    leading: const Icon(Icons.download_rounded),
+                    title: Text("Download"),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+    }
+
     return WillPopScope(
       onWillPop: () {
         onExit();
+        showBottomInfoPanel.value = false;
+        showTopOverlay.value = false;
         return Future.value(true);
       },
       child: Scaffold(
@@ -113,7 +156,6 @@ class PostDetailPage extends HookWidget {
               itemBuilder: (context, index) {
                 return _DetailPageChild(
                   post: posts[index],
-                  onExit: () => onExit(),
                   imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
                   showBottomPanel: showBottomInfoPanel.value,
                 );
@@ -138,43 +180,7 @@ class PostDetailPage extends HookWidget {
             ),
             _buildTopShadowGradient(),
             _buildBackButton(context),
-            Align(
-              alignment: Alignment(0.9, -0.96),
-              child: ButtonBar(
-                children: [
-                  autoPlay.value
-                      ? AnimatedSpinningIcon(
-                          icon: Icon(Icons.sync),
-                          animation: rotateAnimation,
-                          onPressed: () => autoPlay.value = false,
-                        )
-                      : IconButton(
-                          icon: Icon(Icons.slideshow),
-                          onPressed: () => showSlideShowConfig.value = true,
-                        ),
-                  PopupMenuButton<PostAction>(
-                    onSelected: (value) async {
-                      switch (value) {
-                        case PostAction.download:
-                          context.read(downloadServiceProvider).download(post);
-                          break;
-                        default:
-                      }
-                    },
-                    itemBuilder: (BuildContext context) =>
-                        <PopupMenuEntry<PostAction>>[
-                      PopupMenuItem<PostAction>(
-                        value: PostAction.download,
-                        child: ListTile(
-                          leading: const Icon(Icons.download_rounded),
-                          title: Text("Download"),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            _buildSlideShowButton(),
           ],
         ),
       ),
@@ -240,20 +246,21 @@ final _artistCommentaryProvider = FutureProvider.autoDispose
   return artistCommentary;
 });
 
-final _artistPostsProvider = FutureProvider.autoDispose
-    .family<List<Post>, String>((ref, artistString) async {
+final _recommendPostsProvider = FutureProvider.autoDispose
+    .family<List<Post>, String>((ref, tagString) async {
   // Cancel the HTTP request if the user leaves the detail page before
   // the request completes.
   final cancelToken = CancelToken();
   ref.onDispose(cancelToken.cancel);
 
   final repo = ref.watch(postProvider);
-  final artist = artistString.split(' ').map((e) => "~$e").toList().join(' ');
-  final dtos =
-      await repo.getPosts(artist, 1, limit: 5, cancelToken: cancelToken);
+  final tags =
+      tagString.split(' ').take(2).map((e) => "~$e").toList().join(' ');
+  final dtos = await repo.getPosts(tags, 1,
+      limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
   final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-  /// Cache the artist posts once it was successfully obtained.
+  /// Cache the posts once it was successfully obtained.
   ref.maintainState = true;
 
   return posts;
@@ -294,19 +301,17 @@ class _DetailPageChild extends HookWidget {
   _DetailPageChild({
     Key key,
     @required this.post,
-    @required this.onExit,
     @required this.imageHeroTag,
     this.showBottomPanel,
   }) : super(key: key);
 
   final String imageHeroTag;
-  //TODO: callback hell, i don't like it
-  final VoidCallback onExit;
 
   final Post post;
   final bool showBottomPanel;
 
   final double _panelOverImageOffset = 30.0 + 24.0;
+  final double _minPanelHeight = 100;
 
   double _calculatePanelMinHeight(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 24;
@@ -332,68 +337,294 @@ class _DetailPageChild extends HookWidget {
     return screenHeight - (aspectRatio * post.height);
   }
 
-  Widget _buildArtistCommentary(ArtistCommentary artistCommentary,
-      ValueNotifier<ArtistCommentaryTranlationState> artistCommentaryDisplay) {
-    return Column(
-      children: <Widget>[
-        artistCommentaryDisplay.value.when(
-          translated: () => Html(
-              data:
-                  "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
-          original: () => Html(
-              data:
-                  "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
-        ),
-      ],
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final artistCommentaryDisplay =
+        useState(ArtistCommentaryTranlationState.original());
+    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
+    final artistPosts =
+        useProvider(_recommendPostsProvider(post.tagStringArtist));
+    final charactersPosts =
+        useProvider(_recommendPostsProvider(post.tagStringCharacter));
 
-  Widget _buildArtistPosts(ScrollController scrollController,
-      AsyncValue<List<Post>> artistPosts, BuildContext context) {
-    return Expanded(
-      child: CustomScrollView(
-        controller: scrollController,
-        slivers: [
-          _buildSliverSpace(),
-          SliverToBoxAdapter(
-            child: Column(
-              children: <Widget>[
-                artistPosts.maybeWhen(
-                    data: (posts) => Container(
-                          padding: EdgeInsets.all(8),
-                          height: MediaQuery.of(context).size.height * 0.2,
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            itemCount: posts.length,
-                            itemBuilder: (context, index) => Padding(
-                              padding: EdgeInsets.all(1.0),
-                              child: CachedNetworkImage(
-                                imageUrl:
-                                    posts[index].previewImageUri.toString(),
-                                placeholder: (context, url) => Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Theme.of(context).cardColor,
-                                  ),
+    final comments = useProvider(_commentsProvider(post.id));
+    final tickerProvider = useSingleTickerProvider();
+    final panelAnimationController = useAnimationController(
+        vsync: tickerProvider, duration: Duration(milliseconds: 250));
+
+    final showCommentaryTranslateOption = useState(false);
+    final showArtistCommentary = useState(false);
+    useValueChanged(artistCommentary, (_, __) {
+      artistCommentary.whenData((commentary) {
+        if (commentary.hasCommentary) {
+          showArtistCommentary.value = true;
+        } else if (commentary.isTranslated) {
+          showCommentaryTranslateOption.value = true;
+        }
+      });
+    });
+
+    final panelMinHeight = post.isVideo
+        ? _minPanelHeight
+        : max(MediaQuery.of(context).size.height * 0.5,
+            _calculatePanelMinHeight(context) + _panelOverImageOffset);
+
+    if (showBottomPanel) {
+      panelAnimationController.forward();
+    } else {
+      panelAnimationController.reverse();
+    }
+
+    Widget postWidget;
+    if (post.isVideo) {
+      postWidget = PostVideo(post: post);
+    } else {
+      postWidget = GestureDetector(
+        onTap: () async {
+          panelAnimationController.reverse();
+          await AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
+          panelAnimationController.forward();
+        },
+        child: ClipRRect(
+            child: CachedNetworkImage(
+          imageUrl: post.normalImageUri.toString(),
+          alignment: showBottomPanel ? Alignment.topCenter : Alignment.center,
+        )),
+      );
+    }
+
+    Widget _buildModalBottomSheet(ScrollController controller) {
+      return _PostInfoModal(
+          scrollController: controller,
+          panelMinHeight: panelMinHeight,
+          showArtistCommentary: showArtistCommentary,
+          artistCommentary: artistCommentary,
+          post: post,
+          showCommentaryTranslateOption: showCommentaryTranslateOption,
+          artistCommentaryDisplay: artistCommentaryDisplay);
+    }
+
+    Widget _buildRecommendPosts(AsyncValue<List<Post>> recommendedPosts) {
+      return recommendedPosts.maybeWhen(
+          data: (posts) {
+            posts.removeWhere((e) => e.id == post.id);
+            return Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: Padding(
+                padding: EdgeInsets.all(4),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  scrollDirection: Axis.horizontal,
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) => Padding(
+                    padding: EdgeInsets.all(5.0),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      imageUrl: posts[index].previewImageUri.toString(),
+                      placeholder: (context, url) => Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(8.0),
+                          color: Theme.of(context).cardColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+          orElse: () => Center(child: CircularProgressIndicator()));
+    }
+
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: Stack(children: <Widget>[
+          Hero(
+            tag: imageHeroTag,
+            child: AnimatedAlign(
+                duration: Duration(microseconds: 500),
+                alignment:
+                    showBottomPanel ? Alignment.topCenter : Alignment.center,
+                child: postWidget),
+          ),
+          SlideTransition(
+            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
+                .animate(panelAnimationController),
+            child: SlidingUpPanel(
+              color: Colors.transparent,
+              minHeight: panelMinHeight,
+              maxHeight:
+                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
+              panelBuilder: (scrollController) {
+                return Modal(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: () => showMaterialModalBottomSheet(
+                          barrierColor: Colors.transparent,
+                          context: context,
+                          builder: (context, controller) {
+                            return _buildModalBottomSheet(controller);
+                          },
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 5,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.tagStringCharacter.isEmpty
+                                          ? "Original"
+                                          : post.name.characterOnly.pretty
+                                              .capitalizeFirstofEach,
+                                      overflow: TextOverflow.fade,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                        post.tagStringCopyright.isEmpty
+                                            ? "Original"
+                                            : post.name.copyRightOnly.pretty
+                                                .capitalizeFirstofEach,
+                                        overflow: TextOverflow.fade,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      post.createdAt.toString(),
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                  ],
                                 ),
+                              ),
+                              Flexible(child: Icon(Icons.keyboard_arrow_down)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          LikeButton(
+                            // isLiked: post.isFavorited,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            likeCount: post.upScore,
+                            likeBuilder: (isLiked) => FaIcon(isLiked
+                                ? FontAwesomeIcons.solidThumbsUp
+                                : FontAwesomeIcons.thumbsUp),
+                            onTap: (isLiked) {},
+                          ),
+                          LikeButton(
+                            // isLiked: post.isFavorited,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            likeCount: post.downScore,
+                            likeBuilder: (isLiked) => FaIcon(isLiked
+                                ? FontAwesomeIcons.solidThumbsDown
+                                : FontAwesomeIcons.thumbsDown),
+                            onTap: (isLiked) {},
+                          ),
+                          LikeButton(
+                            isLiked: post.isFavorited,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            likeCount: post.favCount,
+                            likeBuilder: (isLiked) => FaIcon(
+                              isLiked
+                                  ? FontAwesomeIcons.solidHeart
+                                  : FontAwesomeIcons.heart,
+                              color: isLiked ? Colors.red : Colors.white,
+                            ),
+                            onTap: (isLiked) {
+                              //TODO: check for success here
+                              if (!isLiked) {
+                                context
+                                    .read(favoriteProvider)
+                                    .addToFavorites(post.id);
+
+                                return Future(() => true);
+                              } else {
+                                context
+                                    .read(favoriteProvider)
+                                    .removeFromFavorites(post.id);
+                                return Future(() => false);
+                              }
+                            },
+                          ),
+                          LikeButton(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // likeCount: detail.postStatistics.commentCount,
+                            likeBuilder: (isLiked) => FaIcon(
+                              FontAwesomeIcons.comment,
+                              color: Colors.white,
+                            ),
+                            onTap: (isLiked) => showBarModalBottomSheet(
+                              expand: false,
+                              context: context,
+                              builder: (context, controller) => CommentPage(
+                                comments: comments,
+                                postId: post.id,
                               ),
                             ),
                           ),
-                        ),
-                    orElse: () => Center(child: CircularProgressIndicator())),
-                Padding(
-                  padding: EdgeInsets.only(left: 4),
-                  child: PostTagList(
-                      tagStringComma: post.tagString.toCommaFormat()),
-                )
-              ],
+                        ],
+                      ),
+                      Divider(
+                        height: 8,
+                        thickness: 1,
+                      ),
+                      ListTile(
+                        title: Text(post.tagStringArtist.pretty),
+                      ),
+                      _buildRecommendPosts(artistPosts),
+                      ListTile(
+                        title: Text(post
+                            .tagStringCharacter.pretty.capitalizeFirstofEach),
+                      ),
+                      _buildRecommendPosts(charactersPosts),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
-        ],
+        ]),
       ),
     );
   }
+}
+
+class _PostInfoModal extends HookWidget {
+  const _PostInfoModal({
+    Key key,
+    @required this.panelMinHeight,
+    @required this.showArtistCommentary,
+    @required this.artistCommentary,
+    @required this.post,
+    @required this.showCommentaryTranslateOption,
+    @required this.artistCommentaryDisplay,
+    @required this.scrollController,
+  }) : super(key: key);
+
+  final double panelMinHeight;
+  final ValueNotifier<bool> showArtistCommentary;
+  final AsyncValue<ArtistCommentary> artistCommentary;
+  final Post post;
+  final ValueNotifier<bool> showCommentaryTranslateOption;
+  final ValueNotifier<ArtistCommentaryTranlationState> artistCommentaryDisplay;
+  final ScrollController scrollController;
 
   Widget _buildLoading(BuildContext context) {
     return Shimmer.fromColors(
@@ -432,240 +663,98 @@ class _DetailPageChild extends HookWidget {
     );
   }
 
-  Widget _buildSliverSpace() {
-    return SliverToBoxAdapter(child: Container(padding: EdgeInsets.all(5.0)));
-  }
-
   @override
   Widget build(BuildContext context) {
-    final artistCommentaryDisplay =
-        useState(ArtistCommentaryTranlationState.original());
-    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
-    final artistPosts = useProvider(_artistPostsProvider(post.tagStringArtist));
-    final comments = useProvider(_commentsProvider(post.id));
-    final tickerProvider = useSingleTickerProvider();
-    final animationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(milliseconds: 250));
-
-    final showCommentaryTranslateOption = useState(false);
-    useValueChanged(artistCommentary, (_, __) {
-      artistCommentary.whenData((commentary) {
-        if (commentary.isTranslated) {
-          showCommentaryTranslateOption.value = true;
-        }
-      });
-    });
-
-    if (showBottomPanel) {
-      animationController.forward();
-    } else {
-      animationController.reverse();
-    }
-
-    Widget postWidget;
-    if (post.isVideo) {
-      postWidget = PostVideo(post: post);
-    } else {
-      postWidget = GestureDetector(
-        onTap: () async {
-          animationController.reverse();
-          await AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
-          animationController.forward();
-        },
-        child: ClipRRect(
-            child: CachedNetworkImage(
-          imageUrl: post.normalImageUri.toString(),
-          alignment: showBottomPanel ? Alignment.topCenter : Alignment.center,
-        )),
-      );
-    }
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+      ),
+      height: panelMinHeight,
       child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Stack(children: <Widget>[
-          Hero(
-            tag: imageHeroTag,
-            child: AnimatedAlign(
-                duration: Duration(microseconds: 500),
-                alignment:
-                    showBottomPanel ? Alignment.topCenter : Alignment.center,
-                child: postWidget),
-          ),
-          SlideTransition(
-            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
-                .animate(animationController),
-            child: SlidingUpPanel(
-              boxShadow: null,
-              color: Colors.transparent,
-              minHeight: post.isVideo
-                  ? MediaQuery.of(context).size.height / 2
-                  : max(
-                      MediaQuery.of(context).size.height / 2,
-                      _calculatePanelMinHeight(context) +
-                          _panelOverImageOffset),
-              maxHeight:
-                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-              panelBuilder: (scrollController) => Modal(
-                child: Column(
-                  children: [
-                    Flexible(
-                      child: ListTile(
-                        onTap: () => showBarModalBottomSheet(
-                          barrierColor: Colors.transparent,
-                          context: context,
-                          builder: (context, controller) {
-                            return Container(
-                              height: MediaQuery.of(context).size.height / 2,
-                              child: Scaffold(
-                                appBar: AppBar(
-                                  leading: IconButton(
-                                    icon: Icon(Icons.close),
-                                    onPressed: () =>
-                                        Navigator.of(context).pop(),
+        appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: Icon(Icons.close),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+          automaticallyImplyLeading: false,
+          title: Text("Information"),
+        ),
+        body: CustomScrollView(
+          controller: scrollController,
+          shrinkWrap: true,
+          slivers: [
+            if (showArtistCommentary.value) ...[
+              SliverToBoxAdapter(
+                child: artistCommentary.when(
+                  loading: () => _buildLoading(context),
+                  data: (artistCommentary) => Wrap(
+                    children: <Widget>[
+                      ListTile(
+                        title: Text(post.tagStringArtist.pretty),
+                        leading: CircleAvatar(),
+                        trailing: showCommentaryTranslateOption.value
+                            ? PopupMenuButton<ArtistCommentaryTranlationState>(
+                                icon: Icon(Icons.keyboard_arrow_down),
+                                onSelected: (value) {
+                                  artistCommentaryDisplay.value = value;
+                                },
+                                itemBuilder: (BuildContext context) => <
+                                    PopupMenuEntry<
+                                        ArtistCommentaryTranlationState>>[
+                                  PopupMenuItem<
+                                      ArtistCommentaryTranlationState>(
+                                    value: artistCommentaryDisplay.value.when(
+                                      translated: () =>
+                                          ArtistCommentaryTranlationState
+                                              .original(),
+                                      original: () =>
+                                          ArtistCommentaryTranlationState
+                                              .translated(),
+                                    ),
+                                    child: ListTile(
+                                      title: artistCommentaryDisplay.value.when(
+                                        translated: () => Text("Show Original"),
+                                        original: () => Text("Show Translated"),
+                                      ),
+                                    ),
                                   ),
-                                  actions: [
-                                    showCommentaryTranslateOption.value
-                                        ? PopupMenuButton<
-                                            ArtistCommentaryTranlationState>(
-                                            icon:
-                                                Icon(Icons.keyboard_arrow_down),
-                                            onSelected: (value) {
-                                              artistCommentaryDisplay.value =
-                                                  value;
-                                            },
-                                            itemBuilder: (BuildContext context) => <
-                                                PopupMenuEntry<
-                                                    ArtistCommentaryTranlationState>>[
-                                              PopupMenuItem<
-                                                  ArtistCommentaryTranlationState>(
-                                                value: artistCommentaryDisplay
-                                                    .value
-                                                    .when(
-                                                  translated: () =>
-                                                      ArtistCommentaryTranlationState
-                                                          .original(),
-                                                  original: () =>
-                                                      ArtistCommentaryTranlationState
-                                                          .translated(),
-                                                ),
-                                                child: ListTile(
-                                                  title: artistCommentaryDisplay
-                                                      .value
-                                                      .when(
-                                                    translated: () =>
-                                                        Text("Show Original"),
-                                                    original: () =>
-                                                        Text("Show Translated"),
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        : SizedBox.shrink(),
-                                  ],
-                                  automaticallyImplyLeading: false,
-                                  title: Text("Commentary"),
-                                ),
-                                body: artistCommentary.when(
-                                  loading: () => _buildLoading(context),
-                                  data: (artistCommentary) =>
-                                      artistCommentary.hasCommentary
-                                          ? _buildArtistCommentary(
-                                              artistCommentary,
-                                              artistCommentaryDisplay)
-                                          : SizedBox.shrink(),
-                                  error: (name, message) =>
-                                      Text("Failed to load commentary"),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                        title: AutoSizeText(
-                          post.tagStringCharacter.isEmpty
-                              ? "Original"
-                              : post.name.characterOnly.pretty
-                                  .capitalizeFirstofEach,
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                        ),
-                        subtitle: AutoSizeText(
-                          post.tagStringCopyright.isEmpty
-                              ? "Original"
-                              : post.name.copyRightOnly.pretty
-                                  .capitalizeFirstofEach,
-                          maxLines: 1,
-                          overflow: TextOverflow.fade,
-                        ),
-                        trailing: Icon(Icons.keyboard_arrow_down),
+                                ],
+                              )
+                            : SizedBox.shrink(),
                       ),
-                    ),
-                    ButtonBar(
-                      alignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        LikeButton(
-                          size: 40,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          // likeCount: detail.postStatistics.commentCount,
-                          likeBuilder: (isLiked) => Icon(
-                            Icons.comment,
-                            color: Colors.white,
-                          ),
-                          onTap: (isLiked) => showBarModalBottomSheet(
-                            expand: false,
-                            context: context,
-                            builder: (context, controller) => CommentPage(
-                              comments: comments,
-                              postId: post.id,
-                            ),
-                          ),
-                        ),
-                        LikeButton(
-                          size: 40,
-                          isLiked: post.isFavorited,
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          likeCount: post.favCount,
-                          likeBuilder: (isLiked) => Icon(
-                            Icons.favorite,
-                            color: isLiked ? Colors.red : Colors.white,
-                          ),
-                          onTap: (isLiked) {
-                            //TODO: check for success here
-                            if (!isLiked) {
-                              context
-                                  .read(favoriteProvider)
-                                  .addToFavorites(post.id);
-
-                              return Future(() => true);
-                            } else {
-                              context
-                                  .read(favoriteProvider)
-                                  .removeFromFavorites(post.id);
-                              return Future(() => false);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
-                    Divider(
-                      height: 8,
-                      thickness: 1,
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-                    ListTile(
-                      title: Text(post.tagStringArtist.pretty),
-                      leading: CircleAvatar(),
-                    ),
-                    _buildArtistPosts(scrollController, artistPosts, context),
-                  ],
+                      artistCommentaryDisplay.value.when(
+                        translated: () => Html(
+                            data:
+                                "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
+                        original: () => Html(
+                            data:
+                                "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
+                      ),
+                    ],
+                  ),
+                  error: (name, message) => Text("Failed to load commentary"),
                 ),
+              )
+            ],
+            SliverToBoxAdapter(
+              child: Divider(
+                height: 8,
+                thickness: 1,
+                indent: 16,
+                endIndent: 16,
               ),
             ),
-          ),
-        ]),
+            SliverToBoxAdapter(
+                child: PostTagList(
+              tagStringComma: post.tagString.toCommaFormat(),
+            )),
+          ],
+        ),
       ),
     );
   }

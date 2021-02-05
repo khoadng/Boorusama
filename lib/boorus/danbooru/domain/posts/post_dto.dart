@@ -97,6 +97,7 @@ extension PostDtoX on PostDto {
       favCount: fav_count,
       uploaderId: uploader_id,
       rating: Rating(rating: rating),
+      fileSize: file_size,
       isFavorited: is_favorited ?? false,
     );
   }

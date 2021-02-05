@@ -32,6 +32,7 @@ class Post implements IDownloadable {
   final int favCount;
   final int uploaderId;
   final Rating rating;
+  final int fileSize;
 
   final bool isFavorited;
 
@@ -57,6 +58,7 @@ class Post implements IDownloadable {
     @required this.favCount,
     @required this.uploaderId,
     @required this.rating,
+    @required this.fileSize,
     //TODO: workaround
     this.isFavorited = false,
   });

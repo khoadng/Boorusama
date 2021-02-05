@@ -182,19 +182,22 @@ class PostRepository implements IPostRepository {
     int page, {
     int limit = 100,
     CancelToken cancelToken,
+    bool skipFavoriteCheck = false,
   }) async {
     final account = await _accountRepository.get();
     final settingsRepository = await _ref.watch(settingsProvider.future);
     final settings = await settingsRepository.load();
 
     try {
+      final stopwatch = Stopwatch()..start();
       final value = await _api.getPosts(account.username, account.apiKey, page,
           settings.safeMode ? "$tagString rating:s" : tagString, limit,
           cancelToken: cancelToken);
 
       final posts = <PostDto>[];
-      final stopwatch = Stopwatch()..start();
-      await _appendIsFavoritedIfValid(value, account, limit: limit);
+      if (!skipFavoriteCheck) {
+        await _appendIsFavoritedIfValid(value, account, limit: limit);
+      }
 
       for (var item in value.response.data) {
         try {

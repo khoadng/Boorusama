@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  animate_do: ^1.7.5
   animations: ^1.1.2
   auto_animated: ^2.1.0
   auto_size_text: ^2.1.0
@@ -37,6 +36,7 @@ dependencies:
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
+  filesize: ^1.0.4
   fluro: ^1.7.8
   flushbar: ^1.10.4
   flutter_datetime_picker: ^1.4.0

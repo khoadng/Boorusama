@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:hooks_riverpod/all.dart';
@@ -168,6 +169,7 @@ class PostImagePage extends HookWidget {
             _buildTopShadowGradient(),
             _buildBackButton(context),
             _buildMoreVertButton(),
+            _buildFileInfo(),
             ...notes.when(
               loading: () => [SizedBox.shrink()],
               data: (notes) => buildNotes(context, notes, post),
@@ -175,6 +177,25 @@ class PostImagePage extends HookWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+
+  Widget _buildFileInfo() {
+    return Align(
+      alignment: Alignment(0.9, -0.80),
+      child: Container(
+        height: 50,
+        width: 100,
+        decoration: BoxDecoration(
+            color: Colors.black87, borderRadius: BorderRadius.circular(8.0)),
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text("${post.width.toInt()}x${post.height.toInt()}"),
+              Text("${filesize(post.fileSize, 1)}"),
+            ]),
       ),
     );
   }

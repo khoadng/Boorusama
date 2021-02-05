@@ -11,6 +11,7 @@ abstract class IPostRepository {
     int page, {
     int limit = 100,
     CancelToken cancelToken,
+    bool skipFavoriteCheck = false,
   });
   Future<List<PostDto>> getPopularPosts(
       DateTime date, int page, TimeScale scale);
