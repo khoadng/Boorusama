@@ -88,15 +88,34 @@ class HomePage extends HookWidget {
                   key: scaffoldKey,
                   drawer: SideBarMenu(),
                   resizeToAvoidBottomInset: false,
-                  body: AnimatedIndexedStack(
-                    index: bottomTabIndex.value,
-                    children: <Widget>[
-                      LatestView(
-                        onMenuOpened: () =>
-                            scaffoldKey.currentState.openDrawer(),
+                  body: CustomScrollView(
+                    slivers: [
+                      SliverAppBar(
+                        toolbarHeight: kToolbarHeight * 1.2,
+                        title: SearchBar(
+                          enabled: false,
+                          leading: IconButton(
+                            icon: Icon(Icons.menu),
+                            onPressed: () =>
+                                scaffoldKey.currentState.openDrawer(),
+                          ),
+                          onTap: () => AppRouter.router
+                              .navigateTo(context, "/posts/search/"),
+                        ),
+                        floating: true,
+                        snap: true,
+                        automaticallyImplyLeading: false,
                       ),
-                      ExplorePage(),
-                      FavoritesPage(),
+                      SliverFillRemaining(
+                        child: AnimatedIndexedStack(
+                          index: bottomTabIndex.value,
+                          children: <Widget>[
+                            LatestView(),
+                            ExplorePage(),
+                            FavoritesPage(),
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   bottomNavigationBar: BottomBar(

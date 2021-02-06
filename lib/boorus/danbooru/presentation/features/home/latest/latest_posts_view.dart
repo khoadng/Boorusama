@@ -32,10 +32,7 @@ final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
 class LatestView extends HookWidget {
   const LatestView({
     Key key,
-    this.onMenuOpened,
   }) : super(key: key);
-
-  final VoidCallback onMenuOpened;
 
   @override
   Widget build(BuildContext context) {
@@ -82,21 +79,6 @@ class LatestView extends HookWidget {
         child: CustomScrollView(
           controller: scrollController.value,
           slivers: <Widget>[
-            SliverAppBar(
-              toolbarHeight: kToolbarHeight * 1.2,
-              title: SearchBar(
-                enabled: false,
-                leading: IconButton(
-                  icon: Icon(Icons.menu),
-                  onPressed: () => onMenuOpened(),
-                ),
-                onTap: () =>
-                    AppRouter.router.navigateTo(context, "/posts/search/"),
-              ),
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-            ),
             SliverPadding(
               padding: EdgeInsets.all(6.0),
               sliver: postsState.maybeWhen(
