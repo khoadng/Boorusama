@@ -282,8 +282,7 @@ class ExplorePage extends HookWidget {
               ),
             ),
             postsState.maybeWhen(
-              refreshing: () => SliverPostGridPlaceHolder(
-                  scrollController: scrollController.value),
+              refreshing: () => SliverPostGridPlaceHolder(),
               orElse: () => SliverPostGrid(
                 key: gridKey.value,
                 onTap: (post, index) async {

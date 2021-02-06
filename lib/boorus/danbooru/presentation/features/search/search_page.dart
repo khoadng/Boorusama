@@ -327,8 +327,7 @@ class SearchPage extends HookWidget {
                           ),
                           refreshing: () => SliverPadding(
                             padding: EdgeInsets.all(6.0),
-                            sliver: SliverPostGridPlaceHolder(
-                                scrollController: scrollController.value),
+                            sliver: SliverPostGridPlaceHolder(),
                           ),
                         ),
                       ),

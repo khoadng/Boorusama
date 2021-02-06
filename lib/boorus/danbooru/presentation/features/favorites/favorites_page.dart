@@ -81,8 +81,7 @@ class FavoritesPage extends HookWidget {
               SliverPadding(
                 padding: EdgeInsets.all(6.0),
                 sliver: postsState.maybeWhen(
-                  refreshing: () => SliverPostGridPlaceHolder(
-                      scrollController: scrollController.value),
+                  refreshing: () => SliverPostGridPlaceHolder(),
                   orElse: () => SliverPostGrid(
                     key: gridKey.value,
                     onTap: (post, index) async {
