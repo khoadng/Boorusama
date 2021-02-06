@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key key, @required this.onTabChanged}) : super(key: key);
@@ -44,45 +45,45 @@ class _BottomBarState extends State<BottomBar> {
       inkColor: Colors.black12, //optional, uses theme color if not specified
       items: <BubbleBottomBarItem>[
         BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-            icon: Icon(
-              Icons.dashboard,
+            backgroundColor: Theme.of(context).accentIconTheme.color,
+            icon: FaIcon(
+              FontAwesomeIcons.home,
               color: Colors.black,
             ),
-            activeIcon: Icon(
-              Icons.dashboard,
+            activeIcon: FaIcon(
+              FontAwesomeIcons.home,
               color: Theme.of(context).accentColor,
             ),
             title: Text(
-              "Posts",
+              "Home",
               style: TextStyle(color: Theme.of(context).accentColor),
             )),
         BubbleBottomBarItem(
             backgroundColor: Theme.of(context).accentIconTheme.color,
-            icon: Icon(
-              Icons.folder_open,
+            icon: FaIcon(
+              Icons.explore,
               color: Colors.black,
             ),
             activeIcon: Icon(
-              Icons.folder_open,
+              Icons.explore,
               color: Theme.of(context).accentColor,
             ),
             title: Text(
-              "Folders",
+              "Explore",
               style: TextStyle(color: Theme.of(context).accentColor),
             )),
         BubbleBottomBarItem(
             backgroundColor: Theme.of(context).accentIconTheme.color,
-            icon: Icon(
-              Icons.menu,
+            icon: FaIcon(
+              FontAwesomeIcons.solidHeart,
               color: Colors.black,
             ),
-            activeIcon: Icon(
-              Icons.menu,
+            activeIcon: FaIcon(
+              FontAwesomeIcons.solidHeart,
               color: Theme.of(context).accentColor,
             ),
             title: Text(
-              "Menu",
+              "Favorites",
               style: TextStyle(color: Theme.of(context).accentColor),
             )),
       ],

@@ -24,7 +24,7 @@ class HomePage extends HookWidget {
   HomePage({Key key}) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final int tabLength = 2;
+  final int tabLength = 1;
 
   void _handleMoreSelected(PostListAction action) {
     // switch (action) {
@@ -37,12 +37,7 @@ class HomePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tickerProvider = useSingleTickerProvider();
-    final tabController =
-        useTabController(initialLength: tabLength, vsync: tickerProvider);
-
     final bottomTabIndex = useState(0);
-    final topTabIndex = useState(0);
 
     final networkStatus = useProvider(networkStatusProvider);
 
@@ -93,10 +88,14 @@ class HomePage extends HookWidget {
                   key: scaffoldKey,
                   drawer: SideBarMenu(),
                   resizeToAvoidBottomInset: false,
-                  body: IndexedStack(
+                  body: AnimatedIndexedStack(
                     index: bottomTabIndex.value,
                     children: <Widget>[
-                      _buildHomeTabBottomBar(topTabIndex, tabController),
+                      LatestView(
+                        onMenuOpened: () =>
+                            scaffoldKey.currentState.openDrawer(),
+                      ),
+                      ExplorePage(),
                       FavoritesPage(),
                     ],
                   ),
@@ -106,68 +105,6 @@ class HomePage extends HookWidget {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHomeTabBottomBar(
-      ValueNotifier<int> topTabIndex, TabController tabController) {
-    return DefaultTabController(
-      length: tabLength,
-      child: NestedScrollView(
-        floatHeaderSlivers: true,
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
-          return <Widget>[
-            SliverSafeArea(
-              top: false,
-              sliver: SliverAppBar(
-                toolbarHeight: kToolbarHeight * 1.2,
-                title: SearchBar(
-                  enabled: false,
-                  leading: IconButton(
-                    icon: Icon(Icons.menu),
-                    onPressed: () => scaffoldKey.currentState.openDrawer(),
-                  ),
-                  onTap: () =>
-                      AppRouter.router.navigateTo(context, "/posts/search/"),
-                ),
-                shape: Border(
-                  bottom: BorderSide(color: Colors.grey[400], width: 1.0),
-                ),
-                floating: false,
-                pinned: true,
-                snap: false,
-                primary: true,
-                forceElevated: true,
-                automaticallyImplyLeading: false,
-                bottom: TabBar(
-                  onTap: (value) => topTabIndex.value = value,
-                  isScrollable: true,
-                  controller: tabController,
-                  unselectedLabelColor: Theme.of(context).unselectedWidgetColor,
-                  labelColor: Theme.of(context).accentColor,
-                  indicatorSize: TabBarIndicatorSize.label,
-                  indicator: MD2Indicator(
-                    indicatorHeight: 4,
-                    indicatorColor: Theme.of(context).accentColor,
-                    indicatorSize: MD2IndicatorSize.full,
-                  ),
-                  tabs: [
-                    Tab(text: I18n.of(context).postCategoriesLatest),
-                    Tab(text: "Explore"),
-                  ],
-                ),
-              ),
-            ),
-          ];
-        },
-        body: AnimatedIndexedStack(
-          index: topTabIndex.value,
-          children: <Widget>[
-            LatestView(),
-            ExplorePage(),
           ],
         ),
       ),
