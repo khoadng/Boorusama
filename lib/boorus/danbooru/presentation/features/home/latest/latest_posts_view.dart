@@ -4,14 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/list_item_status.dart';
@@ -36,8 +35,6 @@ class LatestView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final refreshController =
-        useState(RefreshController(initialRefresh: false));
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
     final scrollController = useState(AutoScrollController());
@@ -48,73 +45,42 @@ class LatestView extends HookWidget {
       return () => scrollController.value.dispose;
     }, []);
 
-    final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, __) {
-      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
-    });
-
-    return ProviderListener<ListItemStatus<Post>>(
-      provider: _postsStateProvider,
-      onChange: (context, state) {
-        state.maybeWhen(
-          fetched: () {
-            refreshController.value.loadComplete();
-            refreshController.value.refreshCompleted();
-          },
-          error: () => Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text("Something went wrong"))),
-          orElse: () {},
-        );
-      },
-      child: SmartRefresher(
-        controller: refreshController.value,
-        enablePullUp: true,
-        enablePullDown: true,
-        header: const MaterialClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () =>
-            context.read(latestPostsStateNotifierProvider).refresh(),
-        onLoading: () =>
-            context.read(latestPostsStateNotifierProvider).getMorePosts(),
-        child: CustomScrollView(
-          controller: scrollController.value,
-          slivers: <Widget>[
-            SliverPadding(
-              padding: EdgeInsets.all(6.0),
-              sliver: postsState.maybeWhen(
-                refreshing: () => SliverPostGridPlaceHolder(),
-                orElse: () => SliverPostGrid(
-                  key: gridKey.value,
-                  onTap: (post, index) async {
-                    final newIndex = await AppRouter.router.navigateTo(
-                      context,
-                      "/posts",
-                      routeSettings: RouteSettings(arguments: [
-                        post,
-                        index,
-                        posts,
-                        () => null,
-                        (index) {
-                          if (index > posts.length * 0.8) {
-                            context
-                                .read(latestPostsStateNotifierProvider)
-                                .getMorePosts();
-                          }
-                        },
-                        gridKey.value,
-                      ]),
-                    );
-
-                    lastViewedPostIndex.value = newIndex;
-                  },
-                  posts: posts,
-                  scrollController: scrollController.value,
-                ),
-              ),
-            ),
-          ],
-        ),
+    return postsState.maybeWhen(
+      refreshing: () => CustomScrollView(
+        controller: scrollController.value,
+        shrinkWrap: true,
+        slivers: [
+          SliverPostGridPlaceHolder(),
+        ],
       ),
+      orElse: () => InfiniteLoadList(
+          header: SliverAppBar(
+            toolbarHeight: kToolbarHeight * 1.2,
+            title: SearchBar(
+              enabled: false,
+              leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                  // scaffoldKey.currentState.openDrawer(),
+                  ),
+              onTap: () =>
+                  AppRouter.router.navigateTo(context, "/posts/search/"),
+            ),
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+          ),
+          onRefresh: () =>
+              context.read(latestPostsStateNotifierProvider).refresh(),
+          onLoadMore: () =>
+              context.read(latestPostsStateNotifierProvider).getMorePosts(),
+          onItemChanged: (index) {
+            if (index > posts.length * 0.8) {
+              context.read(latestPostsStateNotifierProvider).getMorePosts();
+            }
+          },
+          scrollController: scrollController.value,
+          stateProvider: _postsStateProvider,
+          gridKey: gridKey.value,
+          posts: posts),
     );
   }
 }

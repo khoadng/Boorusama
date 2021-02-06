@@ -6,7 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -16,10 +15,9 @@ import 'package:boorusama/boorus/danbooru/application/search/suggestions_state_n
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/list_item_status.dart';
 import 'tag_suggestion_items.dart';
 
@@ -32,9 +30,9 @@ final _searchDisplayProvider =
   return status;
 });
 
-final _itemStatus = Provider.autoDispose<ListItemStatus<Post>>(
+final _itemStatus = Provider<ListItemStatus<Post>>(
     (ref) => ref.watch(searchStateNotifierProvider.state).posts.status);
-final _postStatusProvider = Provider.autoDispose<ListItemStatus<Post>>((ref) {
+final _postStatusProvider = Provider<ListItemStatus<Post>>((ref) {
   final status = ref.watch(_itemStatus);
   print("Search monitoring status: $status");
   return status;
@@ -125,14 +123,6 @@ class SearchPage extends HookWidget {
     context.read(queryStateNotifierProvider).update(value);
   }
 
-  void _onLoadCompleted(ValueNotifier<RefreshController> refreshController) {
-    refreshController.value.refreshCompleted();
-    return refreshController.value.loadComplete();
-  }
-
-  void _onListLoading(BuildContext context) =>
-      context.read(searchStateNotifierProvider).getMoreResult();
-
   bool _onTagRemoveButtonTap(
       BuildContext context, List<String> completedQueryItems, int index) {
     context.read(queryStateNotifierProvider).remove(completedQueryItems[index]);
@@ -142,9 +132,6 @@ class SearchPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO: MEMORY LEAK HERE, CUSTOM HOOK NEEDED
-    final refreshController =
-        useState(RefreshController(initialRefresh: false));
     final queryEditingController = useTextEditingController();
 
     final searchDisplayState = useProvider(_searchDisplayProvider);
@@ -172,170 +159,127 @@ class SearchPage extends HookWidget {
       return () => scrollController.value.dispose;
     }, []);
 
-    final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, __) {
-      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
-    });
+    return SafeArea(
+      child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ),
+        child: Scaffold(
+          floatingActionButton: searchDisplayState.state.when(
+            suggestions: () => FloatingActionButton(
+              onPressed: () {
+                if (completedQueryItems.isEmpty) {
+                  context.read(queryStateNotifierProvider).add(query);
+                }
 
-    return ProviderListener<ListItemStatus<Post>>(
-      provider: _postStatusProvider,
-      onChange: (context, state) {
-        if (state == ListItemStatus.fetched()) {
-          _onLoadCompleted(refreshController);
-        }
-      },
-      child: SafeArea(
-        child: ClipRRect(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+                FocusScope.of(context).unfocus();
+                searchDisplayState.state = SearchDisplayState.results();
+                context.read(searchStateNotifierProvider).search();
+              },
+              heroTag: null,
+              child: Icon(Icons.search),
+            ),
+            results: () => FloatingActionButton(
+              onPressed: () => _onDownloadButtonPressed(posts, context),
+              heroTag: null,
+              child: Icon(Icons.download_sharp),
+            ),
           ),
-          child: Scaffold(
-            floatingActionButton: searchDisplayState.state.when(
-              suggestions: () => FloatingActionButton(
-                onPressed: () {
-                  if (completedQueryItems.isEmpty) {
-                    context.read(queryStateNotifierProvider).add(query);
-                  }
-
-                  FocusScope.of(context).unfocus();
-                  searchDisplayState.state = SearchDisplayState.results();
-                  context.read(searchStateNotifierProvider).search();
-                },
-                heroTag: null,
-                child: Icon(Icons.search),
+          appBar: AppBar(
+            toolbarHeight: kToolbarHeight * 1.2,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            title: SearchBar(
+              autofocus: true,
+              queryEditingController: queryEditingController,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () => _onBackIconPressed(context),
               ),
-              results: () => FloatingActionButton(
-                onPressed: () => _onDownloadButtonPressed(posts, context),
-                heroTag: null,
-                child: Icon(Icons.download_sharp),
+              trailing: IconButton(
+                icon: Icon(Icons.close),
+                onPressed: () =>
+                    _onClearQueryButtonPressed(context, searchDisplayState),
               ),
+              onChanged: (value) =>
+                  _onQueryUpdated(context, value, searchDisplayState),
             ),
-            appBar: AppBar(
-              toolbarHeight: kToolbarHeight * 1.2,
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              title: SearchBar(
-                autofocus: true,
-                queryEditingController: queryEditingController,
-                leading: IconButton(
-                  icon: Icon(Icons.arrow_back),
-                  onPressed: () => _onBackIconPressed(context),
-                ),
-                trailing: IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () =>
-                      _onClearQueryButtonPressed(context, searchDisplayState),
-                ),
-                onChanged: (value) =>
-                    _onQueryUpdated(context, value, searchDisplayState),
-              ),
-            ),
-            body: Column(
-              children: [
-                if (completedQueryItems.length > 0) ...[
-                  Tags(
-                    horizontalScroll: true,
-                    alignment: WrapAlignment.start,
-                    runAlignment: WrapAlignment.start,
-                    itemCount: completedQueryItems.length,
-                    itemBuilder: (index) => ItemTags(
-                      index: index,
-                      title: completedQueryItems[index].replaceAll('_', ' '),
-                      pressEnabled: false,
-                      removeButton: ItemTagsRemoveButton(
-                          onRemoved: () => _onTagRemoveButtonTap(
-                              context, completedQueryItems, index)),
-                    ),
+          ),
+          body: Column(
+            children: [
+              if (completedQueryItems.length > 0) ...[
+                Tags(
+                  horizontalScroll: true,
+                  alignment: WrapAlignment.start,
+                  runAlignment: WrapAlignment.start,
+                  itemCount: completedQueryItems.length,
+                  itemBuilder: (index) => ItemTags(
+                    index: index,
+                    title: completedQueryItems[index].replaceAll('_', ' '),
+                    pressEnabled: false,
+                    removeButton: ItemTagsRemoveButton(
+                        onRemoved: () => _onTagRemoveButtonTap(
+                            context, completedQueryItems, index)),
                   ),
-                  Divider(
-                    height: 0,
-                    thickness: 3,
-                    indent: 10,
-                    endIndent: 10,
-                  ),
-                ],
-                Expanded(
-                    child: SmartRefresher(
-                  controller: refreshController.value,
-                  enablePullUp:
-                      searchDisplayState.state == SearchDisplayState.results(),
-                  enablePullDown: false,
-                  footer: const ClassicFooter(),
-                  onLoading: () => _onListLoading(context),
-                  child: CustomScrollView(
-                    controller: scrollController.value,
-                    slivers: <Widget>[
-                      searchDisplayState.state.when(
+                ),
+                Divider(
+                  height: 0,
+                  thickness: 3,
+                  indent: 10,
+                  endIndent: 10,
+                ),
+              ],
+              Expanded(
+                child: CustomScrollView(
+                  slivers: [
+                    SliverFillRemaining(
+                      child: searchDisplayState.state.when(
                         suggestions: () => suggestionsMonitoringState.when(
-                          none: () => SliverList(
-                            delegate: SliverChildListDelegate([
-                              Center(child: Center()),
-                            ]),
-                          ),
-                          inProgress: () => SliverPadding(
+                          none: () => SizedBox.shrink(),
+                          inProgress: () => Padding(
                             padding: EdgeInsets.only(top: 8),
-                            sliver: TagSuggestionItems(
+                            child: TagSuggestionItems(
                                 tags: tags, onItemTap: (tag) {}),
                           ),
-                          completed: () => SliverPadding(
+                          completed: () => Padding(
                             padding: EdgeInsets.only(top: 8),
-                            sliver: TagSuggestionItems(
+                            child: TagSuggestionItems(
                                 tags: tags,
                                 onItemTap: (tag) =>
                                     _onTagItemTapped(context, tag)),
                           ),
-                          error: () => SliverList(
-                            delegate: SliverChildListDelegate([
-                              Center(
-                                child: Text("Something went wrong"),
-                              ),
-                            ]),
-                          ),
+                          error: () =>
+                              Center(child: Text("Something went wrong")),
                         ),
                         results: () => postStatus.maybeWhen(
-                          orElse: () => SliverPadding(
-                            padding: EdgeInsets.all(6.0),
-                            sliver: SliverPostGrid(
-                              key: gridKey.value,
-                              onTap: (post, index) async {
-                                final newIndex =
-                                    await AppRouter.router.navigateTo(
-                                  context,
-                                  "/posts",
-                                  routeSettings: RouteSettings(arguments: [
-                                    post,
-                                    index,
-                                    posts,
-                                    () => null,
-                                    (index) {
-                                      if (index > posts.length * 0.8) {
-                                        context
-                                            .read(searchStateNotifierProvider)
-                                            .getMoreResult();
-                                      }
-                                    },
-                                    gridKey.value,
-                                  ]),
-                                );
-                                lastViewedPostIndex.value = newIndex;
-                              },
-                              posts: posts,
-                              scrollController: scrollController.value,
-                            ),
-                          ),
-                          refreshing: () => SliverPadding(
-                            padding: EdgeInsets.all(6.0),
-                            sliver: SliverPostGridPlaceHolder(),
+                          orElse: () => postStatus.maybeWhen(
+                            refreshing: () => CustomScrollView(
+                                slivers: [SliverPostGridPlaceHolder()]),
+                            orElse: () => InfiniteLoadList(
+                                onLoadMore: () => context
+                                    .read(searchStateNotifierProvider)
+                                    .getMoreResult(),
+                                onItemChanged: (index) {
+                                  if (index > posts.length * 0.8) {
+                                    context
+                                        .read(searchStateNotifierProvider)
+                                        .getMoreResult();
+                                  }
+                                },
+                                scrollController: scrollController.value,
+                                stateProvider: _postStatusProvider,
+                                gridKey: gridKey.value,
+                                posts: posts),
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                )),
-              ],
-            ),
+                    )
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

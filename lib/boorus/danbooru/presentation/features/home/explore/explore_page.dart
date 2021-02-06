@@ -7,15 +7,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/explore/explore_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/list_item_status.dart';
 import 'package:boorusama/generated/i18n.dart';
 
@@ -120,9 +118,6 @@ class ExplorePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final refreshController =
-        useState(RefreshController(initialRefresh: false));
-
     final selectedDate = useProvider(_dateProvider);
     final selectedTimeScale = useProvider(_timeScaleProvider);
     final selectedCategory = useProvider(_categoryProvider);
@@ -136,183 +131,129 @@ class ExplorePage extends HookWidget {
       return () => scrollController.dispose;
     }, []);
 
-    final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, __) {
-      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
-    });
+    // useEffect(() {
+    //   lastViewedPostIndex.value = -1;
+    //   return null;
+    // }, [selectedDate, selectedTimeScale, selectedCategory]);
 
-    useEffect(() {
-      lastViewedPostIndex.value = -1;
-      return null;
-    }, [selectedDate, selectedTimeScale, selectedCategory]);
-
-    return ProviderListener<ListItemStatus<Post>>(
-      provider: _postsState,
-      onChange: (context, state) {
-        state.maybeWhen(
-          fetched: () {
-            refreshController.value.loadComplete();
-            refreshController.value.refreshCompleted();
-          },
-          error: () => Scaffold.of(context)
-              .showSnackBar(SnackBar(content: Text("Something went wrong"))),
-          orElse: () {},
-        );
-      },
-      child: SmartRefresher(
-        controller: refreshController.value,
-        enablePullDown: true,
-        enablePullUp: true,
-        header: const MaterialClassicHeader(),
-        footer: const ClassicFooter(),
-        onRefresh: () => context.read(exploreStateNotifierProvider).refresh(),
-        onLoading: () =>
-            context.read(exploreStateNotifierProvider).getMorePosts(),
-        child: CustomScrollView(
-          controller: scrollController.value,
-          slivers: <Widget>[
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  Column(
-                    children: [
-                      ButtonBar(
-                        alignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(Icons.keyboard_arrow_left),
-                            onPressed: () => context
-                                .read(exploreStateNotifierProvider)
-                                .reverseOneTimeUnit(),
-                          ),
-                          FlatButton(
-                            color: Theme.of(context).cardColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                            onPressed: () => DatePicker.showDatePicker(
-                              context,
-                              theme: DatePickerTheme(),
-                              onConfirm: (time) {
-                                context
-                                    .read(exploreStateNotifierProvider)
-                                    .updateDate(time);
-                              },
-                              currentTime: DateTime.now(),
-                            ),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                    "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
-                                Icon(Icons.arrow_drop_down)
-                              ],
-                            ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.keyboard_arrow_right),
-                            onPressed: () => context
-                                .read(exploreStateNotifierProvider)
-                                .forwardOneTimeUnit(),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          FlatButton(
-                            color: Theme.of(context).cardColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(18.0),
-                            ),
-                            onPressed: () async {
-                              final category =
-                                  await showMaterialModalBottomSheet(
-                                          context: context,
-                                          builder: (context, controller) =>
-                                              _buildModalCategoryPicker(
-                                                  context)) ??
-                                      selectedCategory;
-
-                              context
-                                  .read(exploreStateNotifierProvider)
-                                  .changeCategory(category);
-                            },
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                    "${selectedCategory.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
-                                Icon(Icons.arrow_drop_down)
-                              ],
-                            ),
-                          ),
-                          selectedCategory.maybeWhen(
-                            mostViewed: () => Center(),
-                            orElse: () => FlatButton(
-                              color: Theme.of(context).cardColor,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              onPressed: () async {
-                                final timeScale =
-                                    await showMaterialModalBottomSheet(
-                                            context: context,
-                                            builder: (context, controller) =>
-                                                _buildModalTimeScalePicker(
-                                                    context)) ??
-                                        selectedTimeScale;
-
-                                context
-                                    .read(exploreStateNotifierProvider)
-                                    .updateTimeScale(timeScale);
-                              },
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                      "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
-                                  Icon(Icons.arrow_drop_down)
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
+    return postsState.maybeWhen(
+      refreshing: () => CustomScrollView(
+          shrinkWrap: true, slivers: [SliverPostGridPlaceHolder()]),
+      orElse: () => InfiniteLoadList(
+        header: SliverToBoxAdapter(
+          child: Column(
+            children: [
+              ButtonBar(
+                alignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.keyboard_arrow_left),
+                    onPressed: () => context
+                        .read(exploreStateNotifierProvider)
+                        .reverseOneTimeUnit(),
+                  ),
+                  FlatButton(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () => DatePicker.showDatePicker(
+                      context,
+                      theme: DatePickerTheme(),
+                      onConfirm: (time) {
+                        context
+                            .read(exploreStateNotifierProvider)
+                            .updateDate(time);
+                      },
+                      currentTime: DateTime.now(),
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                            "${DateFormat('MMM d, yyyy').format(selectedDate)}"),
+                        Icon(Icons.arrow_drop_down)
+                      ],
+                    ),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.keyboard_arrow_right),
+                    onPressed: () => context
+                        .read(exploreStateNotifierProvider)
+                        .forwardOneTimeUnit(),
                   ),
                 ],
               ),
-            ),
-            postsState.maybeWhen(
-              refreshing: () => SliverPostGridPlaceHolder(),
-              orElse: () => SliverPostGrid(
-                key: gridKey.value,
-                onTap: (post, index) async {
-                  final newIndex = await AppRouter.router.navigateTo(
-                    context,
-                    "/posts",
-                    routeSettings: RouteSettings(arguments: [
-                      post,
-                      index,
-                      posts,
-                      () => null,
-                      (index) {
-                        if (index > posts.length * 0.8) {
-                          context
-                              .read(exploreStateNotifierProvider)
-                              .getMorePosts();
-                        }
-                      },
-                      gridKey.value,
-                    ]),
-                  );
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  FlatButton(
+                    color: Theme.of(context).cardColor,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                    ),
+                    onPressed: () async {
+                      final category = await showMaterialModalBottomSheet(
+                              context: context,
+                              builder: (context, controller) =>
+                                  _buildModalCategoryPicker(context)) ??
+                          selectedCategory;
 
-                  lastViewedPostIndex.value = newIndex;
-                },
-                posts: posts,
-                scrollController: scrollController.value,
+                      context
+                          .read(exploreStateNotifierProvider)
+                          .changeCategory(category);
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                            "${selectedCategory.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
+                        Icon(Icons.arrow_drop_down)
+                      ],
+                    ),
+                  ),
+                  selectedCategory.maybeWhen(
+                    mostViewed: () => Center(),
+                    orElse: () => FlatButton(
+                      color: Theme.of(context).cardColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                      onPressed: () async {
+                        final timeScale = await showMaterialModalBottomSheet(
+                                context: context,
+                                builder: (context, controller) =>
+                                    _buildModalTimeScalePicker(context)) ??
+                            selectedTimeScale;
+
+                        context
+                            .read(exploreStateNotifierProvider)
+                            .updateTimeScale(timeScale);
+                      },
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                              "${selectedTimeScale.toString().split('.').last.toUpperCase()}"),
+                          Icon(Icons.arrow_drop_down)
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
+        scrollController: scrollController.value,
+        gridKey: gridKey.value,
+        posts: posts,
+        stateProvider: _postsStateProvider,
+        onItemChanged: (index) {
+          if (index > posts.length * 0.8) {
+            context.read(exploreStateNotifierProvider).getMorePosts();
+          }
+        },
+        onRefresh: () => context.read(exploreStateNotifierProvider).refresh(),
+        onLoadMore: () =>
+            context.read(exploreStateNotifierProvider).getMorePosts(),
       ),
     );
   }
