@@ -65,21 +65,4 @@ class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
       },
     );
   }
-
-  void viewPost(Post post) {
-    _listStateNotifier.view(
-        item: post,
-        onStateChanged: (state) => this.state = this.state.copyWith(
-              posts: state,
-            ));
-  }
-
-  void stopViewing() {
-    _listStateNotifier.stopViewing(
-        lastIndexBuilder: () => state.posts.items
-            .indexWhere((p) => p.id == state.posts.currentViewingItem.id),
-        onStateChanged: (state) => this.state = this.state.copyWith(
-              posts: state,
-            ));
-  }
 }

@@ -64,17 +64,6 @@ final _categoryProvider = Provider<ExploreCategory>((ref) {
   return ref.watch(_category);
 });
 
-final _lastViewedPostIndex = Provider<int>((ref) {
-  return ref
-      .watch(exploreStateNotifierProvider.state)
-      .posts
-      .lastViewedItemIndex;
-});
-final _lastViewedPostIndexProvider = Provider<int>((ref) {
-  final lastViewedPost = ref.watch(_lastViewedPostIndex);
-  return lastViewedPost;
-});
-
 class ExplorePage extends HookWidget {
   const ExplorePage({Key key}) : super(key: key);
 
@@ -138,7 +127,6 @@ class ExplorePage extends HookWidget {
     final selectedTimeScale = useProvider(_timeScaleProvider);
     final selectedCategory = useProvider(_categoryProvider);
     final posts = useProvider(_curatedPostProvider);
-    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final postsState = useProvider(_postsStateProvider);
 
     final gridKey = useState(GlobalKey());
@@ -148,10 +136,15 @@ class ExplorePage extends HookWidget {
       return () => scrollController.dispose;
     }, []);
 
+    final lastViewedPostIndex = useState(-1);
+    useValueChanged(lastViewedPostIndex.value, (_, __) {
+      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
+    });
+
     useEffect(() {
-      scrollController.value.scrollToIndex(lastViewedPostIndex);
-      return () => null;
-    }, [lastViewedPostIndex]);
+      lastViewedPostIndex.value = -1;
+      return null;
+    }, [selectedDate, selectedTimeScale, selectedCategory]);
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postsState,
@@ -293,23 +286,16 @@ class ExplorePage extends HookWidget {
                   scrollController: scrollController.value),
               orElse: () => SliverPostGrid(
                 key: gridKey.value,
-                onTap: (post, index) {
-                  context.read(exploreStateNotifierProvider).viewPost(post);
-                  AppRouter.router.navigateTo(
+                onTap: (post, index) async {
+                  final newIndex = await AppRouter.router.navigateTo(
                     context,
                     "/posts",
                     routeSettings: RouteSettings(arguments: [
                       post,
                       index,
                       posts,
-                      () => context
-                          .read(exploreStateNotifierProvider)
-                          .stopViewing(),
+                      () => null,
                       (index) {
-                        context
-                            .read(exploreStateNotifierProvider)
-                            .viewPost(posts[index]);
-
                         if (index > posts.length * 0.8) {
                           context
                               .read(exploreStateNotifierProvider)
@@ -319,6 +305,8 @@ class ExplorePage extends HookWidget {
                       gridKey.value,
                     ]),
                   );
+
+                  lastViewedPostIndex.value = newIndex;
                 },
                 posts: posts,
                 scrollController: scrollController.value,

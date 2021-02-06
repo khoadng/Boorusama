@@ -80,6 +80,8 @@ class PostDetailPage extends HookWidget {
       }
     });
 
+    final currentPostIndex = useState(posts.indexOf(post));
+
     useValueChanged(autoPlay.value, (_, __) {
       if (autoPlay.value) {
         spinningIconpanelAnimationController.repeat();
@@ -130,12 +132,33 @@ class PostDetailPage extends HookWidget {
       );
     }
 
+    Widget _buildBackButton() {
+      return Align(
+        alignment: Alignment(-0.9, -0.96),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: () {
+              onExit();
+              AppRouter.router.pop(
+                context,
+                currentPostIndex.value,
+              );
+            },
+          ),
+        ),
+      );
+    }
+
     return WillPopScope(
       onWillPop: () {
         onExit();
         showBottomInfoPanel.value = false;
         showTopOverlay.value = false;
-        return Future.value(true);
+
+        AppRouter.router.pop(context, currentPostIndex.value);
+        return Future.value(false);
       },
       child: Scaffold(
         body: Stack(
@@ -143,6 +166,9 @@ class PostDetailPage extends HookWidget {
             CarouselSlider.builder(
               itemCount: posts.length,
               itemBuilder: (context, index) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  currentPostIndex.value = index;
+                });
                 return _DetailPageChild(
                   post: posts[index],
                   imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
@@ -173,25 +199,9 @@ class PostDetailPage extends HookWidget {
                 Colors.black12.withOpacity(0.0)
               ],
             ),
-            _buildBackButton(context),
+            _buildBackButton(),
             _buildSlideShowButton(),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBackButton(BuildContext context) {
-    return Align(
-      alignment: Alignment(-0.9, -0.96),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: () {
-            onExit();
-            AppRouter.router.pop(context);
-          },
         ),
       ),
     );

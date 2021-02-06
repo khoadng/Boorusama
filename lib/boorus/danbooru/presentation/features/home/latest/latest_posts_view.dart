@@ -29,17 +29,6 @@ final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
   return ref.watch(_postsState);
 });
 
-final _lastViewedPostIndex = Provider<int>((ref) {
-  return ref
-      .watch(latestPostsStateNotifierProvider.state)
-      .posts
-      .lastViewedItemIndex;
-});
-final _lastViewedPostIndexProvider = Provider<int>((ref) {
-  final lastViewedPost = ref.watch(_lastViewedPostIndex);
-  return lastViewedPost;
-});
-
 class LatestView extends HookWidget {
   const LatestView({
     Key key,
@@ -54,7 +43,6 @@ class LatestView extends HookWidget {
         useState(RefreshController(initialRefresh: false));
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
-    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final scrollController = useState(AutoScrollController());
 
     final gridKey = useState(GlobalKey());
@@ -63,10 +51,10 @@ class LatestView extends HookWidget {
       return () => scrollController.value.dispose;
     }, []);
 
-    useEffect(() {
-      scrollController.value.scrollToIndex(lastViewedPostIndex);
-      return () => null;
-    }, [lastViewedPostIndex]);
+    final lastViewedPostIndex = useState(-1);
+    useValueChanged(lastViewedPostIndex.value, (_, __) {
+      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
+    });
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postsStateProvider,
@@ -116,27 +104,16 @@ class LatestView extends HookWidget {
                     scrollController: scrollController.value),
                 orElse: () => SliverPostGrid(
                   key: gridKey.value,
-                  onTap: (post, index) {
-                    context
-                        .read(latestPostsStateNotifierProvider)
-                        .viewPost(post);
-                    AppRouter.router.navigateTo(
+                  onTap: (post, index) async {
+                    final newIndex = await AppRouter.router.navigateTo(
                       context,
                       "/posts",
                       routeSettings: RouteSettings(arguments: [
                         post,
                         index,
                         posts,
-                        () {
-                          context
-                              .read(latestPostsStateNotifierProvider)
-                              .stopViewing();
-                        },
+                        () => null,
                         (index) {
-                          context
-                              .read(latestPostsStateNotifierProvider)
-                              .viewPost(posts[index]);
-
                           if (index > posts.length * 0.8) {
                             context
                                 .read(latestPostsStateNotifierProvider)
@@ -146,6 +123,8 @@ class LatestView extends HookWidget {
                         gridKey.value,
                       ]),
                     );
+
+                    lastViewedPostIndex.value = newIndex;
                   },
                   posts: posts,
                   scrollController: scrollController.value,

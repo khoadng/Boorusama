@@ -90,14 +90,6 @@ final _completedQueryItemsProvider = Provider.autoDispose<List<String>>((ref) {
   return completedQueryItems;
 });
 
-final _lastViewedPostIndex = Provider<int>((ref) {
-  return ref.watch(searchStateNotifierProvider.state).posts.lastViewedItemIndex;
-});
-final _lastViewedPostIndexProvider = Provider<int>((ref) {
-  final lastViewedPost = ref.watch(_lastViewedPostIndex);
-  return lastViewedPost;
-});
-
 class SearchPage extends HookWidget {
   const SearchPage({Key key, this.initialQuery}) : super(key: key);
 
@@ -168,7 +160,6 @@ class SearchPage extends HookWidget {
 
     final completedQueryItems = useProvider(_completedQueryItemsProvider);
 
-    final lastViewedPostIndex = useProvider(_lastViewedPostIndexProvider);
     final scrollController = useState(AutoScrollController());
     useEffect(() {
       queryEditingController.text = query;
@@ -181,10 +172,10 @@ class SearchPage extends HookWidget {
       return () => scrollController.value.dispose;
     }, []);
 
-    useEffect(() {
-      scrollController.value.scrollToIndex(lastViewedPostIndex);
-      return () => null;
-    }, [lastViewedPostIndex]);
+    final lastViewedPostIndex = useState(-1);
+    useValueChanged(lastViewedPostIndex.value, (_, __) {
+      scrollController.value.scrollToIndex(lastViewedPostIndex.value);
+    });
 
     return ProviderListener<ListItemStatus<Post>>(
       provider: _postStatusProvider,
@@ -308,25 +299,17 @@ class SearchPage extends HookWidget {
                             padding: EdgeInsets.all(6.0),
                             sliver: SliverPostGrid(
                               key: gridKey.value,
-                              onTap: (post, index) {
-                                context
-                                    .read(searchStateNotifierProvider)
-                                    .viewPost(post);
-                                AppRouter.router.navigateTo(
+                              onTap: (post, index) async {
+                                final newIndex =
+                                    await AppRouter.router.navigateTo(
                                   context,
                                   "/posts",
                                   routeSettings: RouteSettings(arguments: [
                                     post,
                                     index,
                                     posts,
-                                    () => context
-                                        .read(searchStateNotifierProvider)
-                                        .stopViewing(),
+                                    () => null,
                                     (index) {
-                                      context
-                                          .read(searchStateNotifierProvider)
-                                          .viewPost(posts[index]);
-
                                       if (index > posts.length * 0.8) {
                                         context
                                             .read(searchStateNotifierProvider)
@@ -336,6 +319,7 @@ class SearchPage extends HookWidget {
                                     gridKey.value,
                                   ]),
                                 );
+                                lastViewedPostIndex.value = newIndex;
                               },
                               posts: posts,
                               scrollController: scrollController.value,
