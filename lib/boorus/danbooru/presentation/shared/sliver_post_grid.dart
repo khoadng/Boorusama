@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
+import 'package:boorusama/core/presentation/widgets/top_shadow_gradient_overlay.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
@@ -102,7 +103,12 @@ class SliverPostGrid extends HookWidget {
                       ),
                     ),
                   ),
-                  _buildTopShadowGradient(),
+                  TopShadowGradientOverlay(
+                    colors: <Color>[
+                      const Color(0x2F000000),
+                      Colors.black12.withOpacity(0.0)
+                    ],
+                  ),
                   Positioned(
                     top: 6,
                     left: 6,
@@ -265,28 +271,6 @@ class SliverPostGrid extends HookWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTopShadowGradient() {
-    return IgnorePointer(
-      child: Align(
-        alignment: Alignment.topCenter,
-        child: Container(
-          height: 200,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              end: const Alignment(0.0, 0.4),
-              begin: const Alignment(0.0, -1),
-              colors: <Color>[
-                const Color(0x2F000000),
-                Colors.black12.withOpacity(0.0)
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

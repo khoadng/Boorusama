@@ -14,6 +14,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
+import 'package:boorusama/core/presentation/widgets/top_shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
 
 final _notesProvider =
@@ -41,26 +42,6 @@ class PostImagePage extends HookWidget {
 
   final String imageHeroTag;
   final Post post;
-
-  Widget _buildTopShadowGradient() {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        height: 300,
-        width: double.infinity,
-        decoration: new BoxDecoration(
-          gradient: new LinearGradient(
-            end: const Alignment(0.0, 0.4),
-            begin: const Alignment(0.0, -1),
-            colors: <Color>[
-              const Color(0x8A000000),
-              Colors.black12.withOpacity(0.0)
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
@@ -166,7 +147,10 @@ class PostImagePage extends HookWidget {
               },
               child: image),
           if (!hideOverlay.value) ...[
-            _buildTopShadowGradient(),
+            TopShadowGradientOverlay(colors: <Color>[
+              const Color(0x8A000000),
+              Colors.black12.withOpacity(0.0)
+            ]),
             _buildBackButton(context),
             _buildMoreVertButton(),
             _buildFileInfo(),
