@@ -169,6 +169,14 @@ abstract class DanbooruApi implements IApi {
     @Query("date") String date,
   );
 
+  @GET("/explore/posts/searches.json")
+  @override
+  Future<HttpResponse> getPopularSearchByDate(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("date") String date,
+  );
+
   @Extra({
     DIO_CACHE_KEY_TRY_CACHE: true,
     DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),

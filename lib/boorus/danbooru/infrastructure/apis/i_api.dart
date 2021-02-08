@@ -96,6 +96,12 @@ abstract class IApi {
     String date,
   );
 
+  Future<HttpResponse> getPopularSearchByDate(
+    String login,
+    String apiKey,
+    String date,
+  );
+
   Future<HttpResponse> getTagsByNamePattern(
     String login,
     String apiKey,
