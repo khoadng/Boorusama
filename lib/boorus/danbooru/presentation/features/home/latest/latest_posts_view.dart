@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -35,6 +36,7 @@ class LatestView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final refreshController = useState(RefreshController());
     final posts = useProvider(_postProvider);
     final postsState = useProvider(_postsStateProvider);
     final scrollController = useState(AutoScrollController());
@@ -50,10 +52,38 @@ class LatestView extends HookWidget {
         controller: scrollController.value,
         shrinkWrap: true,
         slivers: [
+          SliverAppBar(
+            toolbarHeight: kToolbarHeight * 1.2,
+            title: SearchBar(
+              enabled: false,
+              leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                  // scaffoldKey.currentState.openDrawer(),
+                  ),
+              onTap: () =>
+                  AppRouter.router.navigateTo(context, "/posts/search/"),
+            ),
+            floating: true,
+            snap: true,
+            automaticallyImplyLeading: false,
+          ),
           SliverPostGridPlaceHolder(),
         ],
       ),
-      orElse: () => InfiniteLoadList(
+      orElse: () => ProviderListener(
+        provider: latestPostsStateNotifierProvider,
+        onChange: (context, state) {
+          state.maybeWhen(
+            fetched: () {
+              refreshController.value.loadComplete();
+
+              refreshController.value.refreshCompleted();
+            },
+            error: () => Scaffold.of(context)
+                .showSnackBar(SnackBar(content: Text("Something went wrong"))),
+            orElse: () {},
+          );
+        },
+        child: InfiniteLoadList(
           header: SliverAppBar(
             toolbarHeight: kToolbarHeight * 1.2,
             title: SearchBar(
@@ -78,9 +108,11 @@ class LatestView extends HookWidget {
             }
           },
           scrollController: scrollController.value,
-          stateProvider: _postsStateProvider,
           gridKey: gridKey.value,
-          posts: posts),
+          posts: posts,
+          refreshController: refreshController.value,
+        ),
+      ),
     );
   }
 }

@@ -14,11 +14,6 @@ import 'package:boorusama/core/application/list_state_notifier.dart';
 part 'explore_state.dart';
 part 'explore_state_notifier.freezed.dart';
 
-final exploreStateNotifierProvider =
-    StateNotifierProvider<ExploreStateNotifier>((ref) {
-  return ExploreStateNotifier(ref)..refresh();
-});
-
 class ExploreStateNotifier extends StateNotifier<ExploreState> {
   ExploreStateNotifier(ProviderReference ref)
       : _postRepository = ref.watch(postProvider),

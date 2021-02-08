@@ -18,7 +18,7 @@ import 'latest/latest_posts_view.dart';
 import 'post_list_action.dart';
 import 'side_bar.dart';
 
-final popularSearchProvider =
+final _popularSearchProvider =
     FutureProvider.autoDispose<List<SearchStats>>((ref) async {
   final repo = ref.watch(popularSearchProvider);
 

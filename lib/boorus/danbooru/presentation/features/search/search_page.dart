@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -133,6 +134,7 @@ class SearchPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final queryEditingController = useTextEditingController();
+    final refreshController = useState(RefreshController());
 
     final searchDisplayState = useProvider(_searchDisplayProvider);
     final postStatus = useProvider(_postStatusProvider);
@@ -257,7 +259,23 @@ class SearchPage extends HookWidget {
                           orElse: () => postStatus.maybeWhen(
                             refreshing: () => CustomScrollView(
                                 slivers: [SliverPostGridPlaceHolder()]),
-                            orElse: () => InfiniteLoadList(
+                            orElse: () => ProviderListener(
+                              provider: searchStateNotifierProvider,
+                              onChange: (context, state) {
+                                state.maybeWhen(
+                                  fetched: () {
+                                    refreshController.value.loadComplete();
+
+                                    refreshController.value.refreshCompleted();
+                                  },
+                                  error: () => Scaffold.of(context)
+                                      .showSnackBar(SnackBar(
+                                          content:
+                                              Text("Something went wrong"))),
+                                  orElse: () {},
+                                );
+                              },
+                              child: InfiniteLoadList(
                                 onLoadMore: () => context
                                     .read(searchStateNotifierProvider)
                                     .getMoreResult(),
@@ -269,9 +287,11 @@ class SearchPage extends HookWidget {
                                   }
                                 },
                                 scrollController: scrollController.value,
-                                stateProvider: _postStatusProvider,
                                 gridKey: gridKey.value,
-                                posts: posts),
+                                posts: posts,
+                                refreshController: refreshController.value,
+                              ),
+                            ),
                           ),
                         ),
                       ),

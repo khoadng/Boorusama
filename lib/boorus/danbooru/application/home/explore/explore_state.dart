@@ -23,3 +23,9 @@ abstract class ExploreCategory with _$ExploreCategory {
   const factory ExploreCategory.curated() = _Curated;
   const factory ExploreCategory.mostViewed() = _MostViewed;
 }
+
+extension ExploreCategoryX on ExploreCategory {
+  String getName() {
+    return "${this.toString().split('.').last.replaceAll('()', '').toUpperCase()}";
+  }
+}

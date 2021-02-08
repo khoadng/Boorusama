@@ -64,8 +64,8 @@ class PostDetailPage extends HookWidget {
         useProvider(slideShowConfigurationStateProvider).state;
     useValueChanged(showSlideShowConfig.value, (_, __) {
       if (showSlideShowConfig.value) {
-        showBottomInfoPanel.value = false;
         WidgetsBinding.instance.addPostFrameCallback((_) async {
+          showBottomInfoPanel.value = false;
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
