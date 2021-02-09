@@ -30,8 +30,7 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
       callback: () async {
         final nextPage = state.posts.page + 1;
 
-        final dtos = await _postRepository.getPosts("", nextPage);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
+        final posts = await _postRepository.getPosts("", nextPage);
 
         posts
           ..removeWhere((post) {
@@ -53,8 +52,7 @@ class LatestStateNotifier extends StateNotifier<LatestPostsState> {
   void refresh() async {
     _listStateNotifier.refresh(
       callback: () async {
-        final dtos = await _postRepository.getPosts("", 1);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
+        final posts = await _postRepository.getPosts("", 1);
 
         return posts;
       },

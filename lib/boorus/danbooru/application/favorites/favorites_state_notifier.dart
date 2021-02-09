@@ -34,9 +34,8 @@ class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
       callback: () async {
         final nextPage = state.posts.page + 1;
         final account = await _accountRepository.get();
-        final dtos =
+        final posts =
             await _postRepository.getPosts("fav:${account.username}", nextPage);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
 
         return posts;
       },
@@ -50,9 +49,8 @@ class FavoritesStateNotifier extends StateNotifier<FavoritesState> {
     _listStateNotifier.refresh(
       callback: () async {
         final account = await _accountRepository.get();
-        final dtos =
+        final posts =
             await _postRepository.getPosts("fav:${account.username}", 1);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
 
         return posts;
       },

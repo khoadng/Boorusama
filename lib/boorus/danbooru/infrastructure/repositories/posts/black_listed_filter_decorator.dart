@@ -3,9 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 
 class BlackListedFilterDecorator implements IPostRepository {
@@ -19,100 +17,61 @@ class BlackListedFilterDecorator implements IPostRepository {
   final Future<ISettingRepository> _settingRepository;
 
   @override
-  Future<List<PostDto>> getCuratedPosts(
+  Future<List<Post>> getCuratedPosts(
       DateTime date, int page, TimeScale scale) async {
-    final dtos = await _postRepository.getCuratedPosts(date, page, scale);
-    final settingsRepo = await _settingRepository;
-    final settings = await settingsRepo.load();
-
-    final tagRule = settings.blacklistedTags.split("\n");
-
-    final posts = dtos
-        .where((dto) => dto.tag_string
-            .split(' ')
-            .toSet()
-            .intersection(tagRule.toSet())
-            .isEmpty)
-        .toList();
-
-    for (var dto in dtos) {
-      //TODO: should handle tag combination instead of a single tag
-      for (var tags in tagRule) {
-        if (tags.split(" ").length == 1) {
-          if (dto.tag_string.split(' ').contains(tags)) {
-            posts.add(dto);
-          }
-        }
-      }
-      posts.add(dto);
-    }
-
-    return posts;
+    final posts = await _postRepository.getCuratedPosts(date, page, scale);
+    final filtered = await _filter(posts);
+    return filtered;
   }
 
   @override
-  Future<List<PostDto>> getMostViewedPosts(DateTime date) async {
-    final dtos = await _postRepository.getMostViewedPosts(date);
-    final settingsRepo = await _settingRepository;
-    final settings = await settingsRepo.load();
-
-    final tagRule = settings.blacklistedTags.split("\n");
-    final posts = dtos
-        .where((dto) => dto.tag_string
-            .split(' ')
-            .toSet()
-            .intersection(tagRule.toSet())
-            .isEmpty)
-        .toList();
-
-    return posts;
+  Future<List<Post>> getMostViewedPosts(DateTime date) async {
+    final posts = await _postRepository.getMostViewedPosts(date);
+    final filtered = await _filter(posts);
+    return filtered;
   }
 
   @override
-  Future<List<PostDto>> getPopularPosts(
+  Future<List<Post>> getPopularPosts(
       DateTime date, int page, TimeScale scale) async {
-    final dtos = await _postRepository.getPopularPosts(date, page, scale);
-    final settingsRepo = await _settingRepository;
-    final settings = await settingsRepo.load();
-
-    final tagRule = settings.blacklistedTags.split("\n");
-
-    final posts = dtos
-        .where((dto) => dto.tag_string
-            .split(' ')
-            .toSet()
-            .intersection(tagRule.toSet())
-            .isEmpty)
-        .toList();
-
-    return posts;
+    final posts = await _postRepository.getPopularPosts(date, page, scale);
+    final filtered = await _filter(posts);
+    return filtered;
   }
 
   @override
-  Future<List<PostDto>> getPosts(
+  Future<List<Post>> getPosts(
     String tagString,
     int page, {
     int limit = 100,
     CancelToken cancelToken,
     bool skipFavoriteCheck = false,
   }) async {
-    final dtos = await _postRepository.getPosts(tagString, page,
+    final posts = await _postRepository.getPosts(tagString, page,
         limit: limit,
         cancelToken: cancelToken,
         skipFavoriteCheck: skipFavoriteCheck);
+    final filtered = await _filter(posts);
+    return filtered;
+  }
+
+  Future<List<Post>> _filter(List<Post> posts) async {
     final settingsRepo = await _settingRepository;
     final settings = await settingsRepo.load();
 
     final tagRule = settings.blacklistedTags.split("\n");
 
-    final posts = dtos
-        .where((dto) => dto.tag_string
-            .split(' ')
-            .toSet()
-            .intersection(tagRule.toSet())
-            .isEmpty)
-        .toList();
+    final filtered = posts.where((dto) {
+      print(dto.tagString.toString());
+      print(dto.tagString.toString().split(' ').toSet());
+      return dto.tagString
+          .toString()
+          .split(' ')
+          .toSet()
+          .intersection(tagRule.toSet())
+          .isEmpty;
+    }).toList();
 
-    return posts;
+    return filtered;
   }
 }

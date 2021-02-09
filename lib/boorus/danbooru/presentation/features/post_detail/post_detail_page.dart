@@ -218,9 +218,8 @@ final _recommendPostsProvider = FutureProvider.autoDispose
   final repo = ref.watch(postProvider);
   final tags =
       tagString.split(' ').take(2).map((e) => "~$e").toList().join(' ');
-  final dtos = await repo.getPosts(tags, 1,
+  final posts = await repo.getPosts(tags, 1,
       limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
 
   /// Cache the posts once it was successfully obtained.
   ref.maintainState = true;

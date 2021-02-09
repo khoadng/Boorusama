@@ -36,8 +36,7 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
         final completedQueryItems =
             _ref.watch(queryStateNotifierProvider.state).completedQueryItems;
         final query = completedQueryItems.join(' ');
-        final dtos = await _postRepository.getPosts(query, 1);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
+        final posts = await _postRepository.getPosts(query, 1);
 
         return posts;
       },
@@ -58,8 +57,7 @@ class SearchStateNotifier extends StateNotifier<SearchState> {
         final completedQueryItems =
             _ref.watch(queryStateNotifierProvider.state).completedQueryItems;
         final query = completedQueryItems.join(' ');
-        final dtos = await _postRepository.getPosts(query, nextPage);
-        final posts = dtos.map((dto) => dto.toEntity()).toList();
+        final posts = await _postRepository.getPosts(query, nextPage);
 
         posts
           ..removeWhere((post) {

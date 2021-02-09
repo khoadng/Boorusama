@@ -1,14 +1,12 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
 // Package imports:
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -17,9 +15,26 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/explore/explore_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/generated/i18n.dart';
+
+part 'explore_page.freezed.dart';
+
+@freezed
+abstract class ExploreCategory with _$ExploreCategory {
+  const factory ExploreCategory.popular() = _Popular;
+  const factory ExploreCategory.curated() = _Curated;
+  const factory ExploreCategory.mostViewed() = _MostViewed;
+}
+
+extension ExploreCategoryX on ExploreCategory {
+  String getName() {
+    return "${this.toString().split('.').last.replaceAll('()', '').toUpperCase()}";
+  }
+}
 
 final _popularPostProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
@@ -28,9 +43,8 @@ final _popularPostProvider =
   final page = ref.watch(_pageProvider);
 
   final repo = ref.watch(postProvider);
-  final dtos =
+  final posts =
       await repo.getPopularPosts(date.state, page.state, timeScale.state);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
 
   return posts;
 });
@@ -38,8 +52,7 @@ final _popularPostProvider =
 final _popularPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final dtos = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
+  final posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
 
   return posts.take(20).toList();
 });
@@ -51,9 +64,8 @@ final _curatedPostProvider =
   final page = ref.watch(_pageProvider);
 
   final repo = ref.watch(postProvider);
-  final dtos =
+  final posts =
       await repo.getCuratedPosts(date.state, page.state, timeScale.state);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
 
   return posts;
 });
@@ -61,8 +73,7 @@ final _curatedPostProvider =
 final _curatedPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final dtos = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
+  final posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
 
   return posts.take(20).toList();
 });
@@ -71,8 +82,7 @@ final _mostViewedPostProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final date = ref.watch(_dateProvider);
   final repo = ref.watch(postProvider);
-  final dtos = await repo.getMostViewedPosts(date.state);
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
+  final posts = await repo.getMostViewedPosts(date.state);
 
   return posts;
 });
@@ -80,8 +90,7 @@ final _mostViewedPostProvider =
 final _mostViewedPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final dtos = await repo.getMostViewedPosts(DateTime.now());
-  final posts = dtos.map((dto) => dto.toEntity()).toList();
+  final posts = await repo.getMostViewedPosts(DateTime.now());
 
   return posts.take(20).toList();
 });

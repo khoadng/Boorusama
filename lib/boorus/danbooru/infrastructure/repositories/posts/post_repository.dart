@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:html/parser.dart' as html;
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -45,7 +44,7 @@ class PostRepository implements IPostRepository {
   static const int _limit = 100;
 
   @override
-  Future<List<PostDto>> getCuratedPosts(
+  Future<List<Post>> getCuratedPosts(
     DateTime date,
     int page,
     TimeScale scale,
@@ -61,17 +60,19 @@ class PostRepository implements IPostRepository {
             page,
             _limit)
         .then((value) async {
-      final posts = <PostDto>[];
+      final dtos = <PostDto>[];
       await _appendIsFavoritedIfValid(value, account, limit: _limit);
 
       for (var item in value.response.data) {
         try {
-          var post = PostDto.fromJson(item);
-          posts.add(post);
+          var dto = PostDto.fromJson(item);
+          dtos.add(dto);
         } catch (e) {
           print("Cant parse ${item['id']}");
         }
       }
+
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
 
       return posts;
     }).catchError((Object obj) {
@@ -92,7 +93,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<PostDto>> getMostViewedPosts(
+  Future<List<Post>> getMostViewedPosts(
     DateTime date,
   ) async {
     final account = await _accountRepository.get();
@@ -101,17 +102,19 @@ class PostRepository implements IPostRepository {
         .getMostViewedPosts(account.username, account.apiKey,
             "${date.year}-${date.month}-${date.day}")
         .then((value) async {
-      final posts = <PostDto>[];
+      final dtos = <PostDto>[];
       await _appendIsFavoritedIfValid(value, account, limit: _limit);
 
       for (var item in value.response.data) {
         try {
-          var post = PostDto.fromJson(item);
-          posts.add(post);
+          var dto = PostDto.fromJson(item);
+          dtos.add(dto);
         } catch (e) {
           print("Cant parse ${item['id']}");
         }
       }
+
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
 
       return posts;
     }).catchError((Object obj) {
@@ -132,7 +135,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<PostDto>> getPopularPosts(
+  Future<List<Post>> getPopularPosts(
     DateTime date,
     int page,
     TimeScale scale,
@@ -147,16 +150,19 @@ class PostRepository implements IPostRepository {
             page,
             _limit)
         .then((value) async {
-      final posts = <PostDto>[];
+      final dtos = <PostDto>[];
+
       await _appendIsFavoritedIfValid(value, account, limit: _limit);
       for (var item in value.response.data) {
         try {
-          var post = PostDto.fromJson(item);
-          posts.add(post);
+          var dto = PostDto.fromJson(item);
+          dtos.add(dto);
         } catch (e) {
           print("Cant parse ${item['id']}");
         }
       }
+
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
 
       return posts;
     }).catchError((Object obj) {
@@ -177,7 +183,7 @@ class PostRepository implements IPostRepository {
   }
 
   @override
-  Future<List<PostDto>> getPosts(
+  Future<List<Post>> getPosts(
     String tagString,
     int page, {
     int limit = 100,
@@ -194,19 +200,22 @@ class PostRepository implements IPostRepository {
           settings.safeMode ? "$tagString rating:s" : tagString, limit,
           cancelToken: cancelToken);
 
-      final posts = <PostDto>[];
+      final dtos = <PostDto>[];
       if (!skipFavoriteCheck) {
         await _appendIsFavoritedIfValid(value, account, limit: limit);
       }
 
       for (var item in value.response.data) {
         try {
-          var post = PostDto.fromJson(item);
-          posts.add(post);
+          var dto = PostDto.fromJson(item);
+          dtos.add(dto);
         } catch (e) {
           print("Cant parse ${item['id']}");
         }
       }
+
+      final posts = dtos.map((dto) => dto.toEntity()).toList();
+
       print('parsed posts in ${stopwatch.elapsed.inMilliseconds}ms'
           .toUpperCase());
 
