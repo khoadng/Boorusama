@@ -12,13 +12,17 @@ import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:recase/recase.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/widgets/top_shadow_gradient_overlay.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 part 'explore_page.freezed.dart';
@@ -32,7 +36,7 @@ abstract class ExploreCategory with _$ExploreCategory {
 
 extension ExploreCategoryX on ExploreCategory {
   String getName() {
-    return "${this.toString().split('.').last.replaceAll('()', '').toUpperCase()}";
+    return "${this.toString().split('.').last.replaceAll('()', '')}";
   }
 }
 
@@ -52,7 +56,11 @@ final _popularPostProvider =
 final _popularPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
+  var posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
+  if (posts.isEmpty) {
+    posts = await repo.getPopularPosts(
+        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+  }
 
   return posts.take(20).toList();
 });
@@ -73,7 +81,12 @@ final _curatedPostProvider =
 final _curatedPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
+  var posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
+
+  if (posts.isEmpty) {
+    posts = await repo.getCuratedPosts(
+        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+  }
 
   return posts.take(20).toList();
 });
@@ -90,7 +103,12 @@ final _mostViewedPostProvider =
 final _mostViewedPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
-  final posts = await repo.getMostViewedPosts(DateTime.now());
+  var posts = await repo.getMostViewedPosts(DateTime.now());
+
+  if (posts.isEmpty) {
+    posts = await repo
+        .getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
+  }
 
   return posts.take(20).toList();
 });
@@ -113,8 +131,15 @@ class ExplorePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     Widget _buildExploreSection(ExploreCategory category) {
+      final title = Text(
+        "${category.getName().sentenceCase}",
+        style: Theme.of(context)
+            .textTheme
+            .headline6
+            .copyWith(fontWeight: FontWeight.w700),
+      );
       return _ExploreSection(
-        title: Text("${category.getName().toUpperCase()}"),
+        title: title,
         posts: category.when(
           popular: () => useProvider(_popularPostSneakPeakProvider),
           curated: () => useProvider(_curatedPostSneakPeakProvider),
@@ -124,7 +149,7 @@ class ExplorePage extends HookWidget {
           context: context,
           builder: (context, controller) {
             return _ExploreItemPage(
-              title: Text("${category.getName().toUpperCase()}"),
+              title: title,
               provider: category.when(
                 popular: () => _popularPostProvider,
                 curated: () => _curatedPostProvider,
@@ -409,7 +434,7 @@ class _ExploreListItemHeader extends HookWidget {
 }
 
 class _ExploreSection extends StatelessWidget {
-  const _ExploreSection({
+  _ExploreSection({
     Key key,
     @required this.title,
     @required this.posts,
@@ -419,42 +444,76 @@ class _ExploreSection extends StatelessWidget {
   final AsyncValue<List<Post>> posts;
   final Widget title;
   final VoidCallback onViewMoreTap;
+  final GlobalKey gridKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-            title: title,
-            trailing: IconButton(
-                icon: Icon(Icons.arrow_forward_ios),
-                onPressed: () => onViewMoreTap())),
-        posts.when(
-          data: (posts) => CarouselSlider.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index) {
-              final post = posts[index];
-              return PostImage(
-                imageUrl: post.isAnimated
-                    ? post.previewImageUri.toString()
-                    : post.normalImageUri.toString(),
-                placeholderUrl: post.previewImageUri.toString(),
-              );
-            },
-            options: CarouselOptions(
-              aspectRatio: 1.5,
-              viewportFraction: 0.5,
-              initialPage: 0,
-              autoPlay: true,
-              enlargeCenterPage: true,
-              enlargeStrategy: CenterPageEnlargeStrategy.scale,
-              autoPlayInterval: Duration(seconds: 3),
-              autoPlayAnimationDuration: Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              scrollDirection: Axis.horizontal,
-            ),
+          title: title,
+          trailing: InkWell(
+            onTap: () => onViewMoreTap(),
+            child: Text("See more", style: Theme.of(context).textTheme.button),
           ),
-          loading: () => Center(child: CircularProgressIndicator()),
+        ),
+        posts.when(
+          data: (posts) => posts.isNotEmpty
+              ? CarouselSlider.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index) {
+                    final post = posts[index];
+                    return Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () => AppRouter.router.navigateTo(
+                            context,
+                            "/posts",
+                            routeSettings: RouteSettings(arguments: [
+                              post,
+                              index,
+                              posts,
+                              () => null,
+                              (index) {},
+                              gridKey,
+                            ]),
+                          ),
+                          child: PostImage(
+                            imageUrl: post.isAnimated
+                                ? post.previewImageUri.toString()
+                                : post.normalImageUri.toString(),
+                            placeholderUrl: post.previewImageUri.toString(),
+                          ),
+                        ),
+                        TopShadowGradientOverlay(
+                          colors: <Color>[
+                            const Color(0xC2000000),
+                            Colors.black12.withOpacity(0.0)
+                          ],
+                        ),
+                        Align(
+                            alignment: Alignment(-0.9, -1),
+                            child: Text(
+                              "${index + 1}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline3
+                                  .copyWith(color: Colors.white),
+                            )),
+                      ],
+                    );
+                  },
+                  options: CarouselOptions(
+                    aspectRatio: 1.5,
+                    viewportFraction: 0.5,
+                    initialPage: 0,
+                    enlargeCenterPage: true,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                )
+              : CarouselPlaceholder(),
+          loading: () => CarouselPlaceholder(),
           error: (error, stackTrace) => Center(
             child: Text("Something went wrong"),
           ),

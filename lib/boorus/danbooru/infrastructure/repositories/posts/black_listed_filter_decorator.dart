@@ -62,8 +62,6 @@ class BlackListedFilterDecorator implements IPostRepository {
     final tagRule = settings.blacklistedTags.split("\n");
 
     final filtered = posts.where((dto) {
-      print(dto.tagString.toString());
-      print(dto.tagString.toString().split(' ').toSet());
       return dto.tagString
           .toString()
           .split(' ')
