@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search_stats.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
@@ -21,8 +20,14 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 final _postProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   final page = ref.watch(_pageProvider);
+  final selectedTag = ref.watch(_selectedTagProvider);
+  List<Post> posts;
 
-  final posts = await repo.getPosts("", page.state, limit: 20);
+  if (selectedTag.state.isEmpty) {
+    posts = await repo.getPosts("", page.state);
+  } else {
+    posts = await repo.getPosts(selectedTag.state, page.state);
+  }
 
   ref.maintainState = true;
 
@@ -34,14 +39,18 @@ final _pageProvider = StateProvider.autoDispose<int>((ref) {
 });
 
 final _popularSearchProvider =
-    FutureProvider.autoDispose<List<SearchStats>>((ref) async {
+    FutureProvider.autoDispose<List<Search>>((ref) async {
   final repo = ref.watch(popularSearchProvider);
 
-  final searches = await repo.getSearchStatsByDate(DateTime.now());
+  final searches = await repo.getSearchByDate(DateTime.now());
 
   ref.maintainState = true;
 
   return searches;
+});
+
+final _selectedTagProvider = StateProvider<String>((ref) {
+  return "";
 });
 
 class LatestView extends HookWidget {
@@ -61,10 +70,7 @@ class LatestView extends HookWidget {
 
     final popularSearches = useProvider(_popularSearchProvider);
     final isRefreshing = useState(true);
-
-    useEffect(() {
-      return () => scrollController.value.dispose;
-    }, []);
+    final selectedTag = useProvider(_selectedTagProvider);
 
     void refresh() {
       isRefreshing.value = true;
@@ -80,6 +86,18 @@ class LatestView extends HookWidget {
         page.state = page.state + 1;
       }
     }
+
+    useEffect(() {
+      return () => scrollController.value.dispose;
+    }, []);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        refresh();
+      });
+
+      return null;
+    }, [selectedTag.state]);
 
     useEffect(() {
       postsAtPage.whenData((data) {
@@ -112,6 +130,41 @@ class LatestView extends HookWidget {
       return null;
     }, [postsAtPage]);
 
+    Widget _buildTags(List<Search> searches) {
+      return Container(
+        margin: EdgeInsets.only(left: 8.0),
+        height: 50,
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: searches.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              child: ChoiceChip(
+                  selectedColor: Colors.white,
+                  selected: selectedTag.state == searches[index].keyword,
+                  onSelected: (selected) => selected
+                      ? selectedTag.state = searches[index].keyword
+                      : selectedTag.state = "",
+                  padding: EdgeInsets.all(4.0),
+                  labelPadding: EdgeInsets.all(1.0),
+                  visualDensity: VisualDensity.compact,
+                  label: ConstrainedBox(
+                    constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                    child: Text(
+                      searches[index].keyword.pretty,
+                      overflow: TextOverflow.fade,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  )),
+            );
+          },
+        ),
+      );
+    }
+
     return isRefreshing.value
         ? CustomScrollView(
             controller: scrollController.value,
@@ -132,10 +185,11 @@ class LatestView extends HookWidget {
                 automaticallyImplyLeading: false,
               ),
               SliverToBoxAdapter(
-                  child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Center(child: CircularProgressIndicator()),
-              )),
+                child: popularSearches.maybeWhen(
+                  data: (searches) => _buildTags(searches),
+                  orElse: () => Center(child: CircularProgressIndicator()),
+                ),
+              ),
               SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 6.0),
                   sliver: SliverPostGridPlaceHolder()),
@@ -159,30 +213,7 @@ class LatestView extends HookWidget {
               ),
               SliverToBoxAdapter(
                 child: popularSearches.maybeWhen(
-                    data: (searches) => Tags(
-                          horizontalScroll: true,
-                          alignment: WrapAlignment.start,
-                          runAlignment: WrapAlignment.start,
-                          itemCount: searches.length,
-                          itemBuilder: (index) {
-                            return Chip(
-                                padding: EdgeInsets.all(4.0),
-                                labelPadding: EdgeInsets.all(1.0),
-                                visualDensity: VisualDensity.compact,
-                                label: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                              0.85),
-                                  child: Text(
-                                    searches[index].keyword.pretty,
-                                    overflow: TextOverflow.fade,
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ));
-                          },
-                        ),
+                    data: (searches) => _buildTags(searches),
                     orElse: () => SizedBox.shrink()),
               ),
             ],

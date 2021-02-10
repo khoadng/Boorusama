@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_popular_search_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search_stats.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
@@ -27,7 +27,7 @@ class PopularSearchRepository implements IPopularSearchRepository {
         _api = api;
 
   @override
-  Future<List<SearchStats>> getSearchStatsByDate(DateTime date) async {
+  Future<List<Search>> getSearchByDate(DateTime date) async {
     final account = await _accountRepository.get();
     try {
       final value = await _api.getPopularSearchByDate(
@@ -37,10 +37,10 @@ class PopularSearchRepository implements IPopularSearchRepository {
       );
 
       final stats = value.response.data
-          .map((e) => SearchStats(keyword: e[0], hitCount: e[1].toInt()))
+          .map((e) => Search(keyword: e[0], hitCount: e[1].toInt()))
           .toList();
 
-      return List<SearchStats>.from(stats);
+      return List<Search>.from(stats);
     } on DioError catch (e) {
       if (e.type == DioErrorType.CANCEL) {
         // Cancel token triggered, skip this request
