@@ -117,11 +117,11 @@ final _timeScaleProvider = StateProvider.autoDispose<TimeScale>((ref) {
   return TimeScale.day;
 });
 
-final _dateProvider = StateProvider<DateTime>((ref) {
+final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
   return DateTime.now();
 });
 
-final _pageProvider = StateProvider<int>((ref) {
+final _pageProvider = StateProvider.autoDispose<int>((ref) {
   return 1;
 });
 
@@ -199,26 +199,9 @@ class _ExploreItemPage extends HookWidget {
     final gridKey = useState(GlobalKey());
 
     final isRefreshing = useState(true);
+    final hasNoData = useState(false);
 
     final scrollController = useState(AutoScrollController());
-    useEffect(() {
-      return () => scrollController.dispose;
-    }, []);
-
-    useEffect(() {
-      postsAtPage.whenData((data) {
-        posts.value = [...posts.value, ...data];
-      });
-
-      return null;
-    }, [postsAtPage]);
-
-    useValueChanged(posts.value, (_, __) {
-      if (posts.value.isNotEmpty) {
-        isRefreshing.value = false;
-        refreshController.value.refreshCompleted();
-      }
-    });
 
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
@@ -235,6 +218,71 @@ class _ExploreItemPage extends HookWidget {
       page.state = page.state + 1;
     }
 
+    useEffect(() {
+      return () => scrollController.dispose;
+    }, []);
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        refresh();
+      });
+
+      return null;
+    }, [selectedTimeScale.state, selectedDate.state]);
+
+    useEffect(() {
+      postsAtPage.whenData((data) {
+        if (isRefreshing.value) {
+          isRefreshing.value = false;
+          posts.value = data;
+        } else {
+          // in Loading mode
+          refreshController.value.loadComplete();
+          posts.value = [...posts.value, ...data];
+        }
+
+        if (data.isEmpty) {
+          refreshController.value.loadNoData();
+        }
+
+        hasNoData.value = data.isEmpty && posts.value.isEmpty;
+      });
+
+      return null;
+    }, [postsAtPage]);
+
+    Widget _buildHeader() {
+      return _ExploreListItemHeader(
+        selectedCategory: category,
+        onDateChanged: (value) => selectedDate.state = value,
+        onTimeScaleChanged: (value) => selectedTimeScale.state = value,
+      );
+    }
+
+    Widget _buildPageContent() {
+      if (isRefreshing.value) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      } else {
+        if (hasNoData.value) {
+          return Center(
+            child: Text("No data"),
+          );
+        } else {
+          return InfiniteLoadList(
+              // header: SliverToBoxAdapter(child: header),
+              scrollController: scrollController.value,
+              gridKey: gridKey.value,
+              posts: posts.value,
+              refreshController: refreshController.value,
+              onItemChanged: (index) => loadMoreIfNeeded(index),
+              onRefresh: () => refresh(),
+              onLoadMore: () => loadMore());
+        }
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           actions: [
@@ -246,36 +294,12 @@ class _ExploreItemPage extends HookWidget {
           automaticallyImplyLeading: false,
           title: title,
         ),
-        body: isRefreshing.value
-            ? Column(
-                children: [
-                  _ExploreListItemHeader(
-                    selectedCategory: category,
-                    onDateChanged: (value) => selectedDate.state = value,
-                    onTimeScaleChanged: (value) =>
-                        selectedTimeScale.state = value,
-                  ),
-                  Center(
-                    child: CircularProgressIndicator(),
-                  ),
-                ],
-              )
-            : InfiniteLoadList(
-                header: SliverToBoxAdapter(
-                  child: _ExploreListItemHeader(
-                    selectedCategory: category,
-                    onDateChanged: (value) => selectedDate.state = value,
-                    onTimeScaleChanged: (value) =>
-                        selectedTimeScale.state = value,
-                  ),
-                ),
-                scrollController: scrollController.value,
-                gridKey: gridKey.value,
-                posts: posts.value,
-                refreshController: refreshController.value,
-                onItemChanged: (index) => loadMoreIfNeeded(index),
-                onRefresh: () => refresh(),
-                onLoadMore: () => loadMore()));
+        body: Column(
+          children: [
+            _buildHeader(),
+            Expanded(child: _buildPageContent()),
+          ],
+        ));
   }
 }
 
