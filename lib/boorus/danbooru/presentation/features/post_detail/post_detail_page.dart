@@ -274,31 +274,19 @@ class _DetailPageChild extends HookWidget {
     final charactersPosts =
         useProvider(_recommendPostsProvider(post.tagStringCharacter));
 
-    final tickerProvider = useSingleTickerProvider();
-    final panelAnimationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(milliseconds: 250));
-
     final panelMinHeight = post.isVideo
         ? _minPanelHeight
         : max(MediaQuery.of(context).size.height * 0.5,
             _calculatePanelMinHeight(context) + _panelOverImageOffset);
-
-    if (showBottomPanel) {
-      panelAnimationController.forward();
-    } else {
-      panelAnimationController.reverse();
-    }
 
     Widget postWidget;
     if (post.isVideo) {
       postWidget = PostVideo(post: post);
     } else {
       postWidget = GestureDetector(
-        onTap: () async {
-          panelAnimationController.reverse();
-          await AppRouter.router.navigateTo(context, "/posts/image",
+        onTap: () {
+          AppRouter.router.navigateTo(context, "/posts/image",
               routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
-          panelAnimationController.forward();
         },
         child: ClipRRect(
             child: CachedNetworkImage(
@@ -353,94 +341,97 @@ class _DetailPageChild extends HookWidget {
                     showBottomPanel ? Alignment.topCenter : Alignment.center,
                 child: postWidget),
           ),
-          SlideTransition(
-            position: Tween<Offset>(begin: Offset(0.0, 1.6), end: Offset.zero)
-                .animate(panelAnimationController),
-            child: SlidingUpPanel(
-              color: Colors.transparent,
-              minHeight: panelMinHeight,
-              maxHeight:
-                  MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-              panelBuilder: (scrollController) {
-                return Modal(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () => showMaterialModalBottomSheet(
-                          barrierColor: Colors.transparent,
-                          context: context,
-                          builder: (context, controller) => PostInfoModal(
-                            scrollController: controller,
-                            panelMinHeight: panelMinHeight,
-                            post: post,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                flex: 5,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      post.tagStringCharacter.isEmpty
-                                          ? "Original"
-                                          : post.name.characterOnly.pretty
-                                              .capitalizeFirstofEach,
-                                      overflow: TextOverflow.fade,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                        post.tagStringCopyright.isEmpty
-                                            ? "Original"
-                                            : post.name.copyRightOnly.pretty
-                                                .capitalizeFirstofEach,
-                                        overflow: TextOverflow.fade,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      post.createdAt.toString(),
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                    ),
-                                  ],
-                                ),
+          showBottomPanel
+              ? SlidingUpPanel(
+                  color: Colors.transparent,
+                  minHeight: panelMinHeight,
+                  maxHeight:
+                      MediaQuery.of(context).size.height - 24 - kToolbarHeight,
+                  panelBuilder: (scrollController) {
+                    return Modal(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          InkWell(
+                            onTap: () => showMaterialModalBottomSheet(
+                              barrierColor: Colors.transparent,
+                              context: context,
+                              builder: (context, controller) => PostInfoModal(
+                                scrollController: controller,
+                                panelMinHeight: panelMinHeight,
+                                post: post,
                               ),
-                              Flexible(child: Icon(Icons.keyboard_arrow_down)),
-                            ],
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Flexible(
+                                    flex: 5,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.tagStringCharacter.isEmpty
+                                              ? "Original"
+                                              : post.name.characterOnly.pretty
+                                                  .capitalizeFirstofEach,
+                                          overflow: TextOverflow.fade,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                            post.tagStringCopyright.isEmpty
+                                                ? "Original"
+                                                : post.name.copyRightOnly.pretty
+                                                    .capitalizeFirstofEach,
+                                            overflow: TextOverflow.fade,
+                                            style: Theme.of(context)
+                                                .textTheme
+                                                .bodyText2),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          post.createdAt.toString(),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Flexible(
+                                      child: Icon(Icons.keyboard_arrow_down)),
+                                ],
+                              ),
+                            ),
                           ),
-                        ),
+                          PostActionToolbar(post: post),
+                          Divider(
+                            height: 8,
+                            thickness: 1,
+                          ),
+                          ListTile(
+                            title: Text(post.tagStringArtist.pretty),
+                          ),
+                          _buildRecommendPosts(artistPosts),
+                          ListTile(
+                            title: Text(post.tagStringCharacter.pretty
+                                .capitalizeFirstofEach),
+                          ),
+                          _buildRecommendPosts(charactersPosts),
+                        ],
                       ),
-                      PostActionToolbar(post: post),
-                      Divider(
-                        height: 8,
-                        thickness: 1,
-                      ),
-                      ListTile(
-                        title: Text(post.tagStringArtist.pretty),
-                      ),
-                      _buildRecommendPosts(artistPosts),
-                      ListTile(
-                        title: Text(post
-                            .tagStringCharacter.pretty.capitalizeFirstofEach),
-                      ),
-                      _buildRecommendPosts(charactersPosts),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+                    );
+                  },
+                )
+              : SizedBox.shrink(),
         ]),
       ),
     );

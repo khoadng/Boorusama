@@ -75,9 +75,10 @@ extension PostDtoX on PostDto {
   Post toEntity() {
     return Post(
       id: id,
-      previewImageUri: Uri.parse(preview_file_url),
-      normalImageUri: Uri.parse(large_file_url),
-      fullImageUri: Uri.parse(file_url),
+      previewImageUri:
+          preview_file_url != null ? Uri.parse(preview_file_url) : null,
+      normalImageUri: large_file_url != null ? Uri.parse(large_file_url) : null,
+      fullImageUri: file_url != null ? Uri.parse(file_url) : null,
       tagStringCopyright: tag_string_copyright,
       tagStringCharacter: tag_string_character,
       tagStringArtist: tag_string_artist,
