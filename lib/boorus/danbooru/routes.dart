@@ -21,9 +21,10 @@ final postSearchHandler = Handler(handlerFunc: (
   BuildContext context,
   Map<String, List<String>> params,
 ) {
-  final String query = params["query"][0];
+  final args = context.settings.arguments as List;
+
   return SearchPage(
-    initialQuery: query,
+    initialQuery: args[0],
   );
 });
 

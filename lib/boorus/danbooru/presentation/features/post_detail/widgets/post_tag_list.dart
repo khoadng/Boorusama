@@ -74,9 +74,10 @@ class _PostTagListState extends State<PostTagList> {
         _tagKeys[tag.rawName] = tagKey;
 
         return GestureDetector(
-          onTap: () => AppRouter.router.navigateTo(
-              context, "/posts/search/${tag.rawName}",
-              replace: true, maintainState: false),
+          onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
+              routeSettings: RouteSettings(arguments: [tag.rawName]),
+              replace: true,
+              maintainState: false),
           onLongPress: () {
             if (_menu.isShow) {
               _menu.dismiss();

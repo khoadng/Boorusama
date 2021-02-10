@@ -14,7 +14,7 @@ class AppRouter {
   void setupRoutes() {
     router.define("/", handler: rootHandler);
 
-    router.define("/posts/search/:query",
+    router.define("/posts/search",
         handler: postSearchHandler, transitionType: TransitionType.fadeIn);
 
     router.define("/posts",

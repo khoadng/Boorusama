@@ -177,7 +177,8 @@ class LatestView extends HookWidget {
             leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
                 // scaffoldKey.currentState.openDrawer(),
                 ),
-            onTap: () => AppRouter.router.navigateTo(context, "/posts/search/"),
+            onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
+                routeSettings: RouteSettings(arguments: [''])),
           ),
           floating: true,
           snap: true,

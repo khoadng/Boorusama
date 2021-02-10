@@ -54,6 +54,7 @@ class InfiniteLoadList extends HookWidget {
         child: ScaleTransition(
           scale: hideFabAnimController,
           child: FloatingActionButton(
+            heroTag: null,
             child: FaIcon(FontAwesomeIcons.angleDoubleUp),
             onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
           ),

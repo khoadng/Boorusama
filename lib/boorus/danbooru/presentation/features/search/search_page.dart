@@ -158,6 +158,15 @@ class SearchPage extends HookWidget {
     }, [query]);
 
     useEffect(() {
+      if (initialQuery.isNotEmpty) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          context.read(queryStateNotifierProvider).add(initialQuery);
+        });
+      }
+      return null;
+    }, []);
+
+    useEffect(() {
       return () => scrollController.value.dispose;
     }, []);
 
