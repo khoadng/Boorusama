@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popul
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 final _postProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
@@ -116,6 +117,7 @@ class LatestView extends HookWidget {
         if (isRefreshing.value) {
           isRefreshing.value = false;
           posts.value = data;
+          refreshController.value.refreshCompleted();
         } else {
           // in Loading mode
           refreshController.value.loadComplete();
@@ -142,88 +144,64 @@ class LatestView extends HookWidget {
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
-                  selectedColor: Colors.white,
-                  selected: selectedTag.state == searches[index].keyword,
-                  onSelected: (selected) => selected
-                      ? selectedTag.state = searches[index].keyword
-                      : selectedTag.state = "",
-                  padding: EdgeInsets.all(4.0),
-                  labelPadding: EdgeInsets.all(1.0),
-                  visualDensity: VisualDensity.compact,
-                  label: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85),
-                    child: Text(
-                      searches[index].keyword.pretty,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  )),
+                selectedColor: Colors.white,
+                selected: selectedTag.state == searches[index].keyword,
+                onSelected: (selected) => selected
+                    ? selectedTag.state = searches[index].keyword
+                    : selectedTag.state = "",
+                padding: EdgeInsets.all(4.0),
+                labelPadding: EdgeInsets.all(1.0),
+                visualDensity: VisualDensity.compact,
+                label: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.85),
+                  child: Text(
+                    searches[index].keyword.pretty,
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
             );
           },
         ),
       );
     }
 
-    return isRefreshing.value
-        ? CustomScrollView(
-            controller: scrollController.value,
-            shrinkWrap: true,
-            slivers: [
-              SliverAppBar(
-                toolbarHeight: kToolbarHeight * 1.2,
-                title: SearchBar(
-                  enabled: false,
-                  leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                      // scaffoldKey.currentState.openDrawer(),
-                      ),
-                  onTap: () =>
-                      AppRouter.router.navigateTo(context, "/posts/search/"),
+    return InfiniteLoadList(
+      headers: [
+        SliverAppBar(
+          toolbarHeight: kToolbarHeight * 1.2,
+          title: SearchBar(
+            enabled: false,
+            leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                // scaffoldKey.currentState.openDrawer(),
                 ),
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
-              ),
-              SliverToBoxAdapter(
-                child: popularSearches.maybeWhen(
-                  data: (searches) => _buildTags(searches),
-                  orElse: () => Center(child: CircularProgressIndicator()),
-                ),
-              ),
-              SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0),
-                  sliver: SliverPostGridPlaceHolder()),
-            ],
-          )
-        : InfiniteLoadList(
-            headers: [
-              SliverAppBar(
-                toolbarHeight: kToolbarHeight * 1.2,
-                title: SearchBar(
-                  enabled: false,
-                  leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                      // scaffoldKey.currentState.openDrawer(),
-                      ),
-                  onTap: () =>
-                      AppRouter.router.navigateTo(context, "/posts/search/"),
-                ),
-                floating: true,
-                snap: true,
-                automaticallyImplyLeading: false,
-              ),
-              SliverToBoxAdapter(
-                child: popularSearches.maybeWhen(
-                    data: (searches) => _buildTags(searches),
-                    orElse: () => SizedBox.shrink()),
-              ),
-            ],
-            onRefresh: () => refresh(),
-            onLoadMore: () => loadMore(),
-            onItemChanged: (index) => loadMoreIfNeeded(index),
-            scrollController: scrollController.value,
-            gridKey: gridKey.value,
-            posts: posts.value,
-            refreshController: refreshController.value,
-          );
+            onTap: () => AppRouter.router.navigateTo(context, "/posts/search/"),
+          ),
+          floating: true,
+          snap: true,
+          automaticallyImplyLeading: false,
+        ),
+        SliverToBoxAdapter(
+          child: popularSearches.maybeWhen(
+            data: (searches) => _buildTags(searches),
+            orElse: () => TagChipsPlaceholder(),
+          ),
+        ),
+      ],
+      onRefresh: () => refresh(),
+      onLoadMore: () => loadMore(),
+      onItemChanged: (index) => loadMoreIfNeeded(index),
+      scrollController: scrollController.value,
+      gridKey: gridKey.value,
+      posts: posts.value,
+      refreshController: refreshController.value,
+      child: isRefreshing.value
+          ? SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 6.0),
+              sliver: SliverPostGridPlaceHolder())
+          : null,
+    );
   }
 }

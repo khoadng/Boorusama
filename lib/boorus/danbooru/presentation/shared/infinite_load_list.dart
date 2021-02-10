@@ -22,6 +22,7 @@ class InfiniteLoadList extends HookWidget {
     this.onLoadMore,
     this.onItemChanged,
     this.headers,
+    this.child,
   }) : super(key: key);
 
   final AutoScrollController scrollController;
@@ -31,6 +32,7 @@ class InfiniteLoadList extends HookWidget {
   final VoidCallback onLoadMore;
   final ValueChanged<int> onItemChanged;
   final List<Widget> headers;
+  final Widget child;
   final RefreshController refreshController;
 
   @override
@@ -53,29 +55,30 @@ class InfiniteLoadList extends HookWidget {
           if (headers != null) ...headers,
           SliverPadding(
             padding: EdgeInsets.all(6.0),
-            sliver: SliverPostGrid(
-              key: gridKey,
-              onTap: (post, index) async {
-                final newIndex = await AppRouter.router.navigateTo(
-                  context,
-                  "/posts",
-                  routeSettings: RouteSettings(arguments: [
-                    post,
-                    index,
-                    posts,
-                    () => null,
-                    (index) {
-                      onItemChanged(index);
-                    },
-                    gridKey,
-                  ]),
-                );
+            sliver: child ??
+                SliverPostGrid(
+                  key: gridKey,
+                  onTap: (post, index) async {
+                    final newIndex = await AppRouter.router.navigateTo(
+                      context,
+                      "/posts",
+                      routeSettings: RouteSettings(arguments: [
+                        post,
+                        index,
+                        posts,
+                        () => null,
+                        (index) {
+                          onItemChanged(index);
+                        },
+                        gridKey,
+                      ]),
+                    );
 
-                lastViewedPostIndex.value = newIndex;
-              },
-              posts: posts,
-              scrollController: scrollController,
-            ),
+                    lastViewedPostIndex.value = newIndex;
+                  },
+                  posts: posts,
+                  scrollController: scrollController,
+                ),
           ),
         ],
       ),
