@@ -9,27 +9,28 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search_stats.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/list_item_status.dart';
 
-final _posts = Provider<List<Post>>(
-    (ref) => ref.watch(latestPostsStateNotifierProvider.state).posts.items);
-final _postProvider = Provider<List<Post>>((ref) {
-  return ref.watch(_posts);
+final _postProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
+  final repo = ref.watch(postProvider);
+  final page = ref.watch(_pageProvider);
+
+  final posts = await repo.getPosts("", page.state, limit: 20);
+
+  ref.maintainState = true;
+
+  return posts;
 });
 
-final _postsState = Provider<ListItemStatus<Post>>((ref) {
-  return ref.watch(latestPostsStateNotifierProvider.state).posts.status;
-});
-final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
-  return ref.watch(_postsState);
+final _pageProvider = StateProvider.autoDispose<int>((ref) {
+  return 1;
 });
 
 final _popularSearchProvider =
@@ -51,113 +52,147 @@ class LatestView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final refreshController = useState(RefreshController());
-    final posts = useProvider(_postProvider);
-    final postsState = useProvider(_postsStateProvider);
+    final posts = useState(<Post>[]);
     final scrollController = useState(AutoScrollController());
+    final page = useProvider(_pageProvider);
+    final postsAtPage = useProvider(_postProvider);
 
     final gridKey = useState(GlobalKey());
 
     final popularSearches = useProvider(_popularSearchProvider);
+    final isRefreshing = useState(true);
 
     useEffect(() {
       return () => scrollController.value.dispose;
     }, []);
 
-    return postsState.maybeWhen(
-      refreshing: () => CustomScrollView(
-        controller: scrollController.value,
-        shrinkWrap: true,
-        slivers: [
-          SliverAppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: SearchBar(
-              enabled: false,
-              leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                  // scaffoldKey.currentState.openDrawer(),
-                  ),
-              onTap: () =>
-                  AppRouter.router.navigateTo(context, "/posts/search/"),
-            ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
-          SliverPostGridPlaceHolder(),
-        ],
-      ),
-      orElse: () => ProviderListener(
-        provider: latestPostsStateNotifierProvider,
-        onChange: (context, state) {
-          state.maybeWhen(
-            fetched: () {
-              refreshController.value.loadComplete();
+    void refresh() {
+      isRefreshing.value = true;
+      page.state = 1;
+    }
 
-              refreshController.value.refreshCompleted();
-            },
-            error: () => Scaffold.of(context)
-                .showSnackBar(SnackBar(content: Text("Something went wrong"))),
-            orElse: () {},
-          );
-        },
-        child: InfiniteLoadList(
-          headers: [
-            SliverAppBar(
-              toolbarHeight: kToolbarHeight * 1.2,
-              title: SearchBar(
-                enabled: false,
-                leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                    // scaffoldKey.currentState.openDrawer(),
-                    ),
-                onTap: () =>
-                    AppRouter.router.navigateTo(context, "/posts/search/"),
-              ),
-              floating: true,
-              snap: true,
-              automaticallyImplyLeading: false,
-            ),
-            SliverToBoxAdapter(
-              child: popularSearches.maybeWhen(
-                  data: (searches) => Tags(
-                        horizontalScroll: true,
-                        alignment: WrapAlignment.start,
-                        runAlignment: WrapAlignment.start,
-                        itemCount: searches.length,
-                        itemBuilder: (index) {
-                          return Chip(
-                              padding: EdgeInsets.all(4.0),
-                              labelPadding: EdgeInsets.all(1.0),
-                              visualDensity: VisualDensity.compact,
-                              label: ConstrainedBox(
-                                constraints: BoxConstraints(
-                                    maxWidth:
-                                        MediaQuery.of(context).size.width *
-                                            0.85),
-                                child: Text(
-                                  searches[index].keyword.pretty,
-                                  overflow: TextOverflow.fade,
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ));
-                        },
+    void loadMore() {
+      page.state = page.state + 1;
+    }
+
+    void loadMoreIfNeeded(int index) {
+      if (index > posts.value.length * 0.8) {
+        page.state = page.state + 1;
+      }
+    }
+
+    useEffect(() {
+      postsAtPage.whenData((data) {
+        if (page.state > 1) {
+          // Dedupe
+          data
+            ..removeWhere((post) {
+              final p = posts.value.firstWhere(
+                (sPost) => sPost.id == post.id,
+                orElse: () => null,
+              );
+              return p?.id == post.id;
+            });
+        }
+
+        if (isRefreshing.value) {
+          isRefreshing.value = false;
+          posts.value = data;
+        } else {
+          // in Loading mode
+          refreshController.value.loadComplete();
+          posts.value = [...posts.value, ...data];
+        }
+
+        if (data.isEmpty) {
+          refreshController.value.loadNoData();
+        }
+      });
+
+      return null;
+    }, [postsAtPage]);
+
+    return isRefreshing.value
+        ? CustomScrollView(
+            controller: scrollController.value,
+            shrinkWrap: true,
+            slivers: [
+              SliverAppBar(
+                toolbarHeight: kToolbarHeight * 1.2,
+                title: SearchBar(
+                  enabled: false,
+                  leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                      // scaffoldKey.currentState.openDrawer(),
                       ),
-                  orElse: () => SizedBox.shrink()),
-            ),
-          ],
-          onRefresh: () =>
-              context.read(latestPostsStateNotifierProvider).refresh(),
-          onLoadMore: () =>
-              context.read(latestPostsStateNotifierProvider).getMorePosts(),
-          onItemChanged: (index) {
-            if (index > posts.length * 0.8) {
-              context.read(latestPostsStateNotifierProvider).getMorePosts();
-            }
-          },
-          scrollController: scrollController.value,
-          gridKey: gridKey.value,
-          posts: posts,
-          refreshController: refreshController.value,
-        ),
-      ),
-    );
+                  onTap: () =>
+                      AppRouter.router.navigateTo(context, "/posts/search/"),
+                ),
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+              ),
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: const EdgeInsets.all(14.0),
+                child: Center(child: CircularProgressIndicator()),
+              )),
+              SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                  sliver: SliverPostGridPlaceHolder()),
+            ],
+          )
+        : InfiniteLoadList(
+            headers: [
+              SliverAppBar(
+                toolbarHeight: kToolbarHeight * 1.2,
+                title: SearchBar(
+                  enabled: false,
+                  leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                      // scaffoldKey.currentState.openDrawer(),
+                      ),
+                  onTap: () =>
+                      AppRouter.router.navigateTo(context, "/posts/search/"),
+                ),
+                floating: true,
+                snap: true,
+                automaticallyImplyLeading: false,
+              ),
+              SliverToBoxAdapter(
+                child: popularSearches.maybeWhen(
+                    data: (searches) => Tags(
+                          horizontalScroll: true,
+                          alignment: WrapAlignment.start,
+                          runAlignment: WrapAlignment.start,
+                          itemCount: searches.length,
+                          itemBuilder: (index) {
+                            return Chip(
+                                padding: EdgeInsets.all(4.0),
+                                labelPadding: EdgeInsets.all(1.0),
+                                visualDensity: VisualDensity.compact,
+                                label: ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.85),
+                                  child: Text(
+                                    searches[index].keyword.pretty,
+                                    overflow: TextOverflow.fade,
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ));
+                          },
+                        ),
+                    orElse: () => SizedBox.shrink()),
+              ),
+            ],
+            onRefresh: () => refresh(),
+            onLoadMore: () => loadMore(),
+            onItemChanged: (index) => loadMoreIfNeeded(index),
+            scrollController: scrollController.value,
+            gridKey: gridKey.value,
+            posts: posts.value,
+            refreshController: refreshController.value,
+          );
   }
 }

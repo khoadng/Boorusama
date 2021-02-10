@@ -38,6 +38,7 @@ class SliverPostGrid extends HookWidget {
     final popupPostPreview = useState<OverlayEntry>();
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        childAspectRatio: 0.65,
         crossAxisCount: 2,
         mainAxisSpacing: 10.0,
         crossAxisSpacing: 10.0,
