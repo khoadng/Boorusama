@@ -27,7 +27,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widg
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/presentation/widgets/top_shadow_gradient_overlay.dart';
+import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'providers/slide_show_providers.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
@@ -193,7 +193,8 @@ class PostDetailPage extends HookWidget {
                 scrollDirection: Axis.horizontal,
               ),
             ),
-            TopShadowGradientOverlay(
+            ShadowGradientOverlay(
+              alignment: Alignment.topCenter,
               colors: <Color>[
                 const Color(0x5D000000),
                 Colors.black12.withOpacity(0.0)

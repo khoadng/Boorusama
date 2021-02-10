@@ -22,7 +22,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placehold
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/widgets/top_shadow_gradient_overlay.dart';
+import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 part 'explore_page.freezed.dart';
@@ -509,19 +509,20 @@ class _ExploreSection extends StatelessWidget {
                             placeholderUrl: post.previewImageUri.toString(),
                           ),
                         ),
-                        TopShadowGradientOverlay(
+                        ShadowGradientOverlay(
+                          alignment: Alignment.bottomCenter,
                           colors: <Color>[
                             const Color(0xC2000000),
                             Colors.black12.withOpacity(0.0)
                           ],
                         ),
                         Align(
-                            alignment: Alignment(-0.9, -1),
+                            alignment: Alignment(-0.9, 1),
                             child: Text(
                               "${index + 1}",
                               style: Theme.of(context)
                                   .textTheme
-                                  .headline3
+                                  .headline2
                                   .copyWith(color: Colors.white),
                             )),
                       ],
