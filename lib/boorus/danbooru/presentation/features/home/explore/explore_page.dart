@@ -476,10 +476,10 @@ class _ExploreSection extends StatelessWidget {
       children: [
         ListTile(
           title: title,
-          trailing: InkWell(
-            onTap: () => onViewMoreTap(),
-            child: Text("See more", style: Theme.of(context).textTheme.button),
-          ),
+          trailing: TextButton(
+              onPressed: () => onViewMoreTap(),
+              child:
+                  Text("See more", style: Theme.of(context).textTheme.button)),
         ),
         posts.when(
           data: (posts) => posts.isNotEmpty

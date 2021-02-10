@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -10,6 +11,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/latest/latest_posts_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/search_stats.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
@@ -29,6 +32,17 @@ final _postsStateProvider = Provider<ListItemStatus<Post>>((ref) {
   return ref.watch(_postsState);
 });
 
+final _popularSearchProvider =
+    FutureProvider.autoDispose<List<SearchStats>>((ref) async {
+  final repo = ref.watch(popularSearchProvider);
+
+  final searches = await repo.getSearchStatsByDate(DateTime.now());
+
+  ref.maintainState = true;
+
+  return searches;
+});
+
 class LatestView extends HookWidget {
   const LatestView({
     Key key,
@@ -42,6 +56,8 @@ class LatestView extends HookWidget {
     final scrollController = useState(AutoScrollController());
 
     final gridKey = useState(GlobalKey());
+
+    final popularSearches = useProvider(_popularSearchProvider);
 
     useEffect(() {
       return () => scrollController.value.dispose;
@@ -84,20 +100,49 @@ class LatestView extends HookWidget {
           );
         },
         child: InfiniteLoadList(
-          header: SliverAppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
-            title: SearchBar(
-              enabled: false,
-              leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                  // scaffoldKey.currentState.openDrawer(),
-                  ),
-              onTap: () =>
-                  AppRouter.router.navigateTo(context, "/posts/search/"),
+          headers: [
+            SliverAppBar(
+              toolbarHeight: kToolbarHeight * 1.2,
+              title: SearchBar(
+                enabled: false,
+                leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
+                    // scaffoldKey.currentState.openDrawer(),
+                    ),
+                onTap: () =>
+                    AppRouter.router.navigateTo(context, "/posts/search/"),
+              ),
+              floating: true,
+              snap: true,
+              automaticallyImplyLeading: false,
             ),
-            floating: true,
-            snap: true,
-            automaticallyImplyLeading: false,
-          ),
+            SliverToBoxAdapter(
+              child: popularSearches.maybeWhen(
+                  data: (searches) => Tags(
+                        horizontalScroll: true,
+                        alignment: WrapAlignment.start,
+                        runAlignment: WrapAlignment.start,
+                        itemCount: searches.length,
+                        itemBuilder: (index) {
+                          return Chip(
+                              padding: EdgeInsets.all(4.0),
+                              labelPadding: EdgeInsets.all(1.0),
+                              visualDensity: VisualDensity.compact,
+                              label: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.85),
+                                child: Text(
+                                  searches[index].keyword.pretty,
+                                  overflow: TextOverflow.fade,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                              ));
+                        },
+                      ),
+                  orElse: () => SizedBox.shrink()),
+            ),
+          ],
           onRefresh: () =>
               context.read(latestPostsStateNotifierProvider).refresh(),
           onLoadMore: () =>

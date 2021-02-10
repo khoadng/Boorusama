@@ -21,7 +21,7 @@ class InfiniteLoadList extends HookWidget {
     this.onRefresh,
     this.onLoadMore,
     this.onItemChanged,
-    this.header,
+    this.headers,
   }) : super(key: key);
 
   final AutoScrollController scrollController;
@@ -30,7 +30,7 @@ class InfiniteLoadList extends HookWidget {
   final VoidCallback onRefresh;
   final VoidCallback onLoadMore;
   final ValueChanged<int> onItemChanged;
-  final Widget header;
+  final List<Widget> headers;
   final RefreshController refreshController;
 
   @override
@@ -50,7 +50,7 @@ class InfiniteLoadList extends HookWidget {
       child: CustomScrollView(
         controller: scrollController,
         slivers: <Widget>[
-          if (header != null) ...[header],
+          if (headers != null) ...headers,
           SliverPadding(
             padding: EdgeInsets.all(6.0),
             sliver: SliverPostGrid(

@@ -7,8 +7,6 @@ import 'package:hooks_riverpod/all.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search_stats.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/core/infrastructure/networking/network_info.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
@@ -17,17 +15,6 @@ import 'explore/explore_page.dart';
 import 'latest/latest_posts_view.dart';
 import 'post_list_action.dart';
 import 'side_bar.dart';
-
-final _popularSearchProvider =
-    FutureProvider.autoDispose<List<SearchStats>>((ref) async {
-  final repo = ref.watch(popularSearchProvider);
-
-  final searches = await repo.getSearchStatsByDate(DateTime.now());
-
-  ref.maintainState = true;
-
-  return searches;
-});
 
 class HomePage extends HookWidget {
   HomePage({Key key}) : super(key: key);
