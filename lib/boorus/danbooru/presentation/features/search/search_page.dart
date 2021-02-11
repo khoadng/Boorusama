@@ -267,7 +267,12 @@ class SearchPage extends HookWidget {
                         results: () => postStatus.maybeWhen(
                           orElse: () => postStatus.maybeWhen(
                             refreshing: () => CustomScrollView(
-                                slivers: [SliverPostGridPlaceHolder()]),
+                              slivers: [
+                                SliverPadding(
+                                    padding: EdgeInsets.all(6.0),
+                                    sliver: SliverPostGridPlaceHolder()),
+                              ],
+                            ),
                             orElse: () => ProviderListener(
                               provider: searchStateNotifierProvider,
                               onChange: (context, state) {

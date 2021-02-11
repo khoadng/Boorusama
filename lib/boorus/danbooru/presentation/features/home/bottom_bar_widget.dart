@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomBar extends StatefulWidget {
@@ -16,6 +15,18 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   int currentIndex;
+
+  final buttonIcons = [
+    FontAwesomeIcons.home,
+    Icons.explore,
+    FontAwesomeIcons.solidHeart,
+  ];
+
+  final labels = [
+    "Home",
+    "Explore",
+    "Favorites",
+  ];
 
   @override
   void initState() {
@@ -32,61 +43,58 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return BubbleBottomBar(
-      opacity: .2,
-      backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-      currentIndex: currentIndex,
-      onTap: changePage,
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      elevation: 8,
-      fabLocation: BubbleBottomBarFabLocation.end, //new
-      hasNotch: true, //new
-      hasInk: true, //new, gives a cute ink effect
-      inkColor: Colors.black12, //optional, uses theme color if not specified
-      items: <BubbleBottomBarItem>[
-        BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).accentIconTheme.color,
-            icon: FaIcon(
-              FontAwesomeIcons.home,
-              color: Colors.black,
+    return Material(
+      color: Colors.transparent,
+      elevation: 20,
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
+          color: Theme.of(context).bottomAppBarTheme.color,
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 1.0,
             ),
-            activeIcon: FaIcon(
-              FontAwesomeIcons.home,
-              color: Theme.of(context).accentColor,
-            ),
-            title: Text(
-              "Home",
-              style: TextStyle(color: Theme.of(context).accentColor),
-            )),
-        BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).accentIconTheme.color,
-            icon: FaIcon(
-              Icons.explore,
-              color: Colors.black,
-            ),
-            activeIcon: Icon(
-              Icons.explore,
-              color: Theme.of(context).accentColor,
-            ),
-            title: Text(
-              "Explore",
-              style: TextStyle(color: Theme.of(context).accentColor),
-            )),
-        BubbleBottomBarItem(
-            backgroundColor: Theme.of(context).accentIconTheme.color,
-            icon: FaIcon(
-              FontAwesomeIcons.solidHeart,
-              color: Colors.black,
-            ),
-            activeIcon: FaIcon(
-              FontAwesomeIcons.solidHeart,
-              color: Theme.of(context).accentColor,
-            ),
-            title: Text(
-              "Favorites",
-              style: TextStyle(color: Theme.of(context).accentColor),
-            )),
-      ],
+          ],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20),
+            topRight: Radius.circular(20),
+          ),
+        ),
+        child: BottomNavigationBar(
+          selectedFontSize: 0,
+          backgroundColor: Colors.transparent,
+          elevation: 20,
+          currentIndex: currentIndex,
+          onTap: (value) => changePage(value),
+          items: [
+            ...buttonIcons
+                .map(
+                  (icon) => BottomNavigationBarItem(
+                    label: "",
+                    icon: SizedBox(
+                      height: kBottomNavigationBarHeight,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Icon(icon),
+                          Text(
+                            labels[buttonIcons.indexOf(icon)],
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: currentIndex == buttonIcons.indexOf(icon)
+                                    ? Theme.of(context).accentColor
+                                    : Colors.grey),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+                .toList()
+          ],
+        ),
+      ),
     );
   }
 }

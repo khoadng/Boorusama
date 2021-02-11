@@ -81,6 +81,7 @@ class HomePage extends HookWidget {
                   topRight: Radius.circular(30),
                 ),
                 child: Scaffold(
+                  extendBody: true,
                   key: scaffoldKey,
                   drawer: SideBarMenu(),
                   resizeToAvoidBottomInset: false,

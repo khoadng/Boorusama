@@ -26,7 +26,6 @@ dependencies:
   animations: ^1.1.2
   auto_animated: ^2.1.0
   auto_size_text: ^2.1.0
-  bubble_bottom_bar: ^1.2.0
   cached_network_image: ^2.3.3
   carousel_slider: ^2.3.1
   chewie: ^0.9.10
@@ -38,7 +37,6 @@ dependencies:
   dio_http_cache: ^0.2.11
   filesize: ^1.0.4
   fluro: ^1.7.8
-  flushbar: ^1.10.4
   flutter_datetime_picker: ^1.4.0
   flutter_downloader: ^1.5.1
   flutter_hooks: ^0.15.0

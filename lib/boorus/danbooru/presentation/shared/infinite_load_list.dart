@@ -25,6 +25,7 @@ class InfiniteLoadList extends HookWidget {
     this.onItemChanged,
     this.headers,
     this.child,
+    this.extendBody = false,
   }) : super(key: key);
 
   final AutoScrollController scrollController;
@@ -36,6 +37,7 @@ class InfiniteLoadList extends HookWidget {
   final List<Widget> headers;
   final Widget child;
   final RefreshController refreshController;
+  final bool extendBody;
 
   @override
   Widget build(BuildContext context) {
@@ -53,11 +55,20 @@ class InfiniteLoadList extends HookWidget {
         opacity: hideFabAnimController,
         child: ScaleTransition(
           scale: hideFabAnimController,
-          child: FloatingActionButton(
-            heroTag: null,
-            child: FaIcon(FontAwesomeIcons.angleDoubleUp),
-            onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
-          ),
+          child: extendBody
+              ? Padding(
+                  padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                  child: FloatingActionButton(
+                    heroTag: null,
+                    child: FaIcon(FontAwesomeIcons.angleDoubleUp),
+                    onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
+                  ),
+                )
+              : FloatingActionButton(
+                  heroTag: null,
+                  child: FaIcon(FontAwesomeIcons.angleDoubleUp),
+                  onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
+                ),
         ),
       ),
       body: SmartRefresher(

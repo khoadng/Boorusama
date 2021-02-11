@@ -47,7 +47,9 @@ class FavoritesPage extends HookWidget {
         controller: scrollController.value,
         shrinkWrap: true,
         slivers: [
-          SliverPostGridPlaceHolder(),
+          SliverPadding(
+              padding: EdgeInsets.symmetric(horizontal: 6.0),
+              sliver: SliverPostGridPlaceHolder()),
         ],
       ),
       orElse: () => ProviderListener(

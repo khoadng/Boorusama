@@ -43,7 +43,11 @@ final _popularSearchProvider =
     FutureProvider.autoDispose<List<Search>>((ref) async {
   final repo = ref.watch(popularSearchProvider);
 
-  final searches = await repo.getSearchByDate(DateTime.now());
+  var searches = await repo.getSearchByDate(DateTime.now());
+  if (searches.isEmpty) {
+    searches =
+        await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
+  }
 
   ref.maintainState = true;
 
@@ -169,6 +173,7 @@ class LatestView extends HookWidget {
     }
 
     return InfiniteLoadList(
+      extendBody: true,
       headers: [
         SliverAppBar(
           toolbarHeight: kToolbarHeight * 1.2,
