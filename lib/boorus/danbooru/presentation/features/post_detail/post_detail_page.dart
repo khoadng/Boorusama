@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -249,7 +250,7 @@ class _DetailPageChild extends HookWidget {
   final bool isSlideShow;
 
   final double _panelOverImageOffset = 30.0 + 24.0;
-  final double _minPanelHeight = 100;
+  final double _minPanelHeight = 160;
 
   double _calculatePanelMinHeight(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height - 24;
@@ -284,7 +285,7 @@ class _DetailPageChild extends HookWidget {
 
     final panelMinHeight = post.isVideo
         ? _minPanelHeight
-        : max(MediaQuery.of(context).size.height * 0.5,
+        : max(MediaQuery.of(context).size.height * 0.3,
             _calculatePanelMinHeight(context) + _panelOverImageOffset);
 
     Widget postWidget;
@@ -292,16 +293,14 @@ class _DetailPageChild extends HookWidget {
       postWidget = PostVideo(post: post);
     } else {
       postWidget = GestureDetector(
-        onTap: () {
-          AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: [post]));
-        },
-        child: ClipRRect(
-            child: CachedNetworkImage(
-          imageUrl: post.normalImageUri.toString(),
-          alignment: Alignment.topCenter,
-        )),
-      );
+          onTap: () {
+            AppRouter.router.navigateTo(context, "/posts/image",
+                routeSettings: RouteSettings(arguments: [post]));
+          },
+          child: PostImage(
+            imageUrl: post.normalImageUri.toString(),
+            placeholderUrl: post.previewImageUri.toString(),
+          ));
     }
 
     Widget _buildRecommendPosts(AsyncValue<List<Post>> recommendedPosts) {
@@ -342,13 +341,13 @@ class _DetailPageChild extends HookWidget {
         backgroundColor: Colors.transparent,
         body: Stack(children: <Widget>[
           AnimatedAlign(
-              duration: Duration(microseconds: 500),
+              duration: Duration(milliseconds: 250),
               alignment: isSlideShow ? Alignment.center : Alignment.topCenter,
               child: postWidget),
           showBottomPanel
               ? SlidingUpPanel(
                   color: Colors.transparent,
-                  minHeight: panelMinHeight,
+                  minHeight: 160,
                   maxHeight:
                       MediaQuery.of(context).size.height - 24 - kToolbarHeight,
                   panelBuilder: (scrollController) {

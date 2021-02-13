@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/core/presentation/widgets/fade_page_route.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -21,7 +23,6 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/generated/i18n.dart';
 
@@ -490,17 +491,17 @@ class _ExploreSection extends StatelessWidget {
                     return Stack(
                       children: [
                         GestureDetector(
-                          onTap: () => AppRouter.router.navigateTo(
-                            context,
-                            "/posts",
-                            routeSettings: RouteSettings(arguments: [
-                              post,
-                              index,
-                              posts,
-                              () => null,
-                              (index) {},
-                              gridKey,
-                            ]),
+                          onTap: () => Navigator.of(context).push(
+                            FadeMaterialPageRoute(
+                              builder: (context) => PostDetailPage(
+                                post: post,
+                                intitialIndex: index,
+                                posts: posts,
+                                onExit: (currentIndex) {},
+                                onPostChanged: (index) {},
+                                gridKey: key,
+                              ),
+                            ),
                           ),
                           child: PostImage(
                             imageUrl: post.isAnimated

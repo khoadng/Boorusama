@@ -9,28 +9,11 @@ import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/l
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'presentation/features/accounts/account_info/account_info_page.dart';
 import 'presentation/features/home/home_page.dart';
-import 'presentation/features/post_detail/post_detail_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),
 );
-
-final postDetailHandler = Handler(handlerFunc: (
-  BuildContext context,
-  Map<String, List<String>> params,
-) {
-  final args = context.settings.arguments as List;
-
-  return PostDetailPage(
-    post: args[0],
-    intitialIndex: args[1],
-    posts: args[2],
-    onExit: args[3],
-    onPostChanged: args[4],
-    gridKey: args[5],
-  );
-});
 
 final postDetailImageHandler = Handler(handlerFunc: (
   BuildContext context,
