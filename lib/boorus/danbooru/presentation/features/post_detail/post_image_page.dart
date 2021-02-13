@@ -37,10 +37,8 @@ class PostImagePage extends HookWidget {
   const PostImagePage({
     Key key,
     @required this.post,
-    @required this.imageHeroTag,
   }) : super(key: key);
 
-  final String imageHeroTag;
   final Post post;
 
   Widget _buildBackButton(BuildContext context) {
@@ -117,27 +115,25 @@ class PostImagePage extends HookWidget {
     final hideOverlay = useState(false);
     final notes = useProvider(_notesProvider(post.id));
 
-    final image = Hero(
-        tag: imageHeroTag,
-        child: CachedNetworkImage(
-          fit: BoxFit.fitWidth,
-          imageUrl: post.normalImageUri.toString(),
-          imageBuilder: (context, imageProvider) {
-            precacheImage(imageProvider, context);
-            return PhotoView(
-              imageProvider: imageProvider,
-              backgroundDecoration: BoxDecoration(
-                color: Theme.of(context).appBarTheme.color,
-              ),
-            );
-          },
-          progressIndicatorBuilder: (context, url, progress) => Center(
-            child: CircularProgressIndicator(
-              value: progress.progress,
-            ),
+    final image = CachedNetworkImage(
+      fit: BoxFit.fitWidth,
+      imageUrl: post.normalImageUri.toString(),
+      imageBuilder: (context, imageProvider) {
+        precacheImage(imageProvider, context);
+        return PhotoView(
+          imageProvider: imageProvider,
+          backgroundDecoration: BoxDecoration(
+            color: Theme.of(context).appBarTheme.color,
           ),
-          errorWidget: (context, url, error) => Icon(Icons.error),
-        ));
+        );
+      },
+      progressIndicatorBuilder: (context, url, progress) => Center(
+        child: CircularProgressIndicator(
+          value: progress.progress,
+        ),
+      ),
+      errorWidget: (context, url, error) => Icon(Icons.error),
+    );
     return Scaffold(
       body: Stack(
         children: [

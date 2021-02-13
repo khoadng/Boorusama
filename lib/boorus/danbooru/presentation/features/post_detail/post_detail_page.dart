@@ -45,7 +45,7 @@ class PostDetailPage extends HookWidget {
 
   final GlobalKey gridKey;
   final int intitialIndex;
-  final VoidCallback onExit;
+  final ValueChanged<int> onExit;
   final ValueChanged<int> onPostChanged;
   final Post post;
   final List<Post> posts;
@@ -58,8 +58,7 @@ class PostDetailPage extends HookWidget {
         .animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
-    final showBottomInfoPanel = useState(true);
-    final showTopOverlay = useState(true);
+    final showBottomInfoPanel = useState(false);
     final slideShowConfig =
         useProvider(slideShowConfigurationStateProvider).state;
     useValueChanged(showSlideShowConfig.value, (_, __) {
@@ -75,12 +74,24 @@ class PostDetailPage extends HookWidget {
               false;
           showSlideShowConfig.value = false;
           autoPlay.value = confirm;
-          if (!confirm) showBottomInfoPanel.value = true;
+
+          if (!confirm) {
+            showBottomInfoPanel.value = true;
+          }
         });
       }
     });
 
     final currentPostIndex = useState(posts.indexOf(post));
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Future.delayed(Duration(milliseconds: 100),
+            () => showBottomInfoPanel.value = true);
+      });
+
+      return null;
+    }, []);
 
     useValueChanged(autoPlay.value, (_, __) {
       if (autoPlay.value) {
@@ -140,11 +151,8 @@ class PostDetailPage extends HookWidget {
           child: IconButton(
             icon: Icon(Icons.arrow_back_ios),
             onPressed: () {
-              onExit();
-              AppRouter.router.pop(
-                context,
-                currentPostIndex.value,
-              );
+              onExit(currentPostIndex.value);
+              Navigator.pop(context);
             },
           ),
         ),
@@ -153,56 +161,56 @@ class PostDetailPage extends HookWidget {
 
     return WillPopScope(
       onWillPop: () {
-        onExit();
-        showBottomInfoPanel.value = false;
-        showTopOverlay.value = false;
-
-        AppRouter.router.pop(context, currentPostIndex.value);
+        onExit(currentPostIndex.value);
+        Navigator.pop(context);
         return Future.value(false);
       },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            CarouselSlider.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index) {
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  currentPostIndex.value = index;
-                });
-                return _DetailPageChild(
-                  post: posts[index],
-                  imageHeroTag: "${gridKey.toString()}_${posts[index].id}",
-                  showBottomPanel: showBottomInfoPanel.value,
-                );
-              },
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  onPostChanged(index);
+      child: Hero(
+        tag: "${gridKey.toString()}_${posts[currentPostIndex.value].id}",
+        child: Scaffold(
+          body: Stack(
+            children: [
+              CarouselSlider.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index) {
+                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                    currentPostIndex.value = index;
+                  });
+                  return _DetailPageChild(
+                    post: posts[index],
+                    showBottomPanel: showBottomInfoPanel.value,
+                    isSlideShow: autoPlay.value,
+                  );
                 },
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: intitialIndex,
-                reverse: false,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                autoPlay: autoPlay.value,
-                autoPlayAnimationDuration: slideShowConfig.skipAnimation
-                    ? Duration(microseconds: 1)
-                    : Duration(milliseconds: 600),
-                autoPlayInterval: Duration(seconds: slideShowConfig.interval),
-                scrollDirection: Axis.horizontal,
+                options: CarouselOptions(
+                  onPageChanged: (index, reason) {
+                    onPostChanged(index);
+                  },
+                  height: MediaQuery.of(context).size.height,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false,
+                  initialPage: intitialIndex,
+                  reverse: false,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  autoPlay: autoPlay.value,
+                  autoPlayAnimationDuration: slideShowConfig.skipAnimation
+                      ? Duration(microseconds: 1)
+                      : Duration(milliseconds: 600),
+                  autoPlayInterval: Duration(seconds: slideShowConfig.interval),
+                  scrollDirection: Axis.horizontal,
+                ),
               ),
-            ),
-            ShadowGradientOverlay(
-              alignment: Alignment.topCenter,
-              colors: <Color>[
-                const Color(0x5D000000),
-                Colors.black12.withOpacity(0.0)
-              ],
-            ),
-            _buildBackButton(),
-            _buildSlideShowButton(),
-          ],
+              ShadowGradientOverlay(
+                alignment: Alignment.topCenter,
+                colors: <Color>[
+                  const Color(0x5D000000),
+                  Colors.black12.withOpacity(0.0)
+                ],
+              ),
+              _buildBackButton(),
+              _buildSlideShowButton(),
+            ],
+          ),
         ),
       ),
     );
@@ -232,14 +240,13 @@ class _DetailPageChild extends HookWidget {
   _DetailPageChild({
     Key key,
     @required this.post,
-    @required this.imageHeroTag,
     this.showBottomPanel,
+    this.isSlideShow,
   }) : super(key: key);
-
-  final String imageHeroTag;
 
   final Post post;
   final bool showBottomPanel;
+  final bool isSlideShow;
 
   final double _panelOverImageOffset = 30.0 + 24.0;
   final double _minPanelHeight = 100;
@@ -287,12 +294,12 @@ class _DetailPageChild extends HookWidget {
       postWidget = GestureDetector(
         onTap: () {
           AppRouter.router.navigateTo(context, "/posts/image",
-              routeSettings: RouteSettings(arguments: [post, imageHeroTag]));
+              routeSettings: RouteSettings(arguments: [post]));
         },
         child: ClipRRect(
             child: CachedNetworkImage(
           imageUrl: post.normalImageUri.toString(),
-          alignment: showBottomPanel ? Alignment.topCenter : Alignment.center,
+          alignment: Alignment.topCenter,
         )),
       );
     }
@@ -334,14 +341,10 @@ class _DetailPageChild extends HookWidget {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: Stack(children: <Widget>[
-          Hero(
-            tag: imageHeroTag,
-            child: AnimatedAlign(
-                duration: Duration(microseconds: 500),
-                alignment:
-                    showBottomPanel ? Alignment.topCenter : Alignment.center,
-                child: postWidget),
-          ),
+          AnimatedAlign(
+              duration: Duration(microseconds: 500),
+              alignment: isSlideShow ? Alignment.center : Alignment.topCenter,
+              child: postWidget),
           showBottomPanel
               ? SlidingUpPanel(
                   color: Colors.transparent,

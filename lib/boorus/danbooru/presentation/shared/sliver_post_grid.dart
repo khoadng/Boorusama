@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -18,7 +19,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
+import 'package:boorusama/core/presentation/widgets/fade_page_route.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 
 class SliverPostGrid extends HookWidget {
@@ -26,16 +29,21 @@ class SliverPostGrid extends HookWidget {
     Key key,
     @required this.posts,
     @required this.scrollController,
-    @required this.onTap,
+    @required this.onItemChanged,
   }) : super(key: key);
 
   final List<Post> posts;
   final AutoScrollController scrollController;
-  final Function(Post, int) onTap;
+  final ValueChanged<int> onItemChanged;
 
   @override
   Widget build(BuildContext context) {
+    final lastViewedPostIndex = useState(-1);
+    useValueChanged(lastViewedPostIndex.value, (_, __) {
+      scrollController.scrollToIndex(lastViewedPostIndex.value);
+    });
     final popupPostPreview = useState<OverlayEntry>();
+
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 0.65,
@@ -76,26 +84,38 @@ class SliverPostGrid extends HookWidget {
               );
             }
 
-            return AutoScrollTag(
-              index: index,
-              controller: scrollController,
-              key: ValueKey(index),
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => onTap(post, index),
-                    onLongPress: () {
-                      popupPostPreview.value = OverlayEntry(
-                        builder: (context) =>
-                            _buildImagePreviewOverlay(context, post),
-                      );
-                      Overlay.of(context).insert(popupPostPreview.value);
-                    },
-                    onLongPressEnd: (details) {
-                      popupPostPreview.value?.remove();
-                    },
-                    child: Hero(
-                      tag: "${key.toString()}_${post.id}",
+            return Hero(
+              tag: "${key.toString()}_${post.id}",
+              child: AutoScrollTag(
+                index: index,
+                controller: scrollController,
+                key: ValueKey(index),
+                child: Stack(
+                  children: <Widget>[
+                    GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        FadeMaterialPageRoute(
+                          builder: (context) => PostDetailPage(
+                            post: post,
+                            intitialIndex: index,
+                            posts: posts,
+                            onExit: (currentIndex) =>
+                                lastViewedPostIndex.value = currentIndex,
+                            onPostChanged: (index) => onItemChanged(index),
+                            gridKey: key,
+                          ),
+                        ),
+                      ),
+                      onLongPress: () {
+                        popupPostPreview.value = OverlayEntry(
+                          builder: (context) =>
+                              _buildImagePreviewOverlay(context, post),
+                        );
+                        Overlay.of(context).insert(popupPostPreview.value);
+                      },
+                      onLongPressEnd: (details) {
+                        popupPostPreview.value?.remove();
+                      },
                       child: PostImage(
                         imageUrl: post.isAnimated
                             ? post.previewImageUri.toString()
@@ -103,50 +123,50 @@ class SliverPostGrid extends HookWidget {
                         placeholderUrl: post.previewImageUri.toString(),
                       ),
                     ),
-                  ),
-                  ShadowGradientOverlay(
-                    alignment: Alignment.bottomCenter,
-                    colors: <Color>[
-                      const Color(0x2F000000),
-                      Colors.black12.withOpacity(0.0)
-                    ],
-                  ),
-                  Positioned(
-                    top: 6,
-                    left: 6,
-                    child: Column(
-                      children: items,
+                    ShadowGradientOverlay(
+                      alignment: Alignment.bottomCenter,
+                      colors: <Color>[
+                        const Color(0x2F000000),
+                        Colors.black12.withOpacity(0.0)
+                      ],
                     ),
-                  ),
-                  Positioned(
-                    right: 6,
-                    bottom: 6,
-                    child: LikeButton(
-                      isLiked: post.isFavorited,
-                      likeBuilder: (isLiked) => Icon(
-                        isLiked
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_outline_rounded,
-                        color: isLiked ? Colors.red : Colors.white,
+                    Positioned(
+                      top: 6,
+                      left: 6,
+                      child: Column(
+                        children: items,
                       ),
-                      onTap: (isLiked) {
-                        //TODO: check for success here
-                        if (!isLiked) {
-                          context
-                              .read(favoriteProvider)
-                              .addToFavorites(post.id);
-
-                          return Future(() => true);
-                        } else {
-                          context
-                              .read(favoriteProvider)
-                              .removeFromFavorites(post.id);
-                          return Future(() => false);
-                        }
-                      },
                     ),
-                  )
-                ],
+                    Positioned(
+                      right: 6,
+                      bottom: 6,
+                      child: LikeButton(
+                        isLiked: post.isFavorited,
+                        likeBuilder: (isLiked) => Icon(
+                          isLiked
+                              ? Icons.favorite_rounded
+                              : Icons.favorite_outline_rounded,
+                          color: isLiked ? Colors.red : Colors.white,
+                        ),
+                        onTap: (isLiked) {
+                          //TODO: check for success here
+                          if (!isLiked) {
+                            context
+                                .read(favoriteProvider)
+                                .addToFavorites(post.id);
+
+                            return Future(() => true);
+                          } else {
+                            context
+                                .read(favoriteProvider)
+                                .removeFromFavorites(post.id);
+                            return Future(() => false);
+                          }
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
             );
           } else {

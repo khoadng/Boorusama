@@ -41,10 +41,6 @@ class InfiniteLoadList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, __) {
-      scrollController.scrollToIndex(lastViewedPostIndex.value);
-    });
     final hideFabAnimController = useAnimationController(
         duration: kThemeAnimationDuration, initialValue: 1);
     final scrollControllerWithAnim = useScrollControllerForAnimation(
@@ -88,24 +84,7 @@ class InfiniteLoadList extends HookWidget {
               sliver: child ??
                   SliverPostGrid(
                     key: gridKey,
-                    onTap: (post, index) async {
-                      final newIndex = await AppRouter.router.navigateTo(
-                        context,
-                        "/posts",
-                        routeSettings: RouteSettings(arguments: [
-                          post,
-                          index,
-                          posts,
-                          () => null,
-                          (index) {
-                            onItemChanged(index);
-                          },
-                          gridKey,
-                        ]),
-                      );
-
-                      lastViewedPostIndex.value = newIndex;
-                    },
+                    onItemChanged: (value) => onItemChanged(value),
                     posts: posts,
                     scrollController: scrollControllerWithAnim,
                   ),
