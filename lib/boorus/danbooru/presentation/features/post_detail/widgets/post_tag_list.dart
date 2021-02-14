@@ -67,6 +67,7 @@ class _PostTagListState extends State<PostTagList> {
   Widget _buildTags(List<Tag> tags) {
     return Tags(
       alignment: WrapAlignment.start,
+      runSpacing: 0,
       itemCount: tags.length,
       itemBuilder: (index) {
         final tag = tags[index];
@@ -245,11 +246,6 @@ class _TagBlockTitle extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (!isFirstBlock) ...[
-            const Divider(
-              thickness: 1.0,
-            ),
-          ],
           const SizedBox(
             height: 5,
           ),

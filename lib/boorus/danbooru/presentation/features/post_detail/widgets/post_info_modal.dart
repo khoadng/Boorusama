@@ -15,6 +15,7 @@ import 'package:shimmer/shimmer.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'post_tag_list.dart';
 
 part 'post_info_modal.freezed.dart';
@@ -33,7 +34,6 @@ final _artistCommentaryProvider = FutureProvider.autoDispose
   );
   final artistCommentary = dto.toEntity();
 
-  /// Cache the artist Commentary once it was successfully obtained.
   ref.maintainState = true;
 
   return artistCommentary;
@@ -42,14 +42,12 @@ final _artistCommentaryProvider = FutureProvider.autoDispose
 class PostInfoModal extends HookWidget {
   const PostInfoModal({
     Key key,
-    @required this.panelMinHeight,
     @required this.post,
-    @required this.scrollController,
+    @required this.height,
   }) : super(key: key);
 
-  final double panelMinHeight;
   final Post post;
-  final ScrollController scrollController;
+  final double height;
 
   Widget _buildLoading(BuildContext context) {
     return Shimmer.fromColors(
@@ -94,50 +92,41 @@ class PostInfoModal extends HookWidget {
         useState(ArtistCommentaryTranlationState.original());
     final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
     final showArtistCommentary = useState(false);
-    final showCommentaryTranslateOption = useState(false);
+    // final showCommentaryTranslateOption = useState(false);
 
-    useValueChanged(artistCommentary, (_, __) {
-      artistCommentary.whenData((commentary) {
-        if (commentary.hasCommentary) {
-          showArtistCommentary.value = true;
-        } else if (commentary.isTranslated) {
-          showCommentaryTranslateOption.value = true;
-        }
-      });
-    });
+    // useValueChanged(artistCommentary.data, (_, __) {
+    //   artistCommentary.whenData((commentary) {
+    //     if (commentary.hasCommentary) {
+    //       showArtistCommentary.value = true;
+    //     } else if (commentary.isTranslated) {
+    //       showCommentaryTranslateOption.value = true;
+    //     }
+    //   });
+    // });
     return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ),
-      ),
-      height: panelMinHeight,
-      child: Scaffold(
-        appBar: AppBar(
-          actions: [
-            IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-          ],
-          automaticallyImplyLeading: false,
-          title: Text("Information"),
-        ),
-        body: CustomScrollView(
-          controller: scrollController,
+      height: height,
+      child: Modal(
+        title: "Information",
+        child: CustomScrollView(
           shrinkWrap: true,
           slivers: [
-            if (showArtistCommentary.value) ...[
-              SliverToBoxAdapter(
-                child: artistCommentary.when(
-                  loading: () => _buildLoading(context),
-                  data: (artistCommentary) => Wrap(
+            // if (showArtistCommentary.value) ...[
+            SliverToBoxAdapter(
+              child: artistCommentary.when(
+                loading: () => _buildLoading(context),
+                data: (artistCommentary) {
+                  // if (artistCommentary.hasCommentary) {
+                  //   WidgetsBinding.instance.addPostFrameCallback((_) {
+                  //     showArtistCommentary.value = true;
+                  //   });
+                  // }
+
+                  return Wrap(
                     children: <Widget>[
                       ListTile(
                         title: Text(post.tagStringArtist.pretty),
                         leading: CircleAvatar(),
-                        trailing: showCommentaryTranslateOption.value
+                        trailing: artistCommentary.isTranslated
                             ? PopupMenuButton<ArtistCommentaryTranlationState>(
                                 icon: Icon(Icons.keyboard_arrow_down),
                                 onSelected: (value) {
@@ -176,11 +165,12 @@ class PostInfoModal extends HookWidget {
                                 "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
                       ),
                     ],
-                  ),
-                  error: (name, message) => Text("Failed to load commentary"),
-                ),
-              )
-            ],
+                  );
+                },
+                error: (name, message) => Text("Failed to load commentary"),
+              ),
+            ),
+            // ],
             SliverToBoxAdapter(
               child: Divider(
                 height: 8,

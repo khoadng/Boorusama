@@ -11,7 +11,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -53,13 +52,11 @@ class PostDetailPage extends HookWidget {
         .animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
-    final showBottomInfoPanel = useState(false);
     final slideShowConfig =
         useProvider(slideShowConfigurationStateProvider).state;
     useValueChanged(showSlideShowConfig.value, (_, __) {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          showBottomInfoPanel.value = false;
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
@@ -69,24 +66,11 @@ class PostDetailPage extends HookWidget {
               false;
           showSlideShowConfig.value = false;
           autoPlay.value = confirm;
-
-          if (!confirm) {
-            showBottomInfoPanel.value = true;
-          }
         });
       }
     });
 
     final currentPostIndex = useState(posts.indexOf(post));
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Future.delayed(Duration(milliseconds: 100),
-            () => showBottomInfoPanel.value = true);
-      });
-
-      return null;
-    }, []);
 
     useValueChanged(autoPlay.value, (_, __) {
       if (autoPlay.value) {
@@ -94,7 +78,6 @@ class PostDetailPage extends HookWidget {
       } else {
         spinningIconpanelAnimationController.stop();
         spinningIconpanelAnimationController.reset();
-        showBottomInfoPanel.value = true;
       }
     });
 
@@ -173,8 +156,6 @@ class PostDetailPage extends HookWidget {
                   });
                   return _DetailPageChild(
                     post: posts[index],
-                    showBottomPanel: showBottomInfoPanel.value,
-                    isSlideShow: autoPlay.value,
                   );
                 },
                 options: CarouselOptions(
@@ -235,13 +216,9 @@ class _DetailPageChild extends HookWidget {
   _DetailPageChild({
     Key key,
     @required this.post,
-    this.showBottomPanel,
-    this.isSlideShow,
   }) : super(key: key);
 
   final Post post;
-  final bool showBottomPanel;
-  final bool isSlideShow;
 
   @override
   Widget build(BuildContext context) {
@@ -320,14 +297,13 @@ class _DetailPageChild extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   InkWell(
-                    onTap: () => showMaterialModalBottomSheet(
-                      barrierColor: Colors.transparent,
+                    onTap: () => showModalBottomSheet(
+                      isScrollControlled: true,
+                      backgroundColor: Colors.transparent,
                       context: context,
-                      builder: (context, controller) => PostInfoModal(
-                        scrollController: controller,
-                        panelMinHeight:
-                            MediaQuery.of(context).size.height * 0.5,
+                      builder: (context) => PostInfoModal(
                         post: post,
+                        height: MediaQuery.of(context).size.height * 0.75,
                       ),
                     ),
                     child: Padding(

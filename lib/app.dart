@@ -80,6 +80,10 @@ class _AppState extends State<App> {
           final state = watch(themeStateNotifierProvider.state);
           return Portal(
             child: MaterialApp(
+              builder: (context, child) => ScrollConfiguration(
+                behavior: NoGlowScrollBehavior(),
+                child: child,
+              ),
               theme: AppTheme.lightTheme,
               darkTheme: AppTheme.darkTheme,
               themeMode: state.when(
@@ -104,5 +108,13 @@ class _AppState extends State<App> {
         },
       ),
     );
+  }
+}
+
+class NoGlowScrollBehavior extends ScrollBehavior {
+  @override
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
+    return child;
   }
 }
