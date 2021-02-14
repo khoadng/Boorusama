@@ -10,10 +10,22 @@ import 'package:boorusama/boorus/danbooru/presentation/features/settings/setting
 import 'presentation/features/accounts/account_info/account_info_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
+import 'presentation/features/search/search_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),
 );
+
+final postSearchHandler = Handler(handlerFunc: (
+  BuildContext context,
+  Map<String, List<String>> params,
+) {
+  final args = context.settings.arguments as List;
+
+  return SearchPage(
+    initialQuery: args[0],
+  );
+});
 
 final postDetailImageHandler = Handler(handlerFunc: (
   BuildContext context,

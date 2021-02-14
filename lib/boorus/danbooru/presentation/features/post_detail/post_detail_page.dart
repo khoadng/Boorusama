@@ -1,8 +1,4 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +12,6 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -25,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/infrastructure/services/download_servi
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
@@ -234,7 +228,7 @@ final _recommendPostsProvider = FutureProvider.autoDispose
   /// Cache the posts once it was successfully obtained.
   ref.maintainState = true;
 
-  return posts;
+  return posts.take(3).toList();
 });
 
 class _DetailPageChild extends HookWidget {
@@ -249,45 +243,12 @@ class _DetailPageChild extends HookWidget {
   final bool showBottomPanel;
   final bool isSlideShow;
 
-  final double _panelOverImageOffset = 30.0 + 24.0;
-  final double _minPanelHeight = 160;
-
-  double _calculatePanelMinHeight(BuildContext context) {
-    final screenHeight = MediaQuery.of(context).size.height - 24;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenAspectRatio = screenWidth / screenHeight;
-    final postAspectRatio = post.aspectRatio;
-
-    var aspectRatio = 1.0;
-
-    if (screenHeight > screenWidth) {
-      if (screenAspectRatio < postAspectRatio) {
-        aspectRatio = screenWidth / post.width;
-      } else {
-        aspectRatio = screenHeight / post.height;
-      }
-    } else {
-      if (screenAspectRatio > postAspectRatio) {
-        aspectRatio = screenHeight / post.height;
-      } else {
-        aspectRatio = screenWidth / post.width;
-      }
-    }
-    return screenHeight - (aspectRatio * post.height);
-  }
-
   @override
   Widget build(BuildContext context) {
     final artistPosts =
         useProvider(_recommendPostsProvider(post.tagStringArtist));
     final charactersPosts =
         useProvider(_recommendPostsProvider(post.tagStringCharacter));
-
-    final panelMinHeight = post.isVideo
-        ? _minPanelHeight
-        : max(MediaQuery.of(context).size.height * 0.3,
-            _calculatePanelMinHeight(context) + _panelOverImageOffset);
-
     Widget postWidget;
     if (post.isVideo) {
       postWidget = PostVideo(post: post);
@@ -297,33 +258,41 @@ class _DetailPageChild extends HookWidget {
             AppRouter.router.navigateTo(context, "/posts/image",
                 routeSettings: RouteSettings(arguments: [post]));
           },
-          child: PostImage(
+          // Can't use PostImage due to
+          child: CachedNetworkImage(
+            fadeInDuration: Duration(microseconds: 1),
             imageUrl: post.normalImageUri.toString(),
-            placeholderUrl: post.previewImageUri.toString(),
+            placeholder: (context, url) => CachedNetworkImage(
+              fit: BoxFit.cover,
+              imageUrl: post.previewImageUri.toString(),
+            ),
           ));
     }
 
     Widget _buildRecommendPosts(AsyncValue<List<Post>> recommendedPosts) {
       return recommendedPosts.maybeWhen(
           data: (posts) {
-            posts.removeWhere((e) => e.id == post.id);
             return Container(
               height: MediaQuery.of(context).size.height * 0.2,
               child: Padding(
                 padding: EdgeInsets.all(4),
                 child: ListView.builder(
-                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   scrollDirection: Axis.horizontal,
                   itemCount: posts.length,
                   itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.all(5.0),
-                    child: CachedNetworkImage(
-                      fit: BoxFit.cover,
-                      imageUrl: posts[index].previewImageUri.toString(),
-                      placeholder: (context, url) => Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          color: Theme.of(context).cardColor,
+                    padding: EdgeInsets.all(3.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: CachedNetworkImage(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        width: MediaQuery.of(context).size.width * 0.3,
+                        fit: BoxFit.cover,
+                        imageUrl: posts[index].previewImageUri.toString(),
+                        placeholder: (context, url) => Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                       ),
                     ),
@@ -339,103 +308,90 @@ class _DetailPageChild extends HookWidget {
       value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: Stack(children: <Widget>[
-          AnimatedAlign(
-              duration: Duration(milliseconds: 250),
-              alignment: isSlideShow ? Alignment.center : Alignment.topCenter,
-              child: postWidget),
-          showBottomPanel
-              ? SlidingUpPanel(
-                  color: Colors.transparent,
-                  minHeight: 160,
-                  maxHeight:
-                      MediaQuery.of(context).size.height - 24 - kToolbarHeight,
-                  panelBuilder: (scrollController) {
-                    return Modal(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
+        body: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: postWidget,
+            ),
+            SliverToBoxAdapter(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InkWell(
+                    onTap: () => showMaterialModalBottomSheet(
+                      barrierColor: Colors.transparent,
+                      context: context,
+                      builder: (context, controller) => PostInfoModal(
+                        scrollController: controller,
+                        panelMinHeight:
+                            MediaQuery.of(context).size.height * 0.5,
+                        post: post,
+                      ),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          InkWell(
-                            onTap: () => showMaterialModalBottomSheet(
-                              barrierColor: Colors.transparent,
-                              context: context,
-                              builder: (context, controller) => PostInfoModal(
-                                scrollController: controller,
-                                panelMinHeight: panelMinHeight,
-                                post: post,
-                              ),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(16),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Flexible(
-                                    flex: 5,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          post.tagStringCharacter.isEmpty
-                                              ? "Original"
-                                              : post.name.characterOnly.pretty
-                                                  .capitalizeFirstofEach,
-                                          overflow: TextOverflow.fade,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline6,
-                                        ),
-                                        SizedBox(height: 5),
-                                        Text(
-                                            post.tagStringCopyright.isEmpty
-                                                ? "Original"
-                                                : post.name.copyRightOnly.pretty
-                                                    .capitalizeFirstofEach,
-                                            overflow: TextOverflow.fade,
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .bodyText2),
-                                        SizedBox(height: 5),
-                                        Text(
-                                          post.createdAt.toString(),
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .caption,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Flexible(
-                                      child: Icon(Icons.keyboard_arrow_down)),
-                                ],
-                              ),
+                          Flexible(
+                            flex: 5,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.tagStringCharacter.isEmpty
+                                      ? "Original"
+                                      : post.name.characterOnly.pretty
+                                          .capitalizeFirstofEach,
+                                  overflow: TextOverflow.fade,
+                                  style: Theme.of(context).textTheme.headline6,
+                                ),
+                                SizedBox(height: 5),
+                                Text(
+                                    post.tagStringCopyright.isEmpty
+                                        ? "Original"
+                                        : post.name.copyRightOnly.pretty
+                                            .capitalizeFirstofEach,
+                                    overflow: TextOverflow.fade,
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2),
+                                SizedBox(height: 5),
+                                Text(
+                                  post.createdAt.toString(),
+                                  style: Theme.of(context).textTheme.caption,
+                                ),
+                              ],
                             ),
                           ),
-                          PostActionToolbar(post: post),
-                          Divider(
-                            height: 8,
-                            thickness: 1,
-                          ),
-                          ListTile(
-                            title: Text(post.tagStringArtist.pretty),
-                          ),
-                          _buildRecommendPosts(artistPosts),
-                          ListTile(
-                            title: Text(post.tagStringCharacter.pretty
-                                .capitalizeFirstofEach),
-                          ),
-                          _buildRecommendPosts(charactersPosts),
+                          Flexible(child: Icon(Icons.keyboard_arrow_down)),
                         ],
                       ),
-                    );
-                  },
-                )
-              : SizedBox.shrink(),
-        ]),
+                    ),
+                  ),
+                  PostActionToolbar(post: post),
+                  Divider(
+                    height: 8,
+                    thickness: 1,
+                  ),
+                  ListTile(
+                    title: Text(post.tagStringArtist.pretty),
+                  ),
+                  _buildRecommendPosts(artistPosts),
+                  ListTile(
+                    title: Text(post.tagStringCharacter
+                        .split(' ')
+                        .join(', ')
+                        .pretty
+                        .capitalizeFirstofEach),
+                  ),
+                  _buildRecommendPosts(charactersPosts),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
