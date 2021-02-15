@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animations/animations.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -17,12 +18,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
-import 'package:boorusama/core/presentation/widgets/fade_page_route.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/generated/i18n.dart';
 
@@ -126,11 +128,28 @@ final _pageProvider = StateProvider.autoDispose<int>((ref) {
   return 1;
 });
 
+final _popularSearchProvider =
+    FutureProvider.autoDispose<List<Search>>((ref) async {
+  final repo = ref.watch(popularSearchProvider);
+
+  var searches = await repo.getSearchByDate(DateTime.now());
+  if (searches.isEmpty) {
+    searches =
+        await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
+  }
+
+  ref.maintainState = true;
+
+  return searches;
+});
+
 class ExplorePage extends HookWidget {
   const ExplorePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final popularSearch = useProvider(_popularSearchProvider);
+
     Widget _buildExploreSection(ExploreCategory category) {
       final title = Text(
         "${category.getName().sentenceCase}",
@@ -164,6 +183,33 @@ class ExplorePage extends HookWidget {
     }
 
     return CustomScrollView(slivers: [
+      popularSearch.maybeWhen(
+        data: (searches) => SliverPadding(
+          padding: EdgeInsets.all(10.0),
+          sliver: SliverGrid.count(
+            mainAxisSpacing: 8,
+            crossAxisSpacing: 8,
+            childAspectRatio: 4.5,
+            crossAxisCount: 2,
+            children: searches
+                .take(10)
+                .map(
+                  (search) => Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).accentColor,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Center(child: Text("#${search.keyword.pretty}"))),
+                )
+                .toList(),
+          ),
+        ),
+        orElse: () => SliverToBoxAdapter(
+          child: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
       SliverToBoxAdapter(
         child: _buildExploreSection(ExploreCategory.popular()),
       ),
@@ -488,45 +534,44 @@ class _ExploreSection extends StatelessWidget {
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
                     final post = posts[index];
-                    return Stack(
-                      children: [
-                        GestureDetector(
-                          onTap: () => Navigator.of(context).push(
-                            FadeMaterialPageRoute(
-                              builder: (context) => PostDetailPage(
-                                post: post,
-                                intitialIndex: index,
-                                posts: posts,
-                                onExit: (currentIndex) {},
-                                onPostChanged: (index) {},
-                                gridKey: key,
-                              ),
+                    return OpenContainer(
+                      closedColor: Colors.transparent,
+                      openBuilder: (context, action) => PostDetailPage(
+                        post: post,
+                        intitialIndex: index,
+                        posts: posts,
+                        onExit: (currentIndex) {},
+                        onPostChanged: (index) {},
+                        gridKey: key,
+                      ),
+                      closedBuilder: (context, action) => Stack(
+                        children: [
+                          GestureDetector(
+                            child: PostImage(
+                              imageUrl: post.isAnimated
+                                  ? post.previewImageUri.toString()
+                                  : post.normalImageUri.toString(),
+                              placeholderUrl: post.previewImageUri.toString(),
                             ),
                           ),
-                          child: PostImage(
-                            imageUrl: post.isAnimated
-                                ? post.previewImageUri.toString()
-                                : post.normalImageUri.toString(),
-                            placeholderUrl: post.previewImageUri.toString(),
+                          ShadowGradientOverlay(
+                            alignment: Alignment.bottomCenter,
+                            colors: <Color>[
+                              const Color(0xC2000000),
+                              Colors.black12.withOpacity(0.0)
+                            ],
                           ),
-                        ),
-                        ShadowGradientOverlay(
-                          alignment: Alignment.bottomCenter,
-                          colors: <Color>[
-                            const Color(0xC2000000),
-                            Colors.black12.withOpacity(0.0)
-                          ],
-                        ),
-                        Align(
-                            alignment: Alignment(-0.9, 1),
-                            child: Text(
-                              "${index + 1}",
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline2
-                                  .copyWith(color: Colors.white),
-                            )),
-                      ],
+                          Align(
+                              alignment: Alignment(-0.9, 1),
+                              child: Text(
+                                "${index + 1}",
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2
+                                    .copyWith(color: Colors.white),
+                              )),
+                        ],
+                      ),
                     );
                   },
                   options: CarouselOptions(

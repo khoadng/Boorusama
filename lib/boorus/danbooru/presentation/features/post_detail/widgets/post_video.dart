@@ -57,8 +57,6 @@ class _PostVideoState extends State<PostVideo> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Chewie(controller: _chewieController),
-    );
+    return Chewie(controller: _chewieController);
   }
 }
