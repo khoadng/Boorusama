@@ -6,6 +6,7 @@ import 'package:fluro/fluro.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/downloads/download_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'presentation/features/accounts/account_info/account_info_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -15,6 +16,13 @@ import 'presentation/features/search/search_page.dart';
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => HomePage(),
 );
+
+final downloadHandler = Handler(handlerFunc: (
+  BuildContext context,
+  Map<String, List<String>> params,
+) {
+  return DownloadPage();
+});
 
 final postSearchHandler = Handler(handlerFunc: (
   BuildContext context,

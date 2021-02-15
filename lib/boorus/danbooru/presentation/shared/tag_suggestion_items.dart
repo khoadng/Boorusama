@@ -13,7 +13,7 @@ class TagSuggestionItems extends StatelessWidget {
         super(key: key);
 
   final List<Tag> _tags;
-  final ValueChanged<String> onItemTap;
+  final ValueChanged<Tag> onItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class TagSuggestionItems extends StatelessWidget {
         itemCount: _tags.length,
         itemBuilder: (context, index) {
           return ListTile(
-            onTap: () => onItemTap(_tags[index].rawName),
+            onTap: () => onItemTap(_tags[index]),
             trailing: Text(_tags[index].postCount.toString(),
                 style: TextStyle(color: Colors.grey)),
             title: Text(

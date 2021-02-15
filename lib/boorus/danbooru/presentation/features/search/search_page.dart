@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/application/list_item_status.dart';
-import 'tag_suggestion_items.dart';
+import '../../shared/tag_suggestion_items.dart';
 
 part 'search_page.freezed.dart';
 
@@ -111,11 +111,6 @@ class SearchPage extends HookWidget {
     Navigator.of(context).pop();
   }
 
-  void _onDownloadButtonPressed(List<Post> posts, BuildContext context) {
-    return posts
-        .forEach((post) => useProvider(downloadServiceProvider).download(post));
-  }
-
   void _onQueryUpdated(BuildContext context, String value,
       StateController<SearchDisplayState> searchDisplayState) {
     if (searchDisplayState.state == SearchDisplayState.results()) {
@@ -191,11 +186,7 @@ class SearchPage extends HookWidget {
               heroTag: null,
               child: Icon(Icons.search),
             ),
-            results: () => FloatingActionButton(
-              onPressed: () => _onDownloadButtonPressed(posts, context),
-              heroTag: null,
-              child: Icon(Icons.download_sharp),
-            ),
+            results: () => SizedBox.shrink(),
           ),
           appBar: AppBar(
             toolbarHeight: kToolbarHeight * 1.2,
@@ -259,7 +250,7 @@ class SearchPage extends HookWidget {
                             child: TagSuggestionItems(
                                 tags: tags,
                                 onItemTap: (tag) =>
-                                    _onTagItemTapped(context, tag)),
+                                    _onTagItemTapped(context, tag.rawName)),
                           ),
                           error: () =>
                               Center(child: Text("Something went wrong")),

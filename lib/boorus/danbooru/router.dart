@@ -14,6 +14,9 @@ class AppRouter {
   void setupRoutes() {
     router.define("/", handler: rootHandler);
 
+    router.define("/downloads",
+        handler: downloadHandler, transitionType: TransitionType.inFromRight);
+
     router.define("/posts/search",
         handler: postSearchHandler, transitionType: TransitionType.fadeIn);
 

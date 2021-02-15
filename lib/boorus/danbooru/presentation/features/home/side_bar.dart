@@ -49,6 +49,15 @@ class SideBarMenu extends HookWidget {
       },
     ));
 
+    drawerChildren.add(ListTile(
+      leading: Icon(Icons.download_rounded),
+      title: Text("Downloads"),
+      onTap: () {
+        Navigator.of(context).pop();
+        AppRouter.router.navigateTo(context, "/downloads");
+      },
+    ));
+
     drawerChildren.add(AboutListTile(
       icon: Icon(Icons.info),
       applicationIcon: FlutterLogo(),
