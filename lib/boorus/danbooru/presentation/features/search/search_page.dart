@@ -15,11 +15,12 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/query_processor.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import '../../shared/tag_suggestion_items.dart';
+import 'services/query_processor.dart';
 
 part 'search_page.freezed.dart';
 
@@ -31,7 +32,7 @@ class SearchPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final queryEditingController = useTextEditingController();
-    final searchDisplayState = useState(SearchDisplayState.suggestions());
+    final searchDisplayState = useState(SearchDisplayState.searchOptions());
     final posts = useState(<Post>[]);
     final query = useState(initialQuery);
     final suggestions = useState(<Tag>[]);
@@ -80,6 +81,23 @@ class SearchPage extends HookWidget {
     }
 
     useEffect(() {
+      queryEditingController.addListener(() {
+        if (searchDisplayState.value != SearchDisplayState.results()) {
+          if (queryEditingController.text.isEmpty) {
+            searchDisplayState.value = SearchDisplayState.searchOptions();
+          } else {
+            searchDisplayState.value = SearchDisplayState.suggestions();
+          }
+        }
+      });
+      return null;
+    }, [queryEditingController]);
+
+    useEffect(() {
+      if (query.value.isNotEmpty) {
+        searchDisplayState.value = SearchDisplayState.suggestions();
+      }
+
       queryEditingController.text = query.value;
       queryEditingController.selection =
           TextSelection.fromPosition(TextPosition(offset: query.value.length));
@@ -87,10 +105,15 @@ class SearchPage extends HookWidget {
     }, [query.value]);
 
     useEffect(() {
-      if (completedQueryItems.value.isEmpty) {
-        searchDisplayState.value = SearchDisplayState.suggestions();
-      } else {
-        infiniteListController.value.refresh();
+      if (searchDisplayState.value == SearchDisplayState.results()) {
+        if (completedQueryItems.value.isNotEmpty) {
+          if (query.value.isEmpty) {
+            isRefreshing.value = true;
+            infiniteListController.value.refresh();
+          }
+        } else {
+          searchDisplayState.value = SearchDisplayState.searchOptions();
+        }
       }
 
       return null;
@@ -118,7 +141,6 @@ class SearchPage extends HookWidget {
     }
 
     void onTextInputChanged(String text) async {
-      searchDisplayState.value = SearchDisplayState.suggestions();
       if (text.trim().isEmpty) {
         // Make sure input is not empty
         return;
@@ -133,6 +155,15 @@ class SearchPage extends HookWidget {
       suggestions.value = [...tags];
     }
 
+    void onSearchButtonTap() {
+      addTag(query.value);
+
+      FocusScope.of(context).unfocus();
+      isRefreshing.value = true;
+      infiniteListController.value.refresh();
+      searchDisplayState.value = SearchDisplayState.results();
+    }
+
     return SafeArea(
       child: ClipRRect(
         borderRadius: BorderRadius.only(
@@ -140,22 +171,13 @@ class SearchPage extends HookWidget {
           topRight: Radius.circular(30),
         ),
         child: Scaffold(
-          floatingActionButton: searchDisplayState.value.when(
-            suggestions: () => FloatingActionButton(
-              onPressed: () async {
-                if (completedQueryItems.value.isEmpty) {
-                  addTag(query.value);
-                }
-
-                FocusScope.of(context).unfocus();
-                searchDisplayState.value = SearchDisplayState.results();
-                isRefreshing.value = true;
-                infiniteListController.value.refresh();
-              },
+          floatingActionButton: searchDisplayState.value.maybeWhen(
+            results: () => SizedBox.shrink(),
+            orElse: () => FloatingActionButton(
+              onPressed: () => onSearchButtonTap(),
               heroTag: null,
               child: Icon(Icons.search),
             ),
-            results: () => SizedBox.shrink(),
           ),
           appBar: AppBar(
             toolbarHeight: kToolbarHeight * 1.2,
@@ -167,21 +189,20 @@ class SearchPage extends HookWidget {
               queryEditingController: queryEditingController,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () => searchDisplayState.value.when(
-                  suggestions: () => Navigator.of(context).pop(),
-                  results: () => searchDisplayState.value =
-                      SearchDisplayState.suggestions(),
+                onPressed: () => searchDisplayState.value.maybeWhen(
+                  orElse: () => Navigator.of(context).pop(),
+                  results: () => completedQueryItems.value = [],
                 ),
               ),
               trailing: query.value.isNotEmpty
                   ? IconButton(
                       icon: Icon(Icons.close),
-                      onPressed: () => searchDisplayState.value.when(
-                        suggestions: () => query.value = "",
+                      onPressed: () => searchDisplayState.value.maybeWhen(
+                        orElse: () => query.value = "",
                         results: () {
                           // completedQueryItems.value = [];
                           searchDisplayState.value =
-                              SearchDisplayState.suggestions();
+                              SearchDisplayState.searchOptions();
 
                           return null;
                         },
@@ -220,6 +241,9 @@ class SearchPage extends HookWidget {
               ],
               Expanded(
                 child: searchDisplayState.value.when(
+                  searchOptions: () => SearchOptions(
+                    onTap: (searchOption) => query.value = "$searchOption:",
+                  ),
                   suggestions: () => TagSuggestionItems(
                     tags: suggestions.value,
                     onItemTap: (tag) => addTag(tag.rawName),
@@ -248,6 +272,6 @@ class SearchPage extends HookWidget {
 @freezed
 abstract class SearchDisplayState with _$SearchDisplayState {
   const factory SearchDisplayState.results() = _Results;
-
   const factory SearchDisplayState.suggestions() = _Suggestions;
+  const factory SearchDisplayState.searchOptions() = _SearchOptions;
 }

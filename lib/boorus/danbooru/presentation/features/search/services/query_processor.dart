@@ -1,5 +1,5 @@
 // Package imports:
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final queryProcessorProvider = Provider<QueryProcessor>((ref) {
   return QueryProcessor();
