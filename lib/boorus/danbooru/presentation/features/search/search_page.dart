@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/query_processor.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
@@ -116,6 +117,22 @@ class SearchPage extends HookWidget {
       completedQueryItems.value = [...completedQueryItems.value..remove(tag)];
     }
 
+    void onTextInputChanged(String text) async {
+      searchDisplayState.value = SearchDisplayState.suggestions();
+      if (text.trim().isEmpty) {
+        // Make sure input is not empty
+        return;
+      }
+
+      query.value = context
+          .read(queryProcessorProvider)
+          .process(text, query.value, completedQueryItems.value);
+
+      final tags =
+          await context.read(tagProvider).getTagsByNamePattern(query.value, 1);
+      suggestions.value = [...tags];
+    }
+
     return SafeArea(
       child: ClipRRect(
         borderRadius: BorderRadius.only(
@@ -150,7 +167,11 @@ class SearchPage extends HookWidget {
               queryEditingController: queryEditingController,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () => Navigator.of(context).pop(),
+                onPressed: () => searchDisplayState.value.when(
+                  suggestions: () => Navigator.of(context).pop(),
+                  results: () => searchDisplayState.value =
+                      SearchDisplayState.suggestions(),
+                ),
               ),
               trailing: query.value.isNotEmpty
                   ? IconButton(
@@ -167,43 +188,14 @@ class SearchPage extends HookWidget {
                       ),
                     )
                   : null,
-              onChanged: (value) async {
-                searchDisplayState.value = SearchDisplayState.suggestions();
-                if (value.trim().isEmpty) {
-                  // Make sure input is not empty
-                  return;
-                }
-
-                final removeMode = value.length < query.value.length;
-                String currentInputQuery;
-                var queryItems = completedQueryItems.value;
-                final queries = value.split(' ');
-
-                if (!value.endsWith(' ')) {
-                  currentInputQuery = queries.last;
-                } else {
-                  currentInputQuery = '';
-
-                  if (removeMode) {
-                    queryItems.removeLast();
-                  } else {
-                    queryItems.add(value.trim().split(' ').last);
-                  }
-                }
-                query.value = currentInputQuery;
-                completedQueryItems.value = queryItems;
-
-                final tags = await context
-                    .read(tagProvider)
-                    .getTagsByNamePattern(query.value, 1);
-                suggestions.value = [...tags];
-              },
+              onChanged: (value) => onTextInputChanged(value),
             ),
           ),
           body: Column(
             children: [
               if (completedQueryItems.value.length > 0) ...[
                 Tags(
+                  heightHorizontalScroll: 30,
                   horizontalScroll: true,
                   alignment: WrapAlignment.start,
                   runAlignment: WrapAlignment.start,
@@ -220,7 +212,7 @@ class SearchPage extends HookWidget {
                   ),
                 ),
                 Divider(
-                  height: 0,
+                  height: 15,
                   thickness: 3,
                   indent: 10,
                   endIndent: 10,
