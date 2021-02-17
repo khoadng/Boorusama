@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -17,27 +15,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-
-final _postProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
-  final repo = ref.watch(postProvider);
-  final page = ref.watch(_pageProvider);
-  final selectedTag = ref.watch(_selectedTagProvider);
-  List<Post> posts;
-
-  if (selectedTag.state.isEmpty) {
-    posts = await repo.getPosts("", page.state);
-  } else {
-    posts = await repo.getPosts(selectedTag.state, page.state);
-  }
-
-  ref.maintainState = true;
-
-  return posts;
-});
-
-final _pageProvider = StateProvider.autoDispose<int>((ref) {
-  return 1;
-});
 
 final _popularSearchProvider =
     FutureProvider.autoDispose<List<Search>>((ref) async {
@@ -54,10 +31,6 @@ final _popularSearchProvider =
   return searches;
 });
 
-final _selectedTagProvider = StateProvider<String>((ref) {
-  return "";
-});
-
 class LatestView extends HookWidget {
   const LatestView({
     Key key,
@@ -65,48 +38,19 @@ class LatestView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final refreshController = useState(RefreshController());
     final posts = useState(<Post>[]);
-    final scrollController = useState(AutoScrollController());
-    final page = useProvider(_pageProvider);
-    final postsAtPage = useProvider(_postProvider);
-
-    final gridKey = useState(GlobalKey());
 
     final popularSearches = useProvider(_popularSearchProvider);
-    final isRefreshing = useState(true);
-    final selectedTag = useProvider(_selectedTagProvider);
+    final selectedTag = useState("");
+    final isRefreshing = useState(false);
 
-    void refresh() {
-      isRefreshing.value = true;
-      page.state = 1;
-    }
-
-    void loadMore() {
-      page.state = page.state + 1;
-    }
-
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        page.state = page.state + 1;
-      }
-    }
-
-    useEffect(() {
-      return () => scrollController.value.dispose;
-    }, []);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        refresh();
-      });
-
-      return null;
-    }, [selectedTag.state]);
-
-    useEffect(() {
-      postsAtPage.whenData((data) {
-        if (page.state > 1) {
+    final infiniteListController = useState(InfiniteLoadListController<Post>(
+      onData: (data) {
+        isRefreshing.value = false;
+        posts.value = [...data];
+      },
+      onMoreData: (data, page) {
+        if (page > 1) {
           // Dedupe
           data
             ..removeWhere((post) {
@@ -117,24 +61,30 @@ class LatestView extends HookWidget {
               return p?.id == post.id;
             });
         }
+        posts.value = [...posts.value, ...data];
+      },
+      refreshBuilder: (page) =>
+          context.read(postProvider).getPosts(selectedTag.value, page),
+      loadMoreBuilder: (page) =>
+          context.read(postProvider).getPosts(selectedTag.value, page),
+    ));
 
-        if (isRefreshing.value) {
-          isRefreshing.value = false;
-          posts.value = data;
-          refreshController.value.refreshCompleted();
-        } else {
-          // in Loading mode
-          refreshController.value.loadComplete();
-          posts.value = [...posts.value, ...data];
-        }
+    final gridKey = useState(GlobalKey());
 
-        if (data.isEmpty) {
-          refreshController.value.loadNoData();
-        }
+    void loadMoreIfNeeded(int index) {
+      if (index > posts.value.length * 0.8) {
+        infiniteListController.value.loadMore();
+      }
+    }
+
+    useEffect(() {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        isRefreshing.value = true;
+        infiniteListController.value.refresh();
       });
 
       return null;
-    }, [postsAtPage]);
+    }, [selectedTag.value]);
 
     Widget _buildTags(List<Search> searches) {
       return Container(
@@ -149,10 +99,10 @@ class LatestView extends HookWidget {
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
                 selectedColor: Colors.white,
-                selected: selectedTag.state == searches[index].keyword,
+                selected: selectedTag.value == searches[index].keyword,
                 onSelected: (selected) => selected
-                    ? selectedTag.state = searches[index].keyword
-                    : selectedTag.state = "",
+                    ? selectedTag.value = searches[index].keyword
+                    : selectedTag.value = "",
                 padding: EdgeInsets.all(4.0),
                 labelPadding: EdgeInsets.all(1.0),
                 visualDensity: VisualDensity.compact,
@@ -173,6 +123,7 @@ class LatestView extends HookWidget {
     }
 
     return InfiniteLoadList(
+      controller: infiniteListController.value,
       extendBody: true,
       headers: [
         SliverAppBar(
@@ -196,13 +147,9 @@ class LatestView extends HookWidget {
           ),
         ),
       ],
-      onRefresh: () => refresh(),
-      onLoadMore: () => loadMore(),
       onItemChanged: (index) => loadMoreIfNeeded(index),
-      scrollController: scrollController.value,
       gridKey: gridKey.value,
       posts: posts.value,
-      refreshController: refreshController.value,
       child: isRefreshing.value
           ? SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 6.0),

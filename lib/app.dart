@@ -53,59 +53,27 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderListener<ThemeState>(
-      provider: themeStateNotifierProvider.state,
-      onChange: (context, state) {
-        // state.when(
-        //   darkMode: () async {
-        //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        //       systemNavigationBarColor: Colors.grey[900],
-        //       statusBarColor: Colors.grey[900],
-        //       statusBarIconBrightness: Brightness.light,
-        //       statusBarBrightness: Brightness.light,
-        //     ));
-        //   },
-        //   lightMode: () async {
-        //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        //       systemNavigationBarColor: Colors.white,
-        //       statusBarColor: Colors.white,
-        //       statusBarIconBrightness: Brightness.dark,
-        //       statusBarBrightness: Brightness.dark,
-        //     ));
-        //   },
-        // );
-      },
-      child: Consumer(
-        builder: (context, watch, child) {
-          final state = watch(themeStateNotifierProvider.state);
-          return Portal(
-            child: MaterialApp(
-              builder: (context, child) => ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
-                child: child,
-              ),
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: state.when(
-                darkMode: () => ThemeMode.dark,
-                lightMode: () => ThemeMode.light,
-              ),
-              localizationsDelegates: [
-                i18n,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate
-              ],
-              locale: Locale(widget.settings.language),
-              supportedLocales: i18n.supportedLocales,
-              localeResolutionCallback:
-                  i18n.resolution(fallback: Locale("en", "US")),
-              debugShowCheckedModeBanner: false,
-              onGenerateRoute: AppRouter.router.generator,
-              title: AppConstants.appName,
-            ),
-          );
-        },
+    return Portal(
+      child: MaterialApp(
+        builder: (context, child) => ScrollConfiguration(
+          behavior: NoGlowScrollBehavior(),
+          child: child,
+        ),
+        theme: AppTheme.lightTheme,
+        darkTheme: AppTheme.darkTheme,
+        themeMode: ThemeMode.dark,
+        localizationsDelegates: [
+          i18n,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate
+        ],
+        locale: Locale(widget.settings.language),
+        supportedLocales: i18n.supportedLocales,
+        localeResolutionCallback: i18n.resolution(fallback: Locale("en", "US")),
+        debugShowCheckedModeBanner: false,
+        onGenerateRoute: AppRouter.router.generator,
+        title: AppConstants.appName,
       ),
     );
   }

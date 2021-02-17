@@ -9,42 +9,100 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'sliver_post_grid.dart';
+
+typedef RefreshCallback<T> = void Function(List<T> data);
+typedef LoadMoreCallback<T> = void Function(List<T> data, int page);
+typedef RefreshBuilder<T> = Future<List<T>> Function(int page);
+typedef LoadMoreBuilder<T> = Future<List<T>> Function(int page);
+
+class InfiniteLoadListController<T> {
+  InfiniteLoadListController({
+    @required this.onData,
+    @required this.onMoreData,
+    @required this.refreshBuilder,
+    @required this.loadMoreBuilder,
+  });
+
+  final LoadMoreBuilder<T> loadMoreBuilder;
+  final RefreshCallback<T> onData;
+  final LoadMoreCallback<T> onMoreData;
+  final RefreshBuilder<T> refreshBuilder;
+
+  // bool _isLoading = false;
+  // bool _isRefreshing = false;
+  int _page = 1;
+  RefreshController _refreshController = RefreshController();
+
+  get page => _page;
+
+  // get isRefreshing => _isRefreshing;
+
+  // get isLoading => _isLoading;
+
+  get refreshController => _refreshController;
+
+  void dispose() {
+    _refreshController.dispose();
+  }
+
+  void refresh() async {
+    // _isRefreshing = true;
+    _page = 1;
+    final data = await refreshBuilder(_page);
+    onData(data);
+    // _isRefreshing = false;
+    _refreshController.refreshCompleted();
+  }
+
+  void loadMore() async {
+    // _isLoading = true;
+    _page = _page + 1;
+    final data = await loadMoreBuilder(_page);
+    onMoreData(data, _page);
+    // _isLoading = false;
+
+    if (data.isNotEmpty) {
+      _refreshController.loadComplete();
+    } else {
+      _refreshController.loadNoData();
+    }
+  }
+}
 
 class InfiniteLoadList extends HookWidget {
   const InfiniteLoadList({
     Key key,
-    @required this.scrollController,
+    @required this.controller,
     @required this.gridKey,
     @required this.posts,
-    @required this.refreshController,
-    this.onRefresh,
-    this.onLoadMore,
     this.onItemChanged,
     this.headers,
     this.child,
     this.extendBody = false,
   }) : super(key: key);
 
-  final AutoScrollController scrollController;
-  final GlobalKey gridKey;
-  final List<Post> posts;
-  final VoidCallback onRefresh;
-  final VoidCallback onLoadMore;
-  final ValueChanged<int> onItemChanged;
-  final List<Widget> headers;
   final Widget child;
-  final RefreshController refreshController;
+  final InfiniteLoadListController controller;
   final bool extendBody;
+  final GlobalKey gridKey;
+  final List<Widget> headers;
+  final ValueChanged<int> onItemChanged;
+
+  final List<Post> posts;
 
   @override
   Widget build(BuildContext context) {
+    final scrollController = useState(AutoScrollController());
+
+    useEffect(() {
+      return () => scrollController.value.dispose;
+    }, []);
     final hideFabAnimController = useAnimationController(
         duration: kThemeAnimationDuration, initialValue: 1);
     final scrollControllerWithAnim = useScrollControllerForAnimation(
-        hideFabAnimController, scrollController);
+        hideFabAnimController, scrollController.value);
 
     return Scaffold(
       floatingActionButton: FadeTransition(
@@ -68,13 +126,13 @@ class InfiniteLoadList extends HookWidget {
         ),
       ),
       body: SmartRefresher(
-        controller: refreshController,
+        controller: controller.refreshController,
         enablePullUp: true,
-        enablePullDown: onRefresh != null ? true : false,
+        enablePullDown: true,
         header: const MaterialClassicHeader(),
         footer: const ClassicFooter(),
-        onRefresh: () => onRefresh(),
-        onLoading: () => onLoadMore(),
+        onRefresh: () => controller.refresh(),
+        onLoading: () => controller.loadMore(),
         child: CustomScrollView(
           controller: scrollControllerWithAnim,
           slivers: <Widget>[

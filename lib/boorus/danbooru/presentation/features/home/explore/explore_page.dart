@@ -12,9 +12,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:recase/recase.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -43,19 +41,6 @@ extension ExploreCategoryX on ExploreCategory {
   }
 }
 
-final _popularPostProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final timeScale = ref.watch(_timeScaleProvider);
-  final date = ref.watch(_dateProvider);
-  final page = ref.watch(_pageProvider);
-
-  final repo = ref.watch(postProvider);
-  final posts =
-      await repo.getPopularPosts(date.state, page.state, timeScale.state);
-
-  return posts;
-});
-
 final _popularPostSneakPeakProvider =
     FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
@@ -66,19 +51,6 @@ final _popularPostSneakPeakProvider =
   }
 
   return posts.take(20).toList();
-});
-
-final _curatedPostProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final timeScale = ref.watch(_timeScaleProvider);
-  final date = ref.watch(_dateProvider);
-  final page = ref.watch(_pageProvider);
-
-  final repo = ref.watch(postProvider);
-  final posts =
-      await repo.getCuratedPosts(date.state, page.state, timeScale.state);
-
-  return posts;
 });
 
 final _curatedPostSneakPeakProvider =
@@ -92,15 +64,6 @@ final _curatedPostSneakPeakProvider =
   }
 
   return posts.take(20).toList();
-});
-
-final _mostViewedPostProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final date = ref.watch(_dateProvider);
-  final repo = ref.watch(postProvider);
-  final posts = await repo.getMostViewedPosts(date.state);
-
-  return posts;
 });
 
 final _mostViewedPostSneakPeakProvider =
@@ -122,10 +85,6 @@ final _timeScaleProvider = StateProvider.autoDispose<TimeScale>((ref) {
 
 final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
   return DateTime.now();
-});
-
-final _pageProvider = StateProvider.autoDispose<int>((ref) {
-  return 1;
 });
 
 final _popularSearchProvider =
@@ -170,11 +129,6 @@ class ExplorePage extends HookWidget {
           builder: (context, controller) {
             return _ExploreItemPage(
               title: title,
-              provider: category.when(
-                popular: () => _popularPostProvider,
-                curated: () => _curatedPostProvider,
-                mostViewed: () => _mostViewedPostProvider,
-              ),
               category: category,
             );
           },
@@ -227,76 +181,79 @@ class _ExploreItemPage extends HookWidget {
   const _ExploreItemPage({
     Key key,
     this.title,
-    @required this.provider,
     @required this.category,
   }) : super(key: key);
 
-  final AutoDisposeFutureProvider<List<Post>> provider;
   final Widget title;
   final ExploreCategory category;
 
   @override
   Widget build(BuildContext context) {
-    final refreshController = useState(RefreshController());
     final selectedDate = useProvider(_dateProvider);
     final selectedTimeScale = useProvider(_timeScaleProvider);
     final posts = useState(<Post>[]);
-    final page = useProvider(_pageProvider);
-    final postsAtPage = useProvider(provider);
-    final gridKey = useState(GlobalKey());
-
-    final isRefreshing = useState(true);
     final hasNoData = useState(false);
 
-    final scrollController = useState(AutoScrollController());
+    final isRefreshing = useState(false);
+
+    final infiniteListController = useState(InfiniteLoadListController<Post>(
+      onData: (data) {
+        isRefreshing.value = false;
+        posts.value = [...data];
+        hasNoData.value = data.isEmpty;
+      },
+      onMoreData: (data, page) {
+        if (page > 1) {
+          // Dedupe
+          data
+            ..removeWhere((post) {
+              final p = posts.value.firstWhere(
+                (sPost) => sPost.id == post.id,
+                orElse: () => null,
+              );
+              return p?.id == post.id;
+            });
+        }
+        posts.value = [...posts.value, ...data];
+      },
+      refreshBuilder: (page) => category.when(
+        curated: () => context
+            .read(postProvider)
+            .getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
+        popular: () => context
+            .read(postProvider)
+            .getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
+        mostViewed: () =>
+            context.read(postProvider).getMostViewedPosts(selectedDate.state),
+      ),
+      loadMoreBuilder: (page) => category.when(
+        curated: () => context
+            .read(postProvider)
+            .getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
+        popular: () => context
+            .read(postProvider)
+            .getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
+        mostViewed: () =>
+            context.read(postProvider).getMostViewedPosts(selectedDate.state),
+      ),
+    ));
+
+    final gridKey = useState(GlobalKey());
 
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
-        page.state = page.state + 1;
+        infiniteListController.value.loadMore();
       }
     }
 
-    void refresh() {
-      isRefreshing.value = true;
-      page.state = 1;
-    }
-
-    void loadMore() {
-      page.state = page.state + 1;
-    }
-
-    useEffect(() {
-      return () => scrollController.dispose;
-    }, []);
-
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        refresh();
+        isRefreshing.value = true;
+        infiniteListController.value.refresh();
       });
 
       return null;
     }, [selectedTimeScale.state, selectedDate.state]);
-
-    useEffect(() {
-      postsAtPage.whenData((data) {
-        if (isRefreshing.value) {
-          isRefreshing.value = false;
-          posts.value = data;
-        } else {
-          // in Loading mode
-          refreshController.value.loadComplete();
-          posts.value = [...posts.value, ...data];
-        }
-
-        if (data.isEmpty) {
-          refreshController.value.loadNoData();
-        }
-
-        hasNoData.value = data.isEmpty && posts.value.isEmpty;
-      });
-
-      return null;
-    }, [postsAtPage]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(
@@ -318,14 +275,12 @@ class _ExploreItemPage extends HookWidget {
           );
         } else {
           return InfiniteLoadList(
-              // header: SliverToBoxAdapter(child: header),
-              scrollController: scrollController.value,
-              gridKey: gridKey.value,
-              posts: posts.value,
-              refreshController: refreshController.value,
-              onItemChanged: (index) => loadMoreIfNeeded(index),
-              onRefresh: () => refresh(),
-              onLoadMore: () => loadMore());
+            controller: infiniteListController.value,
+            // header: SliverToBoxAdapter(child: header),
+            gridKey: gridKey.value,
+            posts: posts.value,
+            onItemChanged: (index) => loadMoreIfNeeded(index),
+          );
         }
       }
     }
