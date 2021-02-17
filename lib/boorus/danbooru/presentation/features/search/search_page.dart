@@ -88,17 +88,19 @@ class SearchPage extends HookWidget {
     useEffect(() {
       if (completedQueryItems.value.isEmpty) {
         searchDisplayState.value = SearchDisplayState.suggestions();
+      } else {
+        infiniteListController.value.refresh();
       }
-
-      infiniteListController.value.refresh();
 
       return null;
     }, [completedQueryItems.value]);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        isRefreshing.value = true;
-        infiniteListController.value.refresh();
+        if (completedQueryItems.value.isNotEmpty) {
+          isRefreshing.value = true;
+          infiniteListController.value.refresh();
+        }
       });
       return null;
     }, []);
