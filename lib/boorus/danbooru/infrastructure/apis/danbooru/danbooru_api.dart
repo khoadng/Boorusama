@@ -75,6 +75,13 @@ abstract class DanbooruApi implements IApi {
     @CancelRequest() CancelToken cancelToken,
   });
 
+  @GET("/artists.json")
+  @override
+  Future<HttpResponse> getArtist(
+    @Query("search[name]") String name, {
+    @CancelRequest() CancelToken cancelToken,
+  });
+
   @POST("/comments.json")
   @FormUrlEncoded()
   @override

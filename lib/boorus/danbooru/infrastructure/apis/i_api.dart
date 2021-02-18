@@ -24,6 +24,11 @@ abstract class IApi {
     int limit,
   );
 
+  Future<HttpResponse> getArtist(
+    String name, {
+    CancelToken cancelToken,
+  });
+
   Future<HttpResponse> getComments(
     int postId,
     int limit, {
