@@ -352,7 +352,10 @@ class _DetailPageChild extends HookWidget {
                     thickness: 1,
                   ),
                   ListTile(
+                    onTap: () => AppRouter.router.navigateTo(context, "/artist",
+                        routeSettings: RouteSettings(arguments: [post])),
                     title: Text(post.tagStringArtist.pretty),
+                    trailing: Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                   _buildRecommendPosts(artistPosts),
                   ListTile(

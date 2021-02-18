@@ -14,6 +14,9 @@ class AppRouter {
   void setupRoutes() {
     router.define("/", handler: rootHandler);
 
+    router.define("/artist",
+        handler: artistHandler, transitionType: TransitionType.inFromRight);
+
     router.define("/downloads",
         handler: downloadHandler, transitionType: TransitionType.inFromRight);
 

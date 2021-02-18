@@ -80,7 +80,10 @@ class InfiniteLoadList extends HookWidget {
     this.onItemChanged,
     this.headers,
     this.child,
+    this.enableRefresh = true,
     this.extendBody = false,
+    // Use this will disable scroll to index feature
+    this.scrollController,
   }) : super(key: key);
 
   final Widget child;
@@ -89,20 +92,22 @@ class InfiniteLoadList extends HookWidget {
   final GlobalKey gridKey;
   final List<Widget> headers;
   final ValueChanged<int> onItemChanged;
+  final bool enableRefresh;
+  final ScrollController scrollController;
 
   final List<Post> posts;
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useState(AutoScrollController());
+    final autoScrollController = useState(AutoScrollController());
 
     useEffect(() {
-      return () => scrollController.value.dispose;
+      return () => autoScrollController.value.dispose;
     }, []);
     final hideFabAnimController = useAnimationController(
         duration: kThemeAnimationDuration, initialValue: 1);
     final scrollControllerWithAnim = useScrollControllerForAnimation(
-        hideFabAnimController, scrollController.value);
+        hideFabAnimController, scrollController ?? autoScrollController.value);
 
     return Scaffold(
       floatingActionButton: FadeTransition(
@@ -128,7 +133,7 @@ class InfiniteLoadList extends HookWidget {
       body: SmartRefresher(
         controller: controller.refreshController,
         enablePullUp: true,
-        enablePullDown: true,
+        enablePullDown: enableRefresh,
         header: const MaterialClassicHeader(),
         footer: const ClassicFooter(),
         onRefresh: () => controller.refresh(),
@@ -144,7 +149,7 @@ class InfiniteLoadList extends HookWidget {
                     key: gridKey,
                     onItemChanged: (value) => onItemChanged(value),
                     posts: posts,
-                    scrollController: scrollControllerWithAnim,
+                    scrollController: autoScrollController.value,
                   ),
             ),
           ],
