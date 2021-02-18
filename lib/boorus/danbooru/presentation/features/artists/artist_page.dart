@@ -76,11 +76,7 @@ class ArtistPage extends HookWidget {
           context.read(postProvider).getPosts(artistName.value, page),
     ));
 
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        infiniteListController.value.loadMore();
-      }
-    }
+
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [artistName.value]);
@@ -104,7 +100,6 @@ class ArtistPage extends HookWidget {
               controller: infiniteListController.value,
               posts: posts.value,
               gridKey: gridKey.value,
-              onItemChanged: (index) => loadMoreIfNeeded(index),
               child: isRefreshing.value
                   ? SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 6.0),

@@ -56,18 +56,12 @@ class FavoritesPage extends HookWidget {
       },
     ));
 
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        infiniteListController.value.loadMore();
-      }
-    }
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, []);
 
     return InfiniteLoadList(
         controller: infiniteListController.value,
-        onItemChanged: (index) => loadMoreIfNeeded(index),
         gridKey: gridKey.value,
         posts: posts.value,
         child: isRefreshing.value

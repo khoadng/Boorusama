@@ -90,7 +90,8 @@ class InfiniteLoadList extends HookWidget {
     this.child,
     this.enableRefresh = true,
     this.extendBody = false,
-    // Use this will disable scroll to index feature
+
+    /// Use this will disable scroll to index feature
     this.scrollController,
   }) : super(key: key);
 
@@ -116,6 +117,12 @@ class InfiniteLoadList extends HookWidget {
         duration: kThemeAnimationDuration, initialValue: 1);
     final scrollControllerWithAnim = useScrollControllerForAnimation(
         hideFabAnimController, scrollController ?? autoScrollController.value);
+
+    void loadMoreIfNeeded(int index) {
+      if (index > posts.length * 0.8) {
+        controller.loadMore();
+      }
+    }
 
     return Scaffold(
       floatingActionButton: FadeTransition(
@@ -155,7 +162,10 @@ class InfiniteLoadList extends HookWidget {
               sliver: child ??
                   SliverPostGrid(
                     key: gridKey,
-                    onItemChanged: (value) => onItemChanged(value),
+                    onItemChanged: (index) {
+                      loadMoreIfNeeded(index);
+                      onItemChanged?.call(index);
+                    },
                     posts: posts,
                     scrollController: autoScrollController.value,
                   ),

@@ -241,12 +241,6 @@ class _ExploreItemPage extends HookWidget {
       ),
     ));
 
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        infiniteListController.value.loadMore();
-      }
-    }
-
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value,
         [selectedTimeScale.state, selectedDate.state]);
@@ -275,7 +269,6 @@ class _ExploreItemPage extends HookWidget {
             // header: SliverToBoxAdapter(child: header),
             gridKey: gridKey.value,
             posts: posts.value,
-            onItemChanged: (index) => loadMoreIfNeeded(index),
           );
         }
       }

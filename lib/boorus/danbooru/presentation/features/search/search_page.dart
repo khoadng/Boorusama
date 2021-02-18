@@ -76,12 +76,6 @@ class SearchPage extends HookWidget {
       },
     ));
 
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        infiniteListController.value.loadMore();
-      }
-    }
-
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
         refreshWhen: () =>
@@ -244,7 +238,6 @@ class SearchPage extends HookWidget {
                   ),
                   results: () => InfiniteLoadList(
                     controller: infiniteListController.value,
-                    onItemChanged: (index) => loadMoreIfNeeded(index),
                     gridKey: gridKey.value,
                     posts: posts.value,
                     child: isRefreshing.value

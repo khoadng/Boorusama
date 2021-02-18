@@ -75,12 +75,6 @@ class LatestView extends HookWidget {
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [selectedTag.value]);
 
-    void loadMoreIfNeeded(int index) {
-      if (index > posts.value.length * 0.8) {
-        infiniteListController.value.loadMore();
-      }
-    }
-
     Widget _buildTags(List<Search> searches) {
       return Container(
         margin: EdgeInsets.only(left: 8.0),
@@ -142,7 +136,6 @@ class LatestView extends HookWidget {
           ),
         ),
       ],
-      onItemChanged: (index) => loadMoreIfNeeded(index),
       gridKey: gridKey.value,
       posts: posts.value,
       child: isRefreshing.value
