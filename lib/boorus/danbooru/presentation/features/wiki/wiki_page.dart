@@ -43,8 +43,9 @@ class WikiPage extends HookWidget {
               loading: () => Center(
                     child: CircularProgressIndicator(),
                   ),
-              error: (obj, stackTrace) =>
-                  Center(child: Text("Something went wrong"))),
+              error: (obj, stackTrace) => Center(
+                  child: Text(
+                      "Something went wrong, or this wiki page may not exist."))),
         ),
       ),
     );

@@ -141,6 +141,7 @@ abstract class IApi {
   );
 
   Future<HttpResponse> getWiki(
-    String subject,
-  );
+    String subject, {
+    CancelToken cancelToken,
+  });
 }

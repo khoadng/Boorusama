@@ -248,6 +248,7 @@ abstract class DanbooruApi implements IApi {
   @GET("/wiki_pages/{subject}.json")
   @override
   Future<HttpResponse> getWiki(
-    @Path() String subject,
-  );
+    @Path() String subject, {
+    @CancelRequest() CancelToken cancelToken,
+  });
 }
