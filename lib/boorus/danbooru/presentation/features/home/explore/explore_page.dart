@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/generated/i18n.dart';
 
@@ -191,14 +192,12 @@ class _ExploreItemPage extends HookWidget {
   Widget build(BuildContext context) {
     final selectedDate = useProvider(_dateProvider);
     final selectedTimeScale = useProvider(_timeScaleProvider);
+    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
     final hasNoData = useState(false);
 
-    final isRefreshing = useState(false);
-
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        isRefreshing.value = false;
         posts.value = [...data];
         hasNoData.value = data.isEmpty;
       },
@@ -238,22 +237,15 @@ class _ExploreItemPage extends HookWidget {
       ),
     ));
 
-    final gridKey = useState(GlobalKey());
-
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
         infiniteListController.value.loadMore();
       }
     }
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        isRefreshing.value = true;
-        infiniteListController.value.refresh();
-      });
-
-      return null;
-    }, [selectedTimeScale.state, selectedDate.state]);
+    final isRefreshing = useRefreshingState(infiniteListController.value);
+    useAutoRefresh(infiniteListController.value,
+        [selectedTimeScale.state, selectedDate.state]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(

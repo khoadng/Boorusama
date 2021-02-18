@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/search/search_op
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import '../../shared/tag_suggestion_items.dart';
 import 'services/query_processor.dart';
 
@@ -41,11 +42,8 @@ class SearchPage extends HookWidget {
 
     final completedQueryItems = useState(<String>[]);
 
-    final isRefreshing = useState(false);
-
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        isRefreshing.value = false;
         posts.value = [...data];
       },
       onMoreData: (data, page) {
@@ -80,6 +78,9 @@ class SearchPage extends HookWidget {
       }
     }
 
+    final isRefreshing = useRefreshingState(infiniteListController.value);
+    useAutoRefresh(infiniteListController.value, [completedQueryItems.value]);
+
     useEffect(() {
       queryEditingController.addListener(() {
         if (searchDisplayState.value != SearchDisplayState.results()) {
@@ -106,28 +107,13 @@ class SearchPage extends HookWidget {
 
     useEffect(() {
       if (searchDisplayState.value == SearchDisplayState.results()) {
-        if (completedQueryItems.value.isNotEmpty) {
-          if (query.value.isEmpty) {
-            isRefreshing.value = true;
-            infiniteListController.value.refresh();
-          }
-        } else {
+        if (completedQueryItems.value.isEmpty) {
           searchDisplayState.value = SearchDisplayState.searchOptions();
         }
       }
 
       return null;
     }, [completedQueryItems.value]);
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (completedQueryItems.value.isNotEmpty) {
-          isRefreshing.value = true;
-          infiniteListController.value.refresh();
-        }
-      });
-      return null;
-    }, []);
 
     void addTag(String tag) {
       query.value = "";

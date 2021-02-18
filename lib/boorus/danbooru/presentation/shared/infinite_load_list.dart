@@ -17,7 +17,7 @@ typedef LoadMoreCallback<T> = void Function(List<T> data, int page);
 typedef RefreshBuilder<T> = Future<List<T>> Function(int page);
 typedef LoadMoreBuilder<T> = Future<List<T>> Function(int page);
 
-class InfiniteLoadListController<T> {
+class InfiniteLoadListController<T> extends ChangeNotifier {
   InfiniteLoadListController({
     @required this.onData,
     @required this.onMoreData,
@@ -30,38 +30,46 @@ class InfiniteLoadListController<T> {
   final LoadMoreCallback<T> onMoreData;
   final RefreshBuilder<T> refreshBuilder;
 
-  // bool _isLoading = false;
-  // bool _isRefreshing = false;
+  bool _isLoading = false;
+  bool _isRefreshing = false;
   int _page = 1;
   RefreshController _refreshController = RefreshController();
 
   get page => _page;
 
-  // get isRefreshing => _isRefreshing;
+  get isRefreshing => _isRefreshing;
 
-  // get isLoading => _isLoading;
+  get isLoading => _isLoading;
 
   get refreshController => _refreshController;
 
+  @override
   void dispose() {
     _refreshController.dispose();
+    super.dispose();
   }
 
   void refresh() async {
-    // _isRefreshing = true;
+    _isRefreshing = true;
     _page = 1;
+    notifyListeners();
+
     final data = await refreshBuilder(_page);
     onData(data);
-    // _isRefreshing = false;
+    _isRefreshing = false;
     _refreshController.refreshCompleted();
+    notifyListeners();
   }
 
   void loadMore() async {
-    // _isLoading = true;
+    _isLoading = true;
     _page = _page + 1;
+    notifyListeners();
+
     final data = await loadMoreBuilder(_page);
     onMoreData(data, _page);
-    // _isLoading = false;
+    _isLoading = false;
+    notifyListeners();
 
     if (data.isNotEmpty) {
       _refreshController.loadComplete();

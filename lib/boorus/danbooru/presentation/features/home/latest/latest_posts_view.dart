@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 
 final _popularSearchProvider =
     FutureProvider.autoDispose<List<Search>>((ref) async {
@@ -39,14 +40,13 @@ class LatestView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final posts = useState(<Post>[]);
+    final gridKey = useState(GlobalKey());
 
     final popularSearches = useProvider(_popularSearchProvider);
     final selectedTag = useState("");
-    final isRefreshing = useState(false);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        isRefreshing.value = false;
         posts.value = [...data];
       },
       onMoreData: (data, page) {
@@ -68,23 +68,14 @@ class LatestView extends HookWidget {
       loadMoreBuilder: (page) =>
           context.read(postProvider).getPosts(selectedTag.value, page),
     ));
-
-    final gridKey = useState(GlobalKey());
+    final isRefreshing = useRefreshingState(infiniteListController.value);
+    useAutoRefresh(infiniteListController.value, [selectedTag.value]);
 
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
         infiniteListController.value.loadMore();
       }
     }
-
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        isRefreshing.value = true;
-        infiniteListController.value.refresh();
-      });
-
-      return null;
-    }, [selectedTag.value]);
 
     Widget _buildTags(List<Search> searches) {
       return Container(

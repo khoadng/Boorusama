@@ -10,18 +10,19 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 
 class FavoritesPage extends HookWidget {
   const FavoritesPage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
-    final isRefreshing = useState(false);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        isRefreshing.value = false;
         posts.value = [...data];
       },
       onMoreData: (data, page) {
@@ -52,27 +53,24 @@ class FavoritesPage extends HookWidget {
       },
     ));
 
-    final gridKey = useState(GlobalKey());
-
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
         infiniteListController.value.loadMore();
       }
     }
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        isRefreshing.value = true;
-        infiniteListController.value.refresh();
-      });
-      return null;
-    }, []);
+    final isRefreshing = useRefreshingState(infiniteListController.value);
+    useAutoRefresh(infiniteListController.value, []);
 
     return InfiniteLoadList(
-      controller: infiniteListController.value,
-      onItemChanged: (index) => loadMoreIfNeeded(index),
-      gridKey: gridKey.value,
-      posts: posts.value,
-    );
+        controller: infiniteListController.value,
+        onItemChanged: (index) => loadMoreIfNeeded(index),
+        gridKey: gridKey.value,
+        posts: posts.value,
+        child: isRefreshing.value
+            ? SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 6.0),
+                sliver: SliverPostGridPlaceHolder())
+            : null);
   }
 }
