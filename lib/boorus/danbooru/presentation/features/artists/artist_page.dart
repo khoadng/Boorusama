@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/ar
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 
 final _artistInfoProvider =
     FutureProvider.autoDispose.family<Artist, String>((ref, name) async {
@@ -42,16 +43,18 @@ class ArtistPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height - 24;
+    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
     final artistName = useState(referencePost.tagStringArtist.split(' ').first);
     final artistInfo = useProvider(_artistInfoProvider(artistName.value));
-
-    final isRefreshing = useState(false);
+    final isMounted = useIsMounted();
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        isRefreshing.value = false;
-        posts.value = [...data];
+        if (isMounted()) {
+          posts.value = [...data];
+        }
       },
       onMoreData: (data, page) {
         if (page > 1) {
@@ -73,24 +76,15 @@ class ArtistPage extends HookWidget {
           context.read(postProvider).getPosts(artistName.value, page),
     ));
 
-    final gridKey = useState(GlobalKey());
-
     void loadMoreIfNeeded(int index) {
       if (index > posts.value.length * 0.8) {
         infiniteListController.value.loadMore();
       }
     }
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) async {
-        isRefreshing.value = true;
-        infiniteListController.value.refresh();
-      });
+    final isRefreshing = useRefreshingState(infiniteListController.value);
+    useAutoRefresh(infiniteListController.value, [artistName.value]);
 
-      return null;
-    }, [artistName.value]);
-
-    final height = MediaQuery.of(context).size.height - 24;
     return Scaffold(
       body: SlidingUpPanel(
         color: Colors.transparent,

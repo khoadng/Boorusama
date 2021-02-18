@@ -1,6 +1,11 @@
-import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 
 ValueNotifier<bool> useRefreshingState(InfiniteLoadListController controller) {
   final isRefreshing = useState(false);
