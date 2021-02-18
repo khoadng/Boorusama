@@ -196,10 +196,14 @@ class _ExploreItemPage extends HookWidget {
     final posts = useState(<Post>[]);
     final hasNoData = useState(false);
 
+    final isMounted = useIsMounted();
+
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        posts.value = [...data];
-        hasNoData.value = data.isEmpty;
+        if (isMounted()) {
+          posts.value = [...data];
+          hasNoData.value = data.isEmpty;
+        }
       },
       onMoreData: (data, page) {
         if (page > 1) {

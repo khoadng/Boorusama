@@ -4,10 +4,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 ValueNotifier<bool> useRefreshingState(InfiniteLoadListController controller) {
   final isRefreshing = useState(false);
+  final isMounted = useIsMounted();
 
   useEffect(() {
     controller.addListener(() {
-      isRefreshing.value = controller.isRefreshing;
+      if (isMounted()) {
+        isRefreshing.value = controller.isRefreshing;
+      }
     });
 
     return null;
@@ -16,11 +19,16 @@ ValueNotifier<bool> useRefreshingState(InfiniteLoadListController controller) {
   return isRefreshing;
 }
 
-void useAutoRefresh(InfiniteLoadListController controller,
-    [List<Object> keys]) {
+typedef AutoRefreshConditionBuilder = bool Function();
+
+void useAutoRefresh(InfiniteLoadListController controller, List<Object> keys,
+    {AutoRefreshConditionBuilder refreshWhen}) {
   useEffect(() {
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      controller.refresh();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final canRefresh = refreshWhen ?? () => true;
+      if (canRefresh()) {
+        controller.refresh();
+      }
     });
 
     return null;

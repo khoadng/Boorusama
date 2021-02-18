@@ -42,9 +42,13 @@ class SearchPage extends HookWidget {
 
     final completedQueryItems = useState(<String>[]);
 
+    final isMounted = useIsMounted();
+
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        posts.value = [...data];
+        if (isMounted()) {
+          posts.value = [...data];
+        }
       },
       onMoreData: (data, page) {
         if (page > 1) {
@@ -79,7 +83,9 @@ class SearchPage extends HookWidget {
     }
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [completedQueryItems.value]);
+    useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
+        refreshWhen: () =>
+            completedQueryItems.value.isNotEmpty && query.value.isEmpty);
 
     useEffect(() {
       queryEditingController.addListener(() {
@@ -142,7 +148,9 @@ class SearchPage extends HookWidget {
     }
 
     void onSearchButtonTap() {
-      addTag(query.value);
+      if (query.value.isNotEmpty) {
+        addTag(query.value);
+      }
 
       FocusScope.of(context).unfocus();
       isRefreshing.value = true;

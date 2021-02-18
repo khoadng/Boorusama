@@ -20,10 +20,13 @@ class FavoritesPage extends HookWidget {
   Widget build(BuildContext context) {
     final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
+    final isMounted = useIsMounted();
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        posts.value = [...data];
+        if (isMounted()) {
+          posts.value = [...data];
+        }
       },
       onMoreData: (data, page) {
         if (page > 1) {

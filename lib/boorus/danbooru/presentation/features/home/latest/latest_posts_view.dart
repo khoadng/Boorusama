@@ -45,9 +45,13 @@ class LatestView extends HookWidget {
     final popularSearches = useProvider(_popularSearchProvider);
     final selectedTag = useState("");
 
+    final isMounted = useIsMounted();
+
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
-        posts.value = [...data];
+        if (isMounted()) {
+          posts.value = [...data];
+        }
       },
       onMoreData: (data, page) {
         if (page > 1) {
