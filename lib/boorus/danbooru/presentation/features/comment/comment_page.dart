@@ -175,6 +175,7 @@ class _CommentPageState extends State<CommentPage> {
         body: SafeArea(
           child: Scaffold(
             floatingActionButton: OpenContainer(
+              closedElevation: 0,
               closedColor: Colors.transparent,
               closedBuilder: (context, action) => FloatingActionButton(
                 child: Icon(Icons.add),
