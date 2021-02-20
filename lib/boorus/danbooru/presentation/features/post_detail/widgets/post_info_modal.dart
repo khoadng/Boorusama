@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +12,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -91,99 +93,120 @@ class PostInfoModal extends HookWidget {
     final artistCommentaryDisplay =
         useState(ArtistCommentaryTranlationState.original());
     final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
-    final showArtistCommentary = useState(false);
-    // final showCommentaryTranslateOption = useState(false);
 
-    // useValueChanged(artistCommentary.data, (_, __) {
-    //   artistCommentary.whenData((commentary) {
-    //     if (commentary.hasCommentary) {
-    //       showArtistCommentary.value = true;
-    //     } else if (commentary.isTranslated) {
-    //       showCommentaryTranslateOption.value = true;
-    //     }
-    //   });
-    // });
     return Container(
       height: height,
       child: Modal(
-        title: "Information",
-        child: CustomScrollView(
-          shrinkWrap: true,
-          slivers: [
-            // if (showArtistCommentary.value) ...[
-            SliverToBoxAdapter(
-              child: artistCommentary.when(
-                loading: () => _buildLoading(context),
-                data: (artistCommentary) {
-                  // if (artistCommentary.hasCommentary) {
-                  //   WidgetsBinding.instance.addPostFrameCallback((_) {
-                  //     showArtistCommentary.value = true;
-                  //   });
-                  // }
-
-                  return Wrap(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(post.tagStringArtist.pretty),
-                        leading: CircleAvatar(),
-                        trailing: artistCommentary.isTranslated
-                            ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                                icon: Icon(Icons.keyboard_arrow_down),
-                                onSelected: (value) {
-                                  artistCommentaryDisplay.value = value;
-                                },
-                                itemBuilder: (BuildContext context) => <
-                                    PopupMenuEntry<
-                                        ArtistCommentaryTranlationState>>[
-                                  PopupMenuItem<
-                                      ArtistCommentaryTranlationState>(
-                                    value: artistCommentaryDisplay.value.when(
-                                      translated: () =>
-                                          ArtistCommentaryTranlationState
-                                              .original(),
-                                      original: () =>
-                                          ArtistCommentaryTranlationState
-                                              .translated(),
-                                    ),
-                                    child: ListTile(
-                                      title: artistCommentaryDisplay.value.when(
-                                        translated: () => Text("Show Original"),
-                                        original: () => Text("Show Translated"),
+        child: Container(
+          margin: EdgeInsets.all(8),
+          child: CustomScrollView(
+            shrinkWrap: true,
+            slivers: [
+              SliverToBoxAdapter(
+                child: artistCommentary.when(
+                  loading: () => _buildLoading(context),
+                  data: (artistCommentary) {
+                    return Wrap(
+                      children: <Widget>[
+                        ListTile(
+                          visualDensity: VisualDensity.compact,
+                          title: Text(post.tagStringArtist.pretty),
+                          subtitle: Text(
+                            post.source.uri.toString(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.caption,
+                          ),
+                          leading: CircleAvatar(),
+                          trailing: artistCommentary.isTranslated
+                              ? PopupMenuButton<
+                                  ArtistCommentaryTranlationState>(
+                                  icon: Icon(Icons.keyboard_arrow_down),
+                                  onSelected: (value) {
+                                    artistCommentaryDisplay.value = value;
+                                  },
+                                  itemBuilder: (BuildContext context) => <
+                                      PopupMenuEntry<
+                                          ArtistCommentaryTranlationState>>[
+                                    PopupMenuItem<
+                                        ArtistCommentaryTranlationState>(
+                                      value: artistCommentaryDisplay.value.when(
+                                        translated: () =>
+                                            ArtistCommentaryTranlationState
+                                                .original(),
+                                        original: () =>
+                                            ArtistCommentaryTranlationState
+                                                .translated(),
+                                      ),
+                                      child: ListTile(
+                                        title:
+                                            artistCommentaryDisplay.value.when(
+                                          translated: () =>
+                                              Text("Show Original"),
+                                          original: () =>
+                                              Text("Show Translated"),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              )
-                            : SizedBox.shrink(),
-                      ),
-                      artistCommentaryDisplay.value.when(
-                        translated: () => Html(
-                            data:
-                                "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
-                        original: () => Html(
-                            data:
-                                "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
-                      ),
-                    ],
-                  );
-                },
-                error: (name, message) => Text("Failed to load commentary"),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
+                        ),
+                        artistCommentaryDisplay.value.when(
+                          translated: () => Html(
+                              data:
+                                  "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
+                          original: () => Html(
+                              data:
+                                  "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
+                        ),
+                      ],
+                    );
+                  },
+                  error: (name, message) => Text("Failed to load commentary"),
+                ),
               ),
-            ),
-            // ],
-            SliverToBoxAdapter(
-              child: Divider(
-                height: 8,
-                thickness: 1,
-                indent: 16,
-                endIndent: 16,
-              ),
-            ),
-            SliverToBoxAdapter(
-                child: PostTagList(
-              tagStringComma: post.tagString.toCommaFormat(),
-            )),
-          ],
+              SliverToBoxAdapter(
+                  child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Theme.of(context).cardColor),
+                margin: EdgeInsets.all(10),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: Text("Size"),
+                      trailing: Text("${filesize(post.fileSize, 1)}"),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: Text("Resolution"),
+                      trailing:
+                          Text("${post.width.toInt()}x${post.height.toInt()}"),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: Text("Rating"),
+                      trailing: Text(post.rating.value
+                          .toString()
+                          .split('.')
+                          .last
+                          .pascalCase),
+                    ),
+                  ],
+                ),
+              )),
+              SliverToBoxAdapter(
+                  child: PostTagList(
+                tagStringComma: post.tagString.toCommaFormat(),
+              )),
+            ],
+          ),
         ),
       ),
     );
