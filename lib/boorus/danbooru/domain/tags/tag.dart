@@ -25,4 +25,10 @@ class Tag {
 
   @override
   String toString() => "$rawName (${_postCount.toString()})";
+
+  factory Tag.empty() => Tag(
+        "",
+        TagCategory.invalid_,
+        PostCountType(0),
+      );
 }

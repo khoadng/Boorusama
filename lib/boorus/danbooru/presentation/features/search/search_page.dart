@@ -26,7 +26,7 @@ import 'services/query_processor.dart';
 part 'search_page.freezed.dart';
 
 class SearchPage extends HookWidget {
-  const SearchPage({Key key, this.initialQuery}) : super(key: key);
+  const SearchPage({Key key, this.initialQuery = ''}) : super(key: key);
 
   final String initialQuery;
 
@@ -147,7 +147,6 @@ class SearchPage extends HookWidget {
       }
 
       FocusScope.of(context).unfocus();
-      isRefreshing.value = true;
       infiniteListController.value.refresh();
       searchDisplayState.value = SearchDisplayState.results();
     }

@@ -98,6 +98,32 @@ class Post implements IDownloadable {
   @override
   String get downloadUrl =>
       isVideo ? normalImageUri.toString() : fullImageUri.toString();
+
+  factory Post.empty() => Post(
+        id: 0,
+        previewImageUri: null,
+        normalImageUri: null,
+        fullImageUri: null,
+        tagStringCopyright: "",
+        tagStringCharacter: "",
+        tagStringArtist: "",
+        tagStringGeneral: "",
+        tagString: TagString(""),
+        width: 1,
+        height: 1,
+        format: "png",
+        lastCommentAt: null,
+        source: ImageSource(""),
+        createdAt: CreatedTime(DateTime.now().toIso8601String()),
+        score: 0,
+        upScore: 0,
+        downScore: 0,
+        favCount: 0,
+        uploaderId: 0,
+        rating: Rating(rating: "e"),
+        fileSize: 0,
+        isFavorited: false,
+      );
 }
 
 extension InvalidFileCharsExtension on String {
