@@ -1,7 +1,10 @@
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+// Package imports:
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 
 final stubTagProvider = Provider<ITagRepository>((ref) {
   return FakeTagRepository();

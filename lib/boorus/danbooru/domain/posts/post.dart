@@ -33,6 +33,7 @@ class Post implements IDownloadable {
   final int uploaderId;
   final Rating rating;
   final int fileSize;
+  final int pixivId;
 
   final bool isFavorited;
 
@@ -59,6 +60,7 @@ class Post implements IDownloadable {
     @required this.uploaderId,
     @required this.rating,
     @required this.fileSize,
+    @required this.pixivId,
     //TODO: workaround
     this.isFavorited = false,
   });
@@ -113,7 +115,7 @@ class Post implements IDownloadable {
         height: 1,
         format: "png",
         lastCommentAt: null,
-        source: ImageSource(""),
+        source: ImageSource("", null),
         createdAt: CreatedTime(DateTime.now().toIso8601String()),
         score: 0,
         upScore: 0,
@@ -122,6 +124,7 @@ class Post implements IDownloadable {
         uploaderId: 0,
         rating: Rating(rating: "e"),
         fileSize: 0,
+        pixivId: 0,
         isFavorited: false,
       );
 }

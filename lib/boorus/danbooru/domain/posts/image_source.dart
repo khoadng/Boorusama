@@ -1,10 +1,17 @@
 class ImageSource {
-  final String _source;
   Uri _address;
 
-  ImageSource(String source) : _source = source {
+  ImageSource(
+    String source,
+    int pixivId,
+  ) {
     try {
-      _address = Uri.parse(_source);
+      if (pixivId == null) {
+        _address = Uri.parse(source);
+      } else {
+        final pixivUrl = "https://www.pixiv.net/en/artworks/$pixivId";
+        _address = Uri.parse(pixivUrl);
+      }
     } catch (e) {
       _address = null;
     }

@@ -1,6 +1,9 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+// Package imports:
 import 'package:dio/src/cancel_token.dart';
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 final stubPostProvider = Provider<IPostRepository>((ref) {
   return StubPostRepository();

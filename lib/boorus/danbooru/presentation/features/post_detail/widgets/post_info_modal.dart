@@ -2,21 +2,22 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:recase/recase.dart';
+import 'package:shimmer/shimmer.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_source_webview.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'post_tag_list.dart';
 
@@ -50,6 +51,21 @@ class PostInfoModal extends HookWidget {
 
   final Post post;
   final double height;
+
+  Route _createRoute() {
+    return PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) =>
+          PostSourceWebView(url: post.source.uri.toString()),
+      transitionsBuilder: (context, animation, secondaryAnimation, child) {
+        var tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+
+        return SlideTransition(
+          position: animation.drive(tween),
+          child: child,
+        );
+      },
+    );
+  }
 
   Widget _buildLoading(BuildContext context) {
     return Shimmer.fromColors(
@@ -111,11 +127,16 @@ class PostInfoModal extends HookWidget {
                         ListTile(
                           visualDensity: VisualDensity.compact,
                           title: Text(post.tagStringArtist.pretty),
-                          subtitle: Text(
-                            post.source.uri.toString(),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: Theme.of(context).textTheme.caption,
+                          subtitle: InkWell(
+                            onTap: () => post.source != null
+                                ? Navigator.of(context).push(_createRoute())
+                                : null,
+                            child: Text(
+                              post.source.uri.toString(),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context).textTheme.caption,
+                            ),
                           ),
                           leading: CircleAvatar(),
                           trailing: artistCommentary.isTranslated

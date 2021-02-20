@@ -90,7 +90,7 @@ extension PostDtoX on PostDto {
       lastCommentAt: last_comment_bumped_at != null
           ? DateTime.parse(last_commented_at)
           : null,
-      source: ImageSource(source),
+      source: ImageSource(source, pixiv_id),
       createdAt: CreatedTime(created_at),
       score: score,
       upScore: up_score,
@@ -99,6 +99,7 @@ extension PostDtoX on PostDto {
       uploaderId: uploader_id,
       rating: Rating(rating: rating),
       fileSize: file_size,
+      pixivId: pixiv_id,
       isFavorited: is_favorited ?? false,
     );
   }

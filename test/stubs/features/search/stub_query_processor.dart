@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';
+// Package imports:
 import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';
 
 final stubQueryProcessorProvider = Provider<QueryProcessor>((ref) {
   return StubQueryProcessor();

@@ -1,10 +1,15 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_localizations/flutter_localizations.dart';
+
+// Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/app_constants.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/app_theme.dart';
 import 'package:boorusama/generated/i18n.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 
 class StubMaterialApp extends StatelessWidget {
   const StubMaterialApp({

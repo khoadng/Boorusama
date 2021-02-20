@@ -1,3 +1,12 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/all.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
@@ -8,11 +17,6 @@ import 'package:boorusama/boorus/danbooru/presentation/features/search/services/
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_tags/flutter_tags.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:hooks_riverpod/all.dart';
-
 import '../../../../../fakes/repositories/posts/fake_post_repository.dart';
 import '../../../../../stubs/features/search/stub_query_processor.dart';
 import '../../../../../stubs/repositories/posts/stub_post_repository.dart';

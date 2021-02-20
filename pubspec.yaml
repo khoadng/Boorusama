@@ -41,6 +41,7 @@ dependencies:
   flutter_downloader: ^1.5.1
   flutter_hooks: ^0.15.0
   flutter_html: ^1.0.2
+  flutter_inappwebview: ^4.0.0+4
   flutter_portal: ^0.3.0
   flutter_sticky_header: ^0.5.0
   flutter_tags: ^0.4.9
