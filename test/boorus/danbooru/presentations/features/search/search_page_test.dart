@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/all.dart';
 
@@ -43,35 +44,35 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets(
-    "Show search options at start",
-    (WidgetTester tester) async {
-      await setUp(tester);
+  group('Search state', () {
+    testWidgets(
+      "Show search options at start",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      final searchOptionsFinder = find.byType(SearchOptions);
+        final searchOptionsFinder = find.byType(SearchOptions);
 
-      expect(searchOptionsFinder, findsOneWidget);
-    },
-  );
+        expect(searchOptionsFinder, findsOneWidget);
+      },
+    );
 
-  testWidgets(
-    "Show suggestions when enter a character",
-    (WidgetTester tester) async {
-      await setUp(tester);
+    testWidgets(
+      "Show suggestions when enter a character",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      await tester.enterText(find.byType(TextFormField), "a");
+        await tester.enterText(find.byType(TextFormField), "a");
 
-      await tester.pump();
+        await tester.pump();
 
-      final suggestions = find.byType(TagSuggestionItems);
+        final suggestions = find.byType(TagSuggestionItems);
 
-      expect(suggestions, findsOneWidget);
-    },
-  );
+        expect(suggestions, findsOneWidget);
+      },
+    );
 
-  testWidgets(
-    "Show search options when text is cleared",
-    (WidgetTester tester) async {
+    testWidgets("Show search options when text is cleared",
+        (WidgetTester tester) async {
       await setUp(tester);
 
       await tester.enterText(find.byType(TextFormField), "a");
@@ -88,50 +89,94 @@ void main() {
 
       expect(suggestions, findsNothing);
       expect(searchOptions, findsOneWidget);
-    },
-  );
+    });
 
-  testWidgets(
-    "Show result when search icon is tapped",
-    (WidgetTester tester) async {
-      await setUp(tester);
+    testWidgets(
+      "Show result when search icon is tapped",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-      await tester.enterText(find.byType(TextFormField), "a");
+        await tester.enterText(find.byType(TextFormField), "a");
 
-      await tester.tap(find.byType(FloatingActionButton));
+        await tester.tap(find.byType(FloatingActionButton));
 
-      await tester.pump();
+        await tester.pump();
 
-      final result = find.byType(InfiniteLoadList);
+        final result = find.byType(InfiniteLoadList);
 
-      expect(result, findsOneWidget);
-    },
-  );
+        expect(result, findsOneWidget);
+      },
+    );
 
-  testWidgets(
-    "Show loading indicator when waiting for data after pressing search",
-    (WidgetTester tester) async {
-      await setUp(
-        tester,
-        postTestDouble: fakePostProvider,
-      );
+    testWidgets("Show search options when all tags are cleared",
+        (WidgetTester tester) async {
+      await setUp(tester,
+          queryProcessorTestDouble:
+              Provider<QueryProcessor>((_) => QueryProcessor()));
 
-      await tester.enterText(find.byType(TextFormField), "a");
-
-      await tester.tap(find.byType(FloatingActionButton));
-
-      await tester.pump(Duration(milliseconds: 5));
-
-      final loading = find.descendant(
-        of: find.byType(InfiniteLoadList),
-        matching: find.byType(SliverPostGridPlaceHolder),
-      );
-
-      expect(loading, findsOneWidget);
+      await tester.enterText(find.byType(TextFormField), "a ");
+      final tag = find.byType(ItemTags);
 
       await tester.pumpAndSettle();
 
-      expect(loading, findsNothing);
-    },
-  );
+      expect(tag, findsOneWidget);
+
+      await tester.tap(find.byType(FloatingActionButton));
+
+      final closeIconFinder = find.byIcon(Icons.clear);
+      await tester.tap(closeIconFinder);
+
+      final searchOptions = find.byType(SearchOptions);
+
+      await tester.pumpAndSettle();
+
+      expect(tag, findsNothing);
+      expect(searchOptions, findsOneWidget);
+    });
+  });
+
+  group('Behavior', () {
+    testWidgets(
+      "Show loading indicator when waiting for data after pressing search",
+      (WidgetTester tester) async {
+        await setUp(
+          tester,
+          postTestDouble: fakePostProvider,
+        );
+
+        await tester.enterText(find.byType(TextFormField), "a");
+
+        await tester.tap(find.byType(FloatingActionButton));
+
+        await tester.pump(Duration(milliseconds: 5));
+
+        final loading = find.descendant(
+          of: find.byType(InfiniteLoadList),
+          matching: find.byType(SliverPostGridPlaceHolder),
+        );
+
+        expect(loading, findsOneWidget);
+
+        await tester.pumpAndSettle();
+
+        expect(loading, findsNothing);
+      },
+    );
+
+    testWidgets(
+      "Enter space to add a tag",
+      (WidgetTester tester) async {
+        await setUp(tester,
+            queryProcessorTestDouble:
+                Provider<QueryProcessor>((_) => QueryProcessor()));
+
+        await tester.enterText(find.byType(TextFormField), "a ");
+        final tag = find.byType(ItemTags);
+
+        await tester.pumpAndSettle();
+
+        expect(tag, findsOneWidget);
+      },
+    );
+  });
 }
