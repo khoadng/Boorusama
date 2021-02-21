@@ -11,6 +11,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -297,13 +298,13 @@ class _DetailPageChild extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   InkWell(
-                    onTap: () => showModalBottomSheet(
-                      isScrollControlled: true,
+                    onTap: () => showMaterialModalBottomSheet(
+                      duration: Duration(milliseconds: 100),
                       backgroundColor: Colors.transparent,
                       context: context,
-                      builder: (context) => PostInfoModal(
+                      builder: (context, controller) => PostInfoModal(
                         post: post,
-                        height: MediaQuery.of(context).size.height * 0.75,
+                        scrollController: controller,
                       ),
                     ),
                     child: Padding(

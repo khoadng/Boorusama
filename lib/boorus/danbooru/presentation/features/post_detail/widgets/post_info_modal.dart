@@ -46,21 +46,22 @@ class PostInfoModal extends HookWidget {
   const PostInfoModal({
     Key key,
     @required this.post,
-    @required this.height,
+    @required this.scrollController,
   }) : super(key: key);
 
   final Post post;
-  final double height;
+  final ScrollController scrollController;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: height,
+      height: MediaQuery.of(context).size.height * 0.75,
       child: Modal(
         child: Container(
           margin: EdgeInsets.all(8),
           child: Scaffold(
             body: CustomScrollView(
+              controller: scrollController,
               shrinkWrap: true,
               slivers: [
                 SliverToBoxAdapter(
@@ -74,8 +75,7 @@ class PostInfoModal extends HookWidget {
                       borderRadius: BorderRadius.circular(8.0),
                       color: Theme.of(context).cardColor),
                   margin: EdgeInsets.all(10),
-                  child: ListView(
-                    shrinkWrap: true,
+                  child: Column(
                     children: [
                       ListTile(
                         dense: true,
