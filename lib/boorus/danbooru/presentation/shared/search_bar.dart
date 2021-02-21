@@ -63,7 +63,7 @@ class _SearchBarState extends State<SearchBar> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
           ),
-          child: InkWell(
+          child: GestureDetector(
             onTap: () => widget.onTap?.call(),
             child: Row(
               children: [

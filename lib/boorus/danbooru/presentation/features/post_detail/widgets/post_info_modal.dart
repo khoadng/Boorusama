@@ -17,8 +17,9 @@ import 'package:shimmer/shimmer.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_source_webview.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'post_tag_list.dart';
 
 part 'post_info_modal.freezed.dart';
@@ -132,21 +133,6 @@ class ArtistSection extends HookWidget {
 
   final Post post;
 
-  Route _createRoute() {
-    return PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) =>
-          PostSourceWebView(url: post.source.uri.toString()),
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var tween = Tween(begin: Offset(1, 0), end: Offset.zero);
-
-        return SlideTransition(
-          position: animation.drive(tween),
-          child: child,
-        );
-      },
-    );
-  }
-
   Widget _buildLoading(BuildContext context) {
     return Shimmer.fromColors(
       highlightColor: Colors.grey[500],
@@ -211,7 +197,13 @@ class ArtistSection extends HookWidget {
                   Scaffold.of(context).showSnackBar(snackbar);
                 }),
                 onTap: () => post.source != null
-                    ? Navigator.of(context).push(_createRoute())
+                    ? Navigator.of(context).push(
+                        SlideInRoute(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  WebView(url: post.source.uri.toString()),
+                        ),
+                      )
                     : null,
                 child: Text(
                   post.source.uri.toString(),

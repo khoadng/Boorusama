@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-class PostSourceWebView extends HookWidget {
-  const PostSourceWebView({
+class WebView extends HookWidget {
+  const WebView({
     Key key,
     @required this.url,
   }) : super(key: key);
