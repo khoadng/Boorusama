@@ -62,15 +62,19 @@ class SettingRepository implements ISettingRepository {
     }
 
     final json = jsonDecode(jsonString);
-    return Setting.fromJson(json);
+    final settings = Setting.fromJson(json);
+
+    return settings;
   }
 
   @override
-  Future save(Setting setting) async {
+  Future<bool> save(Setting setting) async {
     final prefs = await _prefs;
     final json = jsonEncode(setting.toJson());
 
     //TODO: should make general name instead
-    prefs.setString("settings", json);
+    final success = await prefs.setString("settings", json);
+
+    return success;
   }
 }

@@ -4,35 +4,48 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:meta/meta.dart';
 
-class Setting {
-  bool safeMode;
-  String blacklistedTags;
-  ThemeMode themeMode;
-  String language;
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 
+class Setting {
   Setting({
     @required this.safeMode,
     @required this.blacklistedTags,
     @required this.themeMode,
     @required this.language,
+    @required this.searchHistories,
   });
-
-  static final defaultSettings = Setting(
-      safeMode: false,
-      blacklistedTags: "",
-      themeMode: ThemeMode.dark,
-      language: "en");
 
   Setting.fromJson(Map<String, dynamic> json)
       : safeMode = json["safeMode"],
         blacklistedTags = json["hideBlacklist"],
         themeMode = ThemeMode.values[json["themeMode"]],
-        language = json["language"];
+        language = json["language"],
+        searchHistories = List<SearchHistory>.from(json["searchHistories"]
+                ?.map((item) => SearchHistory.fromJson(item))
+                ?.toList()) ??
+            <SearchHistory>[];
+
+  static final defaultSettings = Setting(
+    safeMode: false,
+    blacklistedTags: "",
+    themeMode: ThemeMode.dark,
+    language: "en",
+    searchHistories: [],
+  );
+
+  String blacklistedTags;
+  String language;
+  bool safeMode;
+  ThemeMode themeMode;
+  List<SearchHistory> searchHistories;
 
   Map<String, dynamic> toJson() => {
         'safeMode': safeMode,
         'hideBlacklist': blacklistedTags,
         'themeMode': themeMode.index,
         'language': language,
+        'searchHistories':
+            searchHistories.map((item) => item.toJson()).toList(),
       };
 }

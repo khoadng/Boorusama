@@ -5,13 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// Project imports:
+import 'search_history.dart';
+
 class SearchOptions extends HookWidget {
   const SearchOptions({
     Key key,
-    this.onTap,
+    this.onOptionTap,
+    this.onHistoryTap,
   }) : super(key: key);
 
-  final ValueChanged<String> onTap;
+  final ValueChanged<String> onOptionTap;
+  final ValueChanged<String> onHistoryTap;
 
   static const options = [
     "fav",
@@ -79,7 +84,7 @@ class SearchOptions extends HookWidget {
               ...options
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
-                        onTap: () => onTap(option),
+                        onTap: () => onOptionTap(option),
                         title: RichText(
                           text: TextSpan(
                             children: <TextSpan>[
@@ -108,7 +113,10 @@ class SearchOptions extends HookWidget {
                         //       .color,
                         // ),
                       ))
-                  .toList()
+                  .toList(),
+              SearchHistorySection(
+                onHistoryTap: (history) => onHistoryTap(history),
+              ),
             ],
           ),
         ),

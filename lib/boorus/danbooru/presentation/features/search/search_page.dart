@@ -13,6 +13,7 @@ import 'package:hooks_riverpod/all.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
@@ -146,6 +147,10 @@ class SearchPage extends HookWidget {
         addTag(query.value);
       }
 
+      context
+          .read(searchHistoryProvider)
+          .addHistory(completedQueryItems.value.join(' '));
+
       FocusScope.of(context).unfocus();
       infiniteListController.value.refresh();
       searchDisplayState.value = SearchDisplayState.results();
@@ -229,7 +234,9 @@ class SearchPage extends HookWidget {
               Expanded(
                 child: searchDisplayState.value.when(
                   searchOptions: () => SearchOptions(
-                    onTap: (searchOption) => query.value = "$searchOption:",
+                    onOptionTap: (searchOption) =>
+                        query.value = "$searchOption:",
+                    onHistoryTap: (history) => query.value = history,
                   ),
                   suggestions: () => TagSuggestionItems(
                     tags: suggestions.value,
