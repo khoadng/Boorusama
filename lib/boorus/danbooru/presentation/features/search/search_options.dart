@@ -19,30 +19,30 @@ class SearchOptions extends HookWidget {
   final ValueChanged<String> onHistoryTap;
 
   static const options = [
-    "fav",
+    // "fav",
     "favcount",
-    "id",
-    "date",
+    // "id",
+    // "date",
     "age",
     "rating",
     "score",
   ];
 
   static const hints = {
-    "fav": "user",
+    // "fav": "user",
     "favcount": ">10",
-    "id": "1000, >=1000,",
-    "date": "2007-01-01",
+    // "id": "1000, >=1000,",
+    // "date": "2007-01-01",
     "age": "2weeks..1year or age:2w..1y",
     "rating": "safe or s,...",
     "score": "100",
   };
 
   static const icons = {
-    "fav": Icons.favorite,
+    // "fav": Icons.favorite,
     "favcount": FontAwesomeIcons.sortAmountUp,
-    "id": FontAwesomeIcons.idCard,
-    "date": FontAwesomeIcons.calendar,
+    // "id": FontAwesomeIcons.idCard,
+    // "date": FontAwesomeIcons.calendar,
     "age": FontAwesomeIcons.clock,
     "rating": FontAwesomeIcons.exclamation,
     "score": FontAwesomeIcons.star,
