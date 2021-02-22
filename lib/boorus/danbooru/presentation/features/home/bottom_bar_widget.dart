@@ -19,13 +19,13 @@ class _BottomBarState extends State<BottomBar> {
   final buttonIcons = [
     FontAwesomeIcons.home,
     Icons.explore,
-    FontAwesomeIcons.solidHeart,
+    // FontAwesomeIcons.solidHeart,
   ];
 
   final labels = [
     "Home",
     "Explore",
-    "Favorites",
+    // "Favorites",
   ];
 
   @override
