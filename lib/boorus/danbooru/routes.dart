@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/l
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/downloads/download_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'presentation/features/accounts/account_info/account_info_page.dart';
+import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
 import 'presentation/features/search/search_page.dart';
@@ -58,9 +58,9 @@ final postDetailImageHandler = Handler(handlerFunc: (
 
 final userHandler = Handler(
     handlerFunc: (BuildContext context, Map<String, List<String>> params) {
-  final String userId = params["id"][0];
+  // final String userId = params["id"][0];
 
-  return AccountInfoPage(accountId: int.parse(userId));
+  return ProfilePage();
 });
 
 final loginHandler = Handler(

@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/services/download_servi
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
@@ -254,28 +255,7 @@ class _DetailPageChild extends HookWidget {
               height: MediaQuery.of(context).size.height * 0.2,
               child: Padding(
                 padding: EdgeInsets.all(4),
-                child: ListView.builder(
-                  physics: const NeverScrollableScrollPhysics(),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: posts.length,
-                  itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.all(3.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8.0),
-                      child: CachedNetworkImage(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        fit: BoxFit.cover,
-                        imageUrl: posts[index].previewImageUri.toString(),
-                        placeholder: (context, url) => Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+                child: PreviewPostList(posts: posts),
               ),
             );
           },

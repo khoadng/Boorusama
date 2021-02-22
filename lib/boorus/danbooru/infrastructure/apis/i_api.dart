@@ -68,6 +68,12 @@ abstract class IApi {
     CancelToken cancelToken,
   });
 
+  Future<HttpResponse> getProfile(
+    String login,
+    String apiKey, {
+    CancelToken cancelToken,
+  });
+
   Future<HttpResponse> getPosts(
     String login,
     String apiKey,
