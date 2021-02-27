@@ -47,10 +47,23 @@ class LoginBox extends HookWidget {
             Navigator.of(context).pop();
           },
           // ignore: missing_return
-          error: () {
-            //TODO: should handle different kind of errors
-            _isValidUsernameAndPassword.value = false;
-            _formKey.value.currentState.validate();
+          error: (type) {
+            type.when(
+              invalidUsernameOrPassword: () {
+                _isValidUsernameAndPassword.value = false;
+                _formKey.value.currentState.validate();
+              },
+              unknown: () {
+                final snackbar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  elevation: 6.0,
+                  content: Text(
+                    'Something went wrong, please try again later',
+                  ),
+                );
+                Scaffold.of(context).showSnackBar(snackbar);
+              },
+            );
           },
           // ignore: missing_return
           orElse: () {}),

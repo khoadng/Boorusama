@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -40,7 +43,7 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   final IScrapperService _scrapperService;
 
   void logIn([String username, String password]) async {
-    return state.state.when(
+    return state.state.maybeWhen(
         unknown: () async {
           final accounts = await _accountRepository.getAll();
           if (accounts != null && accounts.isNotEmpty) {
@@ -57,9 +60,8 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
           }
         },
         authenticating: () {},
-        error: () {},
         loggedIn: () => state.account,
-        loggedOut: () async {
+        orElse: () async {
           try {
             state = state.copyWith(
               state: AccountState.authenticating(),
@@ -73,11 +75,11 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             );
           } on InvalidUsernameOrPassword {
             state = state.copyWith(
-              state: AccountState.error(),
-            );
-          } on Error {
+                state:
+                    AccountState.error(ErrorType.invalidUsernameOrPassword()));
+          } on Exception {
             state = state.copyWith(
-              state: AccountState.error(),
+              state: AccountState.error(ErrorType.unknown()),
             );
           }
         });

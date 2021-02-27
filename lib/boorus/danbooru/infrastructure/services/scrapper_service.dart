@@ -3,6 +3,7 @@ import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:hooks_riverpod/all.dart';
+import 'package:html/dom.dart';
 import 'package:html/parser.dart' as html;
 import 'package:meta/meta.dart';
 
@@ -36,9 +37,7 @@ class ScrapperService implements IScrapperService {
   @override
   Future<Account> crawlAccountData(String username, String password) async {
     //TODO: handle http error i.e 502
-    final loginResponse = await client.get("$url/login");
-    final loginHtml = loginResponse.data.toString();
-    final loginDocument = html.parse(loginHtml);
+    final loginDocument = await _parseDocument("$url/login");
 
     print("Get login token");
     final authenticityToken = loginDocument.documentElement
@@ -69,48 +68,70 @@ class ScrapperService implements IScrapperService {
     }
 
     print("Get to user profile");
-    final profileResponse = await client.get("$url/profile");
-    final profileHtml = profileResponse.data.toString();
-    final profileDocument = html.parse(profileHtml);
+    final profileDocument = await _parseDocument("$url/profile");
 
     final userId = profileDocument.documentElement
         .querySelector("body")
         .attributes["data-current-user-id"];
 
     print("Get to user api key view");
-    final apiKeyViewResponse = await client.get("$url/users/$userId/api_key");
-    final apiKeyViewHtml = apiKeyViewResponse.data.toString();
-    final apiKeyViewDocument = html.parse(apiKeyViewHtml);
+    final apiKeyDocument = await _parseDocument("$url/users/$userId/api_keys");
 
-    final apiKeyViewAuthenticityToken = apiKeyViewDocument.documentElement
-        .querySelector("meta[name='csrf-token']")
-        .attributes["content"];
+    var apiKeys =
+        apiKeyDocument.getElementsByClassName('key-column col-expand');
 
-    final apiKeyViewContent = {
-      "authenticity_token": apiKeyViewAuthenticityToken,
-      "user[password]": password,
-      "commit": "Submit",
-    };
+    if (apiKeys.isEmpty) {
+      print("Navigate to api key new");
 
-    print("Get to user api key page");
-    final apiKeyResponse = await client.post(
-      "$url/users/$userId/api_key/view",
-      data: apiKeyViewContent,
-      options: Options(
-        contentType: Headers.formUrlEncodedContentType,
-        followRedirects: false,
-        validateStatus: (status) => status < 500,
-      ),
-    );
-    final apiKeyHtml = apiKeyResponse.data.toString();
-    final apiKeyDocument = html.parse(apiKeyHtml);
-    final apiKey = apiKeyDocument.documentElement
-        .querySelector("td[id='api-key']")
-        .querySelector("code")
-        .innerHtml;
+      final apiKeyNewDocument =
+          await _parseDocument("$url/users/$userId/api_keys/new");
+
+      print("Create api key");
+      final token = apiKeyNewDocument.documentElement
+          .querySelector("meta[name='csrf-token']")
+          .attributes["content"];
+
+      final content = {
+        "authenticity_token": token,
+        "api_key[name]": "boorusama",
+        "api_key[permitted_ip_addresses]": '',
+        "commit": "Create",
+      };
+
+      try {
+        await client.post(
+          "$url/api_keys",
+          data: content,
+          options: Options(
+            contentType: Headers.formUrlEncodedContentType,
+          ),
+        );
+      } on DioError catch (e) {
+        if (e.response.statusCode == 302) {
+          // Allow redirect
+        } else {
+          throw InvalidUsernameOrPassword();
+        }
+      }
+
+      print("Get to user api key view");
+      final apiKeyDocument =
+          await _parseDocument("$url/users/$userId/api_keys");
+
+      apiKeys = apiKeyDocument.getElementsByClassName('key-column col-expand');
+    }
 
     print("Done scrapping");
-    return Account.create(username, apiKey, int.parse(userId));
+    return Account.create(
+        username, apiKeys.first.text.trim(), int.parse(userId));
+  }
+
+  Future<Document> _parseDocument(String url) async {
+    final response = await client.get(url);
+    final htmlString = response.data.toString();
+    final document = html.parse(htmlString);
+
+    return document;
   }
 }
 
