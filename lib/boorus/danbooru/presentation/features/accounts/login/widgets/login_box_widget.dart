@@ -64,7 +64,8 @@ class LoginBox extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              TextFormField(
+              LoginField(
+                labelText: I18n.of(context).loginFormUsername,
                 validator: (value) {
                   if (value.isEmpty) {
                     return I18n.of(context).loginErrorsMissingUsername;
@@ -77,47 +78,24 @@ class LoginBox extends HookWidget {
                   return null;
                 },
                 controller: usernameTextController,
-                decoration: InputDecoration(
-                  suffixIcon: usernameHasText.state
-                      ? ScaleTransition(
-                          scale: CurvedAnimation(
-                            parent: animationController,
-                            curve: Interval(0.0, 1.0, curve: Curves.linear),
-                          ),
-                          child: IconButton(
-                              splashColor: Colors.transparent,
-                              color:
-                                  Theme.of(context).appBarTheme.iconTheme.color,
-                              icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
-                              onPressed: () => usernameTextController.clear()),
-                        )
-                      : null,
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).accentColor, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).errorColor),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).errorColor, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  contentPadding: EdgeInsets.all(12.0),
-                  labelText: I18n.of(context).loginFormUsername,
-                ),
+                suffixIcon: usernameHasText.state
+                    ? ScaleTransition(
+                        scale: CurvedAnimation(
+                          parent: animationController,
+                          curve: Interval(0.0, 1.0, curve: Curves.linear),
+                        ),
+                        child: IconButton(
+                            splashColor: Colors.transparent,
+                            color:
+                                Theme.of(context).appBarTheme.iconTheme.color,
+                            icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
+                            onPressed: () => usernameTextController.clear()),
+                      )
+                    : null,
               ),
               SizedBox(height: 20),
-              TextFormField(
+              LoginField(
+                labelText: I18n.of(context).loginFormPassword,
                 obscureText: !showPassword.state,
                 validator: (value) {
                   if (value.isEmpty) {
@@ -130,38 +108,13 @@ class LoginBox extends HookWidget {
                   return null;
                 },
                 controller: passwordTextController,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                      splashColor: Colors.transparent,
-                      color: Theme.of(context).appBarTheme.iconTheme.color,
-                      icon: showPassword.state
-                          ? FaIcon(FontAwesomeIcons.solidEyeSlash)
-                          : FaIcon(FontAwesomeIcons.solidEye),
-                      onPressed: () =>
-                          showPassword.state = !showPassword.state),
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  enabledBorder: OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).accentColor, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  errorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(color: Theme.of(context).errorColor),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  focusedErrorBorder: OutlineInputBorder(
-                    borderSide: BorderSide(
-                        color: Theme.of(context).errorColor, width: 2.0),
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                  contentPadding: EdgeInsets.all(12.0),
-                  labelText: I18n.of(context).loginFormPassword,
-                ),
+                suffixIcon: IconButton(
+                    splashColor: Colors.transparent,
+                    color: Theme.of(context).appBarTheme.iconTheme.color,
+                    icon: showPassword.state
+                        ? FaIcon(FontAwesomeIcons.solidEyeSlash)
+                        : FaIcon(FontAwesomeIcons.solidEye),
+                    onPressed: () => showPassword.state = !showPassword.state),
               ),
               SizedBox(height: 20),
               authStatus.maybeWhen(
@@ -186,6 +139,59 @@ class LoginBox extends HookWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class LoginField extends HookWidget {
+  const LoginField({
+    Key key,
+    @required this.validator,
+    @required this.controller,
+    @required this.labelText,
+    this.obscureText = false,
+    this.suffixIcon,
+  }) : super(key: key);
+
+  final TextEditingController controller;
+  final Function(String) validator;
+  final Widget suffixIcon;
+  final String labelText;
+  final bool obscureText;
+
+  @override
+  Widget build(BuildContext context) {
+    final _controller = useTextEditingController();
+
+    return TextFormField(
+      obscureText: obscureText,
+      validator: validator,
+      controller: controller ?? _controller,
+      decoration: InputDecoration(
+        suffixIcon: suffixIcon,
+        filled: true,
+        fillColor: Theme.of(context).cardColor,
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide.none,
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(color: Theme.of(context).accentColor, width: 2.0),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Theme.of(context).errorColor),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        focusedErrorBorder: OutlineInputBorder(
+          borderSide:
+              BorderSide(color: Theme.of(context).errorColor, width: 2.0),
+          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+        ),
+        contentPadding: EdgeInsets.all(12.0),
+        labelText: labelText,
       ),
     );
   }
