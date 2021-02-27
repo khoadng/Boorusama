@@ -158,6 +158,7 @@ class PostDetailPage extends HookWidget {
                   });
                   return _DetailPageChild(
                     post: posts[index],
+                    minimal: autoPlay.value,
                   );
                 },
                 options: CarouselOptions(
@@ -218,9 +219,11 @@ class _DetailPageChild extends HookWidget {
   _DetailPageChild({
     Key key,
     @required this.post,
+    this.minimal = false,
   }) : super(key: key);
 
   final Post post;
+  final bool minimal;
 
   @override
   Widget build(BuildContext context) {
@@ -237,14 +240,14 @@ class _DetailPageChild extends HookWidget {
             AppRouter.router.navigateTo(context, "/posts/image",
                 routeSettings: RouteSettings(arguments: [post]));
           },
-          // Can't use PostImage due to
           child: CachedNetworkImage(
-            fadeInDuration: Duration(microseconds: 1),
             imageUrl: post.normalImageUri.toString(),
-            placeholder: (context, url) => CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: post.previewImageUri.toString(),
-            ),
+            placeholder: (_, __) => minimal
+                ? SizedBox.shrink()
+                : CachedNetworkImage(
+                    fit: BoxFit.cover,
+                    imageUrl: post.previewImageUri.toString(),
+                  ),
           ));
     }
 
@@ -266,92 +269,96 @@ class _DetailPageChild extends HookWidget {
       value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
         backgroundColor: Colors.transparent,
-        body: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: postWidget,
-            ),
-            SliverToBoxAdapter(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InkWell(
-                    onTap: () => showMaterialModalBottomSheet(
-                      duration: Duration(milliseconds: 100),
-                      backgroundColor: Colors.transparent,
-                      context: context,
-                      builder: (context, controller) => PostInfoModal(
-                        post: post,
-                        scrollController: controller,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            flex: 5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  post.tagStringCharacter.isEmpty
-                                      ? "Original"
-                                      : post.name.characterOnly.pretty
-                                          .capitalizeFirstofEach,
-                                  overflow: TextOverflow.fade,
-                                  style: Theme.of(context).textTheme.headline6,
-                                ),
-                                SizedBox(height: 5),
-                                Text(
-                                    post.tagStringCopyright.isEmpty
-                                        ? "Original"
-                                        : post.name.copyRightOnly.pretty
-                                            .capitalizeFirstofEach,
-                                    overflow: TextOverflow.fade,
-                                    style:
-                                        Theme.of(context).textTheme.bodyText2),
-                                SizedBox(height: 5),
-                                Text(
-                                  post.createdAt.toString(),
-                                  style: Theme.of(context).textTheme.caption,
-                                ),
-                              ],
-                            ),
+        body: minimal
+            ? Center(child: postWidget)
+            : CustomScrollView(slivers: [
+                SliverToBoxAdapter(
+                  child: postWidget,
+                ),
+                SliverToBoxAdapter(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InkWell(
+                        onTap: () => showMaterialModalBottomSheet(
+                          duration: Duration(milliseconds: 100),
+                          backgroundColor: Colors.transparent,
+                          context: context,
+                          builder: (context, controller) => PostInfoModal(
+                            post: post,
+                            scrollController: controller,
                           ),
-                          Flexible(child: Icon(Icons.keyboard_arrow_down)),
-                        ],
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Flexible(
+                                flex: 5,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      post.tagStringCharacter.isEmpty
+                                          ? "Original"
+                                          : post.name.characterOnly.pretty
+                                              .capitalizeFirstofEach,
+                                      overflow: TextOverflow.fade,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    SizedBox(height: 5),
+                                    Text(
+                                        post.tagStringCopyright.isEmpty
+                                            ? "Original"
+                                            : post.name.copyRightOnly.pretty
+                                                .capitalizeFirstofEach,
+                                        overflow: TextOverflow.fade,
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyText2),
+                                    SizedBox(height: 5),
+                                    Text(
+                                      post.createdAt.toString(),
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Flexible(child: Icon(Icons.keyboard_arrow_down)),
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
+                      PostActionToolbar(post: post),
+                      Divider(
+                        height: 8,
+                        thickness: 1,
+                      ),
+                      ListTile(
+                        onTap: () => AppRouter.router.navigateTo(
+                            context, "/artist",
+                            routeSettings: RouteSettings(arguments: [post])),
+                        title: Text(post.tagStringArtist.pretty),
+                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                      ),
+                      _buildRecommendPosts(artistPosts),
+                      ListTile(
+                        title: Text(post.tagStringCharacter
+                            .split(' ')
+                            .join(', ')
+                            .pretty
+                            .capitalizeFirstofEach),
+                      ),
+                      _buildRecommendPosts(charactersPosts),
+                    ],
                   ),
-                  PostActionToolbar(post: post),
-                  Divider(
-                    height: 8,
-                    thickness: 1,
-                  ),
-                  ListTile(
-                    onTap: () => AppRouter.router.navigateTo(context, "/artist",
-                        routeSettings: RouteSettings(arguments: [post])),
-                    title: Text(post.tagStringArtist.pretty),
-                    trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                  _buildRecommendPosts(artistPosts),
-                  ListTile(
-                    title: Text(post.tagStringCharacter
-                        .split(' ')
-                        .join(', ')
-                        .pretty
-                        .capitalizeFirstofEach),
-                  ),
-                  _buildRecommendPosts(charactersPosts),
-                ],
-              ),
-            ),
-          ],
-        ),
+                ),
+              ]),
       ),
     );
   }
