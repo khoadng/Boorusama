@@ -38,6 +38,11 @@ class LoginBox extends HookWidget {
         animationController.reverse();
       }
     });
+
+    void onTextChanged() {
+      _isValidUsernameAndPassword.value = true;
+    }
+
     return ProviderListener<AccountState>(
       provider: accountStateProvider,
       onChange: (context, status) => status.maybeWhen(
@@ -90,6 +95,7 @@ class LoginBox extends HookWidget {
                   }
                   return null;
                 },
+                onChanged: (text) => onTextChanged(),
                 controller: usernameTextController,
                 suffixIcon: usernameHasText.state
                     ? ScaleTransition(
@@ -120,6 +126,7 @@ class LoginBox extends HookWidget {
                   }
                   return null;
                 },
+                onChanged: (text) => onTextChanged(),
                 controller: passwordTextController,
                 suffixIcon: IconButton(
                     splashColor: Colors.transparent,
@@ -165,19 +172,22 @@ class LoginField extends HookWidget {
     @required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
+    this.onChanged,
   }) : super(key: key);
 
   final TextEditingController controller;
-  final Function(String) validator;
+  final ValueChanged<String> validator;
   final Widget suffixIcon;
   final String labelText;
   final bool obscureText;
+  final ValueChanged<String> onChanged;
 
   @override
   Widget build(BuildContext context) {
     final _controller = useTextEditingController();
 
     return TextFormField(
+      onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,
       controller: controller ?? _controller,
