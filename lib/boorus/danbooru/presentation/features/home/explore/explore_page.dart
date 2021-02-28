@@ -192,7 +192,6 @@ class _ExploreItemPage extends HookWidget {
   Widget build(BuildContext context) {
     final selectedDate = useProvider(_dateProvider);
     final selectedTimeScale = useProvider(_timeScaleProvider);
-    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
     final hasNoData = useState(false);
 
@@ -267,7 +266,6 @@ class _ExploreItemPage extends HookWidget {
           return InfiniteLoadList(
             controller: infiniteListController.value,
             // header: SliverToBoxAdapter(child: header),
-            gridKey: gridKey.value,
             posts: posts.value,
           );
         }
@@ -459,7 +457,6 @@ class _ExploreSection extends StatelessWidget {
   final AsyncValue<List<Post>> posts;
   final Widget title;
   final VoidCallback onViewMoreTap;
-  final GlobalKey gridKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -486,7 +483,6 @@ class _ExploreSection extends StatelessWidget {
                         posts: posts,
                         onExit: (currentIndex) {},
                         onPostChanged: (index) {},
-                        gridKey: key,
                       ),
                       closedBuilder: (context, action) => Stack(
                         children: [

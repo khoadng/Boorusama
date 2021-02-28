@@ -40,7 +40,6 @@ class LatestView extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final posts = useState(<Post>[]);
-    final gridKey = useState(GlobalKey());
 
     final popularSearches = useProvider(_popularSearchProvider);
     final selectedTag = useState("");
@@ -136,7 +135,6 @@ class LatestView extends HookWidget {
           ),
         ),
       ],
-      gridKey: gridKey.value,
       posts: posts.value,
       child: isRefreshing.value
           ? SliverPadding(

@@ -36,10 +36,8 @@ class PostDetailPage extends HookWidget {
     @required this.intitialIndex,
     @required this.onExit,
     @required this.onPostChanged,
-    @required this.gridKey,
   }) : super(key: key);
 
-  final GlobalKey gridKey;
   final int intitialIndex;
   final ValueChanged<int> onExit;
   final ValueChanged<int> onPostChanged;
@@ -145,51 +143,48 @@ class PostDetailPage extends HookWidget {
         Navigator.pop(context);
         return Future.value(false);
       },
-      child: Hero(
-        tag: "${gridKey.toString()}_${posts[currentPostIndex.value].id}",
-        child: Scaffold(
-          body: Stack(
-            children: [
-              CarouselSlider.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index) {
-                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                    currentPostIndex.value = index;
-                  });
-                  return _DetailPageChild(
-                    post: posts[index],
-                    minimal: autoPlay.value,
-                  );
+      child: Scaffold(
+        body: Stack(
+          children: [
+            CarouselSlider.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                  currentPostIndex.value = index;
+                });
+                return _DetailPageChild(
+                  post: posts[index],
+                  minimal: autoPlay.value,
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  onPostChanged(index);
                 },
-                options: CarouselOptions(
-                  onPageChanged: (index, reason) {
-                    onPostChanged(index);
-                  },
-                  height: MediaQuery.of(context).size.height,
-                  viewportFraction: 1,
-                  enableInfiniteScroll: false,
-                  initialPage: intitialIndex,
-                  reverse: false,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  autoPlay: autoPlay.value,
-                  autoPlayAnimationDuration: slideShowConfig.skipAnimation
-                      ? Duration(microseconds: 1)
-                      : Duration(milliseconds: 600),
-                  autoPlayInterval: Duration(seconds: slideShowConfig.interval),
-                  scrollDirection: Axis.horizontal,
-                ),
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: intitialIndex,
+                reverse: false,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlay: autoPlay.value,
+                autoPlayAnimationDuration: slideShowConfig.skipAnimation
+                    ? Duration(microseconds: 1)
+                    : Duration(milliseconds: 600),
+                autoPlayInterval: Duration(seconds: slideShowConfig.interval),
+                scrollDirection: Axis.horizontal,
               ),
-              ShadowGradientOverlay(
-                alignment: Alignment.topCenter,
-                colors: <Color>[
-                  const Color(0x5D000000),
-                  Colors.black12.withOpacity(0.0)
-                ],
-              ),
-              _buildBackButton(),
-              _buildSlideShowButton(),
-            ],
-          ),
+            ),
+            ShadowGradientOverlay(
+              alignment: Alignment.topCenter,
+              colors: <Color>[
+                const Color(0x5D000000),
+                Colors.black12.withOpacity(0.0)
+              ],
+            ),
+            _buildBackButton(),
+            _buildSlideShowButton(),
+          ],
         ),
       ),
     );

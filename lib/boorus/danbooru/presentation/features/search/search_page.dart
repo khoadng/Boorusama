@@ -39,8 +39,6 @@ class SearchPage extends HookWidget {
     final query = useState(initialQuery);
     final suggestions = useState(<Tag>[]);
 
-    final gridKey = useState(GlobalKey());
-
     final completedQueryItems = useState(<String>[]);
 
     final isMounted = useIsMounted();
@@ -244,7 +242,6 @@ class SearchPage extends HookWidget {
                   ),
                   results: () => InfiniteLoadList(
                     controller: infiniteListController.value,
-                    gridKey: gridKey.value,
                     posts: posts.value,
                     child: isRefreshing.value
                         ? SliverPadding(

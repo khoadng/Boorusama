@@ -41,7 +41,7 @@ class PostRepository implements IPostRepository {
   final IFavoritePostRepository _favoritePostRepository;
   final ProviderReference _ref;
 
-  static const int _limit = 100;
+  static const int _limit = 60;
 
   @override
   Future<List<Post>> getCuratedPosts(

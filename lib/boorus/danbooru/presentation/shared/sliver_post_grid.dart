@@ -1,11 +1,11 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:ui';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,8 +21,8 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
-import 'package:boorusama/core/presentation/widgets/fade_page_route.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
@@ -43,6 +43,22 @@ class SliverPostGrid extends HookWidget {
       scrollController.scrollToIndex(lastViewedPostIndex.value);
     });
     final popupPostPreview = useState<OverlayEntry>();
+
+    // Workaround to prevent memory leak, clear images every 10 seconds
+    final timer = useState(Timer.periodic(Duration(seconds: 10), (_) {
+      PaintingBinding.instance.imageCache.clearLiveImages();
+    }));
+
+    useEffect(() {
+      return () => timer.value.cancel();
+    }, []);
+
+    // Clear live image cache everytime this widget built
+    useEffect(() {
+      PaintingBinding.instance.imageCache.clearLiveImages();
+
+      return () {};
+    });
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -84,89 +100,86 @@ class SliverPostGrid extends HookWidget {
               );
             }
 
-            return Hero(
-              tag: "${key.toString()}_${post.id}",
-              child: AutoScrollTag(
-                index: index,
-                controller: scrollController,
-                key: ValueKey(index),
-                child: Stack(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        FadeMaterialPageRoute(
-                          builder: (context) => PostDetailPage(
-                            post: post,
-                            intitialIndex: index,
-                            posts: posts,
-                            onExit: (currentIndex) =>
-                                lastViewedPostIndex.value = currentIndex,
-                            onPostChanged: (index) => onItemChanged(index),
-                            gridKey: key,
-                          ),
+            return AutoScrollTag(
+              index: index,
+              controller: scrollController,
+              key: ValueKey(index),
+              child: Stack(
+                children: <Widget>[
+                  GestureDetector(
+                    onTap: () => Navigator.of(context).push(
+                      SlideInRoute(
+                        pageBuilder: (context, _, __) => PostDetailPage(
+                          post: post,
+                          intitialIndex: index,
+                          posts: posts,
+                          onExit: (currentIndex) =>
+                              lastViewedPostIndex.value = currentIndex,
+                          onPostChanged: (index) => onItemChanged(index),
                         ),
-                      ),
-                      onLongPress: () {
-                        popupPostPreview.value = OverlayEntry(
-                          builder: (context) =>
-                              _buildImagePreviewOverlay(context, post),
-                        );
-                        Overlay.of(context).insert(popupPostPreview.value);
-                      },
-                      onLongPressEnd: (details) {
-                        popupPostPreview.value?.remove();
-                      },
-                      child: PostImage(
-                        imageUrl: post.isAnimated
-                            ? post.previewImageUri.toString()
-                            : post.normalImageUri.toString(),
-                        placeholderUrl: post.previewImageUri.toString(),
+                        transitionDuration: Duration(milliseconds: 150),
                       ),
                     ),
-                    ShadowGradientOverlay(
-                      alignment: Alignment.bottomCenter,
-                      colors: <Color>[
-                        const Color(0x2F000000),
-                        Colors.black12.withOpacity(0.0)
-                      ],
+                    onLongPress: () {
+                      popupPostPreview.value = OverlayEntry(
+                        builder: (context) =>
+                            _buildImagePreviewOverlay(context, post),
+                      );
+                      Overlay.of(context).insert(popupPostPreview.value);
+                    },
+                    onLongPressEnd: (details) {
+                      popupPostPreview.value?.remove();
+                    },
+                    child: PostImage(
+                      imageUrl: post.isAnimated
+                          ? post.previewImageUri.toString()
+                          : post.normalImageUri.toString(),
+                      placeholderUrl: post.previewImageUri.toString(),
                     ),
-                    Positioned(
-                      top: 6,
-                      left: 6,
-                      child: Column(
-                        children: items,
+                  ),
+                  ShadowGradientOverlay(
+                    alignment: Alignment.bottomCenter,
+                    colors: <Color>[
+                      const Color(0x2F000000),
+                      Colors.black12.withOpacity(0.0)
+                    ],
+                  ),
+                  Positioned(
+                    top: 6,
+                    left: 6,
+                    child: Column(
+                      children: items,
+                    ),
+                  ),
+                  Positioned(
+                    right: 6,
+                    bottom: 6,
+                    child: LikeButton(
+                      isLiked: post.isFavorited,
+                      likeBuilder: (isLiked) => Icon(
+                        isLiked
+                            ? Icons.favorite_rounded
+                            : Icons.favorite_outline_rounded,
+                        color: isLiked ? Colors.red : Colors.white,
                       ),
-                    ),
-                    Positioned(
-                      right: 6,
-                      bottom: 6,
-                      child: LikeButton(
-                        isLiked: post.isFavorited,
-                        likeBuilder: (isLiked) => Icon(
-                          isLiked
-                              ? Icons.favorite_rounded
-                              : Icons.favorite_outline_rounded,
-                          color: isLiked ? Colors.red : Colors.white,
-                        ),
-                        onTap: (isLiked) {
-                          //TODO: check for success here
-                          if (!isLiked) {
-                            context
-                                .read(favoriteProvider)
-                                .addToFavorites(post.id);
+                      onTap: (isLiked) {
+                        //TODO: check for success here
+                        if (!isLiked) {
+                          context
+                              .read(favoriteProvider)
+                              .addToFavorites(post.id);
 
-                            return Future(() => true);
-                          } else {
-                            context
-                                .read(favoriteProvider)
-                                .removeFromFavorites(post.id);
-                            return Future(() => false);
-                          }
-                        },
-                      ),
-                    )
-                  ],
-                ),
+                          return Future(() => true);
+                        } else {
+                          context
+                              .read(favoriteProvider)
+                              .removeFromFavorites(post.id);
+                          return Future(() => false);
+                        }
+                      },
+                    ),
+                  )
+                ],
               ),
             );
           } else {
@@ -254,14 +267,11 @@ class SliverPostGrid extends HookWidget {
                     ),
                   ),
                   Flexible(
-                    child: Hero(
-                      tag: "${key.toString()}_${post.id}",
-                      child: CachedNetworkImage(
-                        fit: BoxFit.contain,
-                        imageUrl: post.isAnimated
-                            ? post.previewImageUri.toString()
-                            : post.normalImageUri.toString(),
-                      ),
+                    child: CachedNetworkImage(
+                      fit: BoxFit.contain,
+                      imageUrl: post.isAnimated
+                          ? post.previewImageUri.toString()
+                          : post.normalImageUri.toString(),
                     ),
                   ),
                   Flexible(

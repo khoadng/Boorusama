@@ -44,7 +44,6 @@ class ArtistPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - 24;
-    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
     final artistName = useState(referencePost.tagStringArtist.split(' ').first);
     final artistInfo = useProvider(_artistInfoProvider(artistName.value));
@@ -76,8 +75,6 @@ class ArtistPage extends HookWidget {
           context.read(postProvider).getPosts(artistName.value, page),
     ));
 
-
-
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [artistName.value]);
 
@@ -99,7 +96,6 @@ class ArtistPage extends HookWidget {
               enableRefresh: false,
               controller: infiniteListController.value,
               posts: posts.value,
-              gridKey: gridKey.value,
               child: isRefreshing.value
                   ? SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 6.0),

@@ -2,9 +2,14 @@
 import 'package:flutter/cupertino.dart';
 
 class SlideInRoute extends PageRouteBuilder {
-  SlideInRoute({@required RoutePageBuilder pageBuilder})
-      : assert(pageBuilder != null),
-        super(pageBuilder: pageBuilder);
+  SlideInRoute({
+    @required RoutePageBuilder pageBuilder,
+    Duration transitionDuration,
+  })  : assert(pageBuilder != null),
+        super(
+          pageBuilder: pageBuilder,
+          transitionDuration: transitionDuration,
+        );
 
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,

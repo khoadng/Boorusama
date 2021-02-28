@@ -18,7 +18,6 @@ class FavoritesPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridKey = useState(GlobalKey());
     final posts = useState(<Post>[]);
     final isMounted = useIsMounted();
 
@@ -62,7 +61,6 @@ class FavoritesPage extends HookWidget {
 
     return InfiniteLoadList(
         controller: infiniteListController.value,
-        gridKey: gridKey.value,
         posts: posts.value,
         child: isRefreshing.value
             ? SliverPadding(

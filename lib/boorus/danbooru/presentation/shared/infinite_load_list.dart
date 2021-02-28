@@ -83,7 +83,6 @@ class InfiniteLoadList extends HookWidget {
   const InfiniteLoadList({
     Key key,
     @required this.controller,
-    @required this.gridKey,
     @required this.posts,
     this.onItemChanged,
     this.headers,
@@ -98,7 +97,6 @@ class InfiniteLoadList extends HookWidget {
   final Widget child;
   final InfiniteLoadListController controller;
   final bool extendBody;
-  final GlobalKey gridKey;
   final List<Widget> headers;
   final ValueChanged<int> onItemChanged;
   final bool enableRefresh;
@@ -161,7 +159,6 @@ class InfiniteLoadList extends HookWidget {
               padding: EdgeInsets.all(6.0),
               sliver: child ??
                   SliverPostGrid(
-                    key: gridKey,
                     onItemChanged: (index) {
                       loadMoreIfNeeded(index);
                       onItemChanged?.call(index);
