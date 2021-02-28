@@ -15,6 +15,12 @@ import 'package:boorusama/core/application/scraper/i_scrapper_service.dart';
 part 'authentication_state.dart';
 part 'authentication_state_notifier.freezed.dart';
 
+final isLoggedInProvider = Provider<bool>((ref) {
+  final notifier = ref.watch(authenticationStateNotifierProvider.state);
+  final isLoggedIn = notifier.state == AccountState.loggedIn();
+  return isLoggedIn;
+});
+
 final authenticationStateNotifierProvider =
     StateNotifierProvider<AuthenticationNotifier>((ref) {
   return AuthenticationNotifier(ref);

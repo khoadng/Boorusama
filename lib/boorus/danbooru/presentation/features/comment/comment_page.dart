@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'comment_create_page.dart';
@@ -174,15 +175,24 @@ class _CommentPageState extends State<CommentPage> {
         ),
         body: SafeArea(
           child: Scaffold(
-            floatingActionButton: OpenContainer(
-              closedElevation: 0,
-              closedColor: Colors.transparent,
-              closedBuilder: (context, action) => FloatingActionButton(
-                child: Icon(Icons.add),
-                onPressed: null,
-              ),
-              openBuilder: (context, action) =>
-                  CommentCreatePage(postId: widget.postId),
+            floatingActionButton: Consumer(
+              builder: (_, watch, __) {
+                final isLoggedIn = watch(isLoggedInProvider);
+
+                return isLoggedIn
+                    ? OpenContainer(
+                        closedElevation: 0,
+                        closedColor: Colors.transparent,
+                        closedBuilder: (context, action) =>
+                            FloatingActionButton(
+                          child: Icon(Icons.add),
+                          onPressed: null,
+                        ),
+                        openBuilder: (context, action) =>
+                            CommentCreatePage(postId: widget.postId),
+                      )
+                    : SizedBox.shrink();
+              },
             ),
             body: Column(
               children: <Widget>[

@@ -11,6 +11,7 @@ import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -61,6 +62,22 @@ class PostActionToolbar extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final comments = useProvider(_commentsProvider(post.id));
+    final isLoggedIn = useProvider(isLoggedInProvider);
+
+    bool displayNoticeIfNotLoggedIn() {
+      if (!isLoggedIn) {
+        final snackbar = SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6.0,
+          content: Text(
+            'You need to log in to perform this action',
+          ),
+        );
+        Scaffold.of(context).showSnackBar(snackbar);
+        return false;
+      }
+      return true;
+    }
 
     return ButtonBar(
       alignment: MainAxisAlignment.spaceEvenly,
@@ -72,7 +89,9 @@ class PostActionToolbar extends HookWidget {
           likeBuilder: (isLiked) => FaIcon(isLiked
               ? FontAwesomeIcons.solidThumbsUp
               : FontAwesomeIcons.thumbsUp),
-          onTap: (isLiked) {},
+          onTap: (isLiked) {
+            return Future.value(displayNoticeIfNotLoggedIn());
+          },
         ),
         LikeButton(
           // isLiked: post.isFavorited,
@@ -81,7 +100,9 @@ class PostActionToolbar extends HookWidget {
           likeBuilder: (isLiked) => FaIcon(isLiked
               ? FontAwesomeIcons.solidThumbsDown
               : FontAwesomeIcons.thumbsDown),
-          onTap: (isLiked) {},
+          onTap: (isLiked) {
+            return Future.value(displayNoticeIfNotLoggedIn());
+          },
         ),
         LikeButton(
           isLiked: post.isFavorited,
@@ -92,6 +113,10 @@ class PostActionToolbar extends HookWidget {
             color: isLiked ? Colors.red : Colors.white,
           ),
           onTap: (isLiked) {
+            final loggedIn = displayNoticeIfNotLoggedIn();
+
+            if (!loggedIn) return Future.value(false);
+
             //TODO: check for success here
             if (!isLiked) {
               context.read(favoriteProvider).addToFavorites(post.id);

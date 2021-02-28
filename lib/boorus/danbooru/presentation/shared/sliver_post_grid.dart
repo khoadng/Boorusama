@@ -11,10 +11,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:hooks_riverpod/all.dart';
 import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
@@ -38,6 +40,7 @@ class SliverPostGrid extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = useProvider(isLoggedInProvider);
     final lastViewedPostIndex = useState(-1);
     useValueChanged(lastViewedPostIndex.value, (_, __) {
       scrollController.scrollToIndex(lastViewedPostIndex.value);
@@ -151,34 +154,36 @@ class SliverPostGrid extends HookWidget {
                       children: items,
                     ),
                   ),
-                  Positioned(
-                    right: 6,
-                    bottom: 6,
-                    child: LikeButton(
-                      isLiked: post.isFavorited,
-                      likeBuilder: (isLiked) => Icon(
-                        isLiked
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_outline_rounded,
-                        color: isLiked ? Colors.red : Colors.white,
-                      ),
-                      onTap: (isLiked) {
-                        //TODO: check for success here
-                        if (!isLiked) {
-                          context
-                              .read(favoriteProvider)
-                              .addToFavorites(post.id);
+                  isLoggedIn
+                      ? Positioned(
+                          right: 6,
+                          bottom: 6,
+                          child: LikeButton(
+                            isLiked: post.isFavorited,
+                            likeBuilder: (isLiked) => Icon(
+                              isLiked
+                                  ? Icons.favorite_rounded
+                                  : Icons.favorite_outline_rounded,
+                              color: isLiked ? Colors.red : Colors.white,
+                            ),
+                            onTap: (isLiked) {
+                              //TODO: check for success here
+                              if (!isLiked) {
+                                context
+                                    .read(favoriteProvider)
+                                    .addToFavorites(post.id);
 
-                          return Future(() => true);
-                        } else {
-                          context
-                              .read(favoriteProvider)
-                              .removeFromFavorites(post.id);
-                          return Future(() => false);
-                        }
-                      },
-                    ),
-                  )
+                                return Future(() => true);
+                              } else {
+                                context
+                                    .read(favoriteProvider)
+                                    .removeFromFavorites(post.id);
+                                return Future(() => false);
+                              }
+                            },
+                          ),
+                        )
+                      : SizedBox.shrink(),
                 ],
               ),
             );
@@ -259,12 +264,6 @@ class SliverPostGrid extends HookWidget {
                                 .capitalizeFirstofEach,
                         maxLines: 1,
                         overflow: TextOverflow.fade,
-                      ),
-                      trailing: Icon(
-                        post.isFavorited
-                            ? Icons.favorite_rounded
-                            : Icons.favorite_outline_rounded,
-                        color: post.isFavorited ? Colors.red : Colors.white,
                       ),
                     ),
                   ),
