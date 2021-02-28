@@ -1,32 +1,23 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/all.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/all.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_video.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'providers/slide_show_providers.dart';
-import 'widgets/post_action_toolbar.dart';
-import 'widgets/post_info_modal.dart';
 
 class PostDetailPage extends HookWidget {
   PostDetailPage({
@@ -152,7 +143,7 @@ class PostDetailPage extends HookWidget {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   currentPostIndex.value = index;
                 });
-                return _DetailPageChild(
+                return PostDetail(
                   post: posts[index],
                   minimal: autoPlay.value,
                 );
@@ -186,180 +177,6 @@ class PostDetailPage extends HookWidget {
             _buildSlideShowButton(),
           ],
         ),
-      ),
-    );
-  }
-}
-
-final _recommendPostsProvider = FutureProvider.autoDispose
-    .family<List<Post>, String>((ref, tagString) async {
-  // Cancel the HTTP request if the user leaves the detail page before
-  // the request completes.
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(postProvider);
-  final tags =
-      tagString.split(' ').take(2).map((e) => "~$e").toList().join(' ');
-  final posts = await repo.getPosts(tags, 1,
-      limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
-
-  /// Cache the posts once it was successfully obtained.
-  ref.maintainState = true;
-
-  return posts.take(3).toList();
-});
-
-class _DetailPageChild extends HookWidget {
-  _DetailPageChild({
-    Key key,
-    @required this.post,
-    this.minimal = false,
-  }) : super(key: key);
-
-  final Post post;
-  final bool minimal;
-
-  @override
-  Widget build(BuildContext context) {
-    final artistPosts =
-        useProvider(_recommendPostsProvider(post.tagStringArtist));
-    final charactersPosts =
-        useProvider(_recommendPostsProvider(post.tagStringCharacter));
-    Widget postWidget;
-    if (post.isVideo) {
-      postWidget = PostVideo(post: post);
-    } else {
-      postWidget = GestureDetector(
-          onTap: () {
-            AppRouter.router.navigateTo(context, "/posts/image",
-                routeSettings: RouteSettings(arguments: [post]));
-          },
-          child: CachedNetworkImage(
-            imageUrl: post.normalImageUri.toString(),
-            placeholder: (_, __) => minimal
-                ? SizedBox.shrink()
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: post.previewImageUri.toString(),
-                  ),
-          ));
-    }
-
-    Widget _buildRecommendPosts(AsyncValue<List<Post>> recommendedPosts) {
-      return recommendedPosts.maybeWhen(
-          data: (posts) {
-            return Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: Padding(
-                padding: EdgeInsets.all(4),
-                child: PreviewPostList(posts: posts),
-              ),
-            );
-          },
-          orElse: () => Center(child: CircularProgressIndicator()));
-    }
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: minimal
-            ? Center(child: postWidget)
-            : CustomScrollView(slivers: [
-                SliverToBoxAdapter(
-                  child: postWidget,
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InkWell(
-                        onTap: () => showMaterialModalBottomSheet(
-                          duration: Duration(milliseconds: 100),
-                          backgroundColor: Colors.transparent,
-                          context: context,
-                          builder: (context, controller) => PostInfoModal(
-                            post: post,
-                            scrollController: controller,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Flexible(
-                                flex: 5,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      post.tagStringCharacter.isEmpty
-                                          ? "Original"
-                                          : post.name.characterOnly.pretty
-                                              .capitalizeFirstofEach,
-                                      overflow: TextOverflow.fade,
-                                      style:
-                                          Theme.of(context).textTheme.headline6,
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                        post.tagStringCopyright.isEmpty
-                                            ? "Original"
-                                            : post.name.copyRightOnly.pretty
-                                                .capitalizeFirstofEach,
-                                        overflow: TextOverflow.fade,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyText2),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      post.createdAt.toString(),
-                                      style:
-                                          Theme.of(context).textTheme.caption,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Flexible(child: Icon(Icons.keyboard_arrow_down)),
-                            ],
-                          ),
-                        ),
-                      ),
-                      PostActionToolbar(post: post),
-                      Divider(
-                        height: 8,
-                        thickness: 1,
-                      ),
-                      post.tagStringArtist.isNotEmpty
-                          ? ListTile(
-                              onTap: () => AppRouter.router.navigateTo(
-                                  context, "/artist",
-                                  routeSettings:
-                                      RouteSettings(arguments: [post])),
-                              title: Text(post.tagStringArtist.pretty),
-                              trailing:
-                                  Icon(Icons.keyboard_arrow_right_rounded),
-                            )
-                          : SizedBox.shrink(),
-                      _buildRecommendPosts(artistPosts),
-                      post.tagStringCharacter.isNotEmpty
-                          ? ListTile(
-                              title: Text(post.tagStringCharacter
-                                  .split(' ')
-                                  .join(', ')
-                                  .pretty
-                                  .capitalizeFirstofEach),
-                            )
-                          : SizedBox.shrink(),
-                      _buildRecommendPosts(charactersPosts),
-                    ],
-                  ),
-                ),
-              ]),
       ),
     );
   }
