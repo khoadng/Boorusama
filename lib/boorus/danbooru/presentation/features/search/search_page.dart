@@ -157,8 +157,8 @@ class SearchPage extends HookWidget {
     return SafeArea(
       child: ClipRRect(
         borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
         ),
         child: Scaffold(
           floatingActionButton: searchDisplayState.value.maybeWhen(

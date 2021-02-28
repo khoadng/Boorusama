@@ -39,8 +39,6 @@ final _favorites = FutureProvider.autoDispose<List<Post>>((ref) async {
   final favorites = await repo.getPosts("ordfav:${profile.name}", 1,
       limit: 10, cancelToken: cancelToken);
 
-  ref.maintainState = true;
-
   return favorites;
 });
 

@@ -77,8 +77,8 @@ class HomePage extends HookWidget {
             Expanded(
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
                 ),
                 child: Scaffold(
                   extendBody: true,

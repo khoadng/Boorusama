@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 class SlideInRoute extends PageRouteBuilder {
   SlideInRoute({
     @required RoutePageBuilder pageBuilder,
-    Duration transitionDuration,
+    Duration transitionDuration = const Duration(milliseconds: 200),
   })  : assert(pageBuilder != null),
         super(
           pageBuilder: pageBuilder,
