@@ -334,21 +334,27 @@ class _DetailPageChild extends HookWidget {
                         height: 8,
                         thickness: 1,
                       ),
-                      ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                            context, "/artist",
-                            routeSettings: RouteSettings(arguments: [post])),
-                        title: Text(post.tagStringArtist.pretty),
-                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                      ),
+                      post.tagStringArtist.isNotEmpty
+                          ? ListTile(
+                              onTap: () => AppRouter.router.navigateTo(
+                                  context, "/artist",
+                                  routeSettings:
+                                      RouteSettings(arguments: [post])),
+                              title: Text(post.tagStringArtist.pretty),
+                              trailing:
+                                  Icon(Icons.keyboard_arrow_right_rounded),
+                            )
+                          : SizedBox.shrink(),
                       _buildRecommendPosts(artistPosts),
-                      ListTile(
-                        title: Text(post.tagStringCharacter
-                            .split(' ')
-                            .join(', ')
-                            .pretty
-                            .capitalizeFirstofEach),
-                      ),
+                      post.tagStringCharacter.isNotEmpty
+                          ? ListTile(
+                              title: Text(post.tagStringCharacter
+                                  .split(' ')
+                                  .join(', ')
+                                  .pretty
+                                  .capitalizeFirstofEach),
+                            )
+                          : SizedBox.shrink(),
                       _buildRecommendPosts(charactersPosts),
                     ],
                   ),

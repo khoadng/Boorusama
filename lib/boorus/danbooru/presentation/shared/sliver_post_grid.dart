@@ -194,10 +194,12 @@ class SliverPostGrid extends HookWidget {
   Widget _buildImagePreviewOverlay(BuildContext context, Post post) {
     final artistTags = post.tagStringArtist
         .split(' ')
+        .where((e) => e.isNotEmpty)
         .map((e) => [e, TagCategory.artist])
         .toList();
     final copyrightTags = post.tagStringCopyright
         .split(' ')
+        .where((e) => e.isNotEmpty)
         .map((e) => [e, TagCategory.copyright])
         .toList();
     final characterTags = post.tagStringCharacter
