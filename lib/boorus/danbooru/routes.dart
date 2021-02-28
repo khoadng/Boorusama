@@ -24,7 +24,10 @@ final artistHandler = Handler(handlerFunc: (
 ) {
   final args = context.settings.arguments as List;
 
-  return ArtistPage(referencePost: args[0]);
+  return ArtistPage(
+    artistName: args[0],
+    backgroundImageUrl: args[1],
+  );
 });
 
 final downloadHandler = Handler(handlerFunc: (

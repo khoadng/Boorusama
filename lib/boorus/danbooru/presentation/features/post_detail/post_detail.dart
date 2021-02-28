@@ -20,25 +20,27 @@ import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
 
 final _recommendPostsProvider = FutureProvider.autoDispose
-    .family<Recommended, String>((ref, tagString) async {
+    .family<List<Recommended>, String>((ref, tagString) async {
   // Cancel the HTTP request if the user leaves the detail page before
   // the request completes.
   final cancelToken = CancelToken();
   ref.onDispose(cancelToken.cancel);
 
   final repo = ref.watch(postProvider);
-  final tags =
-      tagString.split(' ').take(2).map((e) => "~$e").toList().join(' ');
-  final posts = await repo.getPosts(tags, 1,
-      limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
+  final recommendations = await Future.wait(
+      tagString.split(' ').where((tag) => tag.isNotEmpty).map((tag) async {
+    final posts = await repo.getPosts(tag, 1,
+        limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
+
+    final recommended = Recommended(title: tag, posts: posts.take(3).toList());
+
+    return recommended;
+  }).toList());
 
   /// Cache the posts once it was successfully obtained.
   ref.maintainState = true;
 
-  final recommended =
-      Recommended(title: tagString, posts: posts.take(3).toList());
-
-  return recommended;
+  return recommendations;
 });
 
 class Recommended {
@@ -67,6 +69,11 @@ class PostDetail extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final artistPosts =
+        useProvider(_recommendPostsProvider(post.tagStringArtist));
+    final charactersPosts =
+        useProvider(_recommendPostsProvider(post.tagStringCharacter));
+
     Widget postWidget;
     if (post.isVideo) {
       postWidget = PostVideo(post: post);
@@ -98,8 +105,84 @@ class PostDetail extends HookWidget {
                   child: postWidget,
                 ),
                 SliverToBoxAdapter(
-                  child: InformationSection(
-                    post: post,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InformationSection(post: post),
+                      PostActionToolbar(post: post),
+                      Divider(height: 8, thickness: 1),
+                      post.tagStringArtist.isNotEmpty
+                          ? artistPosts.maybeWhen(
+                              data: (recommendedItems) => Column(
+                                    children: recommendedItems
+                                        .map(
+                                          (item) => RecommendPostSection(
+                                            header: ListTile(
+                                              onTap: () => AppRouter.router
+                                                  .navigateTo(
+                                                      context, "/artist",
+                                                      routeSettings:
+                                                          RouteSettings(
+                                                              arguments: [
+                                                            item._title,
+                                                            post.normalImageUri
+                                                                .toString(),
+                                                          ])),
+                                              title: Text(item.title),
+                                              trailing: Icon(Icons
+                                                  .keyboard_arrow_right_rounded),
+                                            ),
+                                            posts: item.posts,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                              orElse: () =>
+                                  Center(child: CircularProgressIndicator()))
+                          : SizedBox.shrink(),
+                      // post.tagStringCharacter.isNotEmpty
+                      //     ? charactersPosts.maybeWhen(
+                      //         data: (recommended) => RecommendPostSection(
+                      //               header: ListTile(
+                      //                 title: Text(recommended.title),
+                      //               ),
+                      //               posts: recommended.posts,
+                      //             ),
+                      //         orElse: () =>
+                      //             Center(child: CircularProgressIndicator()))
+                      //     : SizedBox.shrink(),
+                      post.tagStringCharacter.isNotEmpty
+                          ? charactersPosts.maybeWhen(
+                              data: (recommendedItems) => Column(
+                                    children: recommendedItems
+                                        .map(
+                                          (item) => RecommendPostSection(
+                                            header: ListTile(
+                                              onTap: () => AppRouter.router
+                                                  .navigateTo(
+                                                      context, "/artist",
+                                                      routeSettings:
+                                                          RouteSettings(
+                                                              arguments: [
+                                                            item._title,
+                                                            post.normalImageUri
+                                                                .toString(),
+                                                          ])),
+                                              title: Text(item.title),
+                                              trailing: Icon(Icons
+                                                  .keyboard_arrow_right_rounded),
+                                            ),
+                                            posts: item.posts,
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
+                              orElse: () =>
+                                  Center(child: CircularProgressIndicator()))
+                          : SizedBox.shrink(),
+                    ],
                   ),
                 ),
               ]),
@@ -118,107 +201,52 @@ class InformationSection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final artistPosts =
-        useProvider(_recommendPostsProvider(post.tagStringArtist));
-    final charactersPosts =
-        useProvider(_recommendPostsProvider(post.tagStringCharacter));
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: () => showMaterialModalBottomSheet(
-            duration: Duration(milliseconds: 100),
-            backgroundColor: Colors.transparent,
-            context: context,
-            builder: (context, controller) => PostInfoModal(
-              post: post,
-              scrollController: controller,
+    return InkWell(
+      onTap: () => showMaterialModalBottomSheet(
+        duration: Duration(milliseconds: 100),
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context, controller) => PostInfoModal(
+          post: post,
+          scrollController: controller,
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Flexible(
+              flex: 5,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    post.tagStringCharacter.isEmpty
+                        ? "Original"
+                        : post.name.characterOnly.pretty.titleCase,
+                    overflow: TextOverflow.fade,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  SizedBox(height: 5),
+                  Text(
+                      post.tagStringCopyright.isEmpty
+                          ? "Original"
+                          : post.name.copyRightOnly.pretty.titleCase,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context).textTheme.bodyText2),
+                  SizedBox(height: 5),
+                  Text(
+                    post.createdAt.toString(),
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ],
+              ),
             ),
-          ),
-          child: Padding(
-            padding: EdgeInsets.all(16),
-            child: InformationHeader(post: post),
-          ),
+            Flexible(child: Icon(Icons.keyboard_arrow_down)),
+          ],
         ),
-        PostActionToolbar(post: post),
-        Divider(
-          height: 8,
-          thickness: 1,
-        ),
-        post.tagStringArtist.isNotEmpty
-            ? artistPosts.maybeWhen(
-                data: (recommended) => RecommendPostSection(
-                      header: ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                            context, "/artist",
-                            routeSettings: RouteSettings(arguments: [post])),
-                        title: Text(recommended.title),
-                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
-                      ),
-                      posts: recommended.posts,
-                    ),
-                orElse: () => Center(child: CircularProgressIndicator()))
-            : SizedBox.shrink(),
-        post.tagStringCharacter.isNotEmpty
-            ? charactersPosts.maybeWhen(
-                data: (recommended) => RecommendPostSection(
-                      header: ListTile(
-                        title: Text(recommended.title),
-                      ),
-                      posts: recommended.posts,
-                    ),
-                orElse: () => Center(child: CircularProgressIndicator()))
-            : SizedBox.shrink(),
-      ],
-    );
-  }
-}
-
-class InformationHeader extends StatelessWidget {
-  const InformationHeader({
-    Key key,
-    @required this.post,
-  }) : super(key: key);
-
-  final Post post;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Flexible(
-          flex: 5,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                post.tagStringCharacter.isEmpty
-                    ? "Original"
-                    : post.name.characterOnly.pretty.titleCase,
-                overflow: TextOverflow.fade,
-                style: Theme.of(context).textTheme.headline6,
-              ),
-              SizedBox(height: 5),
-              Text(
-                  post.tagStringCopyright.isEmpty
-                      ? "Original"
-                      : post.name.copyRightOnly.pretty.titleCase,
-                  overflow: TextOverflow.fade,
-                  style: Theme.of(context).textTheme.bodyText2),
-              SizedBox(height: 5),
-              Text(
-                post.createdAt.toString(),
-                style: Theme.of(context).textTheme.caption,
-              ),
-            ],
-          ),
-        ),
-        Flexible(child: Icon(Icons.keyboard_arrow_down)),
-      ],
+      ),
     );
   }
 }

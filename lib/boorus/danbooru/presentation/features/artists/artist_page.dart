@@ -36,17 +36,18 @@ final _artistInfoProvider =
 class ArtistPage extends HookWidget {
   const ArtistPage({
     Key key,
-    @required this.referencePost,
+    @required this.artistName,
+    @required this.backgroundImageUrl,
   }) : super(key: key);
 
-  final Post referencePost;
+  final String artistName;
+  final String backgroundImageUrl;
 
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - 24;
     final posts = useState(<Post>[]);
-    final artistName = useState(referencePost.tagStringArtist.split(' ').first);
-    final artistInfo = useProvider(_artistInfoProvider(artistName.value));
+    final artistInfo = useProvider(_artistInfoProvider(artistName));
     final isMounted = useIsMounted();
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
@@ -70,13 +71,13 @@ class ArtistPage extends HookWidget {
         posts.value = [...posts.value, ...data];
       },
       refreshBuilder: (page) =>
-          context.read(postProvider).getPosts(artistName.value, page),
+          context.read(postProvider).getPosts(artistName, page),
       loadMoreBuilder: (page) =>
-          context.read(postProvider).getPosts(artistName.value, page),
+          context.read(postProvider).getPosts(artistName, page),
     ));
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [artistName.value]);
+    useAutoRefresh(infiniteListController.value, [artistName]);
 
     return Scaffold(
       body: SlidingUpPanel(
@@ -108,7 +109,7 @@ class ArtistPage extends HookWidget {
           children: [
             Positioned.fill(
               child: CachedNetworkImage(
-                imageUrl: referencePost.normalImageUri.toString(),
+                imageUrl: backgroundImageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -127,7 +128,7 @@ class ArtistPage extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    artistName.value.pretty,
+                    artistName.pretty,
                     style: Theme.of(context)
                         .textTheme
                         .headline6
