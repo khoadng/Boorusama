@@ -42,7 +42,6 @@ class SliverPostGrid extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoggedIn = useProvider(isLoggedInProvider);
     final lastViewedPostIndex = useState(-1);
     useValueChanged(lastViewedPostIndex.value, (_, __) {
       scrollController.scrollToIndex(lastViewedPostIndex.value);
@@ -63,6 +62,21 @@ class SliverPostGrid extends HookWidget {
 
       return () {};
     });
+
+    void handleTap(Post post, int index) {
+      Navigator.of(context).push(
+        SlideInRoute(
+          pageBuilder: (context, _, __) => PostDetailPage(
+            post: post,
+            intitialIndex: index,
+            posts: posts,
+            onExit: (currentIndex) => lastViewedPostIndex.value = currentIndex,
+            onPostChanged: (index) => onItemChanged(index),
+          ),
+          transitionDuration: Duration(milliseconds: 150),
+        ),
+      );
+    }
 
     return SliverGrid(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -111,19 +125,7 @@ class SliverPostGrid extends HookWidget {
               child: Stack(
                 children: <Widget>[
                   GestureDetector(
-                    onTap: () => Navigator.of(context).push(
-                      SlideInRoute(
-                        pageBuilder: (context, _, __) => PostDetailPage(
-                          post: post,
-                          intitialIndex: index,
-                          posts: posts,
-                          onExit: (currentIndex) =>
-                              lastViewedPostIndex.value = currentIndex,
-                          onPostChanged: (index) => onItemChanged(index),
-                        ),
-                        transitionDuration: Duration(milliseconds: 150),
-                      ),
-                    ),
+                    onTap: () => handleTap(post, index),
                     onLongPress: () {
                       showCupertinoModalBottomSheet(
                         expand: true,
@@ -133,6 +135,7 @@ class SliverPostGrid extends HookWidget {
                             PostPreviewSheet(
                           post: post,
                           scrollController: scrollController,
+                          onImageTap: () => handleTap(post, index),
                         ),
                       );
                     },
@@ -175,10 +178,12 @@ class PostPreviewSheet extends HookWidget {
     Key key,
     @required this.post,
     @required this.scrollController,
+    this.onImageTap,
   }) : super(key: key);
 
   final Post post;
   final ScrollController scrollController;
+  final VoidCallback onImageTap;
 
   @override
   Widget build(BuildContext context) {
@@ -223,11 +228,17 @@ class PostPreviewSheet extends HookWidget {
                 padding: const EdgeInsets.all(24.0),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8.0),
-                  child: CachedNetworkImage(
-                    fit: BoxFit.contain,
-                    imageUrl: post.isAnimated
-                        ? post.previewImageUri.toString()
-                        : post.normalImageUri.toString(),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      onImageTap();
+                    },
+                    child: CachedNetworkImage(
+                      fit: BoxFit.contain,
+                      imageUrl: post.isAnimated
+                          ? post.previewImageUri.toString()
+                          : post.normalImageUri.toString(),
+                    ),
                   ),
                 ),
               ),
@@ -241,9 +252,10 @@ class PostPreviewSheet extends HookWidget {
                       ListTile(
                         leading: Icon(Icons.file_download),
                         title: Text("Download"),
-                        onTap: () => context
-                            .read(downloadServiceProvider)
-                            .download(post),
+                        onTap: () {
+                          context.read(downloadServiceProvider).download(post);
+                          Navigator.of(context).pop();
+                        },
                       ),
                       isLoggedIn
                           ? ListTile(
@@ -256,11 +268,14 @@ class PostPreviewSheet extends HookWidget {
                                       .read(favoriteProvider)
                                       .removeFromFavorites(post.id);
                                   isFaved.value = false;
-                                } else {}
-                                context
-                                    .read(favoriteProvider)
-                                    .addToFavorites(post.id);
-                                isFaved.value = true;
+                                } else {
+                                  context
+                                      .read(favoriteProvider)
+                                      .addToFavorites(post.id);
+                                  isFaved.value = true;
+                                }
+
+                                Navigator.of(context).pop();
                               },
                             )
                           : SizedBox.shrink(),
@@ -269,6 +284,7 @@ class PostPreviewSheet extends HookWidget {
                               leading: FaIcon(FontAwesomeIcons.language),
                               title: Text("View translated notes"),
                               onTap: () {
+                                Navigator.of(context).pop();
                                 AppRouter.router.navigateTo(
                                     context, "/posts/image",
                                     routeSettings:
@@ -280,10 +296,12 @@ class PostPreviewSheet extends HookWidget {
                           ? ListTile(
                               leading: FaIcon(FontAwesomeIcons.commentAlt),
                               title: Text("Comment"),
-                              onTap: () => Navigator.of(context).push(
-                                  SlideInRoute(
-                                      pageBuilder: (_, __, ___) =>
-                                          CommentCreatePage(postId: post.id))),
+                              onTap: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(SlideInRoute(
+                                    pageBuilder: (_, __, ___) =>
+                                        CommentCreatePage(postId: post.id)));
+                              },
                             )
                           : SizedBox.shrink(),
                     ],
