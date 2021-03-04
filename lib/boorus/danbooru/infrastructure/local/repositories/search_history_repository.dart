@@ -3,9 +3,9 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:meta/meta.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 
 final searchHistoryProvider = Provider<ISearchHistoryRepository>((ref) {
   return SearchHistoryRepository(ref: ref);
@@ -20,8 +20,7 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
 
   @override
   Future<List<SearchHistory>> getHistories() async {
-    final settingsRepository = await _ref.watch(settingsProvider.future);
-    final settings = await settingsRepository.load();
+    final settings = _ref.watch(settingsNotifier.state).settings;
 
     return settings.searchHistories;
   }
@@ -29,8 +28,7 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
   @override
   Future<bool> addHistory(String query) async {
     try {
-      final settingsRepository = await _ref.watch(settingsProvider.future);
-      final settings = await settingsRepository.load();
+      final settings = _ref.watch(settingsNotifier.state).settings;
 
       if (query.isEmpty) {
         return true;
@@ -47,9 +45,9 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
         );
       }
 
-      final success = await settingsRepository.save(settings);
+      final success = _ref.read(settingsNotifier).save(settings);
 
-      return success;
+      return true;
     } on Exception {
       return Future.value(false);
     }
@@ -58,14 +56,13 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
   @override
   Future<bool> clearAll() async {
     try {
-      final settingsRepository = await _ref.watch(settingsProvider.future);
-      final settings = await settingsRepository.load();
+      final settings = _ref.watch(settingsNotifier.state).settings;
 
       settings.searchHistories.clear();
 
-      final success = await settingsRepository.save(settings);
+      final success = _ref.read(settingsNotifier).save(settings);
 
-      return success;
+      return true;
     } on Exception {
       return Future.value(false);
     }

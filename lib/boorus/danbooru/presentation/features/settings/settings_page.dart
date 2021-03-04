@@ -2,51 +2,22 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'appearance_page.dart';
 import 'tag_settings_page.dart';
 
-class SettingsPage extends StatefulWidget {
+class SettingsPage extends HookWidget {
   SettingsPage({Key key}) : super(key: key);
 
   @override
-  _SettingsPageState createState() => _SettingsPageState();
-}
-
-class _SettingsPageState extends State<SettingsPage> {
-  ISettingRepository _settingRepository;
-  Setting _setting = Setting.defaultSettings;
-
-  @override
-  void initState() {
-    super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      context.read(settingsProvider).whenData((repo) async {
-        _settingRepository = repo;
-        final setting = await _settingRepository.load();
-        setState(() {
-          _setting = setting;
-        });
-      });
-    });
-  }
-
-  @override
-  void dispose() {
-    _settingRepository.save(_setting);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final settings = useProvider(settingsNotifier.state).settings;
     return Scaffold(
       appBar: AppBar(
         title: Text(I18n.of(context).settings_string),
@@ -61,11 +32,10 @@ class _SettingsPageState extends State<SettingsPage> {
                   leading: Icon(Icons.admin_panel_settings),
                   title: I18n.of(context).settingsAppSettingsSafeMode,
                   onToggle: (value) {
-                    setState(() {
-                      _setting.safeMode = value;
-                    });
+                    settings.safeMode = value;
+                    context.read(settingsNotifier).save(settings);
                   },
-                  switchValue: _setting.safeMode),
+                  switchValue: settings.safeMode),
               SettingsTile(
                 leading: Icon(Icons.tag),
                 title: I18n.of(context).settingsAppSettingsBlacklistedTags,
@@ -73,7 +43,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => TagSettingsPage(
-                        settings: _setting,
+                        settings: settings,
                       ),
                     ),
                   );
@@ -86,7 +56,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => AppearancePage(
-                        settings: _setting,
+                        settings: settings,
                       ),
                     ),
                   );
@@ -96,12 +66,11 @@ class _SettingsPageState extends State<SettingsPage> {
                 leading: Icon(Icons.translate),
                 title: I18n.of(context).settingsAppSettingsLanguage_string,
                 trailing: DropdownButton<String>(
-                  value: _setting.language,
+                  value: settings.language,
                   icon: Icon(Icons.keyboard_arrow_right),
                   onChanged: (value) {
-                    setState(() {
-                      _setting.language = value;
-                    });
+                    settings.language = value;
+                    context.read(settingsNotifier).save(settings);
                     I18n.onLocaleChanged(Locale(value));
                   },
                   items: <DropdownMenuItem<String>>[
@@ -121,7 +90,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => AppearancePage(
-                        settings: _setting,
+                        settings: settings,
                       ),
                     ),
                   );

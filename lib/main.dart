@@ -9,9 +9,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
+import 'boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'boorus/danbooru/domain/accounts/account.dart';
 import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,9 +33,17 @@ void main() async {
 
   runApp(
     ProviderScope(
-      child: App(
-        settings: settings,
-      ),
+      overrides: [
+        settingsNotifier.overrideWithProvider(
+          StateNotifierProvider<SettingsStateNotifier>(
+            (ref) => SettingsStateNotifier(
+              settingRepository: settingRepository,
+              setting: SettingsState(settings: settings),
+            ),
+          ),
+        ),
+      ],
+      child: App(),
     ),
   );
 }

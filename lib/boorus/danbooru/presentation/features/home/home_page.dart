@@ -90,7 +90,6 @@ class HomePage extends HookWidget {
                     children: <Widget>[
                       LatestView(),
                       ExplorePage(),
-                      FavoritesPage(),
                     ],
                   ),
                   bottomNavigationBar: BottomBar(

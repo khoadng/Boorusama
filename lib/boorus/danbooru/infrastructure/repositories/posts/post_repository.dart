@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/all.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -15,15 +16,15 @@ import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'black_listed_filter_decorator.dart';
 import 'no_image_filter_decorator.dart';
 
 final postProvider = Provider<IPostRepository>((ref) {
   final postRepo = PostRepository(ref);
-  final settingsRepo = ref.watch(settingsProvider.future);
   final filteredPostRepo = BlackListedFilterDecorator(
-      postRepository: postRepo, settingRepository: settingsRepo);
+    postRepository: postRepo,
+    settings: ref.watch(settingsNotifier.state).settings,
+  );
   final removedNullImageRepo =
       NoImageFilterDecorator(postRepository: filteredPostRepo);
   return removedNullImageRepo;
@@ -191,8 +192,7 @@ class PostRepository implements IPostRepository {
     bool skipFavoriteCheck = false,
   }) async {
     final account = await _accountRepository.get();
-    final settingsRepository = await _ref.watch(settingsProvider.future);
-    final settings = await settingsRepository.load();
+    final settings = _ref.watch(settingsNotifier.state).settings;
 
     try {
       final stopwatch = Stopwatch()..start();

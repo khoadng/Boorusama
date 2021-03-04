@@ -4,30 +4,30 @@ import 'package:meta/meta.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 
 class BlackListedFilterDecorator implements IPostRepository {
-  BlackListedFilterDecorator(
-      {@required IPostRepository postRepository,
-      @required Future<ISettingRepository> settingRepository})
-      : _postRepository = postRepository,
-        _settingRepository = settingRepository;
+  BlackListedFilterDecorator({
+    @required IPostRepository postRepository,
+    @required Setting settings,
+  })  : _postRepository = postRepository,
+        _settings = settings;
 
   final IPostRepository _postRepository;
-  final Future<ISettingRepository> _settingRepository;
+  final Setting _settings;
 
   @override
   Future<List<Post>> getCuratedPosts(
       DateTime date, int page, TimeScale scale) async {
     final posts = await _postRepository.getCuratedPosts(date, page, scale);
-    final filtered = await _filter(posts);
+    final filtered = _filter(posts);
     return filtered;
   }
 
   @override
   Future<List<Post>> getMostViewedPosts(DateTime date) async {
     final posts = await _postRepository.getMostViewedPosts(date);
-    final filtered = await _filter(posts);
+    final filtered = _filter(posts);
     return filtered;
   }
 
@@ -35,7 +35,7 @@ class BlackListedFilterDecorator implements IPostRepository {
   Future<List<Post>> getPopularPosts(
       DateTime date, int page, TimeScale scale) async {
     final posts = await _postRepository.getPopularPosts(date, page, scale);
-    final filtered = await _filter(posts);
+    final filtered = _filter(posts);
     return filtered;
   }
 
@@ -51,13 +51,12 @@ class BlackListedFilterDecorator implements IPostRepository {
         limit: limit,
         cancelToken: cancelToken,
         skipFavoriteCheck: skipFavoriteCheck);
-    final filtered = await _filter(posts);
+    final filtered = _filter(posts);
     return filtered;
   }
 
-  Future<List<Post>> _filter(List<Post> posts) async {
-    final settingsRepo = await _settingRepository;
-    final settings = await settingsRepo.load();
+  List<Post> _filter(List<Post> posts) {
+    final settings = _settings;
 
     final tagRule = settings.blacklistedTags.split("\n");
 
