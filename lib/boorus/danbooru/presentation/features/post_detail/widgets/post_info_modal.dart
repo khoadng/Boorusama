@@ -10,7 +10,7 @@ import 'package:dio/dio.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -194,7 +194,7 @@ class ArtistSection extends HookWidget {
                       'Copied',
                     ),
                   );
-                  Scaffold.of(context).showSnackBar(snackbar);
+                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
                 }),
                 onTap: () => post.source != null
                     ? Navigator.of(context).push(

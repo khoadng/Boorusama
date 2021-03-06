@@ -1,5 +1,5 @@
 // Package imports:
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';

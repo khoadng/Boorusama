@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -28,7 +28,7 @@ class UserRepository implements IUserRepository {
       final value = await _api.getUsersByIdStringComma(idComma, 1000,
           cancelToken: cancelToken);
 
-      var users = List<User>();
+      var users = <User>[];
       print(idComma);
       for (var item in value.response.data) {
         try {

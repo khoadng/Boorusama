@@ -16,7 +16,7 @@ class PostName {
 
   String get characterOnly {
     final charaters = _tagStringCharacter.split(' ').toList();
-    final cleanedCharacterList = List<String>();
+    final cleanedCharacterList = <String>[];
 
     // Remove copyright string in character name
     for (var character in charaters) {

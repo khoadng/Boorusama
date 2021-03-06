@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -89,7 +89,7 @@ class PostRepository implements IPostRepository {
           break;
         default:
       }
-      return List<Post>();
+      return <Post>[];
     });
   }
 
@@ -131,7 +131,7 @@ class PostRepository implements IPostRepository {
           break;
         default:
       }
-      return List<Post>();
+      return <Post>[];
     });
   }
 
@@ -179,7 +179,7 @@ class PostRepository implements IPostRepository {
           break;
         default:
       }
-      return List<Post>();
+      return <Post>[];
     });
   }
 

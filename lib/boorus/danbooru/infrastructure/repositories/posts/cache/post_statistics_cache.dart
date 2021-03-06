@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:hive/hive.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post_statistics.dart';

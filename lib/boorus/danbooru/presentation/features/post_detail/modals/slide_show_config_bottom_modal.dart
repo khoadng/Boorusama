@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
@@ -68,11 +68,11 @@ class SlideShowConfigBottomModal extends HookWidget {
             ButtonBar(
               alignment: MainAxisAlignment.spaceAround,
               children: [
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(false),
                   child: Text("Cancel"),
                 ),
-                RaisedButton(
+                ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
                   child: Text("OK"),
                 ),

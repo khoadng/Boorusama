@@ -8,7 +8,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -16,9 +16,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
@@ -88,28 +86,26 @@ final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
   return DateTime.now();
 });
 
-final _popularSearchProvider =
-    FutureProvider.autoDispose<List<Search>>((ref) async {
-  final repo = ref.watch(popularSearchProvider);
+// final _popularSearchProvider =
+//     FutureProvider.autoDispose<List<Search>>((ref) async {
+//   final repo = ref.watch(popularSearchProvider);
 
-  var searches = await repo.getSearchByDate(DateTime.now());
-  if (searches.isEmpty) {
-    searches =
-        await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
-  }
+//   var searches = await repo.getSearchByDate(DateTime.now());
+//   if (searches.isEmpty) {
+//     searches =
+//         await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
+//   }
 
-  ref.maintainState = true;
+//   ref.maintainState = true;
 
-  return searches;
-});
+//   return searches;
+// });
 
 class ExplorePage extends HookWidget {
   const ExplorePage({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final popularSearch = useProvider(_popularSearchProvider);
-
     Widget _buildExploreSection(ExploreCategory category) {
       final title = Text(
         "${category.getName().sentenceCase}",
@@ -363,10 +359,12 @@ class _ExploreListItemHeader extends HookWidget {
                 onDateChanged(selectedDate.value);
               },
             ),
-            FlatButton(
-              color: Theme.of(context).cardColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
+            TextButton(
+              style: TextButton.styleFrom(
+                primary: Theme.of(context).cardColor,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                ),
               ),
               onPressed: () => DatePicker.showDatePicker(
                 context,
@@ -415,10 +413,12 @@ class _ExploreListItemHeader extends HookWidget {
           children: [
             selectedCategory.maybeWhen(
               mostViewed: () => Center(),
-              orElse: () => FlatButton(
-                color: Theme.of(context).cardColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
+              orElse: () => TextButton(
+                style: TextButton.styleFrom(
+                  primary: Theme.of(context).cardColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                  ),
                 ),
                 onPressed: () async {
                   final timeScale = await showMaterialModalBottomSheet(
