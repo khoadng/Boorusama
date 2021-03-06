@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/all.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 class TagSettingsPage extends HookWidget {
   TagSettingsPage({
@@ -15,7 +15,7 @@ class TagSettingsPage extends HookWidget {
     @required this.settings,
   }) : super(key: key);
 
-  final Setting settings;
+  final Settings settings;
 
   @override
   Widget build(BuildContext context) {

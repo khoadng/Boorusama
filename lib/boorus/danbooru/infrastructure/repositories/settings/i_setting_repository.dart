@@ -1,7 +1,7 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 abstract class ISettingRepository {
-  Future<bool> save(Setting setting);
-  Future<Setting> load();
+  Future<bool> save(Settings setting);
+  Future<Settings> load();
 }

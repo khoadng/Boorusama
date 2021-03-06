@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
+import 'settings.dart';
 import 'settings_state.dart';
 
 final settingsNotifier = StateNotifierProvider<SettingsStateNotifier>((ref) {
@@ -19,7 +19,7 @@ class SettingsStateNotifier extends StateNotifier<SettingsState> {
 
   final ISettingRepository settingRepository;
 
-  void save(Setting setting) {
+  void save(Settings setting) {
     state = state.copyWith(settings: setting);
     settingRepository.save(state.settings);
   }

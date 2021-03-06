@@ -13,10 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_state.da
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
-import 'boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'boorus/danbooru/domain/accounts/account.dart';
-import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
-import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
+import 'boorus/danbooru/application/settings/settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,7 +23,7 @@ void main() async {
 
   final settingRepository = SettingRepository(
     SharedPreferences.getInstance(),
-    Setting.defaultSettings,
+    Settings.defaultSettings,
   );
 
   final settings = await settingRepository.load();

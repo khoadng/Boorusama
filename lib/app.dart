@@ -5,16 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 import 'package:flutter_riverpod/all.dart';
-import 'package:http/http.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'app_constants.dart';
 import 'boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'boorus/danbooru/application/themes/theme_state_notifier.dart';
 import 'boorus/danbooru/domain/accounts/account.dart';
-import 'boorus/danbooru/infrastructure/repositories/settings/setting.dart';
-import 'boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'boorus/danbooru/infrastructure/services/download_service.dart';
 import 'boorus/danbooru/router.dart';

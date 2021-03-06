@@ -3,18 +3,18 @@ import 'package:dio/dio.dart';
 import 'package:meta/meta.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting.dart';
 
 class BlackListedFilterDecorator implements IPostRepository {
   BlackListedFilterDecorator({
     @required IPostRepository postRepository,
-    @required Setting settings,
+    @required Settings settings,
   })  : _postRepository = postRepository,
         _settings = settings;
 
   final IPostRepository _postRepository;
-  final Setting _settings;
+  final Settings _settings;
 
   @override
   Future<List<Post>> getCuratedPosts(

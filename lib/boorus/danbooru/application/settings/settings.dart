@@ -7,8 +7,8 @@ import 'package:meta/meta.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 
-class Setting {
-  Setting({
+class Settings {
+  Settings({
     @required this.safeMode,
     @required this.blacklistedTags,
     @required this.themeMode,
@@ -16,7 +16,7 @@ class Setting {
     @required this.searchHistories,
   });
 
-  Setting.fromJson(Map<String, dynamic> json)
+  Settings.fromJson(Map<String, dynamic> json)
       : safeMode = json["safeMode"],
         blacklistedTags = json["hideBlacklist"],
         themeMode = ThemeMode.values[json["themeMode"]],
@@ -26,7 +26,7 @@ class Setting {
                 ?.toList()) ??
             <SearchHistory>[];
 
-  static final defaultSettings = Setting(
+  static final defaultSettings = Settings(
     safeMode: false,
     blacklistedTags: "",
     themeMode: ThemeMode.dark,
