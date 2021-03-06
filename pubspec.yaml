@@ -24,14 +24,12 @@ dependencies:
   flutter:
     sdk: flutter
   animations: ^2.0.0
-  auto_animated: ^3.0.0
   auto_size_text: ^2.1.0
   cached_network_image: ^2.3.3
   carousel_slider: ^3.0.0
   chewie: ^0.12.2
   connectivity: ^3.0.2
   cupertino_icons: ^1.0.2
-  debounce_throttle: ^2.0.0
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
@@ -43,13 +41,11 @@ dependencies:
   flutter_html: ^1.0.2
   flutter_inappwebview: ^5.1.0
   flutter_portal: ^0.3.0
-  flutter_sticky_header: ^0.5.0
   flutter_tags: ^0.4.9
   font_awesome_flutter: ^8.11.0
   freezed_annotation: ^0.12.0
   hive: ^1.4.4+1
   hooks_riverpod: ^0.12.2
-  html: ^0.14.0+3
   http: ^0.12.2
   intl: ^0.17.0
   jiffy: ^4.0.0
@@ -57,7 +53,6 @@ dependencies:
   json_serializable: ^3.5.1
   like_button: ^1.0.4
   lottie: ^0.7.0+1
-  md2_tab_indicator: ^1.0.2
   meta: ^1.2.3
   modal_bottom_sheet: ^1.0.0+1
   number_inc_dec: ^0.6.6
