@@ -215,6 +215,14 @@ class _ExploreItemPage extends HookWidget {
         }
         posts.value = [...posts.value, ...data];
       },
+      onError: (message) {
+        final snackbar = SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6.0,
+          content: Text(message),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      },
       refreshBuilder: (page) => category.when(
         curated: () => context
             .read(postProvider)

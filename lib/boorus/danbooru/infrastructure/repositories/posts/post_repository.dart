@@ -34,13 +34,11 @@ class PostRepository implements IPostRepository {
   PostRepository(ProviderReference ref)
       : _api = ref.watch(apiProvider),
         _accountRepository = ref.watch(accountProvider),
-        _favoritePostRepository = ref.watch(favoriteProvider),
-        _ref = ref;
+        _favoritePostRepository = ref.watch(favoriteProvider);
 
   final IAccountRepository _accountRepository;
   final IApi _api;
   final IFavoritePostRepository _favoritePostRepository;
-  final ProviderReference _ref;
 
   static const int _limit = 60;
 
@@ -192,12 +190,12 @@ class PostRepository implements IPostRepository {
     bool skipFavoriteCheck = false,
   }) async {
     final account = await _accountRepository.get();
-    final settings = _ref.watch(settingsNotifier.state).settings;
+    // final settings = _ref.watch(settingsNotifier.state).settings;
 
     try {
       final stopwatch = Stopwatch()..start();
-      final value = await _api.getPosts(account.username, account.apiKey, page,
-          settings.safeMode ? "$tagString rating:s" : tagString, limit,
+      final value = await _api.getPosts(
+          account.username, account.apiKey, page, tagString, limit,
           cancelToken: cancelToken);
 
       final dtos = <PostDto>[];
@@ -226,7 +224,7 @@ class PostRepository implements IPostRepository {
         return [];
       } else if (e.response.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
-            "You cannot search for more than 2 tags at a time. Upgrade your account to search for more tags at once.");
+            "${e.response.data['message']} Upgrade your account to search for more tags at once.");
       } else if (e.response.statusCode == 500) {
         throw DatabaseTimeOut(
             "Your search took too long to execute and was cancelled.");
@@ -262,14 +260,20 @@ class PostRepository implements IPostRepository {
   }
 }
 
-class CannotSearchMoreThanTwoTags implements Exception {
+class CannotSearchMoreThanTwoTags implements BooruException {
   CannotSearchMoreThanTwoTags(this.message);
 
   final String message;
 }
 
-class DatabaseTimeOut implements Exception {
+class DatabaseTimeOut implements BooruException {
   DatabaseTimeOut(this.message);
+
+  final String message;
+}
+
+class BooruException implements Exception {
+  BooruException(this.message);
 
   final String message;
 }

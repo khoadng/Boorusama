@@ -66,6 +66,14 @@ class LatestView extends HookWidget {
         }
         posts.value = [...posts.value, ...data];
       },
+      onError: (message) {
+        final snackbar = SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6.0,
+          content: Text(message),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      },
       refreshBuilder: (page) =>
           context.read(postProvider).getPosts(selectedTag.value, page),
       loadMoreBuilder: (page) =>

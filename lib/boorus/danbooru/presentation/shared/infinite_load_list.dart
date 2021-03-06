@@ -9,11 +9,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'sliver_post_grid.dart';
 
 typedef RefreshCallback<T> = void Function(List<T> data);
 typedef LoadMoreCallback<T> = void Function(List<T> data, int page);
+typedef ErrorCallback<T> = void Function(String message);
 typedef RefreshBuilder<T> = Future<List<T>> Function(int page);
 typedef LoadMoreBuilder<T> = Future<List<T>> Function(int page);
 
@@ -21,6 +23,7 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
   InfiniteLoadListController({
     @required this.onData,
     @required this.onMoreData,
+    @required this.onError,
     @required this.refreshBuilder,
     @required this.loadMoreBuilder,
   });
@@ -28,6 +31,7 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
   final LoadMoreBuilder<T> loadMoreBuilder;
   final RefreshCallback<T> onData;
   final LoadMoreCallback<T> onMoreData;
+  final ErrorCallback<T> onError;
   final RefreshBuilder<T> refreshBuilder;
 
   bool _isLoading = false;
@@ -54,10 +58,16 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
     _page = 1;
     notifyListeners();
 
-    final data = await refreshBuilder(_page);
-    onData(data);
+    try {
+      final data = await refreshBuilder(_page);
+      onData(data);
+      _refreshController.refreshCompleted();
+    } on BooruException catch (e) {
+      onError(e.message);
+      _refreshController.refreshFailed();
+    }
+
     _isRefreshing = false;
-    _refreshController.refreshCompleted();
     notifyListeners();
   }
 
@@ -66,16 +76,20 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
     _page = _page + 1;
     notifyListeners();
 
-    final data = await loadMoreBuilder(_page);
-    onMoreData(data, _page);
+    try {
+      final data = await loadMoreBuilder(_page);
+      onMoreData(data, _page);
+      if (data.isNotEmpty) {
+        _refreshController.loadComplete();
+      } else {
+        _refreshController.loadNoData();
+      }
+    } on BooruException catch (e) {
+      onError(e.message);
+      _refreshController.loadFailed();
+    }
     _isLoading = false;
     notifyListeners();
-
-    if (data.isNotEmpty) {
-      _refreshController.loadComplete();
-    } else {
-      _refreshController.loadNoData();
-    }
   }
 }
 

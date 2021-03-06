@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'dio_connectivity_request_retrier.dart';
 import 'retry_interceptor.dart';
@@ -32,7 +33,12 @@ final apiProvider = Provider<IApi>((ref) {
 });
 
 final apiEndpointProvider = Provider<String>((ref) {
-  return "https://danbooru.donmai.us/";
+  final settings = ref.watch(settingsNotifier.state).settings;
+  if (settings.safeMode) {
+    return "https://safebooru.donmai.us/";
+  } else {
+    return "https://danbooru.donmai.us/";
+  }
 });
 
 @RestApi()
