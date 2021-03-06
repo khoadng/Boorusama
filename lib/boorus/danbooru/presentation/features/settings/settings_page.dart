@@ -49,19 +49,20 @@ class SettingsPage extends HookWidget {
                   );
                 },
               ),
-              SettingsTile(
-                leading: Icon(Icons.format_paint),
-                title: I18n.of(context).settingsAppSettingsAppearance_string,
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => AppearancePage(
-                        settings: settings,
-                      ),
-                    ),
-                  );
-                },
-              ),
+              //TODO: re-add theme
+              // SettingsTile(
+              //   leading: Icon(Icons.format_paint),
+              //   title: I18n.of(context).settingsAppSettingsAppearance_string,
+              //   onTap: () {
+              //     Navigator.of(context).push(
+              //       MaterialPageRoute(
+              //         builder: (BuildContext context) => AppearancePage(
+              //           settings: settings,
+              //         ),
+              //       ),
+              //     );
+              //   },
+              // ),
               SettingsTile(
                 leading: Icon(Icons.translate),
                 title: I18n.of(context).settingsAppSettingsLanguage_string,

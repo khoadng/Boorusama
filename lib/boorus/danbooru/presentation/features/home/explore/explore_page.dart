@@ -138,33 +138,34 @@ class ExplorePage extends HookWidget {
     }
 
     return CustomScrollView(slivers: [
-      popularSearch.maybeWhen(
-        data: (searches) => SliverPadding(
-          padding: EdgeInsets.all(10.0),
-          sliver: SliverGrid.count(
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 4.5,
-            crossAxisCount: 2,
-            children: searches
-                .take(10)
-                .map(
-                  (search) => Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).accentColor,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Center(child: Text("#${search.keyword.pretty}"))),
-                )
-                .toList(),
-          ),
-        ),
-        orElse: () => SliverToBoxAdapter(
-          child: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
+      //TODO: doesn't looks good without some images slapped on it
+      // popularSearch.maybeWhen(
+      //   data: (searches) => SliverPadding(
+      //     padding: EdgeInsets.all(10.0),
+      //     sliver: SliverGrid.count(
+      //       mainAxisSpacing: 8,
+      //       crossAxisSpacing: 8,
+      //       childAspectRatio: 4.5,
+      //       crossAxisCount: 2,
+      //       children: searches
+      //           .take(10)
+      //           .map(
+      //             (search) => Container(
+      //                 decoration: BoxDecoration(
+      //                   color: Theme.of(context).accentColor,
+      //                   borderRadius: BorderRadius.circular(8.0),
+      //                 ),
+      //                 child: Center(child: Text("#${search.keyword.pretty}"))),
+      //           )
+      //           .toList(),
+      //     ),
+      //   ),
+      //   orElse: () => SliverToBoxAdapter(
+      //     child: Center(
+      //       child: CircularProgressIndicator(),
+      //     ),
+      //   ),
+      // ),
       SliverToBoxAdapter(
         child: _buildExploreSection(ExploreCategory.popular()),
       ),
