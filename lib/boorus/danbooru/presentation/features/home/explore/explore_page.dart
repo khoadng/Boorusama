@@ -127,7 +127,7 @@ class ExplorePage extends HookWidget {
         ),
         onViewMoreTap: () => showBarModalBottomSheet(
           context: context,
-          builder: (context, controller) {
+          builder: (context) {
             return _ExploreItemPage(
               title: title,
               category: category,
@@ -343,25 +343,24 @@ class _ExploreListItemHeader extends HookWidget {
             IconButton(
               icon: Icon(Icons.keyboard_arrow_left),
               onPressed: () {
-                DateTime previous;
-
+                final jiffy = Jiffy(selectedDate.value);
                 switch (selectedTimeScale.value) {
                   case TimeScale.day:
-                    previous = Jiffy(selectedDate.value).subtract(days: 1);
+                    jiffy..subtract(days: 1);
                     break;
                   case TimeScale.week:
-                    previous = Jiffy(selectedDate.value).subtract(weeks: 1);
+                    jiffy..subtract(weeks: 1);
                     break;
                   case TimeScale.month:
-                    previous = Jiffy(selectedDate.value).subtract(months: 1);
+                    jiffy..subtract(months: 1);
                     break;
                   default:
-                    previous = Jiffy(selectedDate.value).subtract(days: 1);
+                    jiffy..subtract(days: 1);
                     break;
                 }
 
-                selectedDate.value = previous;
-                onDateChanged(previous);
+                selectedDate.value = jiffy.dateTime;
+                onDateChanged(selectedDate.value);
               },
             ),
             FlatButton(
@@ -388,25 +387,25 @@ class _ExploreListItemHeader extends HookWidget {
             IconButton(
               icon: Icon(Icons.keyboard_arrow_right),
               onPressed: () {
-                DateTime next;
+                final jiffy = Jiffy(selectedDate.value);
 
                 switch (selectedTimeScale.value) {
                   case TimeScale.day:
-                    next = Jiffy(selectedDate.value).add(days: 1);
+                    jiffy..add(days: 1);
                     break;
                   case TimeScale.week:
-                    next = Jiffy(selectedDate.value).add(weeks: 1);
+                    jiffy..add(weeks: 1);
                     break;
                   case TimeScale.month:
-                    next = Jiffy(selectedDate.value).add(months: 1);
+                    jiffy..add(months: 1);
                     break;
                   default:
-                    next = Jiffy(selectedDate.value).add(days: 1);
+                    jiffy..add(days: 1);
                     break;
                 }
 
-                selectedDate.value = next;
-                onDateChanged(next);
+                selectedDate.value = jiffy.dateTime;
+                onDateChanged(selectedDate.value);
               },
             ),
           ],
@@ -424,7 +423,7 @@ class _ExploreListItemHeader extends HookWidget {
                 onPressed: () async {
                   final timeScale = await showMaterialModalBottomSheet(
                           context: context,
-                          builder: (context, controller) =>
+                          builder: (context) =>
                               _buildModalTimeScalePicker(context)) ??
                       selectedTimeScale.value;
 
@@ -474,7 +473,7 @@ class _ExploreSection extends StatelessWidget {
           data: (posts) => posts.isNotEmpty
               ? CarouselSlider.builder(
                   itemCount: posts.length,
-                  itemBuilder: (context, index) {
+                  itemBuilder: (context, index, realIndex) {
                     final post = posts[index];
                     return OpenContainer(
                       closedColor: Colors.transparent,

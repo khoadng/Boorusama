@@ -172,7 +172,7 @@ class _PostTagListState extends State<PostTagList> {
         showBarModalBottomSheet(
           expand: false,
           context: context,
-          builder: (context, controller) => WikiPage(
+          builder: (context) => WikiPage(
             title: _currentPopupTag.displayName,
           ),
         );

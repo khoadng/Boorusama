@@ -131,10 +131,9 @@ class SliverPostGrid extends HookWidget {
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
-                        builder: (context, scrollController) =>
-                            PostPreviewSheet(
+                        builder: (context) => PostPreviewSheet(
                           post: post,
-                          scrollController: scrollController,
+                          scrollController: ModalScrollController.of(context),
                           onImageTap: () => handleTap(post, index),
                         ),
                       );

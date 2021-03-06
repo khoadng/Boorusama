@@ -203,12 +203,11 @@ class InformationSection extends HookWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => showMaterialModalBottomSheet(
-        duration: Duration(milliseconds: 100),
         backgroundColor: Colors.transparent,
         context: context,
-        builder: (context, controller) => PostInfoModal(
+        builder: (context) => PostInfoModal(
           post: post,
-          scrollController: controller,
+          scrollController: ModalScrollController.of(context),
         ),
       ),
       child: Padding(

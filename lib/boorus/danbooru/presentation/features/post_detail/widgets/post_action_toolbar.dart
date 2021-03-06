@@ -138,7 +138,7 @@ class PostActionToolbar extends HookWidget {
           onTap: (isLiked) => showBarModalBottomSheet(
             expand: false,
             context: context,
-            builder: (context, controller) => CommentPage(
+            builder: (context) => CommentPage(
               comments: comments,
               postId: post.id,
             ),

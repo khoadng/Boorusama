@@ -139,7 +139,7 @@ class PostDetailPage extends HookWidget {
           children: [
             CarouselSlider.builder(
               itemCount: posts.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index, realIndex) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   currentPostIndex.value = index;
                 });
