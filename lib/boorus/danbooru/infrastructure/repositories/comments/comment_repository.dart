@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -28,7 +28,7 @@ class CommentRepository implements ICommentRepository {
       final value =
           await _api.getComments(postId, 1000, cancelToken: cancelToken);
       final data = value.response.data;
-      var comments = List<CommentDto>();
+      var comments = <CommentDto>[];
 
       for (var item in data) {
         try {

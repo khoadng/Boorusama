@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
@@ -144,11 +144,13 @@ class DownloadPage extends HookWidget {
                     Container(
                       margin: EdgeInsets.all(8.0),
                       width: double.infinity,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4.0),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0),
+                          ),
+                          primary: Theme.of(context).accentColor,
                         ),
-                        color: Theme.of(context).accentColor,
                         onPressed: () {
                           List.generate(totalPage.value.round(), (index) async {
                             final posts = await context

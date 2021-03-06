@@ -10,9 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -131,10 +131,9 @@ class SliverPostGrid extends HookWidget {
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
-                        builder: (context, scrollController) =>
-                            PostPreviewSheet(
+                        builder: (context) => PostPreviewSheet(
                           post: post,
-                          scrollController: scrollController,
+                          scrollController: ModalScrollController.of(context),
                           onImageTap: () => handleTap(post, index),
                         ),
                       );

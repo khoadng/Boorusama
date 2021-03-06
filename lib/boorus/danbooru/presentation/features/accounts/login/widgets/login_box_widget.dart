@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
@@ -66,7 +66,7 @@ class LoginBox extends HookWidget {
                     'Something went wrong, please try again later',
                   ),
                 );
-                Scaffold.of(context).showSnackBar(snackbar);
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
               },
             );
           },
@@ -139,10 +139,12 @@ class LoginBox extends HookWidget {
               SizedBox(height: 20),
               authStatus.maybeWhen(
                 authenticating: () => CircularProgressIndicator(),
-                orElse: () => RaisedButton(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.0)),
-                  color: Theme.of(context).accentColor,
+                orElse: () => ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Theme.of(context).accentColor,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4.0)),
+                  ),
                   child: Text(I18n.of(context).loginFormLogin),
                   onPressed: () {
                     if (_formKey.value.currentState.validate()) {

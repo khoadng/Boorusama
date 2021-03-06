@@ -11,7 +11,7 @@ class CarouselPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       itemCount: 20,
-      itemBuilder: (context, index) {
+      itemBuilder: (context, index, realIndex) {
         return Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16.0),

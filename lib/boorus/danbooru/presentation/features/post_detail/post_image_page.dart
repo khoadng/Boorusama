@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
@@ -54,7 +54,7 @@ class PostImagePage extends HookWidget {
   }
 
   List<Widget> buildNotes(BuildContext context, List<Note> notes, Post post) {
-    final widgets = List<Widget>();
+    final widgets = <Widget>[];
 
     final screenWidth = MediaQuery.of(context).size.width;
     //TODO: Can't get status bar height inside Scaffold

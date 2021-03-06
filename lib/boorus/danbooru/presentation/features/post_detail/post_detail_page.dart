@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -139,7 +139,7 @@ class PostDetailPage extends HookWidget {
           children: [
             CarouselSlider.builder(
               itemCount: posts.length,
-              itemBuilder: (context, index) {
+              itemBuilder: (context, index, realIndex) {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   currentPostIndex.value = index;
                 });

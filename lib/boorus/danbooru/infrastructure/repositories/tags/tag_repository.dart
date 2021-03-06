@@ -1,6 +1,6 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -27,7 +27,7 @@ class TagRepository implements ITagRepository {
         .getTagsByNamePattern(account.username, account.apiKey, page, "yes",
             stringPattern + "*", "count", 30)
         .then((value) {
-      var tags = List<Tag>();
+      var tags = <Tag>[];
       for (var item in value.response.data) {
         try {
           tags.add(Tag.fromJson(item));
@@ -60,7 +60,7 @@ class TagRepository implements ITagRepository {
         1000,
         cancelToken: cancelToken,
       );
-      var tags = List<Tag>();
+      var tags = <Tag>[];
       for (var item in value.response.data) {
         try {
           tags.add(Tag.fromJson(item));

@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/all.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:like_button/like_button.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -73,7 +73,7 @@ class PostActionToolbar extends HookWidget {
             'You need to log in to perform this action',
           ),
         );
-        Scaffold.of(context).showSnackBar(snackbar);
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
         return false;
       }
       return true;
@@ -138,7 +138,7 @@ class PostActionToolbar extends HookWidget {
           onTap: (isLiked) => showBarModalBottomSheet(
             expand: false,
             context: context,
-            builder: (context, controller) => CommentPage(
+            builder: (context) => CommentPage(
               comments: comments,
               postId: post.id,
             ),

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
@@ -203,12 +203,11 @@ class InformationSection extends HookWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => showMaterialModalBottomSheet(
-        duration: Duration(milliseconds: 100),
         backgroundColor: Colors.transparent,
         context: context,
-        builder: (context, controller) => PostInfoModal(
+        builder: (context) => PostInfoModal(
           post: post,
-          scrollController: controller,
+          scrollController: ModalScrollController.of(context),
         ),
       ),
       child: Padding(

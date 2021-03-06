@@ -28,7 +28,7 @@ class WebView extends HookWidget {
                   : SizedBox.shrink()),
           Expanded(
             child: InAppWebView(
-              initialUrl: url,
+              initialUrlRequest: URLRequest(url: Uri.parse(url)),
               onProgressChanged: (controller, progress) =>
                   loadProgress.value = progress / 100,
             ),

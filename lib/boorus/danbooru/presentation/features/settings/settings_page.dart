@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/all.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 // Project imports:
@@ -39,7 +39,7 @@ class SettingsPage extends HookWidget {
               SettingsTile(
                 leading: Icon(Icons.tag),
                 title: I18n.of(context).settingsAppSettingsBlacklistedTags,
-                onTap: () {
+                onPressed: (context) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => TagSettingsPage(
@@ -87,7 +87,7 @@ class SettingsPage extends HookWidget {
                     ),
                   ],
                 ),
-                onTap: () {
+                onPressed: (context) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (BuildContext context) => AppearancePage(

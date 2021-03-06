@@ -23,43 +23,38 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  animations: ^1.1.2
-  auto_animated: ^2.1.0
+  animations: ^2.0.0
   auto_size_text: ^2.1.0
   cached_network_image: ^2.3.3
-  carousel_slider: ^2.3.1
-  chewie: ^0.9.10
-  connectivity: ^2.0.2
-  cupertino_icons: ^0.1.3
-  debounce_throttle: ^1.1.0
+  carousel_slider: ^3.0.0
+  chewie: ^0.12.2
+  connectivity: ^3.0.2
+  cupertino_icons: ^1.0.2
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   dio_http_cache: ^0.2.11
   filesize: ^1.0.4
-  fluro: ^1.7.8
+  fluro: ^2.0.3
   flutter_datetime_picker: ^1.4.0
   flutter_downloader: ^1.5.1
-  flutter_hooks: ^0.15.0
+  flutter_hooks: ^0.16.0
   flutter_html: ^1.0.2
-  flutter_inappwebview: ^4.0.0+4
+  flutter_inappwebview: ^5.1.0
   flutter_portal: ^0.3.0
-  flutter_sticky_header: ^0.5.0
   flutter_tags: ^0.4.9
   font_awesome_flutter: ^8.11.0
   freezed_annotation: ^0.12.0
   hive: ^1.4.4+1
   hooks_riverpod: ^0.12.2
-  html: ^0.14.0+3
   http: ^0.12.2
-  intl: ^0.16.1
-  jiffy: ^3.0.1
+  intl: ^0.17.0
+  jiffy: ^4.0.0
   json_annotation: ^3.1.1
   json_serializable: ^3.5.1
   like_button: ^1.0.4
   lottie: ^0.7.0+1
-  md2_tab_indicator: ^1.0.2
   meta: ^1.2.3
-  modal_bottom_sheet: ^0.2.2
+  modal_bottom_sheet: ^1.0.0+1
   number_inc_dec: ^0.6.6
   path: ^1.7.0
   path_provider: ^1.6.18
@@ -69,8 +64,8 @@ dependencies:
   pull_to_refresh: ^1.6.2
   recase: ^3.0.1
   retrofit: ^1.3.4+1
-  scroll_to_index: ^1.0.6
-  settings_ui: ^0.4.0
+  scroll_to_index: ^2.0.0
+  settings_ui: ^0.6.0
   shared_preferences: ^0.5.12+4
   shimmer: ^1.1.2
   sliding_up_panel: ^1.0.2
