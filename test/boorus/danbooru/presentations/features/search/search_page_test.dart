@@ -5,9 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mockito/mockito.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
@@ -23,6 +25,8 @@ import '../../../../../stubs/repositories/posts/stub_post_repository.dart';
 import '../../../../../stubs/repositories/tags/stub_tag_repository.dart';
 import '../../../../../stubs/stub_material_app.dart';
 
+class MockPostRepository extends Mock implements IPostRepository {}
+
 void main() {
   Future<void> setUp(
     WidgetTester tester, {
@@ -34,7 +38,8 @@ void main() {
       ProviderScope(
         overrides: [
           tagProvider.overrideWithProvider(tagTestDouble ?? stubTagProvider),
-          postProvider.overrideWithProvider(postTestDouble ?? stubPostProvider),
+          postProvider
+              .overrideWithProvider(postTestDouble ?? stubEmptyPostProvider),
           queryProcessorProvider.overrideWithProvider(
               queryProcessorTestDouble ?? stubQueryProcessorProvider)
         ],
@@ -96,9 +101,9 @@ void main() {
     });
 
     testWidgets(
-      "Show result when search icon is tapped",
+      "Show result when search icon is tapped and there are data returned from server",
       (WidgetTester tester) async {
-        await setUp(tester);
+        await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
 
         await tester.enterText(find.byType(TextFormField), "a");
 
@@ -107,6 +112,60 @@ void main() {
         await tester.pump();
 
         final result = find.byType(InfiniteLoadList);
+
+        expect(result, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      "Show no results when search icon is tapped and server return empty data",
+      (WidgetTester tester) async {
+        await setUp(tester, postTestDouble: stubEmptyPostProvider);
+
+        await tester.enterText(find.byType(TextFormField), "a");
+
+        await tester.tap(find.byType(FloatingActionButton));
+
+        await tester.pump();
+
+        final result = find.byType(EmptyResult);
+
+        expect(result, findsOneWidget);
+      },
+    );
+
+    testWidgets(
+      "Show error view when search icon is tapped and there is exception from server",
+      (WidgetTester tester) async {
+        final mockPostRepository = MockPostRepository();
+
+        when(mockPostRepository.getPosts(any, any))
+            .thenThrow(BooruException(""));
+
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              tagProvider.overrideWithProvider(stubTagProvider),
+              postProvider
+                  .overrideWithProvider(Provider((ref) => mockPostRepository)),
+              queryProcessorProvider
+                  .overrideWithProvider(stubQueryProcessorProvider)
+            ],
+            child: StubMaterialApp(
+              child: SearchPage(),
+            ),
+          ),
+        );
+
+        // wait for animation finish
+        await tester.pumpAndSettle();
+
+        await tester.enterText(find.byType(TextFormField), "a");
+
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pump();
+
+        final result = find.byType(ErrorResult);
 
         expect(result, findsOneWidget);
       },

@@ -9,6 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:lottie/lottie.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -47,6 +48,9 @@ class SearchPage extends HookWidget {
       onData: (data) {
         if (isMounted()) {
           posts.value = [...data];
+          if (data.isEmpty) {
+            searchDisplayState.value = SearchDisplayState.noResults();
+          }
         }
       },
       onMoreData: (data, page) {
@@ -64,12 +68,9 @@ class SearchPage extends HookWidget {
         posts.value = [...posts.value, ...data];
       },
       onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        if (searchDisplayState.value == SearchDisplayState.results()) {
+          searchDisplayState.value = SearchDisplayState.error(message);
+        }
       },
       refreshBuilder: (page) {
         return context
@@ -113,11 +114,20 @@ class SearchPage extends HookWidget {
     }, [query.value]);
 
     useEffect(() {
-      if (searchDisplayState.value == SearchDisplayState.results()) {
+      void switchToSearchOptionsView() {
         if (completedQueryItems.value.isEmpty) {
           searchDisplayState.value = SearchDisplayState.searchOptions();
         }
       }
+
+      searchDisplayState.value.when(
+          results: () => switchToSearchOptionsView(),
+          suggestions: () {},
+          searchOptions: () {},
+          noResults: () => switchToSearchOptionsView(),
+          error: (message) {
+            switchToSearchOptionsView();
+          });
 
       return null;
     }, [completedQueryItems.value]);
@@ -158,8 +168,8 @@ class SearchPage extends HookWidget {
           .addHistory(completedQueryItems.value.join(' '));
 
       FocusScope.of(context).unfocus();
-      infiniteListController.value.refresh();
       searchDisplayState.value = SearchDisplayState.results();
+      infiniteListController.value.refresh();
     }
 
     return SafeArea(
@@ -198,7 +208,6 @@ class SearchPage extends HookWidget {
                       onPressed: () => searchDisplayState.value.maybeWhen(
                         orElse: () => query.value = "",
                         results: () {
-                          // completedQueryItems.value = [];
                           searchDisplayState.value =
                               SearchDisplayState.searchOptions();
 
@@ -248,15 +257,23 @@ class SearchPage extends HookWidget {
                     tags: suggestions.value,
                     onItemTap: (tag) => addTag(tag.rawName),
                   ),
-                  results: () => InfiniteLoadList(
-                    controller: infiniteListController.value,
-                    posts: posts.value,
-                    child: isRefreshing.value
-                        ? SliverPadding(
-                            padding: EdgeInsets.symmetric(horizontal: 6.0),
-                            sliver: SliverPostGridPlaceHolder())
-                        : null,
-                  ),
+                  results: () {
+                    return InfiniteLoadList(
+                      controller: infiniteListController.value,
+                      posts: posts.value,
+                      child: isRefreshing.value
+                          ? SliverPadding(
+                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              sliver: SliverPostGridPlaceHolder())
+                          : null,
+                    );
+                  },
+                  noResults: () => EmptyResult(
+                      text:
+                          "We searched far and wide, but no results were found."),
+                  error: (message) {
+                    return ErrorResult(text: message);
+                  },
                 ),
               ),
             ],
@@ -267,9 +284,85 @@ class SearchPage extends HookWidget {
   }
 }
 
+class EmptyResult extends StatelessWidget {
+  const EmptyResult({
+    Key key,
+    @required this.text,
+    this.icon,
+  }) : super(key: key);
+
+  final String text;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Lottie.asset(
+              "assets/animations/search-file.json",
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ErrorResult extends StatelessWidget {
+  const ErrorResult({
+    Key key,
+    @required this.text,
+    this.icon,
+  }) : super(key: key);
+
+  final String text;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: Lottie.asset(
+              "assets/animations/server-error.json",
+              fit: BoxFit.scaleDown,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            child: Text(
+              text,
+              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.center,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 @freezed
 abstract class SearchDisplayState with _$SearchDisplayState {
   const factory SearchDisplayState.results() = _Results;
   const factory SearchDisplayState.suggestions() = _Suggestions;
   const factory SearchDisplayState.searchOptions() = _SearchOptions;
+  const factory SearchDisplayState.noResults() = _NoResults;
+  const factory SearchDisplayState.error(String message) = _Error;
 }
