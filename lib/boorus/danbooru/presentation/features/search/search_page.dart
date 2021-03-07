@@ -158,6 +158,30 @@ class SearchPage extends HookWidget {
       suggestions.value = [...tags];
     }
 
+    void onSearchClearButtonTap() {
+      searchDisplayState.value.maybeWhen(
+        orElse: () => query.value = "",
+        results: () {
+          searchDisplayState.value = SearchDisplayState.searchOptions();
+
+          return null;
+        },
+      );
+    }
+
+    void onBackButtonTap() {
+      void clear() => completedQueryItems.value = [];
+      void pop() => Navigator.of(context).pop();
+
+      searchDisplayState.value.when(
+        results: () => clear(),
+        suggestions: () => pop(),
+        searchOptions: () => pop(),
+        noResults: () => clear(),
+        error: (e) => clear(),
+      );
+    }
+
     void onSearchButtonTap() {
       if (query.value.isNotEmpty) {
         addTag(query.value);
@@ -197,23 +221,12 @@ class SearchPage extends HookWidget {
               queryEditingController: queryEditingController,
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
-                onPressed: () => searchDisplayState.value.maybeWhen(
-                  orElse: () => Navigator.of(context).pop(),
-                  results: () => completedQueryItems.value = [],
-                ),
+                onPressed: () => onBackButtonTap(),
               ),
               trailing: query.value.isNotEmpty
                   ? IconButton(
                       icon: Icon(Icons.close),
-                      onPressed: () => searchDisplayState.value.maybeWhen(
-                        orElse: () => query.value = "",
-                        results: () {
-                          searchDisplayState.value =
-                              SearchDisplayState.searchOptions();
-
-                          return null;
-                        },
-                      ),
+                      onPressed: () => onSearchClearButtonTap(),
                     )
                   : null,
               onChanged: (value) => onTextInputChanged(value),

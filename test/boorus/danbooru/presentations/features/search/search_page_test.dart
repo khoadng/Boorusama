@@ -53,74 +53,149 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  group('Search state', () {
-    testWidgets(
-      "Show search options at start",
-      (WidgetTester tester) async {
-        await setUp(tester);
-
-        final searchOptionsFinder = find.byType(SearchOptions);
-
-        expect(searchOptionsFinder, findsOneWidget);
-      },
-    );
-
-    testWidgets(
-      "Show suggestions when enter a character",
-      (WidgetTester tester) async {
-        await setUp(tester);
-
-        await tester.enterText(find.byType(TextFormField), "a");
-
-        await tester.pump();
-
-        final suggestions = find.byType(TagSuggestionItems);
-
-        expect(suggestions, findsOneWidget);
-      },
-    );
-
-    testWidgets("Show search options when text is cleared",
+  group('[Search state]', () {
+    group('[When enter a character]', () {
+      testWidgets(
+        "Show suggestions",
         (WidgetTester tester) async {
-      await setUp(tester);
+          await setUp(tester);
 
-      await tester.enterText(find.byType(TextFormField), "a");
-      await tester.pump();
-      final suggestions = find.byType(TagSuggestionItems);
-      expect(suggestions, findsOneWidget);
+          await tester.enterText(find.byType(TextFormField), "a");
 
-      await tester.enterText(find.byType(TextFormField), "");
+          await tester.pump();
 
-      // wait for animation
-      await tester.pumpAndSettle();
+          final suggestions = find.byType(TagSuggestionItems);
 
-      final searchOptions = find.byType(SearchOptions);
+          expect(suggestions, findsOneWidget);
+        },
+      );
 
-      expect(suggestions, findsNothing);
-      expect(searchOptions, findsOneWidget);
+      group('[When text is cleared]', () {
+        testWidgets("Show search options", (WidgetTester tester) async {
+          await setUp(tester);
+
+          await tester.enterText(find.byType(TextFormField), "a");
+          await tester.pump();
+          final suggestions = find.byType(TagSuggestionItems);
+          expect(suggestions, findsOneWidget);
+
+          await tester.enterText(find.byType(TextFormField), "");
+
+          // wait for animation
+          await tester.pumpAndSettle();
+
+          final searchOptions = find.byType(SearchOptions);
+
+          expect(suggestions, findsNothing);
+          expect(searchOptions, findsOneWidget);
+        });
+      });
     });
 
-    testWidgets(
-      "Show result when search icon is tapped and there are data returned from server",
-      (WidgetTester tester) async {
-        await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
+    group('[When search]', () {
+      testWidgets(
+        "Show result if data available",
+        (WidgetTester tester) async {
+          await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
 
-        await tester.enterText(find.byType(TextFormField), "a");
+          await tester.enterText(find.byType(TextFormField), "a");
+
+          await tester.tap(find.byType(FloatingActionButton));
+
+          await tester.pump();
+
+          final result = find.byType(InfiniteLoadList);
+
+          expect(result, findsOneWidget);
+        },
+      );
+
+      testWidgets(
+        "Show no results if no data",
+        (WidgetTester tester) async {
+          await setUp(tester, postTestDouble: stubEmptyPostProvider);
+
+          await tester.enterText(find.byType(TextFormField), "a");
+
+          await tester.tap(find.byType(FloatingActionButton));
+
+          await tester.pump();
+
+          final result = find.byType(EmptyResult);
+
+          expect(result, findsOneWidget);
+        },
+      );
+
+      testWidgets(
+        "Show error if exception occured",
+        (WidgetTester tester) async {
+          final mockPostRepository = MockPostRepository();
+
+          when(mockPostRepository.getPosts(any, any))
+              .thenThrow(BooruException(""));
+
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                tagProvider.overrideWithProvider(stubTagProvider),
+                postProvider.overrideWithProvider(
+                    Provider((ref) => mockPostRepository)),
+                queryProcessorProvider
+                    .overrideWithProvider(stubQueryProcessorProvider)
+              ],
+              child: StubMaterialApp(
+                child: SearchPage(),
+              ),
+            ),
+          );
+
+          // wait for animation finish
+          await tester.pumpAndSettle();
+
+          await tester.enterText(find.byType(TextFormField), "a");
+
+          await tester.tap(find.byType(FloatingActionButton));
+          await tester.pump();
+
+          final result = find.byType(ErrorResult);
+
+          expect(result, findsOneWidget);
+        },
+      );
+    });
+
+    group('[When clear tag]', () {
+      testWidgets("Show search options", (WidgetTester tester) async {
+        await setUp(tester,
+            queryProcessorTestDouble:
+                Provider<QueryProcessor>((_) => QueryProcessor()));
+
+        await tester.enterText(find.byType(TextFormField), "a ");
+        final tag = find.byType(ItemTags);
+
+        await tester.pumpAndSettle();
+
+        expect(tag, findsOneWidget);
 
         await tester.tap(find.byType(FloatingActionButton));
 
-        await tester.pump();
+        final closeIconFinder = find.byIcon(Icons.clear);
+        await tester.tap(closeIconFinder);
 
-        final result = find.byType(InfiniteLoadList);
+        final searchOptions = find.byType(SearchOptions);
 
-        expect(result, findsOneWidget);
-      },
-    );
+        await tester.pumpAndSettle();
 
-    testWidgets(
-      "Show no results when search icon is tapped and server return empty data",
-      (WidgetTester tester) async {
-        await setUp(tester, postTestDouble: stubEmptyPostProvider);
+        expect(tag, findsNothing);
+        expect(searchOptions, findsOneWidget);
+      });
+    });
+
+    group('[When go back]', () {
+      testWidgets("Show suggestions if in results state",
+          (WidgetTester tester) async {
+        await setUp(tester);
 
         await tester.enterText(find.byType(TextFormField), "a");
 
@@ -131,12 +206,18 @@ void main() {
         final result = find.byType(EmptyResult);
 
         expect(result, findsOneWidget);
-      },
-    );
 
-    testWidgets(
-      "Show error view when search icon is tapped and there is exception from server",
-      (WidgetTester tester) async {
+        await tester.tap(find.byIcon(Icons.arrow_back));
+
+        await tester.pumpAndSettle();
+
+        final searchOptionsFinder = find.byType(SearchOptions);
+
+        expect(searchOptionsFinder, findsOneWidget);
+      });
+
+      testWidgets("Show suggestions if in error state",
+          (WidgetTester tester) async {
         final mockPostRepository = MockPostRepository();
 
         when(mockPostRepository.getPosts(any, any))
@@ -168,37 +249,52 @@ void main() {
         final result = find.byType(ErrorResult);
 
         expect(result, findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+
+        await tester.pumpAndSettle();
+
+        final searchOptionsFinder = find.byType(SearchOptions);
+
+        expect(searchOptionsFinder, findsOneWidget);
+      });
+
+      testWidgets("Show suggestions if in no results state",
+          (WidgetTester tester) async {
+        await setUp(tester, postTestDouble: stubEmptyPostProvider);
+
+        await tester.enterText(find.byType(TextFormField), "a");
+
+        await tester.tap(find.byType(FloatingActionButton));
+
+        await tester.pump();
+
+        final result = find.byType(EmptyResult);
+
+        expect(result, findsOneWidget);
+
+        await tester.tap(find.byIcon(Icons.arrow_back));
+
+        await tester.pumpAndSettle();
+
+        final searchOptionsFinder = find.byType(SearchOptions);
+
+        expect(searchOptionsFinder, findsOneWidget);
+      });
+    });
+    testWidgets(
+      "Show search options at start",
+      (WidgetTester tester) async {
+        await setUp(tester);
+
+        final searchOptionsFinder = find.byType(SearchOptions);
+
+        expect(searchOptionsFinder, findsOneWidget);
       },
     );
-
-    testWidgets("Show search options when all tags are cleared",
-        (WidgetTester tester) async {
-      await setUp(tester,
-          queryProcessorTestDouble:
-              Provider<QueryProcessor>((_) => QueryProcessor()));
-
-      await tester.enterText(find.byType(TextFormField), "a ");
-      final tag = find.byType(ItemTags);
-
-      await tester.pumpAndSettle();
-
-      expect(tag, findsOneWidget);
-
-      await tester.tap(find.byType(FloatingActionButton));
-
-      final closeIconFinder = find.byIcon(Icons.clear);
-      await tester.tap(closeIconFinder);
-
-      final searchOptions = find.byType(SearchOptions);
-
-      await tester.pumpAndSettle();
-
-      expect(tag, findsNothing);
-      expect(searchOptions, findsOneWidget);
-    });
   });
 
-  group('Behavior', () {
+  group('[Behavior]', () {
     testWidgets(
       "Show loading indicator when waiting for data after pressing search",
       (WidgetTester tester) async {
