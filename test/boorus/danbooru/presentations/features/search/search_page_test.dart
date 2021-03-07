@@ -93,39 +93,63 @@ void main() {
     });
 
     group('[When search]', () {
-      testWidgets(
-        "Show result if data available",
-        (WidgetTester tester) async {
-          await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
+      group('[No data]', () {
+        testWidgets(
+          "Show no results if in results state",
+          (WidgetTester tester) async {
+            await setUp(tester, postTestDouble: stubEmptyPostProvider);
 
-          await tester.enterText(find.byType(TextFormField), "a");
+            await tester.enterText(find.byType(TextFormField), "a");
 
-          await tester.tap(find.byType(FloatingActionButton));
+            await tester.tap(find.byType(FloatingActionButton));
 
-          await tester.pump();
+            await tester.pump();
 
-          final result = find.byType(InfiniteLoadList);
+            final result = find.byType(EmptyResult);
 
-          expect(result, findsOneWidget);
-        },
-      );
+            expect(result, findsOneWidget);
+          },
+        );
 
-      testWidgets(
-        "Show no results if no data",
-        (WidgetTester tester) async {
-          await setUp(tester, postTestDouble: stubEmptyPostProvider);
+        testWidgets(
+          "Stay in current state if not in results state",
+          (WidgetTester tester) async {
+            await setUp(tester,
+                postTestDouble: stubEmptyPostProvider,
+                queryProcessorTestDouble:
+                    Provider<QueryProcessor>((_) => QueryProcessor()));
 
-          await tester.enterText(find.byType(TextFormField), "a");
+            await tester.enterText(find.byType(TextFormField), "a ");
 
-          await tester.tap(find.byType(FloatingActionButton));
+            await tester.pumpAndSettle();
 
-          await tester.pump();
+            final result = find.byType(EmptyResult);
 
-          final result = find.byType(EmptyResult);
+            expect(result, findsNothing);
+          },
+        );
+      });
 
-          expect(result, findsOneWidget);
-        },
-      );
+      group('[Data available]', () {
+        testWidgets(
+          "Show result",
+          (WidgetTester tester) async {
+            await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
+
+            await tester.enterText(find.byType(TextFormField), "a");
+
+            await tester.tap(find.byType(FloatingActionButton));
+
+            await tester.pump();
+
+            final result = find.byType(InfiniteLoadList);
+
+            expect(result, findsOneWidget);
+          },
+        );
+      });
+
+      group('[Error]', () {});
 
       testWidgets(
         "Show error if exception occured",

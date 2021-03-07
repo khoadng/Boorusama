@@ -48,7 +48,8 @@ class SearchPage extends HookWidget {
       onData: (data) {
         if (isMounted()) {
           posts.value = [...data];
-          if (data.isEmpty) {
+          if (data.isEmpty &&
+              searchDisplayState.value == SearchDisplayState.results()) {
             searchDisplayState.value = SearchDisplayState.noResults();
           }
         }
@@ -153,6 +154,7 @@ class SearchPage extends HookWidget {
           .read(queryProcessorProvider)
           .process(text, query.value, completedQueryItems.value);
 
+      //TODO: should use completed query instead of query???
       final tags =
           await context.read(tagProvider).getTagsByNamePattern(query.value, 1);
       suggestions.value = [...tags];
