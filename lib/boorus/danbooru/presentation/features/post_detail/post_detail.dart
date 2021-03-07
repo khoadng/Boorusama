@@ -14,6 +14,7 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
@@ -94,6 +95,98 @@ class PostDetail extends HookWidget {
           ));
     }
 
+    Widget buildRecommendedArtistList() {
+      return post.tagStringArtist.isNotEmpty
+          ? artistPosts.maybeWhen(
+              data: (recommendedItems) => Column(
+                    children: recommendedItems
+                        .map(
+                          (item) => RecommendPostSection(
+                            header: ListTile(
+                              onTap: () => AppRouter.router.navigateTo(
+                                context,
+                                "/artist",
+                                routeSettings: RouteSettings(
+                                  arguments: [
+                                    item._title,
+                                    post.normalImageUri.toString(),
+                                  ],
+                                ),
+                              ),
+                              title: Text(item.title),
+                              trailing:
+                                  Icon(Icons.keyboard_arrow_right_rounded),
+                            ),
+                            posts: item.posts,
+                          ),
+                        )
+                        .toList(),
+                  ),
+              orElse: () {
+                final artists = post.tagStringArtist.split(' ');
+                return Column(
+                  children: [
+                    ...List.generate(
+                      artists.length,
+                      (index) => RecommendPostSectionPlaceHolder(
+                        header: ListTile(
+                          title: Text(artists[index].pretty.titleCase),
+                          trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              })
+          : SizedBox.shrink();
+    }
+
+    Widget buildRecommendedCharacterList() {
+      return post.tagStringCharacter.isNotEmpty
+          ? charactersPosts.maybeWhen(
+              data: (recommendedItems) => Column(
+                    children: recommendedItems
+                        .map(
+                          (item) => RecommendPostSection(
+                            header: ListTile(
+                              onTap: () => AppRouter.router.navigateTo(
+                                context,
+                                "/artist",
+                                routeSettings: RouteSettings(
+                                  arguments: [
+                                    item._title,
+                                    post.normalImageUri.toString(),
+                                  ],
+                                ),
+                              ),
+                              title: Text(item.title),
+                              trailing:
+                                  Icon(Icons.keyboard_arrow_right_rounded),
+                            ),
+                            posts: item.posts,
+                          ),
+                        )
+                        .toList(),
+                  ),
+              orElse: () {
+                final characters = post.tagStringCharacter.split(' ');
+                return Column(
+                  children: [
+                    ...List.generate(
+                      characters.length,
+                      (index) => RecommendPostSectionPlaceHolder(
+                        header: ListTile(
+                          title: Text(characters[index].pretty.titleCase),
+                          trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              })
+          : SizedBox.shrink();
+    }
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
@@ -113,75 +206,8 @@ class PostDetail extends HookWidget {
                       InformationSection(post: post),
                       PostActionToolbar(post: post),
                       Divider(height: 8, thickness: 1),
-                      post.tagStringArtist.isNotEmpty
-                          ? artistPosts.maybeWhen(
-                              data: (recommendedItems) => Column(
-                                    children: recommendedItems
-                                        .map(
-                                          (item) => RecommendPostSection(
-                                            header: ListTile(
-                                              onTap: () => AppRouter.router
-                                                  .navigateTo(
-                                                      context, "/artist",
-                                                      routeSettings:
-                                                          RouteSettings(
-                                                              arguments: [
-                                                            item._title,
-                                                            post.normalImageUri
-                                                                .toString(),
-                                                          ])),
-                                              title: Text(item.title),
-                                              trailing: Icon(Icons
-                                                  .keyboard_arrow_right_rounded),
-                                            ),
-                                            posts: item.posts,
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                              orElse: () =>
-                                  Center(child: CircularProgressIndicator()))
-                          : SizedBox.shrink(),
-                      // post.tagStringCharacter.isNotEmpty
-                      //     ? charactersPosts.maybeWhen(
-                      //         data: (recommended) => RecommendPostSection(
-                      //               header: ListTile(
-                      //                 title: Text(recommended.title),
-                      //               ),
-                      //               posts: recommended.posts,
-                      //             ),
-                      //         orElse: () =>
-                      //             Center(child: CircularProgressIndicator()))
-                      //     : SizedBox.shrink(),
-                      post.tagStringCharacter.isNotEmpty
-                          ? charactersPosts.maybeWhen(
-                              data: (recommendedItems) => Column(
-                                    children: recommendedItems
-                                        .map(
-                                          (item) => RecommendPostSection(
-                                            header: ListTile(
-                                              onTap: () => AppRouter.router
-                                                  .navigateTo(
-                                                      context, "/artist",
-                                                      routeSettings:
-                                                          RouteSettings(
-                                                              arguments: [
-                                                            item._title,
-                                                            post.normalImageUri
-                                                                .toString(),
-                                                          ])),
-                                              title: Text(item.title),
-                                              trailing: Icon(Icons
-                                                  .keyboard_arrow_right_rounded),
-                                            ),
-                                            posts: item.posts,
-                                          ),
-                                        )
-                                        .toList(),
-                                  ),
-                              orElse: () =>
-                                  Center(child: CircularProgressIndicator()))
-                          : SizedBox.shrink(),
+                      buildRecommendedArtistList(),
+                      buildRecommendedCharacterList(),
                     ],
                   ),
                 ),
@@ -265,11 +291,38 @@ class RecommendPostSection extends HookWidget {
     return Column(
       children: [
         header,
-        Container(
-          height: MediaQuery.of(context).size.height * 0.2,
-          child: Padding(
-            padding: EdgeInsets.all(4),
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.2,
             child: PreviewPostList(posts: posts),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class RecommendPostSectionPlaceHolder extends HookWidget {
+  const RecommendPostSectionPlaceHolder({
+    Key key,
+    @required this.header,
+  }) : super(key: key);
+
+  final Widget header;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        header,
+        Padding(
+          padding: EdgeInsets.all(4),
+          child: Container(
+            height: MediaQuery.of(context).size.height * 0.2,
+            child: PreviewPostListPlaceHolder(
+              itemCount: 3,
+            ),
           ),
         ),
       ],

@@ -55,7 +55,6 @@ class _PostTagListState extends State<PostTagList> {
   List<Tag> _generalTags = <Tag>[];
   PopupMenu _menu;
   List<Tag> _metaTags = <Tag>[];
-  List<Tag> _selectedTag = <Tag>[];
   Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
 
   @override
@@ -128,31 +127,6 @@ class _PostTagListState extends State<PostTagList> {
         );
       },
     );
-  }
-
-  void _handleTagSelected(Tag tag) {
-    setState(() {
-      if (_selectedTag.contains(tag)) {
-        _selectedTag.remove(tag);
-      } else {
-        _selectedTag.add(tag);
-      }
-    });
-  }
-
-  void _searchTags(List<Tag> tags, BuildContext context) {
-    final List<String> tagNames = <String>[];
-
-    for (var tag in tags) {
-      tagNames.add(tag.rawName);
-    }
-
-    // showSearch(
-    //   context: context,
-    //   query: tagNames.join(" ") + " ",
-    //   delegate: SearchPage(
-    //       searchFieldStyle: Theme.of(context).inputDecorationTheme.hintStyle),
-    // );
   }
 
   @override
