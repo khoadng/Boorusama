@@ -91,11 +91,12 @@ class LatestView extends HookWidget {
           scrollDirection: Axis.horizontal,
           itemCount: searches.length,
           itemBuilder: (context, index) {
+            final selected = selectedTag.value == searches[index].keyword;
             return Padding(
               padding: EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
                 selectedColor: Colors.white,
-                selected: selectedTag.value == searches[index].keyword,
+                selected: selected,
                 onSelected: (selected) => selected
                     ? selectedTag.value = searches[index].keyword
                     : selectedTag.value = "",
@@ -108,7 +109,10 @@ class LatestView extends HookWidget {
                   child: Text(
                     searches[index].keyword.pretty,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: selected ? Colors.black : Colors.white,
+                    ),
                   ),
                 ),
               ),

@@ -169,10 +169,10 @@ class InfiniteLoadList extends HookWidget {
           controller: scrollControllerWithAnim,
           slivers: <Widget>[
             if (headers != null) ...headers,
-            SliverPadding(
-              padding: EdgeInsets.all(6.0),
-              sliver: child ??
-                  SliverPostGrid(
+            child ??
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                  sliver: SliverPostGrid(
                     onItemChanged: (index) {
                       loadMoreIfNeeded(index);
                       onItemChanged?.call(index);
@@ -180,7 +180,7 @@ class InfiniteLoadList extends HookWidget {
                     posts: posts,
                     scrollController: autoScrollController.value,
                   ),
-            ),
+                ),
           ],
         ),
       ),

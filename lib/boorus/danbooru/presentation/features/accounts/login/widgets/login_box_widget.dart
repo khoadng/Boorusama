@@ -105,8 +105,6 @@ class LoginBox extends HookWidget {
                         ),
                         child: IconButton(
                             splashColor: Colors.transparent,
-                            color:
-                                Theme.of(context).appBarTheme.iconTheme.color,
                             icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
                             onPressed: () => usernameTextController.clear()),
                       )
@@ -130,7 +128,6 @@ class LoginBox extends HookWidget {
                 controller: passwordTextController,
                 suffixIcon: IconButton(
                     splashColor: Colors.transparent,
-                    color: Theme.of(context).appBarTheme.iconTheme.color,
                     icon: showPassword.state
                         ? FaIcon(FontAwesomeIcons.solidEyeSlash)
                         : FaIcon(FontAwesomeIcons.solidEye),
@@ -140,11 +137,7 @@ class LoginBox extends HookWidget {
               authStatus.maybeWhen(
                 authenticating: () => CircularProgressIndicator(),
                 orElse: () => ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    primary: Theme.of(context).accentColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4.0)),
-                  ),
+                  style: ElevatedButton.styleFrom(onPrimary: Colors.white),
                   child: Text(I18n.of(context).loginFormLogin),
                   onPressed: () {
                     if (_formKey.value.currentState.validate()) {

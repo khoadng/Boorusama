@@ -145,12 +145,6 @@ class DownloadPage extends HookWidget {
                       margin: EdgeInsets.all(8.0),
                       width: double.infinity,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                          ),
-                          primary: Theme.of(context).accentColor,
-                        ),
                         onPressed: () {
                           List.generate(totalPage.value.round(), (index) async {
                             final posts = await context

@@ -12,7 +12,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
-import 'package:shimmer/shimmer.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -134,39 +133,34 @@ class ArtistSection extends HookWidget {
   final Post post;
 
   Widget _buildLoading(BuildContext context) {
-    return Shimmer.fromColors(
-      highlightColor: Colors.grey[500],
-      baseColor: Colors.grey[700],
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            leading: CircleAvatar(),
-            title: Container(
-              margin: EdgeInsets.only(
-                  right: MediaQuery.of(context).size.width * 0.4),
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ListTile(
+          leading: CircleAvatar(),
+          title: Container(
+            margin:
+                EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.4),
+            height: 20,
+            decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(8.0)),
           ),
-          ...List.generate(
-            4,
-            (index) => Container(
-              margin: EdgeInsets.only(bottom: 10.0),
-              width: Random().nextDouble() *
-                  MediaQuery.of(context).size.width *
-                  0.9,
-              height: 20,
-              decoration: BoxDecoration(
-                  color: Colors.grey[400],
-                  borderRadius: BorderRadius.circular(8.0)),
-            ),
+        ),
+        ...List.generate(
+          4,
+          (index) => Container(
+            margin: EdgeInsets.only(bottom: 10.0),
+            width: MediaQuery.of(context).size.width * 0.1 +
+                Random().nextDouble() * MediaQuery.of(context).size.width * 0.9,
+            height: 20,
+            decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(8.0)),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

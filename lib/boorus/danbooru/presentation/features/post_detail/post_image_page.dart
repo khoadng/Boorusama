@@ -57,10 +57,7 @@ class PostImagePage extends HookWidget {
     final widgets = <Widget>[];
 
     final screenWidth = MediaQuery.of(context).size.width;
-    //TODO: Can't get status bar height inside Scaffold
-    final screenHeight =
-        MediaQuery.of(context).size.height /* - kToolbarHeight */ - 24;
-    /*60*/ // minus toolbar height, status bar height and custom value for the bottom sheet;
+    final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
 
     for (var note in notes) {

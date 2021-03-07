@@ -369,7 +369,8 @@ class _ExploreListItemHeader extends HookWidget {
             ),
             TextButton(
               style: TextButton.styleFrom(
-                primary: Theme.of(context).cardColor,
+                backgroundColor: Theme.of(context).cardColor,
+                primary: Theme.of(context).textTheme.headline6.color,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                 ),
@@ -423,7 +424,8 @@ class _ExploreListItemHeader extends HookWidget {
               mostViewed: () => Center(),
               orElse: () => TextButton(
                 style: TextButton.styleFrom(
-                  primary: Theme.of(context).cardColor,
+                  backgroundColor: Theme.of(context).cardColor,
+                  primary: Theme.of(context).textTheme.headline6.color,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
                   ),

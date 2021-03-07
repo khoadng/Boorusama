@@ -62,10 +62,6 @@ class SearchHistorySection extends HookWidget {
                       "History".toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .actionsIconTheme
-                                .color,
                           ),
                     ),
                     TextButton(

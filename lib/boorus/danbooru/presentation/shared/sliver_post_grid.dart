@@ -3,6 +3,8 @@ import 'dart:async';
 import 'dart:ui';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -11,6 +13,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_tags/flutter_tags.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -27,6 +30,8 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+
+import 'modal.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
@@ -127,7 +132,8 @@ class SliverPostGrid extends HookWidget {
                   GestureDetector(
                     onTap: () => handleTap(post, index),
                     onLongPress: () {
-                      showCupertinoModalBottomSheet(
+                      showBarModalBottomSheet(
+                        duration: Duration(milliseconds: 200),
                         expand: true,
                         context: context,
                         backgroundColor: Colors.transparent,
@@ -145,18 +151,35 @@ class SliverPostGrid extends HookWidget {
                       placeholderUrl: post.previewImageUri.toString(),
                     ),
                   ),
-                  ShadowGradientOverlay(
-                    alignment: Alignment.bottomCenter,
-                    colors: <Color>[
-                      const Color(0x2F000000),
-                      Colors.black12.withOpacity(0.0)
-                    ],
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(8.0),
+                    child: ShadowGradientOverlay(
+                      alignment: Alignment.topCenter,
+                      colors: <Color>[
+                        const Color(0x2F000000),
+                        Colors.black12.withOpacity(0.0)
+                      ],
+                    ),
                   ),
+                  post.isFavorited
+                      ? Positioned(
+                          top: 6,
+                          right: 6,
+                          child: IgnorePointer(
+                            child: Icon(
+                              Icons.favorite,
+                              color: Colors.red,
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink(),
                   Positioned(
                     top: 6,
                     left: 6,
-                    child: Column(
-                      children: items,
+                    child: IgnorePointer(
+                      child: Column(
+                        children: items,
+                      ),
                     ),
                   ),
                 ],
@@ -189,127 +212,144 @@ class PostPreviewSheet extends HookWidget {
     final isLoggedIn = useProvider(isLoggedInProvider);
     final isFaved = useState(post.isFavorited);
 
-    return Material(
-      color: Colors.transparent,
-      child: Scaffold(
-        appBar: AppBar(
-          toolbarHeight: kToolbarHeight * 1.2,
-          actions: [
-            IconButton(
-              icon: Icon(Icons.close_rounded),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          ],
-          automaticallyImplyLeading: false,
-          title: ListTile(
-            title: AutoSizeText(
-              post.tagStringCharacter.isEmpty
-                  ? "Original"
-                  : post.name.characterOnly.pretty.capitalizeFirstofEach,
-              maxLines: 1,
-              overflow: TextOverflow.fade,
-            ),
-            subtitle: AutoSizeText(
-              post.tagStringCopyright.isEmpty
-                  ? "Original"
-                  : post.name.copyRightOnly.pretty.capitalizeFirstofEach,
-              maxLines: 1,
-              overflow: TextOverflow.fade,
+    final artistTags = post.tagStringArtist
+        .split(' ')
+        .where((e) => e.isNotEmpty)
+        .map((e) => [e, TagCategory.artist])
+        .toList();
+    final copyrightTags = post.tagStringCopyright
+        .split(' ')
+        .where((e) => e.isNotEmpty)
+        .map((e) => [e, TagCategory.copyright])
+        .toList();
+    final characterTags = post.tagStringCharacter
+        .split(' ')
+        .where((e) => e.isNotEmpty)
+        .map((e) => [e, TagCategory.charater])
+        .toList();
+
+    final tags = [
+      ...artistTags,
+      ...copyrightTags,
+      ...characterTags,
+    ];
+
+    return Scaffold(
+      body: CustomScrollView(
+        physics: ClampingScrollPhysics(),
+        controller: scrollController,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onImageTap();
+                  },
+                  child: CachedNetworkImage(
+                    fit: BoxFit.contain,
+                    imageUrl: post.isAnimated
+                        ? post.previewImageUri.toString()
+                        : post.normalImageUri.toString(),
+                  ),
+                ),
+              ),
             ),
           ),
-        ),
-        body: CustomScrollView(
-          physics: ClampingScrollPhysics(),
-          controller: scrollController,
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      onImageTap();
-                    },
-                    child: CachedNetworkImage(
-                      fit: BoxFit.contain,
-                      imageUrl: post.isAnimated
-                          ? post.previewImageUri.toString()
-                          : post.normalImageUri.toString(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  child: Column(
-                    children: [
-                      ListTile(
-                        leading: Icon(Icons.file_download),
-                        title: Text("Download"),
-                        onTap: () {
-                          context.read(downloadServiceProvider).download(post);
-                          Navigator.of(context).pop();
-                        },
+          SliverToBoxAdapter(
+            child: Tags(
+              runSpacing: 0,
+              alignment: WrapAlignment.center,
+              itemCount: tags.length,
+              itemBuilder: (index) {
+                return Chip(
+                    padding: EdgeInsets.all(4.0),
+                    labelPadding: EdgeInsets.all(1.0),
+                    visualDensity: VisualDensity.compact,
+                    backgroundColor:
+                        Color(TagHelper.hexColorOf(tags[index][1])),
+                    label: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.85),
+                      child: Text(
+                        (tags[index][0] as String).pretty,
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      isLoggedIn
-                          ? ListTile(
-                              leading: Icon(Icons.favorite),
-                              title: Text(
-                                  !isFaved.value ? "Favorite" : "Unfavorite"),
-                              onTap: () {
-                                if (isFaved.value) {
-                                  context
-                                      .read(favoriteProvider)
-                                      .removeFromFavorites(post.id);
-                                  isFaved.value = false;
-                                } else {
-                                  context
-                                      .read(favoriteProvider)
-                                      .addToFavorites(post.id);
-                                  isFaved.value = true;
-                                }
+                    ));
+              },
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: Icon(Icons.file_download),
+                      title: Text("Download"),
+                      onTap: () {
+                        context.read(downloadServiceProvider).download(post);
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    isLoggedIn
+                        ? ListTile(
+                            leading: Icon(Icons.favorite),
+                            title: Text(
+                                !isFaved.value ? "Favorite" : "Unfavorite"),
+                            onTap: () {
+                              if (isFaved.value) {
+                                context
+                                    .read(favoriteProvider)
+                                    .removeFromFavorites(post.id);
+                                isFaved.value = false;
+                              } else {
+                                context
+                                    .read(favoriteProvider)
+                                    .addToFavorites(post.id);
+                                isFaved.value = true;
+                              }
 
-                                Navigator.of(context).pop();
-                              },
-                            )
-                          : SizedBox.shrink(),
-                      post.isTranslated
-                          ? ListTile(
-                              leading: FaIcon(FontAwesomeIcons.language),
-                              title: Text("View translated notes"),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                AppRouter.router.navigateTo(
-                                    context, "/posts/image",
-                                    routeSettings:
-                                        RouteSettings(arguments: [post]));
-                              },
-                            )
-                          : SizedBox.shrink(),
-                      isLoggedIn
-                          ? ListTile(
-                              leading: FaIcon(FontAwesomeIcons.commentAlt),
-                              title: Text("Comment"),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                Navigator.of(context).push(SlideInRoute(
-                                    pageBuilder: (_, __, ___) =>
-                                        CommentCreatePage(postId: post.id)));
-                              },
-                            )
-                          : SizedBox.shrink(),
-                    ],
-                  ),
+                              Navigator.of(context).pop();
+                            },
+                          )
+                        : SizedBox.shrink(),
+                    post.isTranslated
+                        ? ListTile(
+                            leading: FaIcon(FontAwesomeIcons.language),
+                            title: Text("View translated notes"),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              AppRouter.router.navigateTo(
+                                  context, "/posts/image",
+                                  routeSettings:
+                                      RouteSettings(arguments: [post]));
+                            },
+                          )
+                        : SizedBox.shrink(),
+                    isLoggedIn
+                        ? ListTile(
+                            leading: FaIcon(FontAwesomeIcons.commentAlt),
+                            title: Text("Comment"),
+                            onTap: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(SlideInRoute(
+                                  pageBuilder: (_, __, ___) =>
+                                      CommentCreatePage(postId: post.id)));
+                            },
+                          )
+                        : SizedBox.shrink(),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

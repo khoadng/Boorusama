@@ -68,10 +68,6 @@ class SearchOptions extends HookWidget {
                       "Search Options".toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2.copyWith(
                             fontWeight: FontWeight.w700,
-                            color: Theme.of(context)
-                                .appBarTheme
-                                .actionsIconTheme
-                                .color,
                           ),
                     ),
                     IconButton(
@@ -85,10 +81,6 @@ class SearchOptions extends HookWidget {
                       icon: FaIcon(
                         FontAwesomeIcons.questionCircle,
                         size: 18,
-                        color: Theme.of(context)
-                            .appBarTheme
-                            .actionsIconTheme
-                            .color,
                       ),
                     )
                   ],

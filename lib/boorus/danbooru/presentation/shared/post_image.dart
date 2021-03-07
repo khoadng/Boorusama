@@ -65,7 +65,7 @@ class _PostImageState extends State<PostImage> {
           ),
         ),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => Center(child: Icon(Icons.error)),
       fadeInDuration: Duration(microseconds: 10),
     );
   }

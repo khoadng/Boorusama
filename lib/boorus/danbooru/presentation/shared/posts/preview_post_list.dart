@@ -35,6 +35,7 @@ class PreviewPostList extends StatelessWidget {
             imageUrl: posts[index].previewImageUri.toString(),
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
                 borderRadius: BorderRadius.circular(8.0),
               ),
             ),
