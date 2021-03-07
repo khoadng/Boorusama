@@ -34,10 +34,10 @@ class SearchPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final queryEditingController = useTextEditingController();
+    final queryEditingController = useTextEditingController
+        .fromValue(TextEditingValue(text: initialQuery));
     final searchDisplayState = useState(SearchDisplayState.searchOptions());
     final posts = useState(<Post>[]);
-    final query = useState(initialQuery);
     final suggestions = useState(<Tag>[]);
 
     final completedQueryItems = useState(<String>[]);
@@ -88,7 +88,8 @@ class SearchPage extends HookWidget {
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
         refreshWhen: () =>
-            completedQueryItems.value.isNotEmpty && query.value.isEmpty);
+            completedQueryItems.value.isNotEmpty &&
+            queryEditingController.text.isEmpty);
 
     useEffect(() {
       queryEditingController.addListener(() {
@@ -104,15 +105,14 @@ class SearchPage extends HookWidget {
     }, [queryEditingController]);
 
     useEffect(() {
-      if (query.value.isNotEmpty) {
+      if (queryEditingController.text.isNotEmpty) {
         searchDisplayState.value = SearchDisplayState.suggestions();
       }
 
-      queryEditingController.text = query.value;
-      queryEditingController.selection =
-          TextSelection.fromPosition(TextPosition(offset: query.value.length));
+      queryEditingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: queryEditingController.text.length));
       return () => {};
-    }, [query.value]);
+    }, [queryEditingController.text]);
 
     useEffect(() {
       void switchToSearchOptionsView() {
@@ -134,10 +134,9 @@ class SearchPage extends HookWidget {
     }, [completedQueryItems.value]);
 
     void addTag(String tag) {
-      query.value = "";
-      completedQueryItems.value =
-          LinkedHashSet<String>.from([...completedQueryItems.value, tag])
-              .toList();
+      queryEditingController.text = "";
+      completedQueryItems.value = LinkedHashSet<String>.from(
+          [...completedQueryItems.value, ...tag.split(' ')]).toList();
     }
 
     void removeTag(String tag) {
@@ -150,19 +149,21 @@ class SearchPage extends HookWidget {
         return;
       }
 
-      query.value = context
-          .read(queryProcessorProvider)
-          .process(text, query.value, completedQueryItems.value);
+      if (text.endsWith(' ')) {
+        queryEditingController.text = '';
+      }
 
-      //TODO: should use completed query instead of query???
+      final lastTag = context.read(queryProcessorProvider).process(
+          text, queryEditingController.text, completedQueryItems.value);
+
       final tags =
-          await context.read(tagProvider).getTagsByNamePattern(query.value, 1);
+          await context.read(tagProvider).getTagsByNamePattern(lastTag, 1);
       suggestions.value = [...tags];
     }
 
     void onSearchClearButtonTap() {
       searchDisplayState.value.maybeWhen(
-        orElse: () => query.value = "",
+        orElse: () => queryEditingController.text = "",
         results: () {
           searchDisplayState.value = SearchDisplayState.searchOptions();
 
@@ -185,8 +186,8 @@ class SearchPage extends HookWidget {
     }
 
     void onSearchButtonTap() {
-      if (query.value.isNotEmpty) {
-        addTag(query.value);
+      if (queryEditingController.text.isNotEmpty) {
+        addTag(queryEditingController.text);
       }
 
       context
@@ -225,7 +226,7 @@ class SearchPage extends HookWidget {
                 icon: Icon(Icons.arrow_back),
                 onPressed: () => onBackButtonTap(),
               ),
-              trailing: query.value.isNotEmpty
+              trailing: queryEditingController.text.isNotEmpty
                   ? IconButton(
                       icon: Icon(Icons.close),
                       onPressed: () => onSearchClearButtonTap(),
@@ -265,8 +266,9 @@ class SearchPage extends HookWidget {
                 child: searchDisplayState.value.when(
                   searchOptions: () => SearchOptions(
                     onOptionTap: (searchOption) =>
-                        query.value = "$searchOption:",
-                    onHistoryTap: (history) => query.value = history,
+                        queryEditingController.text = "$searchOption:",
+                    onHistoryTap: (history) =>
+                        queryEditingController.text = history,
                   ),
                   suggestions: () => TagSuggestionItems(
                     tags: suggestions.value,

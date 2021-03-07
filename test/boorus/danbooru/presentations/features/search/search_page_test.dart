@@ -10,13 +10,17 @@ import 'package:mockito/mockito.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
 import '../../../../../fakes/repositories/posts/fake_post_repository.dart';
@@ -27,13 +31,21 @@ import '../../../../../stubs/stub_material_app.dart';
 
 class MockPostRepository extends Mock implements IPostRepository {}
 
+class MockSearchHistoryRepository extends Mock
+    implements ISearchHistoryRepository {}
+
 void main() {
   Future<void> setUp(
     WidgetTester tester, {
     Provider<ITagRepository> tagTestDouble,
     Provider<IPostRepository> postTestDouble,
     Provider<QueryProcessor> queryProcessorTestDouble,
+    Provider<ISearchHistoryRepository> searchHistoryTestDouble,
   }) async {
+    final mockSearchHistoryProvider = MockSearchHistoryRepository();
+    when(mockSearchHistoryProvider.getHistories())
+        .thenAnswer((_) => Future.value([]));
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
@@ -41,7 +53,9 @@ void main() {
           postProvider
               .overrideWithProvider(postTestDouble ?? stubEmptyPostProvider),
           queryProcessorProvider.overrideWithProvider(
-              queryProcessorTestDouble ?? stubQueryProcessorProvider)
+              queryProcessorTestDouble ?? stubQueryProcessorProvider),
+          searchHistoryProvider.overrideWithProvider(searchHistoryTestDouble ??
+              Provider((ref) => mockSearchHistoryProvider))
         ],
         child: StubMaterialApp(
           child: SearchPage(),
@@ -361,5 +375,40 @@ void main() {
         expect(tag, findsOneWidget);
       },
     );
+  });
+
+  group('[Search bar]', () {
+    group('[Select saved search]', () {
+      testWidgets(
+        "Display saved search on search bar",
+        (WidgetTester tester) async {
+          final mockSearchHistoryProvider = MockSearchHistoryRepository();
+          when(mockSearchHistoryProvider.getHistories()).thenAnswer(
+            (_) => Future.value([
+              SearchHistory(
+                query: "foo bar",
+                createdAt: DateTime.now(),
+              )
+            ]),
+          );
+
+          await setUp(tester,
+              queryProcessorTestDouble:
+                  Provider<QueryProcessor>((_) => QueryProcessor()),
+              searchHistoryTestDouble:
+                  Provider((ref) => mockSearchHistoryProvider));
+
+          final historyItem = find.text("foo bar");
+          await tester.tap(historyItem);
+
+          await tester.pump();
+
+          final text = find.descendant(
+              of: find.byType(SearchBar), matching: find.text("foo bar"));
+
+          expect(text, findsOneWidget);
+        },
+      );
+    });
   });
 }
