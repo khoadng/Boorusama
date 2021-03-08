@@ -1,12 +1,13 @@
 // Flutter imports:
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -17,12 +18,15 @@ import 'boorus/danbooru/application/settings/settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await FlutterDownloader.initialize(debug: false);
+  if (Platform.isAndroid || Platform.isIOS) {
+    await FlutterDownloader.initialize(debug: false);
+  }
+  final dbDirectory = await getApplicationDocumentsDirectory();
 
-  Hive.init(await getDatabasesPath());
+  Hive.init(dbDirectory.path);
 
   final settingRepository = SettingRepository(
-    SharedPreferences.getInstance(),
+    Hive.openBox("settings"),
     Settings.defaultSettings,
   );
 

@@ -51,13 +51,13 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   void logIn([String username, String password]) async {
     return state.state.maybeWhen(
         unknown: () async {
-          final accounts = await _accountRepository.getAll();
-          if (accounts != null && accounts.isNotEmpty) {
+          final account = await _accountRepository.get();
+          if (account != Account.empty) {
             state = state.copyWith(
-              account: accounts.first,
+              account: account,
               state: AccountState.loggedIn(),
             );
-            return accounts.first;
+            return account;
           } else {
             state = state.copyWith(
               account: null,

@@ -1,18 +1,18 @@
 // Package imports:
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'account_database.dart';
 
 final accountProvider = Provider<IAccountRepository>((ref) {
-  return AccountRepository(AccountDatabase.dbProvider.database);
+  final box = Hive.openBox("accounts");
+  return AccountRepository(box);
 });
 
 class AccountRepository implements IAccountRepository {
-  final Future<Database> _db;
+  final Future<Box> _db;
 
   AccountRepository(this._db);
 
@@ -20,8 +20,7 @@ class AccountRepository implements IAccountRepository {
   Future<void> add(Account account) async {
     final db = await _db;
 
-    await db.insert("accounts", account.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
+    db.put("accounts", account.toMap());
   }
 
   @override
@@ -32,33 +31,26 @@ class AccountRepository implements IAccountRepository {
 
   @override
   Future<List<Account>> getAll() async {
-    final db = await _db;
-    final List<Map<String, dynamic>> maps = await db.query("accounts");
-
-    return List.generate(maps.length, (i) {
-      return Account.create(
-          maps[i]['username'], maps[i]['apiKey'], maps[i]['id']);
-    });
+    throw UnimplementedError();
   }
 
   @override
   Future<void> remove(int accountId) async {
     final db = await _db;
 
-    await db.delete("accounts", where: "id = ?", whereArgs: [accountId]);
+    await db.delete('accounts');
   }
 
   @override
   Future<Account> get() async {
     final db = await _db;
 
-    final List<Map<String, dynamic>> records = await db.query('accounts');
+    final record = db.get('accounts');
 
-    if (records == null || records.isEmpty) {
+    if (record == null) {
       return Account.empty;
     }
 
-    return Account.create(records.first['username'], records.first['apiKey'],
-        records.first['id']);
+    return Account.create(record['username'], record['apiKey'], record['id']);
   }
 }

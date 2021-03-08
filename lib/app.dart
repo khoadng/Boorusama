@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -60,8 +62,10 @@ class _AppState extends State<App> {
 
     AppRouter().setupRoutes();
 
-    Future.delayed(
-        Duration.zero, () => context.read(downloadServiceProvider).init());
+    if (Platform.isAndroid || Platform.isIOS) {
+      Future.delayed(
+          Duration.zero, () => context.read(downloadServiceProvider).init());
+    }
 
     // Future.delayed(
     //     Duration.zero,

@@ -1,31 +1,18 @@
 // Package imports:
-import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart';
-import 'package:dio_http_cache/dio_http_cache.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
-import 'dio_connectivity_request_retrier.dart';
-import 'retry_interceptor.dart';
 
 part 'danbooru_api.g.dart';
 
 final apiProvider = Provider<IApi>((ref) {
   final dio = Dio();
   final endPoint = ref.watch(apiEndpointProvider);
-  dio.interceptors
-    ..add(
-      RetryOnConnectionChangeInterceptor(
-        requestRetrier: DioConnectivityRequestRetrier(
-          dio: Dio(),
-          connectivity: Connectivity(),
-        ),
-      ),
-    )
-    ..add(DioCacheManager(CacheConfig(baseUrl: endPoint)).interceptor);
+
   return DanbooruApi(
     dio,
     baseUrl: endPoint,
@@ -109,10 +96,6 @@ abstract class DanbooruApi implements IApi {
     @Field("comment[body]") String content,
   );
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(seconds: 10),
-  })
   @GET("/notes.json")
   @override
   Future<HttpResponse> getNotes(
@@ -139,10 +122,6 @@ abstract class DanbooruApi implements IApi {
     @CancelRequest() CancelToken cancelToken,
   });
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(seconds: 3),
-  })
   @GET("/posts/{postId}")
   @override
   Future<HttpResponse> getPost(
@@ -198,10 +177,6 @@ abstract class DanbooruApi implements IApi {
     @Query("date") String date,
   );
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
-  })
   @GET("/tags.json")
   @override
   Future<HttpResponse> getTagsByNamePattern(
@@ -214,10 +189,6 @@ abstract class DanbooruApi implements IApi {
     @Query("limit") int limit,
   );
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
-  })
   @GET("/tags.json")
   @override
   Future<HttpResponse> getTagsByNameComma(
@@ -231,10 +202,6 @@ abstract class DanbooruApi implements IApi {
     @CancelRequest() CancelToken cancelToken,
   });
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(days: 7),
-  })
   @GET("/users.json")
   @override
   Future<HttpResponse> getUsersByIdStringComma(
@@ -243,10 +210,6 @@ abstract class DanbooruApi implements IApi {
     @CancelRequest() CancelToken cancelToken,
   });
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(days: 90),
-  })
   @GET("/users/{id}.json")
   @override
   Future<HttpResponse> getUserById(
@@ -255,10 +218,6 @@ abstract class DanbooruApi implements IApi {
     @Path() int id,
   );
 
-  @Extra({
-    DIO_CACHE_KEY_TRY_CACHE: true,
-    DIO_CACHE_KEY_MAX_AGE: Duration(hours: 1),
-  })
   @GET("/wiki_pages/{subject}.json")
   @override
   Future<HttpResponse> getWiki(
