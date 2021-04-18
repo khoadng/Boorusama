@@ -50,7 +50,6 @@ dependencies:
   jiffy: ^4.0.0
   json_annotation: ^3.1.1
   json_serializable: ^3.5.1
-  like_button: ^1.0.4
   lottie: ^0.7.0+1
   meta: ^1.2.3
   mockito: ^4.1.4

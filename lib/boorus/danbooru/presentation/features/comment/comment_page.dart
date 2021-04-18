@@ -3,26 +3,60 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animations/animations.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/generated/i18n.dart';
 import 'comment_create_page.dart';
 import 'comment_update_page.dart';
 import 'widgets/comment_item.dart';
 
+final _commentsProvider =
+    FutureProvider.autoDispose.family<List<Comment>, int>((ref, postId) async {
+  // Cancel the HTTP request if the user leaves the detail page before
+  // the request completes.
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final commentRepo = ref.watch(commentProvider);
+  final userRepo = ref.watch(userProvider);
+  final dtos = await commentRepo.getCommentsFromPostId(postId);
+  final comments = dtos
+      .where((e) => e.creator_id != null)
+      .toList()
+      .map((dto) => dto.toEntity())
+      .toList();
+
+  final userList = comments.map((e) => e.creatorId).toSet().toList();
+  final users = await userRepo.getUsersByIdStringComma(userList.join(","));
+
+  final commentsWithAuthor =
+      (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
+    final author = users.where((user) => user.id == comment.creatorId).first;
+    return comment.copyWith(author: author);
+  }).toList();
+
+  /// Cache the artist posts once it was successfully obtained.
+  ref.maintainState = true;
+
+  return commentsWithAuthor;
+});
+
 class CommentPage extends StatefulWidget {
   const CommentPage({
     Key key,
-    @required this.comments,
     @required this.postId,
   }) : super(key: key);
 
-  final AsyncValue<List<Comment>> comments;
   final int postId;
 
   @override
@@ -199,27 +233,35 @@ class _CommentPageState extends State<CommentPage> {
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 20.0),
-                    child: widget.comments.when(
-                      data: (comments) {
-                        _commentsWithDeleted = comments;
-                        _commentsWithoutDeleted = comments
-                            .where((comment) => comment.isDeleted == false)
-                            .toList();
-                        setState(() {
-                          if (_showDeleted) {
-                            _comments = _commentsWithDeleted;
-                          } else {
-                            _comments = _commentsWithoutDeleted;
-                          }
-                        });
-                        return _buildCommentSection(_comments);
-                      },
-                      loading: () => Lottie.asset(
-                          "assets/animations/comment_loading.json"),
-                      error: (error, stackTrace) => Center(
-                        child: Text("Something went wrong"),
-                      ),
-                    ),
+                    child: Consumer(builder: (_, watch, __) {
+                      final comments = watch(_commentsProvider(widget.postId));
+                      return comments.when(
+                        data: (comments) {
+                          _commentsWithDeleted = comments;
+                          _commentsWithoutDeleted = comments
+                              .where((comment) => comment.isDeleted == false)
+                              .toList();
+
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((timeStamp) {
+                            setState(() {
+                              if (_showDeleted) {
+                                _comments = _commentsWithDeleted;
+                              } else {
+                                _comments = _commentsWithoutDeleted;
+                              }
+                            });
+                          });
+
+                          return _buildCommentSection(_comments);
+                        },
+                        loading: () => Lottie.asset(
+                            "assets/animations/comment_loading.json"),
+                        error: (error, stackTrace) => Center(
+                          child: Text("Something went wrong"),
+                        ),
+                      );
+                    }),
                   ),
                 ),
               ],
