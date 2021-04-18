@@ -41,18 +41,18 @@ class I18n implements WidgetsLocalizations {
   String get profileFavorites => "Favorites";
   /// "Name"
   String get loginFormUsername => "Name";
-  /// "Password"
-  String get loginFormPassword => "Password";
+  /// "API Key"
+  String get loginFormPassword => "API Key";
   /// "Login"
   String get loginFormLogin => "Login";
   /// "Hi there!"
   String get loginFormGreeting => "Hi there!";
-  /// "Invalid username or password"
-  String get loginErrorsInvalidUsernameOrPassword => "Invalid username or password";
+  /// "Invalid username or API key"
+  String get loginErrorsInvalidUsernameOrPassword => "Invalid username or API key";
   /// "Please enter your username"
   String get loginErrorsMissingUsername => "Please enter your username";
-  /// "Please enter your password"
-  String get loginErrorsMissingPassword => "Please enter your password";
+  /// "Please enter your API key"
+  String get loginErrorsMissingPassword => "Please enter your API key";
   /// "Comment"
   String get commentCreateHint => "Comment";
   /// "Please wait..."
@@ -138,24 +138,24 @@ class _I18n_vi_VN extends I18n {
   /// "Tài khoản"
   @override
   String get loginFormUsername => "Tài khoản";
-  /// "Mật khẩu"
+  /// "API Key"
   @override
-  String get loginFormPassword => "Mật khẩu";
+  String get loginFormPassword => "API Key";
   /// "Đăng nhập"
   @override
   String get loginFormLogin => "Đăng nhập";
-  /// "Khỏe không bạn gì ơi!"
+  /// "Hi!"
   @override
-  String get loginFormGreeting => "Khỏe không bạn gì ơi!";
-  /// "Tài khoản hoặc mật khẩu không chính xác"
+  String get loginFormGreeting => "Hi!";
+  /// "Tài khoản hoặc API key không chính xác"
   @override
-  String get loginErrorsInvalidUsernameOrPassword => "Tài khoản hoặc mật khẩu không chính xác";
+  String get loginErrorsInvalidUsernameOrPassword => "Tài khoản hoặc API key không chính xác";
   /// "Chưa nhập tên tài khoản"
   @override
   String get loginErrorsMissingUsername => "Chưa nhập tên tài khoản";
-  /// "Chưa nhập mật khẩu"
+  /// "Chưa nhập API key"
   @override
-  String get loginErrorsMissingPassword => "Chưa nhập mật khẩu";
+  String get loginErrorsMissingPassword => "Chưa nhập API key";
   /// "Bình luận"
   @override
   String get commentCreateHint => "Bình luận";

@@ -1,10 +1,12 @@
 // Dart imports:
 import 'dart:convert';
 
+// Package imports:
+import 'package:hive/hive.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
-import 'package:hive/hive.dart';
 
 class SettingRepository implements ISettingRepository {
   final Future<Box> _prefs;

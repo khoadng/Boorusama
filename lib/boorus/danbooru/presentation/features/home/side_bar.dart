@@ -33,7 +33,7 @@ class SideBarMenu extends HookWidget {
         title: Text(I18n.of(context).sideMenuProfile),
         onTap: () {
           Navigator.of(context).pop();
-          AppRouter.router.navigateTo(context, "/users/${account.id}");
+          AppRouter.router.navigateTo(context, "/users/profile");
         },
       ));
     }
@@ -49,14 +49,15 @@ class SideBarMenu extends HookWidget {
       },
     ));
 
-    drawerChildren.add(ListTile(
-      leading: Icon(Icons.download_rounded),
-      title: Text("Downloads"),
-      onTap: () {
-        Navigator.of(context).pop();
-        AppRouter.router.navigateTo(context, "/downloads");
-      },
-    ));
+    //TODO: unfinished feature
+    // drawerChildren.add(ListTile(
+    //   leading: Icon(Icons.download_rounded),
+    //   title: Text("Downloads"),
+    //   onTap: () {
+    //     Navigator.of(context).pop();
+    //     AppRouter.router.navigateTo(context, "/downloads");
+    //   },
+    // ));
 
     drawerChildren.add(AboutListTile(
       icon: Icon(Icons.info),

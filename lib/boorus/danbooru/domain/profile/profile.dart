@@ -50,9 +50,6 @@ class Profile {
   bool noFeedback;
   bool requiresVerification;
   bool isVerified;
-  int apiRegenMultiplier;
-  int apiBurstLimit;
-  int remainingApiLimit;
   int statementTimeout;
   int favoriteGroupLimit;
   int favoriteLimit;
@@ -123,9 +120,6 @@ class Profile {
       this.noFeedback,
       this.requiresVerification,
       this.isVerified,
-      this.apiRegenMultiplier,
-      this.apiBurstLimit,
-      this.remainingApiLimit,
       this.statementTimeout,
       this.favoriteGroupLimit,
       this.favoriteLimit,
@@ -197,9 +191,6 @@ class Profile {
     noFeedback = json['no_feedback'];
     requiresVerification = json['requires_verification'];
     isVerified = json['is_verified'];
-    apiRegenMultiplier = json['api_regen_multiplier'];
-    apiBurstLimit = json['api_burst_limit'];
-    remainingApiLimit = json['remaining_api_limit'].toInt();
     statementTimeout = json['statement_timeout'];
     favoriteGroupLimit = json['favorite_group_limit'];
     favoriteLimit = json['favorite_limit'];
@@ -274,9 +265,6 @@ class Profile {
     data['no_feedback'] = this.noFeedback;
     data['requires_verification'] = this.requiresVerification;
     data['is_verified'] = this.isVerified;
-    data['api_regen_multiplier'] = this.apiRegenMultiplier;
-    data['api_burst_limit'] = this.apiBurstLimit;
-    data['remaining_api_limit'] = this.remainingApiLimit;
     data['statement_timeout'] = this.statementTimeout;
     data['favorite_group_limit'] = this.favoriteGroupLimit;
     data['favorite_limit'] = this.favoriteLimit;

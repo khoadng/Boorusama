@@ -7,5 +7,7 @@ import 'profile.dart';
 abstract class IProfileRepository {
   Future<Profile> getProfile({
     CancelToken cancelToken,
+    String apiKey,
+    String username,
   });
 }

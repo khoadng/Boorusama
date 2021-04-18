@@ -8,14 +8,14 @@
     "login" : {
         "form" : {
             "username" : "Name",
-            "password" : "Password",
+            "password" : "API Key",
             "login" : "Login",
             "greeting" : "Hi there!"
         },
         "errors" : {
-            "invalidUsernameOrPassword" : "Invalid username or password",
+            "invalidUsernameOrPassword" : "Invalid username or API key",
             "missingUsername" : "Please enter your username",
-            "missingPassword" : "Please enter your password"
+            "missingPassword" : "Please enter your API key"
         }
     },
 

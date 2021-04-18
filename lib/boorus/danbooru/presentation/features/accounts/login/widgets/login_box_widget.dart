@@ -8,10 +8,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 final _showPasswordProvider = StateProvider<bool>((ref) => false);
 final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
+final _url = Provider<String>((ref) {
+  return "${ref.watch(apiEndpointProvider)}/login?url=%2F";
+});
 
 class LoginBox extends HookWidget {
   const LoginBox({Key key}) : super(key: key);
@@ -29,6 +35,7 @@ class LoginBox extends HookWidget {
     final authStatus = useProvider(accountStateProvider);
     final showPassword = useProvider(_showPasswordProvider);
     final usernameHasText = useProvider(_userNameHasTextProvider);
+    final logInUrl = useProvider(_url);
 
     usernameTextController.addListener(() {
       if (usernameTextController.text.isNotEmpty) {
@@ -132,6 +139,38 @@ class LoginBox extends HookWidget {
                         ? FaIcon(FontAwesomeIcons.solidEyeSlash)
                         : FaIcon(FontAwesomeIcons.solidEye),
                     onPressed: () => showPassword.state = !showPassword.state),
+              ),
+              TextButton.icon(
+                onPressed: () => showDialog(
+                    context: context,
+                    builder: (context) {
+                      return AlertDialog(
+                        title: Text('API key?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: Text("Cancel"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                SlideInRoute(
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      WebView(url: logInUrl),
+                                ),
+                              );
+                            },
+                            child: Text("Open web browser"),
+                          ),
+                        ],
+                        content: Text(
+                            '1. Log in to your account. \n2. Navigate to your profile \n3. Find and copy your API key into the login form here \n 4. ??? \n 5. Profit'),
+                      );
+                    }),
+                icon: FaIcon(FontAwesomeIcons.solidQuestionCircle),
+                label: Text("API key?"),
               ),
               SizedBox(height: 20),
               authStatus.maybeWhen(

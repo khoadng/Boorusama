@@ -30,12 +30,19 @@ class ProfileRepository implements IProfileRepository {
   @override
   Future<Profile> getProfile({
     CancelToken cancelToken,
+    String apiKey,
+    String username,
   }) async {
-    final account = await _accountRepository.get();
-
+    var value;
     try {
-      final value = await _api.getProfile(account.username, account.apiKey,
-          cancelToken: cancelToken);
+      if (apiKey != null && username != null) {
+        value =
+            await _api.getProfile(username, apiKey, cancelToken: cancelToken);
+      } else {
+        final account = await _accountRepository.get();
+        value = await _api.getProfile(account.username, account.apiKey,
+            cancelToken: cancelToken);
+      }
       return Profile.fromJson(value.response.data);
     } on DioError catch (e) {
       if (e.type == DioErrorType.CANCEL) {

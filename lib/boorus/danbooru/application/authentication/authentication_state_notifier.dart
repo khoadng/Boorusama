@@ -8,7 +8,9 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/scrapper_service.dart';
 import 'package:boorusama/core/application/scraper/i_scrapper_service.dart';
 
@@ -41,12 +43,12 @@ final accountStateProvider = Provider<AccountState>((ref) {
 
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   AuthenticationNotifier(ProviderReference ref)
-      : _scrapperService = ref.read(scrapperProvider),
-        _accountRepository = ref.read(accountProvider),
+      : _accountRepository = ref.read(accountProvider),
+        _profileRepository = ref.read(profileProvider),
         super(AuthenticationState.initial());
 
   final IAccountRepository _accountRepository;
-  final IScrapperService _scrapperService;
+  final IProfileRepository _profileRepository;
 
   void logIn([String username, String password]) async {
     return state.state.maybeWhen(
@@ -72,8 +74,14 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
             state = state.copyWith(
               state: AccountState.authenticating(),
             );
-            final account =
-                await _scrapperService.crawlAccountData(username, password);
+
+            // Obsolete due to Cloudfare DDoS protection
+            // final account =
+            //     await _scrapperService.crawlAccountData(username, password);
+            var profile = await _profileRepository.getProfile(
+                username: username, apiKey: password);
+            var account = new Account.create(username, password, profile.id);
+
             await _accountRepository.add(account);
             state = state.copyWith(
               account: account,

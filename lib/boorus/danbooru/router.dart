@@ -27,7 +27,7 @@ class AppRouter {
         handler: postDetailImageHandler,
         transitionType: TransitionType.inFromRight);
 
-    router.define("/users/:id",
+    router.define("/users/profile",
         handler: userHandler, transitionType: TransitionType.inFromRight);
 
     router.define("/login",

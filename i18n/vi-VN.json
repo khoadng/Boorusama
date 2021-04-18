@@ -8,14 +8,14 @@
     "login" : {
         "form" : {
             "username" : "Tài khoản",
-            "password" : "Mật khẩu",
+            "password" : "API Key",
             "login" : "Đăng nhập",
-            "greeting": "Khỏe không bạn gì ơi!"
+            "greeting": "Hi!"
         },
         "errors" : {
-            "invalidUsernameOrPassword" : "Tài khoản hoặc mật khẩu không chính xác",
+            "invalidUsernameOrPassword" : "Tài khoản hoặc API key không chính xác",
             "missingUsername" : "Chưa nhập tên tài khoản",
-            "missingPassword" : "Chưa nhập mật khẩu"
+            "missingPassword" : "Chưa nhập API key"
         }
     },
 
