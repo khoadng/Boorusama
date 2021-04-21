@@ -59,18 +59,6 @@ class SideBarMenu extends HookWidget {
     //   },
     // ));
 
-    drawerChildren.add(AboutListTile(
-      icon: Icon(Icons.info),
-      applicationIcon: FlutterLogo(),
-      applicationVersion: "Alpha T.B.D",
-      applicationLegalese: "\u{a9} 2020 Nguyen Duc Khoa",
-      applicationName: "Boorusama",
-      aboutBoxChildren: <Widget>[
-        SizedBox(height: 24),
-        Text("Blah blah T.B.D"),
-      ],
-    ));
-
     return Drawer(
       child: SafeArea(
         child: SingleChildScrollView(

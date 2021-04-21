@@ -101,9 +101,35 @@ class SettingsPage extends HookWidget {
                 )
               ],
             ),
+            SettingsSection(
+              title: "App Information",
+              tiles: [
+                SettingsTile(
+                  title: "Acknowledgements",
+                  leading: Icon(Icons.info),
+                  onPressed: (context) => showAboutDialog(
+                      context: context,
+                      applicationIcon: FlutterLogo(),
+                      applicationVersion: "1.0.0",
+                      applicationLegalese: "\u{a9} 2020-2021 Nguyen Duc Khoa",
+                      applicationName: "Boorusama"),
+                )
+              ],
+            )
           ],
         ),
       ),
     );
   }
 }
+// AboutListTile(
+//       icon: Icon(Icons.info),
+//       applicationIcon: FlutterLogo(),
+//       applicationVersion: "Alpha T.B.D",
+//       applicationLegalese: "\u{a9} 2020 Nguyen Duc Khoa",
+//       applicationName: "Boorusama",
+//       aboutBoxChildren: <Widget>[
+//         SizedBox(height: 24),
+//         Text("Blah blah T.B.D"),
+//       ],
+//     )
