@@ -21,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_create_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
@@ -29,7 +28,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
-import 'modal.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
@@ -159,18 +157,6 @@ class SliverPostGrid extends HookWidget {
                       ],
                     ),
                   ),
-                  post.isFavorited
-                      ? Positioned(
-                          top: 6,
-                          right: 6,
-                          child: IgnorePointer(
-                            child: Icon(
-                              Icons.favorite,
-                              color: Colors.red,
-                            ),
-                          ),
-                        )
-                      : SizedBox.shrink(),
                   Positioned(
                     top: 6,
                     left: 6,
@@ -208,7 +194,6 @@ class PostPreviewSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isLoggedIn = useProvider(isLoggedInProvider);
-    final isFaved = useState(post.isFavorited);
 
     final artistTags = post.tagStringArtist
         .split(' ')
@@ -295,28 +280,6 @@ class PostPreviewSheet extends HookWidget {
                         Navigator.of(context).pop();
                       },
                     ),
-                    isLoggedIn
-                        ? ListTile(
-                            leading: Icon(Icons.favorite),
-                            title: Text(
-                                !isFaved.value ? "Favorite" : "Unfavorite"),
-                            onTap: () {
-                              if (isFaved.value) {
-                                context
-                                    .read(favoriteProvider)
-                                    .removeFromFavorites(post.id);
-                                isFaved.value = false;
-                              } else {
-                                context
-                                    .read(favoriteProvider)
-                                    .addToFavorites(post.id);
-                                isFaved.value = true;
-                              }
-
-                              Navigator.of(context).pop();
-                            },
-                          )
-                        : SizedBox.shrink(),
                     post.isTranslated
                         ? ListTile(
                             leading: FaIcon(FontAwesomeIcons.language),

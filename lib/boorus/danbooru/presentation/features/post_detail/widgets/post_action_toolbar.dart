@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +13,19 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+
+final _isFavedProvider =
+    FutureProvider.autoDispose.family<bool, int>((ref, postId) async {
+  final cancelToken = CancelToken();
+  ref.onDispose(cancelToken.cancel);
+
+  final repo = ref.watch(favoriteProvider);
+  final account = await ref.watch(accountProvider).get();
+  final isFaved = repo.checkIfFavoritedByUser(account.id, postId);
+
+  ref.maintainState = true;
+  return isFaved;
+});
 
 class PostActionToolbar extends HookWidget {
   const PostActionToolbar({
@@ -40,59 +55,75 @@ class PostActionToolbar extends HookWidget {
       return true;
     }
 
-    final isFaved = useState(post.isFavorited);
+    final isFaved = useProvider(_isFavedProvider(post.id));
+    final favCount = useState(post.favCount);
+
+    final buttons = <Widget>[
+      TextButton.icon(
+          onPressed: () {},
+          icon: FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white),
+          label: Text(
+            post.upScore.toString(),
+            style: TextStyle(color: Colors.white),
+          )),
+      TextButton.icon(
+          onPressed: () {},
+          icon: FaIcon(
+            FontAwesomeIcons.thumbsDown,
+            color: Colors.white,
+          ),
+          label: Text(
+            post.downScore.toString(),
+            style: TextStyle(color: Colors.white),
+          )),
+    ];
+    if (isLoggedIn) {
+      final button = isFaved.when(
+          data: (value) {
+            final button = TextButton.icon(
+                onPressed: () {
+                  isFaved.whenData((value) async {
+                    final result = value
+                        ? context
+                            .read(favoriteProvider)
+                            .removeFromFavorites(post.id)
+                        : context
+                            .read(favoriteProvider)
+                            .addToFavorites(post.id);
+
+                    await result;
+                    context.refresh(_isFavedProvider(post.id));
+                  });
+                },
+                icon: value
+                    ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
+                    : FaIcon(
+                        FontAwesomeIcons.heart,
+                        color: Colors.white,
+                      ),
+                label: Text(
+                  favCount.value.toString(),
+                  style: TextStyle(color: Colors.white),
+                ));
+            return button;
+          },
+          loading: () => Center(
+                child: TextButton.icon(
+                    onPressed: null,
+                    icon: FaIcon(
+                      FontAwesomeIcons.spinner,
+                      color: Colors.white,
+                    ),
+                    label: Text(
+                      post.favCount.toString(),
+                      style: TextStyle(color: Colors.white),
+                    )),
+              ),
+          error: (e, m) => SizedBox.shrink());
+      buttons.add(button);
+    }
 
     return ButtonBar(
-      alignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        TextButton.icon(
-            onPressed: () {},
-            icon: FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white),
-            label: Text(
-              post.upScore.toString(),
-              style: TextStyle(color: Colors.white),
-            )),
-        TextButton.icon(
-            onPressed: () {},
-            icon: FaIcon(
-              FontAwesomeIcons.thumbsDown,
-              color: Colors.white,
-            ),
-            label: Text(
-              post.downScore.toString(),
-              style: TextStyle(color: Colors.white),
-            )),
-        TextButton.icon(
-            onPressed: () {
-              final loggedIn = displayNoticeIfNotLoggedIn();
-
-              if (!loggedIn) {
-                isFaved.value = false;
-                return null;
-              }
-
-              //TODO: check for success here
-              if (!isFaved.value) {
-                context.read(favoriteProvider).addToFavorites(post.id);
-              } else {
-                context.read(favoriteProvider).removeFromFavorites(post.id);
-              }
-
-              isFaved.value = !isFaved.value;
-            },
-            icon: FaIcon(
-              isFaved.value
-                  ? FontAwesomeIcons.solidHeart
-                  : FontAwesomeIcons.heart,
-              color: isFaved.value ? Colors.red : Colors.white,
-            ),
-            label: Text(
-              isFaved.value
-                  ? (post.favCount + 1).toString()
-                  : post.favCount.toString(),
-              style: TextStyle(color: Colors.white),
-            )),
-      ],
-    );
+        alignment: MainAxisAlignment.spaceEvenly, children: buttons);
   }
 }

@@ -166,7 +166,7 @@ class LoginBox extends HookWidget {
                           ),
                         ],
                         content: Text(
-                            '1. Log in to your account. \n2. Navigate to your profile \n3. Find and copy your API key into the login form here \n 4. ??? \n 5. Profit'),
+                            '1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit'),
                       );
                     }),
                 icon: FaIcon(FontAwesomeIcons.solidQuestionCircle),

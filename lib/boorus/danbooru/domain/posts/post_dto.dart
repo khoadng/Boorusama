@@ -63,8 +63,6 @@ abstract class PostDto with _$PostDto {
     String file_url,
     String large_file_url,
     String preview_file_url,
-    //TODO: self-insert field, not an actually data from server
-    bool is_favorited,
   }) = _PostDto;
 
   factory PostDto.fromJson(Map<String, dynamic> json) =>
@@ -100,7 +98,6 @@ extension PostDtoX on PostDto {
       rating: Rating(rating: rating),
       fileSize: file_size,
       pixivId: pixiv_id,
-      isFavorited: is_favorited ?? false,
     );
   }
 }

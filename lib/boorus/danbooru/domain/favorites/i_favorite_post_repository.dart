@@ -6,4 +6,5 @@ abstract class IFavoritePostRepository {
   Future<bool> removeFromFavorites(int postId);
   Future<List<FavoriteDto>> filterFavoritesFromUserId(
       List<int> postIds, int userId, int limit);
+  Future<bool> checkIfFavoritedByUser(int userId, int postId);
 }

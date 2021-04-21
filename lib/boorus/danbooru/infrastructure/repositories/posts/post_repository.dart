@@ -1,11 +1,9 @@
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
@@ -60,7 +58,6 @@ class PostRepository implements IPostRepository {
             _limit)
         .then((value) async {
       final dtos = <PostDto>[];
-      await _appendIsFavoritedIfValid(value, account, limit: _limit);
 
       for (var item in value.response.data) {
         try {
@@ -102,7 +99,6 @@ class PostRepository implements IPostRepository {
             "${date.year}-${date.month}-${date.day}")
         .then((value) async {
       final dtos = <PostDto>[];
-      await _appendIsFavoritedIfValid(value, account, limit: _limit);
 
       for (var item in value.response.data) {
         try {
@@ -151,7 +147,6 @@ class PostRepository implements IPostRepository {
         .then((value) async {
       final dtos = <PostDto>[];
 
-      await _appendIsFavoritedIfValid(value, account, limit: _limit);
       for (var item in value.response.data) {
         try {
           var dto = PostDto.fromJson(item);
@@ -199,9 +194,6 @@ class PostRepository implements IPostRepository {
           cancelToken: cancelToken);
 
       final dtos = <PostDto>[];
-      if (!skipFavoriteCheck) {
-        await _appendIsFavoritedIfValid(value, account, limit: limit);
-      }
 
       for (var item in value.response.data) {
         try {
@@ -232,31 +224,6 @@ class PostRepository implements IPostRepository {
         throw Exception("Failed to get posts for $tagString");
       }
     }
-  }
-
-  Future _appendIsFavoritedIfValid(
-    HttpResponse value,
-    Account account, {
-    int limit = 100,
-  }) async {
-    var postIds =
-        List<int>.from(value.response.data.map((post) => post["id"]).toList());
-
-    final favorites = await _favoritePostRepository.filterFavoritesFromUserId(
-      postIds,
-      account.id,
-      limit,
-    );
-
-    favorites.forEach((fav) {
-      final data = value.response.data;
-      for (var item in data) {
-        if (item['id'].toString() == fav.post_id.toString()) {
-          value.response.data[data.indexOf(item)]
-              .putIfAbsent("is_favorited", () => true);
-        }
-      }
-    });
   }
 }
 

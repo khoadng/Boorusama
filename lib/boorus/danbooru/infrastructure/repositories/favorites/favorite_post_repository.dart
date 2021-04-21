@@ -93,4 +93,20 @@ class FavoritePostRepository implements IFavoritePostRepository {
       return <FavoriteDto>[];
     });
   }
+
+  @override
+  Future<bool> checkIfFavoritedByUser(int userId, int postId) async {
+    final account = await _accountRepository.get();
+
+    return _api
+        .filterFavoritesFromUserId(
+            account.username, account.apiKey, postId.toString(), userId, 20)
+        .then((value) {
+      final result = value.response.data as List;
+
+      return result.isEmpty ? false : true;
+    }).catchError((Object obj) {
+      return false;
+    });
+  }
 }

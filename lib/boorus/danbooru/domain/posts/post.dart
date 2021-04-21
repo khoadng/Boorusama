@@ -35,8 +35,6 @@ class Post implements IDownloadable {
   final int fileSize;
   final int pixivId;
 
-  final bool isFavorited;
-
   Post({
     @required this.id,
     @required this.previewImageUri,
@@ -61,8 +59,6 @@ class Post implements IDownloadable {
     @required this.rating,
     @required this.fileSize,
     @required this.pixivId,
-    //TODO: workaround
-    this.isFavorited = false,
   });
 
   double get aspectRatio => this.width / this.height;
@@ -125,7 +121,6 @@ class Post implements IDownloadable {
         rating: Rating(rating: "e"),
         fileSize: 0,
         pixivId: 0,
-        isFavorited: false,
       );
 }
 
