@@ -30,6 +30,7 @@ dependencies:
   chewie: ^0.12.2
   connectivity_plus: ^0.8.1
   cupertino_icons: ^1.0.2
+  curved_navigation_bar: ^0.3.7
   dio: ^3.0.10
   dio_cookie_manager: ^1.0.0
   filesize: ^1.0.4

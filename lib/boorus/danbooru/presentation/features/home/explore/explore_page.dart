@@ -171,6 +171,11 @@ class ExplorePage extends HookWidget {
       SliverToBoxAdapter(
         child: _buildExploreSection(ExploreCategory.mostViewed()),
       ),
+      SliverToBoxAdapter(
+        child: SizedBox(
+          height: kBottomNavigationBarHeight,
+        ),
+      ),
     ]);
   }
 }
