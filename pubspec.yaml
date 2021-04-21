@@ -1,5 +1,5 @@
 name: boorusama
-description: A new Flutter project.
+description: A mobile client for Danbooru.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -75,6 +75,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^1.10.4
+  flutter_launcher_icons: ^0.8.1
   freezed: ^0.12.2
   import_sorter: ^4.4.1
   retrofit_generator: ^1.4.1+1
@@ -86,6 +87,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/animations/
+    - assets/icon/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

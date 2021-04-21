@@ -27,7 +27,7 @@ class Settings {
             <SearchHistory>[];
 
   static final defaultSettings = Settings(
-    safeMode: false,
+    safeMode: true,
     blacklistedTags: "",
     themeMode: ThemeMode.dark,
     language: "en",

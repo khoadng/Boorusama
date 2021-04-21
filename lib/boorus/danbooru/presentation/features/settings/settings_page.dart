@@ -109,7 +109,11 @@ class SettingsPage extends HookWidget {
                   leading: Icon(Icons.info),
                   onPressed: (context) => showAboutDialog(
                       context: context,
-                      applicationIcon: FlutterLogo(),
+                      applicationIcon: Image.asset(
+                        'assets/icon/icon-512x512.png',
+                        width: 64,
+                        height: 64,
+                      ),
                       applicationVersion: "1.0.0",
                       applicationLegalese: "\u{a9} 2020-2021 Nguyen Duc Khoa",
                       applicationName: "Boorusama"),
@@ -122,14 +126,3 @@ class SettingsPage extends HookWidget {
     );
   }
 }
-// AboutListTile(
-//       icon: Icon(Icons.info),
-//       applicationIcon: FlutterLogo(),
-//       applicationVersion: "Alpha T.B.D",
-//       applicationLegalese: "\u{a9} 2020 Nguyen Duc Khoa",
-//       applicationName: "Boorusama",
-//       aboutBoxChildren: <Widget>[
-//         SizedBox(height: 24),
-//         Text("Blah blah T.B.D"),
-//       ],
-//     )
