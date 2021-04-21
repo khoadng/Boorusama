@@ -75,6 +75,9 @@ class PostDetailPage extends HookWidget {
       }
     });
 
+    final hideFabAnimController = useAnimationController(
+        duration: kThemeAnimationDuration, initialValue: 1);
+
     Widget _buildSlideShowButton() {
       return Align(
         alignment: Alignment(0.9, -0.96),
@@ -138,20 +141,28 @@ class PostDetailPage extends HookWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => showBarModalBottomSheet(
-            expand: false,
-            context: context,
-            builder: (context) => CommentPage(
-              // comments: comments,
-              postId: posts[currentPostIndex.value].id,
-            ),
-          ),
-          child: FaIcon(
-            FontAwesomeIcons.comment,
-            color: Colors.white,
-          ),
-        ),
+        floatingActionButton: autoPlay.value
+            ? SizedBox.shrink()
+            : FadeTransition(
+                opacity: hideFabAnimController,
+                child: ScaleTransition(
+                  scale: hideFabAnimController,
+                  child: FloatingActionButton(
+                    onPressed: () => showBarModalBottomSheet(
+                      expand: false,
+                      context: context,
+                      builder: (context) => CommentPage(
+                        // comments: comments,
+                        postId: posts[currentPostIndex.value].id,
+                      ),
+                    ),
+                    child: FaIcon(
+                      FontAwesomeIcons.comment,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
         body: Stack(
           children: [
             CarouselSlider.builder(
@@ -163,6 +174,7 @@ class PostDetailPage extends HookWidget {
                 return PostDetail(
                   post: posts[index],
                   minimal: autoPlay.value,
+                  animController: hideFabAnimController,
                 );
               },
               options: CarouselOptions(

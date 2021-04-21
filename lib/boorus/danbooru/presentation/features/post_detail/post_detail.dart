@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -63,10 +64,12 @@ class PostDetail extends HookWidget {
     Key key,
     @required this.post,
     this.minimal = false,
+    @required this.animController,
   }) : super(key: key);
 
   final Post post;
   final bool minimal;
+  final AnimationController animController;
 
   @override
   Widget build(BuildContext context) {
@@ -74,6 +77,9 @@ class PostDetail extends HookWidget {
         useProvider(_recommendPostsProvider(post.tagStringArtist));
     final charactersPosts =
         useProvider(_recommendPostsProvider(post.tagStringCharacter));
+    final scrollController = useScrollController();
+    final scrollControllerWithAnim =
+        useScrollControllerForAnimation(animController, scrollController);
 
     Widget postWidget;
     if (post.isVideo) {
@@ -193,7 +199,7 @@ class PostDetail extends HookWidget {
         backgroundColor: Colors.transparent,
         body: minimal
             ? Center(child: postWidget)
-            : CustomScrollView(slivers: [
+            : CustomScrollView(controller: scrollControllerWithAnim, slivers: [
                 SliverToBoxAdapter(
                   child: postWidget,
                 ),
