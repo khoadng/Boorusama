@@ -77,43 +77,52 @@ class _CommentPageState extends State<CommentPage> {
         child: ListView.builder(
           itemBuilder: (context, index) {
             final comment = comments[index];
-            return ListTile(
-              onLongPress: () => showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) => Material(
-                  child: SafeArea(
-                    top: false,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          title:
-                              Text(I18n.of(context).commentListingCommandsEdit),
-                          leading: Icon(Icons.edit),
-                          onTap: () =>
-                              _handleEditTap(context, comment, widget.postId),
-                        ),
-                        ListTile(
-                          title: Text(
-                              I18n.of(context).commentListingCommandsReply),
-                          leading: Icon(Icons.folder_open),
-                          onTap: () =>
-                              _handleReplyTap(context, comment, widget.postId),
-                        ),
-                        ListTile(
-                          title: Text(
-                              I18n.of(context).commentListingCommandsDelete),
-                          leading: Icon(Icons.delete),
-                          onTap: () => Navigator.of(context).pop(),
-                        ),
-                      ],
-                    ),
+            return Consumer(
+              builder: (_, watch, __) {
+                final isLoggedIn = watch(isLoggedInProvider);
+
+                return ListTile(
+                  //TODO: comment feature is not ready yet
+                  // onLongPress: () => isLoggedIn
+                  //     ? showMaterialModalBottomSheet(
+                  //         context: context,
+                  //         builder: (context) => Material(
+                  //           child: SafeArea(
+                  //             top: false,
+                  //             child: Column(
+                  //               mainAxisSize: MainAxisSize.min,
+                  //               children: <Widget>[
+                  //                 ListTile(
+                  //                   title: Text(I18n.of(context)
+                  //                       .commentListingCommandsEdit),
+                  //                   leading: Icon(Icons.edit),
+                  //                   onTap: () => _handleEditTap(
+                  //                       context, comment, widget.postId),
+                  //                 ),
+                  //                 ListTile(
+                  //                   title: Text(I18n.of(context)
+                  //                       .commentListingCommandsReply),
+                  //                   leading: Icon(Icons.folder_open),
+                  //                   onTap: () => _handleReplyTap(
+                  //                       context, comment, widget.postId),
+                  //                 ),
+                  //                 ListTile(
+                  //                   title: Text(I18n.of(context)
+                  //                       .commentListingCommandsDelete),
+                  //                   leading: Icon(Icons.delete),
+                  //                   onTap: () => Navigator.of(context).pop(),
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       )
+                  //     : null,
+                  title: CommentItem(
+                    comment: comment,
                   ),
-                ),
-              ),
-              title: CommentItem(
-                comment: comment,
-              ),
+                );
+              },
             );
           },
           itemCount: comments.length,
@@ -196,16 +205,17 @@ class _CommentPageState extends State<CommentPage> {
             icon: Icon(Icons.keyboard_arrow_down),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          actions: <Widget>[
-            Tooltip(
-              message:
-                  I18n.of(context).commentListingTooltipsToggleDeletedComments,
-              child: IconButton(
-                icon: Icon(Icons.remove_red_eye),
-                onPressed: () => _toggleDeletedComments(),
-              ),
-            )
-          ],
+          //TODO: questionable feature
+          // actions: <Widget>[
+          //   Tooltip(
+          //     message:
+          //         I18n.of(context).commentListingTooltipsToggleDeletedComments,
+          //     child: IconButton(
+          //       icon: Icon(Icons.remove_red_eye),
+          //       onPressed: () => _toggleDeletedComments(),
+          //     ),
+          //   )
+          // ],
         ),
         body: SafeArea(
           child: Scaffold(
@@ -213,19 +223,21 @@ class _CommentPageState extends State<CommentPage> {
               builder: (_, watch, __) {
                 final isLoggedIn = watch(isLoggedInProvider);
 
-                return isLoggedIn
-                    ? OpenContainer(
-                        closedElevation: 0,
-                        closedColor: Colors.transparent,
-                        closedBuilder: (context, action) =>
-                            FloatingActionButton(
-                          child: Icon(Icons.add),
-                          onPressed: null,
-                        ),
-                        openBuilder: (context, action) =>
-                            CommentCreatePage(postId: widget.postId),
-                      )
-                    : SizedBox.shrink();
+                //TODO: comment feature is not ready yet
+                return SizedBox.shrink();
+                // return isLoggedIn
+                //     ? OpenContainer(
+                //         closedElevation: 0,
+                //         closedColor: Colors.transparent,
+                //         closedBuilder: (context, action) =>
+                //             FloatingActionButton(
+                //           child: Icon(Icons.add),
+                //           onPressed: null,
+                //         ),
+                //         openBuilder: (context, action) =>
+                //             CommentCreatePage(postId: widget.postId),
+                //       )
+                //     : SizedBox.shrink();
               },
             ),
             body: Column(
