@@ -76,7 +76,9 @@ class HomePage extends HookWidget {
                   body: AnimatedIndexedStack(
                     index: bottomTabIndex.value,
                     children: <Widget>[
-                      LatestView(),
+                      LatestView(
+                        onMenuTap: () => scaffoldKey.currentState.openDrawer(),
+                      ),
                       ExplorePage(),
                     ],
                   ),

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:animations/animations.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -23,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/generated/i18n.dart';
 
 part 'explore_page.freezed.dart';
@@ -490,24 +490,28 @@ class _ExploreSection extends StatelessWidget {
                   itemCount: posts.length,
                   itemBuilder: (context, index, realIndex) {
                     final post = posts[index];
-                    return OpenContainer(
-                      closedColor: Colors.transparent,
-                      openBuilder: (context, action) => PostDetailPage(
-                        post: post,
-                        intitialIndex: index,
-                        posts: posts,
-                        onExit: (currentIndex) {},
-                        onPostChanged: (index) {},
+
+                    return GestureDetector(
+                      onTap: () => Navigator.of(context).push(
+                        SlideInRoute(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  PostDetailPage(
+                            post: post,
+                            intitialIndex: index,
+                            posts: posts,
+                            onExit: (currentIndex) {},
+                            onPostChanged: (index) {},
+                          ),
+                        ),
                       ),
-                      closedBuilder: (context, action) => Stack(
+                      child: Stack(
                         children: [
-                          GestureDetector(
-                            child: PostImage(
-                              imageUrl: post.isAnimated
-                                  ? post.previewImageUri.toString()
-                                  : post.normalImageUri.toString(),
-                              placeholderUrl: post.previewImageUri.toString(),
-                            ),
+                          PostImage(
+                            imageUrl: post.isAnimated
+                                ? post.previewImageUri.toString()
+                                : post.normalImageUri.toString(),
+                            placeholderUrl: post.previewImageUri.toString(),
                           ),
                           ShadowGradientOverlay(
                             alignment: Alignment.bottomCenter,

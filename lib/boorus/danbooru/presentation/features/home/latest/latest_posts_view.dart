@@ -35,7 +35,10 @@ final _popularSearchProvider =
 class LatestView extends HookWidget {
   const LatestView({
     Key key,
+    @required this.onMenuTap,
   }) : super(key: key);
+
+  final VoidCallback onMenuTap;
 
   @override
   Widget build(BuildContext context) {
@@ -130,9 +133,10 @@ class LatestView extends HookWidget {
           toolbarHeight: kToolbarHeight * 1.2,
           title: SearchBar(
             enabled: false,
-            leading: IconButton(icon: Icon(Icons.menu), onPressed: () {}
-                // scaffoldKey.currentState.openDrawer(),
-                ),
+            leading: IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () => onMenuTap(),
+            ),
             onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
                 routeSettings: RouteSettings(arguments: [''])),
           ),

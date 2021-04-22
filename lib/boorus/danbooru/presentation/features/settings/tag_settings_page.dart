@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 class TagSettingsPage extends HookWidget {
@@ -47,12 +47,12 @@ class TagSettingsPage extends HookWidget {
                 itemBuilder: (context, index) {
                   return ListTile(
                     title: Text(tags[index]),
-                    trailing: IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () {
-                        tags.remove(tags[index]);
-                      },
-                    ),
+                    // trailing: IconButton(
+                    //   icon: Icon(Icons.close),
+                    //   onPressed: () {
+                    //     tags.remove(tags[index]);
+                    //   },
+                    // ),
                   );
                 },
                 itemCount: tags.length,

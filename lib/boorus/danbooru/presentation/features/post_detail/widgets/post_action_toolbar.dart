@@ -1,9 +1,8 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -12,6 +11,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 
 final _isFavedProvider =

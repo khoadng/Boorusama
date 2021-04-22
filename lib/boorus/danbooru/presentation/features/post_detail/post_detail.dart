@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
