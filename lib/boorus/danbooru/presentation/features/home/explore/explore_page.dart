@@ -384,6 +384,7 @@ class _ExploreListItemHeader extends HookWidget {
                 context,
                 theme: DatePickerTheme(),
                 onConfirm: (time) {
+                  selectedDate.value = time;
                   onDateChanged(time);
                 },
                 currentTime: DateTime.now(),

@@ -141,28 +141,28 @@ class PostDetailPage extends HookWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        floatingActionButton: autoPlay.value
-            ? SizedBox.shrink()
-            : FadeTransition(
-                opacity: hideFabAnimController,
-                child: ScaleTransition(
-                  scale: hideFabAnimController,
-                  child: FloatingActionButton(
-                    onPressed: () => showBarModalBottomSheet(
-                      expand: false,
-                      context: context,
-                      builder: (context) => CommentPage(
-                        // comments: comments,
-                        postId: posts[currentPostIndex.value].id,
-                      ),
-                    ),
-                    child: FaIcon(
-                      FontAwesomeIcons.comment,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              ),
+        // floatingActionButton: autoPlay.value
+        //     ? SizedBox.shrink()
+        //     : FadeTransition(
+        //         opacity: hideFabAnimController,
+        //         child: ScaleTransition(
+        //           scale: hideFabAnimController,
+        //           child: FloatingActionButton(
+        //             onPressed: () => showBarModalBottomSheet(
+        //               expand: false,
+        //               context: context,
+        //               builder: (context) => CommentPage(
+        //                 // comments: comments,
+        //                 postId: posts[currentPostIndex.value].id,
+        //               ),
+        //             ),
+        //             child: FaIcon(
+        //               FontAwesomeIcons.comment,
+        //               color: Colors.white,
+        //             ),
+        //           ),
+        //         ),
+        //       ),
         body: Stack(
           children: [
             CarouselSlider.builder(

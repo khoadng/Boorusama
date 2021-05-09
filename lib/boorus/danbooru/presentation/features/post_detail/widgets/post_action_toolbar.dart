@@ -7,12 +7,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 
 final _isFavedProvider =
     FutureProvider.autoDispose.family<bool, int>((ref, postId) async {
@@ -59,23 +61,36 @@ class PostActionToolbar extends HookWidget {
     final favCount = useState(post.favCount);
 
     final buttons = <Widget>[
-      TextButton.icon(
-          onPressed: () {},
-          icon: FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white),
-          label: Text(
-            post.upScore.toString(),
-            style: TextStyle(color: Colors.white),
-          )),
-      TextButton.icon(
-          onPressed: () {},
-          icon: FaIcon(
-            FontAwesomeIcons.thumbsDown,
-            color: Colors.white,
+      // TextButton.icon(
+      //     onPressed: () {},
+      //     icon: FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white),
+      //     label: Text(
+      //       post.upScore.toString(),
+      //       style: TextStyle(color: Colors.white),
+      //     )),
+      // TextButton.icon(
+      //     onPressed: () {},
+      //     icon: FaIcon(
+      //       FontAwesomeIcons.thumbsDown,
+      //       color: Colors.white,
+      //     ),
+      //     label: Text(
+      //       post.downScore.toString(),
+      //       style: TextStyle(color: Colors.white),
+      //     )),
+      IconButton(
+        onPressed: () => showBarModalBottomSheet(
+          expand: false,
+          context: context,
+          builder: (context) => CommentPage(
+            postId: post.id,
           ),
-          label: Text(
-            post.downScore.toString(),
-            style: TextStyle(color: Colors.white),
-          )),
+        ),
+        icon: FaIcon(
+          FontAwesomeIcons.comment,
+          color: Colors.white,
+        ),
+      ),
     ];
     if (isLoggedIn) {
       final button = isFaved.when(

@@ -293,18 +293,18 @@ class PostPreviewSheet extends HookWidget {
                             },
                           )
                         : SizedBox.shrink(),
-                    isLoggedIn
-                        ? ListTile(
-                            leading: FaIcon(FontAwesomeIcons.commentAlt),
-                            title: Text("Comment"),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(SlideInRoute(
-                                  pageBuilder: (_, __, ___) =>
-                                      CommentCreatePage(postId: post.id)));
-                            },
-                          )
-                        : SizedBox.shrink(),
+                    // isLoggedIn
+                    //     ? ListTile(
+                    //         leading: FaIcon(FontAwesomeIcons.commentAlt),
+                    //         title: Text("Comment"),
+                    //         onTap: () {
+                    //           Navigator.of(context).pop();
+                    //           Navigator.of(context).push(SlideInRoute(
+                    //               pageBuilder: (_, __, ___) =>
+                    //                   CommentCreatePage(postId: post.id)));
+                    //         },
+                    //       )
+                    //     : SizedBox.shrink(),
                   ],
                 ),
               ),
