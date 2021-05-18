@@ -13,6 +13,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
 
@@ -26,7 +27,6 @@ final _notesProvider =
   final repo = ref.watch(noteProvider);
   final notes = await repo.getNotesFrom(postId, cancelToken: cancelToken);
 
-  /// Cache the artist posts once it was successfully obtained.
   ref.maintainState = true;
 
   return notes;
@@ -48,6 +48,34 @@ class PostImagePage extends HookWidget {
         child: IconButton(
           icon: Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildMoreButton(BuildContext context) {
+    return Align(
+      alignment: Alignment(0.9, -0.96),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: PopupMenuButton<PostAction>(
+          onSelected: (value) async {
+            switch (value) {
+              case PostAction.download:
+                context.read(downloadServiceProvider).download(post);
+                break;
+              default:
+            }
+          },
+          itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
+            PopupMenuItem<PostAction>(
+              value: PostAction.download,
+              child: ListTile(
+                leading: const Icon(Icons.download_rounded),
+                title: Text("Download"),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -115,6 +143,7 @@ class PostImagePage extends HookWidget {
                   Colors.black12.withOpacity(0.0)
                 ]),
             _buildBackButton(context),
+            _buildMoreButton(context),
             ...notes.when(
               loading: () => [SizedBox.shrink()],
               data: (notes) => buildNotes(context, notes, post),
