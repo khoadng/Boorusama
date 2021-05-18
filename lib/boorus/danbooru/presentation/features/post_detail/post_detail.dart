@@ -13,8 +13,8 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'widgets/post_action_toolbar.dart';
@@ -34,7 +34,7 @@ final _recommendPostsProvider = FutureProvider.autoDispose
     final posts = await repo.getPosts(tag, 1,
         limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
 
-    final recommended = Recommended(title: tag, posts: posts.take(3).toList());
+    final recommended = Recommended(title: tag, posts: posts.take(6).toList());
 
     return recommended;
   }).toList());
@@ -300,8 +300,8 @@ class RecommendPostSection extends HookWidget {
         Padding(
           padding: EdgeInsets.all(4),
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-            child: PreviewPostList(posts: posts),
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: PreviewPostGrid(posts: posts),
           ),
         ),
       ],
@@ -325,9 +325,9 @@ class RecommendPostSectionPlaceHolder extends HookWidget {
         Padding(
           padding: EdgeInsets.all(4),
           child: Container(
-            height: MediaQuery.of(context).size.height * 0.2,
-            child: PreviewPostListPlaceHolder(
-              itemCount: 3,
+            height: MediaQuery.of(context).size.height * 0.3,
+            child: PreviewPostGridPlaceHolder(
+              itemCount: 6,
             ),
           ),
         ),
