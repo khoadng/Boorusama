@@ -8,6 +8,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'package:boorusama/core/infrastructure/IOHelper.dart';
@@ -28,12 +29,6 @@ class DownloadService implements IDownloadService {
 
   @override
   void download(IDownloadable downloadable) async {
-    final exist = await io.File(
-            _savedDir + io.Platform.pathSeparator + downloadable.fileName)
-        .exists();
-
-    if (exist) return;
-
     await FlutterDownloader.enqueue(
         url: downloadable.downloadUrl,
         fileName: downloadable.fileName,
@@ -55,8 +50,7 @@ class DownloadService implements IDownloadService {
   }
 
   void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+    bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
     if (!isSuccess) {
       _unbindBackgroundIsolate();
       _bindBackgroundIsolate();
@@ -87,17 +81,25 @@ class DownloadService implements IDownloadService {
     FlutterDownloader.registerCallback(downloadCallback);
 
     _permissionReady = false;
-    _localPath = await IOHelper.getLocalPath('Download');
+    _localPath = await IOHelper.getLocalPath(AppConstants.appName);
     _permissionReady = await IOHelper.checkPermission();
+    final savedDir = io.Directory(_localPath);
+    final bool hasExisted = await savedDir.exists();
+    if (!hasExisted) {
+      try {
+        savedDir.create();
+        _savedDir = savedDir.path;
+      } catch (e) {
+        _savedDir = await IOHelper.getLocalPathFallback();
+      }
+    }
 
     _prepare();
     print("Download service initialized");
   }
 
-  static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
-    final SendPort send =
-        IsolateNameServer.lookupPortByName('downloader_send_port');
+  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
+    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port');
     send.send([id, status, progress]);
   }
 
