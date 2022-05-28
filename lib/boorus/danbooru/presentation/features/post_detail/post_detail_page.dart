@@ -40,22 +40,19 @@ class PostDetailPage extends HookWidget {
 
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
-    final spinningIconpanelAnimationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(seconds: 200));
-    final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0)
-        .animate(spinningIconpanelAnimationController);
+    final spinningIconpanelAnimationController =
+        useAnimationController(vsync: tickerProvider, duration: Duration(seconds: 200));
+    final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0).animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
-    final slideShowConfig =
-        useProvider(slideShowConfigurationStateProvider).state;
+    final slideShowConfig = useProvider(slideShowConfigurationStateProvider).state;
     useValueChanged(showSlideShowConfig.value, (_, __) {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
-                builder: (context) =>
-                    Wrap(children: [SlideShowConfigBottomModal()]),
+                builder: (context) => Wrap(children: [SlideShowConfigBottomModal()]),
               ) ??
               false;
           showSlideShowConfig.value = false;
@@ -75,8 +72,7 @@ class PostDetailPage extends HookWidget {
       }
     });
 
-    final hideFabAnimController = useAnimationController(
-        duration: kThemeAnimationDuration, initialValue: 1);
+    final hideFabAnimController = useAnimationController(duration: kThemeAnimationDuration, initialValue: 1);
 
     Widget _buildSlideShowButton() {
       return Align(
@@ -97,13 +93,12 @@ class PostDetailPage extends HookWidget {
               onSelected: (value) async {
                 switch (value) {
                   case PostAction.download:
-                    context.read(downloadServiceProvider).download(post);
+                    context.read(downloadServiceProvider).download(posts[currentPostIndex.value]);
                     break;
                   default:
                 }
               },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<PostAction>>[
+              itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
                 PopupMenuItem<PostAction>(
                   value: PostAction.download,
                   child: ListTile(
@@ -188,19 +183,15 @@ class PostDetailPage extends HookWidget {
                 reverse: false,
                 autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlay: autoPlay.value,
-                autoPlayAnimationDuration: slideShowConfig.skipAnimation
-                    ? Duration(microseconds: 1)
-                    : Duration(milliseconds: 600),
+                autoPlayAnimationDuration:
+                    slideShowConfig.skipAnimation ? Duration(microseconds: 1) : Duration(milliseconds: 600),
                 autoPlayInterval: Duration(seconds: slideShowConfig.interval),
                 scrollDirection: Axis.horizontal,
               ),
             ),
             ShadowGradientOverlay(
               alignment: Alignment.topCenter,
-              colors: <Color>[
-                const Color(0x5D000000),
-                Colors.black12.withOpacity(0.0)
-              ],
+              colors: <Color>[const Color(0x5D000000), Colors.black12.withOpacity(0.0)],
             ),
             _buildBackButton(),
             _buildSlideShowButton(),
