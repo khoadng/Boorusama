@@ -19,8 +19,7 @@ final profileProvider = Provider<IProfileRepository>((ref) {
 });
 
 class ProfileRepository implements IProfileRepository {
-  ProfileRepository(
-      {@required IAccountRepository accountRepository, @required IApi api})
+  ProfileRepository({@required IAccountRepository accountRepository, @required IApi api})
       : _api = api,
         _accountRepository = accountRepository;
 
@@ -36,12 +35,10 @@ class ProfileRepository implements IProfileRepository {
     var value;
     try {
       if (apiKey != null && username != null) {
-        value =
-            await _api.getProfile(username, apiKey, cancelToken: cancelToken);
+        value = await _api.getProfile(username, apiKey, cancelToken: cancelToken);
       } else {
         final account = await _accountRepository.get();
-        value = await _api.getProfile(account.username, account.apiKey,
-            cancelToken: cancelToken);
+        value = await _api.getProfile(account.username, account.apiKey, cancelToken: cancelToken);
       }
       return Profile.fromJson(value.response.data);
     } on DioError catch (e) {
@@ -49,8 +46,10 @@ class ProfileRepository implements IProfileRepository {
         // Cancel token triggered, skip this request
         return null;
       } else {
-        throw Exception("Failed to get profile");
+        throw InvalidUsernameOrPassword();
       }
     }
   }
 }
+
+class InvalidUsernameOrPassword implements Exception {}

@@ -44,7 +44,7 @@ final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
   final userRepository = ref.watch(userProvider);
   var blacklistedTags = <String>[];
 
-  if (accountState == AccountState.loggedIn()) {
+  if (accountState == AccountState.loggedIn) {
     final account = ref.watch(_account);
     final user = await userRepository.getUserById(account.id);
 
@@ -64,8 +64,7 @@ class _AppState extends State<App> {
     AppRouter().setupRoutes();
 
     if (Platform.isAndroid || Platform.isIOS) {
-      Future.delayed(
-          Duration.zero, () => context.read(downloadServiceProvider).init());
+      Future.delayed(Duration.zero, () => context.read(downloadServiceProvider).init());
     }
 
     // Future.delayed(
@@ -118,8 +117,7 @@ class _AppState extends State<App> {
               ],
               locale: locale,
               supportedLocales: i18n.supportedLocales,
-              localeResolutionCallback:
-                  i18n.resolution(fallback: Locale("en", "US")),
+              localeResolutionCallback: i18n.resolution(fallback: Locale("en", "US")),
               debugShowCheckedModeBanner: false,
               onGenerateRoute: AppRouter.router.generator,
               title: AppConstants.appName,
@@ -133,8 +131,7 @@ class _AppState extends State<App> {
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
-      BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
 }

@@ -40,6 +40,9 @@ class ArtistRepository implements IArtistRepository {
       if (e.type == DioErrorType.CANCEL) {
         // Cancel token triggered, skip this request
         return Artist.empty();
+      } else if (e.response == null) {
+        throw Exception("Response is null");
+      } else if (e.response.statusCode == 422) {
       } else {
         throw Exception("Failed to get artist $name");
       }
