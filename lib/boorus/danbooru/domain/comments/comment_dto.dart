@@ -1,53 +1,61 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'comment.dart';
 
-part 'comment_dto.freezed.dart';
-part 'comment_dto.g.dart';
+class CommentDto {
+  CommentDto({
+    this.id,
+    this.createdAt,
+    this.postId,
+    this.creatorId,
+    this.body,
+    this.score,
+    this.updatedAt,
+    this.updaterId,
+    this.doNotBumpPost,
+    this.isDeleted,
+    this.isSticky,
+  });
 
-@freezed
-abstract class CommentDto with _$CommentDto {
-  const factory CommentDto({
-    int id,
-    // ignore: non_constant_identifier_names
-    String created_at,
-    // ignore: non_constant_identifier_names
-    int post_id,
-    // ignore: non_constant_identifier_names
-    @nullable int creator_id,
-    @nullable String body,
-    int score,
-    // ignore: non_constant_identifier_names
-    String updated_at,
-    // ignore: non_constant_identifier_names
-    @nullable int updater_id,
-    // ignore: non_constant_identifier_names
-    bool do_not_bump_post,
-    // ignore: non_constant_identifier_names
-    bool is_deleted,
-    // ignore: non_constant_identifier_names
-    bool is_sticky,
-  }) = _CommentDto;
+  final int id;
+  final DateTime createdAt;
+  final int postId;
+  final int creatorId;
+  final String body;
+  final int score;
+  final String updatedAt;
+  final int updaterId;
+  final bool doNotBumpPost;
+  final bool isDeleted;
+  final bool isSticky;
 
-  factory CommentDto.fromJson(Map<String, dynamic> json) =>
-      _$CommentDtoFromJson(json);
+  factory CommentDto.fromJson(Map<String, dynamic> json) => CommentDto(
+        id: json["id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        postId: json["post_id"],
+        creatorId: json["creator_id"],
+        body: json["body"],
+        score: json["score"],
+        updatedAt: json["updated_at"],
+        updaterId: json["updater_id"],
+        doNotBumpPost: json["do_not_bump_post"],
+        isDeleted: json["is_deleted"],
+        isSticky: json["is_sticky"],
+      );
 }
 
 extension CommentDtoX on CommentDto {
   Comment toEntity() {
     return Comment(
       id: id,
-      createdAt: DateTime.parse(created_at),
-      postId: post_id,
-      creatorId: creator_id,
+      createdAt: createdAt,
+      postId: postId,
+      creatorId: creatorId,
       body: body,
       score: score,
-      updatedAt: updated_at,
-      updaterId: updater_id,
-      isDeleted: is_deleted,
+      updatedAt: updatedAt,
+      updaterId: updaterId,
+      isDeleted: isDeleted,
       author: User.placeholder(),
     );
   }
