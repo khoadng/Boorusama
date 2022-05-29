@@ -37,17 +37,19 @@ class HomePage extends HookWidget {
         child: Column(
           children: <Widget>[
             networkStatus.when(
-              data: (value) => value.when(
-                unknown: () => SizedBox.shrink(),
-                available: () => SizedBox.shrink(),
-                unavailable: () => Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Material(
-                    color: Colors.black,
-                    child: Text("Network unavailable"),
-                  ),
-                ),
-              ),
+              data: (value) {
+                if (value == NetworkStatus.unavailable) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: 10),
+                    child: Material(
+                      color: Colors.black,
+                      child: Text("Network unavailable"),
+                    ),
+                  );
+                } else {
+                  return SizedBox.shrink();
+                }
+              },
               loading: () => Padding(
                 padding: EdgeInsets.only(bottom: 10),
                 child: Material(
