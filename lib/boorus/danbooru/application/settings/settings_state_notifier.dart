@@ -20,7 +20,7 @@ class SettingsStateNotifier extends StateNotifier<SettingsState> {
   final ISettingRepository settingRepository;
 
   void save(Settings setting) {
-    state = state.copyWith(settings: setting);
+    state = SettingsState(settings: setting);
     settingRepository.save(state.settings);
   }
 }
