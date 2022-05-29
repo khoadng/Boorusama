@@ -43,7 +43,6 @@ dependencies:
   flutter_portal: ^0.3.0
   flutter_tags: ^0.4.9
   font_awesome_flutter: ^8.11.0
-  freezed_annotation: ^0.12.0
   hive: ^1.4.4+1
   hooks_riverpod: ^0.12.2
   http: ^0.12.2
@@ -79,7 +78,6 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^1.10.4
   flutter_launcher_icons: ^0.8.1
-  freezed: ^0.12.2
   import_sorter: ^4.4.1
   retrofit_generator: ^1.4.1+1
 
