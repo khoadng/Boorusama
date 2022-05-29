@@ -1,40 +1,50 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 // Project imports:
 import 'artist.dart';
 
-part 'artist_dto.freezed.dart';
-part 'artist_dto.g.dart';
+class ArtistDto {
+  ArtistDto({
+    this.id,
+    this.createdAt,
+    this.name,
+    this.updatedAt,
+    this.isDeleted,
+    this.groupName,
+    this.isBanned,
+    this.otherNames,
+  });
 
-@freezed
-abstract class ArtistDto with _$ArtistDto {
-  const factory ArtistDto(
-    int id,
-    String created_at,
-    String name,
-    String updated_at,
-    bool is_deleted,
-    String group_name,
-    bool is_banned,
-    List<dynamic> other_names,
-  ) = _ArtistDto;
+  final int id;
+  final DateTime createdAt;
+  final String name;
+  final DateTime updatedAt;
+  final bool isDeleted;
+  final String groupName;
+  final bool isBanned;
+  final List<String> otherNames;
 
-  factory ArtistDto.fromJson(Map<String, dynamic> json) =>
-      _$ArtistDtoFromJson(json);
+  factory ArtistDto.fromJson(Map<String, dynamic> json) => ArtistDto(
+        id: json["id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        name: json["name"],
+        updatedAt: DateTime.parse(json["updated_at"]),
+        isDeleted: json["is_deleted"],
+        groupName: json["group_name"],
+        isBanned: json["is_banned"],
+        otherNames: List<String>.from(json["other_names"].map((x) => x)),
+      );
 }
 
 extension ArtistDtoX on ArtistDto {
   Artist toEntity() {
     return Artist(
-      createdAt: DateTime.parse(created_at),
+      createdAt: createdAt,
       id: id,
       name: name,
-      groupName: group_name,
-      isBanned: is_banned,
-      isDeleted: is_deleted,
-      otherNames: List<String>.from(other_names),
-      updatedAt: DateTime.parse(updated_at),
+      groupName: groupName,
+      isBanned: isBanned,
+      isDeleted: isDeleted,
+      otherNames: List<String>.from(otherNames),
+      updatedAt: updatedAt,
     );
   }
 }
