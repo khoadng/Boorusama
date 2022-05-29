@@ -1,31 +1,47 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 import 'note.dart';
 
-part 'note_dto.freezed.dart';
-part 'note_dto.g.dart';
+class NoteDto {
+  NoteDto({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.x,
+    this.y,
+    this.width,
+    this.height,
+    this.isActive,
+    this.postId,
+    this.body,
+    this.version,
+  });
 
-@freezed
-abstract class NoteDto with _$NoteDto {
-  const factory NoteDto({
-    @required int id,
-    @required String created_at,
-    @required String updated_at,
-    @required int x,
-    @required int y,
-    @required int width,
-    @required int height,
-    @required bool is_active,
-    @required int post_id,
-    @required String body,
-    @required int version,
-  }) = _NoteDto;
+  final int id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final int x;
+  final int y;
+  final int width;
+  final int height;
+  final bool isActive;
+  final int postId;
+  final String body;
+  final int version;
 
-  factory NoteDto.fromJson(Map<String, dynamic> json) =>
-      _$NoteDtoFromJson(json);
+  factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
+        id: json["id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        x: json["x"],
+        y: json["y"],
+        width: json["width"],
+        height: json["height"],
+        isActive: json["is_active"],
+        postId: json["post_id"],
+        body: json["body"],
+        version: json["version"],
+      );
 }
 
 extension NoteDtoX on NoteDto {
