@@ -1,28 +1,36 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
-
-// Project imports:
 import 'wiki.dart';
 
-part 'wiki_dto.freezed.dart';
-part 'wiki_dto.g.dart';
+class WikiDto {
+  WikiDto({
+    this.id,
+    this.createdAt,
+    this.updatedAt,
+    this.title,
+    this.body,
+    this.isLocked,
+    this.otherNames,
+    this.isDeleted,
+  });
 
-@freezed
-abstract class WikiDto with _$WikiDto {
-  const factory WikiDto({
-    int id,
-    String created_at,
-    String updated_at,
-    String title,
-    String body,
-    bool is_locked,
-    List<dynamic> other_names,
-    bool is_deleted,
-    int category_name,
-  }) = _WikiDto;
+  final int id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String title;
+  final String body;
+  final bool isLocked;
+  final List<dynamic> otherNames;
+  final bool isDeleted;
 
-  factory WikiDto.fromJson(Map<String, dynamic> json) =>
-      _$WikiDtoFromJson(json);
+  factory WikiDto.fromJson(Map<String, dynamic> json) => WikiDto(
+        id: json["id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        updatedAt: DateTime.parse(json["updated_at"]),
+        title: json["title"],
+        body: json["body"],
+        isLocked: json["is_locked"],
+        otherNames: List<dynamic>.from(json["other_names"].map((x) => x)),
+        isDeleted: json["is_deleted"],
+      );
 }
 
 extension WikiDtoX on WikiDto {
@@ -31,7 +39,7 @@ extension WikiDtoX on WikiDto {
       body: body,
       id: id,
       title: title,
-      otherNames: List<String>.from(other_names),
+      otherNames: List<String>.from(otherNames),
     );
   }
 }
