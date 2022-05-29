@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -25,13 +26,10 @@ import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 
-part 'explore_page.freezed.dart';
-
-@freezed
-abstract class ExploreCategory with _$ExploreCategory {
-  const factory ExploreCategory.popular() = _Popular;
-  const factory ExploreCategory.curated() = _Curated;
-  const factory ExploreCategory.mostViewed() = _MostViewed;
+enum ExploreCategory {
+  popular,
+  curated,
+  mostViewed,
 }
 
 extension ExploreCategoryX on ExploreCategory {
@@ -40,33 +38,39 @@ extension ExploreCategoryX on ExploreCategory {
   }
 }
 
-final _popularPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
+final _popularPostSneakPeakProvider =
+    FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
   if (posts.isEmpty) {
-    posts = await repo.getPopularPosts(DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+    posts = await repo.getPopularPosts(
+        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
   }
 
   return posts.take(20).toList();
 });
 
-final _curatedPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
+final _curatedPostSneakPeakProvider =
+    FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
 
   if (posts.isEmpty) {
-    posts = await repo.getCuratedPosts(DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+    posts = await repo.getCuratedPosts(
+        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
   }
 
   return posts.take(20).toList();
 });
 
-final _mostViewedPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
+final _mostViewedPostSneakPeakProvider =
+    FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getMostViewedPosts(DateTime.now());
 
   if (posts.isEmpty) {
-    posts = await repo.getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
+    posts = await repo
+        .getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
   }
 
   return posts.take(20).toList();
@@ -95,6 +99,35 @@ final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
 //   return searches;
 // });
 
+AutoDisposeFutureProvider<List<Post>> categoryToPostSneakpeakDataProvider(
+    ExploreCategory category) {
+  switch (category) {
+    case ExploreCategory.popular:
+      return _popularPostSneakPeakProvider;
+    case ExploreCategory.curated:
+      return _curatedPostSneakPeakProvider;
+    default:
+      return _mostViewedPostSneakPeakProvider;
+  }
+}
+
+Future<List<Post>> categoryToAwaitablePosts(
+  ExploreCategory category,
+  IPostRepository postRepository,
+  DateTime date,
+  int page,
+  TimeScale scale,
+) {
+  switch (category) {
+    case ExploreCategory.popular:
+      return postRepository.getPopularPosts(date, page, scale);
+    case ExploreCategory.curated:
+      return postRepository.getCuratedPosts(date, page, scale);
+    default:
+      return postRepository.getMostViewedPosts(date);
+  }
+}
+
 class ExplorePage extends HookWidget {
   const ExplorePage({Key key}) : super(key: key);
 
@@ -103,15 +136,15 @@ class ExplorePage extends HookWidget {
     Widget _buildExploreSection(ExploreCategory category) {
       final title = Text(
         "${category.getName().sentenceCase}",
-        style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
+        style: Theme.of(context)
+            .textTheme
+            .headline6
+            .copyWith(fontWeight: FontWeight.w700),
       );
+
       return _ExploreSection(
         title: title,
-        posts: category.when(
-          popular: () => useProvider(_popularPostSneakPeakProvider),
-          curated: () => useProvider(_curatedPostSneakPeakProvider),
-          mostViewed: () => useProvider(_mostViewedPostSneakPeakProvider),
-        ),
+        posts: useProvider(categoryToPostSneakpeakDataProvider(category)),
         onViewMoreTap: () => showBarModalBottomSheet(
           context: context,
           builder: (context) {
@@ -154,13 +187,13 @@ class ExplorePage extends HookWidget {
       //   ),
       // ),
       SliverToBoxAdapter(
-        child: _buildExploreSection(ExploreCategory.popular()),
+        child: _buildExploreSection(ExploreCategory.popular),
       ),
       SliverToBoxAdapter(
-        child: _buildExploreSection(ExploreCategory.curated()),
+        child: _buildExploreSection(ExploreCategory.curated),
       ),
       SliverToBoxAdapter(
-        child: _buildExploreSection(ExploreCategory.mostViewed()),
+        child: _buildExploreSection(ExploreCategory.mostViewed),
       ),
       SliverToBoxAdapter(
         child: SizedBox(
@@ -190,49 +223,56 @@ class _ExploreItemPage extends HookWidget {
 
     final isMounted = useIsMounted();
 
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-          hasNoData.value = data.isEmpty;
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => null,
-              );
-              return p?.id == post.id;
-            });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      refreshBuilder: (page) => category.when(
-        curated: () => context.read(postProvider).getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
-        popular: () => context.read(postProvider).getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
-        mostViewed: () => context.read(postProvider).getMostViewedPosts(selectedDate.state),
+    final infiniteListController = useState(
+      InfiniteLoadListController<Post>(
+        onData: (data) {
+          if (isMounted()) {
+            posts.value = [...data];
+            hasNoData.value = data.isEmpty;
+          }
+        },
+        onMoreData: (data, page) {
+          if (page > 1) {
+            // Dedupe
+            data
+              ..removeWhere((post) {
+                final p = posts.value.firstWhere(
+                  (sPost) => sPost.id == post.id,
+                  orElse: () => null,
+                );
+                return p?.id == post.id;
+              });
+          }
+          posts.value = [...posts.value, ...data];
+        },
+        onError: (message) {
+          final snackbar = SnackBar(
+            behavior: SnackBarBehavior.floating,
+            elevation: 6.0,
+            content: Text(message),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+        },
+        refreshBuilder: (page) => categoryToAwaitablePosts(
+          category,
+          context.read(postProvider),
+          selectedDate.state,
+          page,
+          selectedTimeScale.state,
+        ),
+        loadMoreBuilder: (page) => categoryToAwaitablePosts(
+          category,
+          context.read(postProvider),
+          selectedDate.state,
+          page,
+          selectedTimeScale.state,
+        ),
       ),
-      loadMoreBuilder: (page) => category.when(
-        curated: () => context.read(postProvider).getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
-        popular: () => context.read(postProvider).getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
-        mostViewed: () => context.read(postProvider).getMostViewedPosts(selectedDate.state),
-      ),
-    ));
+    );
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [selectedTimeScale.state, selectedDate.state]);
+    useAutoRefresh(infiniteListController.value,
+        [selectedTimeScale.state, selectedDate.state]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(
@@ -371,7 +411,8 @@ class _ExploreListItemHeader extends HookWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  Text("${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
+                  Text(
+                      "${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
                   Icon(Icons.arrow_drop_down)
                 ],
               ),
@@ -405,32 +446,34 @@ class _ExploreListItemHeader extends HookWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            selectedCategory.maybeWhen(
-              mostViewed: () => Center(),
-              orElse: () => TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).cardColor,
-                  primary: Theme.of(context).textTheme.headline6.color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                  ),
-                ),
-                onPressed: () async {
-                  final timeScale = await showMaterialModalBottomSheet(
-                          context: context, builder: (context) => _buildModalTimeScalePicker(context)) ??
-                      selectedTimeScale.value;
+            selectedCategory == ExploreCategory.mostViewed
+                ? Center()
+                : TextButton(
+                    style: TextButton.styleFrom(
+                      backgroundColor: Theme.of(context).cardColor,
+                      primary: Theme.of(context).textTheme.headline6.color,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                      ),
+                    ),
+                    onPressed: () async {
+                      final timeScale = await showMaterialModalBottomSheet(
+                              context: context,
+                              builder: (context) =>
+                                  _buildModalTimeScalePicker(context)) ??
+                          selectedTimeScale.value;
 
-                  selectedTimeScale.value = timeScale;
-                  onTimeScaleChanged(timeScale);
-                },
-                child: Row(
-                  children: <Widget>[
-                    Text("${selectedTimeScale.value.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
-                    Icon(Icons.arrow_drop_down)
-                  ],
-                ),
-              ),
-            ),
+                      selectedTimeScale.value = timeScale;
+                      onTimeScaleChanged(timeScale);
+                    },
+                    child: Row(
+                      children: <Widget>[
+                        Text(
+                            "${selectedTimeScale.value.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
+                        Icon(Icons.arrow_drop_down)
+                      ],
+                    ),
+                  )
           ],
         ),
       ],
@@ -457,7 +500,9 @@ class _ExploreSection extends StatelessWidget {
         ListTile(
           title: title,
           trailing: TextButton(
-              onPressed: () => onViewMoreTap(), child: Text("See more", style: Theme.of(context).textTheme.button)),
+              onPressed: () => onViewMoreTap(),
+              child:
+                  Text("See more", style: Theme.of(context).textTheme.button)),
         ),
         posts.when(
           data: (posts) => posts.isNotEmpty
@@ -469,7 +514,9 @@ class _ExploreSection extends StatelessWidget {
                     return GestureDetector(
                       onTap: () => Navigator.of(context).push(
                         SlideInRoute(
-                          pageBuilder: (context, animation, secondaryAnimation) => PostDetailPage(
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  PostDetailPage(
                             post: post,
                             intitialIndex: index,
                             posts: posts,
@@ -481,19 +528,26 @@ class _ExploreSection extends StatelessWidget {
                       child: Stack(
                         children: [
                           PostImage(
-                            imageUrl:
-                                post.isAnimated ? post.previewImageUri.toString() : post.normalImageUri.toString(),
+                            imageUrl: post.isAnimated
+                                ? post.previewImageUri.toString()
+                                : post.normalImageUri.toString(),
                             placeholderUrl: post.previewImageUri.toString(),
                           ),
                           ShadowGradientOverlay(
                             alignment: Alignment.bottomCenter,
-                            colors: <Color>[const Color(0xC2000000), Colors.black12.withOpacity(0.0)],
+                            colors: <Color>[
+                              const Color(0xC2000000),
+                              Colors.black12.withOpacity(0.0)
+                            ],
                           ),
                           Align(
                               alignment: Alignment(-0.9, 1),
                               child: Text(
                                 "${index + 1}",
-                                style: Theme.of(context).textTheme.headline2.copyWith(color: Colors.white),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .headline2
+                                    .copyWith(color: Colors.white),
                               )),
                         ],
                       ),
