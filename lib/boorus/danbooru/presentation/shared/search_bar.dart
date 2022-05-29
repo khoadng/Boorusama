@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({
@@ -40,8 +40,7 @@ class _SearchBarState extends State<SearchBar> {
   @override
   void initState() {
     super.initState();
-    _textEditingController =
-        widget.queryEditingController ?? TextEditingController();
+    _textEditingController = widget.queryEditingController ?? TextEditingController();
   }
 
   @override
@@ -73,11 +72,9 @@ class _SearchBarState extends State<SearchBar> {
                 Expanded(
                   child: FocusScope(
                     child: Focus(
-                      onFocusChange: (isFocus) =>
-                          widget.onFocusChanged?.call(isFocus),
+                      onFocusChange: (isFocus) => widget.onFocusChanged?.call(isFocus),
                       child: TextFormField(
-                        onFieldSubmitted: (value) =>
-                            widget.onSubmitted?.call(value),
+                        onFieldSubmitted: (value) => widget.onSubmitted?.call(value),
                         onChanged: (value) => widget.onChanged?.call(value),
                         enabled: widget.enabled,
                         decoration: InputDecoration(
@@ -87,10 +84,8 @@ class _SearchBarState extends State<SearchBar> {
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.only(bottom: 11, top: 11, right: 15),
-                            hintText:
-                                widget.hintText ?? I18n.of(context).searchHint),
+                            contentPadding: EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                            hintText: widget.hintText ?? 'search.hint'.tr()),
                         autofocus: widget.autofocus,
                         controller: _textEditingController,
                         style: Theme.of(context).inputDecorationTheme.hintStyle,

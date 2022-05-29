@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_html/style.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/generated/i18n.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
@@ -28,7 +28,7 @@ class _LoginPageState extends State<LoginPage> {
         body: Column(
           children: <Widget>[
             Text(
-              I18n.of(context).loginFormGreeting,
+              'login.form.greeting'.tr(),
               style: TextStyle(
                 fontWeight: FontWeight.w800,
                 color: Colors.white70,

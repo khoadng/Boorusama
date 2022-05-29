@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -45,7 +46,12 @@ void main() async {
           ),
         ),
       ],
-      child: App(),
+      child: EasyLocalization(
+        supportedLocales: [Locale('en', ''), Locale('vi', '')],
+        path: 'assets/translations',
+        fallbackLocale: Locale('en', ''),
+        child: App(),
+      ),
     ),
   );
 }

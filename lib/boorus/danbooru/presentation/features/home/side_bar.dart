@@ -8,7 +8,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SideBarMenu extends HookWidget {
   SideBarMenu();
@@ -21,7 +21,7 @@ class SideBarMenu extends HookWidget {
     if (account == null) {
       drawerChildren.add(ListTile(
         leading: Icon(Icons.login),
-        title: Text(I18n.of(context).sideMenuLogin),
+        title: Text('sideMenu.login'.tr()),
         onTap: () {
           Navigator.of(context).pop();
           AppRouter.router.navigateTo(context, "/login");
@@ -30,7 +30,7 @@ class SideBarMenu extends HookWidget {
     } else {
       drawerChildren.add(ListTile(
         leading: Icon(Icons.person),
-        title: Text(I18n.of(context).sideMenuProfile),
+        title: Text('sideMenu.profile'.tr()),
         onTap: () {
           Navigator.of(context).pop();
           AppRouter.router.navigateTo(context, "/users/profile");
@@ -42,7 +42,7 @@ class SideBarMenu extends HookWidget {
 
     drawerChildren.add(ListTile(
       leading: Icon(Icons.settings),
-      title: Text(I18n.of(context).sideMenuSettings),
+      title: Text('sideMenu.settings'.tr()),
       onTap: () {
         Navigator.of(context).pop();
         AppRouter.router.navigateTo(context, "/settings");
@@ -63,9 +63,7 @@ class SideBarMenu extends HookWidget {
       child: SafeArea(
         child: SingleChildScrollView(
           child: Container(
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: drawerChildren),
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: drawerChildren),
           ),
         ),
       ),

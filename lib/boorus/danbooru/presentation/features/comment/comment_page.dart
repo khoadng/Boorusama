@@ -15,13 +15,12 @@ import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'comment_create_page.dart';
 import 'comment_update_page.dart';
 import 'widgets/comment_item.dart';
 
-final _commentsProvider =
-    FutureProvider.autoDispose.family<List<Comment>, int>((ref, postId) async {
+final _commentsProvider = FutureProvider.autoDispose.family<List<Comment>, int>((ref, postId) async {
   // Cancel the HTTP request if the user leaves the detail page before
   // the request completes.
   final cancelToken = CancelToken();
@@ -30,17 +29,12 @@ final _commentsProvider =
   final commentRepo = ref.watch(commentProvider);
   final userRepo = ref.watch(userProvider);
   final dtos = await commentRepo.getCommentsFromPostId(postId);
-  final comments = dtos
-      .where((e) => e.creator_id != null)
-      .toList()
-      .map((dto) => dto.toEntity())
-      .toList();
+  final comments = dtos.where((e) => e.creator_id != null).toList().map((dto) => dto.toEntity()).toList();
 
   final userList = comments.map((e) => e.creatorId).toSet().toList();
   final users = await userRepo.getUsersByIdStringComma(userList.join(","));
 
-  final commentsWithAuthor =
-      (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
+  final commentsWithAuthor = (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
     final author = users.where((user) => user.id == comment.creatorId).first;
     return comment.copyWith(author: author);
   }).toList();
@@ -130,7 +124,7 @@ class _CommentPageState extends State<CommentPage> {
       );
     } else {
       return Center(
-        child: Text(I18n.of(context).commentListingNotificationsNoComments),
+        child: Text('commentListing.notifications.noComments'.tr()),
       );
     }
   }
@@ -139,14 +133,12 @@ class _CommentPageState extends State<CommentPage> {
     Navigator.of(context).pop();
     await Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CommentUpdatePage(
+        pageBuilder: (context, animation, secondaryAnimation) => CommentUpdatePage(
           postId: widget.postId,
           commentId: comment.id,
           initialContent: comment.body,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            SharedAxisTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => SharedAxisTransition(
           child: child,
           animation: animation,
           secondaryAnimation: secondaryAnimation,
@@ -157,21 +149,17 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
-  void _handleReplyTap(
-      BuildContext context, Comment comment, int postId) async {
-    final content =
-        "[quote]\n${comment.author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
+  void _handleReplyTap(BuildContext context, Comment comment, int postId) async {
+    final content = "[quote]\n${comment.author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
 
     Navigator.of(context).pop();
     await Navigator.of(context).push(
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) =>
-            CommentCreatePage(
+        pageBuilder: (context, animation, secondaryAnimation) => CommentCreatePage(
           postId: widget.postId,
           initialContent: content,
         ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            SharedAxisTransition(
+        transitionsBuilder: (context, animation, secondaryAnimation, child) => SharedAxisTransition(
           child: child,
           animation: animation,
           secondaryAnimation: secondaryAnimation,
@@ -209,7 +197,7 @@ class _CommentPageState extends State<CommentPage> {
           // actions: <Widget>[
           //   Tooltip(
           //     message:
-          //         I18n.of(context).commentListingTooltipsToggleDeletedComments,
+          //         commentListingTooltipsToggleDeletedComments,
           //     child: IconButton(
           //       icon: Icon(Icons.remove_red_eye),
           //       onPressed: () => _toggleDeletedComments(),
@@ -250,12 +238,9 @@ class _CommentPageState extends State<CommentPage> {
                       return comments.when(
                         data: (comments) {
                           _commentsWithDeleted = comments;
-                          _commentsWithoutDeleted = comments
-                              .where((comment) => comment.isDeleted == false)
-                              .toList();
+                          _commentsWithoutDeleted = comments.where((comment) => comment.isDeleted == false).toList();
 
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((timeStamp) {
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                             setState(() {
                               if (_showDeleted) {
                                 _comments = _commentsWithDeleted;
@@ -267,8 +252,7 @@ class _CommentPageState extends State<CommentPage> {
 
                           return _buildCommentSection(_comments);
                         },
-                        loading: () => Lottie.asset(
-                            "assets/animations/comment_loading.json"),
+                        loading: () => Lottie.asset("assets/animations/comment_loading.json"),
                         error: (error, stackTrace) => Center(
                           child: Text("Something went wrong"),
                         ),

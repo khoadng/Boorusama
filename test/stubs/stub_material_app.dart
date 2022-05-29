@@ -9,7 +9,6 @@ import 'package:boorusama/app.dart';
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/app_theme.dart';
-import 'package:boorusama/generated/i18n.dart';
 
 class StubMaterialApp extends StatelessWidget {
   const StubMaterialApp({
@@ -17,7 +16,6 @@ class StubMaterialApp extends StatelessWidget {
     @required this.child,
   }) : super(key: key);
 
-  final i18n = I18n.delegate;
   final Widget child;
 
   @override
@@ -30,14 +28,6 @@ class StubMaterialApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
-      localizationsDelegates: [
-        i18n,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate
-      ],
-      supportedLocales: i18n.supportedLocales,
-      localeResolutionCallback: i18n.resolution(fallback: Locale("en", "US")),
       debugShowCheckedModeBanner: false,
       onGenerateRoute: AppRouter.router.generator,
       title: AppConstants.appName,

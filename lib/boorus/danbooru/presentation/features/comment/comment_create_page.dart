@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'widgets/editor_spacer.dart';
 
 class CommentCreatePage extends HookWidget {
@@ -22,8 +22,7 @@ class CommentCreatePage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textEditingController =
-        useTextEditingController(text: initialContent ?? "");
+    final textEditingController = useTextEditingController(text: initialContent ?? "");
 
     return Scaffold(
       body: SafeArea(
@@ -63,8 +62,7 @@ class CommentCreatePage extends HookWidget {
                     padding: const EdgeInsets.all(12),
                     child: TextField(
                       controller: textEditingController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: I18n.of(context).commentCreateHint),
+                      decoration: InputDecoration.collapsed(hintText: 'commentCreate.hint'.tr()),
                       autofocus: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,

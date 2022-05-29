@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,7 +19,6 @@ import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'boorus/danbooru/infrastructure/services/download_service.dart';
 import 'boorus/danbooru/router.dart';
 import 'core/app_theme.dart';
-import 'generated/i18n.dart';
 
 class App extends StatefulWidget {
   App();
@@ -55,8 +55,6 @@ final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
 });
 
 class _AppState extends State<App> {
-  final i18n = I18n.delegate;
-
   @override
   void initState() {
     super.initState();
@@ -72,14 +70,6 @@ class _AppState extends State<App> {
     //     () => context
     //         .read(themeStateNotifierProvider)
     //         .changeTheme(widget.settings.themeMode));
-
-    I18n.onLocaleChanged = onLocaleChange;
-  }
-
-  void onLocaleChange(Locale locale) {
-    setState(() {
-      I18n.locale = locale;
-    });
   }
 
   @override
@@ -96,34 +86,22 @@ class _AppState extends State<App> {
           });
         });
       },
-      child: Consumer(
-        builder: (_, watch, __) {
-          final locale = watch(_language);
-
-          return Portal(
-            child: MaterialApp(
-              builder: (context, child) => ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
-                child: child,
-              ),
-              theme: AppTheme.lightTheme,
-              darkTheme: AppTheme.darkTheme,
-              themeMode: ThemeMode.dark,
-              localizationsDelegates: [
-                i18n,
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate
-              ],
-              locale: locale,
-              supportedLocales: i18n.supportedLocales,
-              localeResolutionCallback: i18n.resolution(fallback: Locale("en", "US")),
-              debugShowCheckedModeBanner: false,
-              onGenerateRoute: AppRouter.router.generator,
-              title: AppConstants.appName,
-            ),
-          );
-        },
+      child: Portal(
+        child: MaterialApp(
+          builder: (context, child) => ScrollConfiguration(
+            behavior: NoGlowScrollBehavior(),
+            child: child,
+          ),
+          theme: AppTheme.lightTheme,
+          darkTheme: AppTheme.darkTheme,
+          themeMode: ThemeMode.dark,
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
+          debugShowCheckedModeBanner: false,
+          onGenerateRoute: AppRouter.router.generator,
+          title: AppConstants.appName,
+        ),
       ),
     );
   }

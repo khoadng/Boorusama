@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/themes/theme_state_notifier.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class AppearancePage extends StatefulWidget {
   AppearancePage({
@@ -26,22 +26,20 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(I18n.of(context).settingsAppSettingsAppearance_string),
+        title: Text('settings.appSettings.appearance._string'.tr()),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            Text(I18n.of(context).settingsAppSettingsAppearanceTheme_string),
+            Text('settings.appSettings.appearance.theme._string'.tr()),
             RadioListTile<ThemeMode>(
-              title:
-                  Text(I18n.of(context).settingsAppSettingsAppearanceThemeDark),
+              title: Text('settings.appSettings.appearance.theme.dark'.tr()),
               value: ThemeMode.dark,
               groupValue: widget.settings.themeMode,
               onChanged: (value) => setTheme(value, context),
             ),
             RadioListTile<ThemeMode>(
-              title: Text(
-                  I18n.of(context).settingsAppSettingsAppearanceThemeLight),
+              title: Text('settings.appSettings.appearance.theme.light'.tr()),
               value: ThemeMode.light,
               groupValue: widget.settings.themeMode,
               onChanged: (value) => setTheme(value, context),
