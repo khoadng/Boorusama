@@ -22,8 +22,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'post_tag_list.dart';
 
-part 'post_info_modal.freezed.dart';
-
 final _artistCommentaryProvider = FutureProvider.autoDispose
     .family<ArtistCommentary, int>((ref, postId) async {
   // Cancel the HTTP request if the user leaves the detail page before
@@ -119,12 +117,9 @@ class PostInfoModal extends HookWidget {
   }
 }
 
-@freezed
-abstract class ArtistCommentaryTranlationState
-    with _$ArtistCommentaryTranlationState {
-  const factory ArtistCommentaryTranlationState.original() = _Original;
-
-  const factory ArtistCommentaryTranlationState.translated() = _Translated;
+enum ArtistCommentaryTranlationState {
+  original,
+  translated,
 }
 
 class ArtistSection extends HookWidget {
@@ -170,7 +165,7 @@ class ArtistSection extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final artistCommentaryDisplay =
-        useState(ArtistCommentaryTranlationState.original());
+        useState(ArtistCommentaryTranlationState.original);
     final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
     return artistCommentary.when(
       loading: () => _buildLoading(context),
@@ -219,33 +214,55 @@ class ArtistSection extends HookWidget {
                       itemBuilder: (BuildContext context) =>
                           <PopupMenuEntry<ArtistCommentaryTranlationState>>[
                         PopupMenuItem<ArtistCommentaryTranlationState>(
-                          value: artistCommentaryDisplay.value.when(
-                            translated: () =>
-                                ArtistCommentaryTranlationState.original(),
-                            original: () =>
-                                ArtistCommentaryTranlationState.translated(),
-                          ),
+                          value: getTranslationNextState(
+                              artistCommentaryDisplay.value),
                           child: ListTile(
-                            title: artistCommentaryDisplay.value.when(
-                              translated: () => Text("Show Original"),
-                              original: () => Text("Show Translated"),
-                            ),
+                            title: Text(getTranslationText(
+                                artistCommentaryDisplay.value)),
                           ),
                         ),
                       ],
                     )
                   : SizedBox.shrink(),
             ),
-            artistCommentaryDisplay.value.when(
-              translated: () => SelectableText(
-                  "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}"),
-              original: () => SelectableText(
-                  "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}"),
+            SelectableText(
+              getDescriptionText(
+                artistCommentaryDisplay.value,
+                artistCommentary,
+              ),
             ),
           ],
         );
       },
       error: (name, message) => Text("Failed to load commentary"),
     );
+  }
+}
+
+ArtistCommentaryTranlationState getTranslationNextState(
+    ArtistCommentaryTranlationState currentState) {
+  if (currentState == ArtistCommentaryTranlationState.translated) {
+    return ArtistCommentaryTranlationState.original;
+  } else {
+    return ArtistCommentaryTranlationState.translated;
+  }
+}
+
+String getTranslationText(ArtistCommentaryTranlationState currentState) {
+  if (currentState == ArtistCommentaryTranlationState.translated) {
+    return "Show Original";
+  } else {
+    return "Show Translated";
+  }
+}
+
+String getDescriptionText(
+  ArtistCommentaryTranlationState currentState,
+  ArtistCommentary artistCommentary,
+) {
+  if (currentState == ArtistCommentaryTranlationState.translated) {
+    return "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}";
+  } else {
+    return "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}";
   }
 }
