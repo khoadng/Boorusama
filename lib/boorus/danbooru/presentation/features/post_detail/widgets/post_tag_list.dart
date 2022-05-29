@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:popup_menu/popup_menu.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/wiki/wiki_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 final _tagsProvider = FutureProvider.autoDispose
@@ -39,9 +39,11 @@ class PostTagList extends StatefulWidget {
   PostTagList({
     Key key,
     @required this.tagStringComma,
+    @required this.apiEndpoint,
   }) : super(key: key);
 
   final String tagStringComma;
+  final String apiEndpoint;
 
   @override
   _PostTagListState createState() => _PostTagListState();
@@ -143,12 +145,12 @@ class _PostTagListState extends State<PostTagList> {
         )
       ],
       onClickMenu: (_) {
-        showBarModalBottomSheet(
-          expand: false,
-          context: context,
-          builder: (context) => WikiPage(
-            title: _currentPopupTag.displayName,
-          ),
+        print("${widget.apiEndpoint}${_currentPopupTag.rawName}");
+        Navigator.of(context).push(
+          SlideInRoute(
+              pageBuilder: (context, animation, secondaryAnimation) => WebView(
+                  url:
+                      "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag.rawName}")),
         );
       },
       maxColumn: 4,
