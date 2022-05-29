@@ -1,11 +1,11 @@
 import 'package:timeago/timeago.dart' as timeago;
 
 class CreatedTime {
-  final String _createdDate;
+  final DateTime _createdDate;
 
   CreatedTime(this._createdDate);
 
-  DateTime get time => DateTime.parse(_createdDate);
+  DateTime get time => _createdDate;
 
   @override
   String toString() {

@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
-
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
@@ -8,65 +5,148 @@ import 'post.dart';
 import 'rating.dart';
 import 'tag_string.dart';
 
-part 'post_dto.freezed.dart';
-part 'post_dto.g.dart';
+class PostDto {
+  PostDto({
+    this.id,
+    this.createdAt,
+    this.uploaderId,
+    this.score,
+    this.source,
+    this.md5,
+    this.lastCommentBumpedAt,
+    this.rating,
+    this.imageWidth,
+    this.imageHeight,
+    this.tagString,
+    this.favCount,
+    this.fileExt,
+    this.lastNotedAt,
+    this.parentId,
+    this.hasChildren,
+    this.approverId,
+    this.tagCountGeneral,
+    this.tagCountArtist,
+    this.tagCountCharacter,
+    this.tagCountCopyright,
+    this.fileSize,
+    this.upScore,
+    this.downScore,
+    this.isPending,
+    this.isFlagged,
+    this.isDeleted,
+    this.tagCount,
+    this.updatedAt,
+    this.isBanned,
+    this.pixivId,
+    this.lastCommentedAt,
+    this.hasActiveChildren,
+    this.bitFlags,
+    this.tagCountMeta,
+    this.hasLarge,
+    this.hasVisibleChildren,
+    this.tagStringGeneral,
+    this.tagStringCharacter,
+    this.tagStringCopyright,
+    this.tagStringArtist,
+    this.tagStringMeta,
+    this.fileUrl,
+    this.largeFileUrl,
+    this.previewFileUrl,
+  });
 
-@freezed
-abstract class PostDto with _$PostDto {
-  const factory PostDto({
-    int id,
-    String created_at,
-    int uploader_id,
-    int score,
-    String source,
-    String md5,
-    String last_comment_bumped_at,
-    String rating,
-    int image_width,
-    int image_height,
-    String tag_string,
-    bool is_note_locked,
-    int fav_count,
-    String file_ext,
-    String last_noted_at,
-    bool is_rating_locked,
-    int parent_id,
-    bool has_children,
-    int approver_id,
-    int tag_count_general,
-    int tag_count_artist,
-    int tag_count_character,
-    int tag_count_copyright,
-    int file_size,
-    bool is_status_locked,
-    String pool_string,
-    int up_score,
-    int down_score,
-    bool is_pending,
-    bool is_flagged,
-    bool is_deleted,
-    int tag_count,
-    String updated_at,
-    bool is_banned,
-    int pixiv_id,
-    String last_commented_at,
-    bool has_active_children,
-    int bit_flags,
-    int tag_count_Meta,
-    bool has_large,
-    bool has_visible_children,
-    String tag_string_general,
-    String tag_string_character,
-    String tag_string_copyright,
-    String tag_string_artist,
-    String tag_string_meta,
-    String file_url,
-    String large_file_url,
-    String preview_file_url,
-  }) = _PostDto;
+  final int id;
+  final DateTime createdAt;
+  final int uploaderId;
+  final int score;
+  final String source;
+  final String md5;
+  final dynamic lastCommentBumpedAt;
+  final String rating;
+  final int imageWidth;
+  final int imageHeight;
+  final String tagString;
+  final int favCount;
+  final String fileExt;
+  final dynamic lastNotedAt;
+  final dynamic parentId;
+  final bool hasChildren;
+  final dynamic approverId;
+  final int tagCountGeneral;
+  final int tagCountArtist;
+  final int tagCountCharacter;
+  final int tagCountCopyright;
+  final int fileSize;
+  final int upScore;
+  final int downScore;
+  final bool isPending;
+  final bool isFlagged;
+  final bool isDeleted;
+  final int tagCount;
+  final DateTime updatedAt;
+  final bool isBanned;
+  final dynamic pixivId;
+  final dynamic lastCommentedAt;
+  final bool hasActiveChildren;
+  final int bitFlags;
+  final int tagCountMeta;
+  final bool hasLarge;
+  final bool hasVisibleChildren;
+  final String tagStringGeneral;
+  final String tagStringCharacter;
+  final String tagStringCopyright;
+  final String tagStringArtist;
+  final String tagStringMeta;
+  final String fileUrl;
+  final String largeFileUrl;
+  final String previewFileUrl;
 
-  factory PostDto.fromJson(Map<String, dynamic> json) =>
-      _$PostDtoFromJson(json);
+  factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
+        id: json["id"],
+        createdAt: DateTime.parse(json["created_at"]),
+        uploaderId: json["uploader_id"],
+        score: json["score"],
+        source: json["source"],
+        md5: json["md5"],
+        lastCommentBumpedAt: json["last_comment_bumped_at"],
+        rating: json["rating"],
+        imageWidth: json["image_width"],
+        imageHeight: json["image_height"],
+        tagString: json["tag_string"],
+        favCount: json["fav_count"],
+        fileExt: json["file_ext"],
+        lastNotedAt: json["last_noted_at"],
+        parentId: json["parent_id"],
+        hasChildren: json["has_children"],
+        approverId: json["approver_id"],
+        tagCountGeneral: json["tag_count_general"],
+        tagCountArtist: json["tag_count_artist"],
+        tagCountCharacter: json["tag_count_character"],
+        tagCountCopyright: json["tag_count_copyright"],
+        fileSize: json["file_size"],
+        upScore: json["up_score"],
+        downScore: json["down_score"],
+        isPending: json["is_pending"],
+        isFlagged: json["is_flagged"],
+        isDeleted: json["is_deleted"],
+        tagCount: json["tag_count"],
+        updatedAt: DateTime.parse(json["updated_at"]),
+        isBanned: json["is_banned"],
+        pixivId: json["pixiv_id"],
+        lastCommentedAt: json["last_commented_at"],
+        hasActiveChildren: json["has_active_children"],
+        bitFlags: json["bit_flags"],
+        tagCountMeta: json["tag_count_meta"],
+        hasLarge: json["has_large"],
+        hasVisibleChildren: json["has_visible_children"],
+        tagStringGeneral: json["tag_string_general"],
+        tagStringCharacter: json["tag_string_character"],
+        tagStringCopyright: json["tag_string_copyright"],
+        tagStringArtist: json["tag_string_artist"],
+        tagStringMeta: json["tag_string_meta"],
+        fileUrl: json["file_url"],
+        largeFileUrl: json["large_file_url"],
+        previewFileUrl: json["preview_file_url"],
+      );
 }
 
 extension PostDtoX on PostDto {
@@ -74,30 +154,29 @@ extension PostDtoX on PostDto {
     return Post(
       id: id,
       previewImageUri:
-          preview_file_url != null ? Uri.parse(preview_file_url) : null,
-      normalImageUri: large_file_url != null ? Uri.parse(large_file_url) : null,
-      fullImageUri: file_url != null ? Uri.parse(file_url) : null,
-      tagStringCopyright: tag_string_copyright,
-      tagStringCharacter: tag_string_character,
-      tagStringArtist: tag_string_artist,
-      tagStringGeneral: tag_string_general,
-      tagString: TagString(tag_string),
-      width: image_width.toDouble(),
-      height: image_height.toDouble(),
-      format: file_ext,
-      lastCommentAt: last_comment_bumped_at != null
-          ? DateTime.parse(last_commented_at)
-          : null,
-      source: ImageSource(source, pixiv_id),
-      createdAt: CreatedTime(created_at),
+          previewFileUrl != null ? Uri.parse(previewFileUrl) : null,
+      normalImageUri: largeFileUrl != null ? Uri.parse(largeFileUrl) : null,
+      fullImageUri: fileUrl != null ? Uri.parse(fileUrl) : null,
+      tagStringCopyright: tagStringCopyright,
+      tagStringCharacter: tagStringCharacter,
+      tagStringArtist: tagStringArtist,
+      tagStringGeneral: tagStringGeneral,
+      tagString: TagString(tagString),
+      width: imageWidth.toDouble(),
+      height: imageHeight.toDouble(),
+      format: fileExt,
+      lastCommentAt:
+          lastCommentBumpedAt != null ? DateTime.parse(lastCommentedAt) : null,
+      source: ImageSource(source, pixivId),
+      createdAt: CreatedTime(createdAt),
       score: score,
-      upScore: up_score,
-      downScore: down_score,
-      favCount: fav_count,
-      uploaderId: uploader_id,
+      upScore: upScore,
+      downScore: downScore,
+      favCount: favCount,
+      uploaderId: uploaderId,
       rating: Rating(rating: rating),
-      fileSize: file_size,
-      pixivId: pixiv_id,
+      fileSize: fileSize,
+      pixivId: pixivId,
     );
   }
 }

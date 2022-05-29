@@ -112,7 +112,7 @@ class Post implements IDownloadable {
         format: "png",
         lastCommentAt: null,
         source: ImageSource("", null),
-        createdAt: CreatedTime(DateTime.now().toIso8601String()),
+        createdAt: CreatedTime(DateTime.now()),
         score: 0,
         upScore: 0,
         downScore: 0,
