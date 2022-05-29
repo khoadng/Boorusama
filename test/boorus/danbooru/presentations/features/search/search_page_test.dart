@@ -1,414 +1,425 @@
-// // Flutter imports:
-// import 'package:flutter/material.dart';
-
-// // Package imports:
-// import 'package:flutter_tags/flutter_tags.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:hooks_riverpod/hooks_riverpod.dart';
-// import 'package:mockito/mockito.dart';
-
-// // Project imports:
-// import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
-// import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-// import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
-// import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-// import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-// import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
-// import '../../../../../fakes/repositories/posts/fake_post_repository.dart';
-// import '../../../../../stubs/features/search/stub_query_processor.dart';
-// import '../../../../../stubs/repositories/posts/stub_post_repository.dart';
-// import '../../../../../stubs/repositories/tags/stub_tag_repository.dart';
-// import '../../../../../stubs/stub_material_app.dart';
-
-// class MockPostRepository extends Mock implements IPostRepository {}
-
-// class MockSearchHistoryRepository extends Mock
-//     implements ISearchHistoryRepository {}
-
-// void main() {
-//   Future<void> setUp(
-//     WidgetTester tester, {
-//     Provider<ITagRepository> tagTestDouble,
-//     Provider<IPostRepository> postTestDouble,
-//     Provider<QueryProcessor> queryProcessorTestDouble,
-//     Provider<ISearchHistoryRepository> searchHistoryTestDouble,
-//   }) async {
-//     final mockSearchHistoryProvider = MockSearchHistoryRepository();
-//     when(mockSearchHistoryProvider.getHistories())
-//         .thenAnswer((_) => Future.value([]));
-
-//     await tester.pumpWidget(
-//       ProviderScope(
-//         overrides: [
-//           tagProvider.overrideWithProvider(tagTestDouble ?? stubTagProvider),
-//           postProvider
-//               .overrideWithProvider(postTestDouble ?? stubEmptyPostProvider),
-//           queryProcessorProvider.overrideWithProvider(
-//               queryProcessorTestDouble ?? stubQueryProcessorProvider),
-//           searchHistoryProvider.overrideWithProvider(searchHistoryTestDouble ??
-//               Provider((ref) => mockSearchHistoryProvider))
-//         ],
-//         child: StubMaterialApp(
-//           child: SearchPage(),
-//         ),
-//       ),
-//     );
-
-//     // wait for animation finish
-//     await tester.pumpAndSettle();
-//   }
-
-//   group('[Search state]', () {
-//     group('[When enter a character]', () {
-//       testWidgets(
-//         "Show suggestions",
-//         (WidgetTester tester) async {
-//           await setUp(tester);
-
-//           await tester.enterText(find.byType(TextFormField), "a");
-
-//           await tester.pump();
-
-//           final suggestions = find.byType(TagSuggestionItems);
-
-//           expect(suggestions, findsOneWidget);
-//         },
-//       );
-
-//       group('[When text is cleared]', () {
-//         testWidgets("Show search options", (WidgetTester tester) async {
-//           await setUp(tester);
-
-//           await tester.enterText(find.byType(TextFormField), "a");
-//           await tester.pump();
-//           final suggestions = find.byType(TagSuggestionItems);
-//           expect(suggestions, findsOneWidget);
-
-//           await tester.enterText(find.byType(TextFormField), "");
-
-//           // wait for animation
-//           await tester.pumpAndSettle();
-
-//           final searchOptions = find.byType(SearchOptions);
+// Flutter imports:
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mockito/mockito.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/services/query_processor.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
+import '../../../../../fakes/repositories/posts/fake_post_repository.dart';
+import '../../../../../stubs/features/search/stub_query_processor.dart';
+import '../../../../../stubs/repositories/posts/stub_post_repository.dart';
+import '../../../../../stubs/repositories/tags/stub_tag_repository.dart';
+import '../../../../../stubs/stub_material_app.dart';
+import 'package:easy_localization/src/localization.dart';
+import 'package:easy_localization/src/translations.dart';
+
+class MockPostRepository extends Mock implements IPostRepository {}
+
+class MockSearchHistoryRepository extends Mock
+    implements ISearchHistoryRepository {}
+
+Future<File> fixture(String name) async => File('test/fixtures/$name');
+
+void main() {
+  Future<void> setUp(
+    WidgetTester tester, {
+    Provider<ITagRepository> tagTestDouble,
+    Provider<IPostRepository> postTestDouble,
+    Provider<QueryProcessor> queryProcessorTestDouble,
+    Provider<ISearchHistoryRepository> searchHistoryTestDouble,
+  }) async {
+    final mockSearchHistoryProvider = MockSearchHistoryRepository();
+    when(mockSearchHistoryProvider.getHistories())
+        .thenAnswer((_) => Future.value([]));
+    var contents =
+        "{\"profile\":{\"profile\":\"Profile\",\"favorites\":\"Favorites\"},\"login\":{\"form\":{\"username\":\"Name\",\"password\":\"API Key\",\"login\":\"Login\",\"greeting\":\"Hi there!\"},\"errors\":{\"invalidUsernameOrPassword\":\"Invalid username or API key\",\"missingUsername\":\"Please enter your username\",\"missingPassword\":\"Please enter your API key\"}},\"commentCreate\":{\"hint\":\"Comment\",\"loading\":\"Please wait...\",\"error\":\"Error\"},\"commentListing\":{\"commands\":{\"edit\":\"Edit\",\"reply\":\"Reply\",\"delete\":\"Delete\"},\"tooltips\":{\"toggleDeletedComments\":\"Toggle deleted comments\"},\"notifications\":{\"noComments\":\"There are no comments\"}},\"postCategories\":{\"latest\":\"Latest\",\"popular\":\"Popular\",\"curated\":\"Curated\",\"mostViewed\":\"Most viewed\"},\"search\":{\"hint\":\"Search...\",\"noResult\":\"No result\",\"empty\":\"Such empty\"},\"settings\":{\"_string\":\"Settings\",\"appSettings\":{\"_string\":\"App Settings\",\"appearance\":{\"_string\":\"Appearance\",\"theme\":{\"_string\":\"Theme\",\"dark\":\"Dark\",\"light\":\"Light\"}},\"language\":{\"_string\":\"Language\",\"english\":\"English\",\"vietnamese\":\"Vietnamese\"},\"safeMode\":\"Safe Mode\",\"blacklistedTags\":\"Blacklisted tags\"}},\"sideMenu\":{\"login\":\"Login\",\"profile\":\"Profile\",\"settings\":\"Settings\"},\"dateRange\":{\"day\":\"Day\",\"week\":\"Week\",\"month\":\"Month\"}}";
+    Map<String, dynamic> data = jsonDecode(contents);
+    Localization.load(Locale('en'), translations: Translations(data));
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          tagProvider.overrideWithProvider(tagTestDouble ?? stubTagProvider),
+          postProvider
+              .overrideWithProvider(postTestDouble ?? stubEmptyPostProvider),
+          queryProcessorProvider.overrideWithProvider(
+              queryProcessorTestDouble ?? stubQueryProcessorProvider),
+          searchHistoryProvider.overrideWithProvider(searchHistoryTestDouble ??
+              Provider((ref) => mockSearchHistoryProvider))
+        ],
+        child: StubMaterialApp(
+          child: SearchPage(),
+        ),
+      ),
+    );
+
+    // wait for animation finish
+    await tester.pumpAndSettle();
+  }
+
+  group('[Search state]', () {
+    group('[When enter a character]', () {
+      testWidgets(
+        "Show suggestions",
+        (WidgetTester tester) async {
+          await setUp(tester);
+
+          await tester.enterText(find.byType(TextFormField), "a");
+
+          await tester.pump();
+
+          final suggestions = find.byType(TagSuggestionItems);
+
+          expect(suggestions, findsOneWidget);
+        },
+      );
+
+      group('[When text is cleared]', () {
+        testWidgets("Show search options", (WidgetTester tester) async {
+          await setUp(tester);
+
+          await tester.enterText(find.byType(TextFormField), "a");
+          await tester.pump();
+          final suggestions = find.byType(TagSuggestionItems);
+          expect(suggestions, findsOneWidget);
 
-//           expect(suggestions, findsNothing);
-//           expect(searchOptions, findsOneWidget);
-//         });
-//       });
-//     });
+          await tester.enterText(find.byType(TextFormField), "");
 
-//     group('[When search]', () {
-//       group('[No data]', () {
-//         testWidgets(
-//           "Show no results if in results state",
-//           (WidgetTester tester) async {
-//             await setUp(tester, postTestDouble: stubEmptyPostProvider);
+          // wait for animation
+          await tester.pumpAndSettle();
 
-//             await tester.enterText(find.byType(TextFormField), "a");
+          final searchOptions = find.byType(SearchOptions);
 
-//             await tester.tap(find.byType(FloatingActionButton));
+          expect(suggestions, findsNothing);
+          expect(searchOptions, findsOneWidget);
+        });
+      });
+    });
 
-//             await tester.pump();
+    group('[When search]', () {
+      group('[No data]', () {
+        testWidgets(
+          "Show no results if in results state",
+          (WidgetTester tester) async {
+            await setUp(tester, postTestDouble: stubEmptyPostProvider);
 
-//             final result = find.byType(EmptyResult);
+            await tester.enterText(find.byType(TextFormField), "a");
 
-//             expect(result, findsOneWidget);
-//           },
-//         );
+            await tester.tap(find.byType(FloatingActionButton));
 
-//         testWidgets(
-//           "Stay in current state if not in results state",
-//           (WidgetTester tester) async {
-//             await setUp(tester,
-//                 postTestDouble: stubEmptyPostProvider,
-//                 queryProcessorTestDouble:
-//                     Provider<QueryProcessor>((_) => QueryProcessor()));
+            await tester.pump();
 
-//             await tester.enterText(find.byType(TextFormField), "a ");
+            final result = find.byType(EmptyResult);
 
-//             await tester.pumpAndSettle();
+            expect(result, findsOneWidget);
+          },
+        );
 
-//             final result = find.byType(EmptyResult);
+        testWidgets(
+          "Stay in current state if not in results state",
+          (WidgetTester tester) async {
+            await setUp(tester,
+                postTestDouble: stubEmptyPostProvider,
+                queryProcessorTestDouble:
+                    Provider<QueryProcessor>((_) => QueryProcessor()));
 
-//             expect(result, findsNothing);
-//           },
-//         );
-//       });
+            await tester.enterText(find.byType(TextFormField), "a ");
 
-//       group('[Data available]', () {
-//         testWidgets(
-//           "Show result",
-//           (WidgetTester tester) async {
-//             await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
+            await tester.pumpAndSettle();
 
-//             await tester.enterText(find.byType(TextFormField), "a");
+            final result = find.byType(EmptyResult);
 
-//             await tester.tap(find.byType(FloatingActionButton));
+            expect(result, findsNothing);
+          },
+        );
+      });
 
-//             await tester.pump();
+      group('[Data available]', () {
+        testWidgets(
+          "Show result",
+          (WidgetTester tester) async {
+            await setUp(tester, postTestDouble: stubNonEmptyPostProvider);
 
-//             final result = find.byType(InfiniteLoadList);
+            await tester.enterText(find.byType(TextFormField), "a");
 
-//             expect(result, findsOneWidget);
-//           },
-//         );
-//       });
+            await tester.tap(find.byType(FloatingActionButton));
 
-//       group('[Error]', () {});
+            await tester.pump();
 
-//       testWidgets(
-//         "Show error if exception occured",
-//         (WidgetTester tester) async {
-//           final mockPostRepository = MockPostRepository();
+            final result = find.byType(InfiniteLoadList);
 
-//           when(mockPostRepository.getPosts(any, any))
-//               .thenThrow(BooruException(""));
+            expect(result, findsOneWidget);
+          },
+        );
+      });
 
-//           await tester.pumpWidget(
-//             ProviderScope(
-//               overrides: [
-//                 tagProvider.overrideWithProvider(stubTagProvider),
-//                 postProvider.overrideWithProvider(
-//                     Provider((ref) => mockPostRepository)),
-//                 queryProcessorProvider
-//                     .overrideWithProvider(stubQueryProcessorProvider)
-//               ],
-//               child: StubMaterialApp(
-//                 child: SearchPage(),
-//               ),
-//             ),
-//           );
+      group('[Error]', () {});
 
-//           // wait for animation finish
-//           await tester.pumpAndSettle();
+      testWidgets(
+        "Show error if exception occured",
+        (WidgetTester tester) async {
+          final mockPostRepository = MockPostRepository();
 
-//           await tester.enterText(find.byType(TextFormField), "a");
+          when(mockPostRepository.getPosts(any, any))
+              .thenThrow(BooruException(""));
 
-//           await tester.tap(find.byType(FloatingActionButton));
-//           await tester.pump();
+          await tester.pumpWidget(
+            ProviderScope(
+              overrides: [
+                tagProvider.overrideWithProvider(stubTagProvider),
+                postProvider.overrideWithProvider(
+                    Provider((ref) => mockPostRepository)),
+                queryProcessorProvider
+                    .overrideWithProvider(stubQueryProcessorProvider)
+              ],
+              child: StubMaterialApp(
+                child: SearchPage(),
+              ),
+            ),
+          );
 
-//           final result = find.byType(ErrorResult);
+          // wait for animation finish
+          await tester.pumpAndSettle();
 
-//           expect(result, findsOneWidget);
-//         },
-//       );
-//     });
+          await tester.enterText(find.byType(TextFormField), "a");
 
-//     group('[When clear tag]', () {
-//       testWidgets("Show search options", (WidgetTester tester) async {
-//         await setUp(tester,
-//             queryProcessorTestDouble:
-//                 Provider<QueryProcessor>((_) => QueryProcessor()));
+          await tester.tap(find.byType(FloatingActionButton));
+          await tester.pump();
 
-//         await tester.enterText(find.byType(TextFormField), "a ");
-//         final tag = find.byType(ItemTags);
+          final result = find.byType(ErrorResult);
 
-//         await tester.pumpAndSettle();
+          expect(result, findsOneWidget);
+        },
+      );
+    });
 
-//         expect(tag, findsOneWidget);
+    group('[When clear tag]', () {
+      testWidgets("Show search options", (WidgetTester tester) async {
+        await setUp(tester,
+            queryProcessorTestDouble:
+                Provider<QueryProcessor>((_) => QueryProcessor()));
 
-//         await tester.tap(find.byType(FloatingActionButton));
+        await tester.enterText(find.byType(TextFormField), "a ");
+        final tag = find.byType(ItemTags);
 
-//         final closeIconFinder = find.byIcon(Icons.clear);
-//         await tester.tap(closeIconFinder);
+        await tester.pumpAndSettle();
 
-//         final searchOptions = find.byType(SearchOptions);
+        expect(tag, findsOneWidget);
 
-//         await tester.pumpAndSettle();
+        await tester.tap(find.byType(FloatingActionButton));
 
-//         expect(tag, findsNothing);
-//         expect(searchOptions, findsOneWidget);
-//       });
-//     });
+        final closeIconFinder = find.byIcon(Icons.clear);
+        await tester.tap(closeIconFinder);
 
-//     group('[When go back]', () {
-//       testWidgets("Show suggestions if in results state",
-//           (WidgetTester tester) async {
-//         await setUp(tester);
+        final searchOptions = find.byType(SearchOptions);
 
-//         await tester.enterText(find.byType(TextFormField), "a");
+        await tester.pumpAndSettle();
 
-//         await tester.tap(find.byType(FloatingActionButton));
+        expect(tag, findsNothing);
+        expect(searchOptions, findsOneWidget);
+      });
+    });
 
-//         await tester.pump();
+    group('[When go back]', () {
+      testWidgets("Show suggestions if in results state",
+          (WidgetTester tester) async {
+        await setUp(tester);
 
-//         final result = find.byType(EmptyResult);
+        await tester.enterText(find.byType(TextFormField), "a");
 
-//         expect(result, findsOneWidget);
+        await tester.tap(find.byType(FloatingActionButton));
 
-//         await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pump();
 
-//         await tester.pumpAndSettle();
+        final result = find.byType(EmptyResult);
 
-//         final searchOptionsFinder = find.byType(SearchOptions);
+        expect(result, findsOneWidget);
 
-//         expect(searchOptionsFinder, findsOneWidget);
-//       });
+        await tester.tap(find.byIcon(Icons.arrow_back));
 
-//       testWidgets("Show suggestions if in error state",
-//           (WidgetTester tester) async {
-//         final mockPostRepository = MockPostRepository();
+        await tester.pumpAndSettle();
 
-//         when(mockPostRepository.getPosts(any, any))
-//             .thenThrow(BooruException(""));
+        final searchOptionsFinder = find.byType(SearchOptions);
 
-//         await tester.pumpWidget(
-//           ProviderScope(
-//             overrides: [
-//               tagProvider.overrideWithProvider(stubTagProvider),
-//               postProvider
-//                   .overrideWithProvider(Provider((ref) => mockPostRepository)),
-//               queryProcessorProvider
-//                   .overrideWithProvider(stubQueryProcessorProvider)
-//             ],
-//             child: StubMaterialApp(
-//               child: SearchPage(),
-//             ),
-//           ),
-//         );
+        expect(searchOptionsFinder, findsOneWidget);
+      });
 
-//         // wait for animation finish
-//         await tester.pumpAndSettle();
+      testWidgets("Show suggestions if in error state",
+          (WidgetTester tester) async {
+        final mockPostRepository = MockPostRepository();
 
-//         await tester.enterText(find.byType(TextFormField), "a");
+        when(mockPostRepository.getPosts(any, any))
+            .thenThrow(BooruException(""));
 
-//         await tester.tap(find.byType(FloatingActionButton));
-//         await tester.pump();
+        await tester.pumpWidget(
+          ProviderScope(
+            overrides: [
+              tagProvider.overrideWithProvider(stubTagProvider),
+              postProvider
+                  .overrideWithProvider(Provider((ref) => mockPostRepository)),
+              queryProcessorProvider
+                  .overrideWithProvider(stubQueryProcessorProvider)
+            ],
+            child: StubMaterialApp(
+              child: SearchPage(),
+            ),
+          ),
+        );
 
-//         final result = find.byType(ErrorResult);
+        // wait for animation finish
+        await tester.pumpAndSettle();
 
-//         expect(result, findsOneWidget);
+        await tester.enterText(find.byType(TextFormField), "a");
 
-//         await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.tap(find.byType(FloatingActionButton));
+        await tester.pump();
 
-//         await tester.pumpAndSettle();
+        final result = find.byType(ErrorResult);
 
-//         final searchOptionsFinder = find.byType(SearchOptions);
+        expect(result, findsOneWidget);
 
-//         expect(searchOptionsFinder, findsOneWidget);
-//       });
+        await tester.tap(find.byIcon(Icons.arrow_back));
 
-//       testWidgets("Show suggestions if in no results state",
-//           (WidgetTester tester) async {
-//         await setUp(tester, postTestDouble: stubEmptyPostProvider);
+        await tester.pumpAndSettle();
 
-//         await tester.enterText(find.byType(TextFormField), "a");
+        final searchOptionsFinder = find.byType(SearchOptions);
 
-//         await tester.tap(find.byType(FloatingActionButton));
+        expect(searchOptionsFinder, findsOneWidget);
+      });
 
-//         await tester.pump();
+      testWidgets("Show suggestions if in no results state",
+          (WidgetTester tester) async {
+        await setUp(tester, postTestDouble: stubEmptyPostProvider);
 
-//         final result = find.byType(EmptyResult);
+        await tester.enterText(find.byType(TextFormField), "a");
 
-//         expect(result, findsOneWidget);
+        await tester.tap(find.byType(FloatingActionButton));
 
-//         await tester.tap(find.byIcon(Icons.arrow_back));
+        await tester.pump();
 
-//         await tester.pumpAndSettle();
+        final result = find.byType(EmptyResult);
 
-//         final searchOptionsFinder = find.byType(SearchOptions);
+        expect(result, findsOneWidget);
 
-//         expect(searchOptionsFinder, findsOneWidget);
-//       });
-//     });
-//     testWidgets(
-//       "Show search options at start",
-//       (WidgetTester tester) async {
-//         await setUp(tester);
+        await tester.tap(find.byIcon(Icons.arrow_back));
 
-//         final searchOptionsFinder = find.byType(SearchOptions);
+        await tester.pumpAndSettle();
 
-//         expect(searchOptionsFinder, findsOneWidget);
-//       },
-//     );
-//   });
+        final searchOptionsFinder = find.byType(SearchOptions);
 
-//   group('[Behavior]', () {
-//     testWidgets(
-//       "Show loading indicator when waiting for data after pressing search",
-//       (WidgetTester tester) async {
-//         await setUp(
-//           tester,
-//           postTestDouble: fakePostProvider,
-//         );
+        expect(searchOptionsFinder, findsOneWidget);
+      });
+    });
+    testWidgets(
+      "Show search options at start",
+      (WidgetTester tester) async {
+        await setUp(tester);
 
-//         await tester.enterText(find.byType(TextFormField), "a");
+        final searchOptionsFinder = find.byType(SearchOptions);
 
-//         await tester.tap(find.byType(FloatingActionButton));
+        expect(searchOptionsFinder, findsOneWidget);
+      },
+    );
+  });
 
-//         await tester.pump(Duration(milliseconds: 5));
+  group('[Behavior]', () {
+    testWidgets(
+      "Show loading indicator when waiting for data after pressing search",
+      (WidgetTester tester) async {
+        await setUp(
+          tester,
+          postTestDouble: fakePostProvider,
+        );
 
-//         final loading = find.descendant(
-//           of: find.byType(InfiniteLoadList),
-//           matching: find.byType(SliverPostGridPlaceHolder),
-//         );
+        await tester.enterText(find.byType(TextFormField), "a");
 
-//         expect(loading, findsOneWidget);
+        await tester.tap(find.byType(FloatingActionButton));
 
-//         await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 5));
 
-//         expect(loading, findsNothing);
-//       },
-//     );
+        final loading = find.descendant(
+          of: find.byType(InfiniteLoadList),
+          matching: find.byType(SliverPostGridPlaceHolder),
+        );
 
-//     testWidgets(
-//       "Enter space to add a tag",
-//       (WidgetTester tester) async {
-//         await setUp(tester,
-//             queryProcessorTestDouble:
-//                 Provider<QueryProcessor>((_) => QueryProcessor()));
+        expect(loading, findsOneWidget);
 
-//         await tester.enterText(find.byType(TextFormField), "a ");
-//         final tag = find.byType(ItemTags);
+        await tester.pumpAndSettle();
 
-//         await tester.pumpAndSettle();
+        expect(loading, findsNothing);
+      },
+    );
 
-//         expect(tag, findsOneWidget);
-//       },
-//     );
-//   });
+    testWidgets(
+      "Enter space to add a tag",
+      (WidgetTester tester) async {
+        await setUp(tester,
+            queryProcessorTestDouble:
+                Provider<QueryProcessor>((_) => QueryProcessor()));
 
-//   group('[Search bar]', () {
-//     group('[Select saved search]', () {
-//       testWidgets(
-//         "Display saved search on search bar",
-//         (WidgetTester tester) async {
-//           final mockSearchHistoryProvider = MockSearchHistoryRepository();
-//           when(mockSearchHistoryProvider.getHistories()).thenAnswer(
-//             (_) => Future.value([
-//               SearchHistory(
-//                 query: "foo bar",
-//                 createdAt: DateTime.now(),
-//               )
-//             ]),
-//           );
+        await tester.enterText(find.byType(TextFormField), "a ");
+        final tag = find.byType(ItemTags);
 
-//           await setUp(tester,
-//               queryProcessorTestDouble:
-//                   Provider<QueryProcessor>((_) => QueryProcessor()),
-//               searchHistoryTestDouble:
-//                   Provider((ref) => mockSearchHistoryProvider));
+        await tester.pumpAndSettle();
 
-//           final historyItem = find.text("foo bar");
-//           await tester.tap(historyItem);
+        expect(tag, findsOneWidget);
+      },
+    );
+  });
 
-//           await tester.pump();
+  group('[Search bar]', () {
+    group('[Select saved search]', () {
+      testWidgets(
+        "Display saved search on search bar",
+        (WidgetTester tester) async {
+          final mockSearchHistoryProvider = MockSearchHistoryRepository();
+          when(mockSearchHistoryProvider.getHistories()).thenAnswer(
+            (_) => Future.value([
+              SearchHistory(
+                query: "foo bar",
+                createdAt: DateTime.now(),
+              )
+            ]),
+          );
 
-//           final text = find.descendant(
-//               of: find.byType(SearchBar), matching: find.text("foo bar"));
+          await setUp(tester,
+              queryProcessorTestDouble:
+                  Provider<QueryProcessor>((_) => QueryProcessor()),
+              searchHistoryTestDouble:
+                  Provider((ref) => mockSearchHistoryProvider));
 
-//           expect(text, findsOneWidget);
-//         },
-//       );
-//     });
-//   });
-// }
+          final historyItem = find.text("foo bar");
+          await tester.tap(historyItem);
+
+          await tester.pump();
+
+          final text = find.descendant(
+              of: find.byType(SearchBar), matching: find.text("foo bar"));
+
+          expect(text, findsOneWidget);
+        },
+      );
+    });
+  });
+}
