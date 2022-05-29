@@ -199,43 +199,43 @@ class SearchPage extends HookWidget {
       infiniteListController.value.refresh();
     }
 
-    return SafeArea(
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+      child: Scaffold(
+        floatingActionButton: searchDisplayState.value.maybeWhen(
+          results: () => SizedBox.shrink(),
+          orElse: () => FloatingActionButton(
+            onPressed: () => onSearchButtonTap(),
+            heroTag: null,
+            child: Icon(Icons.search),
+          ),
         ),
-        child: Scaffold(
-          floatingActionButton: searchDisplayState.value.maybeWhen(
-            results: () => SizedBox.shrink(),
-            orElse: () => FloatingActionButton(
-              onPressed: () => onSearchButtonTap(),
-              heroTag: null,
-              child: Icon(Icons.search),
+        appBar: AppBar(
+          toolbarHeight: kToolbarHeight * 1.2,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          title: SearchBar(
+            autofocus: true,
+            queryEditingController: queryEditingController,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => onBackButtonTap(),
             ),
+            trailing: queryEditingController.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => onSearchClearButtonTap(),
+                  )
+                : null,
+            onChanged: (value) => onTextInputChanged(value),
           ),
-          appBar: AppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            title: SearchBar(
-              autofocus: true,
-              queryEditingController: queryEditingController,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => onBackButtonTap(),
-              ),
-              trailing: queryEditingController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => onSearchClearButtonTap(),
-                    )
-                  : null,
-              onChanged: (value) => onTextInputChanged(value),
-            ),
-          ),
-          body: Column(
+        ),
+        body: SafeArea(
+          child: Column(
             children: [
               if (completedQueryItems.value.length > 0) ...[
                 Tags(

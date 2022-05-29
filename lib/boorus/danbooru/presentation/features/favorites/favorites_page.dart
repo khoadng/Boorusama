@@ -66,13 +66,15 @@ class FavoritesPage extends HookWidget {
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, []);
 
-    return InfiniteLoadList(
-        controller: infiniteListController.value,
-        posts: posts.value,
-        child: isRefreshing.value
-            ? SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 6.0),
-                sliver: SliverPostGridPlaceHolder())
-            : null);
+    return SafeArea(
+      child: InfiniteLoadList(
+          controller: infiniteListController.value,
+          posts: posts.value,
+          child: isRefreshing.value
+              ? SliverPadding(
+                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                  sliver: SliverPostGridPlaceHolder())
+              : null),
+    );
   }
 }

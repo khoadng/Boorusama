@@ -18,14 +18,14 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          shadowColor: Colors.transparent,
-        ),
-        resizeToAvoidBottomInset: false,
-        body: Column(
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        shadowColor: Colors.transparent,
+      ),
+      resizeToAvoidBottomInset: false,
+      body: SafeArea(
+        child: Column(
           children: <Widget>[
             Text(
               'login.form.greeting'.tr(),
