@@ -1,15 +1,22 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:meta/meta.dart';
 
-part 'slide_show_providers.freezed.dart';
+class SlideShowConfiguration {
+  SlideShowConfiguration({
+    @required this.interval,
+    @required this.skipAnimation,
+  });
+  final int interval;
+  final bool skipAnimation;
 
-@freezed
-abstract class SlideShowConfiguration with _$SlideShowConfiguration {
-  const factory SlideShowConfiguration({
-    @required int interval,
-    @required bool skipAnimation,
-  }) = _SlideShowConfiguration;
+  SlideShowConfiguration copyWith({
+    interval,
+    skipAnimation,
+  }) =>
+      SlideShowConfiguration(
+        interval: interval ?? this.interval,
+        skipAnimation: skipAnimation ?? this.skipAnimation,
+      );
 }
 
 final slideShowConfigurationStateProvider =
