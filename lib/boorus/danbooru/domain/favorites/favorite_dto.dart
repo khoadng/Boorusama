@@ -1,19 +1,23 @@
-// Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
+class FavoriteDto {
+  FavoriteDto({
+    this.id,
+    this.userId,
+    this.postId,
+  });
 
-part 'favorite_dto.freezed.dart';
-part 'favorite_dto.g.dart';
+  final int id;
+  final int userId;
+  final int postId;
 
-@freezed
-abstract class FavoriteDto with _$FavoriteDto {
-  const factory FavoriteDto(
-    int id,
-    int user_id,
-    int post_id,
-  ) = _FavoriteDto;
+  factory FavoriteDto.fromJson(Map<String, dynamic> json) => FavoriteDto(
+        id: json["id"],
+        userId: json["user_id"],
+        postId: json["post_id"],
+      );
 
-  factory FavoriteDto.fromJson(Map<String, dynamic> json) =>
-      _$FavoriteDtoFromJson(json);
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "user_id": userId,
+        "post_id": postId,
+      };
 }
-
-extension FavoriteDtoX on FavoriteDto {}
