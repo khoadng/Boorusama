@@ -36,8 +36,7 @@ final _favorites = FutureProvider.autoDispose<List<Post>>((ref) async {
 
   final repo = ref.watch(postProvider);
   final profile = await ref.watch(_profile.future);
-  final favorites = await repo.getPosts("ordfav:${profile.name}", 1,
-      limit: 10, cancelToken: cancelToken);
+  final favorites = await repo.getPosts("ordfav:${profile.name}", 1, limit: 10, cancelToken: cancelToken);
 
   return favorites;
 });
@@ -52,21 +51,20 @@ class ProfilePage extends HookWidget {
     final profile = useProvider(_profile);
     final favorites = useProvider(_favorites);
 
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(I18n.of(context).profileProfile),
-          actions: <Widget>[
-            IconButton(
-                icon: Icon(Icons.logout),
-                onPressed: () {
-                  context.read(authenticationStateNotifierProvider).logOut();
-                  AppRouter.router.navigateTo(context, "/",
-                      clearStack: true, replace: true);
-                }),
-          ],
-        ),
-        body: profile.maybeWhen(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(I18n.of(context).profileProfile),
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.logout),
+              onPressed: () {
+                context.read(authenticationStateNotifierProvider).logOut();
+                AppRouter.router.navigateTo(context, "/", clearStack: true, replace: true);
+              }),
+        ],
+      ),
+      body: SafeArea(
+        child: profile.maybeWhen(
           data: (profile) => CustomScrollView(
             slivers: <Widget>[
               SliverToBoxAdapter(
@@ -112,9 +110,8 @@ class ProfilePage extends HookWidget {
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   trailing: TextButton(
-                    onPressed: () => Navigator.of(context).push(SlideInRoute(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            SafeArea(child: FavoritesPage()))),
+                    onPressed: () => Navigator.of(context)
+                        .push(SlideInRoute(pageBuilder: (context, animation, secondaryAnimation) => FavoritesPage())),
                     child: Text("See more"),
                   ),
                 ),

@@ -26,8 +26,7 @@ class HomePage extends HookWidget {
     final networkStatus = useProvider(networkStatusProvider);
 
     useEffect(() {
-      Future.microtask(
-          () => context.read(authenticationStateNotifierProvider).logIn());
+      Future.microtask(() => context.read(authenticationStateNotifierProvider).logIn());
       return () => {};
     }, []);
 
@@ -57,9 +56,7 @@ class HomePage extends HookWidget {
               ),
               error: (error, stackTrace) => Material(
                 color: Theme.of(context).appBarTheme.color,
-                child: Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text("Something went wrong")),
+                child: Padding(padding: EdgeInsets.only(bottom: 10), child: Text("Something went wrong")),
               ),
             ),
             Expanded(

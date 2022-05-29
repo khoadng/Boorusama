@@ -10,8 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wiki.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wikis/wiki_repository.dart';
 
-final _wikiProvider =
-    FutureProvider.autoDispose.family<Wiki, String>((ref, subject) async {
+final _wikiProvider = FutureProvider.autoDispose.family<Wiki, String>((ref, subject) async {
   final repo = ref.watch(wikiProvider);
   final wiki = await repo.getWikiFor(subject);
 
@@ -33,19 +32,18 @@ class WikiPage extends HookWidget {
     final wiki = useProvider(_wikiProvider(title));
 
     return Material(
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            title: Center(child: Text(title)),
-          ),
-          body: wiki.when(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Center(child: Text(title)),
+        ),
+        body: SafeArea(
+          child: wiki.when(
               data: (wiki) => SingleChildScrollView(child: Text(wiki.body)),
               loading: () => Center(
                     child: CircularProgressIndicator(),
                   ),
-              error: (obj, stackTrace) => Center(
-                  child: Text(
-                      "Something went wrong, or this wiki page may not exist."))),
+              error: (obj, stackTrace) =>
+                  Center(child: Text("Something went wrong, or this wiki page may not exist."))),
         ),
       ),
     );

@@ -34,8 +34,7 @@ class SearchPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final queryEditingController = useTextEditingController
-        .fromValue(TextEditingValue(text: initialQuery));
+    final queryEditingController = useTextEditingController.fromValue(TextEditingValue(text: initialQuery));
     final searchDisplayState = useState(SearchDisplayState.searchOptions());
     final posts = useState(<Post>[]);
     final suggestions = useState(<Tag>[]);
@@ -48,8 +47,7 @@ class SearchPage extends HookWidget {
       onData: (data) {
         if (isMounted()) {
           posts.value = [...data];
-          if (data.isEmpty &&
-              searchDisplayState.value == SearchDisplayState.results()) {
+          if (data.isEmpty && searchDisplayState.value == SearchDisplayState.results()) {
             searchDisplayState.value = SearchDisplayState.noResults();
           }
         }
@@ -74,22 +72,16 @@ class SearchPage extends HookWidget {
         }
       },
       refreshBuilder: (page) {
-        return context
-            .read(postProvider)
-            .getPosts(completedQueryItems.value.join(' '), page);
+        return context.read(postProvider).getPosts(completedQueryItems.value.join(' '), page);
       },
       loadMoreBuilder: (page) {
-        return context
-            .read(postProvider)
-            .getPosts(completedQueryItems.value.join(' '), page);
+        return context.read(postProvider).getPosts(completedQueryItems.value.join(' '), page);
       },
     ));
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
-        refreshWhen: () =>
-            completedQueryItems.value.isNotEmpty &&
-            queryEditingController.text.isEmpty);
+        refreshWhen: () => completedQueryItems.value.isNotEmpty && queryEditingController.text.isEmpty);
 
     useEffect(() {
       queryEditingController.addListener(() {
@@ -109,8 +101,8 @@ class SearchPage extends HookWidget {
         searchDisplayState.value = SearchDisplayState.suggestions();
       }
 
-      queryEditingController.selection = TextSelection.fromPosition(
-          TextPosition(offset: queryEditingController.text.length));
+      queryEditingController.selection =
+          TextSelection.fromPosition(TextPosition(offset: queryEditingController.text.length));
       return () => {};
     }, [queryEditingController.text]);
 
@@ -135,8 +127,8 @@ class SearchPage extends HookWidget {
 
     void addTag(String tag) {
       queryEditingController.text = "";
-      completedQueryItems.value = LinkedHashSet<String>.from(
-          [...completedQueryItems.value, ...tag.split(' ')]).toList();
+      completedQueryItems.value =
+          LinkedHashSet<String>.from([...completedQueryItems.value, ...tag.split(' ')]).toList();
     }
 
     void removeTag(String tag) {
@@ -153,11 +145,10 @@ class SearchPage extends HookWidget {
         queryEditingController.text = '';
       }
 
-      final lastTag = context.read(queryProcessorProvider).process(
-          text, queryEditingController.text, completedQueryItems.value);
+      final lastTag =
+          context.read(queryProcessorProvider).process(text, queryEditingController.text, completedQueryItems.value);
 
-      final tags =
-          await context.read(tagProvider).getTagsByNamePattern(lastTag, 1);
+      final tags = await context.read(tagProvider).getTagsByNamePattern(lastTag, 1);
       suggestions.value = [...tags];
     }
 
@@ -190,52 +181,50 @@ class SearchPage extends HookWidget {
         addTag(queryEditingController.text);
       }
 
-      context
-          .read(searchHistoryProvider)
-          .addHistory(completedQueryItems.value.join(' '));
+      context.read(searchHistoryProvider).addHistory(completedQueryItems.value.join(' '));
 
       FocusScope.of(context).unfocus();
       searchDisplayState.value = SearchDisplayState.results();
       infiniteListController.value.refresh();
     }
 
-    return SafeArea(
-      child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+    return ClipRRect(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(16),
+        topRight: Radius.circular(16),
+      ),
+      child: Scaffold(
+        floatingActionButton: searchDisplayState.value.maybeWhen(
+          results: () => SizedBox.shrink(),
+          orElse: () => FloatingActionButton(
+            onPressed: () => onSearchButtonTap(),
+            heroTag: null,
+            child: Icon(Icons.search),
+          ),
         ),
-        child: Scaffold(
-          floatingActionButton: searchDisplayState.value.maybeWhen(
-            results: () => SizedBox.shrink(),
-            orElse: () => FloatingActionButton(
-              onPressed: () => onSearchButtonTap(),
-              heroTag: null,
-              child: Icon(Icons.search),
+        appBar: AppBar(
+          toolbarHeight: kToolbarHeight * 1.2,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          title: SearchBar(
+            autofocus: true,
+            queryEditingController: queryEditingController,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () => onBackButtonTap(),
             ),
+            trailing: queryEditingController.text.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.close),
+                    onPressed: () => onSearchClearButtonTap(),
+                  )
+                : null,
+            onChanged: (value) => onTextInputChanged(value),
           ),
-          appBar: AppBar(
-            toolbarHeight: kToolbarHeight * 1.2,
-            elevation: 0,
-            shadowColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            title: SearchBar(
-              autofocus: true,
-              queryEditingController: queryEditingController,
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () => onBackButtonTap(),
-              ),
-              trailing: queryEditingController.text.isNotEmpty
-                  ? IconButton(
-                      icon: Icon(Icons.close),
-                      onPressed: () => onSearchClearButtonTap(),
-                    )
-                  : null,
-              onChanged: (value) => onTextInputChanged(value),
-            ),
-          ),
-          body: Column(
+        ),
+        body: SafeArea(
+          child: Column(
             children: [
               if (completedQueryItems.value.length > 0) ...[
                 Tags(
@@ -246,8 +235,7 @@ class SearchPage extends HookWidget {
                   itemCount: completedQueryItems.value.length,
                   itemBuilder: (index) => ItemTags(
                     index: index,
-                    title:
-                        completedQueryItems.value[index].replaceAll('_', ' '),
+                    title: completedQueryItems.value[index].replaceAll('_', ' '),
                     pressEnabled: false,
                     removeButton: ItemTagsRemoveButton(onRemoved: () {
                       removeTag(completedQueryItems.value[index]);
@@ -265,10 +253,8 @@ class SearchPage extends HookWidget {
               Expanded(
                 child: searchDisplayState.value.when(
                   searchOptions: () => SearchOptions(
-                    onOptionTap: (searchOption) =>
-                        queryEditingController.text = "$searchOption:",
-                    onHistoryTap: (history) =>
-                        queryEditingController.text = history,
+                    onOptionTap: (searchOption) => queryEditingController.text = "$searchOption:",
+                    onHistoryTap: (history) => queryEditingController.text = history,
                   ),
                   suggestions: () => TagSuggestionItems(
                     tags: suggestions.value,
@@ -280,14 +266,11 @@ class SearchPage extends HookWidget {
                       posts: posts.value,
                       child: isRefreshing.value
                           ? SliverPadding(
-                              padding: EdgeInsets.symmetric(horizontal: 6.0),
-                              sliver: SliverPostGridPlaceHolder())
+                              padding: EdgeInsets.symmetric(horizontal: 6.0), sliver: SliverPostGridPlaceHolder())
                           : null,
                     );
                   },
-                  noResults: () => EmptyResult(
-                      text:
-                          "We searched far and wide, but no results were found."),
+                  noResults: () => EmptyResult(text: "We searched far and wide, but no results were found."),
                   error: (message) {
                     return ErrorResult(text: message);
                   },
