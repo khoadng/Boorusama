@@ -2,10 +2,10 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'comment_dto.dart';
+import 'comment.dart';
 
 abstract class ICommentRepository {
-  Future<List<CommentDto>> getCommentsFromPostId(
+  Future<List<Comment>> getCommentsFromPostId(
     int postId, {
     CancelToken cancelToken,
   });

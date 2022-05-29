@@ -11,7 +11,6 @@ import 'package:lottie/lottie.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comment_dto.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -29,11 +28,7 @@ final _commentsProvider =
   final commentRepo = ref.watch(commentProvider);
   final userRepo = ref.watch(userProvider);
   final dtos = await commentRepo.getCommentsFromPostId(postId);
-  final comments = dtos
-      .where((e) => e.creatorId != null)
-      .toList()
-      .map((dto) => dto.toEntity())
-      .toList();
+  final comments = dtos.where((e) => e.creatorId != null).toList().toList();
 
   final userList = comments.map((e) => e.creatorId).toSet().toList();
   final users = await userRepo.getUsersByIdStringComma(userList.join(","));
