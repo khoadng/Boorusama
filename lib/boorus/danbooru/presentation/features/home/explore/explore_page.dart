@@ -23,7 +23,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 part 'explore_page.freezed.dart';
 
@@ -40,39 +40,33 @@ extension ExploreCategoryX on ExploreCategory {
   }
 }
 
-final _popularPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
+final _popularPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
   if (posts.isEmpty) {
-    posts = await repo.getPopularPosts(
-        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+    posts = await repo.getPopularPosts(DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
   }
 
   return posts.take(20).toList();
 });
 
-final _curatedPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
+final _curatedPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
 
   if (posts.isEmpty) {
-    posts = await repo.getCuratedPosts(
-        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
+    posts = await repo.getCuratedPosts(DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
   }
 
   return posts.take(20).toList();
 });
 
-final _mostViewedPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
+final _mostViewedPostSneakPeakProvider = FutureProvider.autoDispose<List<Post>>((ref) async {
   final repo = ref.watch(postProvider);
   var posts = await repo.getMostViewedPosts(DateTime.now());
 
   if (posts.isEmpty) {
-    posts = await repo
-        .getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
+    posts = await repo.getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
   }
 
   return posts.take(20).toList();
@@ -109,10 +103,7 @@ class ExplorePage extends HookWidget {
     Widget _buildExploreSection(ExploreCategory category) {
       final title = Text(
         "${category.getName().sentenceCase}",
-        style: Theme.of(context)
-            .textTheme
-            .headline6
-            .copyWith(fontWeight: FontWeight.w700),
+        style: Theme.of(context).textTheme.headline6.copyWith(fontWeight: FontWeight.w700),
       );
       return _ExploreSection(
         title: title,
@@ -229,30 +220,19 @@ class _ExploreItemPage extends HookWidget {
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       },
       refreshBuilder: (page) => category.when(
-        curated: () => context
-            .read(postProvider)
-            .getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
-        popular: () => context
-            .read(postProvider)
-            .getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
-        mostViewed: () =>
-            context.read(postProvider).getMostViewedPosts(selectedDate.state),
+        curated: () => context.read(postProvider).getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
+        popular: () => context.read(postProvider).getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
+        mostViewed: () => context.read(postProvider).getMostViewedPosts(selectedDate.state),
       ),
       loadMoreBuilder: (page) => category.when(
-        curated: () => context
-            .read(postProvider)
-            .getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
-        popular: () => context
-            .read(postProvider)
-            .getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
-        mostViewed: () =>
-            context.read(postProvider).getMostViewedPosts(selectedDate.state),
+        curated: () => context.read(postProvider).getCuratedPosts(selectedDate.state, page, selectedTimeScale.state),
+        popular: () => context.read(postProvider).getPopularPosts(selectedDate.state, page, selectedTimeScale.state),
+        mostViewed: () => context.read(postProvider).getMostViewedPosts(selectedDate.state),
       ),
     ));
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value,
-        [selectedTimeScale.state, selectedDate.state]);
+    useAutoRefresh(infiniteListController.value, [selectedTimeScale.state, selectedDate.state]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(
@@ -322,15 +302,15 @@ class _ExploreListItemHeader extends HookWidget {
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             ListTile(
-              title: Text(I18n.of(context).dateRangeDay),
+              title: Text('dateRange.day'.tr()),
               onTap: () => Navigator.of(context).pop(TimeScale.day),
             ),
             ListTile(
-              title: Text(I18n.of(context).dateRangeWeek),
+              title: Text('dateRange.week'.tr()),
               onTap: () => Navigator.of(context).pop(TimeScale.week),
             ),
             ListTile(
-              title: Text(I18n.of(context).dateRangeMonth),
+              title: Text('dateRange.month'.tr()),
               onTap: () => Navigator.of(context).pop(TimeScale.month),
             ),
           ],
@@ -391,8 +371,7 @@ class _ExploreListItemHeader extends HookWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  Text(
-                      "${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
+                  Text("${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
                   Icon(Icons.arrow_drop_down)
                 ],
               ),
@@ -438,9 +417,7 @@ class _ExploreListItemHeader extends HookWidget {
                 ),
                 onPressed: () async {
                   final timeScale = await showMaterialModalBottomSheet(
-                          context: context,
-                          builder: (context) =>
-                              _buildModalTimeScalePicker(context)) ??
+                          context: context, builder: (context) => _buildModalTimeScalePicker(context)) ??
                       selectedTimeScale.value;
 
                   selectedTimeScale.value = timeScale;
@@ -448,8 +425,7 @@ class _ExploreListItemHeader extends HookWidget {
                 },
                 child: Row(
                   children: <Widget>[
-                    Text(
-                        "${selectedTimeScale.value.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
+                    Text("${selectedTimeScale.value.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
                     Icon(Icons.arrow_drop_down)
                   ],
                 ),
@@ -481,9 +457,7 @@ class _ExploreSection extends StatelessWidget {
         ListTile(
           title: title,
           trailing: TextButton(
-              onPressed: () => onViewMoreTap(),
-              child:
-                  Text("See more", style: Theme.of(context).textTheme.button)),
+              onPressed: () => onViewMoreTap(), child: Text("See more", style: Theme.of(context).textTheme.button)),
         ),
         posts.when(
           data: (posts) => posts.isNotEmpty
@@ -495,9 +469,7 @@ class _ExploreSection extends StatelessWidget {
                     return GestureDetector(
                       onTap: () => Navigator.of(context).push(
                         SlideInRoute(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  PostDetailPage(
+                          pageBuilder: (context, animation, secondaryAnimation) => PostDetailPage(
                             post: post,
                             intitialIndex: index,
                             posts: posts,
@@ -509,26 +481,19 @@ class _ExploreSection extends StatelessWidget {
                       child: Stack(
                         children: [
                           PostImage(
-                            imageUrl: post.isAnimated
-                                ? post.previewImageUri.toString()
-                                : post.normalImageUri.toString(),
+                            imageUrl:
+                                post.isAnimated ? post.previewImageUri.toString() : post.normalImageUri.toString(),
                             placeholderUrl: post.previewImageUri.toString(),
                           ),
                           ShadowGradientOverlay(
                             alignment: Alignment.bottomCenter,
-                            colors: <Color>[
-                              const Color(0xC2000000),
-                              Colors.black12.withOpacity(0.0)
-                            ],
+                            colors: <Color>[const Color(0xC2000000), Colors.black12.withOpacity(0.0)],
                           ),
                           Align(
                               alignment: Alignment(-0.9, 1),
                               child: Text(
                                 "${index + 1}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2
-                                    .copyWith(color: Colors.white),
+                                style: Theme.of(context).textTheme.headline2.copyWith(color: Colors.white),
                               )),
                         ],
                       ),

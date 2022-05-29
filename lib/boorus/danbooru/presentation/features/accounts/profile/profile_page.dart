@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favori
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
-import 'package:boorusama/generated/i18n.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 final _profile = FutureProvider.autoDispose<Profile>((ref) async {
   final cancelToken = CancelToken();
@@ -36,8 +36,7 @@ final _favorites = FutureProvider.autoDispose<List<Post>>((ref) async {
 
   final repo = ref.watch(postProvider);
   final profile = await ref.watch(_profile.future);
-  final favorites = await repo.getPosts("ordfav:${profile.name}", 1,
-      limit: 10, cancelToken: cancelToken);
+  final favorites = await repo.getPosts("ordfav:${profile.name}", 1, limit: 10, cancelToken: cancelToken);
 
   return favorites;
 });
@@ -55,14 +54,13 @@ class ProfilePage extends HookWidget {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(I18n.of(context).profileProfile),
+          title: Text('profile.profile'.tr()),
           actions: <Widget>[
             IconButton(
                 icon: Icon(Icons.logout),
                 onPressed: () {
                   context.read(authenticationStateNotifierProvider).logOut();
-                  AppRouter.router.navigateTo(context, "/",
-                      clearStack: true, replace: true);
+                  AppRouter.router.navigateTo(context, "/", clearStack: true, replace: true);
                 }),
           ],
         ),
@@ -108,13 +106,12 @@ class ProfilePage extends HookWidget {
               SliverToBoxAdapter(
                 child: ListTile(
                   leading: Text(
-                    I18n.of(context).profileFavorites,
+                    'profile.favorites'.tr(),
                     style: Theme.of(context).textTheme.headline6,
                   ),
                   trailing: TextButton(
                     onPressed: () => Navigator.of(context).push(SlideInRoute(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            SafeArea(child: FavoritesPage()))),
+                        pageBuilder: (context, animation, secondaryAnimation) => SafeArea(child: FavoritesPage()))),
                     child: Text("See more"),
                   ),
                 ),

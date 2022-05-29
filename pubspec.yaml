@@ -69,6 +69,7 @@ dependencies:
   shared_preferences: ^0.5.12+4
   sliding_up_panel: ^1.0.2
   timeago: ^3.2.2
+  easy_localization: ^2.3.3+1
 
 dev_dependencies:
   flutter_localizations:
@@ -89,6 +90,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/icon/
+    - assets/translations/
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see

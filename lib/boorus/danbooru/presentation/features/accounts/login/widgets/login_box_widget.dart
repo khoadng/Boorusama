@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
-import 'package:boorusama/generated/i18n.dart';
 
 final _showPasswordProvider = StateProvider<bool>((ref) => false);
 final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
@@ -80,14 +80,14 @@ class LoginBox extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LoginField(
-                labelText: I18n.of(context).loginFormUsername,
+                labelText: 'login.form.username'.tr(),
                 validator: (value) {
                   if (value.isEmpty) {
-                    return I18n.of(context).loginErrorsMissingUsername;
+                    return 'login.errors.missingUsername'.tr();
                   }
 
                   if (!_isValidUsernameAndPassword.value) {
-                    return I18n.of(context).loginErrorsInvalidUsernameOrPassword;
+                    return 'login.errors.invalidUsernameOrPassword'.tr();
                   }
                   return null;
                 },
@@ -108,14 +108,14 @@ class LoginBox extends HookWidget {
               ),
               SizedBox(height: 20),
               LoginField(
-                labelText: I18n.of(context).loginFormPassword,
+                labelText: 'login.form.password'.tr(),
                 obscureText: !showPassword.state,
                 validator: (value) {
                   if (value.isEmpty) {
-                    return I18n.of(context).loginErrorsMissingPassword;
+                    return 'login.errors.missingPassword'.tr();
                   }
                   if (!_isValidUsernameAndPassword.value) {
-                    return I18n.of(context).loginErrorsInvalidUsernameOrPassword;
+                    return 'login.errors.invalidUsernameOrPassword'.tr();
                   }
                   return null;
                 },
@@ -177,7 +177,7 @@ class LoginBox extends HookWidget {
       ValueNotifier<bool> _isValidUsernameAndPassword) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(onPrimary: Colors.white),
-      child: Text(I18n.of(context).loginFormLogin),
+      child: Text('login.form.login'.tr()),
       onPressed: () {
         if (_formKey.value.currentState.validate()) {
           context
