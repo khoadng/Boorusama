@@ -34,8 +34,8 @@ final _popularSearchProvider =
 
 class LatestView extends HookWidget {
   const LatestView({
-    Key key,
-    @required this.onMenuTap,
+    Key? key,
+    required this.onMenuTap,
   }) : super(key: key);
 
   final VoidCallback onMenuTap;
@@ -62,9 +62,9 @@ class LatestView extends HookWidget {
             ..removeWhere((post) {
               final p = posts.value.firstWhere(
                 (sPost) => sPost.id == post.id,
-                orElse: () => null,
+                orElse: () => Post.empty(),
               );
-              return p?.id == post.id;
+              return p.id == post.id;
             });
         }
         posts.value = [...posts.value, ...data];
@@ -154,7 +154,7 @@ class LatestView extends HookWidget {
       posts: posts.value,
       child: isRefreshing.value
           ? SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 6.0),
+              padding: EdgeInsets.symmetric(horizontal: 12.0),
               sliver: SliverPostGridPlaceHolder())
           : null,
     );

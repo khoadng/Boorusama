@@ -9,6 +9,6 @@ abstract class ITagRepository {
   Future<List<Tag>> getTagsByNameComma(
     String stringComma,
     int page, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 }

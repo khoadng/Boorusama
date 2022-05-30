@@ -43,9 +43,9 @@ final _artistCommentaryProvider = FutureProvider.autoDispose
 
 class PostInfoModal extends HookWidget {
   const PostInfoModal({
-    Key key,
-    @required this.post,
-    @required this.scrollController,
+    Key? key,
+    required this.post,
+    required this.scrollController,
   }) : super(key: key);
 
   final Post post;
@@ -124,8 +124,8 @@ enum ArtistCommentaryTranlationState {
 
 class ArtistSection extends HookWidget {
   const ArtistSection({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
   }) : super(key: key);
 
   final Post post;

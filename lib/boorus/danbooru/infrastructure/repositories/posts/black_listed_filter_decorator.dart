@@ -8,8 +8,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class BlackListedFilterDecorator implements IPostRepository {
   BlackListedFilterDecorator({
-    @required IPostRepository postRepository,
-    @required Settings settings,
+    required IPostRepository postRepository,
+    required Settings settings,
   })  : _postRepository = postRepository,
         _settings = settings;
 
@@ -44,7 +44,7 @@ class BlackListedFilterDecorator implements IPostRepository {
     String tagString,
     int page, {
     int limit = 100,
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
     bool skipFavoriteCheck = false,
   }) async {
     final posts = await _postRepository.getPosts(tagString, page,

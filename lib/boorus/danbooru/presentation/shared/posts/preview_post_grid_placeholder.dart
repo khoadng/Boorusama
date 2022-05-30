@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class PreviewPostGridPlaceHolder extends StatelessWidget {
   const PreviewPostGridPlaceHolder({
-    Key key,
-    @required this.itemCount,
+    Key? key,
+    required this.itemCount,
     this.physics,
   }) : super(key: key);
 
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
   final int itemCount;
 
   @override

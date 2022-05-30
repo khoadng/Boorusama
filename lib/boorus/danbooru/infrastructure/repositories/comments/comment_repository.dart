@@ -22,7 +22,7 @@ class CommentRepository implements ICommentRepository {
   @override
   Future<List<Comment>> getCommentsFromPostId(
     int postId, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
     try {
       final value =
@@ -40,7 +40,7 @@ class CommentRepository implements ICommentRepository {
 
       return comments;
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {

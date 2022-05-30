@@ -20,12 +20,13 @@ final _url = Provider<String>((ref) {
 });
 
 class LoginBox extends HookWidget {
-  const LoginBox({Key key}) : super(key: key);
+  const LoginBox({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
-    final animationController = useAnimationController(vsync: tickerProvider, duration: Duration(milliseconds: 150));
+    final animationController = useAnimationController(
+        vsync: tickerProvider, duration: Duration(milliseconds: 150));
     final _formKey = useState(GlobalKey<FormState>());
     final _isValidUsernameAndPassword = useState(true);
 
@@ -57,7 +58,7 @@ class LoginBox extends HookWidget {
           Navigator.of(context).pop();
         } else if (status == AccountState.errorInvalidPasswordOrUser) {
           _isValidUsernameAndPassword.value = false;
-          _formKey.value.currentState.validate();
+          _formKey.value.currentState!.validate();
         } else if (status == AccountState.unknown) {
           final snackbar = SnackBar(
             behavior: SnackBarBehavior.floating,
@@ -82,7 +83,7 @@ class LoginBox extends HookWidget {
               LoginField(
                 labelText: 'login.form.username'.tr(),
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return 'login.errors.missingUsername'.tr();
                   }
 
@@ -111,7 +112,7 @@ class LoginBox extends HookWidget {
                 labelText: 'login.form.password'.tr(),
                 obscureText: !showPassword.state,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value == null || value.isEmpty) {
                     return 'login.errors.missingPassword'.tr();
                   }
                   if (!_isValidUsernameAndPassword.value) {
@@ -123,8 +124,9 @@ class LoginBox extends HookWidget {
                 controller: passwordTextController,
                 suffixIcon: IconButton(
                     splashColor: Colors.transparent,
-                    icon:
-                        showPassword.state ? FaIcon(FontAwesomeIcons.solidEyeSlash) : FaIcon(FontAwesomeIcons.solidEye),
+                    icon: showPassword.state
+                        ? FaIcon(FontAwesomeIcons.solidEyeSlash)
+                        : FaIcon(FontAwesomeIcons.solidEye),
                     onPressed: () => showPassword.state = !showPassword.state),
               ),
               TextButton.icon(
@@ -143,7 +145,9 @@ class LoginBox extends HookWidget {
                               Navigator.of(context).pop();
                               Navigator.of(context).push(
                                 SlideInRoute(
-                                  pageBuilder: (context, animation, secondaryAnimation) => WebView(url: logInUrl),
+                                  pageBuilder: (context, animation,
+                                          secondaryAnimation) =>
+                                      WebView(url: logInUrl),
                                 ),
                               );
                             },
@@ -160,8 +164,8 @@ class LoginBox extends HookWidget {
               SizedBox(height: 20),
               authStatus == AccountState.authenticating
                   ? CircularProgressIndicator()
-                  : _buildLoginButton(
-                      context, _formKey, usernameTextController, passwordTextController, _isValidUsernameAndPassword)
+                  : _buildLoginButton(context, _formKey, usernameTextController,
+                      passwordTextController, _isValidUsernameAndPassword)
             ],
           ),
         ),
@@ -179,7 +183,7 @@ class LoginBox extends HookWidget {
       style: ElevatedButton.styleFrom(onPrimary: Colors.white),
       child: Text('login.form.login'.tr()),
       onPressed: () {
-        if (_formKey.value.currentState.validate()) {
+        if (_formKey.value.currentState!.validate()) {
           context
               .read(authenticationStateNotifierProvider)
               .logIn(usernameTextController.text, passwordTextController.text);
@@ -194,21 +198,21 @@ class LoginBox extends HookWidget {
 
 class LoginField extends HookWidget {
   const LoginField({
-    Key key,
-    @required this.validator,
-    @required this.controller,
-    @required this.labelText,
+    Key? key,
+    required this.validator,
+    required this.controller,
+    required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
   }) : super(key: key);
 
-  final TextEditingController controller;
-  final ValueChanged<String> validator;
-  final Widget suffixIcon;
+  final TextEditingController? controller;
+  final String? Function(String?) validator;
+  final Widget? suffixIcon;
   final String labelText;
   final bool obscureText;
-  final ValueChanged<String> onChanged;
+  final ValueChanged<String>? onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -228,7 +232,8 @@ class LoginField extends HookWidget {
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).accentColor, width: 2.0),
+          borderSide:
+              BorderSide(color: Theme.of(context).accentColor, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         errorBorder: OutlineInputBorder(
@@ -236,7 +241,8 @@ class LoginField extends HookWidget {
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2.0),
+          borderSide:
+              BorderSide(color: Theme.of(context).errorColor, width: 2.0),
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         contentPadding: EdgeInsets.all(12.0),

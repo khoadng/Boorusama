@@ -9,7 +9,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key key}) : super(key: key);
+  LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();

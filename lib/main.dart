@@ -23,6 +23,8 @@ void main() async {
   if (Platform.isAndroid || Platform.isIOS) {
     await FlutterDownloader.initialize(debug: false);
   }
+  await EasyLocalization.ensureInitialized();
+
   final dbDirectory = await getApplicationDocumentsDirectory();
 
   Hive.init(dbDirectory.path);

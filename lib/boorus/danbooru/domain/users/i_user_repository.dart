@@ -7,7 +7,7 @@ import 'user.dart';
 abstract class IUserRepository {
   Future<List<User>> getUsersByIdStringComma(
     String idComma, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
   Future<User> getUserById(int id);
 }

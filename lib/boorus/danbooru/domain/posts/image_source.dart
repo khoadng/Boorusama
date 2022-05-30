@@ -1,9 +1,9 @@
 class ImageSource {
-  Uri _address;
+  Uri? _address;
 
   ImageSource(
     String source,
-    int pixivId,
+    int? pixivId,
   ) {
     try {
       if (pixivId == null) {
@@ -17,5 +17,5 @@ class ImageSource {
     }
   }
 
-  Uri get uri => _address;
+  Uri? get uri => _address;
 }

@@ -13,7 +13,7 @@ final searchHistoryProvider = Provider<ISearchHistoryRepository>((ref) {
 
 class SearchHistoryRepository implements ISearchHistoryRepository {
   SearchHistoryRepository({
-    @required ProviderReference ref,
+    required ProviderReference ref,
   }) : _ref = ref;
 
   ProviderReference _ref;

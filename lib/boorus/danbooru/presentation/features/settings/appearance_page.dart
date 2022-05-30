@@ -10,8 +10,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 class AppearancePage extends StatefulWidget {
   AppearancePage({
-    Key key,
-    @required this.settings,
+    Key? key,
+    required this.settings,
   }) : super(key: key);
 
   final Settings settings;

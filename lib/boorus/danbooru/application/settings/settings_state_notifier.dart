@@ -13,9 +13,9 @@ final settingsNotifier = StateNotifierProvider<SettingsStateNotifier>((ref) {
 
 class SettingsStateNotifier extends StateNotifier<SettingsState> {
   SettingsStateNotifier({
-    @required this.settingRepository,
-    SettingsState setting,
-  }) : super(setting ?? SettingsState.defaultSettings());
+    required this.settingRepository,
+    required SettingsState setting,
+  }) : super(setting);
 
   final ISettingRepository settingRepository;
 

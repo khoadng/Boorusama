@@ -12,9 +12,9 @@ import 'post_name.dart';
 
 class Post implements IDownloadable {
   final int id;
-  final Uri previewImageUri;
-  final Uri normalImageUri;
-  final Uri fullImageUri;
+  final Uri? previewImageUri;
+  final Uri? normalImageUri;
+  final Uri? fullImageUri;
   final String tagStringCopyright;
   final String tagStringCharacter;
   final String tagStringArtist;
@@ -23,7 +23,7 @@ class Post implements IDownloadable {
   final double width;
   final double height;
   final String format;
-  final DateTime lastCommentAt;
+  final DateTime? lastCommentAt;
   final ImageSource source;
   final CreatedTime createdAt;
   final int score;
@@ -33,32 +33,32 @@ class Post implements IDownloadable {
   final int uploaderId;
   final Rating rating;
   final int fileSize;
-  final int pixivId;
+  final int? pixivId;
 
   Post({
-    @required this.id,
-    @required this.previewImageUri,
-    @required this.normalImageUri,
-    @required this.fullImageUri,
-    @required this.tagStringCopyright,
-    @required this.tagStringCharacter,
-    @required this.tagStringArtist,
-    @required this.tagStringGeneral,
-    @required this.tagString,
-    @required this.width,
-    @required this.height,
-    @required this.format,
-    @required this.lastCommentAt,
-    @required this.source,
-    @required this.createdAt,
-    @required this.score,
-    @required this.upScore,
-    @required this.downScore,
-    @required this.favCount,
-    @required this.uploaderId,
-    @required this.rating,
-    @required this.fileSize,
-    @required this.pixivId,
+    required this.id,
+    this.previewImageUri,
+    this.normalImageUri,
+    this.fullImageUri,
+    required this.tagStringCopyright,
+    required this.tagStringCharacter,
+    required this.tagStringArtist,
+    required this.tagStringGeneral,
+    required this.tagString,
+    required this.width,
+    required this.height,
+    required this.format,
+    required this.lastCommentAt,
+    required this.source,
+    required this.createdAt,
+    required this.score,
+    required this.upScore,
+    required this.downScore,
+    required this.favCount,
+    required this.uploaderId,
+    required this.rating,
+    required this.fileSize,
+    required this.pixivId,
   });
 
   double get aspectRatio => this.width / this.height;

@@ -34,8 +34,8 @@ final _notesProvider =
 
 class PostImagePage extends HookWidget {
   const PostImagePage({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
   }) : super(key: key);
 
   final Post post;

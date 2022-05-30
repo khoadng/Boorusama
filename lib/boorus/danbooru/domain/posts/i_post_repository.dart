@@ -10,7 +10,7 @@ abstract class IPostRepository {
     String tagString,
     int page, {
     int limit = 100,
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
     bool skipFavoriteCheck = false,
   });
   Future<List<Post>> getPopularPosts(DateTime date, int page, TimeScale scale);

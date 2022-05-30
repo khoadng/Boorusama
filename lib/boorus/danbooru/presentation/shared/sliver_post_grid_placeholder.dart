@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {
   const SliverPostGridPlaceHolder({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

@@ -9,8 +9,8 @@ import 'package:boorusama/core/app_theme.dart';
 
 class StubMaterialApp extends StatelessWidget {
   const StubMaterialApp({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
   }) : super(key: key);
 
   final Widget child;
@@ -20,7 +20,7 @@ class StubMaterialApp extends StatelessWidget {
     return MaterialApp(
       builder: (context, child) => ScrollConfiguration(
         behavior: NoGlowScrollBehavior(),
-        child: child,
+        child: child!,
       ),
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,

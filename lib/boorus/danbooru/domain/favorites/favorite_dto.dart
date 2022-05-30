@@ -1,8 +1,8 @@
 class FavoriteDto {
   FavoriteDto({
-    this.id,
-    this.userId,
-    this.postId,
+    required this.id,
+    required this.userId,
+    required this.postId,
   });
 
   final int id;

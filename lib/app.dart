@@ -35,7 +35,7 @@ final _language = Provider<Locale>((ref) {
 final _accountState = Provider<AccountState>((ref) {
   return ref.watch(authenticationStateNotifierProvider.state).state;
 });
-final _account = Provider<Account>((ref) {
+final _account = Provider<Account?>((ref) {
   return ref.watch(authenticationStateNotifierProvider.state).account;
 });
 
@@ -46,6 +46,9 @@ final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
 
   if (accountState == AccountState.loggedIn) {
     final account = ref.watch(_account);
+
+    if (account == null) return [];
+
     final user = await userRepository.getUserById(account.id);
 
     blacklistedTags = user.blacklistedTags;
@@ -62,7 +65,8 @@ class _AppState extends State<App> {
     AppRouter().setupRoutes();
 
     if (Platform.isAndroid || Platform.isIOS) {
-      Future.delayed(Duration.zero, () => context.read(downloadServiceProvider).init());
+      Future.delayed(
+          Duration.zero, () => context.read(downloadServiceProvider).init());
     }
 
     // Future.delayed(
@@ -76,12 +80,12 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return ProviderListener(
       provider: blacklistedTagsProvider,
-      onChange: (context, tags) {
+      onChange: (context, AsyncValue<List<String>> tags) {
         tags.whenData((data) {
           final settings = context.read(settingsNotifier.state).settings;
 
           settings.blacklistedTags = data.join("\n");
-          WidgetsBinding.instance.addPostFrameCallback((_) {
+          WidgetsBinding.instance!.addPostFrameCallback((_) {
             context.read(settingsNotifier).save(settings);
           });
         });
@@ -90,7 +94,7 @@ class _AppState extends State<App> {
         child: MaterialApp(
           builder: (context, child) => ScrollConfiguration(
             behavior: NoGlowScrollBehavior(),
-            child: child,
+            child: child!,
           ),
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
@@ -109,7 +113,8 @@ class _AppState extends State<App> {
 
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildViewportChrome(
+      BuildContext context, Widget child, AxisDirection axisDirection) {
     return child;
   }
 }

@@ -37,9 +37,9 @@ final _tagsProvider = FutureProvider.autoDispose
 
 class PostTagList extends StatefulWidget {
   PostTagList({
-    Key key,
-    @required this.tagStringComma,
-    @required this.apiEndpoint,
+    Key? key,
+    required this.tagStringComma,
+    required this.apiEndpoint,
   }) : super(key: key);
 
   final String tagStringComma;
@@ -53,17 +53,11 @@ class _PostTagListState extends State<PostTagList> {
   List<Tag> _artistTags = <Tag>[];
   List<Tag> _characterTags = <Tag>[];
   List<Tag> _copyrightTags = <Tag>[];
-  Tag _currentPopupTag;
+  Tag? _currentPopupTag;
   List<Tag> _generalTags = <Tag>[];
-  PopupMenu _menu;
+  PopupMenu? _menu;
   List<Tag> _metaTags = <Tag>[];
   Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
-
-  @override
-  void initState() {
-    PopupMenu.context = context;
-    super.initState();
-  }
 
   Widget _buildTags(List<Tag> tags) {
     return Tags(
@@ -82,11 +76,11 @@ class _PostTagListState extends State<PostTagList> {
             routeSettings: RouteSettings(arguments: [tag.rawName]),
           ),
           onLongPress: () {
-            if (_menu.isShow) {
-              _menu.dismiss();
+            if (_menu!.isShow) {
+              _menu!.dismiss();
             }
             _currentPopupTag = tag;
-            _menu.show(widgetKey: _tagKeys[tag.rawName]);
+            _menu!.show(widgetKey: _tagKeys[tag.rawName]);
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -134,7 +128,11 @@ class _PostTagListState extends State<PostTagList> {
   @override
   Widget build(BuildContext context) {
     _menu ??= PopupMenu(
-      backgroundColor: Theme.of(context).cardColor,
+      context: context,
+      config: MenuConfig(
+        backgroundColor: Theme.of(context).cardColor,
+        maxColumn: 4,
+      ),
       items: [
         MenuItem(
           title: 'Wiki',
@@ -145,15 +143,14 @@ class _PostTagListState extends State<PostTagList> {
         )
       ],
       onClickMenu: (_) {
-        print("${widget.apiEndpoint}${_currentPopupTag.rawName}");
+        print("${widget.apiEndpoint}${_currentPopupTag!.rawName}");
         Navigator.of(context).push(
           SlideInRoute(
               pageBuilder: (context, animation, secondaryAnimation) => WebView(
                   url:
-                      "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag.rawName}")),
+                      "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}")),
         );
       },
-      maxColumn: 4,
     );
 
     return Consumer(
@@ -211,7 +208,7 @@ class _PostTagListState extends State<PostTagList> {
 
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle(
-      {@required this.title, Key key, this.isFirstBlock = false})
+      {required this.title, Key? key, this.isFirstBlock = false})
       : super(key: key);
 
   final bool isFirstBlock;
@@ -235,8 +232,8 @@ class _TagBlockTitle extends StatelessWidget {
 
 class _TagHeader extends StatelessWidget {
   const _TagHeader({
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
   }) : super(key: key);
 
   final String title;
@@ -249,7 +246,7 @@ class _TagHeader extends StatelessWidget {
         title,
         style: Theme.of(context)
             .textTheme
-            .bodyText1
+            .bodyText1!
             .copyWith(fontWeight: FontWeight.w900),
       ),
     );

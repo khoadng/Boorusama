@@ -45,7 +45,7 @@ class TagRepository implements ITagRepository {
   Future<List<Tag>> getTagsByNameComma(
     String stringComma,
     int page, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
     final account = await _accountRepository.get();
 
@@ -70,7 +70,7 @@ class TagRepository implements ITagRepository {
       }
       return tags;
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {

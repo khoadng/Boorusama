@@ -9,7 +9,7 @@ class Note {
   final String content;
 
   Note({
-    @required this.coordinate,
-    @required this.content,
+    required this.coordinate,
+    required this.content,
   });
 }

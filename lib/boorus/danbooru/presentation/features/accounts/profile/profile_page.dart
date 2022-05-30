@@ -27,7 +27,7 @@ final _profile = FutureProvider.autoDispose<Profile>((ref) async {
 
   ref.maintainState = true;
 
-  return profile;
+  return profile!;
 });
 
 final _favorites = FutureProvider.autoDispose<List<Post>>((ref) async {
@@ -44,7 +44,7 @@ final _favorites = FutureProvider.autoDispose<List<Post>>((ref) async {
 
 class ProfilePage extends HookWidget {
   const ProfilePage({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override

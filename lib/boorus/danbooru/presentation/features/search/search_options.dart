@@ -19,17 +19,17 @@ final _config = Provider<IConfig>((ref) {
 
 class SearchOptions extends HookWidget {
   const SearchOptions({
-    Key key,
+    Key? key,
     this.onOptionTap,
     this.onHistoryTap,
   }) : super(key: key);
 
-  final ValueChanged<String> onOptionTap;
-  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<String>? onOptionTap;
+  final ValueChanged<String>? onHistoryTap;
 
   static const icons = {
     // "fav": Icons.favorite,
-    "favcount": FontAwesomeIcons.sortAmountUp,
+    "favcount": FontAwesomeIcons.arrowUpWideShort,
     // "id": FontAwesomeIcons.idCard,
     // "date": FontAwesomeIcons.calendar,
     "age": FontAwesomeIcons.clock,
@@ -66,7 +66,7 @@ class SearchOptions extends HookWidget {
                   children: [
                     Text(
                       "Search Options".toUpperCase(),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                     ),
@@ -89,7 +89,7 @@ class SearchOptions extends HookWidget {
               ...config.searchOptions
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
-                        onTap: () => onOptionTap(option),
+                        onTap: () => onOptionTap?.call(option),
                         title: RichText(
                           text: TextSpan(
                             children: <TextSpan>[
@@ -97,13 +97,13 @@ class SearchOptions extends HookWidget {
                                   text: "$option:",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .subtitle1
+                                      .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
                                   text: " ${config.searchOptionHitns[option]}",
                                   style: Theme.of(context)
                                       .textTheme
-                                      .caption
+                                      .caption!
                                       .copyWith(
                                           fontSize: 14,
                                           fontWeight: FontWeight.w400)),
@@ -113,7 +113,7 @@ class SearchOptions extends HookWidget {
                       ))
                   .toList(),
               SearchHistorySection(
-                onHistoryTap: (history) => onHistoryTap(history),
+                onHistoryTap: (history) => onHistoryTap?.call(history),
               ),
             ],
           ),

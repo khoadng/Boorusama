@@ -7,8 +7,8 @@ part 'search_history.g.dart';
 @JsonSerializable()
 class SearchHistory {
   SearchHistory({
-    @required this.query,
-    @required this.createdAt,
+    required this.query,
+    required this.createdAt,
   });
 
   final DateTime createdAt;

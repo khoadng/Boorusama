@@ -6,7 +6,7 @@ import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key key, @required this.onTabChanged}) : super(key: key);
+  const BottomBar({Key? key, required this.onTabChanged}) : super(key: key);
 
   final ValueChanged<int> onTabChanged;
 
@@ -15,7 +15,7 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-  int currentIndex;
+  late int currentIndex;
 
   final labels = [
     "Home",

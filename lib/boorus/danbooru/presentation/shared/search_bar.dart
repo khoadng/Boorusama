@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({
-    Key key,
+    Key? key,
     this.onTap,
     this.leading,
     this.trailing,
@@ -19,28 +19,29 @@ class SearchBar extends StatefulWidget {
     this.onSubmitted,
   }) : super(key: key);
 
-  final VoidCallback onTap;
-  final Widget leading;
-  final Widget trailing;
+  final VoidCallback? onTap;
+  final Widget? leading;
+  final Widget? trailing;
   final bool enabled;
   final bool autofocus;
-  final ValueChanged<String> onChanged;
-  final ValueChanged<String> onSubmitted;
-  final TextEditingController queryEditingController;
-  final ValueChanged<bool> onFocusChanged;
-  final String hintText;
+  final ValueChanged<String>? onChanged;
+  final ValueChanged<String>? onSubmitted;
+  final TextEditingController? queryEditingController;
+  final ValueChanged<bool>? onFocusChanged;
+  final String? hintText;
 
   @override
   _SearchBarState createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
-  TextEditingController _textEditingController;
+  late TextEditingController _textEditingController;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController = widget.queryEditingController ?? TextEditingController();
+    _textEditingController =
+        widget.queryEditingController ?? TextEditingController();
   }
 
   @override
@@ -72,9 +73,11 @@ class _SearchBarState extends State<SearchBar> {
                 Expanded(
                   child: FocusScope(
                     child: Focus(
-                      onFocusChange: (isFocus) => widget.onFocusChanged?.call(isFocus),
+                      onFocusChange: (isFocus) =>
+                          widget.onFocusChanged?.call(isFocus),
                       child: TextFormField(
-                        onFieldSubmitted: (value) => widget.onSubmitted?.call(value),
+                        onFieldSubmitted: (value) =>
+                            widget.onSubmitted?.call(value),
                         onChanged: (value) => widget.onChanged?.call(value),
                         enabled: widget.enabled,
                         decoration: InputDecoration(
@@ -84,7 +87,8 @@ class _SearchBarState extends State<SearchBar> {
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
-                            contentPadding: EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                            contentPadding:
+                                EdgeInsets.only(bottom: 11, top: 11, right: 15),
                             hintText: widget.hintText ?? 'search.hint'.tr()),
                         autofocus: widget.autofocus,
                         controller: _textEditingController,

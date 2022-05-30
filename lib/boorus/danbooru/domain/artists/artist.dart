@@ -12,14 +12,14 @@ class Artist {
   final String name;
 
   Artist({
-    @required this.id,
-    @required this.createdAt,
-    @required this.updatedAt,
-    @required this.isBanned,
-    @required this.groupName,
-    @required this.isDeleted,
-    @required this.otherNames,
-    @required this.name,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.isBanned,
+    required this.groupName,
+    required this.isDeleted,
+    required this.otherNames,
+    required this.name,
   });
 
   factory Artist.empty() => Artist(

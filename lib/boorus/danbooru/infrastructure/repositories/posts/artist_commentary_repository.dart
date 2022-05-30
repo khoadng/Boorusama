@@ -25,7 +25,7 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
   @override
   Future<ArtistCommentaryDto> getCommentary(
     int postId, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
     final account = await _accountRepository.get();
 
@@ -46,11 +46,21 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
 
       return commentaries.isNotEmpty
           ? commentaries.first
-          : ArtistCommentaryDto();
+          : ArtistCommentaryDto(
+              createdAt: DateTime.now(),
+              id: -1,
+              postId: -1,
+              updatedAt: DateTime.now(),
+            );
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
-        return ArtistCommentaryDto();
+        return ArtistCommentaryDto(
+          createdAt: DateTime.now(),
+          id: -1,
+          postId: -1,
+          updatedAt: DateTime.now(),
+        );
       } else {
         throw Exception("Failed to get artist's comment for $postId");
       }

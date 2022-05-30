@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_p
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 
 class FavoritesPage extends HookWidget {
-  const FavoritesPage({Key key}) : super(key: key);
+  const FavoritesPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +34,9 @@ class FavoritesPage extends HookWidget {
             ..removeWhere((post) {
               final p = posts.value.firstWhere(
                 (sPost) => sPost.id == post.id,
-                orElse: () => null,
+                orElse: () => Post.empty(),
               );
-              return p?.id == post.id;
+              return p.id == post.id;
             });
         }
         posts.value = [...posts.value, ...data];
@@ -72,7 +72,7 @@ class FavoritesPage extends HookWidget {
           posts: posts.value,
           child: isRefreshing.value
               ? SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                  padding: EdgeInsets.symmetric(horizontal: 12.0),
                   sliver: SliverPostGridPlaceHolder())
               : null),
     );
