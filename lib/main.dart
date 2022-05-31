@@ -2,9 +2,13 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
+import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -17,7 +21,9 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_state.da
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
+import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
+import 'boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +48,15 @@ void main() async {
 
   final settings = await settingRepository.load();
 
+  final accountBox = Hive.openBox("accounts");
+  final accountRepo = AccountRepository(accountBox);
+
+  final apiUrl = "https://safebooru.donmai.us/";
+  final api = DanbooruApi(Dio(), baseUrl: apiUrl);
+
+  final popularSearchRepo =
+      PopularSearchRepository(accountRepository: accountRepo, api: api);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -54,12 +69,15 @@ void main() async {
           ),
         ),
       ],
-      child: EasyLocalization(
-        useOnlyLangCode: true,
-        supportedLocales: [Locale('en', ''), Locale('vi', '')],
-        path: 'assets/translations',
-        fallbackLocale: Locale('en', ''),
-        child: App(),
+      child: BlocProvider(
+        create: (context) => SearchKeywordCubit(popularSearchRepo),
+        child: EasyLocalization(
+          useOnlyLangCode: true,
+          supportedLocales: [Locale('en', ''), Locale('vi', '')],
+          path: 'assets/translations',
+          fallbackLocale: Locale('en', ''),
+          child: App(),
+        ),
       ),
     ),
   );

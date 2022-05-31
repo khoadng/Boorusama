@@ -7,15 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-
-final popularSearchProvider = Provider<IPopularSearchRepository>((ref) {
-  return PopularSearchRepository(
-      accountRepository: ref.watch(accountProvider),
-      api: ref.watch(apiProvider));
-});
 
 class PopularSearchRepository implements IPopularSearchRepository {
   final IAccountRepository _accountRepository;
