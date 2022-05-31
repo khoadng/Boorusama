@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -64,9 +65,11 @@ class _AppState extends State<App> {
 
     AppRouter().setupRoutes();
 
-    if (Platform.isAndroid || Platform.isIOS) {
-      Future.delayed(
-          Duration.zero, () => context.read(downloadServiceProvider).init());
+    if (!kIsWeb) {
+      if (Platform.isAndroid || Platform.isIOS) {
+        Future.delayed(
+            Duration.zero, () => context.read(downloadServiceProvider).init());
+      }
     }
 
     // Future.delayed(

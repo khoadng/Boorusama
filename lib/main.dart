@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -20,14 +21,19 @@ import 'boorus/danbooru/application/settings/settings.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (Platform.isAndroid || Platform.isIOS) {
-    await FlutterDownloader.initialize(debug: false);
+  if (!kIsWeb) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      await FlutterDownloader.initialize(debug: false);
+    }
   }
+
   await EasyLocalization.ensureInitialized();
 
-  final dbDirectory = await getApplicationDocumentsDirectory();
+  if (!kIsWeb) {
+    final dbDirectory = await getApplicationDocumentsDirectory();
 
-  Hive.init(dbDirectory.path);
+    Hive.init(dbDirectory.path);
+  }
 
   final settingRepository = SettingRepository(
     Hive.openBox("settings"),
@@ -49,6 +55,7 @@ void main() async {
         ),
       ],
       child: EasyLocalization(
+        useOnlyLangCode: true,
         supportedLocales: [Locale('en', ''), Locale('vi', '')],
         path: 'assets/translations',
         fallbackLocale: Locale('en', ''),
