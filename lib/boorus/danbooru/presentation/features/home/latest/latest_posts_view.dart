@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,6 +117,19 @@ class LatestView extends HookWidget {
       );
     }
 
+    Widget mapStateToTagList(AsyncLoadState<Search> state) {
+      switch (state.status) {
+        case LoadStatus.success:
+          return _buildTags(state.items);
+        case LoadStatus.failure:
+          return SizedBox.shrink();
+        default:
+          return TagChipsPlaceholder();
+      }
+    }
+
+    final state = context.watch<SearchKeywordCubit>().state;
+
     return InfiniteLoadList(
       controller: infiniteListController.value,
       extendBody: true,
@@ -136,16 +150,7 @@ class LatestView extends HookWidget {
           automaticallyImplyLeading: false,
         ),
         SliverToBoxAdapter(
-          child: BlocBuilder<SearchKeywordCubit, SearchKeywordState>(
-              builder: (_, state) {
-            if (state is SearchKeywordLoaded) {
-              return _buildTags(state.searches);
-            } else if (state is SearchKeywordError) {
-              return SizedBox.shrink();
-            } else {
-              return TagChipsPlaceholder();
-            }
-          }),
+          child: mapStateToTagList(state),
         ),
       ],
       posts: posts.value,
