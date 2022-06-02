@@ -69,6 +69,7 @@ dependencies:
   shared_preferences: ^0.5.12+4
   sliding_up_panel: ^1.0.2
   timeago: ^3.2.2
+  webview_flutter: ^1.0.7
 
 dev_dependencies:
   flutter_localizations:

@@ -23,7 +23,8 @@ final postProvider = Provider<IPostRepository>((ref) {
     postRepository: postRepo,
     settings: ref.watch(settingsNotifier.state).settings,
   );
-  final removedNullImageRepo = NoImageFilterDecorator(postRepository: filteredPostRepo);
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
   return removedNullImageRepo;
 });
 
@@ -48,8 +49,13 @@ class PostRepository implements IPostRepository {
     final account = await _accountRepository.get();
 
     return _api
-        .getCuratedPosts(account.username, account.apiKey, "${date.year}-${date.month}-${date.day}",
-            scale.toString().split(".").last, page, _limit)
+        .getCuratedPosts(
+            account.username,
+            account.apiKey,
+            "${date.year}-${date.month}-${date.day}",
+            scale.toString().split(".").last,
+            page,
+            _limit)
         .then((value) async {
       final dtos = <PostDto>[];
 
@@ -70,7 +76,8 @@ class PostRepository implements IPostRepository {
         case DioError:
           final response = (obj as DioError).response;
           if (response.statusCode == 500) {
-            throw DatabaseTimeOut("Your search took too long to execute and was cancelled.");
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
           } else {
             throw Exception("Failed to get popular posts for $date");
           }
@@ -88,7 +95,8 @@ class PostRepository implements IPostRepository {
     final account = await _accountRepository.get();
 
     return _api
-        .getMostViewedPosts(account.username, account.apiKey, "${date.year}-${date.month}-${date.day}")
+        .getMostViewedPosts(account.username, account.apiKey,
+            "${date.year}-${date.month}-${date.day}")
         .then((value) async {
       final dtos = <PostDto>[];
 
@@ -109,7 +117,8 @@ class PostRepository implements IPostRepository {
         case DioError:
           final response = (obj as DioError).response;
           if (response.statusCode == 500) {
-            throw DatabaseTimeOut("Your search took too long to execute and was cancelled.");
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
           } else {
             throw Exception("Failed to get popular posts for $date");
           }
@@ -128,8 +137,13 @@ class PostRepository implements IPostRepository {
   ) async {
     final account = await _accountRepository.get();
     return _api
-        .getPopularPosts(account.username, account.apiKey, "${date.year}-${date.month}-${date.day}",
-            scale.toString().split(".").last, page, _limit)
+        .getPopularPosts(
+            account.username,
+            account.apiKey,
+            "${date.year}-${date.month}-${date.day}",
+            scale.toString().split(".").last,
+            page,
+            _limit)
         .then((value) async {
       final dtos = <PostDto>[];
 
@@ -150,7 +164,8 @@ class PostRepository implements IPostRepository {
         case DioError:
           final response = (obj as DioError).response;
           if (response.statusCode == 500) {
-            throw DatabaseTimeOut("Your search took too long to execute and was cancelled.");
+            throw DatabaseTimeOut(
+                "Your search took too long to execute and was cancelled.");
           } else {
             throw Exception("Failed to get popular posts for $date");
           }
@@ -174,8 +189,9 @@ class PostRepository implements IPostRepository {
 
     try {
       final stopwatch = Stopwatch()..start();
-      final value =
-          await _api.getPosts(account.username, account.apiKey, page, tagString, limit, cancelToken: cancelToken);
+      final value = await _api.getPosts(
+          account.username, account.apiKey, page, tagString, limit,
+          cancelToken: cancelToken);
 
       final dtos = <PostDto>[];
 
@@ -190,7 +206,8 @@ class PostRepository implements IPostRepository {
 
       final posts = dtos.map((dto) => dto.toEntity()).toList();
 
-      print('parsed posts in ${stopwatch.elapsed.inMilliseconds}ms'.toUpperCase());
+      print('parsed posts in ${stopwatch.elapsed.inMilliseconds}ms'
+          .toUpperCase());
 
       return posts;
     } on DioError catch (e) {
@@ -203,7 +220,8 @@ class PostRepository implements IPostRepository {
         throw CannotSearchMoreThanTwoTags(
             "${e.response.data['message']} Upgrade your account to search for more tags at once.");
       } else if (e.response.statusCode == 500) {
-        throw DatabaseTimeOut("Your search took too long to execute and was cancelled.");
+        throw DatabaseTimeOut(
+            "Your search took too long to execute and was cancelled.");
       } else {
         throw Exception("Failed to get posts for $tagString");
       }
