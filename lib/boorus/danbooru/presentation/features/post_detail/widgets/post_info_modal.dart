@@ -16,6 +16,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
@@ -54,6 +55,7 @@ class PostInfoModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    var apiEndpoint = useProvider(apiEndpointProvider);
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       child: Modal(
@@ -105,6 +107,7 @@ class PostInfoModal extends HookWidget {
                 )),
                 SliverToBoxAdapter(
                     child: PostTagList(
+                  apiEndpoint: apiEndpoint,
                   tagStringComma: post.tagString.toCommaFormat(),
                 )),
               ],
