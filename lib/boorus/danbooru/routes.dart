@@ -30,13 +30,6 @@ final artistHandler = Handler(handlerFunc: (
   );
 });
 
-final downloadHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  return DownloadPage();
-});
-
 final postSearchHandler = Handler(handlerFunc: (
   context,
   Map<String, List<String>> params,

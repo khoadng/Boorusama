@@ -2,8 +2,10 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -57,6 +59,8 @@ void main() async {
   final popularSearchRepo =
       PopularSearchRepository(accountRepository: accountRepo, api: api);
 
+  final tagRepo = TagRepository(api, accountRepo);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -69,14 +73,24 @@ void main() async {
           ),
         ),
       ],
-      child: BlocProvider(
-        create: (context) => SearchKeywordCubit(popularSearchRepo),
-        child: EasyLocalization(
-          useOnlyLangCode: true,
-          supportedLocales: [Locale('en', ''), Locale('vi', '')],
-          path: 'assets/translations',
-          fallbackLocale: Locale('en', ''),
-          child: App(),
+      child: MultiRepositoryProvider(
+        providers: [
+          RepositoryProvider<ITagRepository>(
+            create: (_) => tagRepo,
+            lazy: false,
+          ),
+        ],
+        child: MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (_) => SearchKeywordCubit(popularSearchRepo)),
+          ],
+          child: EasyLocalization(
+            useOnlyLangCode: true,
+            supportedLocales: [Locale('en', ''), Locale('vi', '')],
+            path: 'assets/translations',
+            fallbackLocale: Locale('en', ''),
+            child: App(),
+          ),
         ),
       ),
     ),

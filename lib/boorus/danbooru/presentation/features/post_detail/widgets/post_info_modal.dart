@@ -2,18 +2,21 @@
 import 'dart:math';
 
 // Flutter imports:
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:filesize/filesize.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
@@ -104,9 +107,14 @@ class PostInfoModal extends HookWidget {
                   ),
                 )),
                 SliverToBoxAdapter(
-                    child: PostTagList(
-                  apiEndpoint: apiEndpoint,
-                  tagStringComma: post.tagString.toCommaFormat(),
+                    child: BlocProvider(
+                  create: (context) => TagCubit(
+                      tagRepository:
+                          RepositoryProvider.of<ITagRepository>(context)),
+                  child: PostTagList(
+                    apiEndpoint: apiEndpoint,
+                    tagStringComma: post.tagString.toCommaFormat(),
+                  ),
                 )),
               ],
             ),

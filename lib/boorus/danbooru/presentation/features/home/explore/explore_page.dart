@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
@@ -16,14 +15,15 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 enum ExploreCategory {
@@ -255,14 +255,14 @@ class _ExploreItemPage extends HookWidget {
         },
         refreshBuilder: (page) => categoryToAwaitablePosts(
           category,
-          context.read(postProvider),
+          BuildContextX(context).read(postProvider),
           selectedDate.state,
           page,
           selectedTimeScale.state,
         ),
         loadMoreBuilder: (page) => categoryToAwaitablePosts(
           category,
-          context.read(postProvider),
+          BuildContextX(context).read(postProvider),
           selectedDate.state,
           page,
           selectedTimeScale.state,
@@ -516,12 +516,16 @@ class _ExploreSection extends StatelessWidget {
                         SlideInRoute(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  PostDetailPage(
-                            post: post,
-                            intitialIndex: index,
-                            posts: posts,
-                            onExit: (currentIndex) {},
-                            onPostChanged: (index) {},
+                                  RepositoryProvider.value(
+                            value:
+                                RepositoryProvider.of<ITagRepository>(context),
+                            child: PostDetailPage(
+                              post: post,
+                              intitialIndex: index,
+                              posts: posts,
+                              onExit: (currentIndex) {},
+                              onPostChanged: (index) {},
+                            ),
                           ),
                         ),
                       ),

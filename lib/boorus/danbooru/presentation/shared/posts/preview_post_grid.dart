@@ -1,13 +1,16 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
@@ -24,12 +27,15 @@ class PreviewPostGrid extends StatelessWidget {
     void handleTap(Post post, int index) {
       Navigator.of(context).push(
         SlideInRoute(
-          pageBuilder: (context, _, __) => PostDetailPage(
-            post: post,
-            intitialIndex: index,
-            posts: posts,
-            onExit: (currentIndex) => {},
-            onPostChanged: (index) => {},
+          pageBuilder: (context, _, __) => RepositoryProvider.value(
+            value: RepositoryProvider.of<ITagRepository>(context),
+            child: PostDetailPage(
+              post: post,
+              intitialIndex: index,
+              posts: posts,
+              onExit: (currentIndex) => {},
+              onPostChanged: (index) => {},
+            ),
           ),
           transitionDuration: Duration(milliseconds: 150),
         ),

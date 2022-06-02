@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags/flutter_tags.dart';
@@ -22,7 +23,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_create_page.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -67,12 +68,16 @@ class SliverPostGrid extends HookWidget {
     void handleTap(Post post, int index) {
       Navigator.of(context).push(
         SlideInRoute(
-          pageBuilder: (context, _, __) => PostDetailPage(
-            post: post,
-            intitialIndex: index,
-            posts: posts,
-            onExit: (currentIndex) => lastViewedPostIndex.value = currentIndex,
-            onPostChanged: (index) => onItemChanged(index),
+          pageBuilder: (context, _, __) => RepositoryProvider.value(
+            value: RepositoryProvider.of<ITagRepository>(context),
+            child: PostDetailPage(
+              post: post,
+              intitialIndex: index,
+              posts: posts,
+              onExit: (currentIndex) =>
+                  lastViewedPostIndex.value = currentIndex,
+              onPostChanged: (index) => onItemChanged(index),
+            ),
           ),
           transitionDuration: Duration(milliseconds: 150),
         ),
@@ -276,7 +281,9 @@ class PostPreviewSheet extends HookWidget {
                       leading: Icon(Icons.file_download),
                       title: Text("Download"),
                       onTap: () {
-                        context.read(downloadServiceProvider).download(post);
+                        BuildContextX(context)
+                            .read(downloadServiceProvider)
+                            .download(post);
                         Navigator.of(context).pop();
                       },
                     ),
