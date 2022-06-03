@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -21,6 +22,8 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
@@ -89,6 +92,8 @@ void main() async {
 
   final userRepo = UserRepository(api, accountRepo);
 
+  final favoriteRepo = FavoritePostRepository(api, accountRepo);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -116,11 +121,11 @@ void main() async {
       ],
       child: MultiRepositoryProvider(
         providers: [
-          RepositoryProvider<ITagRepository>(
-            create: (_) => tagRepo,
-            lazy: false,
-          ),
+          RepositoryProvider<ITagRepository>(create: (_) => tagRepo),
           RepositoryProvider<IProfileRepository>(create: (_) => profileRepo),
+          RepositoryProvider<IFavoritePostRepository>(
+              create: (_) => favoriteRepo),
+          RepositoryProvider<IAccountRepository>(create: (_) => accountRepo),
         ],
         child: MultiBlocProvider(
           providers: [

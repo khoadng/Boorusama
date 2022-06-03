@@ -7,6 +7,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
@@ -27,14 +30,26 @@ class PreviewPostGrid extends StatelessWidget {
     void handleTap(Post post, int index) {
       Navigator.of(context).push(
         SlideInRoute(
-          pageBuilder: (context, _, __) => RepositoryProvider.value(
-            value: RepositoryProvider.of<ITagRepository>(context),
-            child: PostDetailPage(
-              post: post,
-              intitialIndex: index,
-              posts: posts,
-              onExit: (currentIndex) => {},
-              onPostChanged: (index) => {},
+          pageBuilder: (context, _, __) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => IsPostFavoritedCubit(
+                  accountRepository:
+                      RepositoryProvider.of<IAccountRepository>(context),
+                  favoritePostRepository:
+                      RepositoryProvider.of<IFavoritePostRepository>(context),
+                ),
+              )
+            ],
+            child: RepositoryProvider.value(
+              value: RepositoryProvider.of<ITagRepository>(context),
+              child: PostDetailPage(
+                post: post,
+                intitialIndex: index,
+                posts: posts,
+                onExit: (currentIndex) => {},
+                onPostChanged: (index) => {},
+              ),
             ),
           ),
           transitionDuration: Duration(milliseconds: 150),

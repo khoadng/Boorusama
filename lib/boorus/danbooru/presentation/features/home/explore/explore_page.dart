@@ -14,6 +14,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
@@ -83,21 +86,6 @@ final _timeScaleProvider = StateProvider.autoDispose<TimeScale>((ref) {
 final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
   return DateTime.now();
 });
-
-// final _popularSearchProvider =
-//     FutureProvider.autoDispose<List<Search>>((ref) async {
-//   final repo = ref.watch(popularSearchProvider);
-
-//   var searches = await repo.getSearchByDate(DateTime.now());
-//   if (searches.isEmpty) {
-//     searches =
-//         await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
-//   }
-
-//   ref.maintainState = true;
-
-//   return searches;
-// });
 
 AutoDisposeFutureProvider<List<Post>> categoryToPostSneakpeakDataProvider(
     ExploreCategory category) {
@@ -516,15 +504,28 @@ class _ExploreSection extends StatelessWidget {
                         SlideInRoute(
                           pageBuilder:
                               (context, animation, secondaryAnimation) =>
-                                  RepositoryProvider.value(
-                            value:
-                                RepositoryProvider.of<ITagRepository>(context),
-                            child: PostDetailPage(
-                              post: post,
-                              intitialIndex: index,
-                              posts: posts,
-                              onExit: (currentIndex) {},
-                              onPostChanged: (index) {},
+                                  MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => IsPostFavoritedCubit(
+                                  accountRepository:
+                                      RepositoryProvider.of<IAccountRepository>(
+                                          context),
+                                  favoritePostRepository: RepositoryProvider.of<
+                                      IFavoritePostRepository>(context),
+                                ),
+                              )
+                            ],
+                            child: RepositoryProvider.value(
+                              value: RepositoryProvider.of<ITagRepository>(
+                                  context),
+                              child: PostDetailPage(
+                                post: post,
+                                intitialIndex: index,
+                                posts: posts,
+                                onExit: (currentIndex) {},
+                                onPostChanged: (index) {},
+                              ),
                             ),
                           ),
                         ),

@@ -18,6 +18,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
@@ -68,15 +71,27 @@ class SliverPostGrid extends HookWidget {
     void handleTap(Post post, int index) {
       Navigator.of(context).push(
         SlideInRoute(
-          pageBuilder: (context, _, __) => RepositoryProvider.value(
-            value: RepositoryProvider.of<ITagRepository>(context),
-            child: PostDetailPage(
-              post: post,
-              intitialIndex: index,
-              posts: posts,
-              onExit: (currentIndex) =>
-                  lastViewedPostIndex.value = currentIndex,
-              onPostChanged: (index) => onItemChanged(index),
+          pageBuilder: (context, _, __) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => IsPostFavoritedCubit(
+                  accountRepository:
+                      RepositoryProvider.of<IAccountRepository>(context),
+                  favoritePostRepository:
+                      RepositoryProvider.of<IFavoritePostRepository>(context),
+                ),
+              )
+            ],
+            child: RepositoryProvider.value(
+              value: RepositoryProvider.of<ITagRepository>(context),
+              child: PostDetailPage(
+                post: post,
+                intitialIndex: index,
+                posts: posts,
+                onExit: (currentIndex) =>
+                    lastViewedPostIndex.value = currentIndex,
+                onPostChanged: (index) => onItemChanged(index),
+              ),
             ),
           ),
           transitionDuration: Duration(milliseconds: 150),
