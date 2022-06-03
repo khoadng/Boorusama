@@ -18,7 +18,7 @@ final isLoggedInProvider = Provider<bool>((ref) {
 
 final authenticationStateNotifierProvider =
     StateNotifierProvider<AuthenticationNotifier>((ref) {
-  return AuthenticationNotifier(ref);
+  throw UnimplementedError("Override needed");
 });
 
 final _account = Provider<Account?>(
@@ -35,9 +35,10 @@ final accountStateProvider = Provider<AccountState>((ref) {
 });
 
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
-  AuthenticationNotifier(ProviderReference ref)
+  AuthenticationNotifier(
+      ProviderReference ref, IProfileRepository profileRepository)
       : _accountRepository = ref.read(accountProvider),
-        _profileRepository = ref.read(profileProvider),
+        _profileRepository = profileRepository,
         super(AuthenticationState(
           account: Account.empty,
           state: AccountState.unknown,

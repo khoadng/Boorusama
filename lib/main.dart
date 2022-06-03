@@ -2,12 +2,6 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -21,13 +15,29 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
+import 'boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
+import 'boorus/danbooru/infrastructure/repositories/posts/black_listed_filter_decorator.dart';
+import 'boorus/danbooru/infrastructure/repositories/posts/no_image_filter_decorator.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -65,6 +75,13 @@ void main() async {
 
   final artistRepo = ArtistRepository(api: api);
 
+  final profileRepo =
+      ProfileRepository(accountRepository: accountRepo, api: api);
+
+  final favoritesRepo = FavoritePostRepository(api, accountRepo);
+
+  final postRepo = PostRepository(api, accountRepo, favoritesRepo);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -76,6 +93,19 @@ void main() async {
             ),
           ),
         ),
+        authenticationStateNotifierProvider.overrideWithProvider(
+            StateNotifierProvider<AuthenticationNotifier>((ref) {
+          return AuthenticationNotifier(ref, profileRepo);
+        })),
+        postProvider.overrideWithProvider(Provider<IPostRepository>((ref) {
+          final filteredPostRepo = BlackListedFilterDecorator(
+            postRepository: postRepo,
+            settings: ref.watch(settingsNotifier.state).settings,
+          );
+          final removedNullImageRepo =
+              NoImageFilterDecorator(postRepository: filteredPostRepo);
+          return removedNullImageRepo;
+        })),
       ],
       child: MultiRepositoryProvider(
         providers: [
@@ -83,12 +113,17 @@ void main() async {
             create: (_) => tagRepo,
             lazy: false,
           ),
+          RepositoryProvider<IProfileRepository>(create: (_) => profileRepo),
         ],
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => SearchKeywordCubit(popularSearchRepo)),
             BlocProvider(
                 create: (_) => ArtistCubit(artistRepository: artistRepo)),
+            BlocProvider(
+                create: (_) => FavoritesCubit(postRepository: postRepo)),
+            BlocProvider(
+                create: (_) => ProfileCubit(profileRepository: profileRepo)),
           ],
           child: EasyLocalization(
             useOnlyLangCode: true,

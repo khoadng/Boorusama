@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-Future<void> TryAsync<T extends Object>({
+Future<void> TryAsync<T extends Object?>({
   required Future<T> action(),
   required void onSuccess(T data),
   void onFailure(StackTrace stackTrace, Object error)?,

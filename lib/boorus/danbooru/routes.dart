@@ -1,14 +1,15 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fluro/fluro.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/downloads/download_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
@@ -56,7 +57,13 @@ final userHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   // final String userId = params["id"][0];
 
-  return ProfilePage();
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider.value(value: BlocProvider.of<ProfileCubit>(context!)),
+      BlocProvider.value(value: BlocProvider.of<FavoritesCubit>(context)),
+    ],
+    child: ProfilePage(),
+  );
 });
 
 final loginHandler =

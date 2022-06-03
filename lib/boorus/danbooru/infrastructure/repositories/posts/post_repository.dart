@@ -3,36 +3,24 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
-import 'black_listed_filter_decorator.dart';
-import 'no_image_filter_decorator.dart';
 
 final postProvider = Provider<IPostRepository>((ref) {
-  final postRepo = PostRepository(ref);
-  final filteredPostRepo = BlackListedFilterDecorator(
-    postRepository: postRepo,
-    settings: ref.watch(settingsNotifier.state).settings,
-  );
-  final removedNullImageRepo =
-      NoImageFilterDecorator(postRepository: filteredPostRepo);
-  return removedNullImageRepo;
+  throw UnimplementedError();
 });
 
 class PostRepository implements IPostRepository {
-  PostRepository(ProviderReference ref)
-      : _api = ref.watch(apiProvider),
-        _accountRepository = ref.watch(accountProvider),
-        _favoritePostRepository = ref.watch(favoriteProvider);
+  PostRepository(IApi api, IAccountRepository accountRepository,
+      IFavoritePostRepository favoritePostRepository)
+      : _api = api,
+        _accountRepository = accountRepository,
+        _favoritePostRepository = favoritePostRepository;
 
   final IAccountRepository _accountRepository;
   final IApi _api;
