@@ -27,11 +27,14 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popul
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'app.dart';
+import 'boorus/danbooru/application/comment/comment_cubit.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
 import 'boorus/danbooru/domain/posts/i_post_repository.dart';
@@ -82,6 +85,10 @@ void main() async {
 
   final postRepo = PostRepository(api, accountRepo, favoritesRepo);
 
+  final commentRepo = CommentRepository(api, accountRepo);
+
+  final userRepo = UserRepository(api, accountRepo);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -124,6 +131,12 @@ void main() async {
                 create: (_) => FavoritesCubit(postRepository: postRepo)),
             BlocProvider(
                 create: (_) => ProfileCubit(profileRepository: profileRepo)),
+            BlocProvider(
+              create: (context) => CommentCubit(
+                commentRepository: commentRepo,
+                userRepository: userRepo,
+              ),
+            ),
           ],
           child: EasyLocalization(
             useOnlyLangCode: true,
