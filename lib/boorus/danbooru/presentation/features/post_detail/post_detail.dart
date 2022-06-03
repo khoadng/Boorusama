@@ -99,7 +99,7 @@ class PostDetail extends HookWidget {
           child: WebView(
             initialUrl: 'about:blank',
             onWebViewCreated: (controller) {
-              return controller.loadUrl(Uri.dataFromString(videoHtml,
+              controller.loadUrl(Uri.dataFromString(videoHtml,
                       mimeType: 'text/html',
                       encoding: Encoding.getByName('utf-8'))
                   .toString());
