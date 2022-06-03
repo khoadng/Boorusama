@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,6 +11,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
+import 'package:path/path.dart' as p;
+import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -83,7 +87,28 @@ class PostDetail extends HookWidget {
 
     Widget postWidget;
     if (post.isVideo) {
-      postWidget = PostVideo(post: post);
+      if (p.extension(post.normalImageUri.toString()) == ".webm") {
+        final String videoHtml = """
+            <body style="background-color:black;">
+            <center><video controls allowfulscreen width=${MediaQuery.of(context).size.width} height=${MediaQuery.of(context).size.height} controlsList="nodownload" style="background-color:black;" autoplay loop>
+                <source src=${post.normalImageUri.toString()}#t=0.01 type="video/webm" />
+            </video></center>""";
+        postWidget = Container(
+          color: Colors.black,
+          height: MediaQuery.of(context).size.height,
+          child: WebView(
+            initialUrl: 'about:blank',
+            onWebViewCreated: (controller) {
+              return controller.loadUrl(Uri.dataFromString(videoHtml,
+                      mimeType: 'text/html',
+                      encoding: Encoding.getByName('utf-8'))
+                  .toString());
+            },
+          ),
+        );
+      } else {
+        postWidget = PostVideo(post: post);
+      }
     } else {
       postWidget = GestureDetector(
           onTap: () {

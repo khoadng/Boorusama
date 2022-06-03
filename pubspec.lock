@@ -1219,7 +1219,7 @@ packages:
     source: hosted
     version: "2.2.0"
   webview_flutter:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: webview_flutter
       url: "https://pub.dartlang.org"

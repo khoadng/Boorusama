@@ -12,7 +12,18 @@ import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 
 final postProvider = Provider<IPostRepository>((ref) {
+<<<<<<< HEAD
   throw UnimplementedError();
+=======
+  final postRepo = PostRepository(ref);
+  final filteredPostRepo = BlackListedFilterDecorator(
+    postRepository: postRepo,
+    settings: ref.watch(settingsNotifier.state).settings,
+  );
+  final removedNullImageRepo =
+      NoImageFilterDecorator(postRepository: filteredPostRepo);
+  return removedNullImageRepo;
+>>>>>>> master
 });
 
 class PostRepository implements IPostRepository {
@@ -212,8 +223,13 @@ class PostRepository implements IPostRepository {
         throw Exception("Failed to get posts for $tagString");
       } else if (e.response!.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
+<<<<<<< HEAD
             "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
       } else if (e.response!.statusCode == 500) {
+=======
+            "${e.response.data['message']} Upgrade your account to search for more tags at once.");
+      } else if (e.response.statusCode == 500) {
+>>>>>>> master
         throw DatabaseTimeOut(
             "Your search took too long to execute and was cancelled.");
       } else {
