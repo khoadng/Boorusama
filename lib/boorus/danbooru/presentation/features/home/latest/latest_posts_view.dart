@@ -117,10 +117,10 @@ class LatestView extends HookWidget {
       );
     }
 
-    Widget mapStateToTagList(AsyncLoadState<Search> state) {
+    Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
       switch (state.status) {
         case LoadStatus.success:
-          return _buildTags(state.items);
+          return _buildTags(state.data!);
         case LoadStatus.failure:
           return SizedBox.shrink();
         default:

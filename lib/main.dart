@@ -2,8 +2,10 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:dio/dio.dart';
@@ -61,6 +63,8 @@ void main() async {
 
   final tagRepo = TagRepository(api, accountRepo);
 
+  final artistRepo = ArtistRepository(api: api);
+
   runApp(
     ProviderScope(
       overrides: [
@@ -83,6 +87,8 @@ void main() async {
         child: MultiBlocProvider(
           providers: [
             BlocProvider(create: (_) => SearchKeywordCubit(popularSearchRepo)),
+            BlocProvider(
+                create: (_) => ArtistCubit(artistRepository: artistRepo)),
           ],
           child: EasyLocalization(
             useOnlyLangCode: true,

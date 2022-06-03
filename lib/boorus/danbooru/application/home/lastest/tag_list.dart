@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../common.dart';
 
-class SearchKeywordCubit extends Cubit<AsyncLoadState<Search>> {
+class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
   SearchKeywordCubit(
     this.popularSearchRepository,
   ) : super(const AsyncLoadState.initial());

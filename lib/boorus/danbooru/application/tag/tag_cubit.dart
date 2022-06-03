@@ -32,7 +32,7 @@ String tagCategoryToString(TagCategory category) {
   }
 }
 
-class TagCubit extends Cubit<AsyncLoadState<TagGroupItem>> {
+class TagCubit extends Cubit<AsyncLoadState<List<TagGroupItem>>> {
   TagCubit({
     required this.tagRepository,
   }) : super(AsyncLoadState.initial());

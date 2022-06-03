@@ -20,18 +20,18 @@ enum LoadStatus { initial, loading, success, failure }
 class AsyncLoadState<T extends Object> extends Equatable {
   const AsyncLoadState._({
     this.status = LoadStatus.initial,
-    this.items = const [],
+    this.data = null,
   });
 
   final LoadStatus status;
-  final List<T> items;
+  final T? data;
 
   const AsyncLoadState.initial() : this._();
   const AsyncLoadState.loading() : this._();
-  const AsyncLoadState.success(List<T> items)
-      : this._(status: LoadStatus.success, items: items);
+  const AsyncLoadState.success(T data)
+      : this._(status: LoadStatus.success, data: data);
   const AsyncLoadState.failure() : this._(status: LoadStatus.failure);
 
   @override
-  List<Object> get props => [status, items];
+  List<Object?> get props => [status, data];
 }

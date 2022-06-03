@@ -134,14 +134,14 @@ class _PostTagListState extends State<PostTagList> {
       },
     );
 
-    return BlocBuilder<TagCubit, AsyncLoadState<TagGroupItem>>(
+    return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
           final widgets = <Widget>[];
-          for (var g in state.items) {
+          for (var g in state.data!) {
             widgets.add(_TagBlockTitle(
               title: g.groupName,
-              isFirstBlock: g.groupName == state.items.first.groupName,
+              isFirstBlock: g.groupName == state.data!.first.groupName,
             ));
             widgets.add(_buildTags(g.tags));
           }
