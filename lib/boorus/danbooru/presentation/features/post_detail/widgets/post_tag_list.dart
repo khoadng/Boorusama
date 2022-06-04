@@ -84,12 +84,11 @@ class _PostTagListState extends State<PostTagList> {
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
             key: tagKey,
             children: [
               Chip(
-                  padding: EdgeInsets.all(4.0),
-                  labelPadding: EdgeInsets.all(1.0),
-                  visualDensity: VisualDensity.compact,
+                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                   backgroundColor: Color(tag.tagHexColor),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
@@ -97,7 +96,7 @@ class _PostTagListState extends State<PostTagList> {
                           bottomLeft: Radius.circular(8))),
                   label: ConstrainedBox(
                     constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.85),
+                        maxWidth: MediaQuery.of(context).size.width * 0.70),
                     child: Text(
                       tag.displayName,
                       overflow: TextOverflow.fade,
@@ -105,9 +104,7 @@ class _PostTagListState extends State<PostTagList> {
                     ),
                   )),
               Chip(
-                padding: EdgeInsets.all(2.0),
-                labelPadding: EdgeInsets.all(1.0),
-                visualDensity: VisualDensity.compact,
+                visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                 backgroundColor: Colors.grey[800],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
