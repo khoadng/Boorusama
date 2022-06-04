@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,18 +86,26 @@ class PostDetail extends HookWidget {
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
 
+    useEffect(() {
+      // Enable virtual display.
+      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    }, []);
+
     Widget postWidget;
     if (post.isVideo) {
       if (p.extension(post.normalImageUri.toString()) == ".webm") {
         final String videoHtml = """
-            <body style="background-color:black;">
-            <center><video controls allowfulscreen width=${MediaQuery.of(context).size.width} height=${MediaQuery.of(context).size.height} controlsList="nodownload" style="background-color:black;" autoplay loop>
+            <center>
+              <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${post.normalImageUri.toString()}#t=0.01 type="video/webm" />
-            </video></center>""";
+              </video>
+            </center>""";
         postWidget = Container(
           color: Colors.black,
           height: MediaQuery.of(context).size.height,
           child: WebView(
+            backgroundColor: Colors.black,
+            allowsInlineMediaPlayback: true,
             initialUrl: 'about:blank',
             onWebViewCreated: (controller) {
               controller.loadUrl(Uri.dataFromString(videoHtml,
