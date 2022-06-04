@@ -2,14 +2,17 @@
 import 'dart:io';
 
 // Flutter imports:
-import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -36,24 +39,38 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  runApp(
-    ProviderScope(
-      overrides: [
-        settingsNotifier.overrideWithProvider(
-          StateNotifierProvider<SettingsStateNotifier>(
-            (ref) => SettingsStateNotifier(
-              settingRepository: settingRepository,
-              setting: SettingsState(settings: settings),
+  final run = () => runApp(
+        ProviderScope(
+          overrides: [
+            settingsNotifier.overrideWithProvider(
+              StateNotifierProvider<SettingsStateNotifier>(
+                (ref) => SettingsStateNotifier(
+                  settingRepository: settingRepository,
+                  setting: SettingsState(settings: settings),
+                ),
+              ),
             ),
+          ],
+          child: EasyLocalization(
+            supportedLocales: [Locale('en', ''), Locale('vi', '')],
+            path: 'assets/translations',
+            fallbackLocale: Locale('en', ''),
+            child: App(),
           ),
         ),
-      ],
-      child: EasyLocalization(
-        supportedLocales: [Locale('en', ''), Locale('vi', '')],
-        path: 'assets/translations',
-        fallbackLocale: Locale('en', ''),
-        child: App(),
-      ),
-    ),
-  );
+      );
+
+  await dotenv.load(fileName: ".env");
+  print("Environtment file loaded");
+  if (kDebugMode) {
+    run();
+  } else {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = dotenv.env['SENTRY_DSN'];
+        options.tracesSampleRate = 0.9;
+      },
+      appRunner: run,
+    );
+  }
 }

@@ -77,6 +77,8 @@ dependencies:
   webview_flutter: ^2.8.0
   share_plus: ^4.0.6
   flutter_cache_manager: ^3.3.0
+  sentry_flutter: ^6.5.1
+  flutter_dotenv: ^5.0.2
 
 dev_dependencies:
   flutter_localizations:
@@ -97,6 +99,7 @@ flutter:
     - assets/animations/
     - assets/icon/
     - assets/translations/
+    - .env
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
