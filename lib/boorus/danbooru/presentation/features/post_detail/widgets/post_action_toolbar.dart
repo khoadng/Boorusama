@@ -84,65 +84,77 @@ class PostActionToolbar extends HookWidget {
       //       post.downScore.toString(),
       //       style: TextStyle(color: Colors.white),
       //     )),
-      IconButton(
-        onPressed: () => showBarModalBottomSheet(
-          expand: false,
-          context: context,
-          builder: (context) => CommentPage(
-            postId: post.id,
-          ),
-        ),
-        icon: FaIcon(
-          FontAwesomeIcons.comment,
-          color: Colors.white,
-        ),
-      ),
     ];
-    if (isLoggedIn) {
-      final button = isFaved.when(
-          data: (value) {
-            final button = TextButton.icon(
-                onPressed: () {
-                  isFaved.whenData((value) async {
-                    final result = value
-                        ? context
-                            .read(favoriteProvider)
-                            .removeFromFavorites(post.id)
-                        : context
-                            .read(favoriteProvider)
-                            .addToFavorites(post.id);
+    final favbutton = isFaved.when(
+        data: (value) {
+          final button = TextButton.icon(
+              onPressed: () {
+                if (!isLoggedIn) {
+                  final snackbar = SnackBar(
+                    behavior: SnackBarBehavior.floating,
+                    duration: Duration(seconds: 3),
+                    elevation: 6.0,
+                    content: Text(
+                      'You have to log in to perform this action',
+                    ),
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                  return;
+                }
 
-                    await result;
-                    context.refresh(_isFavedProvider(post.id));
-                  });
-                },
-                icon: value
-                    ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
-                    : FaIcon(
-                        FontAwesomeIcons.heart,
-                        color: Colors.white,
-                      ),
-                label: Text(
-                  favCount.value.toString(),
-                  style: TextStyle(color: Colors.white),
-                ));
-            return button;
-          },
-          loading: () => Center(
-                child: TextButton.icon(
-                    onPressed: null,
-                    icon: FaIcon(
-                      FontAwesomeIcons.spinner,
+                isFaved.whenData((value) async {
+                  final result = value
+                      ? context
+                          .read(favoriteProvider)
+                          .removeFromFavorites(post.id)
+                      : context.read(favoriteProvider).addToFavorites(post.id);
+
+                  await result;
+                  context.refresh(_isFavedProvider(post.id));
+                });
+              },
+              icon: value
+                  ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
+                  : FaIcon(
+                      FontAwesomeIcons.heart,
                       color: Colors.white,
                     ),
-                    label: Text(
-                      post.favCount.toString(),
-                      style: TextStyle(color: Colors.white),
-                    )),
-              ),
-          error: (e, m) => SizedBox.shrink());
-      buttons.add(button);
-    }
+              label: Text(
+                favCount.value.toString(),
+                style: TextStyle(color: Colors.white),
+              ));
+          return button;
+        },
+        loading: () => Center(
+              child: TextButton.icon(
+                  onPressed: null,
+                  icon: FaIcon(
+                    FontAwesomeIcons.spinner,
+                    color: Colors.white,
+                  ),
+                  label: Text(
+                    post.favCount.toString(),
+                    style: TextStyle(color: Colors.white),
+                  )),
+            ),
+        error: (e, m) => SizedBox.shrink());
+    buttons.add(favbutton);
+
+    final commentButton = IconButton(
+      onPressed: () => showBarModalBottomSheet(
+        expand: false,
+        context: context,
+        builder: (context) => CommentPage(
+          postId: post.id,
+        ),
+      ),
+      icon: FaIcon(
+        FontAwesomeIcons.comment,
+        color: Colors.white,
+      ),
+    );
+
+    buttons.add(commentButton);
 
     final shareButton = IconButton(
       onPressed: () => showMaterialModalBottomSheet(
@@ -172,8 +184,8 @@ class PostActionToolbar extends HookWidget {
       ),
     );
 
-    buttons.add(shareButton);
     buttons.add(downloadButton);
+    buttons.add(shareButton);
 
     return ButtonBar(
         alignment: MainAxisAlignment.spaceEvenly, children: buttons);
