@@ -35,9 +35,11 @@ class PostActionToolbar extends HookWidget {
   const PostActionToolbar({
     Key? key,
     required this.post,
+    required this.imagePath,
   }) : super(key: key);
 
   final Post post;
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -150,7 +152,9 @@ class PostActionToolbar extends HookWidget {
         builder: (context) => ModalShare(
           endpoint: endpoint,
           onTap: (value) => Share.share(value),
+          onTapFile: (filePath) => Share.shareFiles([filePath]),
           post: post,
+          imagePath: imagePath,
         ),
       ),
       icon: FaIcon(
@@ -185,11 +189,15 @@ class ModalShare extends StatelessWidget {
     required this.post,
     required this.endpoint,
     required this.onTap,
+    required this.onTapFile,
+    required this.imagePath,
   }) : super(key: key);
 
   final void Function(String value) onTap;
+  final void Function(String filePath) onTapFile;
   final Post post;
   final String endpoint;
+  final String? imagePath;
 
   @override
   Widget build(BuildContext context) {
@@ -216,6 +224,15 @@ class ModalShare extends StatelessWidget {
               onTap.call(getShareContent(ShareMode.booru, post, endpoint));
             },
           ),
+          if (imagePath != null)
+            ListTile(
+              title: Text('Share image'),
+              leading: FaIcon(FontAwesomeIcons.fileImage),
+              onTap: () {
+                Navigator.of(context).pop();
+                onTapFile.call(imagePath!);
+              },
+            ),
         ],
       ),
     ));

@@ -76,6 +76,7 @@ dependencies:
   url_launcher: ^6.1.2
   webview_flutter: ^2.8.0
   share_plus: ^4.0.6
+  flutter_cache_manager: ^3.3.0
 
 dev_dependencies:
   flutter_localizations:

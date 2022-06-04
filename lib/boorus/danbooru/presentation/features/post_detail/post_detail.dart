@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -86,6 +87,8 @@ class PostDetail extends HookWidget {
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
 
+    final imagePath = useState<String?>(null);
+
     useEffect(() {
       // Enable virtual display.
       if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
@@ -126,6 +129,14 @@ class PostDetail extends HookWidget {
         },
         child: CachedNetworkImage(
           imageUrl: post.normalImageUri.toString(),
+          imageBuilder: (context, imageProvider) {
+            DefaultCacheManager()
+                .getFileFromCache(post.normalImageUri.toString())
+                .then((file) {
+              imagePath.value = file!.file.path;
+            });
+            return Image(image: imageProvider);
+          },
           progressIndicatorBuilder: (context, url, progress) => FittedBox(
             fit: BoxFit.cover,
             child: Container(
@@ -246,7 +257,13 @@ class PostDetail extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       InformationSection(post: post),
-                      PostActionToolbar(post: post),
+                      ValueListenableBuilder<String?>(
+                        valueListenable: imagePath,
+                        builder: (context, value, child) => PostActionToolbar(
+                          post: post,
+                          imagePath: value,
+                        ),
+                      ),
                       Divider(height: 8, thickness: 1),
                       buildRecommendedArtistList(),
                       buildRecommendedCharacterList(),
@@ -274,9 +291,7 @@ class InformationSection extends HookWidget {
         backgroundColor: Colors.transparent,
         context: context,
         builder: (context) => PostInfoModal(
-          post: post,
-          scrollController: ModalScrollController.of(context)!,
-        ),
+            post: post, scrollController: ModalScrollController.of(context)!),
       ),
       child: Padding(
         padding: EdgeInsets.all(16),
