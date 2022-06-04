@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 
@@ -163,7 +164,16 @@ class PostActionToolbar extends HookWidget {
       ),
     );
 
+    final downloadButton = IconButton(
+      onPressed: () => context.read(downloadServiceProvider).download(post),
+      icon: FaIcon(
+        FontAwesomeIcons.download,
+        color: Colors.white,
+      ),
+    );
+
     buttons.add(shareButton);
+    buttons.add(downloadButton);
 
     return ButtonBar(
         alignment: MainAxisAlignment.spaceEvenly, children: buttons);
