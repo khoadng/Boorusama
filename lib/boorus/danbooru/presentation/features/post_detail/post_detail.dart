@@ -120,19 +120,21 @@ class PostDetail extends HookWidget {
       }
     } else {
       postWidget = GestureDetector(
-          onTap: () {
-            AppRouter.router.navigateTo(context, "/posts/image",
-                routeSettings: RouteSettings(arguments: [post]));
-          },
-          child: CachedNetworkImage(
-            imageUrl: post.normalImageUri.toString(),
-            placeholder: (_, __) => minimal
-                ? SizedBox.shrink()
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: post.previewImageUri.toString(),
-                  ),
-          ));
+        onTap: () {
+          AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: [post]));
+        },
+        child: CachedNetworkImage(
+          imageUrl: post.normalImageUri.toString(),
+          progressIndicatorBuilder: (context, url, progress) => FittedBox(
+            fit: BoxFit.cover,
+            child: Container(
+              height: post.height,
+              width: post.width,
+            ),
+          ),
+        ),
+      );
     }
 
     Widget buildRecommendedArtistList() {
