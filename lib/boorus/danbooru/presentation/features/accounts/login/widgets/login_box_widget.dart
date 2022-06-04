@@ -10,8 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 
 final _showPasswordProvider = StateProvider<bool>((ref) => false);
 final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
@@ -143,13 +142,7 @@ class LoginBox extends HookWidget {
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).pop();
-                              Navigator.of(context).push(
-                                SlideInRoute(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      WebView(url: logInUrl),
-                                ),
-                              );
+                              launchExternalUrl(Uri.parse(logInUrl));
                             },
                             child: Text("Open web browser"),
                           ),

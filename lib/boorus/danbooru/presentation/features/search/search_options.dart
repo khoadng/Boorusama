@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/config_provider.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 
 final _config = Provider<IConfig>((ref) {
@@ -71,15 +71,14 @@ class SearchOptions extends HookWidget {
                           ),
                     ),
                     IconButton(
-                      onPressed: () => Navigator.of(context).push(
-                        SlideInRoute(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  WebView(url: config.cheatSheetUrl),
-                        ),
-                      ),
+                      onPressed: () {
+                        launchExternalUrl(
+                          Uri.parse(config.cheatSheetUrl),
+                          mode: LaunchMode.platformDefault,
+                        );
+                      },
                       icon: FaIcon(
-                        FontAwesomeIcons.questionCircle,
+                        FontAwesomeIcons.circleQuestion,
                         size: 18,
                       ),
                     )

@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/core/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -9,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:dio/dio.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
 
@@ -18,8 +18,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'post_tag_list.dart';
 
 final _artistCommentaryProvider = FutureProvider.autoDispose
@@ -188,15 +186,10 @@ class ArtistSection extends HookWidget {
                   );
                   ScaffoldMessenger.of(context).showSnackBar(snackbar);
                 }),
-                onTap: () => post.source != null
-                    ? Navigator.of(context).push(
-                        SlideInRoute(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  WebView(url: post.source.uri.toString()),
-                        ),
-                      )
-                    : null,
+                onTap: () {
+                  if (post.source.uri == null) return;
+                  launchExternalUrl(post.source.uri!);
+                },
                 child: Text(
                   post.source.uri.toString(),
                   maxLines: 1,

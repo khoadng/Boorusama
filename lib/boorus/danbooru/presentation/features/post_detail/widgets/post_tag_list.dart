@@ -6,14 +6,14 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
 import 'package:popup_menu/popup_menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/utils.dart';
 
 final _tagsProvider = FutureProvider.autoDispose
     .family<List<Tag>, String>((ref, tagStringComma) async {
@@ -143,12 +143,10 @@ class _PostTagListState extends State<PostTagList> {
         )
       ],
       onClickMenu: (_) {
-        print("${widget.apiEndpoint}${_currentPopupTag!.rawName}");
-        Navigator.of(context).push(
-          SlideInRoute(
-              pageBuilder: (context, animation, secondaryAnimation) => WebView(
-                  url:
-                      "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}")),
+        launchExternalUrl(
+          Uri.parse(
+              "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}"),
+          mode: LaunchMode.platformDefault,
         );
       },
     );
