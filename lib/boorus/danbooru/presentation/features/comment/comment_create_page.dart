@@ -12,17 +12,18 @@ import 'widgets/editor_spacer.dart';
 
 class CommentCreatePage extends HookWidget {
   const CommentCreatePage({
-    Key key,
-    @required this.postId,
+    Key? key,
+    required this.postId,
     this.initialContent,
   }) : super(key: key);
 
   final int postId;
-  final String initialContent;
+  final String? initialContent;
 
   @override
   Widget build(BuildContext context) {
-    final textEditingController = useTextEditingController(text: initialContent ?? "");
+    final textEditingController =
+        useTextEditingController(text: initialContent ?? "");
 
     return Scaffold(
       body: SafeArea(
@@ -62,7 +63,8 @@ class CommentCreatePage extends HookWidget {
                     padding: const EdgeInsets.all(12),
                     child: TextField(
                       controller: textEditingController,
-                      decoration: InputDecoration.collapsed(hintText: 'commentCreate.hint'.tr()),
+                      decoration: InputDecoration.collapsed(
+                          hintText: 'commentCreate.hint'.tr()),
                       autofocus: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,

@@ -11,13 +11,13 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
-    Key key,
-    @required this.posts,
+    Key? key,
+    required this.posts,
     this.physics,
   }) : super(key: key);
 
   final List<Post> posts;
-  final ScrollPhysics physics;
+  final ScrollPhysics? physics;
 
   @override
   Widget build(BuildContext context) {

@@ -12,10 +12,10 @@ class ArtistCommentary {
   final String translatedDescription;
 
   ArtistCommentary(
-      {@required this.originalTitle,
-      @required this.originalDescription,
-      @required this.translatedTitle,
-      @required this.translatedDescription});
+      {required this.originalTitle,
+      required this.originalDescription,
+      required this.translatedTitle,
+      required this.translatedDescription});
 
   bool get isTranslated =>
       translatedTitle.isNotEmpty || translatedDescription.isNotEmpty;

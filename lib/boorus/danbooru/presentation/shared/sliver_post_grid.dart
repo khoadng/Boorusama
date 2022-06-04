@@ -31,10 +31,10 @@ import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
-    Key key,
-    @required this.posts,
-    @required this.scrollController,
-    @required this.onItemChanged,
+    Key? key,
+    required this.posts,
+    required this.scrollController,
+    required this.onItemChanged,
   }) : super(key: key);
 
   final List<Post> posts;
@@ -44,13 +44,13 @@ class SliverPostGrid extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, __) {
+    useValueChanged(lastViewedPostIndex.value, (_, Null __) {
       scrollController.scrollToIndex(lastViewedPostIndex.value);
     });
 
     // Workaround to prevent memory leak, clear images every 10 seconds
     final timer = useState(Timer.periodic(Duration(seconds: 10), (_) {
-      PaintingBinding.instance.imageCache.clearLiveImages();
+      PaintingBinding.instance!.imageCache!.clearLiveImages();
     }));
 
     useEffect(() {
@@ -59,7 +59,7 @@ class SliverPostGrid extends HookWidget {
 
     // Clear live image cache everytime this widget built
     useEffect(() {
-      PaintingBinding.instance.imageCache.clearLiveImages();
+      PaintingBinding.instance!.imageCache!.clearLiveImages();
 
       return () {};
     });
@@ -181,15 +181,15 @@ class SliverPostGrid extends HookWidget {
 
 class PostPreviewSheet extends HookWidget {
   const PostPreviewSheet({
-    Key key,
-    @required this.post,
-    @required this.scrollController,
+    Key? key,
+    required this.post,
+    required this.scrollController,
     this.onImageTap,
   }) : super(key: key);
 
   final Post post;
-  final ScrollController scrollController;
-  final VoidCallback onImageTap;
+  final ScrollController? scrollController;
+  final VoidCallback? onImageTap;
 
   @override
   Widget build(BuildContext context) {
@@ -230,7 +230,7 @@ class PostPreviewSheet extends HookWidget {
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
-                    onImageTap();
+                    onImageTap?.call();
                   },
                   child: CachedNetworkImage(
                     fit: BoxFit.contain,
@@ -252,8 +252,8 @@ class PostPreviewSheet extends HookWidget {
                     padding: EdgeInsets.all(4.0),
                     labelPadding: EdgeInsets.all(1.0),
                     visualDensity: VisualDensity.compact,
-                    backgroundColor:
-                        Color(TagHelper.hexColorOf(tags[index][1])),
+                    backgroundColor: Color(
+                        TagHelper.hexColorOf(tags[index][1] as TagCategory)),
                     label: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85),

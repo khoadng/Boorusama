@@ -7,6 +7,6 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artist.dart';
 abstract class IArtistRepository {
   Future<Artist> getArtist(
     String name, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 }

@@ -19,7 +19,8 @@ final profileProvider = Provider<IProfileRepository>((ref) {
 });
 
 class ProfileRepository implements IProfileRepository {
-  ProfileRepository({@required IAccountRepository accountRepository, @required IApi api})
+  ProfileRepository(
+      {required IAccountRepository accountRepository, required IApi api})
       : _api = api,
         _accountRepository = accountRepository;
 
@@ -27,22 +28,24 @@ class ProfileRepository implements IProfileRepository {
   final IApi _api;
 
   @override
-  Future<Profile> getProfile({
-    CancelToken cancelToken,
-    String apiKey,
-    String username,
+  Future<Profile?> getProfile({
+    CancelToken? cancelToken,
+    String? apiKey,
+    String? username,
   }) async {
     var value;
     try {
       if (apiKey != null && username != null) {
-        value = await _api.getProfile(username, apiKey, cancelToken: cancelToken);
+        value =
+            await _api.getProfile(username, apiKey, cancelToken: cancelToken);
       } else {
         final account = await _accountRepository.get();
-        value = await _api.getProfile(account.username, account.apiKey, cancelToken: cancelToken);
+        value = await _api.getProfile(account.username, account.apiKey,
+            cancelToken: cancelToken);
       }
       return Profile.fromJson(value.response.data);
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return null;
       } else {

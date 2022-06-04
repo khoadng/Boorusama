@@ -3,8 +3,8 @@ import 'package:meta/meta.dart';
 
 class SlideShowConfiguration {
   SlideShowConfiguration({
-    @required this.interval,
-    @required this.skipAnimation,
+    required this.interval,
+    required this.skipAnimation,
   });
   final int interval;
   final bool skipAnimation;

@@ -26,13 +26,13 @@ abstract class IApi {
 
   Future<HttpResponse> getArtist(
     String name, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getComments(
     int postId,
     int limit, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> postComment(
@@ -52,7 +52,7 @@ abstract class IApi {
 
   Future<HttpResponse> getNotes(
     int postId, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getPost(
@@ -65,13 +65,13 @@ abstract class IApi {
     String login,
     String apiKey,
     int postId, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getProfile(
     String login,
     String apiKey, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getPosts(
@@ -80,7 +80,7 @@ abstract class IApi {
     int page,
     String tags,
     int limit, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getPopularPosts(
@@ -131,13 +131,13 @@ abstract class IApi {
     String stringComma,
     String order,
     int limit, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getUsersByIdStringComma(
     String idComma,
     int limit, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 
   Future<HttpResponse> getUserById(
@@ -148,6 +148,6 @@ abstract class IApi {
 
   Future<HttpResponse> getWiki(
     String subject, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   });
 }

@@ -2,14 +2,14 @@ import 'wiki.dart';
 
 class WikiDto {
   WikiDto({
-    this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.title,
-    this.body,
-    this.isLocked,
-    this.otherNames,
-    this.isDeleted,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.title,
+    required this.body,
+    required this.isLocked,
+    required this.otherNames,
+    required this.isDeleted,
   });
 
   final int id;

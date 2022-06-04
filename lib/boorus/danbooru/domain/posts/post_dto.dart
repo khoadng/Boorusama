@@ -8,69 +8,69 @@ import 'tag_string.dart';
 class PostDto {
   PostDto({
     this.id,
-    this.createdAt,
-    this.uploaderId,
-    this.score,
-    this.source,
-    this.md5,
+    required this.createdAt,
+    required this.uploaderId,
+    required this.score,
+    required this.source,
+    required this.md5,
     this.lastCommentBumpedAt,
-    this.rating,
-    this.imageWidth,
-    this.imageHeight,
-    this.tagString,
-    this.favCount,
-    this.fileExt,
+    required this.rating,
+    required this.imageWidth,
+    required this.imageHeight,
+    required this.tagString,
+    required this.favCount,
+    required this.fileExt,
     this.lastNotedAt,
     this.parentId,
-    this.hasChildren,
+    required this.hasChildren,
     this.approverId,
-    this.tagCountGeneral,
-    this.tagCountArtist,
-    this.tagCountCharacter,
-    this.tagCountCopyright,
-    this.fileSize,
-    this.upScore,
-    this.downScore,
-    this.isPending,
-    this.isFlagged,
-    this.isDeleted,
-    this.tagCount,
-    this.updatedAt,
-    this.isBanned,
+    required this.tagCountGeneral,
+    required this.tagCountArtist,
+    required this.tagCountCharacter,
+    required this.tagCountCopyright,
+    required this.fileSize,
+    required this.upScore,
+    required this.downScore,
+    required this.isPending,
+    required this.isFlagged,
+    required this.isDeleted,
+    required this.tagCount,
+    required this.updatedAt,
+    required this.isBanned,
     this.pixivId,
     this.lastCommentedAt,
-    this.hasActiveChildren,
-    this.bitFlags,
-    this.tagCountMeta,
-    this.hasLarge,
-    this.hasVisibleChildren,
-    this.tagStringGeneral,
-    this.tagStringCharacter,
-    this.tagStringCopyright,
-    this.tagStringArtist,
-    this.tagStringMeta,
-    this.fileUrl,
-    this.largeFileUrl,
-    this.previewFileUrl,
+    required this.hasActiveChildren,
+    required this.bitFlags,
+    required this.tagCountMeta,
+    required this.hasLarge,
+    required this.hasVisibleChildren,
+    required this.tagStringGeneral,
+    required this.tagStringCharacter,
+    required this.tagStringCopyright,
+    required this.tagStringArtist,
+    required this.tagStringMeta,
+    required this.fileUrl,
+    required this.largeFileUrl,
+    required this.previewFileUrl,
   });
 
-  final int id;
+  final int? id;
   final DateTime createdAt;
   final int uploaderId;
   final int score;
   final String source;
   final String md5;
-  final dynamic lastCommentBumpedAt;
+  final DateTime? lastCommentBumpedAt;
   final String rating;
   final int imageWidth;
   final int imageHeight;
   final String tagString;
   final int favCount;
   final String fileExt;
-  final dynamic lastNotedAt;
-  final dynamic parentId;
+  final DateTime? lastNotedAt;
+  final int? parentId;
   final bool hasChildren;
-  final dynamic approverId;
+  final int? approverId;
   final int tagCountGeneral;
   final int tagCountArtist;
   final int tagCountCharacter;
@@ -84,12 +84,12 @@ class PostDto {
   final int tagCount;
   final DateTime updatedAt;
   final bool isBanned;
-  final dynamic pixivId;
-  final dynamic lastCommentedAt;
+  final int? pixivId;
+  final DateTime? lastCommentedAt;
   final bool hasActiveChildren;
   final int bitFlags;
   final int tagCountMeta;
-  final bool hasLarge;
+  final bool? hasLarge;
   final bool hasVisibleChildren;
   final String tagStringGeneral;
   final String tagStringCharacter;
@@ -107,14 +107,18 @@ class PostDto {
         score: json["score"],
         source: json["source"],
         md5: json["md5"],
-        lastCommentBumpedAt: json["last_comment_bumped_at"],
+        lastCommentBumpedAt: json["last_comment_bumped_at"] != null
+            ? DateTime.parse(json["last_comment_bumped_at"])
+            : null,
         rating: json["rating"],
         imageWidth: json["image_width"],
         imageHeight: json["image_height"],
         tagString: json["tag_string"],
         favCount: json["fav_count"],
         fileExt: json["file_ext"],
-        lastNotedAt: json["last_noted_at"],
+        lastNotedAt: json["last_noted_at"] != null
+            ? DateTime.parse(json["last_noted_at"])
+            : null,
         parentId: json["parent_id"],
         hasChildren: json["has_children"],
         approverId: json["approver_id"],
@@ -132,7 +136,9 @@ class PostDto {
         updatedAt: DateTime.parse(json["updated_at"]),
         isBanned: json["is_banned"],
         pixivId: json["pixiv_id"],
-        lastCommentedAt: json["last_commented_at"],
+        lastCommentedAt: json["last_commented_at"] != null
+            ? DateTime.parse(json["last_commented_at"])
+            : null,
         hasActiveChildren: json["has_active_children"],
         bitFlags: json["bit_flags"],
         tagCountMeta: json["tag_count_meta"],
@@ -151,8 +157,9 @@ class PostDto {
 
 extension PostDtoX on PostDto {
   Post toEntity() {
+    if (id == null) return Post.empty();
     return Post(
-      id: id,
+      id: id!,
       previewImageUri:
           previewFileUrl != null ? Uri.parse(previewFileUrl) : null,
       normalImageUri: largeFileUrl != null ? Uri.parse(largeFileUrl) : null,
@@ -165,8 +172,7 @@ extension PostDtoX on PostDto {
       width: imageWidth.toDouble(),
       height: imageHeight.toDouble(),
       format: fileExt,
-      lastCommentAt:
-          lastCommentBumpedAt != null ? DateTime.parse(lastCommentedAt) : null,
+      lastCommentAt: lastCommentBumpedAt,
       source: ImageSource(source, pixivId),
       createdAt: CreatedTime(createdAt),
       score: score,

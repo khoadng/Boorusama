@@ -9,7 +9,7 @@ import 'settings.dart';
 
 class SettingsState {
   const SettingsState({
-    @required this.settings,
+    required this.settings,
   });
   final Settings settings;
 

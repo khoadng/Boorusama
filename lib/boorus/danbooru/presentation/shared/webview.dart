@@ -7,8 +7,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 class WebView extends HookWidget {
   const WebView({
-    Key key,
-    @required this.url,
+    Key? key,
+    required this.url,
   }) : super(key: key);
 
   final String url;

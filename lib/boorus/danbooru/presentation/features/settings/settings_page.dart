@@ -13,7 +13,7 @@ import 'appearance_page.dart';
 import 'tag_settings_page.dart';
 
 class SettingsPage extends HookWidget {
-  SettingsPage({Key key}) : super(key: key);
+  SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,22 +25,22 @@ class SettingsPage extends HookWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0),
         child: SettingsList(
-          backgroundColor: Theme.of(context).appBarTheme.color,
           sections: [
             SettingsSection(
-              title: 'settings.appSettings._string'.tr(),
+              title: Text('settings.appSettings._string'.tr()),
               tiles: [
                 SettingsTile.switchTile(
-                    leading: Icon(Icons.admin_panel_settings),
-                    title: 'settings.appSettings.safeMode'.tr(),
-                    onToggle: (value) {
-                      settings.safeMode = value;
-                      context.read(settingsNotifier).save(settings);
-                    },
-                    switchValue: settings.safeMode),
+                  leading: Icon(Icons.admin_panel_settings),
+                  title: Text('settings.appSettings.safeMode'.tr()),
+                  onToggle: (value) {
+                    settings.safeMode = value;
+                    context.read(settingsNotifier).save(settings);
+                  },
+                  initialValue: settings.safeMode,
+                ),
                 SettingsTile(
                   leading: Icon(Icons.tag),
-                  title: 'settings.appSettings.blacklistedTags'.tr(),
+                  title: Text('settings.appSettings.blacklistedTags'.tr()),
                   onPressed: (context) {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -67,23 +67,26 @@ class SettingsPage extends HookWidget {
                 // ),
                 SettingsTile(
                   leading: Icon(Icons.translate),
-                  title: 'settings.appSettings.language._string'.tr(),
+                  title: Text('settings.appSettings.language._string'.tr()),
                   trailing: DropdownButton<String>(
                     value: settings.language,
                     icon: Icon(Icons.keyboard_arrow_right),
                     onChanged: (value) {
+                      if (value == null) return;
                       settings.language = value;
                       context.read(settingsNotifier).save(settings);
-                      context.locale = Locale(value);
+                      context.setLocale(Locale(value));
                     },
                     items: <DropdownMenuItem<String>>[
                       DropdownMenuItem(
                         value: "en",
-                        child: Text('settings.appSettings.language.english'.tr()),
+                        child:
+                            Text('settings.appSettings.language.english'.tr()),
                       ),
                       DropdownMenuItem(
                         value: "vi",
-                        child: Text('settings.appSettings.language.vietnamese'.tr()),
+                        child: Text(
+                            'settings.appSettings.language.vietnamese'.tr()),
                       ),
                     ],
                   ),
@@ -100,10 +103,10 @@ class SettingsPage extends HookWidget {
               ],
             ),
             SettingsSection(
-              title: "App Information",
+              title: Text("App Information"),
               tiles: [
                 SettingsTile(
-                  title: "Acknowledgements",
+                  title: Text("Acknowledgements"),
                   leading: Icon(Icons.info),
                   onPressed: (context) => showAboutDialog(
                       context: context,

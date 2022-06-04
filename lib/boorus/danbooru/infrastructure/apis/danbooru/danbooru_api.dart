@@ -65,14 +65,14 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getComments(
     @Query("search[post_id]") int postId,
     @Query("limit") int limit, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/artists.json")
   @override
   Future<HttpResponse> getArtist(
     @Query("search[name]") String name, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @POST("/comments.json")
@@ -100,7 +100,7 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getNotes(
     @Query("search[post_id]") int postId, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/profile.json")
@@ -108,7 +108,7 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getProfile(
     @Query("login") String login,
     @Query("api_key") String apiKey, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/posts.json")
@@ -119,7 +119,7 @@ abstract class DanbooruApi implements IApi {
     @Query("page") int page,
     @Query("tags") String tags,
     @Query("limit") int limit, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/posts/{postId}")
@@ -136,7 +136,7 @@ abstract class DanbooruApi implements IApi {
     @Query("login") String login,
     @Query("api_key") String apiKey,
     @Query("search[post_id]") int postId, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/explore/posts/popular.json")
@@ -199,7 +199,7 @@ abstract class DanbooruApi implements IApi {
     @Query("search[name_comma]") String stringComma,
     @Query("search[order]") String order,
     @Query("limit") int limit, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/users.json")
@@ -207,7 +207,7 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getUsersByIdStringComma(
     @Query("search[id]") String idComma,
     @Query("limit") int limit, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 
   @GET("/users/{id}.json")
@@ -222,6 +222,6 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getWiki(
     @Path() String subject, {
-    @CancelRequest() CancelToken cancelToken,
+    @CancelRequest() CancelToken? cancelToken,
   });
 }

@@ -8,10 +8,10 @@ class Wiki {
   List<dynamic> otherNames;
 
   Wiki({
-    @required this.id,
-    @required this.title,
-    @required this.body,
-    @required this.otherNames,
+    required this.id,
+    required this.title,
+    required this.body,
+    required this.otherNames,
   });
 
   factory Wiki.empty() => Wiki(

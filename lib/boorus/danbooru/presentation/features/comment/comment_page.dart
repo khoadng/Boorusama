@@ -47,8 +47,8 @@ final _commentsProvider =
 
 class CommentPage extends StatefulWidget {
   const CommentPage({
-    Key key,
-    @required this.postId,
+    Key? key,
+    required this.postId,
   }) : super(key: key);
 
   final int postId;
@@ -248,7 +248,7 @@ class _CommentPageState extends State<CommentPage> {
                               .where((comment) => comment.isDeleted == false)
                               .toList();
 
-                          WidgetsBinding.instance
+                          WidgetsBinding.instance!
                               .addPostFrameCallback((timeStamp) {
                             setState(() {
                               if (_showDeleted) {

@@ -26,7 +26,7 @@ final _query = StateProvider<String>((ref) {
 });
 
 class DownloadPage extends HookWidget {
-  const DownloadPage({Key key}) : super(key: key);
+  const DownloadPage({Key? key}) : super(key: key);
   final maxPage = 10.0;
 
   @override
@@ -137,7 +137,7 @@ class DownloadPage extends HookWidget {
                       label: totalPage.value.round().toString(),
                       value: totalPage.value,
                       onChanged: (value) {
-                        return totalPage.value = value;
+                        totalPage.value = value;
                       },
                     ),
                     Spacer(),

@@ -4,18 +4,18 @@ import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 //TODO: remove the author fuckery here, make it pure!
 class Comment {
   Comment({
-    this.id,
-    this.createdAt,
-    this.postId,
-    this.creatorId,
-    this.body,
-    this.score,
-    this.updatedAt,
-    this.updaterId,
-    this.doNotBumpPost,
-    this.isDeleted,
-    this.isSticky,
-    this.author,
+    required this.id,
+    required this.createdAt,
+    required this.postId,
+    required this.creatorId,
+    required this.body,
+    required this.score,
+    required this.updatedAt,
+    required this.updaterId,
+    required this.doNotBumpPost,
+    required this.isDeleted,
+    required this.isSticky,
+    required this.author,
   });
 
   final int id;
@@ -33,18 +33,18 @@ class Comment {
   final User author;
 
   Comment copyWith({
-    int id,
-    DateTime createdAt,
-    int postId,
-    int creatorId,
-    String body,
-    int score,
-    DateTime updatedAt,
-    int updaterId,
-    bool doNotBumpPost,
-    bool isDeleted,
-    bool isSticky,
-    User author,
+    int? id,
+    DateTime? createdAt,
+    int? postId,
+    int? creatorId,
+    String? body,
+    int? score,
+    String? updatedAt,
+    int? updaterId,
+    bool? doNotBumpPost,
+    bool? isDeleted,
+    bool? isSticky,
+    User? author,
   }) =>
       Comment(
         id: id ?? this.id,

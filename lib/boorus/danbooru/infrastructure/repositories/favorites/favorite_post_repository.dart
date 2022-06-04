@@ -31,6 +31,7 @@ class FavoritePostRepository implements IFavoritePostRepository {
       switch (obj.runtimeType) {
         case DioError:
           final response = (obj as DioError).response;
+          if (response == null) return false;
           if (response.statusCode == 302) {
             // It's okay to be redirected here.
             return true;
@@ -38,7 +39,6 @@ class FavoritePostRepository implements IFavoritePostRepository {
             return false;
             // throw Exception("Failed to add post $postId to favorites");
           }
-          break;
         default:
       }
     });
@@ -56,6 +56,7 @@ class FavoritePostRepository implements IFavoritePostRepository {
       switch (obj.runtimeType) {
         case DioError:
           final response = (obj as DioError).response;
+          if (response == null) return false;
           if (response.statusCode == 302) {
             // It's okay to be redirected here.
             return true;

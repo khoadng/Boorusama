@@ -19,7 +19,7 @@ class NoteRepository implements INoteRepository {
   @override
   Future<List<Note>> getNotesFrom(
     int postId, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
     try {
       final value = await _api.getNotes(postId, cancelToken: cancelToken);
@@ -27,7 +27,7 @@ class NoteRepository implements INoteRepository {
           .map((note) => NoteDto.fromJson(note).toEntity())
           .toList());
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {

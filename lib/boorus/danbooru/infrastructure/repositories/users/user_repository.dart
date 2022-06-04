@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +24,7 @@ class UserRepository implements IUserRepository {
   @override
   Future<List<User>> getUsersByIdStringComma(
     String idComma, {
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
   }) async {
     try {
       final value = await _api.getUsersByIdStringComma(idComma, 1000,
@@ -32,14 +34,16 @@ class UserRepository implements IUserRepository {
       print(idComma);
       for (var item in value.response.data) {
         try {
-          users.add(User.fromJson(item));
+          var dto = UserDto.fromJson(item);
+          var user = User(dto.id, dto.name, UserLevel(dto.level), '');
+          users.add(user);
         } catch (e) {
           print("Cant parse ${item['id']}");
         }
       }
       return users;
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {
@@ -52,7 +56,9 @@ class UserRepository implements IUserRepository {
   Future<User> getUserById(int id) async {
     final account = await _accountRepository.get();
     return _api.getUserById(account.username, account.apiKey, id).then((value) {
-      return User.fromJson(value.response.data);
+      var dto = UserDto.fromJson(value.response.data);
+      var user = User(dto.id, dto.name, UserLevel(dto.level), '');
+      return user;
     }).catchError((Object obj) {
       throw Exception("Failed to get user info for $id");
     });

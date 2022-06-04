@@ -22,7 +22,7 @@ class PopularSearchRepository implements IPopularSearchRepository {
   final IApi _api;
 
   PopularSearchRepository(
-      {@required IAccountRepository accountRepository, @required IApi api})
+      {required IAccountRepository accountRepository, required IApi api})
       : _accountRepository = accountRepository,
         _api = api;
 
@@ -42,7 +42,7 @@ class PopularSearchRepository implements IPopularSearchRepository {
 
       return List<Search>.from(stats);
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {

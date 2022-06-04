@@ -1,7 +1,7 @@
 class Search {
   Search({
-    this.hitCount,
-    this.keyword,
+    required this.hitCount,
+    required this.keyword,
   });
 
   final int hitCount;

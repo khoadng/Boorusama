@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
-  PostVideo({Key key, @required this.post}) : super(key: key);
+  PostVideo({Key? key, required this.post}) : super(key: key);
 
   final Post post;
 
@@ -19,8 +19,8 @@ class PostVideo extends StatefulWidget {
 }
 
 class _PostVideoState extends State<PostVideo> {
-  VideoPlayerController _videoPlayerController;
-  ChewieController _chewieController;
+  late VideoPlayerController _videoPlayerController;
+  late ChewieController _chewieController;
 
   @override
   void initState() {

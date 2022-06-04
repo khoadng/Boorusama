@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 class ShadowGradientOverlay extends StatelessWidget {
   const ShadowGradientOverlay({
-    Key key,
-    @required this.alignment,
-    @required this.colors,
+    Key? key,
+    required this.alignment,
+    required this.colors,
   })  : assert(alignment == Alignment.bottomCenter ||
             alignment == Alignment.topCenter),
         super(key: key);

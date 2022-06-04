@@ -3,22 +3,22 @@ import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
 
 class ArtistCommentaryDto {
   ArtistCommentaryDto({
-    this.id,
-    this.postId,
+    required this.id,
+    required this.postId,
     this.originalTitle,
     this.originalDescription,
     this.translatedTitle,
     this.translatedDescription,
-    this.createdAt,
-    this.updatedAt,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   final int id;
   final int postId;
-  final String originalTitle;
-  final String originalDescription;
-  final String translatedTitle;
-  final String translatedDescription;
+  final String? originalTitle;
+  final String? originalDescription;
+  final String? translatedTitle;
+  final String? translatedDescription;
   final DateTime createdAt;
   final DateTime updatedAt;
 

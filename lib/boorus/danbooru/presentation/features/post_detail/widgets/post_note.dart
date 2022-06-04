@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 
 class PostNote extends HookWidget {
   const PostNote({
-    Key key,
-    @required this.coordinate,
-    @required this.content,
+    Key? key,
+    required this.coordinate,
+    required this.content,
   }) : super(key: key);
 
   final NoteCoordinate coordinate;

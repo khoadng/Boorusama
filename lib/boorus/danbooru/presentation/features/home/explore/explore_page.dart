@@ -129,7 +129,7 @@ Future<List<Post>> categoryToAwaitablePosts(
 }
 
 class ExplorePage extends HookWidget {
-  const ExplorePage({Key key}) : super(key: key);
+  const ExplorePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -138,7 +138,7 @@ class ExplorePage extends HookWidget {
         "${category.getName().sentenceCase}",
         style: Theme.of(context)
             .textTheme
-            .headline6
+            .headline6!
             .copyWith(fontWeight: FontWeight.w700),
       );
 
@@ -206,12 +206,12 @@ class ExplorePage extends HookWidget {
 
 class _ExploreItemPage extends HookWidget {
   const _ExploreItemPage({
-    Key key,
+    Key? key,
     this.title,
-    @required this.category,
+    required this.category,
   }) : super(key: key);
 
-  final Widget title;
+  final Widget? title;
   final ExploreCategory category;
 
   @override
@@ -238,9 +238,9 @@ class _ExploreItemPage extends HookWidget {
               ..removeWhere((post) {
                 final p = posts.value.firstWhere(
                   (sPost) => sPost.id == post.id,
-                  orElse: () => null,
+                  orElse: () => Post.empty(),
                 );
-                return p?.id == post.id;
+                return p.id == post.id;
               });
           }
           posts.value = [...posts.value, ...data];
@@ -324,10 +324,10 @@ class _ExploreItemPage extends HookWidget {
 
 class _ExploreListItemHeader extends HookWidget {
   const _ExploreListItemHeader({
-    Key key,
-    @required this.selectedCategory,
-    @required this.onDateChanged,
-    @required this.onTimeScaleChanged,
+    Key? key,
+    required this.selectedCategory,
+    required this.onDateChanged,
+    required this.onTimeScaleChanged,
   }) : super(key: key);
 
   final ExploreCategory selectedCategory;
@@ -395,7 +395,7 @@ class _ExploreListItemHeader extends HookWidget {
             TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).cardColor,
-                primary: Theme.of(context).textTheme.headline6.color,
+                primary: Theme.of(context).textTheme.headline6!.color,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),
                 ),
@@ -451,7 +451,7 @@ class _ExploreListItemHeader extends HookWidget {
                 : TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).cardColor,
-                      primary: Theme.of(context).textTheme.headline6.color,
+                      primary: Theme.of(context).textTheme.headline6!.color,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(18.0),
                       ),
@@ -483,10 +483,10 @@ class _ExploreListItemHeader extends HookWidget {
 
 class _ExploreSection extends StatelessWidget {
   _ExploreSection({
-    Key key,
-    @required this.title,
-    @required this.posts,
-    @required this.onViewMoreTap,
+    Key? key,
+    required this.title,
+    required this.posts,
+    required this.onViewMoreTap,
   }) : super(key: key);
 
   final AsyncValue<List<Post>> posts;
@@ -546,7 +546,7 @@ class _ExploreSection extends StatelessWidget {
                                 "${index + 1}",
                                 style: Theme.of(context)
                                     .textTheme
-                                    .headline2
+                                    .headline2!
                                     .copyWith(color: Colors.white),
                               )),
                         ],

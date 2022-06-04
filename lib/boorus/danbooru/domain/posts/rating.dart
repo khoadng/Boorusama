@@ -2,7 +2,7 @@ class Rating {
   final String _rating;
 
   Rating({
-    String rating,
+    required String rating,
   }) : _rating = rating;
 
   RatingType get value {

@@ -19,10 +19,10 @@ final rootHandler = Handler(
 );
 
 final artistHandler = Handler(handlerFunc: (
-  BuildContext context,
+  context,
   Map<String, List<String>> params,
 ) {
-  final args = context.settings.arguments as List;
+  final args = context!.settings!.arguments as List;
 
   return ArtistPage(
     artistName: args[0],
@@ -31,17 +31,17 @@ final artistHandler = Handler(handlerFunc: (
 });
 
 final downloadHandler = Handler(handlerFunc: (
-  BuildContext context,
+  context,
   Map<String, List<String>> params,
 ) {
   return DownloadPage();
 });
 
 final postSearchHandler = Handler(handlerFunc: (
-  BuildContext context,
+  context,
   Map<String, List<String>> params,
 ) {
-  final args = context.settings.arguments as List;
+  final args = context!.settings!.arguments as List;
 
   return SearchPage(
     initialQuery: args[0],
@@ -49,29 +49,29 @@ final postSearchHandler = Handler(handlerFunc: (
 });
 
 final postDetailImageHandler = Handler(handlerFunc: (
-  BuildContext context,
+  context,
   Map<String, List<String>> params,
 ) {
-  final args = context.settings.arguments as List;
+  final args = context!.settings!.arguments as List;
 
   return PostImagePage(
     post: args[0],
   );
 });
 
-final userHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+final userHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
   // final String userId = params["id"][0];
 
   return ProfilePage();
 });
 
-final loginHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+final loginHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
   return LoginPage();
 });
 
-final settingsHandler = Handler(
-    handlerFunc: (BuildContext context, Map<String, List<String>> params) {
+final settingsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
   return SettingsPage();
 });

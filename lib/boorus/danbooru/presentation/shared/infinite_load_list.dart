@@ -21,11 +21,11 @@ typedef LoadMoreBuilder<T> = Future<List<T>> Function(int page);
 
 class InfiniteLoadListController<T> extends ChangeNotifier {
   InfiniteLoadListController({
-    @required this.onData,
-    @required this.onMoreData,
-    @required this.onError,
-    @required this.refreshBuilder,
-    @required this.loadMoreBuilder,
+    required this.onData,
+    required this.onMoreData,
+    required this.onError,
+    required this.refreshBuilder,
+    required this.loadMoreBuilder,
   });
 
   final LoadMoreBuilder<T> loadMoreBuilder;
@@ -95,9 +95,9 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
 
 class InfiniteLoadList extends HookWidget {
   const InfiniteLoadList({
-    Key key,
-    @required this.controller,
-    @required this.posts,
+    Key? key,
+    required this.controller,
+    required this.posts,
     this.onItemChanged,
     this.headers,
     this.child,
@@ -108,13 +108,13 @@ class InfiniteLoadList extends HookWidget {
     this.scrollController,
   }) : super(key: key);
 
-  final Widget child;
+  final Widget? child;
   final InfiniteLoadListController controller;
   final bool extendBody;
-  final List<Widget> headers;
-  final ValueChanged<int> onItemChanged;
+  final List<Widget>? headers;
+  final ValueChanged<int>? onItemChanged;
   final bool enableRefresh;
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
 
   final List<Post> posts;
 
@@ -146,13 +146,13 @@ class InfiniteLoadList extends HookWidget {
                   padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight),
                   child: FloatingActionButton(
                     heroTag: null,
-                    child: FaIcon(FontAwesomeIcons.angleDoubleUp),
+                    child: FaIcon(FontAwesomeIcons.angleUp),
                     onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
                   ),
                 )
               : FloatingActionButton(
                   heroTag: null,
-                  child: FaIcon(FontAwesomeIcons.angleDoubleUp),
+                  child: FaIcon(FontAwesomeIcons.angleUp),
                   onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
                 ),
         ),
@@ -168,10 +168,10 @@ class InfiniteLoadList extends HookWidget {
         child: CustomScrollView(
           controller: scrollControllerWithAnim,
           slivers: <Widget>[
-            if (headers != null) ...headers,
+            if (headers != null) ...headers!,
             child ??
                 SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 6.0),
+                  padding: EdgeInsets.symmetric(horizontal: 14.0),
                   sliver: SliverPostGrid(
                     onItemChanged: (index) {
                       loadMoreIfNeeded(index);

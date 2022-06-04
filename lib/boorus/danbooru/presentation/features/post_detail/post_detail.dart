@@ -50,8 +50,8 @@ class Recommended {
   final List<Post> _posts;
 
   Recommended({
-    @required String title,
-    @required List<Post> posts,
+    required String title,
+    required List<Post> posts,
   })  : _posts = posts,
         _title = title;
 
@@ -61,10 +61,10 @@ class Recommended {
 
 class PostDetail extends HookWidget {
   PostDetail({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
     this.minimal = false,
-    @required this.animController,
+    required this.animController,
   }) : super(key: key);
 
   final Post post;
@@ -225,8 +225,8 @@ class PostDetail extends HookWidget {
 
 class InformationSection extends HookWidget {
   const InformationSection({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
   }) : super(key: key);
 
   final Post post;
@@ -239,7 +239,7 @@ class InformationSection extends HookWidget {
         context: context,
         builder: (context) => PostInfoModal(
           post: post,
-          scrollController: ModalScrollController.of(context),
+          scrollController: ModalScrollController.of(context)!,
         ),
       ),
       child: Padding(
@@ -284,9 +284,9 @@ class InformationSection extends HookWidget {
 
 class RecommendPostSection extends HookWidget {
   const RecommendPostSection({
-    Key key,
-    @required this.posts,
-    @required this.header,
+    Key? key,
+    required this.posts,
+    required this.header,
   }) : super(key: key);
 
   final List<Post> posts;
@@ -311,8 +311,8 @@ class RecommendPostSection extends HookWidget {
 
 class RecommendPostSectionPlaceHolder extends HookWidget {
   const RecommendPostSectionPlaceHolder({
-    Key key,
-    @required this.header,
+    Key? key,
+    required this.header,
   }) : super(key: key);
 
   final Widget header;

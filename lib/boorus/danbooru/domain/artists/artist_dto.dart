@@ -3,14 +3,14 @@ import 'artist.dart';
 
 class ArtistDto {
   ArtistDto({
-    this.id,
-    this.createdAt,
-    this.name,
-    this.updatedAt,
-    this.isDeleted,
-    this.groupName,
-    this.isBanned,
-    this.otherNames,
+    required this.id,
+    required this.createdAt,
+    required this.name,
+    required this.updatedAt,
+    required this.isDeleted,
+    required this.groupName,
+    required this.isBanned,
+    required this.otherNames,
   });
 
   final int id;

@@ -6,9 +6,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class PostImage extends StatefulWidget {
   const PostImage({
-    Key key,
-    @required this.imageUrl,
-    @required this.placeholderUrl,
+    Key? key,
+    required this.imageUrl,
+    required this.placeholderUrl,
   }) : super(key: key);
 
   final String imageUrl;
@@ -19,7 +19,7 @@ class PostImage extends StatefulWidget {
 }
 
 class _PostImageState extends State<PostImage> {
-  Image myImage;
+  late Image myImage;
 
   @override
   void didChangeDependencies() {

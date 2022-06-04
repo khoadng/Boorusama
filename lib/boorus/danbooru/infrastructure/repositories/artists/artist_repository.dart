@@ -16,13 +16,13 @@ final artistProvider = Provider<IArtistRepository>((ref) {
 
 class ArtistRepository implements IArtistRepository {
   ArtistRepository({
-    @required IApi api,
+    required IApi api,
   }) : _api = api;
 
   final IApi _api;
 
   @override
-  Future<Artist> getArtist(String name, {CancelToken cancelToken}) async {
+  Future<Artist> getArtist(String name, {CancelToken? cancelToken}) async {
     try {
       final value = await _api.getArtist(name, cancelToken: cancelToken);
       final data = value.response.data.first;
@@ -37,12 +37,13 @@ class ArtistRepository implements IArtistRepository {
         return Artist.empty();
       }
     } on DioError catch (e) {
-      if (e.type == DioErrorType.CANCEL) {
+      if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return Artist.empty();
       } else if (e.response == null) {
         throw Exception("Response is null");
-      } else if (e.response.statusCode == 422) {
+      } else if (e.response!.statusCode == 422) {
+        return Artist.empty();
       } else {
         throw Exception("Failed to get artist $name");
       }

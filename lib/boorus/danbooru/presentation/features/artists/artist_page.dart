@@ -35,9 +35,9 @@ final _artistInfoProvider =
 
 class ArtistPage extends HookWidget {
   const ArtistPage({
-    Key key,
-    @required this.artistName,
-    @required this.backgroundImageUrl,
+    Key? key,
+    required this.artistName,
+    required this.backgroundImageUrl,
   }) : super(key: key);
 
   final String artistName;
@@ -63,9 +63,9 @@ class ArtistPage extends HookWidget {
             ..removeWhere((post) {
               final p = posts.value.firstWhere(
                 (sPost) => sPost.id == post.id,
-                orElse: () => null,
+                orElse: () => Post.empty(),
               );
-              return p?.id == post.id;
+              return p.id == post.id;
             });
         }
         posts.value = [...posts.value, ...data];
@@ -107,7 +107,7 @@ class ArtistPage extends HookWidget {
               posts: posts.value,
               child: isRefreshing.value
                   ? SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 6.0),
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
                       sliver: SliverPostGridPlaceHolder())
                   : null,
             ),
@@ -139,7 +139,7 @@ class ArtistPage extends HookWidget {
                     artistName.pretty,
                     style: Theme.of(context)
                         .textTheme
-                        .headline6
+                        .headline6!
                         .copyWith(fontWeight: FontWeight.w900),
                   ),
                   artistInfo.maybeWhen(

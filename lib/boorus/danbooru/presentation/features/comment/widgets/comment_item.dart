@@ -13,7 +13,7 @@ class CommentItem extends StatelessWidget {
   final Comment comment;
 
   CommentItem({
-    @required this.comment,
+    required this.comment,
   });
 
   @override

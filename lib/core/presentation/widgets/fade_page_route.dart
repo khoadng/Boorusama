@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class FadeMaterialPageRoute<T> extends MaterialPageRoute<T> {
   FadeMaterialPageRoute({
-    @required WidgetBuilder builder,
-    RouteSettings settings,
+    required WidgetBuilder builder,
+    RouteSettings? settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) : super(

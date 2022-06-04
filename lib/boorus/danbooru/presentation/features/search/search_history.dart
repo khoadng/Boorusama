@@ -23,8 +23,8 @@ final _historyProvider =
 
 class SearchHistorySection extends HookWidget {
   const SearchHistorySection({
-    Key key,
-    @required this.onHistoryTap,
+    Key? key,
+    required this.onHistoryTap,
   }) : super(key: key);
 
   final ValueChanged<String> onHistoryTap;
@@ -60,7 +60,7 @@ class SearchHistorySection extends HookWidget {
                   children: [
                     Text(
                       "History".toUpperCase(),
-                      style: Theme.of(context).textTheme.subtitle2.copyWith(
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
                     ),

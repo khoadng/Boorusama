@@ -14,14 +14,5 @@ class User {
   String get rawName => _name;
   List<String> get blacklistedTags => _blacklistedTagString.split("\n");
 
-  factory User.fromJson(Map<String, dynamic> json) {
-    return User(
-      json["id"],
-      json["name"],
-      UserLevel(json["level"]),
-      json["blacklisted_tags"],
-    );
-  }
-
   factory User.placeholder() => User(0, "User", UserLevel(20), "");
 }

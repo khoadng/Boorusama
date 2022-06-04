@@ -15,7 +15,7 @@ import 'latest/latest_posts_view.dart';
 import 'side_bar.dart';
 
 class HomePage extends HookWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -79,7 +79,7 @@ class HomePage extends HookWidget {
                     index: bottomTabIndex.value,
                     children: <Widget>[
                       LatestView(
-                        onMenuTap: () => scaffoldKey.currentState.openDrawer(),
+                        onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
                       ),
                       ExplorePage(),
                     ],

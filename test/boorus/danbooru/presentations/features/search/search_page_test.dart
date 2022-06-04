@@ -44,10 +44,10 @@ Future<File> fixture(String name) async => File('test/fixtures/$name');
 void main() {
   Future<void> setUp(
     WidgetTester tester, {
-    Provider<ITagRepository> tagTestDouble,
-    Provider<IPostRepository> postTestDouble,
-    Provider<QueryProcessor> queryProcessorTestDouble,
-    Provider<ISearchHistoryRepository> searchHistoryTestDouble,
+    Provider<ITagRepository>? tagTestDouble,
+    Provider<IPostRepository>? postTestDouble,
+    Provider<QueryProcessor>? queryProcessorTestDouble,
+    Provider<ISearchHistoryRepository>? searchHistoryTestDouble,
   }) async {
     final mockSearchHistoryProvider = MockSearchHistoryRepository();
     when(mockSearchHistoryProvider.getHistories())
@@ -181,7 +181,7 @@ void main() {
         (WidgetTester tester) async {
           final mockPostRepository = MockPostRepository();
 
-          when(mockPostRepository.getPosts(any, any))
+          when(mockPostRepository.getPosts('', 1))
               .thenThrow(BooruException(""));
 
           await tester.pumpWidget(
@@ -269,8 +269,7 @@ void main() {
           (WidgetTester tester) async {
         final mockPostRepository = MockPostRepository();
 
-        when(mockPostRepository.getPosts(any, any))
-            .thenThrow(BooruException(""));
+        when(mockPostRepository.getPosts('', 1)).thenThrow(BooruException(""));
 
         await tester.pumpWidget(
           ProviderScope(

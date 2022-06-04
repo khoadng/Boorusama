@@ -16,15 +16,18 @@ final isLoggedInProvider = Provider<bool>((ref) {
   return isLoggedIn;
 });
 
-final authenticationStateNotifierProvider = StateNotifierProvider<AuthenticationNotifier>((ref) {
+final authenticationStateNotifierProvider =
+    StateNotifierProvider<AuthenticationNotifier>((ref) {
   return AuthenticationNotifier(ref);
 });
 
-final _account = Provider<Account>((ref) => ref.watch(authenticationStateNotifierProvider.state).account);
+final _account = Provider<Account?>(
+    (ref) => ref.watch(authenticationStateNotifierProvider.state).account);
 
-final _accountState = Provider<AccountState>((ref) => ref.watch(authenticationStateNotifierProvider.state).state);
+final _accountState = Provider<AccountState>(
+    (ref) => ref.watch(authenticationStateNotifierProvider.state).state);
 
-final currentAccountProvider = Provider<Account>((ref) => ref.watch(_account));
+final currentAccountProvider = Provider<Account?>((ref) => ref.watch(_account));
 
 final accountStateProvider = Provider<AccountState>((ref) {
   final state = ref.watch(_accountState);
@@ -43,37 +46,45 @@ class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   final IAccountRepository _accountRepository;
   final IProfileRepository _profileRepository;
 
-  void logIn([String username, String password]) async {
+  void logIn([String username = '', String password = '']) async {
     if (state.state == AccountState.unknown) {
       final account = await _accountRepository.get();
       if (account != Account.empty) {
-        state = AuthenticationState(account: account, state: AccountState.loggedIn);
+        state =
+            AuthenticationState(account: account, state: AccountState.loggedIn);
       } else {
-        state = AuthenticationState(account: null, state: AccountState.loggedOut);
+        state =
+            AuthenticationState(account: null, state: AccountState.loggedOut);
       }
     } else if (state.state == AccountState.loggedIn) {
     } else {
       try {
-        state = AuthenticationState(account: state.account, state: AccountState.authenticating);
+        state = AuthenticationState(
+            account: state.account, state: AccountState.authenticating);
         // Obsolete due to Cloudfare DDoS protection
         // final account =
         //     await _scrapperService.crawlAccountData(username, password);
-        var profile = await _profileRepository.getProfile(username: username, apiKey: password);
-        var account = new Account.create(username, password, profile.id);
+        var profile = await _profileRepository.getProfile(
+            username: username, apiKey: password);
+        var account = new Account.create(username, password, profile!.id);
 
         await _accountRepository.add(account);
-        state = AuthenticationState(account: account, state: AccountState.loggedIn);
+        state =
+            AuthenticationState(account: account, state: AccountState.loggedIn);
       } on InvalidUsernameOrPassword {
-        state = AuthenticationState(account: state.account, state: AccountState.errorInvalidPasswordOrUser);
+        state = AuthenticationState(
+            account: state.account,
+            state: AccountState.errorInvalidPasswordOrUser);
       } on Exception {
-        state = AuthenticationState(account: state.account, state: AccountState.errorUnknown);
+        state = AuthenticationState(
+            account: state.account, state: AccountState.errorUnknown);
       }
     }
   }
 
   void logOut() async {
     final account = state.account;
-    await _accountRepository.remove(account.id);
+    await _accountRepository.remove(account!.id);
 
     state = AuthenticationState(account: null, state: AccountState.loggedOut);
   }

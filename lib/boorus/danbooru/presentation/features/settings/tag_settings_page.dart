@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 class TagSettingsPage extends HookWidget {
   TagSettingsPage({
-    Key key,
-    @required this.settings,
+    Key? key,
+    required this.settings,
   }) : super(key: key);
 
   final Settings settings;

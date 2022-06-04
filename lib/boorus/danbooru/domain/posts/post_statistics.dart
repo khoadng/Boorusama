@@ -11,9 +11,9 @@ class PostStatistics {
   final bool isFavorited;
 
   PostStatistics({
-    @required this.favCount,
-    @required this.commentCount,
-    @required this.isFavorited,
+    required this.favCount,
+    required this.commentCount,
+    required this.isFavorited,
   });
 
   factory PostStatistics.empty() =>

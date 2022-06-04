@@ -4,17 +4,17 @@ import 'note.dart';
 
 class NoteDto {
   NoteDto({
-    this.id,
-    this.createdAt,
-    this.updatedAt,
-    this.x,
-    this.y,
-    this.width,
-    this.height,
-    this.isActive,
-    this.postId,
-    this.body,
-    this.version,
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.x,
+    required this.y,
+    required this.width,
+    required this.height,
+    required this.isActive,
+    required this.postId,
+    required this.body,
+    required this.version,
   });
 
   final int id;

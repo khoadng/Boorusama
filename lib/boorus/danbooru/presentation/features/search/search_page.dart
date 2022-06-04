@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
@@ -27,7 +27,7 @@ import '../../shared/tag_suggestion_items.dart';
 import 'services/query_processor.dart';
 
 class SearchPage extends HookWidget {
-  const SearchPage({Key key, this.initialQuery = ''}) : super(key: key);
+  const SearchPage({Key? key, this.initialQuery = ''}) : super(key: key);
 
   final String initialQuery;
 
@@ -60,9 +60,9 @@ class SearchPage extends HookWidget {
             ..removeWhere((post) {
               final p = posts.value.firstWhere(
                 (sPost) => sPost.id == post.id,
-                orElse: () => null,
+                orElse: () => Post.empty(),
               );
-              return p?.id == post.id;
+              return p.id == post.id;
             });
         }
         posts.value = [...posts.value, ...data];
@@ -120,14 +120,20 @@ class SearchPage extends HookWidget {
         }
       }
 
-      searchDisplayState.value.when(
-          results: () => switchToSearchOptionsView(),
-          suggestions: () {},
-          searchOptions: () {},
-          noResults: () => switchToSearchOptionsView(),
-          error: (message) {
-            switchToSearchOptionsView();
-          });
+      searchDisplayState.value.when(results: () {
+        switchToSearchOptionsView();
+        return Null;
+      }, suggestions: () {
+        return Null;
+      }, searchOptions: () {
+        return Null;
+      }, noResults: () {
+        switchToSearchOptionsView();
+        return Null;
+      }, error: (message) {
+        switchToSearchOptionsView();
+        return Null;
+      });
 
       return null;
     }, [completedQueryItems.value]);
@@ -162,11 +168,14 @@ class SearchPage extends HookWidget {
 
     void onSearchClearButtonTap() {
       searchDisplayState.value.maybeWhen(
-        orElse: () => queryEditingController.text = "",
+        orElse: () {
+          queryEditingController.text = "";
+          return Null;
+        },
         results: () {
           searchDisplayState.value = SearchDisplayState.searchOptions();
 
-          return null;
+          return Null;
         },
       );
     }
@@ -176,11 +185,26 @@ class SearchPage extends HookWidget {
       void pop() => Navigator.of(context).pop();
 
       searchDisplayState.value.when(
-        results: () => clear(),
-        suggestions: () => pop(),
-        searchOptions: () => pop(),
-        noResults: () => clear(),
-        error: (e) => clear(),
+        results: () {
+          clear();
+          return Null;
+        },
+        suggestions: () {
+          pop();
+          return Null;
+        },
+        searchOptions: () {
+          pop();
+          return Null;
+        },
+        noResults: () {
+          clear();
+          return Null;
+        },
+        error: (e) {
+          clear();
+          return Null;
+        },
       );
     }
 
@@ -196,6 +220,42 @@ class SearchPage extends HookWidget {
       FocusScope.of(context).unfocus();
       searchDisplayState.value = SearchDisplayState.results();
       infiniteListController.value.refresh();
+    }
+
+    Widget _buildTags() {
+      return Container(
+        margin: const EdgeInsets.only(left: 8.0),
+        height: 50,
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: completedQueryItems.value.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              child: Chip(
+                padding: const EdgeInsets.all(4.0),
+                labelPadding: const EdgeInsets.all(1.0),
+                visualDensity: VisualDensity.compact,
+                deleteIcon: const Icon(
+                  FontAwesomeIcons.xmark,
+                  color: Colors.red,
+                  size: 15,
+                ),
+                onDeleted: () => removeTag(completedQueryItems.value[index]),
+                label: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width * 0.85),
+                  child: Text(
+                    completedQueryItems.value[index].replaceAll('_', ' '),
+                    overflow: TextOverflow.fade,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
+      );
     }
 
     return ClipRRect(
@@ -237,23 +297,7 @@ class SearchPage extends HookWidget {
           child: Column(
             children: [
               if (completedQueryItems.value.length > 0) ...[
-                Tags(
-                  heightHorizontalScroll: 30,
-                  horizontalScroll: true,
-                  alignment: WrapAlignment.start,
-                  runAlignment: WrapAlignment.start,
-                  itemCount: completedQueryItems.value.length,
-                  itemBuilder: (index) => ItemTags(
-                    index: index,
-                    title:
-                        completedQueryItems.value[index].replaceAll('_', ' '),
-                    pressEnabled: false,
-                    removeButton: ItemTagsRemoveButton(onRemoved: () {
-                      removeTag(completedQueryItems.value[index]);
-                      return true;
-                    }),
-                  ),
-                ),
+                _buildTags(),
                 Divider(
                   height: 15,
                   thickness: 3,
@@ -279,7 +323,7 @@ class SearchPage extends HookWidget {
                       posts: posts.value,
                       child: isRefreshing.value
                           ? SliverPadding(
-                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              padding: EdgeInsets.symmetric(horizontal: 12.0),
                               sliver: SliverPostGridPlaceHolder())
                           : null,
                     );
@@ -302,13 +346,11 @@ class SearchPage extends HookWidget {
 
 class EmptyResult extends StatelessWidget {
   const EmptyResult({
-    Key key,
-    @required this.text,
-    this.icon,
+    Key? key,
+    required this.text,
   }) : super(key: key);
 
   final String text;
-  final Widget icon;
 
   @override
   Widget build(BuildContext context) {
@@ -339,13 +381,11 @@ class EmptyResult extends StatelessWidget {
 
 class ErrorResult extends StatelessWidget {
   const ErrorResult({
-    Key key,
-    @required this.text,
-    this.icon,
+    Key? key,
+    required this.text,
   }) : super(key: key);
 
   final String text;
-  final Widget icon;
 
   @override
   Widget build(BuildContext context) {
@@ -382,31 +422,31 @@ abstract class SearchDisplayState extends Equatable {
   factory SearchDisplayState.noResults() => NoResults();
   factory SearchDisplayState.error(String message) => Error(message: message);
   TResult when<TResult extends Object>({
-    @required TResult results(),
-    @required TResult suggestions(),
-    @required TResult searchOptions(),
-    @required TResult noResults(),
-    @required TResult error(String message),
+    required TResult results()?,
+    required TResult suggestions()?,
+    required TResult searchOptions()?,
+    required TResult noResults()?,
+    required TResult error(String message)?,
   });
   TResult maybeWhen<TResult extends Object>({
-    TResult results(),
-    TResult suggestions(),
-    TResult searchOptions(),
-    TResult noResults(),
-    TResult error(String message),
-    @required TResult orElse(),
+    TResult results()?,
+    TResult suggestions()?,
+    TResult searchOptions()?,
+    TResult noResults()?,
+    TResult error(String message)?,
+    required TResult orElse(),
   });
 }
 
 class Results extends SearchDisplayState {
   @override
   TResult maybeWhen<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message),
-      TResult orElse()}) {
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?,
+      required TResult orElse()}) {
     if (results != null) {
       return results();
     }
@@ -415,12 +455,12 @@ class Results extends SearchDisplayState {
 
   @override
   TResult when<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message)}) {
-    return results();
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?}) {
+    return results!();
   }
 
   @override
@@ -430,12 +470,12 @@ class Results extends SearchDisplayState {
 class Suggestions extends SearchDisplayState {
   @override
   TResult maybeWhen<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message),
-      TResult orElse()}) {
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?,
+      required TResult orElse()}) {
     if (suggestions != null) {
       return suggestions();
     }
@@ -444,12 +484,12 @@ class Suggestions extends SearchDisplayState {
 
   @override
   TResult when<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message)}) {
-    return suggestions();
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?}) {
+    return suggestions!();
   }
 
   @override
@@ -459,12 +499,12 @@ class Suggestions extends SearchDisplayState {
 class __SearchOptions extends SearchDisplayState {
   @override
   TResult maybeWhen<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message),
-      TResult orElse()}) {
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?,
+      required TResult orElse()}) {
     if (searchOptions != null) {
       return searchOptions();
     }
@@ -473,12 +513,12 @@ class __SearchOptions extends SearchDisplayState {
 
   @override
   TResult when<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message)}) {
-    return searchOptions();
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?}) {
+    return searchOptions!();
   }
 
   @override
@@ -488,12 +528,12 @@ class __SearchOptions extends SearchDisplayState {
 class NoResults extends SearchDisplayState {
   @override
   TResult maybeWhen<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message),
-      TResult orElse()}) {
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?,
+      required TResult orElse()}) {
     if (noResults != null) {
       return noResults();
     }
@@ -502,12 +542,12 @@ class NoResults extends SearchDisplayState {
 
   @override
   TResult when<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message)}) {
-    return noResults();
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?}) {
+    return noResults!();
   }
 
   @override
@@ -516,18 +556,18 @@ class NoResults extends SearchDisplayState {
 
 class Error extends SearchDisplayState {
   Error({
-    @required this.message,
+    required this.message,
   });
   final String message;
 
   @override
   TResult maybeWhen<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message),
-      TResult orElse()}) {
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?,
+      required TResult orElse()}) {
     if (error != null) {
       return error(message);
     }
@@ -536,12 +576,12 @@ class Error extends SearchDisplayState {
 
   @override
   TResult when<TResult extends Object>(
-      {TResult results(),
-      TResult suggestions(),
-      TResult searchOptions(),
-      TResult noResults(),
-      TResult error(String message)}) {
-    return error(message);
+      {TResult results()?,
+      TResult suggestions()?,
+      TResult searchOptions()?,
+      TResult noResults()?,
+      TResult error(String message)?}) {
+    return error!(message);
   }
 
   @override

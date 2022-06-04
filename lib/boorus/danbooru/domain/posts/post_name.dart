@@ -7,9 +7,9 @@ class PostName {
   final String _tagStringCopyright;
 
   PostName({
-    @required String tagStringArtist,
-    @required String tagStringCharacter,
-    @required String tagStringCopyright,
+    required String tagStringArtist,
+    required String tagStringCharacter,
+    required String tagStringCopyright,
   })  : _tagStringArtist = tagStringArtist,
         _tagStringCharacter = tagStringCharacter,
         _tagStringCopyright = tagStringCopyright;

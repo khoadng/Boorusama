@@ -32,7 +32,7 @@ class StubEmptyPostRepository implements IPostRepository {
   @override
   Future<List<Post>> getPosts(String tagString, int page,
       {int limit = 100,
-      CancelToken cancelToken,
+      CancelToken? cancelToken,
       bool skipFavoriteCheck = false}) {
     return Future.value([]);
   }
@@ -57,7 +57,7 @@ class StubNonEmptyPostRepository implements IPostRepository {
   @override
   Future<List<Post>> getPosts(String tagString, int page,
       {int limit = 100,
-      CancelToken cancelToken,
+      CancelToken? cancelToken,
       bool skipFavoriteCheck = false}) {
     return Future.value([Post.empty()]);
   }

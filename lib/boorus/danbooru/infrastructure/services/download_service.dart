@@ -23,9 +23,9 @@ class DownloadService implements IDownloadService {
   DownloadService();
 
   ReceivePort _port = ReceivePort();
-  bool _permissionReady;
-  String _localPath;
-  String _savedDir;
+  bool _permissionReady = false;
+  String _localPath = '';
+  String _savedDir = '';
 
   @override
   void download(IDownloadable downloadable) async {
@@ -50,7 +50,8 @@ class DownloadService implements IDownloadService {
   }
 
   void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
+    bool isSuccess = IsolateNameServer.registerPortWithName(
+        _port.sendPort, 'downloader_send_port');
     if (!isSuccess) {
       _unbindBackgroundIsolate();
       _bindBackgroundIsolate();
@@ -98,9 +99,10 @@ class DownloadService implements IDownloadService {
     print("Download service initialized");
   }
 
-  static void downloadCallback(String id, DownloadTaskStatus status, int progress) {
-    final SendPort send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    send.send([id, status, progress]);
+  static void downloadCallback(
+      String id, DownloadTaskStatus status, int progress) {
+    final send = IsolateNameServer.lookupPortByName('downloader_send_port');
+    send!.send([id, status, progress]);
   }
 
   @override

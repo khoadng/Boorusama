@@ -6,9 +6,9 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({
-    Key key,
-    @required List<Tag> tags,
-    @required this.onItemTap,
+    Key? key,
+    required List<Tag> tags,
+    required this.onItemTap,
   })  : _tags = tags,
         super(key: key);
 

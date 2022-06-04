@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class NoImageFilterDecorator implements IPostRepository {
   NoImageFilterDecorator({
-    @required IPostRepository postRepository,
+    required IPostRepository postRepository,
   }) : _postRepository = postRepository;
 
   final IPostRepository _postRepository;
@@ -37,7 +37,7 @@ class NoImageFilterDecorator implements IPostRepository {
     String tagString,
     int page, {
     int limit = 100,
-    CancelToken cancelToken,
+    CancelToken? cancelToken,
     bool skipFavoriteCheck = false,
   }) async {
     final posts = await _postRepository.getPosts(tagString, page,

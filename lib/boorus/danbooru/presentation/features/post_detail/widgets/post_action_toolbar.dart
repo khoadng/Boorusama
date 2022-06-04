@@ -31,8 +31,8 @@ final _isFavedProvider =
 
 class PostActionToolbar extends HookWidget {
   const PostActionToolbar({
-    Key key,
-    @required this.post,
+    Key? key,
+    required this.post,
   }) : super(key: key);
 
   final Post post;

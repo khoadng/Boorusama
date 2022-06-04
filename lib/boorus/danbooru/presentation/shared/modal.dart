@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 class Modal extends StatelessWidget {
   const Modal({
     this.title,
-    @required this.child,
+    required this.child,
   });
 
   final Widget child;
-  final String title;
+  final String? title;
 
   static const Radius _borderRadius = Radius.circular(30.0);
 
@@ -54,7 +54,7 @@ class _DragLine extends StatelessWidget {
 class _Title extends StatelessWidget {
   const _Title(this.text);
 
-  final String text;
+  final String? text;
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +68,7 @@ class _Title extends StatelessWidget {
         bottom: 8,
       ),
       child: Text(
-        text,
+        text!,
         style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w900,

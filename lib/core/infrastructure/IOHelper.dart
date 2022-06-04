@@ -15,7 +15,11 @@ class IOHelper {
       final directory = Platform.isAndroid
           ? await getExternalStorageDirectory()
           : await getApplicationDocumentsDirectory();
+<<<<<<< HEAD
       return directory.path + Platform.pathSeparator + folderName;
+=======
+      return directory!.path + Platform.pathSeparator + folderName;
+>>>>>>> migrate-sound-null-safety
     }
   }
 
@@ -23,7 +27,11 @@ class IOHelper {
     final directory = Platform.isAndroid
         ? await getExternalStorageDirectory()
         : await getApplicationDocumentsDirectory();
+<<<<<<< HEAD
     return directory.path;
+=======
+    return directory!.path;
+>>>>>>> migrate-sound-null-safety
   }
 
   static Future<String> _getLocalPath(String folderName) async {
