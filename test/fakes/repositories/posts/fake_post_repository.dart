@@ -32,7 +32,7 @@ class FakePostRepository implements IPostRepository {
 
   @override
   Future<List<Post>> getPosts(String tagString, int page,
-      {int limit = 100,
+      {int limit = 50,
       CancelToken? cancelToken,
       bool skipFavoriteCheck = false}) async {
     await Future.delayed(Duration(milliseconds: 10));
