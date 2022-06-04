@@ -13,6 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -20,6 +21,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_state_no
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +40,10 @@ void main() async {
   );
 
   final settings = await settingRepository.load();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   final run = () => runApp(
         ProviderScope(
