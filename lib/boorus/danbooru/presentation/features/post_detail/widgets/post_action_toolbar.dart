@@ -8,10 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
@@ -41,6 +43,7 @@ class PostActionToolbar extends HookWidget {
   Widget build(BuildContext context) {
     // final comments = useProvider(_commentsProvider(post.id));
     final isLoggedIn = useProvider(isLoggedInProvider);
+    final endpoint = useProvider(apiEndpointProvider);
 
     bool displayNoticeIfNotLoggedIn() {
       if (!isLoggedIn) {
@@ -138,7 +141,83 @@ class PostActionToolbar extends HookWidget {
       buttons.add(button);
     }
 
+    final shareButton = IconButton(
+      onPressed: () => showMaterialModalBottomSheet(
+        expand: false,
+        context: context,
+        barrierColor: Colors.black45,
+        backgroundColor: Colors.transparent,
+        builder: (context) => ModalShare(
+          endpoint: endpoint,
+          onTap: (value) => Share.share(value),
+          post: post,
+        ),
+      ),
+      icon: FaIcon(
+        FontAwesomeIcons.shareFromSquare,
+        color: Colors.white,
+      ),
+    );
+
+    buttons.add(shareButton);
+
     return ButtonBar(
         alignment: MainAxisAlignment.spaceEvenly, children: buttons);
+  }
+}
+
+enum ShareMode {
+  source,
+  booru,
+}
+
+String getShareContent(ShareMode mode, Post post, String endpoint) {
+  final booruLink = "${endpoint}posts/${post.id}";
+  if (mode == ShareMode.booru) return booruLink;
+  if (post.source.uri == null) return booruLink;
+
+  return post.source.uri.toString();
+}
+
+class ModalShare extends StatelessWidget {
+  const ModalShare({
+    Key? key,
+    required this.post,
+    required this.endpoint,
+    required this.onTap,
+  }) : super(key: key);
+
+  final void Function(String value) onTap;
+  final Post post;
+  final String endpoint;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+        child: SafeArea(
+      top: false,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          if (post.source.uri != null)
+            ListTile(
+              title: Text('Share source link'),
+              leading: FaIcon(FontAwesomeIcons.link),
+              onTap: () {
+                Navigator.of(context).pop();
+                onTap.call(getShareContent(ShareMode.source, post, endpoint));
+              },
+            ),
+          ListTile(
+            title: Text('Share booru link'),
+            leading: FaIcon(FontAwesomeIcons.box),
+            onTap: () {
+              Navigator.of(context).pop();
+              onTap.call(getShareContent(ShareMode.booru, post, endpoint));
+            },
+          ),
+        ],
+      ),
+    ));
   }
 }

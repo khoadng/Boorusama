@@ -75,6 +75,7 @@ dependencies:
   mockito: ^5.0.15
   url_launcher: ^6.1.2
   webview_flutter: ^2.8.0
+  share_plus: ^4.0.6
 
 dev_dependencies:
   flutter_localizations:
