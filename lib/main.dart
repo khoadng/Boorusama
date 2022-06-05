@@ -4,6 +4,7 @@ import 'dart:io';
 // Flutter imports:
 
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
@@ -41,6 +42,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/pr
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'app.dart';
+import 'boorus/danbooru/application/artist_commentary/artist_commentary_cubit.dart';
 import 'boorus/danbooru/application/comment/comment_cubit.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
@@ -102,6 +104,8 @@ void main() async {
 
   final noteRepo = NoteRepository(api);
 
+  final artistCommentaryRepo = ArtistCommentaryRepository(api, accountRepo);
+
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {
       await downloader.init();
@@ -158,6 +162,9 @@ void main() async {
                 userRepository: userRepo,
               ),
             ),
+            BlocProvider(
+                create: (context) => ArtistCommentaryCubit(
+                    artistCommentaryRepository: artistCommentaryRepo)),
           ],
           child: EasyLocalization(
             useOnlyLangCode: true,

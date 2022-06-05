@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,34 +14,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/artist_commentary/artist_commentary_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'post_tag_list.dart';
-
-final _artistCommentaryProvider = FutureProvider.autoDispose
-    .family<ArtistCommentary, int>((ref, postId) async {
-  // Cancel the HTTP request if the user leaves the detail page before
-  // the request completes.
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(artistCommentaryProvider);
-  final dto = await repo.getCommentary(
-    postId,
-    cancelToken: cancelToken,
-  );
-  final artistCommentary = dto.toEntity();
-
-  ref.maintainState = true;
-
-  return artistCommentary;
-});
 
 class PostInfoModal extends HookWidget {
   const PostInfoModal({
@@ -174,75 +155,86 @@ class ArtistSection extends HookWidget {
   Widget build(BuildContext context) {
     final artistCommentaryDisplay =
         useState(ArtistCommentaryTranlationState.original);
-    final artistCommentary = useProvider(_artistCommentaryProvider(post.id));
-    return artistCommentary.when(
-      loading: () => _buildLoading(context),
-      data: (artistCommentary) {
-        return Wrap(
-          children: <Widget>[
-            ListTile(
-              visualDensity: VisualDensity.compact,
-              title: Text(post.tagStringArtist.pretty),
-              subtitle: InkWell(
-                onLongPress: () => Clipboard.setData(
-                        ClipboardData(text: post.source.uri.toString()))
-                    .then((results) {
-                  final snackbar = SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    elevation: 6.0,
-                    content: Text(
-                      'Copied',
-                    ),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                }),
-                onTap: () => post.source != null
-                    ? Navigator.of(context).push(
-                        SlideInRoute(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  WebView(url: post.source.uri.toString()),
-                        ),
+
+    useEffect(() {
+      ReadContext(context)
+          .read<ArtistCommentaryCubit>()
+          .getArtistCommentary(post.id);
+    }, []);
+
+    return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final artistCommentary = state.data!;
+          return Wrap(
+            children: <Widget>[
+              ListTile(
+                visualDensity: VisualDensity.compact,
+                title: Text(post.tagStringArtist.pretty),
+                subtitle: InkWell(
+                  onLongPress: () => Clipboard.setData(
+                          ClipboardData(text: post.source.uri.toString()))
+                      .then((results) {
+                    final snackbar = SnackBar(
+                      behavior: SnackBarBehavior.floating,
+                      elevation: 6.0,
+                      content: Text(
+                        'Copied',
+                      ),
+                    );
+                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                  }),
+                  onTap: () => post.source != null
+                      ? Navigator.of(context).push(
+                          SlideInRoute(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    WebView(url: post.source.uri.toString()),
+                          ),
+                        )
+                      : null,
+                  child: Text(
+                    post.source.uri.toString(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.caption,
+                  ),
+                ),
+                leading: CircleAvatar(),
+                trailing: artistCommentary.isTranslated
+                    ? PopupMenuButton<ArtistCommentaryTranlationState>(
+                        icon: Icon(Icons.keyboard_arrow_down),
+                        onSelected: (value) {
+                          artistCommentaryDisplay.value = value;
+                        },
+                        itemBuilder: (BuildContext context) =>
+                            <PopupMenuEntry<ArtistCommentaryTranlationState>>[
+                          PopupMenuItem<ArtistCommentaryTranlationState>(
+                            value: getTranslationNextState(
+                                artistCommentaryDisplay.value),
+                            child: ListTile(
+                              title: Text(getTranslationText(
+                                  artistCommentaryDisplay.value)),
+                            ),
+                          ),
+                        ],
                       )
-                    : null,
-                child: Text(
-                  post.source.uri.toString(),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.caption,
+                    : SizedBox.shrink(),
+              ),
+              SelectableText(
+                getDescriptionText(
+                  artistCommentaryDisplay.value,
+                  artistCommentary,
                 ),
               ),
-              leading: CircleAvatar(),
-              trailing: artistCommentary.isTranslated
-                  ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                      icon: Icon(Icons.keyboard_arrow_down),
-                      onSelected: (value) {
-                        artistCommentaryDisplay.value = value;
-                      },
-                      itemBuilder: (BuildContext context) =>
-                          <PopupMenuEntry<ArtistCommentaryTranlationState>>[
-                        PopupMenuItem<ArtistCommentaryTranlationState>(
-                          value: getTranslationNextState(
-                              artistCommentaryDisplay.value),
-                          child: ListTile(
-                            title: Text(getTranslationText(
-                                artistCommentaryDisplay.value)),
-                          ),
-                        ),
-                      ],
-                    )
-                  : SizedBox.shrink(),
-            ),
-            SelectableText(
-              getDescriptionText(
-                artistCommentaryDisplay.value,
-                artistCommentary,
-              ),
-            ),
-          ],
-        );
+            ],
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return SizedBox.shrink();
+        } else {
+          return _buildLoading(context);
+        }
       },
-      error: (name, message) => Text("Failed to load commentary"),
     );
   }
 }
