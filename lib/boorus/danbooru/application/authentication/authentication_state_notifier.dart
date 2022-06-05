@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 
 part 'authentication_state.dart';
@@ -36,8 +35,9 @@ final accountStateProvider = Provider<AccountState>((ref) {
 
 class AuthenticationNotifier extends StateNotifier<AuthenticationState> {
   AuthenticationNotifier(
-      ProviderReference ref, IProfileRepository profileRepository)
-      : _accountRepository = ref.read(accountProvider),
+    IProfileRepository profileRepository,
+    IAccountRepository accountRepository,
+  )   : _accountRepository = accountRepository,
         _profileRepository = profileRepository,
         super(AuthenticationState(
           account: Account.empty,

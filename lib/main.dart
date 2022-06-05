@@ -125,7 +125,7 @@ void main() async {
         ),
         authenticationStateNotifierProvider.overrideWithProvider(
             StateNotifierProvider<AuthenticationNotifier>((ref) {
-          return AuthenticationNotifier(ref, profileRepo);
+          return AuthenticationNotifier(profileRepo, accountRepo);
         })),
         postProvider.overrideWithProvider(Provider<IPostRepository>((ref) {
           final filteredPostRepo = BlackListedFilterDecorator(
@@ -146,6 +146,7 @@ void main() async {
           RepositoryProvider<IAccountRepository>(create: (_) => accountRepo),
           RepositoryProvider<IDownloadService>(create: (_) => downloader),
           RepositoryProvider<INoteRepository>(create: (_) => noteRepo),
+          RepositoryProvider<IAccountRepository>(create: (_) => accountRepo),
         ],
         child: MultiBlocProvider(
           providers: [
