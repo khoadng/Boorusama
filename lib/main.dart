@@ -3,6 +3,8 @@ import 'dart:io';
 
 // Flutter imports:
 
+import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:dio/dio.dart';
@@ -98,6 +100,8 @@ void main() async {
 
   final downloader = DownloadService();
 
+  final noteRepo = NoteRepository(api);
+
   if (!kIsWeb) {
     if (Platform.isAndroid || Platform.isIOS) {
       await downloader.init();
@@ -137,6 +141,7 @@ void main() async {
               create: (_) => favoriteRepo),
           RepositoryProvider<IAccountRepository>(create: (_) => accountRepo),
           RepositoryProvider<IDownloadService>(create: (_) => downloader),
+          RepositoryProvider<INoteRepository>(create: (_) => noteRepo),
         ],
         child: MultiBlocProvider(
           providers: [
