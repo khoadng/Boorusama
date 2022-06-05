@@ -8,12 +8,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';

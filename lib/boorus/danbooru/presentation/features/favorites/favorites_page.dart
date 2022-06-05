@@ -2,14 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
@@ -53,15 +51,13 @@ class FavoritesPage extends HookWidget {
       refreshBuilder: (page) async {
         final account =
             await RepositoryProvider.of<IAccountRepository>(context).get();
-        return BuildContextX(context)
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts("ordfav:${account.username}", page);
       },
       loadMoreBuilder: (page) async {
         final account =
             await RepositoryProvider.of<IAccountRepository>(context).get();
-        return BuildContextX(context)
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts("ordfav:${account.username}", page);
       },
     ));

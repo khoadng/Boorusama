@@ -2,22 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 final _showPasswordProvider = StateProvider<bool>((ref) => false);
 final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
-final _url = Provider<String>((ref) {
-  return "${ref.watch(apiEndpointProvider)}/login?url=%2F";
-});
 
 class LoginBox extends HookWidget {
   const LoginBox({Key? key}) : super(key: key);
@@ -35,7 +33,6 @@ class LoginBox extends HookWidget {
     final authStatus = useProvider(accountStateProvider);
     final showPassword = useProvider(_showPasswordProvider);
     final usernameHasText = useProvider(_userNameHasTextProvider);
-    final logInUrl = useProvider(_url);
 
     usernameTextController.addListener(() {
       if (usernameTextController.text.isNotEmpty) {
@@ -140,18 +137,22 @@ class LoginBox extends HookWidget {
                             onPressed: () => Navigator.of(context).pop(),
                             child: Text("Cancel"),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              Navigator.of(context).push(
-                                SlideInRoute(
-                                  pageBuilder: (context, animation,
-                                          secondaryAnimation) =>
-                                      WebView(url: logInUrl),
-                                ),
-                              );
-                            },
-                            child: Text("Open web browser"),
+                          BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                            builder: (context, state) => TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                Navigator.of(context).push(
+                                  SlideInRoute(
+                                    pageBuilder: (context, animation,
+                                            secondaryAnimation) =>
+                                        WebView(
+                                            url:
+                                                "${state.booru.url}/login?url=%2F"),
+                                  ),
+                                );
+                              },
+                              child: Text("Open web browser"),
+                            ),
                           ),
                         ],
                         content: Text(
@@ -184,7 +185,7 @@ class LoginBox extends HookWidget {
       child: Text('login.form.login'.tr()),
       onPressed: () {
         if (_formKey.value.currentState!.validate()) {
-          context
+          BuildContextX(context)
               .read(authenticationStateNotifierProvider)
               .logIn(usernameTextController.text, passwordTextController.text);
           FocusScope.of(context).unfocus();

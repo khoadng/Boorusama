@@ -1,32 +1,11 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 
 part 'danbooru_api.g.dart';
-
-final apiProvider = Provider<IApi>((ref) {
-  final dio = Dio();
-  final endPoint = ref.watch(apiEndpointProvider);
-
-  return DanbooruApi(
-    dio,
-    baseUrl: endPoint,
-  );
-});
-
-final apiEndpointProvider = Provider<String>((ref) {
-  final settings = ref.watch(settingsNotifier.state).settings;
-  if (settings.safeMode) {
-    return "https://safebooru.donmai.us/";
-  } else {
-    return "https://danbooru.donmai.us/";
-  }
-});
 
 @RestApi()
 abstract class DanbooruApi implements IApi {

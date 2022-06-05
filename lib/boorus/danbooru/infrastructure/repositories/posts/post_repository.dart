@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -10,10 +9,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
-
-final postProvider = Provider<IPostRepository>((ref) {
-  throw UnimplementedError();
-});
 
 class PostRepository implements IPostRepository {
   PostRepository(IApi api, IAccountRepository accountRepository,
@@ -163,7 +158,6 @@ class PostRepository implements IPostRepository {
           } else {
             throw Exception("Failed to get popular posts for $date");
           }
-          break;
         default:
       }
       return <Post>[];
@@ -182,7 +176,6 @@ class PostRepository implements IPostRepository {
     // final settings = _ref.watch(settingsNotifier.state).settings;
 
     try {
-      final stopwatch = Stopwatch()..start();
       final value = await _api.getPosts(
           account.username, account.apiKey, page, tagString, limit,
           cancelToken: cancelToken);
@@ -199,9 +192,6 @@ class PostRepository implements IPostRepository {
       }
 
       final posts = dtos.map((dto) => dto.toEntity()).toList();
-
-      print('parsed posts in ${stopwatch.elapsed.inMilliseconds}ms'
-          .toUpperCase());
 
       return posts;
     } on DioError catch (e) {

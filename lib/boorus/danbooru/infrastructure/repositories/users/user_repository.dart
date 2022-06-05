@@ -1,12 +1,12 @@
 // Package imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 
 class UserRepository implements IUserRepository {

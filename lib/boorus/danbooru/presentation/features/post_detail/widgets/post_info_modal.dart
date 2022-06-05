@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,16 +9,15 @@ import 'package:flutter/services.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/artist_commentary/artist_commentary_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
@@ -37,7 +35,6 @@ class PostInfoModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    var apiEndpoint = useProvider(apiEndpointProvider);
     return Container(
       height: MediaQuery.of(context).size.height * 0.75,
       child: Modal(
@@ -92,9 +89,11 @@ class PostInfoModal extends HookWidget {
                   create: (context) => TagCubit(
                       tagRepository:
                           RepositoryProvider.of<ITagRepository>(context)),
-                  child: PostTagList(
-                    apiEndpoint: apiEndpoint,
-                    tagStringComma: post.tagString.toCommaFormat(),
+                  child: BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                    builder: (context, state) => PostTagList(
+                      apiEndpoint: state.booru.url,
+                      tagStringComma: post.tagString.toCommaFormat(),
+                    ),
                   ),
                 )),
               ],

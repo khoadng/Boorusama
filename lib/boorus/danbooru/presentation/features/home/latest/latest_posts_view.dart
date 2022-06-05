@@ -1,17 +1,15 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
@@ -67,11 +65,9 @@ class LatestView extends HookWidget {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       },
-      refreshBuilder: (page) => BuildContextX(context)
-          .read(postProvider)
+      refreshBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
           .getPosts(selectedTag.value, page),
-      loadMoreBuilder: (page) => BuildContextX(context)
-          .read(postProvider)
+      loadMoreBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
           .getPosts(selectedTag.value, page),
     ));
     final isRefreshing = useRefreshingState(infiniteListController.value);

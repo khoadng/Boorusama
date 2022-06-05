@@ -1,7 +1,7 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Project imports:
+// Package imports:
 import 'package:easy_localization/easy_localization.dart';
 
 class SearchBar extends StatefulWidget {

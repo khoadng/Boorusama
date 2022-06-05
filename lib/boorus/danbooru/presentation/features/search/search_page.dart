@@ -13,11 +13,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
@@ -42,6 +41,10 @@ class SearchPage extends HookWidget {
     final completedQueryItems = useState(<String>[]);
 
     final isMounted = useIsMounted();
+
+    useEffect(() {
+      ReadContext(context).read<SearchHistoryCubit>().getSearchHistory();
+    }, []);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
@@ -73,13 +76,11 @@ class SearchPage extends HookWidget {
         }
       },
       refreshBuilder: (page) {
-        return BuildContextX(context)
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts(completedQueryItems.value.join(' '), page);
       },
       loadMoreBuilder: (page) {
-        return BuildContextX(context)
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts(completedQueryItems.value.join(' '), page);
       },
     ));
@@ -215,8 +216,8 @@ class SearchPage extends HookWidget {
         addTag(queryEditingController.text);
       }
 
-      BuildContextX(context)
-          .read(searchHistoryProvider)
+      ReadContext(context)
+          .read<SearchHistoryCubit>()
           .addHistory(completedQueryItems.value.join(' '));
 
       FocusScope.of(context).unfocus();

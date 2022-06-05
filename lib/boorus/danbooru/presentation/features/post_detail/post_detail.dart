@@ -1,22 +1,23 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:convert';
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:recase/recase.dart';
 import 'package:path/path.dart' as p;
+import 'package:recase/recase.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -24,30 +25,6 @@ import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
-
-final _recommendPostsProvider = FutureProvider.autoDispose
-    .family<List<Recommended>, String>((ref, tagString) async {
-  // Cancel the HTTP request if the user leaves the detail page before
-  // the request completes.
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(postProvider);
-  final recommendations = await Future.wait(
-      tagString.split(' ').where((tag) => tag.isNotEmpty).map((tag) async {
-    final posts = await repo.getPosts(tag, 1,
-        limit: 10, cancelToken: cancelToken, skipFavoriteCheck: true);
-
-    final recommended = Recommended(title: tag, posts: posts.take(6).toList());
-
-    return recommended;
-  }).toList());
-
-  /// Cache the posts once it was successfully obtained.
-  ref.maintainState = true;
-
-  return recommendations;
-});
 
 class Recommended {
   final String _title;
@@ -77,18 +54,24 @@ class PostDetail extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final artistPosts =
-        useProvider(_recommendPostsProvider(post.tagStringArtist));
-    final charactersPosts =
-        useProvider(_recommendPostsProvider(post.tagStringCharacter));
     final scrollController = useScrollController();
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
 
+    useEffect(() {
+      ReadContext(context)
+          .read<RecommendedArtistPostCubit>()
+          .getRecommendedPosts(post.tagStringArtist);
+      ReadContext(context)
+          .read<RecommendedCharacterPostCubit>()
+          .getRecommendedPosts(post.tagStringCharacter);
+    }, []);
+
     Widget postWidget;
     if (post.isVideo) {
       if (p.extension(post.normalImageUri.toString()) == ".webm") {
-        final String videoHtml = """
+        final String videoHtml =
+            """
             <body style="background-color:black;">
             <center><video controls allowfulscreen width=${MediaQuery.of(context).size.width} height=${MediaQuery.of(context).size.height} controlsList="nodownload" style="background-color:black;" autoplay loop>
                 <source src=${post.normalImageUri.toString()}#t=0.01 type="video/webm" />
@@ -127,95 +110,103 @@ class PostDetail extends HookWidget {
     }
 
     Widget buildRecommendedArtistList() {
-      return post.tagStringArtist.isNotEmpty
-          ? artistPosts.maybeWhen(
-              data: (recommendedItems) => Column(
-                    children: recommendedItems
-                        .map(
-                          (item) => RecommendPostSection(
-                            header: ListTile(
-                              onTap: () => AppRouter.router.navigateTo(
-                                context,
-                                "/artist",
-                                routeSettings: RouteSettings(
-                                  arguments: [
-                                    item._title,
-                                    post.normalImageUri.toString(),
-                                  ],
-                                ),
-                              ),
-                              title: Text(item.title),
-                              trailing:
-                                  Icon(Icons.keyboard_arrow_right_rounded),
-                            ),
-                            posts: item.posts,
+      if (post.tagStringArtist.isEmpty) return SizedBox.shrink();
+      return BlocBuilder<RecommendedArtistPostCubit,
+          AsyncLoadState<List<Recommended>>>(
+        builder: (context, state) {
+          if (state.status == LoadStatus.success) {
+            final recommendedItems = state.data!;
+            return Column(
+              children: recommendedItems
+                  .map(
+                    (item) => RecommendPostSection(
+                      header: ListTile(
+                        onTap: () => AppRouter.router.navigateTo(
+                          context,
+                          "/artist",
+                          routeSettings: RouteSettings(
+                            arguments: [
+                              item._title,
+                              post.normalImageUri.toString(),
+                            ],
                           ),
-                        )
-                        .toList(),
-                  ),
-              orElse: () {
-                final artists = post.tagStringArtist.split(' ');
-                return Column(
-                  children: [
-                    ...List.generate(
-                      artists.length,
-                      (index) => RecommendPostSectionPlaceHolder(
-                        header: ListTile(
-                          title: Text(artists[index].pretty.titleCase),
-                          trailing: Icon(Icons.keyboard_arrow_right_rounded),
                         ),
+                        title: Text(item.title),
+                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
                       ),
-                    )
-                  ],
-                );
-              })
-          : SizedBox.shrink();
+                      posts: item.posts,
+                    ),
+                  )
+                  .toList(),
+            );
+          } else {
+            final artists = post.tagStringArtist.split(' ');
+            return Column(
+              children: [
+                ...List.generate(
+                  artists.length,
+                  (index) => RecommendPostSectionPlaceHolder(
+                    header: ListTile(
+                      title: Text(artists[index].pretty.titleCase),
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                  ),
+                )
+              ],
+            );
+          }
+        },
+      );
     }
 
     Widget buildRecommendedCharacterList() {
-      return post.tagStringCharacter.isNotEmpty
-          ? charactersPosts.maybeWhen(
-              data: (recommendedItems) => Column(
-                    children: recommendedItems
-                        .map(
-                          (item) => RecommendPostSection(
-                            header: ListTile(
-                              onTap: () => AppRouter.router.navigateTo(
-                                context,
-                                "/artist",
-                                routeSettings: RouteSettings(
-                                  arguments: [
-                                    item._title,
-                                    post.normalImageUri.toString(),
-                                  ],
-                                ),
-                              ),
-                              title: Text(item.title),
-                              trailing:
-                                  Icon(Icons.keyboard_arrow_right_rounded),
-                            ),
-                            posts: item.posts,
+      if (post.tagStringCharacter.isEmpty) return SizedBox.shrink();
+      return BlocBuilder<RecommendedCharacterPostCubit,
+          AsyncLoadState<List<Recommended>>>(
+        builder: (context, state) {
+          if (state.status == LoadStatus.success) {
+            final recommendedItems = state.data!;
+            return Column(
+              children: recommendedItems
+                  .map(
+                    (item) => RecommendPostSection(
+                      header: ListTile(
+                        onTap: () => AppRouter.router.navigateTo(
+                          context,
+                          "/artist",
+                          routeSettings: RouteSettings(
+                            arguments: [
+                              item._title,
+                              post.normalImageUri.toString(),
+                            ],
                           ),
-                        )
-                        .toList(),
-                  ),
-              orElse: () {
-                final characters = post.tagStringCharacter.split(' ');
-                return Column(
-                  children: [
-                    ...List.generate(
-                      characters.length,
-                      (index) => RecommendPostSectionPlaceHolder(
-                        header: ListTile(
-                          title: Text(characters[index].pretty.titleCase),
-                          trailing: Icon(Icons.keyboard_arrow_right_rounded),
                         ),
+                        title: Text(item.title),
+                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
                       ),
-                    )
-                  ],
-                );
-              })
-          : SizedBox.shrink();
+                      posts: item.posts,
+                    ),
+                  )
+                  .toList(),
+            );
+          } else {
+            final characters = post.tagStringCharacter.split(' ');
+            return Column(
+              children: [
+                ...List.generate(
+                  characters.length,
+                  (index) => RecommendPostSectionPlaceHolder(
+                    header: ListTile(
+                      title: Text(characters[index].pretty.titleCase),
+                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                  ),
+                )
+              ],
+            );
+          }
+        },
+      );
     }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(

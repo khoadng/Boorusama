@@ -1,5 +1,6 @@
 // Flutter imports:
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,7 +8,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
@@ -15,7 +15,6 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artist.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
@@ -64,10 +63,10 @@ class ArtistPage extends HookWidget {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       },
-      refreshBuilder: (page) =>
-          BuildContextX(context).read(postProvider).getPosts(artistName, page),
-      loadMoreBuilder: (page) =>
-          BuildContextX(context).read(postProvider).getPosts(artistName, page),
+      refreshBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
+          .getPosts(artistName, page),
+      loadMoreBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
+          .getPosts(artistName, page),
     ));
 
     final isRefreshing = useRefreshingState(infiniteListController.value);

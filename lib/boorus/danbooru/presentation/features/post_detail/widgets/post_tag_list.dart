@@ -1,5 +1,6 @@
 // Flutter imports:
 
+// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,12 +9,12 @@ import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
 import 'package:popup_menu/popup_menu.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 class PostTagList extends StatefulWidget {
   PostTagList({

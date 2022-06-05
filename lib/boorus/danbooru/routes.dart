@@ -2,15 +2,17 @@
 
 // Package imports:
 import 'package:fluro/fluro.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'application/note/note_cubit.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -39,8 +41,16 @@ final postSearchHandler = Handler(handlerFunc: (
 ) {
   final args = context!.settings!.arguments as List;
 
-  return SearchPage(
-    initialQuery: args[0],
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => SearchHistoryCubit(
+              searchHistoryRepository:
+                  RepositoryProvider.of<ISearchHistoryRepository>(context))),
+    ],
+    child: SearchPage(
+      initialQuery: args[0],
+    ),
   );
 });
 

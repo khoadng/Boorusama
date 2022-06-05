@@ -1,10 +1,13 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 
-class Settings {
+class Settings extends Equatable {
   Settings({
     required this.safeMode,
     required this.blacklistedTags,
@@ -30,11 +33,26 @@ class Settings {
     searchHistories: [],
   );
 
-  String blacklistedTags;
-  String language;
-  bool safeMode;
-  ThemeMode themeMode;
-  List<SearchHistory> searchHistories;
+  final String blacklistedTags;
+  final String language;
+  final bool safeMode;
+  final ThemeMode themeMode;
+  final List<SearchHistory> searchHistories;
+
+  Settings copyWith({
+    String? blacklistedTags,
+    String? language,
+    bool? safeMode,
+    ThemeMode? themeMode,
+    List<SearchHistory>? searchHistories,
+  }) =>
+      Settings(
+        safeMode: safeMode ?? this.safeMode,
+        blacklistedTags: blacklistedTags ?? this.blacklistedTags,
+        themeMode: themeMode ?? this.themeMode,
+        language: language ?? this.language,
+        searchHistories: searchHistories ?? this.searchHistories,
+      );
 
   Map<String, dynamic> toJson() => {
         'safeMode': safeMode,
@@ -44,4 +62,8 @@ class Settings {
         'searchHistories':
             searchHistories.map((item) => item.toJson()).toList(),
       };
+
+  @override
+  List<Object?> get props =>
+      [safeMode, blacklistedTags, themeMode, language, searchHistories];
 }

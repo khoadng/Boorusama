@@ -1,7 +1,10 @@
+// Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class NoteCubit extends Cubit<AsyncLoadState<List<Note>>> {
   NoteCubit({

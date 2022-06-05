@@ -1,5 +1,4 @@
 // Flutter imports:
-
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -8,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -39,7 +39,15 @@ class PreviewPostGrid extends StatelessWidget {
                   favoritePostRepository:
                       RepositoryProvider.of<IFavoritePostRepository>(context),
                 ),
-              )
+              ),
+              BlocProvider(
+                  create: (context) => RecommendedArtistPostCubit(
+                      postRepository:
+                          RepositoryProvider.of<IPostRepository>(context))),
+              BlocProvider(
+                  create: (context) => RecommendedCharacterPostCubit(
+                      postRepository:
+                          RepositoryProvider.of<IPostRepository>(context))),
             ],
             child: RepositoryProvider.value(
               value: RepositoryProvider.of<ITagRepository>(context),
