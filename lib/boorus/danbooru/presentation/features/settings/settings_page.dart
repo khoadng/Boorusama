@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 // Project imports:
+import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
+import 'package:boorusama/main.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'appearance_page.dart';
 import 'tag_settings_page.dart';
@@ -18,6 +21,7 @@ class SettingsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final settings = useProvider(settingsNotifier.state).settings;
+    final info = useProvider(packageInfoProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('settings._string'.tr()),
@@ -103,22 +107,23 @@ class SettingsPage extends HookWidget {
               ],
             ),
             SettingsSection(
-              title: Text("App Information"),
+              title: Text("App Information ${getVersionText(info)}"),
               tiles: [
                 SettingsTile(
                   title: Text("Acknowledgements"),
                   leading: Icon(Icons.info),
                   onPressed: (context) => showAboutDialog(
-                      context: context,
-                      applicationIcon: Image.asset(
-                        'assets/icon/icon-512x512.png',
-                        width: 64,
-                        height: 64,
-                      ),
-                      applicationVersion: "1.0.0",
-                      applicationLegalese: "\u{a9} 2020-2021 Nguyen Duc Khoa",
-                      applicationName: "Boorusama"),
-                )
+                    context: context,
+                    applicationIcon: Image.asset(
+                      'assets/icon/icon-512x512.png',
+                      width: 64,
+                      height: 64,
+                    ),
+                    applicationVersion: getVersion(info),
+                    applicationLegalese: "\u{a9} 2020-2022 Nguyen Duc Khoa",
+                    applicationName: AppConstants.appName,
+                  ),
+                ),
               ],
             )
           ],
@@ -127,3 +132,7 @@ class SettingsPage extends HookWidget {
     );
   }
 }
+
+String getVersion(PackageInfo info) => info.version;
+String getVersionText(PackageInfo info) =>
+    "(v${info.version} - Build ${info.buildNumber})";

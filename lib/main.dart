@@ -11,6 +11,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,9 +46,11 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  final packageInfo = await getPackageInfo();
   final run = () => runApp(
         ProviderScope(
           overrides: [
+            packageInfoProvider.overrideWithValue(packageInfo),
             settingsNotifier.overrideWithProvider(
               StateNotifierProvider<SettingsStateNotifier>(
                 (ref) => SettingsStateNotifier(
@@ -80,3 +83,11 @@ void main() async {
     );
   }
 }
+
+Future<PackageInfo> getPackageInfo() async {
+  return await PackageInfo.fromPlatform();
+}
+
+final packageInfoProvider = Provider<PackageInfo>((ref) {
+  throw UnimplementedError();
+});
