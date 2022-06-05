@@ -65,13 +65,6 @@ class _AppState extends State<App> {
 
     AppRouter().setupRoutes();
 
-    if (!kIsWeb) {
-      if (Platform.isAndroid || Platform.isIOS) {
-        Future.delayed(
-            Duration.zero, () => context.read(downloadServiceProvider).init());
-      }
-    }
-
     // Future.delayed(
     //     Duration.zero,
     //     () => context

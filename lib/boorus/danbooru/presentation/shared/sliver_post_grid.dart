@@ -10,7 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_tags/flutter_tags.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -22,10 +21,10 @@ import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorite
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
@@ -296,8 +295,7 @@ class PostPreviewSheet extends HookWidget {
                       leading: Icon(Icons.file_download),
                       title: Text("Download"),
                       onTap: () {
-                        BuildContextX(context)
-                            .read(downloadServiceProvider)
+                        RepositoryProvider.of<IDownloadService>(context)
                             .download(post);
                         Navigator.of(context).pop();
                       },

@@ -1,9 +1,11 @@
 // Flutter imports:
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -13,7 +15,6 @@ import 'package:photo_view/photo_view.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
 
@@ -62,7 +63,7 @@ class PostImagePage extends HookWidget {
           onSelected: (value) async {
             switch (value) {
               case PostAction.download:
-                context.read(downloadServiceProvider).download(post);
+                RepositoryProvider.of<IDownloadService>(context).download(post);
                 break;
               default:
             }

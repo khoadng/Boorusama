@@ -3,6 +3,8 @@ import 'dart:io';
 
 // Flutter imports:
 
+import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:dio/dio.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
@@ -94,6 +96,14 @@ void main() async {
 
   final favoriteRepo = FavoritePostRepository(api, accountRepo);
 
+  final downloader = DownloadService();
+
+  if (!kIsWeb) {
+    if (Platform.isAndroid || Platform.isIOS) {
+      await downloader.init();
+    }
+  }
+
   runApp(
     ProviderScope(
       overrides: [
@@ -126,6 +136,7 @@ void main() async {
           RepositoryProvider<IFavoritePostRepository>(
               create: (_) => favoriteRepo),
           RepositoryProvider<IAccountRepository>(create: (_) => accountRepo),
+          RepositoryProvider<IDownloadService>(create: (_) => downloader),
         ],
         child: MultiBlocProvider(
           providers: [
