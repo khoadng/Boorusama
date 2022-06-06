@@ -8,7 +8,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -44,14 +43,6 @@ extension ExploreCategoryX on ExploreCategory {
     return "${this.toString().split('.').last.replaceAll('()', '')}";
   }
 }
-
-final _timeScaleProvider = StateProvider.autoDispose<TimeScale>((ref) {
-  return TimeScale.day;
-});
-
-final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
-  return DateTime.now();
-});
 
 Future<List<Post>> categoryToAwaitablePosts(
   ExploreCategory category,
@@ -194,8 +185,8 @@ class _ExploreItemPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDate = useProvider(_dateProvider);
-    final selectedTimeScale = useProvider(_timeScaleProvider);
+    final selectedDate = useState(DateTime.now());
+    final selectedTimeScale = useState(TimeScale.day);
     final posts = useState(<Post>[]);
     final hasNoData = useState(false);
 
@@ -234,29 +225,29 @@ class _ExploreItemPage extends HookWidget {
         refreshBuilder: (page) => categoryToAwaitablePosts(
           category,
           RepositoryProvider.of<IPostRepository>(context),
-          selectedDate.state,
+          selectedDate.value,
           page,
-          selectedTimeScale.state,
+          selectedTimeScale.value,
         ),
         loadMoreBuilder: (page) => categoryToAwaitablePosts(
           category,
           RepositoryProvider.of<IPostRepository>(context),
-          selectedDate.state,
+          selectedDate.value,
           page,
-          selectedTimeScale.state,
+          selectedTimeScale.value,
         ),
       ),
     );
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value,
-        [selectedTimeScale.state, selectedDate.state]);
+        [selectedTimeScale.value, selectedDate.value]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(
         selectedCategory: category,
-        onDateChanged: (value) => selectedDate.state = value,
-        onTimeScaleChanged: (value) => selectedTimeScale.state = value,
+        onDateChanged: (value) => selectedDate.value = value,
+        onTimeScaleChanged: (value) => selectedTimeScale.value = value,
       );
     }
 

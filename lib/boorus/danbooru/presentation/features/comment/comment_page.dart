@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
@@ -40,50 +38,10 @@ class _CommentPageState extends State<CommentPage> {
         child: ListView.builder(
           itemBuilder: (context, index) {
             final comment = comments[index];
-            return Consumer(
-              builder: (_, watch, __) {
-                return ListTile(
-                  //TODO: comment feature is not ready yet
-                  // onLongPress: () => isLoggedIn
-                  //     ? showMaterialModalBottomSheet(
-                  //         context: context,
-                  //         builder: (context) => Material(
-                  //           child: SafeArea(
-                  //             top: false,
-                  //             child: Column(
-                  //               mainAxisSize: MainAxisSize.min,
-                  //               children: <Widget>[
-                  //                 ListTile(
-                  //                   title: Text(I18n.of(context)
-                  //                       .commentListingCommandsEdit),
-                  //                   leading: Icon(Icons.edit),
-                  //                   onTap: () => _handleEditTap(
-                  //                       context, comment, widget.postId),
-                  //                 ),
-                  //                 ListTile(
-                  //                   title: Text(I18n.of(context)
-                  //                       .commentListingCommandsReply),
-                  //                   leading: Icon(Icons.folder_open),
-                  //                   onTap: () => _handleReplyTap(
-                  //                       context, comment, widget.postId),
-                  //                 ),
-                  //                 ListTile(
-                  //                   title: Text(I18n.of(context)
-                  //                       .commentListingCommandsDelete),
-                  //                   leading: Icon(Icons.delete),
-                  //                   onTap: () => Navigator.of(context).pop(),
-                  //                 ),
-                  //               ],
-                  //             ),
-                  //           ),
-                  //         ),
-                  //       )
-                  //     : null,
-                  title: CommentItem(
-                    comment: comment,
-                  ),
-                );
-              },
+            return ListTile(
+              title: CommentItem(
+                comment: comment,
+              ),
             );
           },
           itemCount: comments.length,
@@ -186,25 +144,6 @@ class _CommentPageState extends State<CommentPage> {
         ),
         body: SafeArea(
           child: Scaffold(
-            floatingActionButton: Consumer(
-              builder: (_, watch, __) {
-                //TODO: comment feature is not ready yet
-                return SizedBox.shrink();
-                // return isLoggedIn
-                //     ? OpenContainer(
-                //         closedElevation: 0,
-                //         closedColor: Colors.transparent,
-                //         closedBuilder: (context, action) =>
-                //             FloatingActionButton(
-                //           child: Icon(Icons.add),
-                //           onPressed: null,
-                //         ),
-                //         openBuilder: (context, action) =>
-                //             CommentCreatePage(postId: widget.postId),
-                //       )
-                //     : SizedBox.shrink();
-              },
-            ),
             body: Column(
               children: <Widget>[
                 Expanded(

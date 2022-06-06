@@ -9,7 +9,6 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
@@ -159,10 +158,8 @@ class SearchPage extends HookWidget {
         queryEditingController.text = '';
       }
 
-      final lastTag = BuildContextX(context)
-          .read(queryProcessorProvider)
-          .process(
-              text, queryEditingController.text, completedQueryItems.value);
+      final lastTag = QueryProcessor().process(
+          text, queryEditingController.text, completedQueryItems.value);
 
       final tags = await RepositoryProvider.of<ITagRepository>(context)
           .getTagsByNamePattern(lastTag, 1);

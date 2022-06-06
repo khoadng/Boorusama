@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -222,7 +221,7 @@ void main() async {
                         accountCubit.removeAccount();
                       }
                     },
-                    child: ProviderScope(child: App()),
+                    child: App(),
                   ),
                 ),
               );
