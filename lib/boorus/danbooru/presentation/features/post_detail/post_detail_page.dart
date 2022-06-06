@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -43,15 +42,18 @@ class PostDetailPage extends HookWidget {
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
     final slideShowConfig =
-        useProvider(slideShowConfigurationStateProvider).state;
+        useState(SlideShowConfiguration(interval: 4, skipAnimation: false));
     useValueChanged(showSlideShowConfig.value, (bool _, Null __) {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance!.addPostFrameCallback((_) async {
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
-                builder: (context) =>
-                    Wrap(children: [SlideShowConfigBottomModal()]),
+                builder: (context) => Wrap(children: [
+                  SlideShowConfigBottomModal(
+                    config: slideShowConfig,
+                  )
+                ]),
               ) ??
               false;
           showSlideShowConfig.value = false;
@@ -138,58 +140,39 @@ class PostDetailPage extends HookWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        // floatingActionButton: autoPlay.value
-        //     ? SizedBox.shrink()
-        //     : FadeTransition(
-        //         opacity: hideFabAnimController,
-        //         child: ScaleTransition(
-        //           scale: hideFabAnimController,
-        //           child: FloatingActionButton(
-        //             onPressed: () => showBarModalBottomSheet(
-        //               expand: false,
-        //               context: context,
-        //               builder: (context) => CommentPage(
-        //                 // comments: comments,
-        //                 postId: posts[currentPostIndex.value].id,
-        //               ),
-        //             ),
-        //             child: FaIcon(
-        //               FontAwesomeIcons.comment,
-        //               color: Colors.white,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
         body: Stack(
           children: [
-            CarouselSlider.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index, realIndex) {
-                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-                  currentPostIndex.value = index;
-                });
-                return PostDetail(
-                  post: posts[index],
-                  minimal: autoPlay.value,
-                  animController: hideFabAnimController,
-                );
-              },
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  onPostChanged(index);
+            ValueListenableBuilder<SlideShowConfiguration>(
+              valueListenable: slideShowConfig,
+              builder: (context, config, child) => CarouselSlider.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index, realIndex) {
+                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                    currentPostIndex.value = index;
+                  });
+                  return PostDetail(
+                    post: posts[index],
+                    minimal: autoPlay.value,
+                    animController: hideFabAnimController,
+                  );
                 },
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: intitialIndex,
-                reverse: false,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                autoPlay: autoPlay.value,
-                autoPlayAnimationDuration: slideShowConfig.skipAnimation
-                    ? Duration(microseconds: 1)
-                    : Duration(milliseconds: 600),
-                autoPlayInterval: Duration(seconds: slideShowConfig.interval),
-                scrollDirection: Axis.horizontal,
+                options: CarouselOptions(
+                  onPageChanged: (index, reason) {
+                    onPostChanged(index);
+                  },
+                  height: MediaQuery.of(context).size.height,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false,
+                  initialPage: intitialIndex,
+                  reverse: false,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  autoPlay: autoPlay.value,
+                  autoPlayAnimationDuration: config.skipAnimation
+                      ? Duration(microseconds: 1)
+                      : Duration(milliseconds: 600),
+                  autoPlayInterval: Duration(seconds: config.interval),
+                  scrollDirection: Axis.horizontal,
+                ),
               ),
             ),
             ShadowGradientOverlay(
