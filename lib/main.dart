@@ -42,10 +42,6 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   final packageInfo = await getPackageInfo();
   final run = () => runApp(
         ProviderScope(
@@ -74,6 +70,9 @@ void main() async {
   if (kDebugMode) {
     run();
   } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await SentryFlutter.init(
       (options) {
         options.dsn = dotenv.env['SENTRY_DSN'];
