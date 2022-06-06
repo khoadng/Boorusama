@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -102,6 +103,7 @@ void main() async {
       fallbackLocale: Locale('en', ''),
       child: MultiBlocProvider(
         providers: [
+          BlocProvider(create: (_) => NetworkBloc()),
           BlocProvider(
             create: (_) => ApiCubit(
               defaultUrl: "https://safebooru.donmai.us/",

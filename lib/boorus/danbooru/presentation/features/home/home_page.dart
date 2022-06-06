@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/core/infrastructure/networking/network_info.dart';
+import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
 import 'explore/explore_page.dart';
@@ -24,8 +23,6 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final bottomTabIndex = useState(0);
 
-    final networkStatus = useProvider(networkStatusProvider);
-
     useEffect(() {
       Future.microtask(
           () => ReadContext(context).read<AuthenticationCubit>().logIn());
@@ -37,9 +34,11 @@ class HomePage extends HookWidget {
       child: SafeArea(
         child: Column(
           children: <Widget>[
-            networkStatus.when(
-              data: (value) {
-                if (value == NetworkStatus.unavailable) {
+            BlocBuilder<NetworkBloc, NetworkState>(
+              builder: (context, state) {
+                if (state is NetworkConnectedState) {
+                  return SizedBox.shrink();
+                } else if (state is NetworkDisconnectedState) {
                   return Padding(
                     padding: EdgeInsets.only(bottom: 10),
                     child: Material(
@@ -51,19 +50,6 @@ class HomePage extends HookWidget {
                   return SizedBox.shrink();
                 }
               },
-              loading: () => Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Material(
-                  color: Theme.of(context).appBarTheme.color,
-                  child: Text("Connecting"),
-                ),
-              ),
-              error: (error, stackTrace) => Material(
-                color: Theme.of(context).appBarTheme.color,
-                child: Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text("Something went wrong")),
-              ),
             ),
             Expanded(
               child: ClipRRect(
