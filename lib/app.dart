@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
 import 'app_constants.dart';
@@ -17,24 +16,6 @@ class App extends StatefulWidget {
   @override
   _AppState createState() => _AppState();
 }
-
-final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
-  // final accountState = ref.watch(_accountState);
-  // // final userRepository = ref.watch(userProvider);
-  // var blacklistedTags = <String>[];
-
-  // if (accountState == AccountState.loggedIn) {
-  //   final account = ref.watch(_account);
-
-  //   if (account == null) return [];
-
-  //   final user = await userRepository.getUserById(account.id);
-
-  //   blacklistedTags = user.blacklistedTags;
-  // }
-
-  return [];
-});
 
 class _AppState extends State<App> {
   @override

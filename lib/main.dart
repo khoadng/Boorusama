@@ -31,6 +31,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
@@ -89,6 +91,8 @@ void main() async {
       await downloader.init();
     }
   }
+
+  final config = DanbooruConfig();
 
   runApp(
     EasyLocalization(
@@ -192,6 +196,7 @@ void main() async {
                   RepositoryProvider<IPostRepository>.value(value: postRepo),
                   RepositoryProvider<ISearchHistoryRepository>.value(
                       value: searchHistoryRepo),
+                  RepositoryProvider<IConfig>.value(value: config),
                 ],
                 child: MultiBlocProvider(
                   providers: [
