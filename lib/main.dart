@@ -7,10 +7,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
@@ -55,6 +59,7 @@ import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
 import 'boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -93,142 +98,195 @@ void main() async {
   }
 
   final config = DanbooruConfig();
+  final packageInfo = PackageInfoProvider(await getPackageInfo());
 
-  runApp(
-    EasyLocalization(
-      useOnlyLangCode: true,
-      supportedLocales: [Locale('en', ''), Locale('vi', '')],
-      path: 'assets/translations',
-      fallbackLocale: Locale('en', ''),
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => NetworkBloc()),
-          BlocProvider(
-            create: (_) => ApiCubit(
-              defaultUrl: "https://safebooru.donmai.us/",
-            ),
-          ),
-          BlocProvider(create: (_) => ApiEndpointCubit()),
-          BlocProvider(
-              create: (_) => SettingsCubit(settingRepository: settingRepository)
-                ..update(settings)),
-        ],
-        child: MultiBlocListener(
-          listeners: [
-            BlocListener<SettingsCubit, SettingsState>(
-              listenWhen: (previous, current) =>
-                  previous.settings != current.settings,
-              listener: (context, state) {
-                ReadContext(context)
-                    .read<ApiEndpointCubit>()
-                    .changeApi(state.settings.safeMode);
-              },
-            ),
-            BlocListener<ApiEndpointCubit, ApiEndpointState>(
-              listenWhen: (previous, current) => previous != current,
-              listener: (context, state) =>
-                  ReadContext(context).read<ApiCubit>().changeApi(state.booru),
-            ),
-          ],
-          child: BlocBuilder<ApiCubit, ApiState>(
-            builder: (context, state) {
-              final api = state.api;
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-              final popularSearchRepo = PopularSearchRepository(
-                  accountRepository: accountRepo, api: api);
-
-              final tagRepo = TagRepository(api, accountRepo);
-
-              final artistRepo = ArtistRepository(api: api);
-
-              final profileRepo =
-                  ProfileRepository(accountRepository: accountRepo, api: api);
-
-              final favoritesRepo = FavoritePostRepository(api, accountRepo);
-
-              final postRepo = PostRepository(api, accountRepo, favoritesRepo);
-
-              final commentRepo = CommentRepository(api, accountRepo);
-
-              final userRepo = UserRepository(api, accountRepo);
-
-              final nopeRepo = NoteRepository(api);
-
-              final favoriteRepo = FavoritePostRepository(api, accountRepo);
-
-              final artistCommentaryRepo =
-                  ArtistCommentaryRepository(api, accountRepo);
-
-              final mostViewedCubit = MostViewedCubit(postRepository: postRepo)
-                ..getMostViewed();
-              final popularCubit = PopularCubit(postRepository: postRepo)
-                ..getPopular();
-              final curatedCubit = CuratedCubit(postRepository: postRepo)
-                ..getCurated();
-
-              final favoritedCubit = FavoritesCubit(postRepository: postRepo);
-              final artistCubit = ArtistCubit(artistRepository: artistRepo);
-              final popularSearchCubit = SearchKeywordCubit(popularSearchRepo);
-              final profileCubit = ProfileCubit(profileRepository: profileRepo);
-              final commentCubit = CommentCubit(
-                  commentRepository: commentRepo, userRepository: userRepo);
-              final artistCommentaryCubit = ArtistCommentaryCubit(
-                  artistCommentaryRepository: artistCommentaryRepo);
-              final accountCubit = AccountCubit(accountRepository: accountRepo)
-                ..getCurrentAccount();
-              final authenticationCubit = AuthenticationCubit(
-                accountRepository: accountRepo,
-                profileRepository: profileRepo,
-              );
-
-              return MultiRepositoryProvider(
-                providers: [
-                  RepositoryProvider<ITagRepository>.value(value: tagRepo),
-                  RepositoryProvider<IProfileRepository>.value(
-                      value: profileRepo),
-                  RepositoryProvider<IFavoritePostRepository>.value(
-                      value: favoriteRepo),
-                  RepositoryProvider<IAccountRepository>.value(
-                      value: accountRepo),
-                  RepositoryProvider<IDownloadService>.value(value: downloader),
-                  RepositoryProvider<ISettingRepository>.value(
-                      value: settingRepository),
-                  RepositoryProvider<INoteRepository>.value(value: nopeRepo),
-                  RepositoryProvider<IPostRepository>.value(value: postRepo),
-                  RepositoryProvider<ISearchHistoryRepository>.value(
-                      value: searchHistoryRepo),
-                  RepositoryProvider<IConfig>.value(value: config),
-                ],
-                child: MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: popularSearchCubit),
-                    BlocProvider.value(value: artistCubit),
-                    BlocProvider.value(value: favoritedCubit),
-                    BlocProvider.value(value: profileCubit),
-                    BlocProvider.value(value: commentCubit),
-                    BlocProvider.value(value: artistCommentaryCubit),
-                    BlocProvider.value(value: mostViewedCubit),
-                    BlocProvider.value(value: popularCubit),
-                    BlocProvider.value(value: curatedCubit),
-                    BlocProvider.value(value: accountCubit),
-                    BlocProvider.value(value: authenticationCubit),
-                  ],
-                  child: BlocListener<AuthenticationCubit, AuthenticationState>(
-                    listener: (context, state) {
-                      if (state is Authenticated) {
-                        accountCubit.setAccount(state.account);
-                      } else if (state is Unauthenticated) {
-                        accountCubit.removeAccount();
-                      }
-                    },
-                    child: App(),
+  final run = () => runApp(
+        EasyLocalization(
+          useOnlyLangCode: true,
+          supportedLocales: [Locale('en', ''), Locale('vi', '')],
+          path: 'assets/translations',
+          fallbackLocale: Locale('en', ''),
+          child: MultiRepositoryProvider(
+            providers: [
+              RepositoryProvider.value(value: packageInfo),
+            ],
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(create: (_) => NetworkBloc()),
+                BlocProvider(
+                  create: (_) => ApiCubit(
+                    defaultUrl: "https://safebooru.donmai.us/",
                   ),
                 ),
-              );
-            },
+                BlocProvider(create: (_) => ApiEndpointCubit()),
+                BlocProvider(
+                    create: (_) =>
+                        SettingsCubit(settingRepository: settingRepository)
+                          ..update(settings)),
+              ],
+              child: MultiBlocListener(
+                listeners: [
+                  BlocListener<SettingsCubit, SettingsState>(
+                    listenWhen: (previous, current) =>
+                        previous.settings != current.settings,
+                    listener: (context, state) {
+                      ReadContext(context)
+                          .read<ApiEndpointCubit>()
+                          .changeApi(state.settings.safeMode);
+                    },
+                  ),
+                  BlocListener<ApiEndpointCubit, ApiEndpointState>(
+                    listenWhen: (previous, current) => previous != current,
+                    listener: (context, state) => ReadContext(context)
+                        .read<ApiCubit>()
+                        .changeApi(state.booru),
+                  ),
+                ],
+                child: BlocBuilder<ApiCubit, ApiState>(
+                  builder: (context, state) {
+                    final api = state.api;
+
+                    final popularSearchRepo = PopularSearchRepository(
+                        accountRepository: accountRepo, api: api);
+
+                    final tagRepo = TagRepository(api, accountRepo);
+
+                    final artistRepo = ArtistRepository(api: api);
+
+                    final profileRepo = ProfileRepository(
+                        accountRepository: accountRepo, api: api);
+
+                    final favoritesRepo =
+                        FavoritePostRepository(api, accountRepo);
+
+                    final postRepo =
+                        PostRepository(api, accountRepo, favoritesRepo);
+
+                    final commentRepo = CommentRepository(api, accountRepo);
+
+                    final userRepo = UserRepository(api, accountRepo);
+
+                    final nopeRepo = NoteRepository(api);
+
+                    final favoriteRepo =
+                        FavoritePostRepository(api, accountRepo);
+
+                    final artistCommentaryRepo =
+                        ArtistCommentaryRepository(api, accountRepo);
+
+                    final mostViewedCubit =
+                        MostViewedCubit(postRepository: postRepo)
+                          ..getMostViewed();
+                    final popularCubit = PopularCubit(postRepository: postRepo)
+                      ..getPopular();
+                    final curatedCubit = CuratedCubit(postRepository: postRepo)
+                      ..getCurated();
+
+                    final favoritedCubit =
+                        FavoritesCubit(postRepository: postRepo);
+                    final artistCubit =
+                        ArtistCubit(artistRepository: artistRepo);
+                    final popularSearchCubit =
+                        SearchKeywordCubit(popularSearchRepo);
+                    final profileCubit =
+                        ProfileCubit(profileRepository: profileRepo);
+                    final commentCubit = CommentCubit(
+                        commentRepository: commentRepo,
+                        userRepository: userRepo);
+                    final artistCommentaryCubit = ArtistCommentaryCubit(
+                        artistCommentaryRepository: artistCommentaryRepo);
+                    final accountCubit =
+                        AccountCubit(accountRepository: accountRepo)
+                          ..getCurrentAccount();
+                    final authenticationCubit = AuthenticationCubit(
+                      accountRepository: accountRepo,
+                      profileRepository: profileRepo,
+                    );
+
+                    return MultiRepositoryProvider(
+                      providers: [
+                        RepositoryProvider<ITagRepository>.value(
+                            value: tagRepo),
+                        RepositoryProvider<IProfileRepository>.value(
+                            value: profileRepo),
+                        RepositoryProvider<IFavoritePostRepository>.value(
+                            value: favoriteRepo),
+                        RepositoryProvider<IAccountRepository>.value(
+                            value: accountRepo),
+                        RepositoryProvider<IDownloadService>.value(
+                            value: downloader),
+                        RepositoryProvider<ISettingRepository>.value(
+                            value: settingRepository),
+                        RepositoryProvider<INoteRepository>.value(
+                            value: nopeRepo),
+                        RepositoryProvider<IPostRepository>.value(
+                            value: postRepo),
+                        RepositoryProvider<ISearchHistoryRepository>.value(
+                            value: searchHistoryRepo),
+                        RepositoryProvider<IConfig>.value(value: config),
+                      ],
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: popularSearchCubit),
+                          BlocProvider.value(value: artistCubit),
+                          BlocProvider.value(value: favoritedCubit),
+                          BlocProvider.value(value: profileCubit),
+                          BlocProvider.value(value: commentCubit),
+                          BlocProvider.value(value: artistCommentaryCubit),
+                          BlocProvider.value(value: mostViewedCubit),
+                          BlocProvider.value(value: popularCubit),
+                          BlocProvider.value(value: curatedCubit),
+                          BlocProvider.value(value: accountCubit),
+                          BlocProvider.value(value: authenticationCubit),
+                        ],
+                        child: BlocListener<AuthenticationCubit,
+                            AuthenticationState>(
+                          listener: (context, state) {
+                            if (state is Authenticated) {
+                              accountCubit.setAccount(state.account);
+                            } else if (state is Unauthenticated) {
+                              accountCubit.removeAccount();
+                            }
+                          },
+                          child: App(),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
         ),
-      ),
-    ),
-  );
+      );
+
+  await dotenv.load(fileName: ".env");
+  print("Environtment file loaded");
+  if (kDebugMode) {
+    run();
+  } else {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = dotenv.env['SENTRY_DSN'];
+        options.tracesSampleRate = 0.9;
+      },
+      appRunner: run,
+    );
+  }
+}
+
+class PackageInfoProvider {
+  PackageInfoProvider(this.packageInfo);
+
+  final PackageInfo packageInfo;
+
+  PackageInfo getPackageInfo() => packageInfo;
+}
+
+Future<PackageInfo> getPackageInfo() async {
+  return await PackageInfo.fromPlatform();
 }

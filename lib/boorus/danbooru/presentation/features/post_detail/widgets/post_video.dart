@@ -7,6 +7,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/core/presentation/material_desktop_controls.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
@@ -31,20 +32,8 @@ class _PostVideoState extends State<PostVideo> {
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.post.aspectRatio,
       autoPlay: true,
+      customControls: MaterialDesktopControls(),
       looping: true,
-      // Try playing around with some of these other options:
-
-      // showControls: false,
-      // materialProgressColors: ChewieProgressColors(
-      //   playedColor: Colors.red,
-      //   handleColor: Colors.blue,
-      //   backgroundColor: Colors.grey,
-      //   bufferedColor: Colors.lightGreen,
-      // ),
-      // placeholder: Container(
-      //   color: Colors.grey,
-      // ),
-      // autoInitialize: true,
     );
   }
 

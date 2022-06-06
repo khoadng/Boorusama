@@ -23,6 +23,7 @@ class DownloadService implements IDownloadService {
   @override
   void download(IDownloadable downloadable) async {
     await FlutterDownloader.enqueue(
+        saveInPublicStorage: true,
         url: downloadable.downloadUrl,
         fileName: downloadable.fileName,
         savedDir: _savedDir,

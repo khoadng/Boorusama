@@ -168,7 +168,7 @@ class PostRepository implements IPostRepository {
   Future<List<Post>> getPosts(
     String tagString,
     int page, {
-    int limit = 100,
+    int limit = 50,
     CancelToken? cancelToken,
     bool skipFavoriteCheck = false,
   }) async {

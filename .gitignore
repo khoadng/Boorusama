@@ -46,3 +46,6 @@ app.*.map.json
 # Generated file
 *.freezed.dart
 *.g.dart
+generated_plugin*
+
+.env

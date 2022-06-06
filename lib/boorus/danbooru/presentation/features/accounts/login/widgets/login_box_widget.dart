@@ -11,8 +11,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 
 class LoginBox extends HookWidget {
   const LoginBox({Key? key}) : super(key: key);
@@ -138,15 +137,7 @@ class LoginBox extends HookWidget {
                             builder: (context, state) => TextButton(
                               onPressed: () {
                                 Navigator.of(context).pop();
-                                Navigator.of(context).push(
-                                  SlideInRoute(
-                                    pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        WebView(
-                                            url:
-                                                "${state.booru.url}/login?url=%2F"),
-                                  ),
-                                );
+                                launchExternalUrl(Uri.parse(state.booru.url));
                               },
                               child: Text("Open web browser"),
                             ),

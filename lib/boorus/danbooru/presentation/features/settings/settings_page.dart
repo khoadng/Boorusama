@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 // Project imports:
+import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/main.dart';
 import 'appearance_page.dart';
-import 'tag_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
   SettingsPage({Key? key}) : super(key: key);
@@ -114,6 +116,29 @@ class SettingsPage extends StatelessWidget {
                           applicationName: "Boorusama"),
                     )
                   ],
+                ),
+                SettingsSection(
+                  title: Text(
+                      "App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}"),
+                  tiles: [
+                    SettingsTile(
+                      title: Text("Acknowledgements"),
+                      leading: Icon(Icons.info),
+                      onPressed: (context) => showAboutDialog(
+                        context: context,
+                        applicationIcon: Image.asset(
+                          'assets/icon/icon-512x512.png',
+                          width: 64,
+                          height: 64,
+                        ),
+                        applicationVersion: getVersion(
+                            RepositoryProvider.of<PackageInfoProvider>(context)
+                                .getPackageInfo()),
+                        applicationLegalese: "\u{a9} 2020-2022 Nguyen Duc Khoa",
+                        applicationName: AppConstants.appName,
+                      ),
+                    ),
+                  ],
                 )
               ],
             );
@@ -123,3 +148,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 }
+
+String getVersion(PackageInfo info) => info.version;
+String getVersionText(PackageInfo info) =>
+    "(v${info.version} - Build ${info.buildNumber})";

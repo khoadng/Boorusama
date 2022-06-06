@@ -19,8 +19,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 
 class PostInfoModal extends HookWidget {
@@ -183,15 +182,10 @@ class ArtistSection extends HookWidget {
                     );
                     ScaffoldMessenger.of(context).showSnackBar(snackbar);
                   }),
-                  onTap: () => post.source != null
-                      ? Navigator.of(context).push(
-                          SlideInRoute(
-                            pageBuilder:
-                                (context, animation, secondaryAnimation) =>
-                                    WebView(url: post.source.uri.toString()),
-                          ),
-                        )
-                      : null,
+                  onTap: () {
+                    if (post.source.uri == null) return;
+                    launchExternalUrl(post.source.uri!);
+                  },
                   child: Text(
                     post.source.uri.toString(),
                     maxLines: 1,

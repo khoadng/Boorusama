@@ -54,11 +54,3 @@
 //     return Future.value([Post.empty()]);
 //   }
 
-//   @override
-//   Future<List<Post>> getPosts(String tagString, int page,
-//       {int limit = 100,
-//       CancelToken? cancelToken,
-//       bool skipFavoriteCheck = false}) {
-//     return Future.value([Post.empty()]);
-//   }
-// }

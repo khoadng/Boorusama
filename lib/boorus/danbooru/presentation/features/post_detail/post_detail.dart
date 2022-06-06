@@ -1,5 +1,6 @@
 // Dart imports:
 import 'dart:convert';
+import 'dart:io';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
@@ -66,20 +68,28 @@ class PostDetail extends HookWidget {
           .read<RecommendedCharacterPostCubit>()
           .getRecommendedPosts(post.tagStringCharacter);
     }, []);
+    final imagePath = useState<String?>(null);
+
+    useEffect(() {
+      // Enable virtual display.
+      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    }, []);
 
     Widget postWidget;
     if (post.isVideo) {
       if (p.extension(post.normalImageUri.toString()) == ".webm") {
-        final String videoHtml =
-            """
-            <body style="background-color:black;">
-            <center><video controls allowfulscreen width=${MediaQuery.of(context).size.width} height=${MediaQuery.of(context).size.height} controlsList="nodownload" style="background-color:black;" autoplay loop>
+        final String videoHtml = """
+            <center>
+              <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${post.normalImageUri.toString()}#t=0.01 type="video/webm" />
-            </video></center>""";
+              </video>
+            </center>""";
         postWidget = Container(
           color: Colors.black,
           height: MediaQuery.of(context).size.height,
           child: WebView(
+            backgroundColor: Colors.black,
+            allowsInlineMediaPlayback: true,
             initialUrl: 'about:blank',
             onWebViewCreated: (controller) {
               controller.loadUrl(Uri.dataFromString(videoHtml,
@@ -94,19 +104,29 @@ class PostDetail extends HookWidget {
       }
     } else {
       postWidget = GestureDetector(
-          onTap: () {
-            AppRouter.router.navigateTo(context, "/posts/image",
-                routeSettings: RouteSettings(arguments: [post]));
+        onTap: () {
+          AppRouter.router.navigateTo(context, "/posts/image",
+              routeSettings: RouteSettings(arguments: [post]));
+        },
+        child: CachedNetworkImage(
+          imageUrl: post.normalImageUri.toString(),
+          imageBuilder: (context, imageProvider) {
+            DefaultCacheManager()
+                .getFileFromCache(post.normalImageUri.toString())
+                .then((file) {
+              imagePath.value = file!.file.path;
+            });
+            return Image(image: imageProvider);
           },
-          child: CachedNetworkImage(
-            imageUrl: post.normalImageUri.toString(),
-            placeholder: (_, __) => minimal
-                ? SizedBox.shrink()
-                : CachedNetworkImage(
-                    fit: BoxFit.cover,
-                    imageUrl: post.previewImageUri.toString(),
-                  ),
-          ));
+          progressIndicatorBuilder: (context, url, progress) => FittedBox(
+            fit: BoxFit.cover,
+            child: Container(
+              height: post.height,
+              width: post.width,
+            ),
+          ),
+        ),
+      );
     }
 
     Widget buildRecommendedArtistList() {
@@ -226,7 +246,13 @@ class PostDetail extends HookWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       InformationSection(post: post),
-                      PostActionToolbar(post: post),
+                      ValueListenableBuilder<String?>(
+                        valueListenable: imagePath,
+                        builder: (context, value, child) => PostActionToolbar(
+                          post: post,
+                          imagePath: value,
+                        ),
+                      ),
                       Divider(height: 8, thickness: 1),
                       buildRecommendedArtistList(),
                       buildRecommendedCharacterList(),
@@ -254,9 +280,7 @@ class InformationSection extends HookWidget {
         backgroundColor: Colors.transparent,
         context: context,
         builder: (context) => PostInfoModal(
-          post: post,
-          scrollController: ModalScrollController.of(context)!,
-        ),
+            post: post, scrollController: ModalScrollController.of(context)!),
       ),
       child: Padding(
         padding: EdgeInsets.all(16),

@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/webview.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 
 class SearchOptions extends HookWidget {
@@ -65,17 +65,15 @@ class SearchOptions extends HookWidget {
                           ),
                     ),
                     IconButton(
-                      onPressed: () => Navigator.of(context).push(
-                        SlideInRoute(
-                          pageBuilder: (context, animation,
-                                  secondaryAnimation) =>
-                              WebView(
-                                  url: RepositoryProvider.of<IConfig>(context)
-                                      .cheatSheetUrl),
-                        ),
-                      ),
+                      onPressed: () {
+                        launchExternalUrl(
+                          Uri.parse(RepositoryProvider.of<IConfig>(context)
+                              .cheatSheetUrl),
+                          mode: LaunchMode.platformDefault,
+                        );
+                      },
                       icon: FaIcon(
-                        FontAwesomeIcons.questionCircle,
+                        FontAwesomeIcons.circleQuestion,
                         size: 18,
                       ),
                     )
