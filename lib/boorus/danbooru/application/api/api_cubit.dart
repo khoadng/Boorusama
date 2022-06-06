@@ -38,38 +38,44 @@ String getEndpoint(BooruType booru) {
     return "https://safebooru.donmai.us/";
 }
 
+Booru getBooru(bool isSafeMode) {
+  if (isSafeMode) {
+    return Booru(
+      url: getEndpoint(BooruType.safebooru),
+      booruType: BooruType.safebooru,
+    );
+  } else {
+    return Booru(
+      url: getEndpoint(BooruType.danbooru),
+      booruType: BooruType.danbooru,
+    );
+  }
+}
+
 class ApiEndpointState extends Equatable {
   const ApiEndpointState({
     required this.booru,
-    // required this.api,
   });
 
   final Booru booru;
-  // final IApi api;
 
   @override
   List<Object?> get props => [booru];
-
-  factory ApiEndpointState.initial() => ApiEndpointState(booru: Booru.empty);
 }
 
 class ApiEndpointCubit extends Cubit<ApiEndpointState> {
-  ApiEndpointCubit() : super(ApiEndpointState.initial());
+  ApiEndpointCubit({
+    required Booru initialValue,
+  }) : super(ApiEndpointState(booru: initialValue));
 
   void changeApi(bool isSafeMode) {
     if (isSafeMode) {
       emit(ApiEndpointState(
-        booru: Booru(
-          url: getEndpoint(BooruType.safebooru),
-          booruType: BooruType.safebooru,
-        ),
+        booru: getBooru(isSafeMode),
       ));
     } else {
       emit(ApiEndpointState(
-        booru: Booru(
-          url: getEndpoint(BooruType.danbooru),
-          booruType: BooruType.danbooru,
-        ),
+        booru: getBooru(isSafeMode),
       ));
     }
   }

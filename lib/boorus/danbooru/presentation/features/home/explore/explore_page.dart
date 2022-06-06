@@ -14,6 +14,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
@@ -496,6 +498,10 @@ class _ExploreSection extends StatelessWidget {
                             postRepository:
                                 RepositoryProvider.of<IPostRepository>(
                                     context))),
+                    BlocProvider.value(
+                        value: BlocProvider.of<AuthenticationCubit>(context)),
+                    BlocProvider.value(
+                        value: BlocProvider.of<ApiEndpointCubit>(context)),
                   ],
                   child: RepositoryProvider.value(
                     value: RepositoryProvider.of<ITagRepository>(context),

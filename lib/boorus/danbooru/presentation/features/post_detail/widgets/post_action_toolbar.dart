@@ -39,7 +39,7 @@ class PostActionToolbar extends HookWidget {
     final favCount = useState(post.favCount);
 
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, state) =>
+      builder: (context, authState) =>
           ButtonBar(alignment: MainAxisAlignment.spaceEvenly, children: [
         BlocBuilder<IsPostFavoritedCubit, AsyncLoadState<bool>>(
           builder: (context, state) {
@@ -47,7 +47,7 @@ class PostActionToolbar extends HookWidget {
               final value = state.data!;
               final button = TextButton.icon(
                   onPressed: () async {
-                    if (state is Authenticated) {
+                    if (authState is Authenticated) {
                       final snackbar = SnackBar(
                         behavior: SnackBarBehavior.floating,
                         duration: Duration(seconds: 3),

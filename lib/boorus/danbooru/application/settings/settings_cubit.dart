@@ -9,7 +9,8 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit({
     required this.settingRepository,
-  }) : super(SettingsState.defaultSettings());
+    required Settings settings,
+  }) : super(SettingsState(settings: settings));
 
   final ISettingRepository settingRepository;
 

@@ -119,20 +119,22 @@ void main() async {
                 BlocProvider(create: (_) => NetworkBloc()),
                 BlocProvider(
                   create: (_) => ApiCubit(
-                    defaultUrl: "https://safebooru.donmai.us/",
+                    defaultUrl: getBooru(settings.safeMode).url,
                   ),
                 ),
-                BlocProvider(create: (_) => ApiEndpointCubit()),
                 BlocProvider(
-                    create: (_) =>
-                        SettingsCubit(settingRepository: settingRepository)
-                          ..update(settings)),
+                    create: (_) => ApiEndpointCubit(
+                        initialValue: getBooru(settings.safeMode))),
+                BlocProvider(
+                    create: (_) => SettingsCubit(
+                        settingRepository: settingRepository,
+                        settings: settings)),
               ],
               child: MultiBlocListener(
                 listeners: [
                   BlocListener<SettingsCubit, SettingsState>(
                     listenWhen: (previous, current) =>
-                        previous.settings != current.settings,
+                        previous.settings.safeMode != current.settings.safeMode,
                     listener: (context, state) {
                       ReadContext(context)
                           .read<ApiEndpointCubit>()
@@ -140,7 +142,6 @@ void main() async {
                     },
                   ),
                   BlocListener<ApiEndpointCubit, ApiEndpointState>(
-                    listenWhen: (previous, current) => previous != current,
                     listener: (context, state) => ReadContext(context)
                         .read<ApiCubit>()
                         .changeApi(state.booru),

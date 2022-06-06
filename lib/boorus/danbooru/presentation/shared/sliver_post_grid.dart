@@ -16,6 +16,8 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -87,6 +89,10 @@ class SliverPostGrid extends HookWidget {
                   create: (context) => RecommendedCharacterPostCubit(
                       postRepository:
                           RepositoryProvider.of<IPostRepository>(context))),
+              BlocProvider.value(
+                  value: BlocProvider.of<AuthenticationCubit>(context)),
+              BlocProvider.value(
+                  value: BlocProvider.of<ApiEndpointCubit>(context)),
             ],
             child: RepositoryProvider.value(
               value: RepositoryProvider.of<ITagRepository>(context),
