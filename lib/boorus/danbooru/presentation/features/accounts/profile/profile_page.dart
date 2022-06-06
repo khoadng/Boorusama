@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
@@ -38,9 +37,7 @@ class ProfilePage extends HookWidget {
             IconButton(
                 icon: Icon(Icons.logout),
                 onPressed: () {
-                  BuildContextX(context)
-                      .read(authenticationStateNotifierProvider)
-                      .logOut();
+                  ReadContext(context).read<AuthenticationCubit>().logOut();
                   AppRouter.router.navigateTo(context, "/",
                       clearStack: true, replace: true);
                 }),

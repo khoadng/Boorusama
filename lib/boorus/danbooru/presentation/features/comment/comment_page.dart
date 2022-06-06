@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
@@ -43,8 +42,6 @@ class _CommentPageState extends State<CommentPage> {
             final comment = comments[index];
             return Consumer(
               builder: (_, watch, __) {
-                final isLoggedIn = watch(isLoggedInProvider);
-
                 return ListTile(
                   //TODO: comment feature is not ready yet
                   // onLongPress: () => isLoggedIn
@@ -191,8 +188,6 @@ class _CommentPageState extends State<CommentPage> {
           child: Scaffold(
             floatingActionButton: Consumer(
               builder: (_, watch, __) {
-                final isLoggedIn = watch(isLoggedInProvider);
-
                 //TODO: comment feature is not ready yet
                 return SizedBox.shrink();
                 // return isLoggedIn

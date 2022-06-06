@@ -14,9 +14,10 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
@@ -168,6 +169,12 @@ void main() async {
                   commentRepository: commentRepo, userRepository: userRepo);
               final artistCommentaryCubit = ArtistCommentaryCubit(
                   artistCommentaryRepository: artistCommentaryRepo);
+              final accountCubit = AccountCubit(accountRepository: accountRepo)
+                ..getCurrentAccount();
+              final authenticationCubit = AuthenticationCubit(
+                accountRepository: accountRepo,
+                profileRepository: profileRepo,
+              );
 
               return MultiRepositoryProvider(
                 providers: [
@@ -197,15 +204,18 @@ void main() async {
                     BlocProvider.value(value: mostViewedCubit),
                     BlocProvider.value(value: popularCubit),
                     BlocProvider.value(value: curatedCubit),
+                    BlocProvider.value(value: accountCubit),
+                    BlocProvider.value(value: authenticationCubit),
                   ],
-                  child: ProviderScope(
-                    overrides: [
-                      authenticationStateNotifierProvider.overrideWithProvider(
-                          StateNotifierProvider<AuthenticationNotifier>((ref) {
-                        return AuthenticationNotifier(profileRepo, accountRepo);
-                      })),
-                    ],
-                    child: App(),
+                  child: BlocListener<AuthenticationCubit, AuthenticationState>(
+                    listener: (context, state) {
+                      if (state is Authenticated) {
+                        accountCubit.setAccount(state.account);
+                      } else if (state is Unauthenticated) {
+                        accountCubit.removeAccount();
+                      }
+                    },
+                    child: ProviderScope(child: App()),
                   ),
                 ),
               );

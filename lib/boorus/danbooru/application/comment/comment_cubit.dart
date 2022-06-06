@@ -11,9 +11,7 @@ class CommentCubit extends Cubit<AsyncLoadState<List<Comment>>> {
   CommentCubit({
     required this.commentRepository,
     required this.userRepository,
-  }) : super(AsyncLoadState.initial()) {
-    print("comment cubit created");
-  }
+  }) : super(AsyncLoadState.initial());
 
   final ICommentRepository commentRepository;
   final IUserRepository userRepository;

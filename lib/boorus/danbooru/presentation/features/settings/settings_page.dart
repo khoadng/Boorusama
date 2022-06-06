@@ -43,19 +43,19 @@ class SettingsPage extends StatelessWidget {
                       },
                       initialValue: settings.safeMode,
                     ),
-                    SettingsTile(
-                      leading: Icon(Icons.tag),
-                      title: Text('settings.appSettings.blacklistedTags'.tr()),
-                      onPressed: (context) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => TagSettingsPage(
-                              settings: settings,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
+                    // SettingsTile(
+                    //   leading: Icon(Icons.tag),
+                    //   title: Text('settings.appSettings.blacklistedTags'.tr()),
+                    //   onPressed: (context) {
+                    //     Navigator.of(context).push(
+                    //       MaterialPageRoute(
+                    //         builder: (BuildContext context) => TagSettingsPage(
+                    //           settings: settings,
+                    //         ),
+                    //       ),
+                    //     );
+                    //   },
+                    // ),
                     SettingsTile(
                       leading: Icon(Icons.translate),
                       title: Text('settings.appSettings.language._string'.tr()),

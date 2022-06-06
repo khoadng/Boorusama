@@ -1,24 +1,44 @@
-part of 'authentication_state_notifier.dart';
+part of 'authentication_cubit.dart';
 
-class AuthenticationState {
-  final Account? account;
-  final AccountState state;
-  AuthenticationState({
-    this.account,
-    required this.state,
+abstract class AuthenticationState extends Equatable {
+  const AuthenticationState();
+}
+
+class AuthenticationInitial extends AuthenticationState {
+  @override
+  List<Object?> get props => ['initial'];
+}
+
+class AuthenticationInProgress extends AuthenticationState {
+  @override
+  List<Object?> get props => ['inProgress'];
+}
+
+class Authenticated extends AuthenticationState {
+  Authenticated({
+    required this.account,
   });
+
+  final Account account;
+
+  @override
+  List<Object?> get props => [account];
 }
 
-enum AccountState {
-  unknown,
-  authenticating,
-  errorUnknown,
-  errorInvalidPasswordOrUser,
-  loggedIn,
-  loggedOut,
+class Unauthenticated extends AuthenticationState {
+  @override
+  List<Object?> get props => ['unauthenticated'];
 }
 
-enum ErrorType {
-  invalidUsernameOrPassword,
-  unknown,
+class AuthenticationError extends AuthenticationState {
+  AuthenticationError({
+    required this.exception,
+    required this.stackTrace,
+  });
+
+  final Exception exception;
+  final StackTrace stackTrace;
+
+  @override
+  List<Object?> get props => [exception, stackTrace];
 }

@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
@@ -88,7 +89,12 @@ final userHandler =
 
 final loginHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return LoginPage();
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context!)),
+    ],
+    child: LoginPage(),
+  );
 });
 
 final settingsHandler =
