@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -99,10 +98,6 @@ void main() async {
 
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   final run = () => runApp(
         EasyLocalization(
@@ -265,14 +260,16 @@ void main() async {
         ),
       );
 
-  await dotenv.load(fileName: ".env");
-  print("Environtment file loaded");
   if (kDebugMode) {
     run();
   } else {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     await SentryFlutter.init(
       (options) {
-        options.dsn = dotenv.env['SENTRY_DSN'];
+        options.dsn =
+            'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740';
         options.tracesSampleRate = 0.9;
       },
       appRunner: run,
