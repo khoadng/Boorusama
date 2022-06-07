@@ -150,4 +150,10 @@ abstract class IApi {
     String subject, {
     CancelToken? cancelToken,
   });
+
+  Future<HttpResponse> getPools(
+    String login,
+    String apiKey, {
+    CancelToken? cancelToken,
+  });
 }

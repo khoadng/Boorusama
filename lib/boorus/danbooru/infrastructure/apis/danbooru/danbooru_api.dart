@@ -203,4 +203,12 @@ abstract class DanbooruApi implements IApi {
     @Path() String subject, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET("/pools.json")
+  @override
+  Future<HttpResponse> getPools(
+    @Query("login") String login,
+    @Query("api_key") String apiKey, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }
