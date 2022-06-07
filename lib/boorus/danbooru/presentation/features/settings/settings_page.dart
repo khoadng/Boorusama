@@ -98,26 +98,6 @@ class SettingsPage extends StatelessWidget {
                   ],
                 ),
                 SettingsSection(
-                  title: Text("App Information"),
-                  tiles: [
-                    SettingsTile(
-                      title: Text("Acknowledgements"),
-                      leading: Icon(Icons.info),
-                      onPressed: (context) => showAboutDialog(
-                          context: context,
-                          applicationIcon: Image.asset(
-                            'assets/icon/icon-512x512.png',
-                            width: 64,
-                            height: 64,
-                          ),
-                          applicationVersion: "1.0.0",
-                          applicationLegalese:
-                              "\u{a9} 2020-2021 Nguyen Duc Khoa",
-                          applicationName: "Boorusama"),
-                    )
-                  ],
-                ),
-                SettingsSection(
                   title: Text(
                       "App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}"),
                   tiles: [
