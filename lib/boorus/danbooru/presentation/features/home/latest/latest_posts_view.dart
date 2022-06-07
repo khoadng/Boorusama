@@ -2,35 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
-
-final _popularSearchProvider =
-    FutureProvider.autoDispose<List<Search>>((ref) async {
-  final repo = ref.watch(popularSearchProvider);
-
-  var searches = await repo.getSearchByDate(DateTime.now());
-  if (searches.isEmpty) {
-    searches =
-        await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
-  }
-
-  ref.maintainState = true;
-
-  return searches;
-});
 
 class LatestView extends HookWidget {
   const LatestView({
@@ -44,10 +29,13 @@ class LatestView extends HookWidget {
   Widget build(BuildContext context) {
     final posts = useState(<Post>[]);
 
-    final popularSearches = useProvider(_popularSearchProvider);
     final selectedTag = useState("");
 
     final isMounted = useIsMounted();
+
+    useEffect(() {
+      ReadContext(context).read<SearchKeywordCubit>().getTags();
+    }, []);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
@@ -77,10 +65,10 @@ class LatestView extends HookWidget {
         );
         ScaffoldMessenger.of(context).showSnackBar(snackbar);
       },
-      refreshBuilder: (page) =>
-          context.read(postProvider).getPosts(selectedTag.value, page),
-      loadMoreBuilder: (page) =>
-          context.read(postProvider).getPosts(selectedTag.value, page),
+      refreshBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
+          .getPosts(selectedTag.value, page),
+      loadMoreBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
+          .getPosts(selectedTag.value, page),
     ));
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value, [selectedTag.value]);
@@ -125,6 +113,19 @@ class LatestView extends HookWidget {
       );
     }
 
+    Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
+      switch (state.status) {
+        case LoadStatus.success:
+          return _buildTags(state.data!);
+        case LoadStatus.failure:
+          return SizedBox.shrink();
+        default:
+          return TagChipsPlaceholder();
+      }
+    }
+
+    final state = context.watch<SearchKeywordCubit>().state;
+
     return InfiniteLoadList(
       controller: infiniteListController.value,
       extendBody: true,
@@ -145,10 +146,7 @@ class LatestView extends HookWidget {
           automaticallyImplyLeading: false,
         ),
         SliverToBoxAdapter(
-          child: popularSearches.maybeWhen(
-            data: (searches) => _buildTags(searches),
-            orElse: () => TagChipsPlaceholder(),
-          ),
+          child: mapStateToTagList(state),
         ),
       ],
       posts: posts.value,

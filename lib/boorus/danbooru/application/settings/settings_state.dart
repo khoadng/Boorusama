@@ -1,13 +1,10 @@
-// Flutter imports:
-import 'package:flutter/material.dart';
-
 // Package imports:
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'settings.dart';
 
-class SettingsState {
+class SettingsState extends Equatable {
   const SettingsState({
     required this.settings,
   });
@@ -16,4 +13,7 @@ class SettingsState {
   factory SettingsState.defaultSettings() => SettingsState(
         settings: Settings.defaultSettings,
       );
+
+  @override
+  List<Object?> get props => [settings];
 }

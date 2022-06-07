@@ -2,11 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 class AppearancePage extends StatefulWidget {
   AppearancePage({

@@ -6,18 +6,16 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_tags/flutter_tags.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
@@ -42,6 +40,10 @@ class SearchPage extends HookWidget {
     final completedQueryItems = useState(<String>[]);
 
     final isMounted = useIsMounted();
+
+    useEffect(() {
+      ReadContext(context).read<SearchHistoryCubit>().getSearchHistory();
+    }, []);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(
       onData: (data) {
@@ -73,13 +75,11 @@ class SearchPage extends HookWidget {
         }
       },
       refreshBuilder: (page) {
-        return context
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts(completedQueryItems.value.join(' '), page);
       },
       loadMoreBuilder: (page) {
-        return context
-            .read(postProvider)
+        return RepositoryProvider.of<IPostRepository>(context)
             .getPosts(completedQueryItems.value.join(' '), page);
       },
     ));
@@ -158,11 +158,11 @@ class SearchPage extends HookWidget {
         queryEditingController.text = '';
       }
 
-      final lastTag = context.read(queryProcessorProvider).process(
+      final lastTag = QueryProcessor().process(
           text, queryEditingController.text, completedQueryItems.value);
 
-      final tags =
-          await context.read(tagProvider).getTagsByNamePattern(lastTag, 1);
+      final tags = await RepositoryProvider.of<ITagRepository>(context)
+          .getTagsByNamePattern(lastTag, 1);
       suggestions.value = [...tags];
     }
 
@@ -213,8 +213,8 @@ class SearchPage extends HookWidget {
         addTag(queryEditingController.text);
       }
 
-      context
-          .read(searchHistoryProvider)
+      ReadContext(context)
+          .read<SearchHistoryCubit>()
           .addHistory(completedQueryItems.value.join(' '));
 
       FocusScope.of(context).unfocus();

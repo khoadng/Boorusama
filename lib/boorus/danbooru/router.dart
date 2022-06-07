@@ -17,9 +17,6 @@ class AppRouter {
     router.define("/artist",
         handler: artistHandler, transitionType: TransitionType.inFromRight);
 
-    router.define("/downloads",
-        handler: downloadHandler, transitionType: TransitionType.inFromRight);
-
     router.define("/posts/search",
         handler: postSearchHandler, transitionType: TransitionType.fadeIn);
 

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/style.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_html/style.dart';
 
 // Project imports:
 import 'widgets/login_box_widget.dart';

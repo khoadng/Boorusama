@@ -2,20 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/config_provider.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
-
-final _config = Provider<IConfig>((ref) {
-  return ref.watch(configProvider);
-});
 
 class SearchOptions extends HookWidget {
   const SearchOptions({
@@ -41,7 +36,6 @@ class SearchOptions extends HookWidget {
   Widget build(BuildContext context) {
     final animationController =
         useAnimationController(duration: kThemeAnimationDuration);
-    final config = useProvider(_config);
 
     useEffect(() {
       Future.delayed(
@@ -73,7 +67,8 @@ class SearchOptions extends HookWidget {
                     IconButton(
                       onPressed: () {
                         launchExternalUrl(
-                          Uri.parse(config.cheatSheetUrl),
+                          Uri.parse(RepositoryProvider.of<IConfig>(context)
+                              .cheatSheetUrl),
                           mode: LaunchMode.platformDefault,
                         );
                       },
@@ -85,7 +80,8 @@ class SearchOptions extends HookWidget {
                   ],
                 ),
               ),
-              ...config.searchOptions
+              ...RepositoryProvider.of<IConfig>(context)
+                  .searchOptions
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
                         onTap: () => onOptionTap?.call(option),
@@ -99,7 +95,8 @@ class SearchOptions extends HookWidget {
                                       .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
-                                  text: " ${config.searchOptionHitns[option]}",
+                                  text:
+                                      " ${RepositoryProvider.of<IConfig>(context).searchOptionHitns[option]}",
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!

@@ -1,6 +1,3 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meta/meta.dart';
-
 class SlideShowConfiguration {
   SlideShowConfiguration({
     required this.interval,
@@ -18,8 +15,3 @@ class SlideShowConfiguration {
         skipAnimation: skipAnimation ?? this.skipAnimation,
       );
 }
-
-final slideShowConfigurationStateProvider =
-    StateProvider<SlideShowConfiguration>((ref) {
-  return SlideShowConfiguration(interval: 4, skipAnimation: false);
-});

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
@@ -11,12 +10,17 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/prov
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 
 class SlideShowConfigBottomModal extends HookWidget {
+  SlideShowConfigBottomModal({
+    Key? key,
+    required this.config,
+  }) : super(key: key);
+  final ValueNotifier<SlideShowConfiguration> config;
+
   @override
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.of(context).viewInsets.bottom;
     final safeAreaBottom = MediaQuery.of(context).padding.bottom;
     final numberEditingController = useTextEditingController();
-    final config = useProvider(slideShowConfigurationStateProvider);
 
     return Modal(
       title: "Slide Show",
@@ -36,13 +40,13 @@ class SlideShowConfigBottomModal extends HookWidget {
                 Flexible(
                   flex: 1,
                   child: NumberInputWithIncrementDecrement(
-                    initialValue: config.state.interval,
+                    initialValue: config.value.interval,
                     onDecrement: (value) =>
-                        config.state = config.state.copyWith(
+                        config.value = config.value.copyWith(
                       interval: value,
                     ),
                     onIncrement: (value) =>
-                        config.state = config.state.copyWith(
+                        config.value = config.value.copyWith(
                       interval: value,
                     ),
                     min: 0,
@@ -58,9 +62,9 @@ class SlideShowConfigBottomModal extends HookWidget {
                 Flexible(
                   flex: 1,
                   child: Switch(
-                    value: config.state.skipAnimation,
-                    onChanged: (value) => config.state =
-                        config.state.copyWith(skipAnimation: value),
+                    value: config.value.skipAnimation,
+                    onChanged: (value) => config.value =
+                        config.value.copyWith(skipAnimation: value),
                   ),
                 ),
               ],

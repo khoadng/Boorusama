@@ -4,19 +4,28 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:dio/dio.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
@@ -24,7 +33,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 enum ExploreCategory {
   popular,
@@ -35,79 +43,6 @@ enum ExploreCategory {
 extension ExploreCategoryX on ExploreCategory {
   String getName() {
     return "${this.toString().split('.').last.replaceAll('()', '')}";
-  }
-}
-
-final _popularPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final repo = ref.watch(postProvider);
-  var posts = await repo.getPopularPosts(DateTime.now(), 1, TimeScale.day);
-  if (posts.isEmpty) {
-    posts = await repo.getPopularPosts(
-        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
-  }
-
-  return posts.take(20).toList();
-});
-
-final _curatedPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final repo = ref.watch(postProvider);
-  var posts = await repo.getCuratedPosts(DateTime.now(), 1, TimeScale.day);
-
-  if (posts.isEmpty) {
-    posts = await repo.getCuratedPosts(
-        DateTime.now().subtract(Duration(days: 1)), 1, TimeScale.day);
-  }
-
-  return posts.take(20).toList();
-});
-
-final _mostViewedPostSneakPeakProvider =
-    FutureProvider.autoDispose<List<Post>>((ref) async {
-  final repo = ref.watch(postProvider);
-  var posts = await repo.getMostViewedPosts(DateTime.now());
-
-  if (posts.isEmpty) {
-    posts = await repo
-        .getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
-  }
-
-  return posts.take(20).toList();
-});
-
-final _timeScaleProvider = StateProvider.autoDispose<TimeScale>((ref) {
-  return TimeScale.day;
-});
-
-final _dateProvider = StateProvider.autoDispose<DateTime>((ref) {
-  return DateTime.now();
-});
-
-// final _popularSearchProvider =
-//     FutureProvider.autoDispose<List<Search>>((ref) async {
-//   final repo = ref.watch(popularSearchProvider);
-
-//   var searches = await repo.getSearchByDate(DateTime.now());
-//   if (searches.isEmpty) {
-//     searches =
-//         await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
-//   }
-
-//   ref.maintainState = true;
-
-//   return searches;
-// });
-
-AutoDisposeFutureProvider<List<Post>> categoryToPostSneakpeakDataProvider(
-    ExploreCategory category) {
-  switch (category) {
-    case ExploreCategory.popular:
-      return _popularPostSneakPeakProvider;
-    case ExploreCategory.curated:
-      return _curatedPostSneakPeakProvider;
-    default:
-      return _mostViewedPostSneakPeakProvider;
   }
 }
 
@@ -142,19 +77,55 @@ class ExplorePage extends HookWidget {
             .copyWith(fontWeight: FontWeight.w700),
       );
 
-      return _ExploreSection(
-        title: title,
-        posts: useProvider(categoryToPostSneakpeakDataProvider(category)),
-        onViewMoreTap: () => showBarModalBottomSheet(
-          context: context,
-          builder: (context) {
-            return _ExploreItemPage(
-              title: title,
-              category: category,
-            );
-          },
-        ),
-      );
+      if (category == ExploreCategory.popular) {
+        return BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
+          builder: (context, state) => _ExploreSection(
+            title: title,
+            posts: state,
+            onViewMoreTap: () => showBarModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return _ExploreItemPage(
+                  title: title,
+                  category: category,
+                );
+              },
+            ),
+          ),
+        );
+      } else if (category == ExploreCategory.curated) {
+        return BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
+          builder: (context, state) => _ExploreSection(
+            title: title,
+            posts: state,
+            onViewMoreTap: () => showBarModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return _ExploreItemPage(
+                  title: title,
+                  category: category,
+                );
+              },
+            ),
+          ),
+        );
+      } else {
+        return BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
+          builder: (context, state) => _ExploreSection(
+            title: title,
+            posts: state,
+            onViewMoreTap: () => showBarModalBottomSheet(
+              context: context,
+              builder: (context) {
+                return _ExploreItemPage(
+                  title: title,
+                  category: category,
+                );
+              },
+            ),
+          ),
+        );
+      }
     }
 
     return CustomScrollView(slivers: [
@@ -216,8 +187,8 @@ class _ExploreItemPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDate = useProvider(_dateProvider);
-    final selectedTimeScale = useProvider(_timeScaleProvider);
+    final selectedDate = useState(DateTime.now());
+    final selectedTimeScale = useState(TimeScale.day);
     final posts = useState(<Post>[]);
     final hasNoData = useState(false);
 
@@ -255,30 +226,30 @@ class _ExploreItemPage extends HookWidget {
         },
         refreshBuilder: (page) => categoryToAwaitablePosts(
           category,
-          context.read(postProvider),
-          selectedDate.state,
+          RepositoryProvider.of<IPostRepository>(context),
+          selectedDate.value,
           page,
-          selectedTimeScale.state,
+          selectedTimeScale.value,
         ),
         loadMoreBuilder: (page) => categoryToAwaitablePosts(
           category,
-          context.read(postProvider),
-          selectedDate.state,
+          RepositoryProvider.of<IPostRepository>(context),
+          selectedDate.value,
           page,
-          selectedTimeScale.state,
+          selectedTimeScale.value,
         ),
       ),
     );
 
     final isRefreshing = useRefreshingState(infiniteListController.value);
     useAutoRefresh(infiniteListController.value,
-        [selectedTimeScale.state, selectedDate.state]);
+        [selectedTimeScale.value, selectedDate.value]);
 
     Widget _buildHeader() {
       return _ExploreListItemHeader(
         selectedCategory: category,
-        onDateChanged: (value) => selectedDate.state = value,
-        onTimeScaleChanged: (value) => selectedTimeScale.state = value,
+        onDateChanged: (value) => selectedDate.value = value,
+        onTimeScaleChanged: (value) => selectedTimeScale.value = value,
       );
     }
 
@@ -489,9 +460,107 @@ class _ExploreSection extends StatelessWidget {
     required this.onViewMoreTap,
   }) : super(key: key);
 
-  final AsyncValue<List<Post>> posts;
+  final AsyncLoadState<List<Post>> posts;
   final Widget title;
   final VoidCallback onViewMoreTap;
+
+  Widget _buildCarousel(AsyncLoadState<List<Post>> data) {
+    if (data.status == LoadStatus.success) {
+      final posts = data.data!;
+      if (posts.isEmpty) return CarouselPlaceholder();
+      return CarouselSlider.builder(
+        itemCount: posts.length,
+        itemBuilder: (context, index, realIndex) {
+          final post = posts[index];
+
+          return GestureDetector(
+            onTap: () => Navigator.of(context).push(
+              SlideInRoute(
+                pageBuilder: (context, animation, secondaryAnimation) =>
+                    MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
+                      create: (context) => IsPostFavoritedCubit(
+                        accountRepository:
+                            RepositoryProvider.of<IAccountRepository>(context),
+                        favoritePostRepository:
+                            RepositoryProvider.of<IFavoritePostRepository>(
+                                context),
+                      ),
+                    ),
+                    BlocProvider(
+                        create: (context) => RecommendedArtistPostCubit(
+                            postRepository:
+                                RepositoryProvider.of<IPostRepository>(
+                                    context))),
+                    BlocProvider(
+                        create: (context) => RecommendedCharacterPostCubit(
+                            postRepository:
+                                RepositoryProvider.of<IPostRepository>(
+                                    context))),
+                    BlocProvider.value(
+                        value: BlocProvider.of<AuthenticationCubit>(context)),
+                    BlocProvider.value(
+                        value: BlocProvider.of<ApiEndpointCubit>(context)),
+                  ],
+                  child: RepositoryProvider.value(
+                    value: RepositoryProvider.of<ITagRepository>(context),
+                    child: PostDetailPage(
+                      post: post,
+                      intitialIndex: index,
+                      posts: posts,
+                      onExit: (currentIndex) {},
+                      onPostChanged: (index) {},
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            child: Stack(
+              children: [
+                PostImage(
+                  imageUrl: post.isAnimated
+                      ? post.previewImageUri.toString()
+                      : post.normalImageUri.toString(),
+                  placeholderUrl: post.previewImageUri.toString(),
+                ),
+                ShadowGradientOverlay(
+                  alignment: Alignment.bottomCenter,
+                  colors: <Color>[
+                    const Color(0xC2000000),
+                    Colors.black12.withOpacity(0.0)
+                  ],
+                ),
+                Align(
+                    alignment: Alignment(-0.9, 1),
+                    child: Text(
+                      "${index + 1}",
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline2!
+                          .copyWith(color: Colors.white),
+                    )),
+              ],
+            ),
+          );
+        },
+        options: CarouselOptions(
+          aspectRatio: 1.5,
+          viewportFraction: 0.5,
+          initialPage: 0,
+          enlargeCenterPage: true,
+          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+          scrollDirection: Axis.horizontal,
+        ),
+      );
+    } else if (data.status == LoadStatus.failure) {
+      return Center(
+        child: Text("Something went wrong"),
+      );
+    } else {
+      return CarouselPlaceholder();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -504,70 +573,7 @@ class _ExploreSection extends StatelessWidget {
               child:
                   Text("See more", style: Theme.of(context).textTheme.button)),
         ),
-        posts.when(
-          data: (posts) => posts.isNotEmpty
-              ? CarouselSlider.builder(
-                  itemCount: posts.length,
-                  itemBuilder: (context, index, realIndex) {
-                    final post = posts[index];
-
-                    return GestureDetector(
-                      onTap: () => Navigator.of(context).push(
-                        SlideInRoute(
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  PostDetailPage(
-                            post: post,
-                            intitialIndex: index,
-                            posts: posts,
-                            onExit: (currentIndex) {},
-                            onPostChanged: (index) {},
-                          ),
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          PostImage(
-                            imageUrl: post.isAnimated
-                                ? post.previewImageUri.toString()
-                                : post.normalImageUri.toString(),
-                            placeholderUrl: post.previewImageUri.toString(),
-                          ),
-                          ShadowGradientOverlay(
-                            alignment: Alignment.bottomCenter,
-                            colors: <Color>[
-                              const Color(0xC2000000),
-                              Colors.black12.withOpacity(0.0)
-                            ],
-                          ),
-                          Align(
-                              alignment: Alignment(-0.9, 1),
-                              child: Text(
-                                "${index + 1}",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headline2!
-                                    .copyWith(color: Colors.white),
-                              )),
-                        ],
-                      ),
-                    );
-                  },
-                  options: CarouselOptions(
-                    aspectRatio: 1.5,
-                    viewportFraction: 0.5,
-                    initialPage: 0,
-                    enlargeCenterPage: true,
-                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                )
-              : CarouselPlaceholder(),
-          loading: () => CarouselPlaceholder(),
-          error: (error, stackTrace) => Center(
-            child: Text("Something went wrong"),
-          ),
-        ),
+        _buildCarousel(posts),
       ],
     );
   }

@@ -5,19 +5,12 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'package:boorusama/core/infrastructure/IOHelper.dart';
-
-final downloadServiceProvider = Provider<IDownloadService>((ref) {
-  final downloader = DownloadService();
-
-  return downloader;
-});
 
 class DownloadService implements IDownloadService {
   DownloadService();

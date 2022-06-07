@@ -2,21 +2,16 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 import 'package:boorusama/core/utils.dart';
-
-final _showPasswordProvider = StateProvider<bool>((ref) => false);
-final _userNameHasTextProvider = StateProvider<bool>((ref) => false);
-final _url = Provider<String>((ref) {
-  return "${ref.watch(apiEndpointProvider)}/login?url=%2F";
-});
 
 class LoginBox extends HookWidget {
   const LoginBox({Key? key}) : super(key: key);
@@ -31,15 +26,13 @@ class LoginBox extends HookWidget {
 
     final usernameTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();
-    final authStatus = useProvider(accountStateProvider);
-    final showPassword = useProvider(_showPasswordProvider);
-    final usernameHasText = useProvider(_userNameHasTextProvider);
-    final logInUrl = useProvider(_url);
+    final showPassword = useState(false);
+    final usernameHasText = useState(false);
 
     usernameTextController.addListener(() {
       if (usernameTextController.text.isNotEmpty) {
         animationController.forward();
-        usernameHasText.state = usernameTextController.text.isNotEmpty;
+        usernameHasText.value = usernameTextController.text.isNotEmpty;
       } else {
         animationController.reverse();
       }
@@ -49,16 +42,17 @@ class LoginBox extends HookWidget {
       _isValidUsernameAndPassword.value = true;
     }
 
-    return ProviderListener<AccountState>(
-      provider: accountStateProvider,
-      onChange: (context, status) {
-        if (status == AccountState.loggedIn) {
+    return BlocListener<AuthenticationCubit, AuthenticationState>(
+      listener: (context, state) {
+        if (state is Authenticated) {
           _isValidUsernameAndPassword.value = true;
           Navigator.of(context).pop();
-        } else if (status == AccountState.errorInvalidPasswordOrUser) {
+        } else if (state is AuthenticationError &&
+            state.exception is InvalidUsernameOrPassword) {
           _isValidUsernameAndPassword.value = false;
           _formKey.value.currentState!.validate();
-        } else if (status == AccountState.unknown) {
+        } else if (state is AuthenticationError &&
+            state.exception is Exception) {
           final snackbar = SnackBar(
             behavior: SnackBarBehavior.floating,
             elevation: 6.0,
@@ -93,7 +87,7 @@ class LoginBox extends HookWidget {
                 },
                 onChanged: (text) => onTextChanged(),
                 controller: usernameTextController,
-                suffixIcon: usernameHasText.state
+                suffixIcon: usernameHasText.value
                     ? ScaleTransition(
                         scale: CurvedAnimation(
                           parent: animationController,
@@ -109,7 +103,7 @@ class LoginBox extends HookWidget {
               SizedBox(height: 20),
               LoginField(
                 labelText: 'login.form.password'.tr(),
-                obscureText: !showPassword.state,
+                obscureText: !showPassword.value,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'login.errors.missingPassword'.tr();
@@ -123,10 +117,10 @@ class LoginBox extends HookWidget {
                 controller: passwordTextController,
                 suffixIcon: IconButton(
                     splashColor: Colors.transparent,
-                    icon: showPassword.state
+                    icon: showPassword.value
                         ? FaIcon(FontAwesomeIcons.solidEyeSlash)
                         : FaIcon(FontAwesomeIcons.solidEye),
-                    onPressed: () => showPassword.state = !showPassword.state),
+                    onPressed: () => showPassword.value = !showPassword.value),
               ),
               TextButton.icon(
                 onPressed: () => showDialog(
@@ -139,12 +133,14 @@ class LoginBox extends HookWidget {
                             onPressed: () => Navigator.of(context).pop(),
                             child: Text("Cancel"),
                           ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              launchExternalUrl(Uri.parse(logInUrl));
-                            },
-                            child: Text("Open web browser"),
+                          BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                            builder: (context, state) => TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                launchExternalUrl(Uri.parse(state.booru.url));
+                              },
+                              child: Text("Open web browser"),
+                            ),
                           ),
                         ],
                         content: Text(
@@ -155,10 +151,17 @@ class LoginBox extends HookWidget {
                 label: Text("API key?"),
               ),
               SizedBox(height: 20),
-              authStatus == AccountState.authenticating
-                  ? CircularProgressIndicator()
-                  : _buildLoginButton(context, _formKey, usernameTextController,
-                      passwordTextController, _isValidUsernameAndPassword)
+              BlocBuilder<AuthenticationCubit, AuthenticationState>(
+                builder: (context, state) => state is AuthenticationInProgress
+                    ? CircularProgressIndicator()
+                    : _buildLoginButton(
+                        context,
+                        _formKey,
+                        usernameTextController,
+                        passwordTextController,
+                        _isValidUsernameAndPassword,
+                      ),
+              )
             ],
           ),
         ),
@@ -177,8 +180,8 @@ class LoginBox extends HookWidget {
       child: Text('login.form.login'.tr()),
       onPressed: () {
         if (_formKey.value.currentState!.validate()) {
-          context
-              .read(authenticationStateNotifierProvider)
+          ReadContext(context)
+              .read<AuthenticationCubit>()
               .logIn(usernameTextController.text, passwordTextController.text);
           FocusScope.of(context).unfocus();
         } else {

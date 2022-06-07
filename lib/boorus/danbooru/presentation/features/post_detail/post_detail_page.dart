@@ -4,20 +4,15 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'providers/slide_show_providers.dart';
@@ -47,15 +42,18 @@ class PostDetailPage extends HookWidget {
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
     final slideShowConfig =
-        useProvider(slideShowConfigurationStateProvider).state;
+        useState(SlideShowConfiguration(interval: 4, skipAnimation: false));
     useValueChanged(showSlideShowConfig.value, (bool _, Null __) {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance!.addPostFrameCallback((_) async {
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
-                builder: (context) =>
-                    Wrap(children: [SlideShowConfigBottomModal()]),
+                builder: (context) => Wrap(children: [
+                  SlideShowConfigBottomModal(
+                    config: slideShowConfig,
+                  )
+                ]),
               ) ??
               false;
           showSlideShowConfig.value = false;
@@ -97,8 +95,7 @@ class PostDetailPage extends HookWidget {
               onSelected: (value) async {
                 switch (value) {
                   case PostAction.download:
-                    context
-                        .read(downloadServiceProvider)
+                    RepositoryProvider.of<IDownloadService>(context)
                         .download(posts[currentPostIndex.value]);
                     break;
                   default:
@@ -143,58 +140,39 @@ class PostDetailPage extends HookWidget {
         return Future.value(false);
       },
       child: Scaffold(
-        // floatingActionButton: autoPlay.value
-        //     ? SizedBox.shrink()
-        //     : FadeTransition(
-        //         opacity: hideFabAnimController,
-        //         child: ScaleTransition(
-        //           scale: hideFabAnimController,
-        //           child: FloatingActionButton(
-        //             onPressed: () => showBarModalBottomSheet(
-        //               expand: false,
-        //               context: context,
-        //               builder: (context) => CommentPage(
-        //                 // comments: comments,
-        //                 postId: posts[currentPostIndex.value].id,
-        //               ),
-        //             ),
-        //             child: FaIcon(
-        //               FontAwesomeIcons.comment,
-        //               color: Colors.white,
-        //             ),
-        //           ),
-        //         ),
-        //       ),
         body: Stack(
           children: [
-            CarouselSlider.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index, realIndex) {
-                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-                  currentPostIndex.value = index;
-                });
-                return PostDetail(
-                  post: posts[index],
-                  minimal: autoPlay.value,
-                  animController: hideFabAnimController,
-                );
-              },
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  onPostChanged(index);
+            ValueListenableBuilder<SlideShowConfiguration>(
+              valueListenable: slideShowConfig,
+              builder: (context, config, child) => CarouselSlider.builder(
+                itemCount: posts.length,
+                itemBuilder: (context, index, realIndex) {
+                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                    currentPostIndex.value = index;
+                  });
+                  return PostDetail(
+                    post: posts[index],
+                    minimal: autoPlay.value,
+                    animController: hideFabAnimController,
+                  );
                 },
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: intitialIndex,
-                reverse: false,
-                autoPlayCurve: Curves.fastOutSlowIn,
-                autoPlay: autoPlay.value,
-                autoPlayAnimationDuration: slideShowConfig.skipAnimation
-                    ? Duration(microseconds: 1)
-                    : Duration(milliseconds: 600),
-                autoPlayInterval: Duration(seconds: slideShowConfig.interval),
-                scrollDirection: Axis.horizontal,
+                options: CarouselOptions(
+                  onPageChanged: (index, reason) {
+                    onPostChanged(index);
+                  },
+                  height: MediaQuery.of(context).size.height,
+                  viewportFraction: 1,
+                  enableInfiniteScroll: false,
+                  initialPage: intitialIndex,
+                  reverse: false,
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  autoPlay: autoPlay.value,
+                  autoPlayAnimationDuration: config.skipAnimation
+                      ? Duration(microseconds: 1)
+                      : Duration(milliseconds: 600),
+                  autoPlayInterval: Duration(seconds: config.interval),
+                  scrollDirection: Axis.horizontal,
+                ),
               ),
             ),
             ShadowGradientOverlay(
