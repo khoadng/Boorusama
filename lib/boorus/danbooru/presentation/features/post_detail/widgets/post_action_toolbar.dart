@@ -44,10 +44,9 @@ class PostActionToolbar extends HookWidget {
         BlocBuilder<IsPostFavoritedCubit, AsyncLoadState<bool>>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
-              final value = state.data!;
-              final button = TextButton.icon(
+              return TextButton.icon(
                   onPressed: () async {
-                    if (authState is Authenticated) {
+                    if (authState is Unauthenticated) {
                       final snackbar = SnackBar(
                         behavior: SnackBarBehavior.floating,
                         duration: Duration(seconds: 3),
@@ -60,7 +59,7 @@ class PostActionToolbar extends HookWidget {
                       return;
                     }
 
-                    final result = value
+                    final result = state.data!
                         ? RepositoryProvider.of<IFavoritePostRepository>(
                                 context)
                             .removeFromFavorites(post.id)
@@ -74,7 +73,7 @@ class PostActionToolbar extends HookWidget {
                         .checkIfFavorited(post.id);
                     print("operation success = $success");
                   },
-                  icon: value
+                  icon: state.data!
                       ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
                       : FaIcon(
                           FontAwesomeIcons.heart,
@@ -84,7 +83,6 @@ class PostActionToolbar extends HookWidget {
                     favCount.value.toString(),
                     style: TextStyle(color: Colors.white),
                   ));
-              return button;
             } else if (state.status == LoadStatus.failure) {
               return SizedBox.shrink();
             } else {
