@@ -1,17 +1,27 @@
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/i_comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/core/infrastructure/http_parser.dart';
+
+List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
+      value: value,
+      converter: (item) => Comment.fromJson(item),
+    );
 
 class CommentRepository implements ICommentRepository {
+  CommentRepository(
+    this._api,
+    this._accountRepository,
+  );
+
   final IApi _api;
   final IAccountRepository _accountRepository;
-
-  CommentRepository(this._api, this._accountRepository);
 
   @override
   Future<List<Comment>> getCommentsFromPostId(
@@ -19,20 +29,13 @@ class CommentRepository implements ICommentRepository {
     CancelToken? cancelToken,
   }) async {
     try {
-      final value =
-          await _api.getComments(postId, 1000, cancelToken: cancelToken);
-      final data = value.response.data;
-      var comments = <Comment>[];
-
-      for (var item in data) {
-        try {
-          comments.add(Comment.fromJson(item));
-        } catch (e) {
-          print("Cant parse ${item['id']}");
-        }
-      }
-
-      return comments;
+      return _api
+          .getComments(
+            postId,
+            1000,
+            cancelToken: cancelToken,
+          )
+          .then(parseComment);
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
@@ -44,38 +47,37 @@ class CommentRepository implements ICommentRepository {
   }
 
   @override
-  Future<bool> postComment(int postId, String content) async {
-    final account = await _accountRepository.get();
-    return _api
-        .postComment(account.username, account.apiKey, postId, content, true)
-        .then((value) {
-      print("Add comment to post $postId success");
-      return true;
-    }).catchError((Object obj) {
-      switch (obj.runtimeType) {
-        case DioError:
-        default:
-          print("Failed to add comment to post $postId");
-      }
-      return false;
-    });
-  }
+  Future<bool> postComment(int postId, String content) => _accountRepository
+          .get()
+          .then((account) => _api.postComment(
+              account.username, account.apiKey, postId, content, true))
+          .then((value) {
+        print("Add comment to post $postId success");
+        return true;
+      }).catchError((Object obj) {
+        switch (obj.runtimeType) {
+          case DioError:
+          default:
+            print("Failed to add comment to post $postId");
+        }
+        return false;
+      });
 
   @override
-  Future<bool> updateComment(int commentId, String content) async {
-    final account = await _accountRepository.get();
-    return _api
-        .updateComment(account.username, account.apiKey, commentId, content)
-        .then((value) {
-      print("Update comment $commentId success");
-      return true;
-    }).catchError((Object obj) {
-      switch (obj.runtimeType) {
-        case DioError:
-        default:
-          print("Failed to update comment $commentId");
-      }
-      return false;
-    });
-  }
+  Future<bool> updateComment(int commentId, String content) =>
+      _accountRepository
+          .get()
+          .then((account) => _api.updateComment(
+              account.username, account.apiKey, commentId, content))
+          .then((value) {
+        print("Update comment $commentId success");
+        return true;
+      }).catchError((Object obj) {
+        switch (obj.runtimeType) {
+          case DioError:
+          default:
+            print("Failed to update comment $commentId");
+        }
+        return false;
+      });
 }
