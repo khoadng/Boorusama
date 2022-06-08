@@ -146,7 +146,7 @@ class ExplorePage extends HookWidget {
       //                   color: Theme.of(context).accentColor,
       //                   borderRadius: BorderRadius.circular(8.0),
       //                 ),
-      //                 child: Center(child: Text("#${search.keyword.pretty}"))),
+      //                 child: Center(child: Text("#${search.keyword.removeUnderscoreWithSpace()}"))),
       //           )
       //           .toList(),
       //     ),

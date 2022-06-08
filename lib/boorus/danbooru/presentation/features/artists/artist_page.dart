@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/core/utils.dart';
 
 class ArtistPage extends HookWidget {
   const ArtistPage({
@@ -125,7 +126,7 @@ class ArtistPage extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    artistName.pretty,
+                    artistName.removeUnderscoreWithSpace(),
                     style: Theme.of(context)
                         .textTheme
                         .headline6!
@@ -165,7 +166,7 @@ class ArtistPage extends HookWidget {
                 constraints: BoxConstraints(
                     maxWidth: MediaQuery.of(context).size.width * 0.85),
                 child: Text(
-                  state.data!.otherNames[index].pretty,
+                  state.data!.otherNames[index].removeUnderscoreWithSpace(),
                   overflow: TextOverflow.fade,
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),

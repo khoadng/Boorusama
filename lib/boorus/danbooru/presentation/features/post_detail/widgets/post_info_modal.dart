@@ -168,7 +168,7 @@ class ArtistSection extends HookWidget {
             children: <Widget>[
               ListTile(
                 visualDensity: VisualDensity.compact,
-                title: Text(post.tagStringArtist.pretty),
+                title: Text(post.tagStringArtist.removeUnderscoreWithSpace()),
                 subtitle: InkWell(
                   onLongPress: () => Clipboard.setData(
                           ClipboardData(text: post.source.uri.toString()))
