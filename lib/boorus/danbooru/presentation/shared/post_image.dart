@@ -33,7 +33,7 @@ class _PostImageState extends State<PostImage> {
       image: CachedNetworkImageProvider(widget.imageUrl),
     );
     myImage.image
-        .resolve(ImageConfiguration())
+        .resolve(const ImageConfiguration())
         .addListener(ImageStreamListener((_, __) {}));
     super.initState();
   }
@@ -65,8 +65,9 @@ class _PostImageState extends State<PostImage> {
           ),
         ),
       ),
-      errorWidget: (context, url, error) => Center(child: Icon(Icons.error)),
-      fadeInDuration: Duration(microseconds: 10),
+      errorWidget: (context, url, error) =>
+          const Center(child: Icon(Icons.error)),
+      fadeInDuration: const Duration(microseconds: 10),
     );
   }
 }

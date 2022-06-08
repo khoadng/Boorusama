@@ -38,15 +38,15 @@ String tagCategoryToString(TagCategory category) {
 class TagCubit extends Cubit<AsyncLoadState<List<TagGroupItem>>> {
   TagCubit({
     required this.tagRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final ITagRepository tagRepository;
 
   void getTagsByNameComma(String tagStringComma) {
-    TryAsync<List<Tag>>(
+    tryAsync<List<Tag>>(
       action: () => tagRepository.getTagsByNameComma(tagStringComma, 1),
-      onLoading: () => emit(AsyncLoadState.loading()),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onSuccess: (tags) {
         tags.sort((a, b) => a.rawName.compareTo(b.rawName));
         final group = tags

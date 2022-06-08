@@ -8,7 +8,7 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 
 class Settings extends Equatable {
-  Settings({
+  const Settings({
     required this.safeMode,
     required this.blacklistedTags,
     required this.themeMode,
@@ -25,7 +25,7 @@ class Settings extends Equatable {
             ?.map((item) => SearchHistory.fromJson(item))
             ?.toList());
 
-  static final defaultSettings = Settings(
+  static const defaultSettings = Settings(
     safeMode: true,
     blacklistedTags: "",
     themeMode: ThemeMode.dark,

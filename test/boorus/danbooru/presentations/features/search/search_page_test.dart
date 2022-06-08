@@ -355,7 +355,7 @@
 
 //         await tester.tap(find.byType(FloatingActionButton));
 
-//         await tester.pump(Duration(milliseconds: 5));
+//         await tester.pump(const Duration(milliseconds: 5));
 
 //         final loading = find.descendant(
 //           of: find.byType(InfiniteLoadList),
@@ -408,13 +408,13 @@
 //               searchHistoryTestDouble:
 //                   Provider((ref) => mockSearchHistoryProvider));
 
-//           final historyItem = find.text("foo bar");
+//           final historyItem = find.const Text("foo bar");
 //           await tester.tap(historyItem);
 
 //           await tester.pump();
 
 //           final text = find.descendant(
-//               of: find.byType(SearchBar), matching: find.text("foo bar"));
+//               of: find.byType(SearchBar), matching: find.const Text("foo bar"));
 
 //           expect(text, findsOneWidget);
 //         },

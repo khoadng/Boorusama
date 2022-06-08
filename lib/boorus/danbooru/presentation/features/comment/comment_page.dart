@@ -28,8 +28,7 @@ class _CommentPageState extends State<CommentPage> {
   List<Comment> _comments = <Comment>[];
   List<Comment> _commentsWithDeleted = <Comment>[];
   List<Comment> _commentsWithoutDeleted = <Comment>[];
-  // List<User> _users = <User>[];
-  bool _showDeleted = false;
+  final bool _showDeleted = false;
 
   Widget _buildCommentSection(List<Comment> comments) {
     if (comments.isNotEmpty) {
@@ -71,7 +70,7 @@ class _CommentPageState extends State<CommentPage> {
   //         secondaryAnimation: secondaryAnimation,
   //         transitionType: SharedAxisTransitionType.scaled,
   //       ),
-  //       transitionDuration: Duration(milliseconds: 500),
+  //       transitionDuration: const Duration(milliseconds: 500),
   //     ),
   //   );
   // }
@@ -96,24 +95,10 @@ class _CommentPageState extends State<CommentPage> {
   //         secondaryAnimation: secondaryAnimation,
   //         transitionType: SharedAxisTransitionType.scaled,
   //       ),
-  //       transitionDuration: Duration(milliseconds: 500),
+  //       transitionDuration: const Duration(milliseconds: 500),
   //     ),
   //   );
   // }
-
-  void _toggleDeletedComments() {
-    if (_showDeleted) {
-      setState(() {
-        _comments = _commentsWithoutDeleted;
-        _showDeleted = false;
-      });
-    } else {
-      setState(() {
-        _comments = _commentsWithDeleted;
-        _showDeleted = true;
-      });
-    }
-  }
 
   @override
   void initState() {
@@ -127,20 +112,9 @@ class _CommentPageState extends State<CommentPage> {
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.keyboard_arrow_down),
+            icon: const Icon(Icons.keyboard_arrow_down),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          //TODO: questionable feature
-          // actions: <Widget>[
-          //   Tooltip(
-          //     message:
-          //         commentListingTooltipsToggleDeletedComments,
-          //     child: IconButton(
-          //       icon: Icon(Icons.remove_red_eye),
-          //       onPressed: () => _toggleDeletedComments(),
-          //     ),
-          //   )
-          // ],
         ),
         body: SafeArea(
           child: Scaffold(
@@ -171,7 +145,7 @@ class _CommentPageState extends State<CommentPage> {
 
                             return _buildCommentSection(_comments);
                           } else if (state.status == LoadStatus.failure) {
-                            return Center(
+                            return const Center(
                               child: Text("Something went wrong"),
                             );
                           } else {

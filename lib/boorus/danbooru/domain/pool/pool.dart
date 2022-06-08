@@ -6,7 +6,7 @@ import 'package:equatable/equatable.dart';
 
 @immutable
 class Pool {
-  Pool({
+  const Pool({
     required this.id,
     required this.postIds,
     required this.category,
@@ -34,7 +34,7 @@ enum PoolCategory {
 }
 
 class PoolName extends Equatable {
-  PoolName(this.value);
+  const PoolName(this.value);
   final String value;
 
   @override
@@ -42,7 +42,7 @@ class PoolName extends Equatable {
 }
 
 class PoolDescription extends Equatable {
-  PoolDescription(this.value);
+  const PoolDescription(this.value);
   final String value;
 
   @override
@@ -50,7 +50,7 @@ class PoolDescription extends Equatable {
 }
 
 class PoolPostCount extends Equatable {
-  PoolPostCount(this.value);
+  const PoolPostCount(this.value);
   final int value;
 
   @override
@@ -58,7 +58,7 @@ class PoolPostCount extends Equatable {
 }
 
 class PoolId extends Equatable {
-  PoolId(this.value);
+  const PoolId(this.value);
   final int value;
 
   @override

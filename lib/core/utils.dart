@@ -3,7 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 Future<bool> launchExternalUrl(
   Uri url, {
-  void onError()?,
+  void Function()? onError,
   LaunchMode? mode,
 }) async {
   if (!await launchUrl(
@@ -18,5 +18,5 @@ Future<bool> launchExternalUrl(
 }
 
 extension StringX on String {
-  String removeUnderscoreWithSpace() => this.replaceAll("_", " ");
+  String removeUnderscoreWithSpace() => replaceAll("_", " ");
 }

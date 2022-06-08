@@ -1,11 +1,11 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
-Future<void> TryAsync<T extends Object?>({
-  required Future<T> action(),
-  required void onSuccess(T data),
-  void onFailure(StackTrace stackTrace, Object error)?,
-  void onLoading()?,
+Future<void> tryAsync<T extends Object?>({
+  required Future<T> Function() action,
+  required void Function(T data) onSuccess,
+  void Function(StackTrace stackTrace, Object error)? onFailure,
+  void Function()? onLoading,
 }) async {
   try {
     onLoading?.call();
@@ -21,7 +21,7 @@ enum LoadStatus { initial, loading, success, failure }
 class AsyncLoadState<T extends Object> extends Equatable {
   const AsyncLoadState._({
     this.status = LoadStatus.initial,
-    this.data = null,
+    this.data,
   });
 
   final LoadStatus status;

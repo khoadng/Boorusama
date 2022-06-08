@@ -35,7 +35,7 @@ import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 import 'package:boorusama/core/utils.dart';
 
 class SliverPostGrid extends HookWidget {
-  SliverPostGrid({
+  const SliverPostGrid({
     Key? key,
     required this.posts,
     required this.scrollController,
@@ -49,12 +49,12 @@ class SliverPostGrid extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final lastViewedPostIndex = useState(-1);
-    useValueChanged(lastViewedPostIndex.value, (_, Null __) {
+    useValueChanged(lastViewedPostIndex.value, (_, void __) {
       scrollController.scrollToIndex(lastViewedPostIndex.value);
     });
 
     // Workaround to prevent memory leak, clear images every 10 seconds
-    final timer = useState(Timer.periodic(Duration(seconds: 10), (_) {
+    final timer = useState(Timer.periodic(const Duration(seconds: 10), (_) {
       PaintingBinding.instance!.imageCache!.clearLiveImages();
     }));
 
@@ -107,13 +107,13 @@ class SliverPostGrid extends HookWidget {
               ),
             ),
           ),
-          transitionDuration: Duration(milliseconds: 150),
+          transitionDuration: const Duration(milliseconds: 150),
         ),
       );
     }
 
     return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 0.65,
         crossAxisCount: 2,
         mainAxisSpacing: 10.0,
@@ -121,90 +121,86 @@ class SliverPostGrid extends HookWidget {
       ),
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
-          if (index != null) {
-            final post = posts[index];
-            final items = <Widget>[];
+          final post = posts[index];
+          final items = <Widget>[];
 
-            if (post.isAnimated) {
-              items.add(
-                Icon(
-                  Icons.play_circle_outline,
-                  color: Colors.white70,
-                ),
-              );
-            }
-
-            if (post.isTranslated) {
-              items.add(
-                Icon(
-                  Icons.g_translate_outlined,
-                  color: Colors.white70,
-                ),
-              );
-            }
-
-            if (post.hasComment) {
-              items.add(
-                Icon(
-                  Icons.comment,
-                  color: Colors.white70,
-                ),
-              );
-            }
-
-            return AutoScrollTag(
-              index: index,
-              controller: scrollController,
-              key: ValueKey(index),
-              child: Stack(
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () => handleTap(post, index),
-                    onLongPress: () {
-                      showBarModalBottomSheet(
-                        duration: Duration(milliseconds: 200),
-                        expand: true,
-                        context: context,
-                        backgroundColor: Colors.transparent,
-                        builder: (context) => PostPreviewSheet(
-                          post: post,
-                          scrollController: ModalScrollController.of(context),
-                          onImageTap: () => handleTap(post, index),
-                        ),
-                      );
-                    },
-                    child: PostImage(
-                      imageUrl: post.isAnimated
-                          ? post.previewImageUri.toString()
-                          : post.normalImageUri.toString(),
-                      placeholderUrl: post.previewImageUri.toString(),
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: <Color>[
-                        const Color(0x2F000000),
-                        Colors.black12.withOpacity(0.0)
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    top: 6,
-                    left: 6,
-                    child: IgnorePointer(
-                      child: Column(
-                        children: items,
-                      ),
-                    ),
-                  ),
-                ],
+          if (post.isAnimated) {
+            items.add(
+              const Icon(
+                Icons.play_circle_outline,
+                color: Colors.white70,
               ),
             );
-          } else {
-            return Center();
           }
+
+          if (post.isTranslated) {
+            items.add(
+              const Icon(
+                Icons.g_translate_outlined,
+                color: Colors.white70,
+              ),
+            );
+          }
+
+          if (post.hasComment) {
+            items.add(
+              const Icon(
+                Icons.comment,
+                color: Colors.white70,
+              ),
+            );
+          }
+
+          return AutoScrollTag(
+            index: index,
+            controller: scrollController,
+            key: ValueKey(index),
+            child: Stack(
+              children: <Widget>[
+                GestureDetector(
+                  onTap: () => handleTap(post, index),
+                  onLongPress: () {
+                    showBarModalBottomSheet(
+                      duration: const Duration(milliseconds: 200),
+                      expand: true,
+                      context: context,
+                      backgroundColor: Colors.transparent,
+                      builder: (context) => PostPreviewSheet(
+                        post: post,
+                        scrollController: ModalScrollController.of(context),
+                        onImageTap: () => handleTap(post, index),
+                      ),
+                    );
+                  },
+                  child: PostImage(
+                    imageUrl: post.isAnimated
+                        ? post.previewImageUri.toString()
+                        : post.normalImageUri.toString(),
+                    placeholderUrl: post.previewImageUri.toString(),
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: ShadowGradientOverlay(
+                    alignment: Alignment.topCenter,
+                    colors: <Color>[
+                      const Color(0x2F000000),
+                      Colors.black12.withOpacity(0.0)
+                    ],
+                  ),
+                ),
+                Positioned(
+                  top: 6,
+                  left: 6,
+                  child: IgnorePointer(
+                    child: Column(
+                      children: items,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
         },
         childCount: posts.length,
       ),
@@ -250,7 +246,7 @@ class PostPreviewSheet extends HookWidget {
 
     return Scaffold(
       body: CustomScrollView(
-        physics: ClampingScrollPhysics(),
+        physics: const ClampingScrollPhysics(),
         controller: scrollController,
         slivers: [
           SliverToBoxAdapter(
@@ -280,8 +276,8 @@ class PostPreviewSheet extends HookWidget {
               itemCount: tags.length,
               itemBuilder: (index) {
                 return Chip(
-                    padding: EdgeInsets.all(4.0),
-                    labelPadding: EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(4.0),
+                    labelPadding: const EdgeInsets.all(1.0),
                     visualDensity: VisualDensity.compact,
                     backgroundColor: Color(
                         TagHelper.hexColorOf(tags[index][1] as TagCategory)),
@@ -291,7 +287,7 @@ class PostPreviewSheet extends HookWidget {
                       child: Text(
                         (tags[index][0] as String).removeUnderscoreWithSpace(),
                         overflow: TextOverflow.fade,
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ));
               },
@@ -300,45 +296,42 @@ class PostPreviewSheet extends HookWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Container(
-                child: Column(
-                  children: [
-                    ListTile(
-                      leading: Icon(Icons.file_download),
-                      title: Text("Download"),
-                      onTap: () {
-                        RepositoryProvider.of<IDownloadService>(context)
-                            .download(post);
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                    post.isTranslated
-                        ? ListTile(
-                            leading: FaIcon(FontAwesomeIcons.language),
-                            title: Text("View translated notes"),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              AppRouter.router.navigateTo(
-                                  context, "/posts/image",
-                                  routeSettings:
-                                      RouteSettings(arguments: [post]));
-                            },
-                          )
-                        : SizedBox.shrink(),
-                    // isLoggedIn
-                    //     ? ListTile(
-                    //         leading: FaIcon(FontAwesomeIcons.commentAlt),
-                    //         title: Text("Comment"),
-                    //         onTap: () {
-                    //           Navigator.of(context).pop();
-                    //           Navigator.of(context).push(SlideInRoute(
-                    //               pageBuilder: (_, __, ___) =>
-                    //                   CommentCreatePage(postId: post.id)));
-                    //         },
-                    //       )
-                    //     : SizedBox.shrink(),
-                  ],
-                ),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.file_download),
+                    title: const Text("Download"),
+                    onTap: () {
+                      RepositoryProvider.of<IDownloadService>(context)
+                          .download(post);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  post.isTranslated
+                      ? ListTile(
+                          leading: const FaIcon(FontAwesomeIcons.language),
+                          title: const Text("View translated notes"),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(context, "/posts/image",
+                                routeSettings:
+                                    RouteSettings(arguments: [post]));
+                          },
+                        )
+                      : const SizedBox.shrink(),
+                  // isLoggedIn
+                  //     ? ListTile(
+                  //         leading: const FaIcon(FontAwesomeIcons.commentAlt),
+                  //         title: const Text("Comment"),
+                  //         onTap: () {
+                  //           Navigator.of(context).pop();
+                  //           Navigator.of(context).push(SlideInRoute(
+                  //               pageBuilder: (_, __, ___) =>
+                  //                   CommentCreatePage(postId: post.id)));
+                  //         },
+                  //       )
+                  //     : SizedBox.shrink(),
+                ],
               ),
             ),
           ),

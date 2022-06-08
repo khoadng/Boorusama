@@ -67,9 +67,9 @@ class _SearchBarState extends State<SearchBar> {
             onTap: () => widget.onTap?.call(),
             child: Row(
               children: [
-                SizedBox(width: 10),
-                widget.leading ?? SizedBox.shrink(),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
+                widget.leading ?? const SizedBox.shrink(),
+                const SizedBox(width: 10),
                 Expanded(
                   child: FocusScope(
                     child: Focus(
@@ -87,8 +87,8 @@ class _SearchBarState extends State<SearchBar> {
                             enabledBorder: InputBorder.none,
                             errorBorder: InputBorder.none,
                             disabledBorder: InputBorder.none,
-                            contentPadding:
-                                EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                            contentPadding: const EdgeInsets.only(
+                                bottom: 11, top: 11, right: 15),
                             hintText: widget.hintText ?? 'search.hint'.tr()),
                         autofocus: widget.autofocus,
                         controller: _textEditingController,
@@ -97,7 +97,7 @@ class _SearchBarState extends State<SearchBar> {
                     ),
                   ),
                 ),
-                widget.trailing ?? SizedBox.shrink(),
+                widget.trailing ?? const SizedBox.shrink(),
               ],
             ),
           )),

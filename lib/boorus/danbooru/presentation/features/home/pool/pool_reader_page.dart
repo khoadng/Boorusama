@@ -34,11 +34,11 @@ class _PoolReaderPageState extends State<PoolReaderPage> {
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
-      alignment: Alignment(-0.9, -0.96),
+      alignment: const Alignment(-0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -83,7 +83,7 @@ class _PoolReaderPageState extends State<PoolReaderPage> {
                       value: progress.progress,
                     ),
                   ),
-                  errorWidget: (context, url, error) => Icon(Icons.error),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
                 ),
               ),
               ...[
@@ -98,7 +98,7 @@ class _PoolReaderPageState extends State<PoolReaderPage> {
                 if (state.status == LoadStatus.success)
                   ...buildNotes(context, state.data!, widget.post)
                 else
-                  SizedBox.shrink()
+                  const SizedBox.shrink()
               ],
             ],
           ),

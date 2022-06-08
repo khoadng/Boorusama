@@ -11,7 +11,7 @@ import 'package:boorusama/core/presentation/material_desktop_controls.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
-  PostVideo({Key? key, required this.post}) : super(key: key);
+  const PostVideo({Key? key, required this.post}) : super(key: key);
 
   final Post post;
 
@@ -32,7 +32,7 @@ class _PostVideoState extends State<PostVideo> {
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.post.aspectRatio,
       autoPlay: true,
-      customControls: MaterialDesktopControls(),
+      customControls: const MaterialDesktopControls(),
       looping: true,
     );
   }

@@ -96,9 +96,9 @@ class PostDto {
   final String tagStringCopyright;
   final String tagStringArtist;
   final String tagStringMeta;
-  final String fileUrl;
-  final String largeFileUrl;
-  final String previewFileUrl;
+  final String? fileUrl;
+  final String? largeFileUrl;
+  final String? previewFileUrl;
 
   factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
         id: json["id"],
@@ -161,9 +161,9 @@ extension PostDtoX on PostDto {
     return Post(
       id: id!,
       previewImageUri:
-          previewFileUrl != null ? Uri.parse(previewFileUrl) : null,
-      normalImageUri: largeFileUrl != null ? Uri.parse(largeFileUrl) : null,
-      fullImageUri: fileUrl != null ? Uri.parse(fileUrl) : null,
+          previewFileUrl != null ? Uri.parse(previewFileUrl!) : null,
+      normalImageUri: largeFileUrl != null ? Uri.parse(largeFileUrl!) : null,
+      fullImageUri: fileUrl != null ? Uri.parse(fileUrl!) : null,
       tagStringCopyright: tagStringCopyright,
       tagStringCharacter: tagStringCharacter,
       tagStringArtist: tagStringArtist,

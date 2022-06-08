@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PostTagList extends StatefulWidget {
-  PostTagList({
+  const PostTagList({
     Key? key,
     required this.tagStringComma,
     required this.apiEndpoint,
@@ -33,7 +33,7 @@ class PostTagList extends StatefulWidget {
 class _PostTagListState extends State<PostTagList> {
   Tag? _currentPopupTag;
   PopupMenu? _menu;
-  Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
+  final Map<String, GlobalKey> _tagKeys = <String, GlobalKey>{};
 
   Widget _buildTags(List<Tag> tags) {
     return Tags(
@@ -64,9 +64,10 @@ class _PostTagListState extends State<PostTagList> {
             key: tagKey,
             children: [
               Chip(
-                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
                   backgroundColor: Color(tag.tagHexColor),
-                  shape: RoundedRectangleBorder(
+                  shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(8),
                           bottomLeft: Radius.circular(8))),
@@ -76,19 +77,20 @@ class _PostTagListState extends State<PostTagList> {
                     child: Text(
                       tag.displayName,
                       overflow: TextOverflow.fade,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   )),
               Chip(
-                visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                visualDensity:
+                    const VisualDensity(horizontal: -4, vertical: -4),
                 backgroundColor: Colors.grey[800],
-                shape: RoundedRectangleBorder(
+                shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                         topRight: Radius.circular(8),
                         bottomRight: Radius.circular(8))),
                 label: Text(
                   tag.postCount.toString(),
-                  style: TextStyle(color: Colors.white60, fontSize: 12),
+                  style: const TextStyle(color: Colors.white60, fontSize: 12),
                 ),
               )
             ],
@@ -115,7 +117,7 @@ class _PostTagListState extends State<PostTagList> {
       items: [
         MenuItem(
           title: 'Wiki',
-          image: Icon(
+          image: const Icon(
             Icons.info,
             color: Colors.white70,
           ),
@@ -149,9 +151,9 @@ class _PostTagListState extends State<PostTagList> {
             ],
           );
         } else if (state.status == LoadStatus.failure) {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         } else {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );

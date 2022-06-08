@@ -36,7 +36,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
         emit(AuthenticationInProgress());
         var profile = await profileRepository.getProfile(
             username: username, apiKey: password);
-        var account = new Account.create(username, password, profile!.id);
+        var account = Account.create(username, password, profile!.id);
 
         emit(Authenticated(account: account));
       } on InvalidUsernameOrPassword catch (ex, stack) {

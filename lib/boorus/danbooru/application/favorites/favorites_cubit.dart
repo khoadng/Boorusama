@@ -9,15 +9,15 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 class FavoritesCubit extends Cubit<AsyncLoadState<List<Post>>> {
   FavoritesCubit({
     required this.postRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IPostRepository postRepository;
 
   void getUserFavoritePosts(String username) {
-    TryAsync<List<Post>>(
-      action: () => postRepository.getPosts("ordfav:${username}", 1, limit: 10),
-      onLoading: () => emit(AsyncLoadState.loading()),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+    tryAsync<List<Post>>(
+      action: () => postRepository.getPosts("ordfav:$username", 1, limit: 10),
+      onLoading: () => emit(const AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onSuccess: (posts) => emit(AsyncLoadState.success(posts)),
     );
   }

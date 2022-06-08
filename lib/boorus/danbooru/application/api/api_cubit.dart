@@ -14,7 +14,7 @@ enum BooruType {
 }
 
 class Booru extends Equatable {
-  Booru({
+  const Booru({
     required this.url,
     required this.booruType,
   });
@@ -22,7 +22,7 @@ class Booru extends Equatable {
   final String url;
   final BooruType booruType;
 
-  static Booru empty = Booru(
+  static Booru empty = const Booru(
     url: '',
     booruType: BooruType.unknown,
   );
@@ -32,10 +32,11 @@ class Booru extends Equatable {
 }
 
 String getEndpoint(BooruType booru) {
-  if (booru == BooruType.danbooru)
+  if (booru == BooruType.danbooru) {
     return "https://danbooru.donmai.us/";
-  else
+  } else {
     return "https://safebooru.donmai.us/";
+  }
 }
 
 Booru getBooru(bool isSafeMode) {

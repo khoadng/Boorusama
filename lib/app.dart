@@ -11,7 +11,9 @@ import 'boorus/danbooru/router.dart';
 import 'core/app_theme.dart';
 
 class App extends StatefulWidget {
-  App();
+  const App({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _AppState createState() => _AppState();

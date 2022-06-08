@@ -38,9 +38,9 @@ class HomePage extends HookWidget {
             BlocBuilder<NetworkBloc, NetworkState>(
               builder: (context, state) {
                 if (state is NetworkConnectedState) {
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 } else if (state is NetworkDisconnectedState) {
-                  return Padding(
+                  return const Padding(
                     padding: EdgeInsets.only(bottom: 10),
                     child: Material(
                       color: Colors.black,
@@ -48,20 +48,20 @@ class HomePage extends HookWidget {
                     ),
                   );
                 } else {
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
                 child: Scaffold(
                   extendBody: true,
                   key: scaffoldKey,
-                  drawer: SideBarMenu(),
+                  drawer: const SideBarMenu(),
                   resizeToAvoidBottomInset: false,
                   body: AnimatedIndexedStack(
                     index: bottomTabIndex.value,
@@ -69,8 +69,8 @@ class HomePage extends HookWidget {
                       LatestView(
                         onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
                       ),
-                      ExplorePage(),
-                      PoolPage(),
+                      const ExplorePage(),
+                      const PoolPage(),
                     ],
                   ),
                   bottomNavigationBar: BottomBar(

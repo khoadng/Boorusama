@@ -34,11 +34,11 @@ class PostInfoModal extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: MediaQuery.of(context).size.height * 0.75,
       child: Modal(
         child: Container(
-          margin: EdgeInsets.all(8),
+          margin: const EdgeInsets.all(8),
           child: Scaffold(
             body: CustomScrollView(
               controller: scrollController,
@@ -54,26 +54,26 @@ class PostInfoModal extends HookWidget {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8.0),
                       color: Theme.of(context).cardColor),
-                  margin: EdgeInsets.all(10),
+                  margin: const EdgeInsets.all(10),
                   child: Column(
                     children: [
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: Text("Size"),
-                        trailing: Text("${filesize(post.fileSize, 1)}"),
+                        title: const Text("Size"),
+                        trailing: Text(filesize(post.fileSize, 1)),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: Text("Resolution"),
+                        title: const Text("Resolution"),
                         trailing: Text(
                             "${post.width.toInt()}x${post.height.toInt()}"),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: Text("Rating"),
+                        title: const Text("Rating"),
                         trailing: Text(post.rating.value
                             .toString()
                             .split('.')
@@ -123,7 +123,7 @@ class ArtistSection extends HookWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
-          leading: CircleAvatar(),
+          leading: const CircleAvatar(),
           title: Container(
             margin:
                 EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.4),
@@ -136,7 +136,7 @@ class ArtistSection extends HookWidget {
         ...List.generate(
           4,
           (index) => Container(
-            margin: EdgeInsets.only(bottom: 10.0),
+            margin: const EdgeInsets.only(bottom: 10.0),
             width: MediaQuery.of(context).size.width * 0.1 +
                 Random().nextDouble() * MediaQuery.of(context).size.width * 0.9,
             height: 20,
@@ -173,7 +173,7 @@ class ArtistSection extends HookWidget {
                   onLongPress: () => Clipboard.setData(
                           ClipboardData(text: post.source.uri.toString()))
                       .then((results) {
-                    final snackbar = SnackBar(
+                    const snackbar = SnackBar(
                       behavior: SnackBarBehavior.floating,
                       elevation: 6.0,
                       content: Text(
@@ -193,10 +193,10 @@ class ArtistSection extends HookWidget {
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ),
-                leading: CircleAvatar(),
+                leading: const CircleAvatar(),
                 trailing: artistCommentary.isTranslated
                     ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                        icon: Icon(Icons.keyboard_arrow_down),
+                        icon: const Icon(Icons.keyboard_arrow_down),
                         onSelected: (value) {
                           artistCommentaryDisplay.value = value;
                         },
@@ -212,7 +212,7 @@ class ArtistSection extends HookWidget {
                           ),
                         ],
                       )
-                    : SizedBox.shrink(),
+                    : const SizedBox.shrink(),
               ),
               SelectableText(
                 getDescriptionText(
@@ -223,7 +223,7 @@ class ArtistSection extends HookWidget {
             ],
           );
         } else if (state.status == LoadStatus.failure) {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         } else {
           return _buildLoading(context);
         }

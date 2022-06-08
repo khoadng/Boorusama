@@ -35,7 +35,7 @@ class ProfilePage extends HookWidget {
           title: Text('profile.profile'.tr()),
           actions: <Widget>[
             IconButton(
-                icon: Icon(Icons.logout),
+                icon: const Icon(Icons.logout),
                 onPressed: () {
                   ReadContext(context).read<AuthenticationCubit>().logOut();
                   AppRouter.router.navigateTo(context, "/",
@@ -59,25 +59,25 @@ class ProfilePage extends HookWidget {
                         child: Column(
                           children: [
                             ListTile(
-                              leading: Text("User ID"),
+                              leading: const Text("User ID"),
                               trailing: Text(
                                 profile.id.toString(),
                               ),
                             ),
                             ListTile(
-                              leading: Text("Level"),
+                              leading: const Text("Level"),
                               trailing: Text(
                                 profile.levelString,
                               ),
                             ),
                             ListTile(
-                              leading: Text("Favorites"),
+                              leading: const Text("Favorites"),
                               trailing: Text(
                                 profile.favoriteCount.toString(),
                               ),
                             ),
                             ListTile(
-                              leading: Text("Comments"),
+                              leading: const Text("Comments"),
                               trailing: Text(
                                 profile.commentCount.toString(),
                               ),
@@ -85,7 +85,7 @@ class ProfilePage extends HookWidget {
                           ],
                         ),
                       ),
-                      SliverToBoxAdapter(
+                      const SliverToBoxAdapter(
                         child: Divider(
                           endIndent: 10,
                           indent: 10,
@@ -102,8 +102,8 @@ class ProfilePage extends HookWidget {
                                 SlideInRoute(
                                     pageBuilder: (context, animation,
                                             secondaryAnimation) =>
-                                        FavoritesPage())),
-                            child: Text("See more"),
+                                        const FavoritesPage())),
+                            child: const Text("See more"),
                           ),
                         ),
                       ),
@@ -111,11 +111,11 @@ class ProfilePage extends HookWidget {
                         builder: (context, state) {
                           if (state.status == LoadStatus.success) {
                             return SliverToBoxAdapter(
-                              child: Container(
+                              child: SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.2,
                                 child: Padding(
-                                  padding: EdgeInsets.all(4),
+                                  padding: const EdgeInsets.all(4),
                                   child: PreviewPostList(
                                     posts: state.data!,
                                     physics:
@@ -125,9 +125,9 @@ class ProfilePage extends HookWidget {
                               ),
                             );
                           } else if (state.status == LoadStatus.failure) {
-                            return SizedBox.shrink();
+                            return const SizedBox.shrink();
                           } else {
-                            return SliverToBoxAdapter(
+                            return const SliverToBoxAdapter(
                               child: Center(
                                 child: CircularProgressIndicator(),
                               ),
@@ -138,11 +138,11 @@ class ProfilePage extends HookWidget {
                     ],
                   );
                 } else if (state.status == LoadStatus.failure) {
-                  return Center(
+                  return const Center(
                     child: Text("Fail to load profile"),
                   );
                 } else {
-                  return Center(
+                  return const Center(
                     child: CircularProgressIndicator(),
                   );
                 }

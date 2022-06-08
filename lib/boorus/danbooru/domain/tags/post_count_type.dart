@@ -2,7 +2,7 @@
 import 'package:intl/intl.dart';
 
 class PostCountType {
-  int _value;
+  final int _value;
 
   PostCountType(this._value);
 

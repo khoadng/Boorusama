@@ -31,6 +31,7 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
           var commentary = ArtistCommentaryDto.fromJson(item);
           commentaries.add(commentary);
         } catch (e) {
+          // ignore: avoid_print
           print("Cant parse ${item['id']}");
         }
       }

@@ -16,7 +16,7 @@ import 'package:boorusama/core/utils.dart';
 
 @immutable
 class PoolItem {
-  PoolItem({
+  const PoolItem({
     required this.coverUrl,
     required this.poolName,
     required this.lastUpdated,
@@ -39,16 +39,16 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
   PoolCubit({
     required this.poolRepository,
     required this.postRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final PoolRepository poolRepository;
   final IPostRepository postRepository;
 
   void getPools(PoolCategory category) {
-    TryAsync<List<Pool>>(
+    tryAsync<List<Pool>>(
       action: () => poolRepository.getPools(),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-      onLoading: () => emit(AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
       onSuccess: (pools) async {
         final poolFiltered = pools
             .where((element) => element.postIds.isNotEmpty)

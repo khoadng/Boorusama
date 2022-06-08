@@ -32,30 +32,30 @@ class NoteCoordinate {
       if (screenAspectRatio < postAspectRatio) {
         aspectRatio = screenWidth / postWidth;
         offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = this.x * aspectRatio;
-        newY = this.y * aspectRatio + offset;
+        newX = x * aspectRatio;
+        newY = y * aspectRatio + offset;
       } else {
         aspectRatio = screenHeight / postHeight;
         offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = this.x * aspectRatio + offset;
-        newY = this.y * aspectRatio;
+        newX = x * aspectRatio + offset;
+        newY = y * aspectRatio;
       }
     } else {
       if (screenAspectRatio > postAspectRatio) {
         aspectRatio = screenHeight / postHeight;
         offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = this.x * aspectRatio + offset;
-        newY = this.y * aspectRatio;
+        newX = x * aspectRatio + offset;
+        newY = y * aspectRatio;
       } else {
         aspectRatio = screenWidth / postWidth;
         offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = this.x * aspectRatio;
-        newY = this.y * aspectRatio + offset;
+        newX = x * aspectRatio;
+        newY = y * aspectRatio + offset;
       }
     }
 
-    newWidth = this.width * aspectRatio;
-    newHeight = this.height * aspectRatio;
+    newWidth = width * aspectRatio;
+    newHeight = height * aspectRatio;
 
     return NoteCoordinate(newX, newY, newWidth, newHeight);
   }

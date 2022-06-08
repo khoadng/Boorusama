@@ -10,7 +10,7 @@ class SettingsState extends Equatable {
   });
   final Settings settings;
 
-  factory SettingsState.defaultSettings() => SettingsState(
+  factory SettingsState.defaultSettings() => const SettingsState(
         settings: Settings.defaultSettings,
       );
 

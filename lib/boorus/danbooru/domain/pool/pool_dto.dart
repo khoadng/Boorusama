@@ -27,22 +27,22 @@ class PoolDto {
   final int? postCount;
 
   factory PoolDto.fromJson(Map<String, dynamic> json) => PoolDto(
-        id: json["id"] == null ? null : json["id"],
-        name: json["name"] == null ? null : json["name"],
+        id: json["id"],
+        name: json["name"],
         createdAt: json["created_at"] == null
             ? null
             : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null
             ? null
             : DateTime.parse(json["updated_at"]),
-        description: json["description"] == null ? null : json["description"],
-        isActive: json["is_active"] == null ? null : json["is_active"],
-        isDeleted: json["is_deleted"] == null ? null : json["is_deleted"],
+        description: json["description"],
+        isActive: json["is_active"],
+        isDeleted: json["is_deleted"],
         postIds: json["post_ids"] == null
             ? null
             : List<int>.from(json["post_ids"].map((x) => x)),
-        category: json["category"] == null ? null : json["category"],
-        postCount: json["post_count"] == null ? null : json["post_count"],
+        category: json["category"],
+        postCount: json["post_count"],
       );
 }
 

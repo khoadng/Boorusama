@@ -1,5 +1,5 @@
 class UserLevel {
-  int _level;
+  final int _level;
 
   UserLevel(this._level);
 

@@ -12,15 +12,15 @@ class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
   ) : super(const AsyncLoadState.initial());
   final IPopularSearchRepository popularSearchRepository;
 
-  Future<void> getTags() async => TryAsync<List<Search>>(
+  Future<void> getTags() async => tryAsync<List<Search>>(
       action: () => popularSearchRepository.getSearchByDate(DateTime.now()),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-      onLoading: () => emit(AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
       onSuccess: (searches) async {
         if (searches.isEmpty) {
-          emit(AsyncLoadState.loading());
-          searches = await popularSearchRepository
-              .getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
+          emit(const AsyncLoadState.loading());
+          searches = await popularSearchRepository.getSearchByDate(
+              DateTime.now().subtract(const Duration(days: 1)));
         }
         emit(AsyncLoadState.success(searches));
       });

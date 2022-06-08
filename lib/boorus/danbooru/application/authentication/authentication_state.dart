@@ -15,7 +15,7 @@ class AuthenticationInProgress extends AuthenticationState {
 }
 
 class Authenticated extends AuthenticationState {
-  Authenticated({
+  const Authenticated({
     required this.account,
   });
 
@@ -31,7 +31,7 @@ class Unauthenticated extends AuthenticationState {
 }
 
 class AuthenticationError extends AuthenticationState {
-  AuthenticationError({
+  const AuthenticationError({
     required this.exception,
     required this.stackTrace,
   });

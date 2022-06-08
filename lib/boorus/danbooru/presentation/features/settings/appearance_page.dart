@@ -8,7 +8,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 class AppearancePage extends StatefulWidget {
-  AppearancePage({
+  const AppearancePage({
     Key? key,
     required this.settings,
   }) : super(key: key);
@@ -28,7 +28,7 @@ class _AppearancePageState extends State<AppearancePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: <Widget>[
+          children: const <Widget>[
             // Text('settings.appSettings.appearance.theme._string'.tr()),
             // RadioListTile<ThemeMode>(
             //   title: Text('settings.appSettings.appearance.theme.dark'.tr()),

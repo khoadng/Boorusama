@@ -9,15 +9,15 @@ import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dar
 class ArtistCubit extends Cubit<AsyncLoadState<Artist>> {
   ArtistCubit({
     required this.artistRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IArtistRepository artistRepository;
 
   void getArtist(String name) {
-    TryAsync<Artist>(
+    tryAsync<Artist>(
       action: () => artistRepository.getArtist(name),
-      onLoading: () => emit(AsyncLoadState.loading()),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onSuccess: (artist) => emit(AsyncLoadState.success(artist)),
     );
   }

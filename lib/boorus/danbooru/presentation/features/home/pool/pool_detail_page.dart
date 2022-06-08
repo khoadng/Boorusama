@@ -60,7 +60,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
               builder: (context, state) {
                 if (state.status == LoadStatus.success) {
                   return SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 0.65,
                       crossAxisCount: 2,
                       mainAxisSpacing: 10.0,
@@ -73,7 +74,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
 
                         if (post.isAnimated) {
                           items.add(
-                            Icon(
+                            const Icon(
                               Icons.play_circle_outline,
                               color: Colors.white70,
                             ),
@@ -82,7 +83,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
 
                         if (post.isTranslated) {
                           items.add(
-                            Icon(
+                            const Icon(
                               Icons.g_translate_outlined,
                               color: Colors.white70,
                             ),
@@ -91,7 +92,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
 
                         if (post.hasComment) {
                           items.add(
-                            Icon(
+                            const Icon(
                               Icons.comment,
                               color: Colors.white70,
                             ),
@@ -140,10 +141,10 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       childCount: state.data!.length,
                     ),
                   );
-                } else if (state.status == LoadStatus.failure)
-                  return SizedBox.shrink();
-                else {
-                  return SliverPostGridPlaceHolder();
+                } else if (state.status == LoadStatus.failure) {
+                  return const SizedBox.shrink();
+                } else {
+                  return const SliverPostGridPlaceHolder();
                 }
               },
             )

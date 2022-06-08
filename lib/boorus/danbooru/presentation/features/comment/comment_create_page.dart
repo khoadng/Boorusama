@@ -29,7 +29,7 @@
 //       body: SafeArea(
 //         child: Container(
 //           height: double.infinity,
-//           margin: const EdgeInsets.all(4),
+//           margin: const const EdgeInsets.all(4),
 //           child: Material(
 //             child: SingleChildScrollView(
 //               child: Column(
@@ -37,13 +37,13 @@
 //                 mainAxisSize: MainAxisSize.min,
 //                 children: <Widget>[
 //                   Padding(
-//                     padding: const EdgeInsets.only(top: 8),
+//                     padding: const const EdgeInsets.only(top: 8),
 //                     child: Row(
 //                       crossAxisAlignment: CrossAxisAlignment.center,
 //                       children: <Widget>[
 //                         IconButton(
 //                           onPressed: () => Navigator.of(context).pop(),
-//                           icon: const Icon(
+//                           icon: const const Icon(
 //                             Icons.close,
 //                           ),
 //                         ),
@@ -53,14 +53,14 @@
 //                               _handleSend(context, textEditingController.text);
 //                               Navigator.of(context).pop();
 //                             },
-//                             icon: Icon(Icons.send)),
+//                             icon: const Icon(Icons.send)),
 //                       ],
 //                     ),
 //                   ),
 //                   EditorSpacer(),
-//                   const SizedBox(height: 8),
+//                   const const SizedBox(height: 8),
 //                   Padding(
-//                     padding: const EdgeInsets.all(12),
+//                     padding: const const EdgeInsets.all(12),
 //                     child: TextField(
 //                       controller: textEditingController,
 //                       decoration: InputDecoration.collapsed(

@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/prov
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
 
 class SlideShowConfigBottomModal extends HookWidget {
-  SlideShowConfigBottomModal({
+  const SlideShowConfigBottomModal({
     Key? key,
     required this.config,
   }) : super(key: key);
@@ -36,7 +36,7 @@ class SlideShowConfigBottomModal extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Flexible(flex: 3, child: Text("Interval (seconds)")),
+                const Flexible(flex: 3, child: Text("Interval (seconds)")),
                 Flexible(
                   flex: 1,
                   child: NumberInputWithIncrementDecrement(
@@ -58,7 +58,7 @@ class SlideShowConfigBottomModal extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Flexible(flex: 3, child: Text("Skip animation")),
+                const Flexible(flex: 3, child: Text("Skip animation")),
                 Flexible(
                   flex: 1,
                   child: Switch(
@@ -74,11 +74,11 @@ class SlideShowConfigBottomModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: Text("Cancel"),
+                  child: const Text("Cancel"),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: Text("OK"),
+                  child: const Text("OK"),
                 ),
               ],
             ),

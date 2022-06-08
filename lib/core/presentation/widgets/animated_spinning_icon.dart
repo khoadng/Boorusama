@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 class AnimatedSpinningIcon extends AnimatedWidget {
-  AnimatedSpinningIcon({
+  const AnimatedSpinningIcon({
     Key? key,
     required Animation<double> animation,
     required this.icon,
@@ -12,6 +12,7 @@ class AnimatedSpinningIcon extends AnimatedWidget {
   final VoidCallback? onPressed;
   final Widget icon;
 
+  @override
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
     return Transform.rotate(

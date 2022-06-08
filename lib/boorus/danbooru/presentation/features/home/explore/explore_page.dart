@@ -42,7 +42,7 @@ enum ExploreCategory {
 
 extension ExploreCategoryX on ExploreCategory {
   String getName() {
-    return "${this.toString().split('.').last.replaceAll('()', '')}";
+    return toString().split('.').last.replaceAll('()', '');
   }
 }
 
@@ -70,7 +70,7 @@ class ExplorePage extends HookWidget {
   Widget build(BuildContext context) {
     Widget _buildExploreSection(ExploreCategory category) {
       final title = Text(
-        "${category.getName().sentenceCase}",
+        category.getName().sentenceCase,
         style: Theme.of(context)
             .textTheme
             .headline6!
@@ -132,7 +132,7 @@ class ExplorePage extends HookWidget {
       //TODO: doesn't looks good without some images slapped on it
       // popularSearch.maybeWhen(
       //   data: (searches) => SliverPadding(
-      //     padding: EdgeInsets.all(10.0),
+      //     padding: const EdgeInsets.all(10.0),
       //     sliver: SliverGrid.count(
       //       mainAxisSpacing: 8,
       //       crossAxisSpacing: 8,
@@ -146,7 +146,7 @@ class ExplorePage extends HookWidget {
       //                   color: Theme.of(context).accentColor,
       //                   borderRadius: BorderRadius.circular(8.0),
       //                 ),
-      //                 child: Center(child: Text("#${search.keyword.removeUnderscoreWithSpace()}"))),
+      //                 child: Center(child: const Text("#${search.keyword.removeUnderscoreWithSpace()}"))),
       //           )
       //           .toList(),
       //     ),
@@ -166,7 +166,7 @@ class ExplorePage extends HookWidget {
       SliverToBoxAdapter(
         child: _buildExploreSection(ExploreCategory.mostViewed),
       ),
-      SliverToBoxAdapter(
+      const SliverToBoxAdapter(
         child: SizedBox(
           height: kBottomNavigationBarHeight,
         ),
@@ -205,14 +205,13 @@ class _ExploreItemPage extends HookWidget {
         onMoreData: (data, page) {
           if (page > 1) {
             // Dedupe
-            data
-              ..removeWhere((post) {
-                final p = posts.value.firstWhere(
-                  (sPost) => sPost.id == post.id,
-                  orElse: () => Post.empty(),
-                );
-                return p.id == post.id;
-              });
+            data.removeWhere((post) {
+              final p = posts.value.firstWhere(
+                (sPost) => sPost.id == post.id,
+                orElse: () => Post.empty(),
+              );
+              return p.id == post.id;
+            });
           }
           posts.value = [...posts.value, ...data];
         },
@@ -255,12 +254,12 @@ class _ExploreItemPage extends HookWidget {
 
     Widget _buildPageContent() {
       if (isRefreshing.value) {
-        return Center(
+        return const Center(
           child: CircularProgressIndicator(),
         );
       } else {
         if (hasNoData.value) {
-          return Center(
+          return const Center(
             child: Text("No data"),
           );
         } else {
@@ -277,7 +276,7 @@ class _ExploreItemPage extends HookWidget {
         appBar: AppBar(
           actions: [
             IconButton(
-              icon: Icon(Icons.close),
+              icon: const Icon(Icons.close),
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],
@@ -341,21 +340,21 @@ class _ExploreListItemHeader extends HookWidget {
           alignment: MainAxisAlignment.center,
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.keyboard_arrow_left),
+              icon: const Icon(Icons.keyboard_arrow_left),
               onPressed: () {
                 final jiffy = Jiffy(selectedDate.value);
                 switch (selectedTimeScale.value) {
                   case TimeScale.day:
-                    jiffy..subtract(days: 1);
+                    jiffy.subtract(days: 1);
                     break;
                   case TimeScale.week:
-                    jiffy..subtract(weeks: 1);
+                    jiffy.subtract(weeks: 1);
                     break;
                   case TimeScale.month:
-                    jiffy..subtract(months: 1);
+                    jiffy.subtract(months: 1);
                     break;
                   default:
-                    jiffy..subtract(days: 1);
+                    jiffy.subtract(days: 1);
                     break;
                 }
 
@@ -373,7 +372,7 @@ class _ExploreListItemHeader extends HookWidget {
               ),
               onPressed: () => DatePicker.showDatePicker(
                 context,
-                theme: DatePickerTheme(),
+                theme: const DatePickerTheme(),
                 onConfirm: (time) {
                   selectedDate.value = time;
                   onDateChanged(time);
@@ -382,29 +381,28 @@ class _ExploreListItemHeader extends HookWidget {
               ),
               child: Row(
                 children: <Widget>[
-                  Text(
-                      "${DateFormat('MMM d, yyyy').format(selectedDate.value)}"),
-                  Icon(Icons.arrow_drop_down)
+                  Text(DateFormat('MMM d, yyyy').format(selectedDate.value)),
+                  const Icon(Icons.arrow_drop_down)
                 ],
               ),
             ),
             IconButton(
-              icon: Icon(Icons.keyboard_arrow_right),
+              icon: const Icon(Icons.keyboard_arrow_right),
               onPressed: () {
                 final jiffy = Jiffy(selectedDate.value);
 
                 switch (selectedTimeScale.value) {
                   case TimeScale.day:
-                    jiffy..add(days: 1);
+                    jiffy.add(days: 1);
                     break;
                   case TimeScale.week:
-                    jiffy..add(weeks: 1);
+                    jiffy.add(weeks: 1);
                     break;
                   case TimeScale.month:
-                    jiffy..add(months: 1);
+                    jiffy.add(months: 1);
                     break;
                   default:
-                    jiffy..add(days: 1);
+                    jiffy.add(days: 1);
                     break;
                 }
 
@@ -418,7 +416,7 @@ class _ExploreListItemHeader extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             selectedCategory == ExploreCategory.mostViewed
-                ? Center()
+                ? const Center()
                 : TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).cardColor,
@@ -439,9 +437,13 @@ class _ExploreListItemHeader extends HookWidget {
                     },
                     child: Row(
                       children: <Widget>[
-                        Text(
-                            "${selectedTimeScale.value.toString().split('.').last.replaceAll('()', '').toUpperCase()}"),
-                        Icon(Icons.arrow_drop_down)
+                        Text(selectedTimeScale.value
+                            .toString()
+                            .split('.')
+                            .last
+                            .replaceAll('()', '')
+                            .toUpperCase()),
+                        const Icon(Icons.arrow_drop_down)
                       ],
                     ),
                   )
@@ -453,7 +455,7 @@ class _ExploreListItemHeader extends HookWidget {
 }
 
 class _ExploreSection extends StatelessWidget {
-  _ExploreSection({
+  const _ExploreSection({
     Key? key,
     required this.title,
     required this.posts,
@@ -467,7 +469,7 @@ class _ExploreSection extends StatelessWidget {
   Widget _buildCarousel(AsyncLoadState<List<Post>> data) {
     if (data.status == LoadStatus.success) {
       final posts = data.data!;
-      if (posts.isEmpty) return CarouselPlaceholder();
+      if (posts.isEmpty) return const CarouselPlaceholder();
       return CarouselSlider.builder(
         itemCount: posts.length,
         itemBuilder: (context, index, realIndex) {
@@ -532,7 +534,7 @@ class _ExploreSection extends StatelessWidget {
                   ],
                 ),
                 Align(
-                    alignment: Alignment(-0.9, 1),
+                    alignment: const Alignment(-0.9, 1),
                     child: Text(
                       "${index + 1}",
                       style: Theme.of(context)
@@ -554,11 +556,11 @@ class _ExploreSection extends StatelessWidget {
         ),
       );
     } else if (data.status == LoadStatus.failure) {
-      return Center(
+      return const Center(
         child: Text("Something went wrong"),
       );
     } else {
-      return CarouselPlaceholder();
+      return const CarouselPlaceholder();
     }
   }
 

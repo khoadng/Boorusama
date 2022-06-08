@@ -29,14 +29,13 @@ class FavoritesPage extends HookWidget {
       onMoreData: (data, page) {
         if (page > 1) {
           // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
-              );
-              return p.id == post.id;
-            });
+          data.removeWhere((post) {
+            final p = posts.value.firstWhere(
+              (sPost) => sPost.id == post.id,
+              orElse: () => Post.empty(),
+            );
+            return p.id == post.id;
+          });
         }
         posts.value = [...posts.value, ...data];
       },
@@ -70,7 +69,7 @@ class FavoritesPage extends HookWidget {
           controller: infiniteListController.value,
           posts: posts.value,
           child: isRefreshing.value
-              ? SliverPadding(
+              ? const SliverPadding(
                   padding: EdgeInsets.symmetric(horizontal: 12.0),
                   sliver: SliverPostGridPlaceHolder())
               : null),

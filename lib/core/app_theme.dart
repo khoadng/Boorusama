@@ -6,7 +6,7 @@ class AppTheme {
   AppTheme._();
 
   static final lightTheme = ThemeData.light().copyWith(
-    colorScheme: ColorScheme.light(
+    colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(255, 114, 137, 218),
       primaryVariant: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
@@ -17,15 +17,14 @@ class AppTheme {
         ),
   );
   static final darkTheme = ThemeData.dark().copyWith(
-    accentColor: Color.fromARGB(255, 114, 137, 218),
-    colorScheme: ColorScheme.dark(
+    appBarTheme: ThemeData.dark().appBarTheme.copyWith(
+          color: ThemeData.dark().scaffoldBackgroundColor,
+        ),
+    colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(255, 114, 137, 218),
       primaryVariant: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
       secondaryVariant: Color.fromARGB(255, 114, 137, 218),
-    ),
-    appBarTheme: ThemeData.dark().appBarTheme.copyWith(
-          color: ThemeData.dark().scaffoldBackgroundColor,
-        ),
+    ).copyWith(secondary: const Color.fromARGB(255, 114, 137, 218)),
   );
 }

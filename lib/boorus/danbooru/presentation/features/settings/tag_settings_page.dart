@@ -8,7 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 
 class TagSettingsPage extends HookWidget {
-  TagSettingsPage({
+  const TagSettingsPage({
     Key? key,
     required this.settings,
   }) : super(key: key);
@@ -32,19 +32,19 @@ class TagSettingsPage extends HookWidget {
     //           //       tags.add(tag);
     //           //     }
     //           //   },
-    //           //   child: Icon(
+    //           //   child: const Icon(
     //           //     Icons.add,
     //           //   ),
     //           // ),
     //           appBar: AppBar(
-    //             title: Text("Blacklisted tags"),
+    //             title: const Text("Blacklisted tags"),
     //           ),
     //           body: ListView.builder(
     //             itemBuilder: (context, index) {
     //               return ListTile(
     //                 title: Text(tags[index]),
     //                 // trailing: IconButton(
-    //                 //   icon: Icon(Icons.close),
+    //                 //   icon: const Icon(Icons.close),
     //                 //   onPressed: () {
     //                 //     tags.remove(tags[index]);
     //                 //   },
@@ -60,10 +60,10 @@ class TagSettingsPage extends HookWidget {
     //       )
     //     : Scaffold(
     //         appBar: AppBar(
-    //           title: Text("Blacklisted tags"),
+    //           title: const Text("Blacklisted tags"),
     //         ),
     //         body: Center(
-    //           child: Text("Log in to view your blacklisted tag"),
+    //           child: const Text("Log in to view your blacklisted tag"),
     //         ),
     //       );
   }

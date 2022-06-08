@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 class Wiki {
   int id;
   String title;

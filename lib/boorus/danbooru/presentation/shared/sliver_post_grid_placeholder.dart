@@ -9,7 +9,7 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverGrid(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 0.65,
         crossAxisCount: 2,
         crossAxisSpacing: 10,

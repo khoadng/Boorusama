@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class PoolPage extends StatefulWidget {
-  PoolPage({Key? key}) : super(key: key);
+  const PoolPage({Key? key}) : super(key: key);
 
   @override
   State<PoolPage> createState() => _PoolPageState();
@@ -47,9 +47,9 @@ class _PoolPageState extends State<PoolPage> {
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (context, index) => Padding(
-                    padding: EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.all(3.0),
                     child: ClipRRect(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(8.0),
                         topRight: Radius.circular(8.0),
                       ),
@@ -73,9 +73,9 @@ class _PoolPageState extends State<PoolPage> {
                               width: MediaQuery.of(context).size.width,
                               child: Text(
                                 state.data![index].poolName,
-                                style: TextStyle(color: Colors.black),
+                                style: const TextStyle(color: Colors.black),
                               ),
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: Colors.white70,
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(8.0),
@@ -91,11 +91,11 @@ class _PoolPageState extends State<PoolPage> {
                   itemCount: state.data!.length,
                 );
               } else if (state.status == LoadStatus.failure) {
-                return Center(
+                return const Center(
                   child: Text("Failed to load pool, please try again later"),
                 );
               } else {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
@@ -115,7 +115,7 @@ class _PoolPageState extends State<PoolPage> {
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(8.0),
                   topRight: Radius.circular(8.0),
                 ),
@@ -134,7 +134,7 @@ class _PoolPageState extends State<PoolPage> {
                   Text(
                     pool.postCount.toString(),
                   ),
-                  FaIcon(FontAwesomeIcons.image)
+                  const FaIcon(FontAwesomeIcons.image)
                 ],
               ),
             ),
@@ -164,14 +164,14 @@ class _PoolPageState extends State<PoolPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               ListTile(
-                                title: Text('Series'),
+                                title: const Text('Series'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   _currentCategory.value = PoolCategory.series;
                                 },
                               ),
                               ListTile(
-                                title: Text('Collection'),
+                                title: const Text('Collection'),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   _currentCategory.value =
@@ -185,7 +185,7 @@ class _PoolPageState extends State<PoolPage> {
               child: Row(
                 children: <Widget>[
                   Text(poolCategoryToDisplayString(category).toUpperCase()),
-                  Icon(Icons.arrow_drop_down)
+                  const Icon(Icons.arrow_drop_down)
                 ],
               ),
             )
@@ -195,4 +195,4 @@ class _PoolPageState extends State<PoolPage> {
 }
 
 String poolCategoryToDisplayString(PoolCategory category) =>
-    "${category.toString().split('.').last.replaceAll('()', '')}";
+    category.toString().split('.').last.replaceAll('()', '');

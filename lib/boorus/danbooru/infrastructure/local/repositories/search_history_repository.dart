@@ -35,8 +35,7 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
         shs.add(sh);
       }
 
-      final success =
-          await settingRepository.save(settings.copyWith(searchHistories: shs));
+      await settingRepository.save(settings.copyWith(searchHistories: shs));
 
       return shs;
     } on Exception {

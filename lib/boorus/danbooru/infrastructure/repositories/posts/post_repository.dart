@@ -23,12 +23,10 @@ class PostRepository implements IPostRepository {
     IAccountRepository accountRepository,
     IFavoritePostRepository favoritePostRepository,
   )   : _api = api,
-        _accountRepository = accountRepository,
-        _favoritePostRepository = favoritePostRepository;
+        _accountRepository = accountRepository;
 
   final IAccountRepository _accountRepository;
   final IApi _api;
-  final IFavoritePostRepository _favoritePostRepository;
 
   static const int _limit = 60;
 
@@ -55,8 +53,9 @@ class PostRepository implements IPostRepository {
         switch (obj.runtimeType) {
           case DioError:
             final response = (obj as DioError).response;
-            if (response == null)
+            if (response == null) {
               throw Exception("Failed to get popular posts for $date");
+            }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
                   "Your search took too long to execute and was cancelled.");
@@ -86,8 +85,9 @@ class PostRepository implements IPostRepository {
         switch (obj.runtimeType) {
           case DioError:
             final response = (obj as DioError).response;
-            if (response == null)
+            if (response == null) {
               throw Exception("Failed to get popular posts for $date");
+            }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
                   "Your search took too long to execute and was cancelled.");
@@ -122,8 +122,9 @@ class PostRepository implements IPostRepository {
         switch (obj.runtimeType) {
           case DioError:
             final response = (obj as DioError).response;
-            if (response == null)
+            if (response == null) {
               throw Exception("Failed to get popular posts for $date");
+            }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
                   "Your search took too long to execute and was cancelled.");
@@ -183,12 +184,14 @@ class PostRepository implements IPostRepository {
 class CannotSearchMoreThanTwoTags implements BooruException {
   CannotSearchMoreThanTwoTags(this.message);
 
+  @override
   final String message;
 }
 
 class DatabaseTimeOut implements BooruException {
   DatabaseTimeOut(this.message);
 
+  @override
   final String message;
 }
 

@@ -9,38 +9,38 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.d
 class AccountCubit extends Cubit<AsyncLoadState<Account>> {
   AccountCubit({
     required this.accountRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IAccountRepository accountRepository;
 
   void setAccount(Account account) {
-    TryAsync<void>(
+    tryAsync<void>(
         action: () => accountRepository.add(account),
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (_) {
           emit(AsyncLoadState.success(account));
         });
   }
 
   void removeAccount() {
-    TryAsync<void>(
+    tryAsync<void>(
         action: () async {
           final account = await accountRepository.get();
           return accountRepository.remove(account.id);
         },
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (_) {
-          emit(AsyncLoadState.success(Account.empty));
+          emit(const AsyncLoadState.success(Account.empty));
         });
   }
 
   void getCurrentAccount() {
-    TryAsync<Account>(
+    tryAsync<Account>(
         action: () => accountRepository.get(),
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (acc) {
           emit(AsyncLoadState.success(acc));
         });

@@ -101,12 +101,12 @@ void main() async {
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
 
-  final run = () => runApp(
+  run() => runApp(
         EasyLocalization(
           useOnlyLangCode: true,
-          supportedLocales: [Locale('en', ''), Locale('vi', '')],
+          supportedLocales: const [Locale('en', ''), Locale('vi', '')],
           path: 'assets/translations',
-          fallbackLocale: Locale('en', ''),
+          fallbackLocale: const Locale('en', ''),
           child: MultiRepositoryProvider(
             providers: [
               RepositoryProvider.value(value: packageInfo),
@@ -176,7 +176,7 @@ void main() async {
                     final artistCommentaryRepo =
                         ArtistCommentaryRepository(api, accountRepo);
 
-                    final poolRepo = new PoolRepository(api, accountRepo);
+                    final poolRepo = PoolRepository(api, accountRepo);
 
                     final mostViewedCubit =
                         MostViewedCubit(postRepository: postRepo)
@@ -255,7 +255,7 @@ void main() async {
                               accountCubit.removeAccount();
                             }
                           },
-                          child: App(),
+                          child: const App(),
                         ),
                       ),
                     );

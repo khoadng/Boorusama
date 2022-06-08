@@ -45,14 +45,13 @@ class ArtistPage extends HookWidget {
       onMoreData: (data, page) {
         if (page > 1) {
           // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
-              );
-              return p.id == post.id;
-            });
+          data.removeWhere((post) {
+            final p = posts.value.firstWhere(
+              (sPost) => sPost.id == post.id,
+              orElse: () => Post.empty(),
+            );
+            return p.id == post.id;
+          });
         }
         posts.value = [...posts.value, ...data];
       },
@@ -86,7 +85,7 @@ class ArtistPage extends HookWidget {
         panelBuilder: (scrollController) => Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: BorderRadius.all(Radius.circular(24.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(24.0)),
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 32),
@@ -96,9 +95,10 @@ class ArtistPage extends HookWidget {
               controller: infiniteListController.value,
               posts: posts.value,
               child: isRefreshing.value
-                  ? SliverPadding(
+                  ? const SliverPadding(
                       padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      sliver: SliverPostGridPlaceHolder())
+                      sliver: SliverPostGridPlaceHolder(),
+                    )
                   : null,
             ),
           ),
@@ -121,7 +121,7 @@ class ArtistPage extends HookWidget {
               ),
             ),
             Align(
-              alignment: Alignment(0, -0.6),
+              alignment: const Alignment(0, -0.6),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -158,9 +158,9 @@ class ArtistPage extends HookWidget {
           itemCount: state.data!.otherNames.length,
           itemBuilder: (index) {
             return Chip(
-              shape: StadiumBorder(side: BorderSide(color: Colors.grey)),
-              padding: EdgeInsets.all(4.0),
-              labelPadding: EdgeInsets.all(1.0),
+              shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
+              padding: const EdgeInsets.all(4.0),
+              labelPadding: const EdgeInsets.all(1.0),
               visualDensity: VisualDensity.compact,
               label: ConstrainedBox(
                 constraints: BoxConstraints(
@@ -168,14 +168,14 @@ class ArtistPage extends HookWidget {
                 child: Text(
                   state.data!.otherNames[index].removeUnderscoreWithSpace(),
                   overflow: TextOverflow.fade,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),
             );
           },
         );
       default:
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
     }
   }
 }
