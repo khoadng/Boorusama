@@ -20,6 +20,7 @@ class _BottomBarState extends State<BottomBar> {
   final labels = [
     "Home",
     "Explore",
+    "Pool",
     // "Favorites",
   ];
 
@@ -45,8 +46,9 @@ class _BottomBarState extends State<BottomBar> {
       color: Colors.black,
       backgroundColor: Colors.transparent,
       items: [
-        FaIcon(FontAwesomeIcons.home),
+        FaIcon(FontAwesomeIcons.house),
         FaIcon(Icons.explore),
+        FaIcon(FontAwesomeIcons.images),
       ],
       onTap: (index) => changePage(index),
     );

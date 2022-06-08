@@ -1,38 +1,43 @@
+// Flutter imports:
+import 'package:flutter/cupertino.dart';
+
+@immutable
 class Pool {
   Pool({
     required this.id,
-    required this.name,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.description,
-    required this.isActive,
-    required this.isDeleted,
     required this.postIds,
     required this.category,
+    required this.description,
     required this.postCount,
+    required this.name,
+    required this.createdAt,
   });
 
   final int id;
-  final String name;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String description;
-  final bool isActive;
-  final bool isDeleted;
   final List<int> postIds;
-  final String category;
-  final int postCount;
+  final PoolCategory category;
+  final String description;
+  final PoolPostCount postCount;
+  final PoolName name;
+  final DateTime createdAt;
+}
 
-  factory Pool.fromJson(Map<String, dynamic> json) => Pool(
-        id: json["id"],
-        name: json["name"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        description: json["description"],
-        isActive: json["is_active"],
-        isDeleted: json["is_deleted"],
-        postIds: List<int>.from(json["post_ids"].map((x) => x)),
-        category: json["category"],
-        postCount: json["post_count"],
-      );
+enum PoolCategory {
+  unknown,
+  collection,
+  series,
+}
+
+class PoolName {
+  PoolName(this.value);
+  final String value;
+}
+
+class PoolPostCount {
+  PoolPostCount(this.value);
+  final int value;
+}
+
+extension PoolX on Pool {
+  int? get postCoverId => postIds.isEmpty ? null : postIds.first;
 }

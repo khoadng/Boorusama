@@ -174,6 +174,10 @@ class PostRepository implements IPostRepository {
       }
     }
   }
+
+  @override
+  Future<List<Post>> getPostsFromIds(List<int> ids) =>
+      getPosts('id:${ids.join(',')}', 1);
 }
 
 class CannotSearchMoreThanTwoTags implements BooruException {

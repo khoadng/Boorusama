@@ -16,4 +16,5 @@ abstract class IPostRepository {
   Future<List<Post>> getPopularPosts(DateTime date, int page, TimeScale scale);
   Future<List<Post>> getCuratedPosts(DateTime date, int page, TimeScale scale);
   Future<List<Post>> getMostViewedPosts(DateTime date);
+  Future<List<Post>> getPostsFromIds(List<int> ids);
 }

@@ -8,6 +8,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
 import 'explore/explore_page.dart';
@@ -69,6 +70,7 @@ class HomePage extends HookWidget {
                         onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
                       ),
                       ExplorePage(),
+                      PoolPage(),
                     ],
                   ),
                   bottomNavigationBar: BottomBar(
