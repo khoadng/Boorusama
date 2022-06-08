@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 class Artist {
   final int id;
   final DateTime createdAt;

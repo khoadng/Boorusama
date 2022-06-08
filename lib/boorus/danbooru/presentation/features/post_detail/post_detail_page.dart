@@ -18,7 +18,7 @@ import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart
 import 'providers/slide_show_providers.dart';
 
 class PostDetailPage extends HookWidget {
-  PostDetailPage({
+  const PostDetailPage({
     Key? key,
     required this.post,
     required this.posts,
@@ -33,17 +33,18 @@ class PostDetailPage extends HookWidget {
   final Post post;
   final List<Post> posts;
 
+  @override
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
     final spinningIconpanelAnimationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(seconds: 200));
+        vsync: tickerProvider, duration: const Duration(seconds: 200));
     final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0)
         .animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
     final slideShowConfig =
         useState(SlideShowConfiguration(interval: 4, skipAnimation: false));
-    useValueChanged(showSlideShowConfig.value, (bool _, Null __) {
+    useValueChanged(showSlideShowConfig.value, (bool _, void __) {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance!.addPostFrameCallback((_) async {
           final confirm = await showModalBottomSheet(
@@ -64,7 +65,7 @@ class PostDetailPage extends HookWidget {
 
     final currentPostIndex = useState(posts.indexOf(post));
 
-    useValueChanged(autoPlay.value, (_, Null __) {
+    useValueChanged(autoPlay.value, (_, void __) {
       if (autoPlay.value) {
         spinningIconpanelAnimationController.repeat();
       } else {
@@ -78,17 +79,17 @@ class PostDetailPage extends HookWidget {
 
     Widget _buildSlideShowButton() {
       return Align(
-        alignment: Alignment(0.9, -0.96),
+        alignment: const Alignment(0.9, -0.96),
         child: ButtonBar(
           children: [
             autoPlay.value
                 ? AnimatedSpinningIcon(
-                    icon: Icon(Icons.sync),
+                    icon: const Icon(Icons.sync),
                     animation: rotateAnimation,
                     onPressed: () => autoPlay.value = false,
                   )
                 : IconButton(
-                    icon: Icon(Icons.slideshow),
+                    icon: const Icon(Icons.slideshow),
                     onPressed: () => showSlideShowConfig.value = true,
                   ),
             PopupMenuButton<PostAction>(
@@ -103,10 +104,10 @@ class PostDetailPage extends HookWidget {
               },
               itemBuilder: (BuildContext context) =>
                   <PopupMenuEntry<PostAction>>[
-                PopupMenuItem<PostAction>(
+                const PopupMenuItem<PostAction>(
                   value: PostAction.download,
                   child: ListTile(
-                    leading: const Icon(Icons.download_rounded),
+                    leading: Icon(Icons.download_rounded),
                     title: Text("Download"),
                   ),
                 ),
@@ -119,11 +120,11 @@ class PostDetailPage extends HookWidget {
 
     Widget _buildBackButton() {
       return Align(
-        alignment: Alignment(-0.9, -0.96),
+        alignment: const Alignment(-0.9, -0.96),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: IconButton(
-            icon: Icon(Icons.arrow_back_ios),
+            icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
               onExit(currentPostIndex.value);
               Navigator.pop(context);
@@ -168,8 +169,8 @@ class PostDetailPage extends HookWidget {
                   autoPlayCurve: Curves.fastOutSlowIn,
                   autoPlay: autoPlay.value,
                   autoPlayAnimationDuration: config.skipAnimation
-                      ? Duration(microseconds: 1)
-                      : Duration(milliseconds: 600),
+                      ? const Duration(microseconds: 1)
+                      : const Duration(milliseconds: 600),
                   autoPlayInterval: Duration(seconds: config.interval),
                   scrollDirection: Axis.horizontal,
                 ),

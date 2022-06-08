@@ -47,14 +47,13 @@ class LatestView extends HookWidget {
       onMoreData: (data, page) {
         if (page > 1) {
           // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
-              );
-              return p.id == post.id;
-            });
+          data.removeWhere((post) {
+            final p = posts.value.firstWhere(
+              (sPost) => sPost.id == post.id,
+              orElse: () => Post.empty(),
+            );
+            return p.id == post.id;
+          });
         }
         posts.value = [...posts.value, ...data];
       },
@@ -76,7 +75,7 @@ class LatestView extends HookWidget {
 
     Widget _buildTags(List<Search> searches) {
       return Container(
-        margin: EdgeInsets.only(left: 8.0),
+        margin: const EdgeInsets.only(left: 8.0),
         height: 50,
         child: ListView.builder(
           shrinkWrap: true,
@@ -85,15 +84,15 @@ class LatestView extends HookWidget {
           itemBuilder: (context, index) {
             final selected = selectedTag.value == searches[index].keyword;
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
                 selectedColor: Colors.white,
                 selected: selected,
                 onSelected: (selected) => selected
                     ? selectedTag.value = searches[index].keyword
                     : selectedTag.value = "",
-                padding: EdgeInsets.all(4.0),
-                labelPadding: EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(4.0),
+                labelPadding: const EdgeInsets.all(1.0),
                 visualDensity: VisualDensity.compact,
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
@@ -119,9 +118,9 @@ class LatestView extends HookWidget {
         case LoadStatus.success:
           return _buildTags(state.data!);
         case LoadStatus.failure:
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         default:
-          return TagChipsPlaceholder();
+          return const TagChipsPlaceholder();
       }
     }
 
@@ -136,11 +135,11 @@ class LatestView extends HookWidget {
           title: SearchBar(
             enabled: false,
             leading: IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () => onMenuTap(),
             ),
             onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
-                routeSettings: RouteSettings(arguments: [''])),
+                routeSettings: const RouteSettings(arguments: [''])),
           ),
           floating: true,
           snap: true,
@@ -152,7 +151,7 @@ class LatestView extends HookWidget {
       ],
       posts: posts.value,
       child: isRefreshing.value
-          ? SliverPadding(
+          ? const SliverPadding(
               padding: EdgeInsets.symmetric(horizontal: 12.0),
               sliver: SliverPostGridPlaceHolder())
           : null,

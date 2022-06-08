@@ -25,7 +25,7 @@ class PreviewPostList extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: posts.length,
       itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(3.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
           child: CachedNetworkImage(

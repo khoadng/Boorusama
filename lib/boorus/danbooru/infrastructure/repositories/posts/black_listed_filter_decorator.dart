@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';

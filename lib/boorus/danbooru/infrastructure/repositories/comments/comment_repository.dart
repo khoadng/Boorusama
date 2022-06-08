@@ -52,13 +52,11 @@ class CommentRepository implements ICommentRepository {
           .then((account) => _api.postComment(
               account.username, account.apiKey, postId, content, true))
           .then((value) {
-        print("Add comment to post $postId success");
         return true;
       }).catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioError:
           default:
-            print("Failed to add comment to post $postId");
         }
         return false;
       });
@@ -70,13 +68,11 @@ class CommentRepository implements ICommentRepository {
           .then((account) => _api.updateComment(
               account.username, account.apiKey, commentId, content))
           .then((value) {
-        print("Update comment $commentId success");
         return true;
       }).catchError((Object obj) {
         switch (obj.runtimeType) {
           case DioError:
           default:
-            print("Failed to update comment $commentId");
         }
         return false;
       });

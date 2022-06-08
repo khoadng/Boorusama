@@ -9,31 +9,31 @@ import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
   SearchHistoryCubit({
     required this.searchHistoryRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final ISearchHistoryRepository searchHistoryRepository;
 
   void clearHistory() async {
-    TryAsync<bool>(
+    tryAsync<bool>(
         action: () => searchHistoryRepository.clearAll(),
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onSuccess: (success) => emit(AsyncLoadState.success([])));
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onSuccess: (success) => emit(const AsyncLoadState.success([])));
   }
 
   void addHistory(String history) {
-    TryAsync<List<SearchHistory>>(
+    tryAsync<List<SearchHistory>>(
         action: () => searchHistoryRepository.addHistory(history),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onLoading: () => emit(AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (sh) => emit(AsyncLoadState.success(sh)));
   }
 
   void getSearchHistory() {
-    TryAsync<List<SearchHistory>>(
+    tryAsync<List<SearchHistory>>(
         action: () => searchHistoryRepository.getHistories(),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onLoading: () => emit(AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (hist) {
           hist.sort((a, b) {
             return b.createdAt.compareTo(a.createdAt);

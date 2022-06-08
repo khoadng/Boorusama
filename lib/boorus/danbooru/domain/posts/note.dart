@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 // Project imports:
 import 'note_coordinate.dart';
 

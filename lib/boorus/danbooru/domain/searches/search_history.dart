@@ -1,6 +1,5 @@
 // Package imports:
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
 
 part 'search_history.g.dart';
 

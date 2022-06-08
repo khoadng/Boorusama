@@ -30,7 +30,7 @@ class TagSuggestionItems extends StatelessWidget {
           return ListTile(
             onTap: () => onItemTap(_tags[index]),
             trailing: Text(_tags[index].postCount.toString(),
-                style: TextStyle(color: Colors.grey)),
+                style: const TextStyle(color: Colors.grey)),
             title: Text(
               _tags[index].displayName,
               style: TextStyle(color: Color(_tags[index].tagHexColor)),

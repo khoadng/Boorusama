@@ -9,18 +9,18 @@ import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 class ProfileCubit extends Cubit<AsyncLoadState<Profile>> {
   ProfileCubit({
     required this.profileRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IProfileRepository profileRepository;
 
   void getProfile() {
-    TryAsync<Profile?>(
+    tryAsync<Profile?>(
         action: () => profileRepository.getProfile(),
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (profile) {
           if (profile == null) {
-            emit(AsyncLoadState.failure());
+            emit(const AsyncLoadState.failure());
             return;
           }
 

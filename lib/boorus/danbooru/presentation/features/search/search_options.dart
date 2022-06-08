@@ -38,8 +38,8 @@ class SearchOptions extends HookWidget {
         useAnimationController(duration: kThemeAnimationDuration);
 
     useEffect(() {
-      Future.delayed(
-          Duration(milliseconds: 100), () => animationController.forward());
+      Future.delayed(const Duration(milliseconds: 100),
+          () => animationController.forward());
       return null;
     }, [animationController]);
 
@@ -47,13 +47,13 @@ class SearchOptions extends HookWidget {
       opacity: animationController,
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -72,7 +72,7 @@ class SearchOptions extends HookWidget {
                           mode: LaunchMode.platformDefault,
                         );
                       },
-                      icon: FaIcon(
+                      icon: const FaIcon(
                         FontAwesomeIcons.circleQuestion,
                         size: 18,
                       ),

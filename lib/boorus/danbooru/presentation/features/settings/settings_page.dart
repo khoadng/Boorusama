@@ -15,7 +15,7 @@ import 'package:boorusama/main.dart';
 import 'appearance_page.dart';
 
 class SettingsPage extends StatelessWidget {
-  SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +36,7 @@ class SettingsPage extends StatelessWidget {
                   title: Text('settings.appSettings._string'.tr()),
                   tiles: [
                     SettingsTile.switchTile(
-                      leading: Icon(Icons.admin_panel_settings),
+                      leading: const Icon(Icons.admin_panel_settings),
                       title: Text('settings.appSettings.safeMode'.tr()),
                       onToggle: (value) {
                         context
@@ -46,7 +46,7 @@ class SettingsPage extends StatelessWidget {
                       initialValue: settings.safeMode,
                     ),
                     // SettingsTile(
-                    //   leading: Icon(Icons.tag),
+                    //   leading: const Icon(Icons.tag),
                     //   title: Text('settings.appSettings.blacklistedTags'.tr()),
                     //   onPressed: (context) {
                     //     Navigator.of(context).push(
@@ -59,11 +59,11 @@ class SettingsPage extends StatelessWidget {
                     //   },
                     // ),
                     SettingsTile(
-                      leading: Icon(Icons.translate),
+                      leading: const Icon(Icons.translate),
                       title: Text('settings.appSettings.language._string'.tr()),
                       trailing: DropdownButton<String>(
                         value: settings.language,
-                        icon: Icon(Icons.keyboard_arrow_right),
+                        icon: const Icon(Icons.keyboard_arrow_right),
                         onChanged: (value) {
                           if (value == null) return;
                           context
@@ -102,8 +102,8 @@ class SettingsPage extends StatelessWidget {
                       "App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}"),
                   tiles: [
                     SettingsTile(
-                      title: Text("Acknowledgements"),
-                      leading: Icon(Icons.info),
+                      title: const Text("Acknowledgements"),
+                      leading: const Icon(Icons.info),
                       onPressed: (context) => showAboutDialog(
                         context: context,
                         applicationIcon: Image.asset(

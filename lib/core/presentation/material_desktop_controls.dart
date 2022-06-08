@@ -282,7 +282,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
               if (!chewieController.isLive)
                 Expanded(
                   child: Container(
-                    padding: EdgeInsets.only(
+                    padding: const EdgeInsets.only(
                       right: 20,
                       left: 20,
                     ),

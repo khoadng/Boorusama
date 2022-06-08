@@ -12,54 +12,54 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class SideBarMenu extends StatelessWidget {
-  SideBarMenu();
+  const SideBarMenu({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
-            child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
-              builder: (context, state) {
-                if (state.status == LoadStatus.success) {
-                  return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (state.data! == Account.empty)
-                          ListTile(
-                            leading: Icon(Icons.login),
-                            title: Text('sideMenu.login'.tr()),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              AppRouter.router.navigateTo(context, "/login");
-                            },
-                          )
-                        else
-                          ListTile(
-                            leading: Icon(Icons.person),
-                            title: Text('sideMenu.profile'.tr()),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              AppRouter.router
-                                  .navigateTo(context, "/users/profile");
-                            },
-                          ),
-                        Divider(),
+          child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
+            builder: (context, state) {
+              if (state.status == LoadStatus.success) {
+                return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (state.data! == Account.empty)
                         ListTile(
-                          leading: Icon(Icons.settings),
-                          title: Text('sideMenu.settings'.tr()),
+                          leading: const Icon(Icons.login),
+                          title: Text('sideMenu.login'.tr()),
                           onTap: () {
                             Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(context, "/settings");
+                            AppRouter.router.navigateTo(context, "/login");
                           },
                         )
-                      ]);
-                } else {
-                  return SizedBox.shrink();
-                }
-              },
-            ),
+                      else
+                        ListTile(
+                          leading: const Icon(Icons.person),
+                          title: Text('sideMenu.profile'.tr()),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            AppRouter.router
+                                .navigateTo(context, "/users/profile");
+                          },
+                        ),
+                      const Divider(),
+                      ListTile(
+                        leading: const Icon(Icons.settings),
+                        title: Text('sideMenu.settings'.tr()),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          AppRouter.router.navigateTo(context, "/settings");
+                        },
+                      )
+                    ]);
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
           ),
         ),
       ),

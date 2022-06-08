@@ -45,7 +45,7 @@ class Recommended {
 }
 
 class PostDetail extends HookWidget {
-  PostDetail({
+  const PostDetail({
     Key? key,
     required this.post,
     this.minimal = false,
@@ -122,7 +122,7 @@ class PostDetail extends HookWidget {
           },
           progressIndicatorBuilder: (context, url, progress) => FittedBox(
             fit: BoxFit.cover,
-            child: Container(
+            child: SizedBox(
               height: post.height,
               width: post.width,
             ),
@@ -132,7 +132,7 @@ class PostDetail extends HookWidget {
     }
 
     Widget buildRecommendedArtistList() {
-      if (post.tagStringArtist.isEmpty) return SizedBox.shrink();
+      if (post.tagStringArtist.isEmpty) return const SizedBox.shrink();
       return BlocBuilder<RecommendedArtistPostCubit,
           AsyncLoadState<List<Recommended>>>(
         builder: (context, state) {
@@ -154,7 +154,8 @@ class PostDetail extends HookWidget {
                           ),
                         ),
                         title: Text(item.title),
-                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                        trailing:
+                            const Icon(Icons.keyboard_arrow_right_rounded),
                       ),
                       posts: item.posts,
                     ),
@@ -171,7 +172,7 @@ class PostDetail extends HookWidget {
                     header: ListTile(
                       title: Text(
                           artists[index].removeUnderscoreWithSpace().titleCase),
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
                 )
@@ -183,7 +184,7 @@ class PostDetail extends HookWidget {
     }
 
     Widget buildRecommendedCharacterList() {
-      if (post.tagStringCharacter.isEmpty) return SizedBox.shrink();
+      if (post.tagStringCharacter.isEmpty) return const SizedBox.shrink();
       return BlocBuilder<RecommendedCharacterPostCubit,
           AsyncLoadState<List<Recommended>>>(
         builder: (context, state) {
@@ -205,7 +206,8 @@ class PostDetail extends HookWidget {
                           ),
                         ),
                         title: Text(item.title),
-                        trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                        trailing:
+                            const Icon(Icons.keyboard_arrow_right_rounded),
                       ),
                       posts: item.posts,
                     ),
@@ -223,7 +225,7 @@ class PostDetail extends HookWidget {
                       title: Text(characters[index]
                           .removeUnderscoreWithSpace()
                           .titleCase),
-                      trailing: Icon(Icons.keyboard_arrow_right_rounded),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
                 )
@@ -235,7 +237,7 @@ class PostDetail extends HookWidget {
     }
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: minimal
@@ -258,7 +260,7 @@ class PostDetail extends HookWidget {
                           imagePath: value,
                         ),
                       ),
-                      Divider(height: 8, thickness: 1),
+                      const Divider(height: 8, thickness: 1),
                       buildRecommendedArtistList(),
                       buildRecommendedCharacterList(),
                     ],
@@ -288,7 +290,7 @@ class InformationSection extends HookWidget {
             post: post, scrollController: ModalScrollController.of(context)!),
       ),
       child: Padding(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -306,7 +308,7 @@ class InformationSection extends HookWidget {
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.headline6,
                   ),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                       post.tagStringCopyright.isEmpty
                           ? "Original"
@@ -315,7 +317,7 @@ class InformationSection extends HookWidget {
                               .titleCase,
                       overflow: TextOverflow.fade,
                       style: Theme.of(context).textTheme.bodyText2),
-                  SizedBox(height: 5),
+                  const SizedBox(height: 5),
                   Text(
                     post.createdAt.toString(),
                     style: Theme.of(context).textTheme.caption,
@@ -323,7 +325,7 @@ class InformationSection extends HookWidget {
                 ],
               ),
             ),
-            Flexible(child: Icon(Icons.keyboard_arrow_down)),
+            const Flexible(child: Icon(Icons.keyboard_arrow_down)),
           ],
         ),
       ),
@@ -347,8 +349,8 @@ class RecommendPostSection extends HookWidget {
       children: [
         header,
         Padding(
-          padding: EdgeInsets.all(4),
-          child: Container(
+          padding: const EdgeInsets.all(4),
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
             child: PreviewPostGrid(posts: posts),
           ),
@@ -372,10 +374,10 @@ class RecommendPostSectionPlaceHolder extends HookWidget {
       children: [
         header,
         Padding(
-          padding: EdgeInsets.all(4),
-          child: Container(
+          padding: const EdgeInsets.all(4),
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
-            child: PreviewPostGridPlaceHolder(
+            child: const PreviewPostGridPlaceHolder(
               itemCount: 6,
             ),
           ),

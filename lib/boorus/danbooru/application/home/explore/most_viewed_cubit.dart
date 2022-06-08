@@ -8,19 +8,19 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 class MostViewedCubit extends Cubit<AsyncLoadState<List<Post>>> {
   MostViewedCubit({required this.postRepository})
-      : super(AsyncLoadState.initial());
+      : super(const AsyncLoadState.initial());
 
   final IPostRepository postRepository;
 
   void getMostViewed() {
-    TryAsync<List<Post>>(
+    tryAsync<List<Post>>(
         action: () => postRepository.getMostViewedPosts(DateTime.now()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onLoading: () => AsyncLoadState.loading(),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onLoading: () => const AsyncLoadState.loading(),
         onSuccess: (posts) async {
           if (posts.isEmpty) {
-            posts = await postRepository
-                .getMostViewedPosts(DateTime.now().subtract(Duration(days: 1)));
+            posts = await postRepository.getMostViewedPosts(
+                DateTime.now().subtract(const Duration(days: 1)));
           }
 
           emit(AsyncLoadState.success(posts.take(20).toList()));

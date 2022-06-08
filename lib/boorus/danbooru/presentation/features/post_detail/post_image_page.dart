@@ -26,11 +26,11 @@ class PostImagePage extends HookWidget {
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
-      alignment: Alignment(-0.9, -0.96),
+      alignment: const Alignment(-0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -39,7 +39,7 @@ class PostImagePage extends HookWidget {
 
   Widget _buildMoreButton(BuildContext context) {
     return Align(
-      alignment: Alignment(0.9, -0.96),
+      alignment: const Alignment(0.9, -0.96),
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: PopupMenuButton<PostAction>(
@@ -52,10 +52,10 @@ class PostImagePage extends HookWidget {
             }
           },
           itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-            PopupMenuItem<PostAction>(
+            const PopupMenuItem<PostAction>(
               value: PostAction.download,
               child: ListTile(
-                leading: const Icon(Icons.download_rounded),
+                leading: Icon(Icons.download_rounded),
                 title: Text("Download"),
               ),
             ),
@@ -108,7 +108,7 @@ class PostImagePage extends HookWidget {
           value: progress.progress,
         ),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
     return Scaffold(
       body: BlocBuilder<NoteCubit, AsyncLoadState<List<Note>>>(
@@ -131,7 +131,7 @@ class PostImagePage extends HookWidget {
               if (state.status == LoadStatus.success)
                 ...buildNotes(context, state.data!, post)
               else
-                SizedBox.shrink()
+                const SizedBox.shrink()
             ],
           ],
         ),

@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
@@ -61,7 +60,7 @@ class Post implements IDownloadable {
     required this.pixivId,
   });
 
-  double get aspectRatio => this.width / this.height;
+  double get aspectRatio => width / height;
 
   PostName get name {
     return PostName(
@@ -126,6 +125,6 @@ class Post implements IDownloadable {
 
 extension InvalidFileCharsExtension on String {
   String fixInvalidCharacterForPathName() {
-    return this.replaceAll(RegExp(r'[\\/*?:"<>|]'), "_");
+    return replaceAll(RegExp(r'[\\/*?:"<>|]'), "_");
   }
 }

@@ -1,14 +1,9 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 class Account {
   const Account({
     required this.username,
     required this.apiKey,
     required this.id,
-  })  : assert(username != null),
-        assert(apiKey != null),
-        assert(id != null);
+  });
 
   final String username;
   final String apiKey;

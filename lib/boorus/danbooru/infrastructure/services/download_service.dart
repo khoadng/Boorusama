@@ -15,7 +15,7 @@ import 'package:boorusama/core/infrastructure/IOHelper.dart';
 class DownloadService implements IDownloadService {
   DownloadService();
 
-  ReceivePort _port = ReceivePort();
+  final ReceivePort _port = ReceivePort();
   bool _permissionReady = false;
   String _localPath = '';
   String _savedDir = '';
@@ -31,9 +31,7 @@ class DownloadService implements IDownloadService {
         openFileFromNotification: true);
   }
 
-  Future<Null> _prepare() async {
-    final tasks = await FlutterDownloader.loadTasks();
-
+  Future<void> _prepare() async {
     //TODO: refactor to use configurable input
     final savedDir = io.Directory(_localPath);
     bool hasExisted = await savedDir.exists();
@@ -51,19 +49,6 @@ class DownloadService implements IDownloadService {
       _bindBackgroundIsolate();
       return;
     }
-    _port.listen((dynamic data) {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
-
-      // final task = _tasks?.firstWhere((task) => task.taskId == id);
-      // if (task != null) {
-      //   setState(() {
-      //     task.status = status;
-      //     task.progress = progress;
-      //   });
-      // }
-    });
   }
 
   void _unbindBackgroundIsolate() {
@@ -71,7 +56,7 @@ class DownloadService implements IDownloadService {
   }
 
   @override
-  Future<Null> init() async {
+  Future<void> init() async {
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
 
@@ -90,6 +75,7 @@ class DownloadService implements IDownloadService {
     }
 
     _prepare();
+    // ignore: avoid_print
     print("Download service initialized");
   }
 

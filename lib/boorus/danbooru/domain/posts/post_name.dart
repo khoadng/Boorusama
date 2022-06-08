@@ -1,6 +1,3 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 class PostName {
   final String _tagStringArtist;
   final String _tagStringCharacter;
@@ -56,18 +53,18 @@ class PostName {
 
 extension CapExtension on String {
   String get inCaps {
-    if (this.isNotEmpty) {
-      return '${this[0].toUpperCase()}${this.substring(1)}';
+    if (isNotEmpty) {
+      return '${this[0].toUpperCase()}${substring(1)}';
     } else {
       return this;
     }
   }
 
-  String get allInCaps => this.toUpperCase();
+  String get allInCaps => toUpperCase();
   String get capitalizeFirstofEach =>
-      this.split(" ").map((str) => str.inCaps).join(" ");
+      split(" ").map((str) => str.inCaps).join(" ");
 }
 
 extension PrettyExtension on String {
-  String get pretty => this.replaceAll("_", " ");
+  String get pretty => replaceAll("_", " ");
 }

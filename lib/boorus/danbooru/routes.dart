@@ -83,7 +83,7 @@ final userHandler =
       BlocProvider.value(value: BlocProvider.of<ProfileCubit>(context!)),
       BlocProvider.value(value: BlocProvider.of<FavoritesCubit>(context)),
     ],
-    child: ProfilePage(),
+    child: const ProfilePage(),
   );
 });
 
@@ -93,11 +93,11 @@ final loginHandler =
     providers: [
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context!)),
     ],
-    child: LoginPage(),
+    child: const LoginPage(),
   );
 });
 
 final settingsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return SettingsPage();
+  return const SettingsPage();
 });

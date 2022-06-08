@@ -66,7 +66,7 @@ class PreviewPostGrid extends StatelessWidget {
               ),
             ),
           ),
-          transitionDuration: Duration(milliseconds: 150),
+          transitionDuration: const Duration(milliseconds: 150),
         ),
       );
     }
@@ -80,7 +80,7 @@ class PreviewPostGrid extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: posts.length,
       itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(3.0),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
           child: GestureDetector(

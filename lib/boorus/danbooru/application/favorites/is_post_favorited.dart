@@ -10,13 +10,13 @@ class IsPostFavoritedCubit extends Cubit<AsyncLoadState<bool>> {
   IsPostFavoritedCubit({
     required this.accountRepository,
     required this.favoritePostRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IAccountRepository accountRepository;
   final IFavoritePostRepository favoritePostRepository;
 
   void checkIfFavorited(int postId) {
-    TryAsync<bool>(
+    tryAsync<bool>(
       action: () async {
         final account = await accountRepository.get();
         final isFaved =
@@ -24,8 +24,8 @@ class IsPostFavoritedCubit extends Cubit<AsyncLoadState<bool>> {
 
         return isFaved;
       },
-      onLoading: () => emit(AsyncLoadState.loading()),
-      onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onSuccess: (value) => emit(AsyncLoadState.success(value)),
     );
   }

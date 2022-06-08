@@ -20,7 +20,7 @@ class LoginBox extends HookWidget {
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
     final animationController = useAnimationController(
-        vsync: tickerProvider, duration: Duration(milliseconds: 150));
+        vsync: tickerProvider, duration: const Duration(milliseconds: 150));
     final _formKey = useState(GlobalKey<FormState>());
     final _isValidUsernameAndPassword = useState(true);
 
@@ -53,7 +53,7 @@ class LoginBox extends HookWidget {
           _formKey.value.currentState!.validate();
         } else if (state is AuthenticationError &&
             state.exception is Exception) {
-          final snackbar = SnackBar(
+          const snackbar = SnackBar(
             behavior: SnackBarBehavior.floating,
             elevation: 6.0,
             content: Text(
@@ -66,7 +66,7 @@ class LoginBox extends HookWidget {
       child: Form(
         autovalidateMode: AutovalidateMode.disabled,
         key: _formKey.value,
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.5,
           child: Column(
@@ -91,16 +91,17 @@ class LoginBox extends HookWidget {
                     ? ScaleTransition(
                         scale: CurvedAnimation(
                           parent: animationController,
-                          curve: Interval(0.0, 1.0, curve: Curves.linear),
+                          curve: const Interval(0.0, 1.0, curve: Curves.linear),
                         ),
                         child: IconButton(
                             splashColor: Colors.transparent,
-                            icon: FaIcon(FontAwesomeIcons.solidTimesCircle),
+                            icon:
+                                const FaIcon(FontAwesomeIcons.solidCircleXmark),
                             onPressed: () => usernameTextController.clear()),
                       )
                     : null,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               LoginField(
                 labelText: 'login.form.password'.tr(),
                 obscureText: !showPassword.value,
@@ -118,8 +119,8 @@ class LoginBox extends HookWidget {
                 suffixIcon: IconButton(
                     splashColor: Colors.transparent,
                     icon: showPassword.value
-                        ? FaIcon(FontAwesomeIcons.solidEyeSlash)
-                        : FaIcon(FontAwesomeIcons.solidEye),
+                        ? const FaIcon(FontAwesomeIcons.solidEyeSlash)
+                        : const FaIcon(FontAwesomeIcons.solidEye),
                     onPressed: () => showPassword.value = !showPassword.value),
               ),
               TextButton.icon(
@@ -127,11 +128,11 @@ class LoginBox extends HookWidget {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                        title: Text('API key?'),
+                        title: const Text('API key?'),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: Text("Cancel"),
+                            child: const Text("Cancel"),
                           ),
                           BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                             builder: (context, state) => TextButton(
@@ -139,21 +140,21 @@ class LoginBox extends HookWidget {
                                 Navigator.of(context).pop();
                                 launchExternalUrl(Uri.parse(state.booru.url));
                               },
-                              child: Text("Open web browser"),
+                              child: const Text("Open web browser"),
                             ),
                           ),
                         ],
-                        content: Text(
+                        content: const Text(
                             '1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit'),
                       );
                     }),
-                icon: FaIcon(FontAwesomeIcons.solidQuestionCircle),
-                label: Text("API key?"),
+                icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
+                label: const Text("API key?"),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               BlocBuilder<AuthenticationCubit, AuthenticationState>(
                 builder: (context, state) => state is AuthenticationInProgress
-                    ? CircularProgressIndicator()
+                    ? const CircularProgressIndicator()
                     : _buildLoginButton(
                         context,
                         _formKey,
@@ -223,25 +224,25 @@ class LoginField extends HookWidget {
         suffixIcon: suffixIcon,
         filled: true,
         fillColor: Theme.of(context).cardColor,
-        enabledBorder: OutlineInputBorder(
+        enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide.none,
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide:
               BorderSide(color: Theme.of(context).accentColor, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Theme.of(context).errorColor),
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide:
               BorderSide(color: Theme.of(context).errorColor, width: 2.0),
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
+          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
-        contentPadding: EdgeInsets.all(12.0),
+        contentPadding: const EdgeInsets.all(12.0),
         labelText: labelText,
       ),
     );

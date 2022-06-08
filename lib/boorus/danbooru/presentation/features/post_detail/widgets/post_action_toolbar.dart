@@ -47,7 +47,7 @@ class PostActionToolbar extends HookWidget {
               return TextButton.icon(
                   onPressed: () async {
                     if (authState is Unauthenticated) {
-                      final snackbar = SnackBar(
+                      const snackbar = SnackBar(
                         behavior: SnackBarBehavior.floating,
                         duration: Duration(seconds: 3),
                         elevation: 6.0,
@@ -71,31 +71,33 @@ class PostActionToolbar extends HookWidget {
                     ReadContext(context)
                         .read<IsPostFavoritedCubit>()
                         .checkIfFavorited(post.id);
+                    // ignore: avoid_print
                     print("operation success = $success");
                   },
                   icon: state.data!
-                      ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
-                      : FaIcon(
+                      ? const FaIcon(FontAwesomeIcons.solidHeart,
+                          color: Colors.red)
+                      : const FaIcon(
                           FontAwesomeIcons.heart,
                           color: Colors.white,
                         ),
                   label: Text(
                     favCount.value.toString(),
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ));
             } else if (state.status == LoadStatus.failure) {
-              return SizedBox.shrink();
+              return const SizedBox.shrink();
             } else {
               return Center(
                 child: TextButton.icon(
                     onPressed: null,
-                    icon: FaIcon(
+                    icon: const FaIcon(
                       FontAwesomeIcons.spinner,
                       color: Colors.white,
                     ),
                     label: Text(
                       post.favCount.toString(),
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     )),
               );
             }
@@ -109,7 +111,7 @@ class PostActionToolbar extends HookWidget {
               postId: post.id,
             ),
           ),
-          icon: FaIcon(
+          icon: const FaIcon(
             FontAwesomeIcons.comment,
             color: Colors.white,
           ),
@@ -133,14 +135,14 @@ class PostActionToolbar extends HookWidget {
               },
             ),
           ),
-          icon: FaIcon(
+          icon: const FaIcon(
             FontAwesomeIcons.shareFromSquare,
             color: Colors.white,
           ),
         ),
         IconButton(
           onPressed: () => context.read<IDownloadService>().download(post),
-          icon: FaIcon(
+          icon: const FaIcon(
             FontAwesomeIcons.download,
             color: Colors.white,
           ),
@@ -189,16 +191,16 @@ class ModalShare extends StatelessWidget {
         children: <Widget>[
           if (post.source.uri != null)
             ListTile(
-              title: Text('Share source link'),
-              leading: FaIcon(FontAwesomeIcons.link),
+              title: const Text('Share source link'),
+              leading: const FaIcon(FontAwesomeIcons.link),
               onTap: () {
                 Navigator.of(context).pop();
                 onTap.call(getShareContent(ShareMode.source, post, endpoint));
               },
             ),
           ListTile(
-            title: Text('Share booru link'),
-            leading: FaIcon(FontAwesomeIcons.box),
+            title: const Text('Share booru link'),
+            leading: const FaIcon(FontAwesomeIcons.box),
             onTap: () {
               Navigator.of(context).pop();
               onTap.call(getShareContent(ShareMode.booru, post, endpoint));
@@ -206,8 +208,8 @@ class ModalShare extends StatelessWidget {
           ),
           if (imagePath != null)
             ListTile(
-              title: Text('Share image'),
-              leading: FaIcon(FontAwesomeIcons.fileImage),
+              title: const Text('Share image'),
+              leading: const FaIcon(FontAwesomeIcons.fileImage),
               onTap: () {
                 Navigator.of(context).pop();
                 onTapFile.call(imagePath!);

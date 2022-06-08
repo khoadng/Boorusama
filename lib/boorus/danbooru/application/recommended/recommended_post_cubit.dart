@@ -9,11 +9,11 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post
 class RecommendedPostCubit extends Cubit<AsyncLoadState<List<Recommended>>> {
   RecommendedPostCubit({
     required this.postRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
   final IPostRepository postRepository;
 
   void getRecommendedPosts(String tagString) {
-    TryAsync<List<Recommended>>(
+    tryAsync<List<Recommended>>(
         action: () => Future.wait(tagString
                 .split(' ')
                 .where((tag) => tag.isNotEmpty)
@@ -26,8 +26,8 @@ class RecommendedPostCubit extends Cubit<AsyncLoadState<List<Recommended>>> {
 
               return recommended;
             }).toList()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onLoading: () => emit(AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (posts) => emit(AsyncLoadState.success(posts)));
   }
 }

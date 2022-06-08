@@ -39,13 +39,13 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       height: 60,
       //TODO: shouldn't use hardcode value, not working great when using multiple themes
       color: Colors.black,
       backgroundColor: Colors.transparent,
-      items: [
-        FaIcon(FontAwesomeIcons.home),
+      items: const [
+        FaIcon(FontAwesomeIcons.house),
         FaIcon(Icons.explore),
       ],
       onTap: (index) => changePage(index),

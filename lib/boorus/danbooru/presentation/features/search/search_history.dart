@@ -28,7 +28,7 @@ class SearchHistorySection extends HookWidget {
           if (state.status == LoadStatus.success)
             ..._buildHistories(context, state.data!)
           else
-            SizedBox.shrink()
+            const SizedBox.shrink()
         ],
       ),
     );
@@ -47,11 +47,11 @@ class SearchHistorySection extends HookWidget {
           ),
         )
         .toList();
-    widgets..addAll(historyTiles);
+    widgets.addAll(historyTiles);
 
     if (historyTiles.isNotEmpty) {
       final header = Padding(
-        padding: EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -65,7 +65,7 @@ class SearchHistorySection extends HookWidget {
               onPressed: () => ReadContext(context)
                   .read<SearchHistoryCubit>()
                   .clearHistory(),
-              child: Text("Clear"),
+              child: const Text("Clear"),
             ),
           ],
         ),
@@ -73,7 +73,7 @@ class SearchHistorySection extends HookWidget {
       widgets.insert(0, header);
       widgets.insert(
           0,
-          Divider(
+          const Divider(
             indent: 10,
             endIndent: 10,
           ));

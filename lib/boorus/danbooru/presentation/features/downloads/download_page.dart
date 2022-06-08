@@ -53,7 +53,7 @@
 
 //     Widget _buildTags(List<Tag> tags) {
 //       return Container(
-//         margin: EdgeInsets.only(left: 8.0),
+//         margin: const EdgeInsets.only(left: 8.0),
 //         height: 50,
 //         child: ListView.builder(
 //           shrinkWrap: true,
@@ -67,8 +67,8 @@
 //                   ...selectedTags.value..remove(tags[index])
 //                 ],
 //                 backgroundColor: Color(tags[index].tagHexColor),
-//                 padding: EdgeInsets.all(4.0),
-//                 labelPadding: EdgeInsets.all(1.0),
+//                 padding: const EdgeInsets.all(4.0),
+//                 labelPadding: const EdgeInsets.all(1.0),
 //                 visualDensity: VisualDensity.compact,
 //                 label: ConstrainedBox(
 //                   constraints: BoxConstraints(
@@ -76,7 +76,7 @@
 //                   child: Text(
 //                     tags[index].displayName,
 //                     overflow: TextOverflow.fade,
-//                     style: TextStyle(fontWeight: FontWeight.bold),
+//                     style: const TextStyle(fontWeight: FontWeight.bold),
 //                   ),
 //                 ),
 //               ),
@@ -94,10 +94,10 @@
 //           hintText: "Find some tags to download",
 //           onChanged: (value) => query.state = value,
 //           queryEditingController: textEditingController,
-//           leading: Icon(Icons.search),
+//           leading: const Icon(Icons.search),
 //           trailing: query.state.isNotEmpty
 //               ? IconButton(
-//                   icon: Icon(Icons.close),
+//                   icon: const Icon(Icons.close),
 //                   onPressed: () => query.state = "",
 //                 )
 //               : null,
@@ -129,7 +129,7 @@
 //                 child: Column(
 //                   children: [
 //                     _buildTags(selectedTags.value),
-//                     Text("Total download pages"),
+//                     const Text("Total download pages"),
 //                     Slider(
 //                       min: 1.0,
 //                       max: maxPage,
@@ -142,7 +142,7 @@
 //                     ),
 //                     Spacer(),
 //                     Container(
-//                       margin: EdgeInsets.all(8.0),
+//                       margin: const EdgeInsets.all(8.0),
 //                       width: double.infinity,
 //                       child: ElevatedButton(
 //                         onPressed: () {
@@ -163,7 +163,7 @@
 //                             });
 //                           });
 //                         },
-//                         child: Text("Download"),
+//                         child: const Text("Download"),
 //                       ),
 //                     ),
 //                   ],

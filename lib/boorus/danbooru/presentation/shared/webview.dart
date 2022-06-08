@@ -25,7 +25,7 @@ class WebView extends HookWidget {
                   ? LinearProgressIndicator(
                       value: loadProgress.value,
                     )
-                  : SizedBox.shrink()),
+                  : const SizedBox.shrink()),
           Expanded(
             child: InAppWebView(
               initialUrlRequest: URLRequest(url: Uri.parse(url)),

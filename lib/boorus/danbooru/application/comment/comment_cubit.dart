@@ -11,20 +11,19 @@ class CommentCubit extends Cubit<AsyncLoadState<List<Comment>>> {
   CommentCubit({
     required this.commentRepository,
     required this.userRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final ICommentRepository commentRepository;
   final IUserRepository userRepository;
 
   void getComment(int postId) {
-    TryAsync<List<Comment>>(
+    tryAsync<List<Comment>>(
         action: () => commentRepository.getCommentsFromPostId(postId),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
-        onLoading: () => emit(AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (comments) async {
           final dtos = await commentRepository.getCommentsFromPostId(postId);
-          final comments =
-              dtos.where((e) => e.creatorId != null).toList().toList();
+          final comments = dtos.toList();
 
           final userList = comments.map((e) => e.creatorId).toSet().toList();
           final users =

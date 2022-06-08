@@ -9,7 +9,7 @@ import 'package:flutter_html/style.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: FontSize.xLarge.size,
               ),
             ),
-            Center(
+            const Center(
               child: LoginBox(),
             )
           ],

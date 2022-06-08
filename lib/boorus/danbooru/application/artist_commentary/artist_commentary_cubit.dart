@@ -9,15 +9,15 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 class ArtistCommentaryCubit extends Cubit<AsyncLoadState<ArtistCommentary>> {
   ArtistCommentaryCubit({
     required this.artistCommentaryRepository,
-  }) : super(AsyncLoadState.initial());
+  }) : super(const AsyncLoadState.initial());
 
   final IArtistCommentaryRepository artistCommentaryRepository;
 
   void getArtistCommentary(int postId) {
-    TryAsync<ArtistCommentaryDto>(
+    tryAsync<ArtistCommentaryDto>(
         action: () => artistCommentaryRepository.getCommentary(postId),
-        onLoading: () => emit(AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(AsyncLoadState.failure()),
+        onLoading: () => emit(const AsyncLoadState.loading()),
+        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (dto) {
           emit(AsyncLoadState.success(dto.toEntity()));
         });

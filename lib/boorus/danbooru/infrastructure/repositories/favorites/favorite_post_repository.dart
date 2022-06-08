@@ -34,7 +34,6 @@ class FavoritePostRepository implements IFavoritePostRepository {
             ),
           )
           .then((value) {
-        print("Add post $postId to favorites success");
         return true;
       }).catchError((Object obj) {
         switch (obj.runtimeType) {
@@ -64,7 +63,6 @@ class FavoritePostRepository implements IFavoritePostRepository {
           ),
         )
         .then((value) {
-      print("Remove post $postId from favorites success");
       return true;
     }).catchError((Object obj) {
       switch (obj.runtimeType) {

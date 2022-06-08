@@ -37,7 +37,7 @@ class InfiniteLoadListController<T> extends ChangeNotifier {
   bool _isLoading = false;
   bool _isRefreshing = false;
   int _page = 1;
-  RefreshController _refreshController = RefreshController();
+  final RefreshController _refreshController = RefreshController();
 
   get page => _page;
 
@@ -143,16 +143,17 @@ class InfiniteLoadList extends HookWidget {
           scale: hideFabAnimController,
           child: extendBody
               ? Padding(
-                  padding: EdgeInsets.only(bottom: kBottomNavigationBarHeight),
+                  padding:
+                      const EdgeInsets.only(bottom: kBottomNavigationBarHeight),
                   child: FloatingActionButton(
                     heroTag: null,
-                    child: FaIcon(FontAwesomeIcons.angleUp),
+                    child: const FaIcon(FontAwesomeIcons.angleUp),
                     onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
                   ),
                 )
               : FloatingActionButton(
                   heroTag: null,
-                  child: FaIcon(FontAwesomeIcons.angleUp),
+                  child: const FaIcon(FontAwesomeIcons.angleUp),
                   onPressed: () => scrollControllerWithAnim.jumpTo(0.0),
                 ),
         ),
@@ -171,7 +172,7 @@ class InfiniteLoadList extends HookWidget {
             if (headers != null) ...headers!,
             child ??
                 SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 14.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
                   sliver: SliverPostGrid(
                     onItemChanged: (index) {
                       loadMoreIfNeeded(index);
