@@ -2,12 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_reader_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
@@ -95,40 +98,51 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                           );
                         }
 
-                        return Stack(
-                          children: <Widget>[
-                            PostImage(
-                              imageUrl: post.isAnimated
-                                  ? post.previewImageUri.toString()
-                                  : post.normalImageUri.toString(),
-                              placeholderUrl: post.previewImageUri.toString(),
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(8.0),
-                              child: ShadowGradientOverlay(
-                                alignment: Alignment.topCenter,
-                                colors: <Color>[
-                                  const Color(0x2F000000),
-                                  Colors.black12.withOpacity(0.0)
-                                ],
+                        return OpenContainer(
+                          closedBuilder: (context, action) => Stack(
+                            children: <Widget>[
+                              PostImage(
+                                imageUrl: post.isAnimated
+                                    ? post.previewImageUri.toString()
+                                    : post.normalImageUri.toString(),
+                                placeholderUrl: post.previewImageUri.toString(),
                               ),
-                            ),
-                            Positioned(
-                              top: 6,
-                              left: 6,
-                              child: IgnorePointer(
-                                child: Column(
-                                  children: items,
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: ShadowGradientOverlay(
+                                  alignment: Alignment.topCenter,
+                                  colors: <Color>[
+                                    const Color(0x2F000000),
+                                    Colors.black12.withOpacity(0.0)
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
+                              Positioned(
+                                top: 6,
+                                left: 6,
+                                child: IgnorePointer(
+                                  child: Column(
+                                    children: items,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          openColor: Colors.transparent,
+                          closedColor: Colors.transparent,
+                          openBuilder: (_, action) =>
+                              MultiBlocProvider(providers: [
+                            BlocProvider.value(
+                                value: BlocProvider.of<NoteCubit>(context)),
+                          ], child: PoolReaderPage(post: post)),
                         );
                       },
                       childCount: state.data!.length,
                     ),
                   );
-                } else {
+                } else if (state.status == LoadStatus.failure)
+                  return SizedBox.shrink();
+                else {
                   return SliverPostGridPlaceHolder();
                 }
               },

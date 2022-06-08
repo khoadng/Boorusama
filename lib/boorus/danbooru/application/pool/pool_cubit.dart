@@ -56,7 +56,7 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
             .toList();
 
         final posts = await postRepository
-            .getPostsFromIds(poolFiltered.map((e) => e.id.value).toList());
+            .getPostsFromIds(poolFiltered.map((e) => e.postCoverId!).toList());
 
         final poolItems = [
           for (final pair in zip([posts, poolFiltered]))
@@ -67,7 +67,7 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
                 category: _(pair).item2.category,
                 postCount: _(pair).item2.postCount.value,
                 poolDescription: _(pair).item2.description.value,
-                postIds: _(pair).item2.postIds.take(20).toList()),
+                postIds: _(pair).item2.postIds.reversed.take(20).toList()),
         ];
 
         emit(AsyncLoadState.success(poolItems));

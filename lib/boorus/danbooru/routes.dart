@@ -114,6 +114,9 @@ final poolDetailHandler =
       BlocProvider(
           create: (context) => PoolDetailCubit(
               postRepository: RepositoryProvider.of<IPostRepository>(context))),
+      BlocProvider(
+          create: (context) => NoteCubit(
+              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
     ],
     child: PoolDetailPage(
       poolName: args[0],
