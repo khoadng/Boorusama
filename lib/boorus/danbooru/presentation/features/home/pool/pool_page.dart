@@ -11,6 +11,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
 class PoolPage extends StatefulWidget {
   PoolPage({Key? key}) : super(key: key);
@@ -52,62 +53,38 @@ class _PoolPageState extends State<PoolPage> {
                         topLeft: Radius.circular(8.0),
                         topRight: Radius.circular(8.0),
                       ),
-                      child: Column(
-                        children: [
-                          Expanded(
-                            child: Stack(
-                              children: [
-                                CachedNetworkImage(
-                                  width: MediaQuery.of(context).size.width,
-                                  fit: BoxFit.cover,
-                                  imageUrl: state.data![index].coverUrl,
-                                  placeholder: (context, url) => Container(
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context).cardColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(8.0),
-                                        topRight: Radius.circular(8.0),
-                                      ),
-                                    ),
-                                  ),
+                      child: GestureDetector(
+                        onTap: () => AppRouter.router.navigateTo(
+                          context,
+                          'pool/detail',
+                          routeSettings: RouteSettings(arguments: [
+                            state.data![index].poolName,
+                            state.data![index].poolDescription,
+                            state.data![index].postIds,
+                            state.data![index].lastUpdated,
+                          ]),
+                        ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: _buildPoolImage(state.data![index]),
+                            ),
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              child: Text(
+                                state.data![index].poolName,
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.white70,
+                                borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(8.0),
+                                  bottomRight: Radius.circular(8.0),
                                 ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Container(
-                                    color: Theme.of(context).cardColor,
-                                    height: 25,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        Text(
-                                          state.data![index].postCount
-                                              .toString(),
-                                        ),
-                                        FaIcon(FontAwesomeIcons.image)
-                                      ],
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            child: Text(
-                              state.data![index].poolName,
-                              style: TextStyle(color: Colors.black),
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white70,
-                              borderRadius: BorderRadius.only(
-                                bottomLeft: Radius.circular(8.0),
-                                bottomRight: Radius.circular(8.0),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -128,6 +105,42 @@ class _PoolPageState extends State<PoolPage> {
       ],
     );
   }
+
+  Widget _buildPoolImage(PoolItem pool) => Stack(
+        children: [
+          CachedNetworkImage(
+            width: MediaQuery.of(context).size.width,
+            fit: BoxFit.cover,
+            imageUrl: pool.coverUrl,
+            placeholder: (context, url) => Container(
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Container(
+              color: Theme.of(context).cardColor,
+              height: 25,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text(
+                    pool.postCount.toString(),
+                  ),
+                  FaIcon(FontAwesomeIcons.image)
+                ],
+              ),
+            ),
+          )
+        ],
+      );
 
   Widget _buildHeader() => ValueListenableBuilder<PoolCategory>(
         valueListenable: _currentCategory,

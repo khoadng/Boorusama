@@ -47,13 +47,14 @@ class PoolDto {
 }
 
 Pool poolDtoToPool(PoolDto dto) => Pool(
-      id: dto.id!,
+      id: PoolId(dto.id!),
       postIds: dto.postIds!,
       category: _stringToPoolCategory(dto.category),
-      description: dto.description!,
+      description: PoolDescription(dto.description!),
       postCount: PoolPostCount(dto.postCount!),
       name: PoolName(dto.name!),
       createdAt: dto.createdAt!,
+      updatedAt: dto.updatedAt!,
     );
 
 PoolCategory _stringToPoolCategory(String? value) {

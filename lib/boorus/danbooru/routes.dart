@@ -7,12 +7,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'application/note/note_cubit.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
@@ -100,4 +103,23 @@ final loginHandler =
 final settingsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   return SettingsPage();
+});
+
+final poolDetailHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PoolDetailCubit(
+              postRepository: RepositoryProvider.of<IPostRepository>(context))),
+    ],
+    child: PoolDetailPage(
+      poolName: args[0],
+      poolDescription: args[1],
+      postIds: args[2],
+      poolUpdatedTime: args[3],
+    ),
+  );
 });
