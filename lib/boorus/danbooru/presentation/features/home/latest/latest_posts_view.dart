@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_p
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/core/utils.dart';
 
 class LatestView extends HookWidget {
   const LatestView({
@@ -98,7 +99,7 @@ class LatestView extends HookWidget {
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.85),
                   child: Text(
-                    searches[index].keyword.pretty,
+                    searches[index].keyword.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,

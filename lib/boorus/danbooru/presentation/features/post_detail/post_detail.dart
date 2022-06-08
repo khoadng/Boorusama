@@ -24,6 +24,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/core/utils.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
@@ -38,7 +39,8 @@ class Recommended {
   })  : _posts = posts,
         _title = title;
 
-  String get title => _title.split(' ').join(', ').pretty.titleCase;
+  String get title =>
+      _title.split(' ').join(', ').removeUnderscoreWithSpace().titleCase;
   List<Post> get posts => _posts;
 }
 
@@ -167,7 +169,8 @@ class PostDetail extends HookWidget {
                   artists.length,
                   (index) => RecommendPostSectionPlaceHolder(
                     header: ListTile(
-                      title: Text(artists[index].pretty.titleCase),
+                      title: Text(
+                          artists[index].removeUnderscoreWithSpace().titleCase),
                       trailing: Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
@@ -217,7 +220,9 @@ class PostDetail extends HookWidget {
                   characters.length,
                   (index) => RecommendPostSectionPlaceHolder(
                     header: ListTile(
-                      title: Text(characters[index].pretty.titleCase),
+                      title: Text(characters[index]
+                          .removeUnderscoreWithSpace()
+                          .titleCase),
                       trailing: Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
@@ -295,7 +300,9 @@ class InformationSection extends HookWidget {
                   Text(
                     post.tagStringCharacter.isEmpty
                         ? "Original"
-                        : post.name.characterOnly.pretty.titleCase,
+                        : post.name.characterOnly
+                            .removeUnderscoreWithSpace()
+                            .titleCase,
                     overflow: TextOverflow.fade,
                     style: Theme.of(context).textTheme.headline6,
                   ),
@@ -303,7 +310,9 @@ class InformationSection extends HookWidget {
                   Text(
                       post.tagStringCopyright.isEmpty
                           ? "Original"
-                          : post.name.copyRightOnly.pretty.titleCase,
+                          : post.name.copyRightOnly
+                              .removeUnderscoreWithSpace()
+                              .titleCase,
                       overflow: TextOverflow.fade,
                       style: Theme.of(context).textTheme.bodyText2),
                   SizedBox(height: 5),

@@ -32,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/core/utils.dart';
 
 class SliverPostGrid extends HookWidget {
   SliverPostGrid({
@@ -288,7 +289,7 @@ class PostPreviewSheet extends HookWidget {
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85),
                       child: Text(
-                        (tags[index][0] as String).pretty,
+                        (tags[index][0] as String).removeUnderscoreWithSpace(),
                         overflow: TextOverflow.fade,
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),

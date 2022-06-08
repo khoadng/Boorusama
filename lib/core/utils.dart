@@ -16,3 +16,7 @@ Future<bool> launchExternalUrl(
 
   return true;
 }
+
+extension StringX on String {
+  String removeUnderscoreWithSpace() => this.replaceAll("_", " ");
+}
