@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_reader_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
@@ -135,7 +136,17 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                               MultiBlocProvider(providers: [
                             BlocProvider.value(
                                 value: BlocProvider.of<NoteCubit>(context)),
-                          ], child: PoolReaderPage(post: post)),
+                            BlocProvider(
+                              create: (_) => PoolReadCubit(
+                                initialState: PoolReadState(
+                                  imageUrl: post.normalImageUri.toString(),
+                                  currentIdx: index,
+                                  post: post,
+                                ),
+                                posts: state.data!,
+                              ),
+                            )
+                          ], child: const PoolReaderPage()),
                         );
                       },
                       childCount: state.data!.length,

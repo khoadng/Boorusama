@@ -208,7 +208,8 @@ abstract class DanbooruApi implements IApi {
   @override
   Future<HttpResponse> getPools(
     @Query("login") String login,
-    @Query("api_key") String apiKey, {
+    @Query("api_key") String apiKey,
+    @Query("limit") int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
 }

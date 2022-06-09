@@ -153,7 +153,8 @@ abstract class IApi {
 
   Future<HttpResponse> getPools(
     String login,
-    String apiKey, {
+    String apiKey,
+    int limit, {
     CancelToken? cancelToken,
   });
 }

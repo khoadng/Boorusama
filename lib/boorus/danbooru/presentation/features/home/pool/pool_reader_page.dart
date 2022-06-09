@@ -8,29 +8,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_note.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 
-class PoolReaderPage extends StatefulWidget {
+class PoolReaderPage extends StatelessWidget {
   const PoolReaderPage({
     Key? key,
-    required this.post,
   }) : super(key: key);
-
-  final Post post;
-
-  @override
-  State<PoolReaderPage> createState() => _PoolReaderPageState();
-}
-
-class _PoolReaderPageState extends State<PoolReaderPage> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<NoteCubit>().getNote(widget.post.id);
-  }
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
@@ -70,39 +57,59 @@ class _PoolReaderPageState extends State<PoolReaderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: InteractiveViewer(
-        child: BlocBuilder<NoteCubit, AsyncLoadState<List<Note>>>(
-          builder: (context, state) => Stack(
-            children: [
-              Align(
-                alignment: Alignment.center,
-                child: CachedNetworkImage(
-                  imageUrl: widget.post.normalImageUri.toString(),
-                  progressIndicatorBuilder: (context, url, progress) => Center(
-                    child: CircularProgressIndicator(
-                      value: progress.progress,
+      floatingActionButton: ButtonBar(
+        children: [
+          IconButton(
+              onPressed: () => context.read<PoolReadCubit>().previous(),
+              icon: const Icon(Icons.arrow_left)),
+          IconButton(
+              onPressed: () => context.read<PoolReadCubit>().next(),
+              icon: const Icon(Icons.arrow_right)),
+        ],
+      ),
+      body: BlocConsumer<PoolReadCubit, PoolReadState>(
+        listenWhen: (previous, current) => previous.post.id != current.post.id,
+        listener: (context, state) =>
+            context.read<NoteCubit>().getNote(state.post.id),
+        buildWhen: (previous, current) => previous.imageUrl != current.imageUrl,
+        builder: (context, prs) {
+          return InteractiveViewer(
+            child: BlocBuilder<NoteCubit, AsyncLoadState<List<Note>>>(
+              builder: (context, state) => Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: CachedNetworkImage(
+                      imageUrl: prs.imageUrl,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          Center(
+                        child: CircularProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
+                      errorWidget: (context, url, error) =>
+                          const Icon(Icons.error),
                     ),
                   ),
-                  errorWidget: (context, url, error) => const Icon(Icons.error),
-                ),
+                  ...[
+                    ShadowGradientOverlay(
+                        alignment: Alignment.topCenter,
+                        colors: <Color>[
+                          const Color(0x8A000000),
+                          Colors.black12.withOpacity(0.0)
+                        ]),
+                    _buildBackButton(context),
+                    // _buildMoreButton(context),
+                    if (state.status == LoadStatus.success)
+                      ...buildNotes(context, state.data!, prs.post)
+                    else
+                      const SizedBox.shrink()
+                  ],
+                ],
               ),
-              ...[
-                ShadowGradientOverlay(
-                    alignment: Alignment.topCenter,
-                    colors: <Color>[
-                      const Color(0x8A000000),
-                      Colors.black12.withOpacity(0.0)
-                    ]),
-                _buildBackButton(context),
-                // _buildMoreButton(context),
-                if (state.status == LoadStatus.success)
-                  ...buildNotes(context, state.data!, widget.post)
-                else
-                  const SizedBox.shrink()
-              ],
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
