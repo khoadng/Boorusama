@@ -128,11 +128,7 @@ final poolDetailHandler =
                       RepositoryProvider.of<INoteRepository>(context))),
         ],
         child: PoolDetailPage(
-          poolName: args[0],
-          poolId: args[1],
-          poolDescription: args[2],
-          postIds: args[3],
-          poolUpdatedTime: args[4],
+          pool: args[0],
         ),
       );
     },

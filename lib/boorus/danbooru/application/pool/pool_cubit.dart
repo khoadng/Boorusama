@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quiver/iterables.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:tuple/tuple.dart';
 
 // Project imports:
@@ -12,29 +11,16 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
-import 'package:boorusama/core/utils.dart';
 
 @immutable
 class PoolItem {
   const PoolItem({
     this.coverUrl,
-    required this.poolName,
-    required this.lastUpdated,
-    required this.category,
-    required this.postCount,
-    required this.poolDescription,
-    required this.postIds,
-    required this.poolId,
+    required this.pool,
   });
 
   final String? coverUrl;
-  final String poolName;
-  final String lastUpdated;
-  final PoolCategory category;
-  final int postCount;
-  final String poolDescription;
-  final List<int> postIds;
-  final PoolId poolId;
+  final Pool pool;
 }
 
 class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
@@ -74,13 +60,7 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
               coverUrl: _(pair).item1.id == 0
                   ? null
                   : _(pair).item1.normalImageUri.toString(),
-              poolName: _(pair).item2.name.value.removeUnderscoreWithSpace(),
-              lastUpdated: dateTimeToString(_(pair).item2.updatedAt),
-              category: _(pair).item2.category,
-              postCount: _(pair).item2.postCount.value,
-              poolDescription: _(pair).item2.description.value,
-              postIds: _(pair).item2.postIds.reversed.take(20).toList(),
-              poolId: _(pair).item2.id,
+              pool: _(pair).item2,
             ),
         ];
 
@@ -88,14 +68,6 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
       },
     );
   }
-}
-
-String dateTimeToString(DateTime time) {
-  final now = DateTime.now();
-  final diff = now.difference(time);
-  final ago = now.subtract(diff);
-
-  return timeago.format(ago);
 }
 
 Tuple2<Post, Pool> _(List<Object> pair) =>

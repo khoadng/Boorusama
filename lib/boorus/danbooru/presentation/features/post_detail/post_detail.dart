@@ -265,15 +265,8 @@ class PostDetail extends HookWidget {
                                   onTap: () => AppRouter.router.navigateTo(
                                     context,
                                     'pool/detail',
-                                    routeSettings: RouteSettings(arguments: [
-                                      state.data![index].name.value,
-                                      state.data![index].id,
-                                      state.data![index].description.value,
-                                      state.data![index].postIds
-                                          .take(10)
-                                          .toList(),
-                                      "fixed me",
-                                    ]),
+                                    routeSettings:
+                                        RouteSettings(arguments: [e]),
                                   ),
                                   visualDensity: const VisualDensity(
                                       horizontal: -4, vertical: -4),

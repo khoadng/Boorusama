@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/utils.dart';
 
 class PoolPage extends StatefulWidget {
   const PoolPage({Key? key}) : super(key: key);
@@ -58,11 +59,7 @@ class _PoolPageState extends State<PoolPage> {
                           context,
                           'pool/detail',
                           routeSettings: RouteSettings(arguments: [
-                            state.data![index].poolName,
-                            state.data![index].poolId,
-                            state.data![index].poolDescription,
-                            state.data![index].postIds,
-                            state.data![index].lastUpdated,
+                            state.data![index].pool,
                           ]),
                         ),
                         child: Column(
@@ -73,7 +70,8 @@ class _PoolPageState extends State<PoolPage> {
                             Container(
                               width: MediaQuery.of(context).size.width,
                               child: Text(
-                                state.data![index].poolName,
+                                state.data![index].pool.name.value
+                                    .removeUnderscoreWithSpace(),
                                 style: const TextStyle(color: Colors.black),
                               ),
                               decoration: const BoxDecoration(
@@ -148,7 +146,7 @@ class _PoolPageState extends State<PoolPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    pool.postCount.toString(),
+                    pool.pool.postCount.value.toString(),
                   ),
                   const FaIcon(FontAwesomeIcons.image)
                 ],

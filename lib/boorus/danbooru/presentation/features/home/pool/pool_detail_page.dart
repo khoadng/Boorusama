@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -24,18 +25,10 @@ import 'package:boorusama/core/utils.dart';
 class PoolDetailPage extends StatefulWidget {
   const PoolDetailPage({
     Key? key,
-    required this.poolName,
-    required this.poolId,
-    required this.poolDescription,
-    required this.poolUpdatedTime,
-    required this.postIds,
+    required this.pool,
   }) : super(key: key);
 
-  final String poolName;
-  final PoolId poolId;
-  final String poolDescription;
-  final String poolUpdatedTime;
-  final List<int> postIds;
+  final Pool pool;
 
   @override
   State<PoolDetailPage> createState() => _PoolDetailPageState();
@@ -45,8 +38,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PoolDetailCubit>().getPoolDetail(widget.postIds);
-    context.read<PoolDescriptionCubit>().getDescription(widget.poolId);
+    context.read<PoolDetailCubit>().getPoolDetail(widget.pool.postIds);
+    context.read<PoolDescriptionCubit>().getDescription(widget.pool.id);
   }
 
   @override
@@ -59,10 +52,11 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
             SliverToBoxAdapter(
               child: ListTile(
                 title: Text(
-                  widget.poolName,
+                  widget.pool.name.value.removeUnderscoreWithSpace(),
                   style: Theme.of(context).textTheme.headline6!,
                 ),
-                subtitle: Text("Last updated: ${widget.poolUpdatedTime}"),
+                subtitle: Text(
+                    "Last updated: ${dateTimeToString(widget.pool.updatedAt)}"),
               ),
             ),
             SliverToBoxAdapter(
@@ -223,4 +217,12 @@ void _onHtmlLinkTapped(
 //             routeSettings: RouteSettings(arguments: [tag.rawName]),
 //           )
   }
+}
+
+String dateTimeToString(DateTime time) {
+  final now = DateTime.now();
+  final diff = now.difference(time);
+  final ago = now.subtract(diff);
+
+  return timeago.format(ago);
 }
