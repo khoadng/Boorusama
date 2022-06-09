@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/l
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'application/note/note_cubit.dart';
+import 'application/note/note_bloc.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
@@ -67,9 +67,9 @@ final postDetailImageHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (_) => NoteCubit(
+          create: (_) => NoteBloc(
               noteRepository: RepositoryProvider.of<INoteRepository>(context))
-            ..getNote(args[0].id))
+            ..add(NoteRequested(postId: args[0].id)))
     ],
     child: PostImagePage(
       post: args[0],
@@ -115,7 +115,7 @@ final poolDetailHandler =
           create: (context) => PoolDetailCubit(
               postRepository: RepositoryProvider.of<IPostRepository>(context))),
       BlocProvider(
-          create: (context) => NoteCubit(
+          create: (context) => NoteBloc(
               noteRepository: RepositoryProvider.of<INoteRepository>(context))),
     ],
     child: PoolDetailPage(

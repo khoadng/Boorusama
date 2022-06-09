@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
@@ -135,7 +135,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                           openBuilder: (_, action) =>
                               MultiBlocProvider(providers: [
                             BlocProvider.value(
-                                value: BlocProvider.of<NoteCubit>(context)),
+                                value: BlocProvider.of<NoteBloc>(context)),
                             BlocProvider(
                               create: (_) => PoolReadCubit(
                                 initialState: PoolReadState(

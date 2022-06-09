@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
@@ -70,11 +70,11 @@ class PoolReaderPage extends StatelessWidget {
       body: BlocConsumer<PoolReadCubit, PoolReadState>(
         listenWhen: (previous, current) => previous.post.id != current.post.id,
         listener: (context, state) =>
-            context.read<NoteCubit>().getNote(state.post.id),
+            context.read<NoteBloc>().add(NoteRequested(postId: state.post.id)),
         buildWhen: (previous, current) => previous.imageUrl != current.imageUrl,
         builder: (context, prs) {
           return InteractiveViewer(
-            child: BlocBuilder<NoteCubit, AsyncLoadState<List<Note>>>(
+            child: BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
               builder: (context, state) => Stack(
                 children: [
                   Align(
