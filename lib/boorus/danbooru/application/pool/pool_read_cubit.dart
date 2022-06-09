@@ -48,7 +48,7 @@ class PoolReadCubit extends Cubit<PoolReadState> {
     final idx = _getNextIndex(_posts, state.currentIdx);
 
     emit(state.copyWith(
-      imageUrl: _posts[idx].normalImageUri.toString(),
+      imageUrl: _posts[idx].normalImageUrl,
       currentIdx: idx,
       post: _posts[idx],
     ));
@@ -58,7 +58,7 @@ class PoolReadCubit extends Cubit<PoolReadState> {
     final idx = _getPrevIndex(_posts, state.currentIdx);
 
     emit(state.copyWith(
-      imageUrl: _posts[idx].normalImageUri.toString(),
+      imageUrl: _posts[idx].normalImageUrl,
       currentIdx: idx,
       post: _posts[idx],
     ));

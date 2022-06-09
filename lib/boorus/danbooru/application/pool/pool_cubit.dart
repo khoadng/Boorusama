@@ -57,9 +57,8 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
           for (final pair
               in zip([poolCoveridsMap.values.toList(), poolFiltered]))
             PoolItem(
-              coverUrl: _(pair).item1.id == 0
-                  ? null
-                  : _(pair).item1.normalImageUri.toString(),
+              coverUrl:
+                  _(pair).item1.id == 0 ? null : _(pair).item1.normalImageUrl,
               pool: _(pair).item2,
             ),
         ];

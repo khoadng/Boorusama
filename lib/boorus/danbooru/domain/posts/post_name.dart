@@ -1,18 +1,18 @@
 class PostName {
-  final String _tagStringArtist;
-  final String _tagStringCharacter;
-  final String _tagStringCopyright;
+  final String _artistTags;
+  final String _characterTags;
+  final String _copyrightTags;
 
   PostName({
-    required String tagStringArtist,
-    required String tagStringCharacter,
-    required String tagStringCopyright,
-  })  : _tagStringArtist = tagStringArtist,
-        _tagStringCharacter = tagStringCharacter,
-        _tagStringCopyright = tagStringCopyright;
+    required String artistTags,
+    required String characterTags,
+    required String copyrightTags,
+  })  : _artistTags = artistTags,
+        _characterTags = characterTags,
+        _copyrightTags = copyrightTags;
 
   String get characterOnly {
-    final charaters = _tagStringCharacter.split(' ').toList();
+    final charaters = _characterTags.split(' ').toList();
     final cleanedCharacterList = <String>[];
 
     // Remove copyright string in character name
@@ -38,7 +38,7 @@ class PostName {
   }
 
   String get copyRightOnly {
-    final copyrights = _tagStringCopyright.split(' ').toList();
+    final copyrights = _copyrightTags.split(' ').toList();
 
     var remainedCopyrightString = copyrights.skip(1).isEmpty
         ? ""
@@ -47,8 +47,7 @@ class PostName {
     return "${copyrights.first}$remainedCopyrightString";
   }
 
-  String get full =>
-      "$characterOnly ($copyRightOnly) drawn by $_tagStringArtist";
+  String get full => "$characterOnly ($copyRightOnly) drawn by $_artistTags";
 }
 
 extension CapExtension on String {

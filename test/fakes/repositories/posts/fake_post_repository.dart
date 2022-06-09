@@ -31,7 +31,7 @@
 //   }
 
 //   @override
-//   Future<List<Post>> getPosts(String tagString, int page,
+//   Future<List<Post>> getPosts(String tags, int page,
 //       {int limit = 100,
 //       CancelToken? cancelToken,
 //       bool skipFavoriteCheck = false}) async {

@@ -1,23 +1,16 @@
-class Rating {
-  final String _rating;
-
-  Rating({
-    required String rating,
-  }) : _rating = rating;
-
-  RatingType get value {
-    if (_rating == "s") {
-      return RatingType.safe;
-    } else if (_rating == "q") {
-      return RatingType.questionable;
-    } else {
-      return RatingType.explicit;
-    }
-  }
-}
-
-enum RatingType {
+enum Rating {
   safe,
   questionable,
   explicit,
+}
+
+Rating mapStringToRating(String str) {
+  switch (str) {
+    case 's':
+      return Rating.safe;
+    case 'e':
+      return Rating.explicit;
+    default:
+      return Rating.questionable;
+  }
 }

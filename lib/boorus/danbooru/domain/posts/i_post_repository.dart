@@ -7,7 +7,7 @@ import 'post.dart';
 
 abstract class IPostRepository {
   Future<List<Post>> getPosts(
-    String tagString,
+    String tags,
     int page, {
     int limit = 50,
     CancelToken? cancelToken,

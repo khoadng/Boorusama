@@ -74,11 +74,8 @@ class PostInfoModal extends HookWidget {
                         dense: true,
                         visualDensity: VisualDensity.compact,
                         title: const Text("Rating"),
-                        trailing: Text(post.rating.value
-                            .toString()
-                            .split('.')
-                            .last
-                            .pascalCase),
+                        trailing: Text(
+                            post.rating.toString().split('.').last.pascalCase),
                       ),
                     ],
                   ),
@@ -91,7 +88,7 @@ class PostInfoModal extends HookWidget {
                   child: BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                     builder: (context, state) => PostTagList(
                       apiEndpoint: state.booru.url,
-                      tagStringComma: post.tagString.toCommaFormat(),
+                      tagsComma: post.tags.join(','),
                     ),
                   ),
                 )),
@@ -168,7 +165,7 @@ class ArtistSection extends HookWidget {
             children: <Widget>[
               ListTile(
                 visualDensity: VisualDensity.compact,
-                title: Text(post.tagStringArtist.removeUnderscoreWithSpace()),
+                title: Text(post.artistTags.join(' ')),
                 subtitle: InkWell(
                   onLongPress: () => Clipboard.setData(
                           ClipboardData(text: post.source.uri.toString()))

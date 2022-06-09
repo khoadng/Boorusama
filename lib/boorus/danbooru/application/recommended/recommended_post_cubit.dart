@@ -12,12 +12,10 @@ class RecommendedPostCubit extends Cubit<AsyncLoadState<List<Recommended>>> {
   }) : super(const AsyncLoadState.initial());
   final IPostRepository postRepository;
 
-  void getRecommendedPosts(String tagString) {
+  void getRecommendedPosts(List<String> tags) {
     tryAsync<List<Recommended>>(
-        action: () => Future.wait(tagString
-                .split(' ')
-                .where((tag) => tag.isNotEmpty)
-                .map((tag) async {
+        action: () =>
+            Future.wait(tags.where((tag) => tag.isNotEmpty).map((tag) async {
               final posts = await postRepository.getPosts(tag, 1,
                   limit: 10, skipFavoriteCheck: true);
 
