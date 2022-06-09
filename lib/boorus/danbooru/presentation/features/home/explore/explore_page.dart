@@ -21,11 +21,13 @@ import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorite
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/carousel_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
@@ -504,6 +506,11 @@ class _ExploreSection extends StatelessWidget {
                         value: BlocProvider.of<AuthenticationCubit>(context)),
                     BlocProvider.value(
                         value: BlocProvider.of<ApiEndpointCubit>(context)),
+                    BlocProvider(
+                        create: (context) => PoolFromPostIdCubit(
+                            poolRepository:
+                                RepositoryProvider.of<PoolRepository>(
+                                    context))),
                   ],
                   child: RepositoryProvider.value(
                     value: RepositoryProvider.of<ITagRepository>(context),

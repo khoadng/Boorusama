@@ -230,6 +230,8 @@ void main() async {
                         RepositoryProvider<ISearchHistoryRepository>.value(
                             value: searchHistoryRepo),
                         RepositoryProvider<IConfig>.value(value: config),
+                        RepositoryProvider<PoolRepository>.value(
+                            value: poolRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [

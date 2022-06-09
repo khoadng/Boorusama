@@ -9,11 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
@@ -46,6 +48,10 @@ class PreviewPostGrid extends StatelessWidget {
                   create: (context) => RecommendedArtistPostCubit(
                       postRepository:
                           RepositoryProvider.of<IPostRepository>(context))),
+              BlocProvider(
+                  create: (context) => PoolFromPostIdCubit(
+                      poolRepository:
+                          RepositoryProvider.of<PoolRepository>(context))),
               BlocProvider(
                   create: (context) => RecommendedCharacterPostCubit(
                       postRepository:

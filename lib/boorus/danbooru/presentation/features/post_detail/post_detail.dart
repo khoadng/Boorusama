@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
 import 'package:recase/recase.dart';
@@ -18,7 +21,9 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid_placeholder.dart';
@@ -63,12 +68,13 @@ class PostDetail extends HookWidget {
         useScrollControllerForAnimation(animController, scrollController);
 
     useEffect(() {
-      ReadContext(context)
+      context
           .read<RecommendedArtistPostCubit>()
           .getRecommendedPosts(post.tagStringArtist);
-      ReadContext(context)
+      context
           .read<RecommendedCharacterPostCubit>()
           .getRecommendedPosts(post.tagStringCharacter);
+      context.read<PoolFromPostIdCubit>().getPools(post.id);
     }, []);
     final imagePath = useState<String?>(null);
 
@@ -245,6 +251,57 @@ class PostDetail extends HookWidget {
             : CustomScrollView(controller: scrollControllerWithAnim, slivers: [
                 SliverToBoxAdapter(
                   child: postWidget,
+                ),
+                BlocBuilder<PoolFromPostIdCubit, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return SliverToBoxAdapter(
+                        child: Material(
+                          color: Theme.of(context).cardColor,
+                          child: Column(
+                            children: [
+                              ...state.data!.mapIndexed(
+                                (index, e) => ListTile(
+                                  onTap: () => AppRouter.router.navigateTo(
+                                    context,
+                                    'pool/detail',
+                                    routeSettings: RouteSettings(arguments: [
+                                      state.data![index].name.value,
+                                      state.data![index].id,
+                                      state.data![index].description.value,
+                                      state.data![index].postIds
+                                          .take(10)
+                                          .toList(),
+                                      "fixed me",
+                                    ]),
+                                  ),
+                                  visualDensity: const VisualDensity(
+                                      horizontal: -4, vertical: -4),
+                                  title: Text(
+                                    e.name.value.removeUnderscoreWithSpace(),
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    softWrap: false,
+                                    style:
+                                        Theme.of(context).textTheme.subtitle2,
+                                  ),
+                                  trailing: const FaIcon(
+                                    FontAwesomeIcons.angleRight,
+                                    size: 12,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    } else if (state.status == LoadStatus.failure) {
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
+                    } else {
+                      return const SliverToBoxAdapter(
+                          child: LinearProgressIndicator());
+                    }
+                  },
                 ),
                 SliverToBoxAdapter(
                   child: Column(

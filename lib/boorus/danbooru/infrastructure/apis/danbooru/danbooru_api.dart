@@ -212,4 +212,14 @@ abstract class DanbooruApi implements IApi {
     @Query("limit") int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET("/pools.json")
+  @override
+  Future<HttpResponse> getPoolsFromPostId(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Query("search[post_ids_include_all]") int postId,
+    @Query("limit") int limit, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

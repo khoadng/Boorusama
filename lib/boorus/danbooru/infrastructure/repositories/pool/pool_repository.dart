@@ -31,4 +31,14 @@ class PoolRepository {
             _limit,
           )
           .then(parsePool));
+
+  Future<List<Pool>> getPoolsByPostId(int postId) =>
+      _accountRepository.get().then((account) => _api
+          .getPoolsFromPostId(
+            account.username,
+            account.apiKey,
+            postId,
+            _limit,
+          )
+          .then(parsePool));
 }
