@@ -59,6 +59,7 @@ class _PoolPageState extends State<PoolPage> {
                           'pool/detail',
                           routeSettings: RouteSettings(arguments: [
                             state.data![index].poolName,
+                            state.data![index].poolId,
                             state.data![index].poolDescription,
                             state.data![index].postIds,
                             state.data![index].lastUpdated,

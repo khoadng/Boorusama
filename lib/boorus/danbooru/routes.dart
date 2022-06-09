@@ -5,8 +5,10 @@ import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
@@ -109,20 +111,30 @@ final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-          create: (context) => PoolDetailCubit(
-              postRepository: RepositoryProvider.of<IPostRepository>(context))),
-      BlocProvider(
-          create: (context) => NoteBloc(
-              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
-    ],
-    child: PoolDetailPage(
-      poolName: args[0],
-      poolDescription: args[1],
-      postIds: args[2],
-      poolUpdatedTime: args[3],
-    ),
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => PoolDetailCubit(
+                  postRepository:
+                      RepositoryProvider.of<IPostRepository>(context))),
+          BlocProvider(
+              create: (context) =>
+                  PoolDescriptionCubit(endpoint: state.booru.url)),
+          BlocProvider(
+              create: (context) => NoteBloc(
+                  noteRepository:
+                      RepositoryProvider.of<INoteRepository>(context))),
+        ],
+        child: PoolDetailPage(
+          poolName: args[0],
+          poolId: args[1],
+          poolDescription: args[2],
+          postIds: args[3],
+          poolUpdatedTime: args[4],
+        ),
+      );
+    },
   );
 });

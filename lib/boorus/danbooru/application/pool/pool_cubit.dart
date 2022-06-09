@@ -24,6 +24,7 @@ class PoolItem {
     required this.postCount,
     required this.poolDescription,
     required this.postIds,
+    required this.poolId,
   });
 
   final String? coverUrl;
@@ -33,6 +34,7 @@ class PoolItem {
   final int postCount;
   final String poolDescription;
   final List<int> postIds;
+  final PoolId poolId;
 }
 
 class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
@@ -69,15 +71,17 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
           for (final pair
               in zip([poolCoveridsMap.values.toList(), poolFiltered]))
             PoolItem(
-                coverUrl: _(pair).item1.id == 0
-                    ? null
-                    : _(pair).item1.normalImageUri.toString(),
-                poolName: _(pair).item2.name.value.removeUnderscoreWithSpace(),
-                lastUpdated: dateTimeToString(_(pair).item2.updatedAt),
-                category: _(pair).item2.category,
-                postCount: _(pair).item2.postCount.value,
-                poolDescription: _(pair).item2.description.value,
-                postIds: _(pair).item2.postIds.reversed.take(20).toList()),
+              coverUrl: _(pair).item1.id == 0
+                  ? null
+                  : _(pair).item1.normalImageUri.toString(),
+              poolName: _(pair).item2.name.value.removeUnderscoreWithSpace(),
+              lastUpdated: dateTimeToString(_(pair).item2.updatedAt),
+              category: _(pair).item2.category,
+              postCount: _(pair).item2.postCount.value,
+              poolDescription: _(pair).item2.description.value,
+              postIds: _(pair).item2.postIds.reversed.take(20).toList(),
+              poolId: _(pair).item2.id,
+            ),
         ];
 
         emit(AsyncLoadState.success(poolItems));

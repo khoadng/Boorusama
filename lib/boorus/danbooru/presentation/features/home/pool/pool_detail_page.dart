@@ -4,28 +4,35 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_reader_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
   const PoolDetailPage({
     Key? key,
     required this.poolName,
+    required this.poolId,
     required this.poolDescription,
     required this.poolUpdatedTime,
     required this.postIds,
   }) : super(key: key);
 
   final String poolName;
+  final PoolId poolId;
   final String poolDescription;
   final String poolUpdatedTime;
   final List<int> postIds;
@@ -39,6 +46,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   void initState() {
     super.initState();
     context.read<PoolDetailCubit>().getPoolDetail(widget.postIds);
+    context.read<PoolDescriptionCubit>().getDescription(widget.poolId);
   }
 
   @override
@@ -49,13 +57,34 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
         child: CustomScrollView(
           slivers: [
             SliverToBoxAdapter(
-              child: Text(widget.poolName),
+              child: ListTile(
+                title: Text(
+                  widget.poolName,
+                  style: Theme.of(context).textTheme.headline6!,
+                ),
+                subtitle: Text("Last updated: ${widget.poolUpdatedTime}"),
+              ),
             ),
             SliverToBoxAdapter(
-              child: Text(widget.poolDescription),
-            ),
-            SliverToBoxAdapter(
-              child: Text("Last updated: ${widget.poolUpdatedTime}"),
+              child: BlocBuilder<PoolDescriptionCubit,
+                  AsyncLoadState<PoolDescriptionState>>(
+                builder: (context, state) {
+                  if (state.status == LoadStatus.success) {
+                    return Html(
+                      onLinkTap: (url, context, attributes, element) =>
+                          _onHtmlLinkTapped(attributes, url,
+                              state.data!.descriptionEndpointRefUrl),
+                      data: state.data!.description,
+                    );
+                  } else if (state.status == LoadStatus.failure) {
+                    return const SizedBox.shrink();
+                  } else {
+                    return const Center(
+                      child: LinearProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ),
             BlocBuilder<PoolDetailCubit, AsyncLoadState<List<Post>>>(
               builder: (context, state) {
@@ -135,7 +164,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                           openBuilder: (_, action) =>
                               MultiBlocProvider(providers: [
                             BlocProvider.value(
-                                value: BlocProvider.of<NoteBloc>(context)),
+                                value: BlocProvider.of<NoteBloc>(context)
+                                  ..add(NoteRequested(postId: post.id))),
                             BlocProvider(
                               create: (_) => PoolReadCubit(
                                 initialState: PoolReadState(
@@ -163,5 +193,34 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
         ),
       ),
     );
+  }
+}
+
+void _onHtmlLinkTapped(
+  Map<String, String> attributes,
+  String? url,
+  String endpoint,
+) {
+  if (url == null) return;
+
+  if (!attributes.containsKey('class')) return;
+  final att = attributes['class']!.split(' ').toList();
+  if (att.isEmpty) return;
+  if (att.contains('dtext-external-link')) {
+    launchExternalUrl(
+      Uri.parse(url),
+      mode: LaunchMode.inAppWebView,
+    );
+  } else if (att.contains('dtext-wiki-link')) {
+    launchExternalUrl(
+      Uri.parse("$endpoint$url"),
+      mode: LaunchMode.inAppWebView,
+    );
+  } else if (att.contains('dtext-post-search-link')) {
+// AppRouter.router.navigateTo(
+//             context,
+//             "/posts/search",
+//             routeSettings: RouteSettings(arguments: [tag.rawName]),
+//           )
   }
 }
