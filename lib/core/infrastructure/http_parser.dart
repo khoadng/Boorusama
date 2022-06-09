@@ -4,6 +4,7 @@ import 'package:retrofit/dio.dart';
 List<T> parse<T>({
   required HttpResponse<dynamic> value,
   required T Function(dynamic item) converter,
+  Function(dynamic item)? onError,
 }) {
   final dtos = <T>[];
 
@@ -13,6 +14,7 @@ List<T> parse<T>({
     } catch (e) {
       // ignore: avoid_print
       print("Cant parse item");
+      onError?.call(item);
     }
   }
 

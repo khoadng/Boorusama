@@ -17,7 +17,7 @@ import 'package:boorusama/core/utils.dart';
 @immutable
 class PoolItem {
   const PoolItem({
-    required this.coverUrl,
+    this.coverUrl,
     required this.poolName,
     required this.lastUpdated,
     required this.category,
@@ -26,7 +26,7 @@ class PoolItem {
     required this.postIds,
   });
 
-  final String coverUrl;
+  final String? coverUrl;
   final String poolName;
   final String lastUpdated;
   final PoolCategory category;
@@ -55,13 +55,23 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
             .where((element) => element.category == category)
             .toList();
 
-        final posts = await postRepository
-            .getPostsFromIds(poolFiltered.map((e) => e.postCoverId!).toList());
+        final poolCoverIds = poolFiltered.map((e) => e.postIds.last).toList();
+
+        final poolCoveridsMap = {for (var e in poolCoverIds) e: Post.empty()};
+
+        final posts = await postRepository.getPostsFromIds(poolCoverIds);
+
+        for (var p in posts) {
+          poolCoveridsMap[p.id] = p;
+        }
 
         final poolItems = [
-          for (final pair in zip([posts, poolFiltered]))
+          for (final pair
+              in zip([poolCoveridsMap.values.toList(), poolFiltered]))
             PoolItem(
-                coverUrl: _(pair).item1.previewImageUri.toString(),
+                coverUrl: _(pair).item1.id == 0
+                    ? null
+                    : _(pair).item1.normalImageUri.toString(),
                 poolName: _(pair).item2.name.value.removeUnderscoreWithSpace(),
                 lastUpdated: dateTimeToString(_(pair).item2.updatedAt),
                 category: _(pair).item2.category,

@@ -107,12 +107,25 @@ class _PoolPageState extends State<PoolPage> {
   }
 
   Widget _buildPoolImage(PoolItem pool) => Stack(
+        alignment: Alignment.center,
         children: [
-          CachedNetworkImage(
-            width: MediaQuery.of(context).size.width,
-            fit: BoxFit.cover,
-            imageUrl: pool.coverUrl,
-            placeholder: (context, url) => Container(
+          if (pool.coverUrl != null)
+            CachedNetworkImage(
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.fitWidth,
+              imageUrl: pool.coverUrl!,
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(8.0),
+                    topRight: Radius.circular(8.0),
+                  ),
+                ),
+              ),
+            )
+          else
+            Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: const BorderRadius.only(
@@ -120,8 +133,10 @@ class _PoolPageState extends State<PoolPage> {
                   topRight: Radius.circular(8.0),
                 ),
               ),
+              child: const Center(
+                child: Text('NSFW'),
+              ),
             ),
-          ),
           Align(
             alignment: Alignment.topRight,
             child: Container(

@@ -64,7 +64,3 @@ class PoolId extends Equatable {
   @override
   List<Object?> get props => [value];
 }
-
-extension PoolX on Pool {
-  int? get postCoverId => postIds.isEmpty ? null : postIds.first;
-}
