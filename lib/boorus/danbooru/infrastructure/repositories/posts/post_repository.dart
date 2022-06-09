@@ -15,7 +15,7 @@ import 'package:boorusama/core/infrastructure/http_parser.dart';
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
       value: value,
       converter: (item) => PostDto.fromJson(item),
-    ).map((dto) => dto.toEntity()).toList();
+    ).map(postDtoToPost).where(isPostValid).toList();
 
 class PostRepository implements IPostRepository {
   PostRepository(
@@ -138,7 +138,7 @@ class PostRepository implements IPostRepository {
 
   @override
   Future<List<Post>> getPosts(
-    String tagString,
+    String tags,
     int page, {
     int limit = 50,
     CancelToken? cancelToken,
@@ -152,7 +152,7 @@ class PostRepository implements IPostRepository {
               account.username,
               account.apiKey,
               page,
-              tagString,
+              tags,
               limit,
               cancelToken: cancelToken,
             ),
@@ -163,7 +163,7 @@ class PostRepository implements IPostRepository {
         // Cancel token triggered, skip this request
         return [];
       } else if (e.response == null) {
-        throw Exception("Failed to get posts for $tagString");
+        throw Exception("Failed to get posts for $tags");
       } else if (e.response!.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
             "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
@@ -171,7 +171,7 @@ class PostRepository implements IPostRepository {
         throw DatabaseTimeOut(
             "Your search took too long to execute and was cancelled.");
       } else {
-        throw Exception("Failed to get posts for $tagString");
+        throw Exception("Failed to get posts for $tags");
       }
     }
   }

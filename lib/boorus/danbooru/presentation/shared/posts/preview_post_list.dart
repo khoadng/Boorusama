@@ -32,7 +32,7 @@ class PreviewPostList extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.width * 0.3,
             fit: BoxFit.cover,
-            imageUrl: posts[index].previewImageUri.toString(),
+            imageUrl: posts[index].previewImageUrl,
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,

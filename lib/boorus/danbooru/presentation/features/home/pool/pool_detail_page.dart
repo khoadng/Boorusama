@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -56,7 +55,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                   style: Theme.of(context).textTheme.headline6!,
                 ),
                 subtitle: Text(
-                    "Last updated: ${dateTimeToString(widget.pool.updatedAt)}"),
+                    "Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}"),
               ),
             ),
             SliverToBoxAdapter(
@@ -128,9 +127,9 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                             children: <Widget>[
                               PostImage(
                                 imageUrl: post.isAnimated
-                                    ? post.previewImageUri.toString()
-                                    : post.normalImageUri.toString(),
-                                placeholderUrl: post.previewImageUri.toString(),
+                                    ? post.previewImageUrl
+                                    : post.normalImageUrl,
+                                placeholderUrl: post.previewImageUrl,
                               ),
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
@@ -163,7 +162,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                             BlocProvider(
                               create: (_) => PoolReadCubit(
                                 initialState: PoolReadState(
-                                  imageUrl: post.normalImageUri.toString(),
+                                  imageUrl: post.normalImageUrl,
                                   currentIdx: index,
                                   post: post,
                                 ),
@@ -217,12 +216,4 @@ void _onHtmlLinkTapped(
 //             routeSettings: RouteSettings(arguments: [tag.rawName]),
 //           )
   }
-}
-
-String dateTimeToString(DateTime time) {
-  final now = DateTime.now();
-  final diff = now.difference(time);
-  final ago = now.subtract(diff);
-
-  return timeago.format(ago);
 }

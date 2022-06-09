@@ -180,9 +180,9 @@ class SliverPostGrid extends HookWidget {
                   },
                   child: PostImage(
                     imageUrl: post.isAnimated
-                        ? post.previewImageUri.toString()
-                        : post.normalImageUri.toString(),
-                    placeholderUrl: post.previewImageUri.toString(),
+                        ? post.previewImageUrl
+                        : post.normalImageUrl,
+                    placeholderUrl: post.previewImageUrl,
                   ),
                 ),
                 ClipRRect(
@@ -228,18 +228,15 @@ class PostPreviewSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final artistTags = post.tagStringArtist
-        .split(' ')
+    final artistTags = post.artistTags
         .where((e) => e.isNotEmpty)
         .map((e) => [e, TagCategory.artist])
         .toList();
-    final copyrightTags = post.tagStringCopyright
-        .split(' ')
+    final copyrightTags = post.copyrightTags
         .where((e) => e.isNotEmpty)
         .map((e) => [e, TagCategory.copyright])
         .toList();
-    final characterTags = post.tagStringCharacter
-        .split(' ')
+    final characterTags = post.characterTags
         .where((e) => e.isNotEmpty)
         .map((e) => [e, TagCategory.charater])
         .toList();
@@ -268,8 +265,8 @@ class PostPreviewSheet extends HookWidget {
                   child: CachedNetworkImage(
                     fit: BoxFit.contain,
                     imageUrl: post.isAnimated
-                        ? post.previewImageUri.toString()
-                        : post.normalImageUri.toString(),
+                        ? post.previewImageUrl
+                        : post.normalImageUrl,
                   ),
                 ),
               ),

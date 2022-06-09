@@ -1,30 +1,29 @@
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/rating.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/tag_string.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'post_name.dart';
 
-class Post implements IDownloadable {
+class Post extends Equatable implements IDownloadable {
   final int id;
-  final Uri? previewImageUri;
-  final Uri? normalImageUri;
-  final Uri? fullImageUri;
-  final String tagStringCopyright;
-  final String tagStringCharacter;
-  final String tagStringArtist;
-  final String tagStringGeneral;
-  final TagString tagString;
+  final String previewImageUrl;
+  final String normalImageUrl;
+  final String fullImageUrl;
+  final List<String> copyrightTags;
+  final List<String> characterTags;
+  final List<String> artistTags;
+  final List<String> generalTags;
+  final List<String> tags;
   final double width;
   final double height;
   final String format;
   final DateTime? lastCommentAt;
   final ImageSource source;
-  final CreatedTime createdAt;
+  final DateTime createdAt;
   final int score;
   final int upScore;
   final int downScore;
@@ -33,17 +32,18 @@ class Post implements IDownloadable {
   final Rating rating;
   final int fileSize;
   final int? pixivId;
+  final bool isBanned;
 
-  Post({
+  const Post({
     required this.id,
-    this.previewImageUri,
-    this.normalImageUri,
-    this.fullImageUri,
-    required this.tagStringCopyright,
-    required this.tagStringCharacter,
-    required this.tagStringArtist,
-    required this.tagStringGeneral,
-    required this.tagString,
+    required this.previewImageUrl,
+    required this.normalImageUrl,
+    required this.fullImageUrl,
+    required this.copyrightTags,
+    required this.characterTags,
+    required this.artistTags,
+    required this.generalTags,
+    required this.tags,
     required this.width,
     required this.height,
     required this.format,
@@ -58,15 +58,16 @@ class Post implements IDownloadable {
     required this.rating,
     required this.fileSize,
     required this.pixivId,
+    required this.isBanned,
   });
 
   double get aspectRatio => width / height;
 
   PostName get name {
     return PostName(
-      tagStringArtist: tagStringArtist,
-      tagStringCharacter: tagStringCharacter,
-      tagStringCopyright: tagStringCopyright,
+      artistTags: artistTags.join(' '),
+      characterTags: characterTags.join(' '),
+      copyrightTags: copyrightTags.join(' '),
     );
   }
 
@@ -84,7 +85,7 @@ class Post implements IDownloadable {
     return isVideo || (format == "gif");
   }
 
-  bool get isTranslated => tagString.contains("translated");
+  bool get isTranslated => tags.contains("translated");
 
   bool get hasComment => lastCommentAt != null;
 
@@ -93,35 +94,90 @@ class Post implements IDownloadable {
       .fixInvalidCharacterForPathName();
 
   @override
-  String get downloadUrl =>
-      isVideo ? normalImageUri.toString() : fullImageUri.toString();
+  String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
   factory Post.empty() => Post(
         id: 0,
-        previewImageUri: null,
-        normalImageUri: null,
-        fullImageUri: null,
-        tagStringCopyright: "",
-        tagStringCharacter: "",
-        tagStringArtist: "",
-        tagStringGeneral: "",
-        tagString: TagString(""),
+        previewImageUrl: "",
+        normalImageUrl: "",
+        fullImageUrl: "",
+        copyrightTags: const [],
+        characterTags: const [],
+        artistTags: const [],
+        generalTags: const [],
+        tags: const [],
         width: 1,
         height: 1,
         format: "png",
         lastCommentAt: null,
         source: ImageSource("", null),
-        createdAt: CreatedTime(DateTime.now()),
+        createdAt: DateTime.now(),
         score: 0,
         upScore: 0,
         downScore: 0,
         favCount: 0,
         uploaderId: 0,
-        rating: Rating(rating: "e"),
+        rating: Rating.explicit,
         fileSize: 0,
         pixivId: 0,
+        isBanned: false,
       );
+
+  factory Post.banned({
+    required DateTime createdAt,
+    required int uploaderId,
+    required int score,
+    required ImageSource source,
+    required DateTime? lastCommentBumpedAt,
+    required Rating rating,
+    required double imageWidth,
+    required double imageHeight,
+    required List<String> tags,
+    required int favCount,
+    required String fileExt,
+    required int fileSize,
+    required int upScore,
+    required int downScore,
+    required bool isBanned,
+    required int? pixivId,
+    required List<String> generalTags,
+    required List<String> characterTags,
+    required List<String> copyrightTags,
+    required List<String> artistTags,
+  }) =>
+      Post(
+        id: -1,
+        previewImageUrl: "",
+        normalImageUrl: "",
+        fullImageUrl: "",
+        copyrightTags: copyrightTags,
+        characterTags: characterTags,
+        artistTags: artistTags,
+        generalTags: generalTags,
+        tags: tags,
+        width: imageWidth,
+        height: imageHeight,
+        format: fileExt,
+        lastCommentAt: lastCommentBumpedAt,
+        source: source,
+        createdAt: createdAt,
+        score: score,
+        upScore: upScore,
+        downScore: downScore,
+        favCount: favCount,
+        uploaderId: uploaderId,
+        rating: rating,
+        fileSize: fileSize,
+        pixivId: pixivId,
+        isBanned: isBanned,
+      );
+
+  @override
+  List<Object?> get props => [id];
 }
+
+bool isPostBanned(Post post) => post.id <= 0;
+bool isPostValid(Post post) => post.id > 0;
 
 extension InvalidFileCharsExtension on String {
   String fixInvalidCharacterForPathName() {

@@ -1,9 +1,7 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/created_time.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
 import 'post.dart';
 import 'rating.dart';
-import 'tag_string.dart';
 
 class PostDto {
   PostDto({
@@ -17,7 +15,7 @@ class PostDto {
     required this.rating,
     required this.imageWidth,
     required this.imageHeight,
-    required this.tagString,
+    required this.tags,
     required this.favCount,
     required this.fileExt,
     this.lastNotedAt,
@@ -44,11 +42,11 @@ class PostDto {
     required this.tagCountMeta,
     required this.hasLarge,
     required this.hasVisibleChildren,
-    required this.tagStringGeneral,
-    required this.tagStringCharacter,
-    required this.tagStringCopyright,
-    required this.tagStringArtist,
-    required this.tagStringMeta,
+    required this.generalTags,
+    required this.characterTags,
+    required this.copyrightTags,
+    required this.artistTags,
+    required this.tagsMeta,
     required this.fileUrl,
     required this.largeFileUrl,
     required this.previewFileUrl,
@@ -59,12 +57,12 @@ class PostDto {
   final int uploaderId;
   final int score;
   final String source;
-  final String md5;
+  final String? md5;
   final DateTime? lastCommentBumpedAt;
   final String rating;
   final int imageWidth;
   final int imageHeight;
-  final String tagString;
+  final String tags;
   final int favCount;
   final String fileExt;
   final DateTime? lastNotedAt;
@@ -91,11 +89,11 @@ class PostDto {
   final int tagCountMeta;
   final bool? hasLarge;
   final bool hasVisibleChildren;
-  final String tagStringGeneral;
-  final String tagStringCharacter;
-  final String tagStringCopyright;
-  final String tagStringArtist;
-  final String tagStringMeta;
+  final String generalTags;
+  final String characterTags;
+  final String copyrightTags;
+  final String artistTags;
+  final String tagsMeta;
   final String? fileUrl;
   final String? largeFileUrl;
   final String? previewFileUrl;
@@ -113,7 +111,7 @@ class PostDto {
         rating: json["rating"],
         imageWidth: json["image_width"],
         imageHeight: json["image_height"],
-        tagString: json["tag_string"],
+        tags: json["tag_string"],
         favCount: json["fav_count"],
         fileExt: json["file_ext"],
         lastNotedAt: json["last_noted_at"] != null
@@ -144,45 +142,73 @@ class PostDto {
         tagCountMeta: json["tag_count_meta"],
         hasLarge: json["has_large"],
         hasVisibleChildren: json["has_visible_children"],
-        tagStringGeneral: json["tag_string_general"],
-        tagStringCharacter: json["tag_string_character"],
-        tagStringCopyright: json["tag_string_copyright"],
-        tagStringArtist: json["tag_string_artist"],
-        tagStringMeta: json["tag_string_meta"],
+        generalTags: json["tag_string_general"],
+        characterTags: json["tag_string_character"],
+        copyrightTags: json["tag_string_copyright"],
+        artistTags: json["tag_string_artist"],
+        tagsMeta: json["tag_string_meta"],
         fileUrl: json["file_url"],
         largeFileUrl: json["large_file_url"],
         previewFileUrl: json["preview_file_url"],
       );
 }
 
-extension PostDtoX on PostDto {
-  Post toEntity() {
-    if (id == null) return Post.empty();
+List<String> splitTag(String tags) => tags.split(' ');
+
+Post postDtoToPost(PostDto dto) {
+  try {
+    if (dto.id == null) {
+      return Post.banned(
+        copyrightTags: splitTag(dto.copyrightTags),
+        characterTags: splitTag(dto.characterTags),
+        artistTags: splitTag(dto.artistTags),
+        generalTags: splitTag(dto.generalTags),
+        tags: splitTag(dto.tags),
+        imageWidth: dto.imageWidth.toDouble(),
+        imageHeight: dto.imageHeight.toDouble(),
+        fileExt: dto.fileExt,
+        lastCommentBumpedAt: dto.lastCommentBumpedAt,
+        source: ImageSource(dto.source, dto.pixivId),
+        createdAt: dto.createdAt,
+        score: dto.score,
+        upScore: dto.upScore,
+        downScore: dto.downScore,
+        favCount: dto.favCount,
+        uploaderId: dto.uploaderId,
+        rating: mapStringToRating(dto.rating),
+        fileSize: dto.fileSize,
+        pixivId: dto.pixivId,
+        isBanned: dto.isBanned,
+      );
+    }
+
     return Post(
-      id: id!,
-      previewImageUri:
-          previewFileUrl != null ? Uri.parse(previewFileUrl!) : null,
-      normalImageUri: largeFileUrl != null ? Uri.parse(largeFileUrl!) : null,
-      fullImageUri: fileUrl != null ? Uri.parse(fileUrl!) : null,
-      tagStringCopyright: tagStringCopyright,
-      tagStringCharacter: tagStringCharacter,
-      tagStringArtist: tagStringArtist,
-      tagStringGeneral: tagStringGeneral,
-      tagString: TagString(tagString),
-      width: imageWidth.toDouble(),
-      height: imageHeight.toDouble(),
-      format: fileExt,
-      lastCommentAt: lastCommentBumpedAt,
-      source: ImageSource(source, pixivId),
-      createdAt: CreatedTime(createdAt),
-      score: score,
-      upScore: upScore,
-      downScore: downScore,
-      favCount: favCount,
-      uploaderId: uploaderId,
-      rating: Rating(rating: rating),
-      fileSize: fileSize,
-      pixivId: pixivId,
+      id: dto.id!,
+      previewImageUrl: dto.previewFileUrl!,
+      normalImageUrl: dto.largeFileUrl!,
+      fullImageUrl: dto.fileUrl!,
+      copyrightTags: splitTag(dto.copyrightTags),
+      characterTags: splitTag(dto.characterTags),
+      artistTags: splitTag(dto.artistTags),
+      generalTags: splitTag(dto.generalTags),
+      tags: splitTag(dto.tags),
+      width: dto.imageWidth.toDouble(),
+      height: dto.imageHeight.toDouble(),
+      format: dto.fileExt,
+      lastCommentAt: dto.lastCommentBumpedAt,
+      source: ImageSource(dto.source, dto.pixivId),
+      createdAt: dto.createdAt,
+      score: dto.score,
+      upScore: dto.upScore,
+      downScore: dto.downScore,
+      favCount: dto.favCount,
+      uploaderId: dto.uploaderId,
+      rating: mapStringToRating(dto.rating),
+      fileSize: dto.fileSize,
+      pixivId: dto.pixivId,
+      isBanned: dto.isBanned,
     );
+  } catch (e) {
+    return Post.empty();
   }
 }

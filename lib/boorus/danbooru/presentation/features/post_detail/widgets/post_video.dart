@@ -27,7 +27,7 @@ class _PostVideoState extends State<PostVideo> {
   void initState() {
     super.initState();
     _videoPlayerController =
-        VideoPlayerController.network(widget.post.normalImageUri.toString());
+        VideoPlayerController.network(widget.post.normalImageUrl);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.post.aspectRatio,

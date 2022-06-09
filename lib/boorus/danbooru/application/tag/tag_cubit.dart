@@ -42,9 +42,9 @@ class TagCubit extends Cubit<AsyncLoadState<List<TagGroupItem>>> {
 
   final ITagRepository tagRepository;
 
-  void getTagsByNameComma(String tagStringComma) {
+  void getTagsByNameComma(String tagsComma) {
     tryAsync<List<Tag>>(
-      action: () => tagRepository.getTagsByNameComma(tagStringComma, 1),
+      action: () => tagRepository.getTagsByNameComma(tagsComma, 1),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onSuccess: (tags) {

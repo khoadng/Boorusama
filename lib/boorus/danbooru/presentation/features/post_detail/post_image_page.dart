@@ -93,7 +93,7 @@ class PostImagePage extends HookWidget {
 
     final image = CachedNetworkImage(
       fit: BoxFit.fitWidth,
-      imageUrl: post.normalImageUri.toString(),
+      imageUrl: post.normalImageUrl,
       imageBuilder: (context, imageProvider) {
         precacheImage(imageProvider, context);
         return PhotoView(

@@ -1,6 +1,5 @@
 export 'artist_commentary.dart';
 export 'artist_commentary_dto.dart';
-export 'created_time.dart';
 export 'i_artist_commentary_repository.dart';
 export 'i_note_repository.dart';
 export 'i_post_repository.dart';
@@ -13,5 +12,4 @@ export 'post_dto.dart';
 export 'post_name.dart';
 export 'post_statistics.dart';
 export 'rating.dart';
-export 'tag_string.dart';
 export 'time_scale.dart';

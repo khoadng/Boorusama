@@ -70,10 +70,10 @@ class PostDetail extends HookWidget {
     useEffect(() {
       context
           .read<RecommendedArtistPostCubit>()
-          .getRecommendedPosts(post.tagStringArtist);
+          .getRecommendedPosts(post.artistTags);
       context
           .read<RecommendedCharacterPostCubit>()
-          .getRecommendedPosts(post.tagStringCharacter);
+          .getRecommendedPosts(post.characterTags);
       context.read<PoolFromPostIdCubit>().getPools(post.id);
     }, []);
     final imagePath = useState<String?>(null);
@@ -85,11 +85,11 @@ class PostDetail extends HookWidget {
 
     Widget postWidget;
     if (post.isVideo) {
-      if (p.extension(post.normalImageUri.toString()) == ".webm") {
+      if (p.extension(post.normalImageUrl) == ".webm") {
         final String videoHtml = """
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
-                <source src=${post.normalImageUri.toString()}#t=0.01 type="video/webm" />
+                <source src=${post.normalImageUrl}#t=0.01 type="video/webm" />
               </video>
             </center>""";
         postWidget = Container(
@@ -117,10 +117,10 @@ class PostDetail extends HookWidget {
               routeSettings: RouteSettings(arguments: [post]));
         },
         child: CachedNetworkImage(
-          imageUrl: post.normalImageUri.toString(),
+          imageUrl: post.normalImageUrl,
           imageBuilder: (context, imageProvider) {
             DefaultCacheManager()
-                .getFileFromCache(post.normalImageUri.toString())
+                .getFileFromCache(post.normalImageUrl)
                 .then((file) {
               imagePath.value = file!.file.path;
             });
@@ -138,7 +138,7 @@ class PostDetail extends HookWidget {
     }
 
     Widget buildRecommendedArtistList() {
-      if (post.tagStringArtist.isEmpty) return const SizedBox.shrink();
+      if (post.artistTags.isEmpty) return const SizedBox.shrink();
       return BlocBuilder<RecommendedArtistPostCubit,
           AsyncLoadState<List<Recommended>>>(
         builder: (context, state) {
@@ -155,7 +155,7 @@ class PostDetail extends HookWidget {
                           routeSettings: RouteSettings(
                             arguments: [
                               item._title,
-                              post.normalImageUri.toString(),
+                              post.normalImageUrl,
                             ],
                           ),
                         ),
@@ -169,7 +169,7 @@ class PostDetail extends HookWidget {
                   .toList(),
             );
           } else {
-            final artists = post.tagStringArtist.split(' ');
+            final artists = post.artistTags;
             return Column(
               children: [
                 ...List.generate(
@@ -190,7 +190,7 @@ class PostDetail extends HookWidget {
     }
 
     Widget buildRecommendedCharacterList() {
-      if (post.tagStringCharacter.isEmpty) return const SizedBox.shrink();
+      if (post.characterTags.isEmpty) return const SizedBox.shrink();
       return BlocBuilder<RecommendedCharacterPostCubit,
           AsyncLoadState<List<Recommended>>>(
         builder: (context, state) {
@@ -207,7 +207,7 @@ class PostDetail extends HookWidget {
                           routeSettings: RouteSettings(
                             arguments: [
                               item._title,
-                              post.normalImageUri.toString(),
+                              post.normalImageUrl,
                             ],
                           ),
                         ),
@@ -221,7 +221,7 @@ class PostDetail extends HookWidget {
                   .toList(),
             );
           } else {
-            final characters = post.tagStringCharacter.split(' ');
+            final characters = post.characterTags;
             return Column(
               children: [
                 ...List.generate(
@@ -350,7 +350,7 @@ class InformationSection extends HookWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    post.tagStringCharacter.isEmpty
+                    post.characterTags.isEmpty
                         ? "Original"
                         : post.name.characterOnly
                             .removeUnderscoreWithSpace()
@@ -360,7 +360,7 @@ class InformationSection extends HookWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                      post.tagStringCopyright.isEmpty
+                      post.copyrightTags.isEmpty
                           ? "Original"
                           : post.name.copyRightOnly
                               .removeUnderscoreWithSpace()
@@ -369,7 +369,7 @@ class InformationSection extends HookWidget {
                       style: Theme.of(context).textTheme.bodyText2),
                   const SizedBox(height: 5),
                   Text(
-                    post.createdAt.toString(),
+                    dateTimeToStringTimeAgo(post.createdAt),
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],

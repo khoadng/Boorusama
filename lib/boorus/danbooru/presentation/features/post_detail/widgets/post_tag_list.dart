@@ -19,11 +19,11 @@ import 'package:boorusama/core/utils.dart';
 class PostTagList extends StatefulWidget {
   const PostTagList({
     Key? key,
-    required this.tagStringComma,
+    required this.tagsComma,
     required this.apiEndpoint,
   }) : super(key: key);
 
-  final String tagStringComma;
+  final String tagsComma;
   final String apiEndpoint;
 
   @override
@@ -103,7 +103,7 @@ class _PostTagListState extends State<PostTagList> {
   @override
   void initState() {
     super.initState();
-    context.read<TagCubit>().getTagsByNameComma(widget.tagStringComma);
+    context.read<TagCubit>().getTagsByNameComma(widget.tagsComma);
   }
 
   @override

@@ -529,9 +529,9 @@ class _ExploreSection extends StatelessWidget {
               children: [
                 PostImage(
                   imageUrl: post.isAnimated
-                      ? post.previewImageUri.toString()
-                      : post.normalImageUri.toString(),
-                  placeholderUrl: post.previewImageUri.toString(),
+                      ? post.previewImageUrl
+                      : post.normalImageUrl,
+                  placeholderUrl: post.previewImageUrl,
                 ),
                 ShadowGradientOverlay(
                   alignment: Alignment.bottomCenter,
