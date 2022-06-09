@@ -37,7 +37,7 @@ dependencies:
   fluro: ^2.0.3
   flutter_datetime_picker: ^1.5.1
   flutter_downloader: ^1.7.4
-  flutter_hooks: 0.16.0
+  flutter_hooks: ^0.16.0
   flutter_html: ^2.1.5
   flutter_inappwebview: ^5.3.2
   flutter_portal: ^0.4.0
@@ -81,6 +81,9 @@ dependencies:
   firebase_analytics: ^9.1.1
   firebase_performance: ^0.8.0+6
   package_info_plus: ^1.4.2
+  quiver: ^3.1.0
+  tuple: ^2.0.0
+  rxdart: ^0.27.4
 
 dev_dependencies:
   flutter_localizations:

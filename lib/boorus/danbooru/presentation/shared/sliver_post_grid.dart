@@ -19,6 +19,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -26,6 +27,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -86,6 +88,10 @@ class SliverPostGrid extends HookWidget {
                   create: (context) => RecommendedArtistPostCubit(
                       postRepository:
                           RepositoryProvider.of<IPostRepository>(context))),
+              BlocProvider(
+                  create: (context) => PoolFromPostIdCubit(
+                      poolRepository:
+                          RepositoryProvider.of<PoolRepository>(context))),
               BlocProvider(
                   create: (context) => RecommendedCharacterPostCubit(
                       postRepository:

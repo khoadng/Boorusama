@@ -20,6 +20,7 @@ class _BottomBarState extends State<BottomBar> {
   final labels = [
     "Home",
     "Explore",
+    "Pool",
     // "Favorites",
   ];
 
@@ -47,6 +48,7 @@ class _BottomBarState extends State<BottomBar> {
       items: const [
         FaIcon(FontAwesomeIcons.house),
         FaIcon(Icons.explore),
+        FaIcon(FontAwesomeIcons.images),
       ],
       onTap: (index) => changePage(index),
     );

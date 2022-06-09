@@ -32,5 +32,8 @@ class AppRouter {
 
     router.define("/settings",
         handler: settingsHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/pool/detail",
+        handler: poolDetailHandler, transitionType: TransitionType.inFromRight);
   }
 }

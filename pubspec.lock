@@ -1039,7 +1039,7 @@ packages:
     source: hosted
     version: "2.0.0"
   quiver:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: quiver
       url: "https://pub.dartlang.org"
@@ -1074,12 +1074,12 @@ packages:
     source: hosted
     version: "0.13.1"
   rxdart:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: rxdart
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.27.3"
+    version: "0.27.4"
   scroll_to_index:
     dependency: "direct main"
     description:
@@ -1324,7 +1324,7 @@ packages:
     source: hosted
     version: "2.0.0"
   tuple:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: tuple
       url: "https://pub.dartlang.org"

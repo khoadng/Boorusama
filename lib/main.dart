@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -41,6 +42,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/a
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
@@ -174,6 +176,8 @@ void main() async {
                     final artistCommentaryRepo =
                         ArtistCommentaryRepository(api, accountRepo);
 
+                    final poolRepo = PoolRepository(api, accountRepo);
+
                     final mostViewedCubit =
                         MostViewedCubit(postRepository: postRepo)
                           ..getMostViewed();
@@ -202,6 +206,8 @@ void main() async {
                       accountRepository: accountRepo,
                       profileRepository: profileRepo,
                     );
+                    final poolCubit = PoolCubit(
+                        poolRepository: poolRepo, postRepository: postRepo);
 
                     return MultiRepositoryProvider(
                       providers: [
@@ -224,6 +230,8 @@ void main() async {
                         RepositoryProvider<ISearchHistoryRepository>.value(
                             value: searchHistoryRepo),
                         RepositoryProvider<IConfig>.value(value: config),
+                        RepositoryProvider<PoolRepository>.value(
+                            value: poolRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [
@@ -238,6 +246,7 @@ void main() async {
                           BlocProvider.value(value: curatedCubit),
                           BlocProvider.value(value: accountCubit),
                           BlocProvider.value(value: authenticationCubit),
+                          BlocProvider.value(value: poolCubit),
                         ],
                         child: BlocListener<AuthenticationCubit,
                             AuthenticationState>(

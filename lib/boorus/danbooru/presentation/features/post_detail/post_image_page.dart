@@ -9,7 +9,7 @@ import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
@@ -111,7 +111,7 @@ class PostImagePage extends HookWidget {
       errorWidget: (context, url, error) => const Icon(Icons.error),
     );
     return Scaffold(
-      body: BlocBuilder<NoteCubit, AsyncLoadState<List<Note>>>(
+      body: BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
         builder: (context, state) => Stack(
           children: [
             InkWell(
