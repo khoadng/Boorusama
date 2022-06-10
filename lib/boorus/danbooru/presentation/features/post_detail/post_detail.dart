@@ -126,11 +126,21 @@ class PostDetail extends HookWidget {
             });
             return Image(image: imageProvider);
           },
+          placeholderFadeInDuration: Duration.zero,
+          fadeOutDuration: Duration.zero,
           progressIndicatorBuilder: (context, url, progress) => FittedBox(
             fit: BoxFit.cover,
             child: SizedBox(
               height: post.height,
               width: post.width,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: LinearProgressIndicator(value: progress.progress),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

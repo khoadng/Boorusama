@@ -10,7 +10,7 @@ class Profile {
     required this.commentThreshold,
     required this.updatedAt,
     required this.defaultImageSize,
-    required this.favoriteTags,
+    // required this.favoriteTags,
     required this.blacklistedTags,
     required this.timeZone,
     required this.postUpdateCount,
@@ -18,7 +18,7 @@ class Profile {
     required this.favoriteCount,
     required this.postUploadCount,
     required this.perPage,
-    required this.customStyle,
+    // required this.customStyle,
     required this.theme,
     required this.isBanned,
     required this.canApprovePosts,
@@ -80,7 +80,7 @@ class Profile {
   final int commentThreshold;
   final DateTime updatedAt;
   final String defaultImageSize;
-  final String favoriteTags;
+  // final String favoriteTags;
   final String blacklistedTags;
   final String timeZone;
   final int postUpdateCount;
@@ -88,7 +88,7 @@ class Profile {
   final int favoriteCount;
   final int postUploadCount;
   final int perPage;
-  final String customStyle;
+  // final String customStyle;
   final String theme;
   final bool isBanned;
   final bool canApprovePosts;
@@ -150,7 +150,7 @@ class Profile {
         commentThreshold: json["comment_threshold"],
         updatedAt: DateTime.parse(json["updated_at"]),
         defaultImageSize: json["default_image_size"],
-        favoriteTags: json["favorite_tags"],
+        // favoriteTags: json["favorite_tags"],
         blacklistedTags: json["blacklisted_tags"],
         timeZone: json["time_zone"],
         postUpdateCount: json["post_update_count"],
@@ -158,7 +158,7 @@ class Profile {
         favoriteCount: json["favorite_count"],
         postUploadCount: json["post_upload_count"],
         perPage: json["per_page"],
-        customStyle: json["custom_style"],
+        // customStyle: json["custom_style"],
         theme: json["theme"],
         isBanned: json["is_banned"],
         canApprovePosts: json["can_approve_posts"],
