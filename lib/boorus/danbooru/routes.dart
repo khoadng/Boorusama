@@ -81,7 +81,7 @@ final postDetailHandler = Handler(handlerFunc: (
           create: (context) => RecommendedArtistPostCubit(
               postRepository: RepositoryProvider.of<IPostRepository>(context))),
       BlocProvider(
-          create: (context) => PoolFromPostIdCubit(
+          create: (context) => PoolFromPostIdBloc(
               poolRepository: RepositoryProvider.of<PoolRepository>(context))),
       BlocProvider(
           create: (context) => RecommendedCharacterPostCubit(
