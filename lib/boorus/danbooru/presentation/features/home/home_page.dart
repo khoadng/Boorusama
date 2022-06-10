@@ -8,6 +8,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
@@ -66,8 +68,19 @@ class HomePage extends HookWidget {
                   body: AnimatedIndexedStack(
                     index: bottomTabIndex.value,
                     children: <Widget>[
-                      LatestView(
-                        onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
+                      MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                              create: (context) => PostBloc(
+                                  postRepository:
+                                      RepositoryProvider.of<IPostRepository>(
+                                          context))
+                                ..add(const PostRefreshed())),
+                        ],
+                        child: LatestView(
+                          onMenuTap: () =>
+                              scaffoldKey.currentState!.openDrawer(),
+                        ),
                       ),
                       const ExplorePage(),
                       const PoolPage(),

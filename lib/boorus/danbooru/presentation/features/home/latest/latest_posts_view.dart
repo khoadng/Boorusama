@@ -1,24 +1,28 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/utils.dart';
 
-class LatestView extends HookWidget {
+class LatestView extends StatefulWidget {
   const LatestView({
     Key? key,
     required this.onMenuTap,
@@ -27,54 +31,149 @@ class LatestView extends HookWidget {
   final VoidCallback onMenuTap;
 
   @override
+  State<LatestView> createState() => _LatestViewState();
+}
+
+class _LatestViewState extends State<LatestView> {
+  final AutoScrollController _autoScrollController = AutoScrollController();
+  final ValueNotifier<String> _selectedTag = ValueNotifier('');
+  final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
+  final CompositeSubscription _compositeSubscription = CompositeSubscription();
+
+  void _sendRefresh(String tag) =>
+      context.read<PostBloc>().add(PostRefreshed(tag: tag));
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTag.addListener(() => _selectedTagStream.add(_selectedTag.value));
+
+    _selectedTagStream
+        .debounceTime(const Duration(milliseconds: 500))
+        .distinct()
+        .listen(_sendRefresh)
+        .addTo(_compositeSubscription);
+  }
+
+  @override
+  void dispose() {
+    _autoScrollController.dispose();
+    _compositeSubscription.dispose();
+    _selectedTagStream.close();
+    _selectedTag.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final posts = useState(<Post>[]);
-
-    final selectedTag = useState("");
-
-    final isMounted = useIsMounted();
-
-    useEffect(() {
-      ReadContext(context).read<SearchKeywordCubit>().getTags();
-    }, []);
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-        }
+    return InfiniteLoadList2(
+      extendBody: true,
+      onLoadMore: () =>
+          context.read<PostBloc>().add(PostFetched(tags: _selectedTag.value)),
+      onRefresh: (controller) {
+        _sendRefresh(_selectedTag.value);
+        Future.delayed(
+            const Duration(seconds: 1), () => controller.refreshCompleted());
       },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data.removeWhere((post) {
-            final p = posts.value.firstWhere(
-              (sPost) => sPost.id == post.id,
-              orElse: () => Post.empty(),
+      scrollController: _autoScrollController,
+      builder: (context, controller) => CustomScrollView(
+        controller: controller,
+        slivers: <Widget>[
+          _buildAppBar(context),
+          _buildMostSearchTagList(),
+          _buildPostList(controller),
+          _buildBottomIndicator(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAppBar(BuildContext context) {
+    return SliverAppBar(
+      toolbarHeight: kToolbarHeight * 1.2,
+      title: SearchBar(
+        enabled: false,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => widget.onMenuTap(),
+        ),
+        onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
+            routeSettings: const RouteSettings(arguments: [''])),
+      ),
+      floating: true,
+      snap: true,
+      automaticallyImplyLeading: false,
+    );
+  }
+
+  Widget _buildMostSearchTagList() {
+    return BlocBuilder<SearchKeywordCubit, AsyncLoadState<List<Search>>>(
+      builder: (context, state) => SliverToBoxAdapter(
+        child: mapStateToTagList(state),
+      ),
+    );
+  }
+
+  Widget _buildPostList(AutoScrollController controller) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      sliver: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => current.status != PostStatus.loading,
+        builder: (context, state) {
+          if (state.status == PostStatus.initial) {
+            return const SliverPostGridPlaceHolder();
+          } else if (state.status == PostStatus.success) {
+            return SliverPostGrid(
+                posts: state.posts,
+                scrollController: controller,
+                onItemChanged: (_) {});
+          } else if (state.status == PostStatus.loading) {
+            return const SliverToBoxAdapter(
+              child: SizedBox.shrink(),
             );
-            return p.id == post.id;
-          });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      refreshBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
-          .getPosts(selectedTag.value, page),
-      loadMoreBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
-          .getPosts(selectedTag.value, page),
-    ));
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [selectedTag.value]);
+          } else {
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: Text("Something went wrong"),
+              ),
+            );
+          }
+        },
+      ),
+    );
+  }
 
-    Widget _buildTags(List<Search> searches) {
-      return Container(
+  Widget _buildBottomIndicator() {
+    return BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => current.status == PostStatus.loading,
+        builder: (context, state) {
+          return const SliverPadding(
+            padding: EdgeInsets.only(
+                bottom: kBottomNavigationBarHeight + 20, top: 20),
+            sliver: SliverToBoxAdapter(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
+    switch (state.status) {
+      case LoadStatus.success:
+        return _buildTags(state.data!);
+      case LoadStatus.failure:
+        return const SizedBox.shrink();
+      default:
+        return const TagChipsPlaceholder();
+    }
+  }
+
+  Widget _buildTags(List<Search> searches) {
+    return ValueListenableBuilder(
+      valueListenable: _selectedTag,
+      builder: (context, selectedTag, child) => Container(
         margin: const EdgeInsets.only(left: 8.0),
         height: 50,
         child: ListView.builder(
@@ -82,15 +181,15 @@ class LatestView extends HookWidget {
           scrollDirection: Axis.horizontal,
           itemCount: searches.length,
           itemBuilder: (context, index) {
-            final selected = selectedTag.value == searches[index].keyword;
+            final selected = selectedTag == searches[index].keyword;
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0),
               child: ChoiceChip(
                 selectedColor: Colors.white,
                 selected: selected,
                 onSelected: (selected) => selected
-                    ? selectedTag.value = searches[index].keyword
-                    : selectedTag.value = "",
+                    ? _selectedTag.value = searches[index].keyword
+                    : _selectedTag.value = "",
                 padding: const EdgeInsets.all(4.0),
                 labelPadding: const EdgeInsets.all(1.0),
                 visualDensity: VisualDensity.compact,
@@ -110,51 +209,7 @@ class LatestView extends HookWidget {
             );
           },
         ),
-      );
-    }
-
-    Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
-      switch (state.status) {
-        case LoadStatus.success:
-          return _buildTags(state.data!);
-        case LoadStatus.failure:
-          return const SizedBox.shrink();
-        default:
-          return const TagChipsPlaceholder();
-      }
-    }
-
-    final state = context.watch<SearchKeywordCubit>().state;
-
-    return InfiniteLoadList(
-      controller: infiniteListController.value,
-      extendBody: true,
-      headers: [
-        SliverAppBar(
-          toolbarHeight: kToolbarHeight * 1.2,
-          title: SearchBar(
-            enabled: false,
-            leading: IconButton(
-              icon: const Icon(Icons.menu),
-              onPressed: () => onMenuTap(),
-            ),
-            onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
-                routeSettings: const RouteSettings(arguments: [''])),
-          ),
-          floating: true,
-          snap: true,
-          automaticallyImplyLeading: false,
-        ),
-        SliverToBoxAdapter(
-          child: mapStateToTagList(state),
-        ),
-      ],
-      posts: posts.value,
-      child: isRefreshing.value
-          ? const SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
-              sliver: SliverPostGridPlaceHolder())
-          : null,
+      ),
     );
   }
 }

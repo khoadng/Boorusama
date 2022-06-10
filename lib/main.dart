@@ -191,7 +191,7 @@ void main() async {
                     final artistCubit =
                         ArtistCubit(artistRepository: artistRepo);
                     final popularSearchCubit =
-                        SearchKeywordCubit(popularSearchRepo);
+                        SearchKeywordCubit(popularSearchRepo)..getTags();
                     final profileCubit =
                         ProfileCubit(profileRepository: profileRepo);
                     final commentCubit = CommentCubit(
