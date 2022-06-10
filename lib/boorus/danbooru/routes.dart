@@ -71,7 +71,7 @@ final postDetailHandler = Handler(handlerFunc: (
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc(posts: posts)),
       BlocProvider(
-        create: (context) => IsPostFavoritedCubit(
+        create: (context) => IsPostFavoritedBloc(
           accountRepository: RepositoryProvider.of<IAccountRepository>(context),
           favoritePostRepository:
               RepositoryProvider.of<IFavoritePostRepository>(context),

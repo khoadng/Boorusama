@@ -32,8 +32,8 @@ class PostActionToolbar extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       ReadContext(context)
-          .read<IsPostFavoritedCubit>()
-          .checkIfFavorited(post.id);
+          .read<IsPostFavoritedBloc>()
+          .add(IsPostFavoritedRequested(postId: post.id));
     }, []);
 
     final favCount = useState(post.favCount);
@@ -41,7 +41,7 @@ class PostActionToolbar extends HookWidget {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
       builder: (context, authState) =>
           ButtonBar(alignment: MainAxisAlignment.spaceEvenly, children: [
-        BlocBuilder<IsPostFavoritedCubit, AsyncLoadState<bool>>(
+        BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
               return TextButton.icon(
@@ -69,8 +69,8 @@ class PostActionToolbar extends HookWidget {
 
                     final success = await result;
                     ReadContext(context)
-                        .read<IsPostFavoritedCubit>()
-                        .checkIfFavorited(post.id);
+                        .read<IsPostFavoritedBloc>()
+                        .add(IsPostFavoritedRequested(postId: post.id));
                     // ignore: avoid_print
                     print("operation success = $success");
                   },
