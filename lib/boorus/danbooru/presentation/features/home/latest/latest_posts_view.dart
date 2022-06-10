@@ -81,7 +81,7 @@ class _LatestViewState extends State<LatestView> {
         slivers: <Widget>[
           _buildAppBar(context),
           _buildMostSearchTagList(),
-          _buildPostList(controller),
+          SliverPostImageGrid(controller: controller),
           _buildBottomIndicator(),
         ],
       ),
@@ -110,35 +110,6 @@ class _LatestViewState extends State<LatestView> {
     return BlocBuilder<SearchKeywordCubit, AsyncLoadState<List<Search>>>(
       builder: (context, state) => SliverToBoxAdapter(
         child: mapStateToTagList(state),
-      ),
-    );
-  }
-
-  Widget _buildPostList(AutoScrollController controller) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
-      sliver: BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => current.status != PostStatus.loading,
-        builder: (context, state) {
-          if (state.status == PostStatus.initial) {
-            return const SliverPostGridPlaceHolder();
-          } else if (state.status == PostStatus.success) {
-            return SliverPostGrid(
-                posts: state.posts,
-                scrollController: controller,
-                onItemChanged: (_) {});
-          } else if (state.status == PostStatus.loading) {
-            return const SliverToBoxAdapter(
-              child: SizedBox.shrink(),
-            );
-          } else {
-            return const SliverToBoxAdapter(
-              child: Center(
-                child: Text("Something went wrong"),
-              ),
-            );
-          }
-        },
       ),
     );
   }
@@ -209,6 +180,58 @@ class _LatestViewState extends State<LatestView> {
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class SliverPostImageGrid extends StatelessWidget {
+  const SliverPostImageGrid({
+    Key? key,
+    required this.controller,
+  }) : super(key: key);
+
+  final AutoScrollController controller;
+
+  Widget mapStateToWidget(BuildContext context, PostState state) {
+    if (state.status == PostStatus.initial) {
+      return const SliverPostGridPlaceHolder();
+    } else if (state.status == PostStatus.success) {
+      return SliverPostGrid(
+        posts: state.posts,
+        scrollController: controller,
+        onTap: (post, index) => AppRouter.router.navigateTo(
+          context,
+          "/post/detail",
+          routeSettings: RouteSettings(
+            arguments: [
+              state.posts,
+              index,
+              controller,
+            ],
+          ),
+        ),
+      );
+    } else if (state.status == PostStatus.loading) {
+      return const SliverToBoxAdapter(
+        child: SizedBox.shrink(),
+      );
+    } else {
+      return const SliverToBoxAdapter(
+        child: Center(
+          child: Text("Something went wrong"),
+        ),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      sliver: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => current.status != PostStatus.loading,
+        builder: mapStateToWidget,
       ),
     );
   }

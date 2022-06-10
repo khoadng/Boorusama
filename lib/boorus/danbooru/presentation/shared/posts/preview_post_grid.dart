@@ -3,21 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
@@ -32,47 +21,14 @@ class PreviewPostGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void handleTap(Post post, int index) {
-      Navigator.of(context).push(
-        SlideInRoute(
-          pageBuilder: (context, _, __) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => IsPostFavoritedCubit(
-                  accountRepository:
-                      RepositoryProvider.of<IAccountRepository>(context),
-                  favoritePostRepository:
-                      RepositoryProvider.of<IFavoritePostRepository>(context),
-                ),
-              ),
-              BlocProvider(
-                  create: (context) => RecommendedArtistPostCubit(
-                      postRepository:
-                          RepositoryProvider.of<IPostRepository>(context))),
-              BlocProvider(
-                  create: (context) => PoolFromPostIdCubit(
-                      poolRepository:
-                          RepositoryProvider.of<PoolRepository>(context))),
-              BlocProvider(
-                  create: (context) => RecommendedCharacterPostCubit(
-                      postRepository:
-                          RepositoryProvider.of<IPostRepository>(context))),
-              BlocProvider.value(
-                  value: BlocProvider.of<AuthenticationCubit>(context)),
-              BlocProvider.value(
-                  value: BlocProvider.of<ApiEndpointCubit>(context)),
-            ],
-            child: RepositoryProvider.value(
-              value: RepositoryProvider.of<ITagRepository>(context),
-              child: PostDetailPage(
-                post: post,
-                intitialIndex: index,
-                posts: posts,
-                onExit: (currentIndex) => {},
-                onPostChanged: (index) => {},
-              ),
-            ),
-          ),
-          transitionDuration: const Duration(milliseconds: 150),
+      AppRouter.router.navigateTo(
+        context,
+        "/post/detail",
+        routeSettings: RouteSettings(
+          arguments: [
+            posts,
+            index,
+          ],
         ),
       );
     }

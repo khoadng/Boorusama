@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
@@ -23,13 +24,9 @@ class PostDetailPage extends HookWidget {
     required this.post,
     required this.posts,
     required this.intitialIndex,
-    required this.onExit,
-    required this.onPostChanged,
   }) : super(key: key);
 
   final int intitialIndex;
-  final ValueChanged<int> onExit;
-  final ValueChanged<int> onPostChanged;
   final Post post;
   final List<Post> posts;
 
@@ -126,7 +123,6 @@ class PostDetailPage extends HookWidget {
           child: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
-              onExit(currentPostIndex.value);
               Navigator.pop(context);
             },
           ),
@@ -134,59 +130,54 @@ class PostDetailPage extends HookWidget {
       );
     }
 
-    return WillPopScope(
-      onWillPop: () {
-        onExit(currentPostIndex.value);
-        Navigator.pop(context);
-        return Future.value(false);
-      },
-      child: Scaffold(
-        body: Stack(
-          children: [
-            ValueListenableBuilder<SlideShowConfiguration>(
-              valueListenable: slideShowConfig,
-              builder: (context, config, child) => CarouselSlider.builder(
-                itemCount: posts.length,
-                itemBuilder: (context, index, realIndex) {
-                  WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-                    currentPostIndex.value = index;
-                  });
-                  return PostDetail(
-                    post: posts[index],
-                    minimal: autoPlay.value,
-                    animController: hideFabAnimController,
-                  );
+    return Scaffold(
+      body: Stack(
+        children: [
+          ValueListenableBuilder<SlideShowConfiguration>(
+            valueListenable: slideShowConfig,
+            builder: (context, config, child) => CarouselSlider.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index, realIndex) {
+                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                  currentPostIndex.value = index;
+                });
+                return PostDetail(
+                  post: posts[index],
+                  minimal: autoPlay.value,
+                  animController: hideFabAnimController,
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  context
+                      .read<SliverPostGridBloc>()
+                      .add(SliverPostGridItemChanged(index: index));
                 },
-                options: CarouselOptions(
-                  onPageChanged: (index, reason) {
-                    onPostChanged(index);
-                  },
-                  height: MediaQuery.of(context).size.height,
-                  viewportFraction: 1,
-                  enableInfiniteScroll: false,
-                  initialPage: intitialIndex,
-                  reverse: false,
-                  autoPlayCurve: Curves.fastOutSlowIn,
-                  autoPlay: autoPlay.value,
-                  autoPlayAnimationDuration: config.skipAnimation
-                      ? const Duration(microseconds: 1)
-                      : const Duration(milliseconds: 600),
-                  autoPlayInterval: Duration(seconds: config.interval),
-                  scrollDirection: Axis.horizontal,
-                ),
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: intitialIndex,
+                reverse: false,
+                autoPlayCurve: Curves.fastOutSlowIn,
+                autoPlay: autoPlay.value,
+                autoPlayAnimationDuration: config.skipAnimation
+                    ? const Duration(microseconds: 1)
+                    : const Duration(milliseconds: 600),
+                autoPlayInterval: Duration(seconds: config.interval),
+                scrollDirection: Axis.horizontal,
               ),
             ),
-            ShadowGradientOverlay(
-              alignment: Alignment.topCenter,
-              colors: <Color>[
-                const Color(0x5D000000),
-                Colors.black12.withOpacity(0.0)
-              ],
-            ),
-            _buildBackButton(),
-            _buildSlideShowButton(),
-          ],
-        ),
+          ),
+          ShadowGradientOverlay(
+            alignment: Alignment.topCenter,
+            colors: <Color>[
+              const Color(0x5D000000),
+              Colors.black12.withOpacity(0.0)
+            ],
+          ),
+          _buildBackButton(),
+          _buildSlideShowButton(),
+        ],
       ),
     );
   }
