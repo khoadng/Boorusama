@@ -65,6 +65,7 @@ class PostDetail extends HookWidget {
     final scrollController = useScrollController();
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
+    final isMounted = useIsMounted();
 
     useEffect(() {
       context
@@ -123,6 +124,7 @@ class PostDetail extends HookWidget {
             DefaultCacheManager()
                 .getFileFromCache(post.normalImageUrl)
                 .then((file) {
+              if (!isMounted()) return;
               imagePath.value = file!.file.path;
             });
             return Image(image: imageProvider);

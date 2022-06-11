@@ -193,10 +193,11 @@ class InfiniteLoadList extends HookWidget {
 class InfiniteLoadList2 extends StatefulWidget {
   const InfiniteLoadList2({
     Key? key,
-    this.limit = 0.85,
+    this.limit = 0.95,
     this.scrollController,
     this.refreshController,
     this.enableRefresh = true,
+    this.enableLoadMore = true,
     this.onLoadMore,
     this.onRefresh,
     this.extendBody = false,
@@ -207,6 +208,7 @@ class InfiniteLoadList2 extends StatefulWidget {
   final bool extendBody;
   final double? extendBodyHeight;
   final bool enableRefresh;
+  final bool enableLoadMore;
   final double limit;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
@@ -278,7 +280,7 @@ class _InfiniteLoadList2State extends State<InfiniteLoadList2>
         break;
     }
     _isOnTop.value = _isTop;
-    if (_isBottom) widget.onLoadMore?.call();
+    if (_isBottom && widget.enableLoadMore) widget.onLoadMore?.call();
   }
 
   bool get _isBottom {

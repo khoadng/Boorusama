@@ -11,76 +11,75 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 @immutable
-class PostState extends Equatable {
-  const PostState({
+class PostMostViewedState extends Equatable {
+  const PostMostViewedState({
     required this.status,
     required this.posts,
-    required this.page,
     required this.hasMore,
   });
 
   final List<Post> posts;
   final LoadStatus status;
-  final int page;
   final bool hasMore;
 
-  PostState copyWith({
+  PostMostViewedState copyWith({
     LoadStatus? status,
     List<Post>? posts,
-    int? page,
     bool? hasMore,
   }) =>
-      PostState(
+      PostMostViewedState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
-        page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
       );
 
-  factory PostState.initial() => const PostState(
+  factory PostMostViewedState.initial() => const PostMostViewedState(
         status: LoadStatus.initial,
         posts: [],
-        page: 1,
         hasMore: true,
       );
 
   @override
-  List<Object?> get props => [status, posts, page, hasMore];
+  List<Object?> get props => [status, posts, hasMore];
 }
 
 @immutable
-abstract class PostEvent extends Equatable {
-  const PostEvent();
+abstract class PostMostViewedEvent extends Equatable {
+  const PostMostViewedEvent();
 }
 
-class PostFetched extends PostEvent {
-  const PostFetched({
-    required this.tags,
-  }) : super();
-  final String tags;
-
-  @override
-  List<Object?> get props => [tags];
-}
-
-class PostRefreshed extends PostEvent {
-  const PostRefreshed({
-    this.tag,
+class PostMostViewedFetched extends PostMostViewedEvent {
+  const PostMostViewedFetched({
+    required this.date,
   }) : super();
 
-  final String? tag;
+  final DateTime date;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [date];
 }
 
-class PostBloc extends Bloc<PostEvent, PostState> {
-  PostBloc({
+class PostMostViewedRefreshed extends PostMostViewedEvent {
+  const PostMostViewedRefreshed({
+    required this.date,
+  }) : super();
+
+  final DateTime date;
+
+  @override
+  List<Object?> get props => [date];
+}
+
+class PostMostViewedBloc
+    extends Bloc<PostMostViewedEvent, PostMostViewedState> {
+  PostMostViewedBloc({
     required IPostRepository postRepository,
-  }) : super(PostState.initial()) {
-    on<PostFetched>(
+  }) : super(PostMostViewedState.initial()) {
+    on<PostMostViewedFetched>(
       (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tags, state.page + 1),
+        action: () => postRepository.getMostViewedPosts(
+          event.date,
+        ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
@@ -88,17 +87,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.copyWith(
             status: LoadStatus.success,
             posts: [...state.posts, ...posts],
-            page: state.page + 1,
-            hasMore: posts.isNotEmpty,
+            hasMore: false,
           ),
         ),
       ),
       transformer: droppable(),
     );
 
-    on<PostRefreshed>(
+    on<PostMostViewedRefreshed>(
       (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tag ?? '', 1),
+        action: () => postRepository.getMostViewedPosts(
+          event.date,
+        ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
@@ -106,8 +106,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.copyWith(
             status: LoadStatus.success,
             posts: posts,
-            page: 1,
-            hasMore: posts.isNotEmpty,
+            hasMore: false,
           ),
         ),
       ),

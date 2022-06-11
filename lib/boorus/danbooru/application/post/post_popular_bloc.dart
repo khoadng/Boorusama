@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 @immutable
-class PostState extends Equatable {
-  const PostState({
+class PostPopularState extends Equatable {
+  const PostPopularState({
     required this.status,
     required this.posts,
     required this.page,
@@ -24,20 +24,20 @@ class PostState extends Equatable {
   final int page;
   final bool hasMore;
 
-  PostState copyWith({
+  PostPopularState copyWith({
     LoadStatus? status,
     List<Post>? posts,
     int? page,
     bool? hasMore,
   }) =>
-      PostState(
+      PostPopularState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
       );
 
-  factory PostState.initial() => const PostState(
+  factory PostPopularState.initial() => const PostPopularState(
         status: LoadStatus.initial,
         posts: [],
         page: 1,
@@ -49,38 +49,47 @@ class PostState extends Equatable {
 }
 
 @immutable
-abstract class PostEvent extends Equatable {
-  const PostEvent();
+abstract class PostPopularEvent extends Equatable {
+  const PostPopularEvent();
 }
 
-class PostFetched extends PostEvent {
-  const PostFetched({
-    required this.tags,
-  }) : super();
-  final String tags;
-
-  @override
-  List<Object?> get props => [tags];
-}
-
-class PostRefreshed extends PostEvent {
-  const PostRefreshed({
-    this.tag,
+class PostPopularFetched extends PostPopularEvent {
+  const PostPopularFetched({
+    required this.date,
+    required this.scale,
   }) : super();
 
-  final String? tag;
+  final DateTime date;
+  final TimeScale scale;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [date, scale];
 }
 
-class PostBloc extends Bloc<PostEvent, PostState> {
-  PostBloc({
+class PostPopularRefreshed extends PostPopularEvent {
+  const PostPopularRefreshed({
+    required this.date,
+    required this.scale,
+  }) : super();
+
+  final DateTime date;
+  final TimeScale scale;
+
+  @override
+  List<Object?> get props => [];
+}
+
+class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
+  PostPopularBloc({
     required IPostRepository postRepository,
-  }) : super(PostState.initial()) {
-    on<PostFetched>(
+  }) : super(PostPopularState.initial()) {
+    on<PostPopularFetched>(
       (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tags, state.page + 1),
+        action: () => postRepository.getPopularPosts(
+          event.date,
+          state.page + 1,
+          event.scale,
+        ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
@@ -96,9 +105,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       transformer: droppable(),
     );
 
-    on<PostRefreshed>(
+    on<PostPopularRefreshed>(
       (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tag ?? '', 1),
+        action: () => postRepository.getPopularPosts(
+          event.date,
+          1,
+          event.scale,
+        ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
