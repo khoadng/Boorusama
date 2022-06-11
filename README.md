@@ -88,3 +88,7 @@ flutter build assembleRelease
 # debug
 flutter build apk --split-per-abi --debug
 ```
+
+## Fix app crashes on certain devices on Android 6.0
+
+> Read more [here](https://docs.flutter.dev/deployment/android#building-the-app-for-release)
