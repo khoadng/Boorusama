@@ -38,5 +38,8 @@ class AppRouter {
 
     router.define("/pool/detail",
         handler: poolDetailHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/favorites",
+        handler: favoritesHandler, transitionType: TransitionType.inFromRight);
   }
 }

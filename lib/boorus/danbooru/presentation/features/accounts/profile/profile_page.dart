@@ -98,11 +98,10 @@ class ProfilePage extends HookWidget {
                             style: Theme.of(context).textTheme.headline6,
                           ),
                           trailing: TextButton(
-                            onPressed: () => Navigator.of(context).push(
-                                SlideInRoute(
-                                    pageBuilder: (context, animation,
-                                            secondaryAnimation) =>
-                                        const FavoritesPage())),
+                            onPressed: () => AppRouter.router.navigateTo(
+                                context, '/favorites',
+                                routeSettings:
+                                    RouteSettings(arguments: [profile.name])),
                             child: const Text("See more"),
                           ),
                         ),

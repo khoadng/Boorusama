@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorite
 import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
@@ -28,6 +29,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
@@ -199,6 +201,29 @@ final poolDetailHandler =
         ],
         child: PoolDetailPage(
           pool: args[0],
+        ),
+      );
+    },
+  );
+});
+
+final favoritesHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+  final String username = args[0];
+
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => PostBloc(
+                  postRepository:
+                      RepositoryProvider.of<IPostRepository>(context))
+                ..add(PostRefreshed(tag: "ordfav:$username"))),
+        ],
+        child: FavoritesPage(
+          username: username,
         ),
       );
     },
