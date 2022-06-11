@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.d
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:retrofit/dio.dart';
 
 class ProfileRepository implements IProfileRepository {
   ProfileRepository(
@@ -22,7 +23,7 @@ class ProfileRepository implements IProfileRepository {
     String? apiKey,
     String? username,
   }) async {
-    var value;
+    HttpResponse value;
     try {
       if (apiKey != null && username != null) {
         value =

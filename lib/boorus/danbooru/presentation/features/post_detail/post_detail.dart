@@ -71,6 +71,7 @@ class PostDetail extends HookWidget {
     useEffect(() {
       // Enable virtual display.
       if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+      return null;
     }, []);
 
     Widget postWidget;

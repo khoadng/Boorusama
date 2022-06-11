@@ -10,13 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:chewie/src/animated_play_pause.dart';
 import 'package:chewie/src/center_play_button.dart';
-import 'package:chewie/src/chewie_player.dart';
-import 'package:chewie/src/chewie_progress_colors.dart';
 import 'package:chewie/src/helpers/utils.dart';
 import 'package:chewie/src/material/material_progress_bar.dart';
 import 'package:chewie/src/material/widgets/options_dialog.dart';
 import 'package:chewie/src/material/widgets/playback_speed_dialog.dart';
-import 'package:chewie/src/models/subtitle_model.dart';
 import 'package:chewie/src/notifiers/index.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
@@ -124,11 +121,11 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
 
   @override
   void didChangeDependencies() {
-    final _oldController = _chewieController;
+    final oldController = _chewieController;
     _chewieController = ChewieController.of(context);
     controller = chewieController.videoPlayerController;
 
-    if (_oldController != chewieController) {
+    if (oldController != chewieController) {
       _dispose();
       _initialize();
     }
@@ -555,8 +552,8 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         },
         colors: chewieController.materialProgressColors ??
             ChewieProgressColors(
-              playedColor: Theme.of(context).accentColor,
-              handleColor: Theme.of(context).accentColor,
+              playedColor: Theme.of(context).colorScheme.secondary,
+              handleColor: Theme.of(context).colorScheme.secondary,
               bufferedColor: Theme.of(context).backgroundColor.withOpacity(0.5),
               backgroundColor: Theme.of(context).disabledColor.withOpacity(.5),
             ),

@@ -155,6 +155,7 @@ class ArtistSection extends HookWidget {
       ReadContext(context)
           .read<ArtistCommentaryCubit>()
           .getArtistCommentary(post.id);
+      return null;
     }, []);
 
     return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(

@@ -46,7 +46,7 @@ class _DragLine extends StatelessWidget {
       height: 3,
       decoration: ShapeDecoration(
         shape: const StadiumBorder(),
-        color: Theme.of(context).accentColor,
+        color: Theme.of(context).colorScheme.secondary,
       ),
     );
   }
