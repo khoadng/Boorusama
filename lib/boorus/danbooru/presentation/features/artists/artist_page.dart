@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
@@ -74,6 +74,7 @@ class ArtistPage extends HookWidget {
 
     useEffect(() {
       ReadContext(context).read<ArtistCubit>().getArtist(artistName);
+      return null;
     }, []);
 
     return Scaffold(

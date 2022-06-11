@@ -22,30 +22,39 @@ class PostNote extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final visible = useState(false);
-    Alignment portalAlignment;
-    Alignment childAlignment;
+    // Alignment portalAlignment;
+    // Alignment childAlignment;
+    Aligned anchorPortalAlignment;
 
     if (coordinate.x > MediaQuery.of(context).size.width / 2) {
-      portalAlignment = Alignment.topRight;
-      childAlignment = Alignment.bottomRight;
+      // portalAlignment = Alignment.topRight;
+      // childAlignment = Alignment.bottomRight;
+      anchorPortalAlignment = const Aligned(
+        follower: Alignment.topRight,
+        target: Alignment.bottomRight,
+      );
     } else {
-      portalAlignment = Alignment.topLeft;
-      childAlignment = Alignment.bottomLeft;
+      // portalAlignment = Alignment.topLeft;
+      // childAlignment = Alignment.bottomLeft;
+      anchorPortalAlignment = const Aligned(
+        follower: Alignment.topLeft,
+        target: Alignment.bottomLeft,
+      );
     }
 
-    return PortalEntry(
+    return PortalTarget(
       visible: visible.value,
-      portal: GestureDetector(
+      portalFollower: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => visible.value = false,
       ),
       child: Container(
         margin: EdgeInsets.only(left: coordinate.x, top: coordinate.y),
-        child: PortalEntry(
-          portalAnchor: portalAlignment,
-          childAnchor: childAlignment,
+        child: PortalTarget(
+          anchor: anchorPortalAlignment,
+          // childAnchor: childAlignment,
           visible: visible.value,
-          portal: ConstrainedBox(
+          portalFollower: ConstrainedBox(
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.5),
             child: IntrinsicWidth(

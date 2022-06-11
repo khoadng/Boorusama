@@ -34,6 +34,7 @@ class PostActionToolbar extends HookWidget {
       ReadContext(context)
           .read<IsPostFavoritedCubit>()
           .checkIfFavorited(post.id);
+      return null;
     }, []);
 
     final favCount = useState(post.favCount);

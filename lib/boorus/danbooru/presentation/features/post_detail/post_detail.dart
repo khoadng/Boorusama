@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,12 +74,14 @@ class PostDetail extends HookWidget {
           .read<RecommendedCharacterPostCubit>()
           .getRecommendedPosts(post.characterTags);
       context.read<PoolFromPostIdCubit>().getPools(post.id);
+      return null;
     }, []);
     final imagePath = useState<String?>(null);
 
     useEffect(() {
       // Enable virtual display.
       if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+      return null;
     }, []);
 
     Widget postWidget;

@@ -29,7 +29,7 @@ typedef AutoRefreshConditionBuilder = bool Function();
 void useAutoRefresh(InfiniteLoadListController controller, List<Object> keys,
     {AutoRefreshConditionBuilder? refreshWhen}) {
   useEffect(() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       final canRefresh = refreshWhen ?? () => true;
       if (canRefresh()) {
         controller.refresh();

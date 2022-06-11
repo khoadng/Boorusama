@@ -132,8 +132,7 @@ class _CommentPageState extends State<CommentPage> {
                                 .where((comment) => comment.isDeleted == false)
                                 .toList();
 
-                            WidgetsBinding.instance!
-                                .addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               setState(() {
                                 if (_showDeleted) {
                                   _comments = _commentsWithDeleted;

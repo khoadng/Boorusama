@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
-import 'package:popup_menu/popup_menu.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
+import 'package:popup_menu/popup_menu.dart' as popup_menu;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
@@ -32,7 +32,7 @@ class PostTagList extends StatefulWidget {
 
 class _PostTagListState extends State<PostTagList> {
   Tag? _currentPopupTag;
-  PopupMenu? _menu;
+  popup_menu.PopupMenu? _menu;
   final Map<String, GlobalKey> _tagKeys = <String, GlobalKey>{};
 
   Widget _buildTags(List<Tag> tags) {
@@ -108,14 +108,14 @@ class _PostTagListState extends State<PostTagList> {
 
   @override
   Widget build(BuildContext context) {
-    _menu ??= PopupMenu(
+    _menu ??= popup_menu.PopupMenu(
       context: context,
-      config: MenuConfig(
+      config: popup_menu.MenuConfig(
         backgroundColor: Theme.of(context).cardColor,
         maxColumn: 4,
       ),
       items: [
-        MenuItem(
+        popup_menu.MenuItem(
           title: 'Wiki',
           image: const Icon(
             Icons.info,

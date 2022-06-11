@@ -43,6 +43,7 @@ class SearchPage extends HookWidget {
 
     useEffect(() {
       ReadContext(context).read<SearchHistoryCubit>().getSearchHistory();
+      return null;
     }, []);
 
     final infiniteListController = useState(InfiniteLoadListController<Post>(

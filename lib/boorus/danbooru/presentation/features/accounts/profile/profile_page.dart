@@ -27,6 +27,7 @@ class ProfilePage extends HookWidget {
   Widget build(BuildContext context) {
     useEffect(() {
       ReadContext(context).read<ProfileCubit>().getProfile();
+      return null;
     }, []);
 
     return SafeArea(
