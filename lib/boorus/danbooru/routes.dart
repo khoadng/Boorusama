@@ -1,24 +1,41 @@
+// Dart imports:
+import 'dart:collection';
+
 // Flutter imports:
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
 import 'application/note/note_bloc.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -35,9 +52,77 @@ final artistHandler = Handler(handlerFunc: (
 ) {
   final args = context!.settings!.arguments as List;
 
-  return ArtistPage(
-    artistName: args[0],
-    backgroundImageUrl: args[1],
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PostBloc(
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(PostRefreshed(tag: args[0]))),
+    ],
+    child: ArtistPage(
+      artistName: args[0],
+      backgroundImageUrl: args[1],
+    ),
+  );
+});
+
+final postDetailHandler = Handler(handlerFunc: (
+  context,
+  Map<String, List<String>> params,
+) {
+  final args = context!.settings!.arguments as List;
+  final posts = args[0];
+  final index = args[1];
+
+  AutoScrollController? controller;
+  if (args.length == 3) {
+    controller = args[2];
+  }
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(create: (context) => SliverPostGridBloc(posts: posts)),
+      BlocProvider(
+        create: (context) => IsPostFavoritedBloc(
+          accountRepository: RepositoryProvider.of<IAccountRepository>(context),
+          favoritePostRepository:
+              RepositoryProvider.of<IFavoritePostRepository>(context),
+        )..add(IsPostFavoritedRequested(postId: posts[index].id)),
+      ),
+      BlocProvider(
+          create: (context) => RecommendedArtistPostCubit(
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(RecommendedPostRequested(tags: posts[index].artistTags))),
+      BlocProvider(
+          create: (context) => PoolFromPostIdBloc(
+              poolRepository: RepositoryProvider.of<PoolRepository>(context))
+            ..add(PoolFromPostIdRequested(postId: posts[index].id))),
+      BlocProvider(
+          create: (context) => RecommendedCharacterPostCubit(
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(RecommendedPostRequested(tags: posts[index].characterTags))),
+      BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
+      BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
+    ],
+    child: RepositoryProvider.value(
+      value: RepositoryProvider.of<ITagRepository>(context),
+      child: Builder(
+        builder: (context) =>
+            BlocListener<SliverPostGridBloc, SliverPostGridState>(
+          listenWhen: (previous, current) =>
+              previous.currentIndex != current.currentIndex,
+          listener: (context, state) async {
+            if (controller == null) return;
+            return await controller.scrollToIndex(state.currentIndex);
+          },
+          child: PostDetailPage(
+            post: posts[index],
+            intitialIndex: index,
+            posts: posts,
+          ),
+        ),
+      ),
+    ),
   );
 });
 
@@ -52,7 +137,10 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
           create: (context) => SearchHistoryCubit(
               searchHistoryRepository:
-                  RepositoryProvider.of<ISearchHistoryRepository>(context))),
+                  context.read<ISearchHistoryRepository>())),
+      BlocProvider(
+          create: (context) =>
+              PostBloc(postRepository: context.read<IPostRepository>())),
     ],
     child: SearchPage(
       initialQuery: args[0],
@@ -110,6 +198,7 @@ final settingsHandler =
 final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
+  final pool = args[0] as Pool;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {
@@ -117,8 +206,10 @@ final poolDetailHandler =
         providers: [
           BlocProvider(
               create: (context) => PoolDetailCubit(
+                  ids: Queue.from(pool.postIds.reversed),
                   postRepository:
-                      RepositoryProvider.of<IPostRepository>(context))),
+                      RepositoryProvider.of<IPostRepository>(context))
+                ..load()),
           BlocProvider(
               create: (context) =>
                   PoolDescriptionCubit(endpoint: state.booru.url)),
@@ -128,7 +219,30 @@ final poolDetailHandler =
                       RepositoryProvider.of<INoteRepository>(context))),
         ],
         child: PoolDetailPage(
-          pool: args[0],
+          pool: pool,
+        ),
+      );
+    },
+  );
+});
+
+final favoritesHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+  final String username = args[0];
+
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => PostBloc(
+                  postRepository:
+                      RepositoryProvider.of<IPostRepository>(context))
+                ..add(PostRefreshed(tag: "ordfav:$username"))),
+        ],
+        child: FavoritesPage(
+          username: username,
         ),
       );
     },

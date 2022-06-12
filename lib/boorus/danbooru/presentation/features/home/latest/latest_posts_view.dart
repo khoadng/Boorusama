@@ -66,24 +66,92 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteLoadList2(
-      extendBody: true,
-      onLoadMore: () =>
-          context.read<PostBloc>().add(PostFetched(tags: _selectedTag.value)),
-      onRefresh: (controller) {
-        _sendRefresh(_selectedTag.value);
-        Future.delayed(
-            const Duration(seconds: 1), () => controller.refreshCompleted());
+    return BlocBuilder<PostBloc, PostState>(
+      buildWhen: (previous, current) => !current.hasMore,
+      builder: (context, state) {
+        return InfiniteLoadList(
+          extendBody: true,
+          enableLoadMore: state.hasMore,
+          onLoadMore: () => context
+              .read<PostBloc>()
+              .add(PostFetched(tags: _selectedTag.value)),
+          onRefresh: (controller) {
+            _sendRefresh(_selectedTag.value);
+            Future.delayed(const Duration(seconds: 1),
+                () => controller.refreshCompleted());
+          },
+          scrollController: _autoScrollController,
+          builder: (context, controller) => CustomScrollView(
+            controller: controller,
+            slivers: <Widget>[
+              _buildAppBar(context),
+              _buildMostSearchTagList(),
+              _buildPostList(controller),
+              BlocBuilder<PostBloc, PostState>(
+                builder: (context, state) {
+                  if (state.status == LoadStatus.loading) {
+                    return const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SliverToBoxAdapter(
+                      child: SizedBox.shrink(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        );
       },
-      scrollController: _autoScrollController,
-      builder: (context, controller) => CustomScrollView(
-        controller: controller,
-        slivers: <Widget>[
-          _buildAppBar(context),
-          _buildMostSearchTagList(),
-          _buildPostList(controller),
-          _buildBottomIndicator(),
-        ],
+    );
+  }
+
+  Widget _buildPostList(AutoScrollController controller) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      sliver: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => current.status != LoadStatus.loading,
+        builder: (context, state) {
+          if (state.status == LoadStatus.initial) {
+            return const SliverPostGridPlaceHolder();
+          } else if (state.status == LoadStatus.success) {
+            if (state.posts.isEmpty) {
+              return const SliverToBoxAdapter(
+                  child: Center(child: Text("No data")));
+            }
+            return SliverPostGrid(
+              posts: state.posts,
+              scrollController: controller,
+              onTap: (post, index) => AppRouter.router.navigateTo(
+                context,
+                "/post/detail",
+                routeSettings: RouteSettings(
+                  arguments: [
+                    state.posts,
+                    index,
+                    controller,
+                  ],
+                ),
+              ),
+            );
+          } else if (state.status == LoadStatus.loading) {
+            return const SliverToBoxAdapter(
+              child: SizedBox.shrink(),
+            );
+          } else {
+            return const SliverToBoxAdapter(
+              child: Center(
+                child: Text("Something went wrong"),
+              ),
+            );
+          }
+        },
       ),
     );
   }
@@ -112,51 +180,6 @@ class _LatestViewState extends State<LatestView> {
         child: mapStateToTagList(state),
       ),
     );
-  }
-
-  Widget _buildPostList(AutoScrollController controller) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
-      sliver: BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => current.status != PostStatus.loading,
-        builder: (context, state) {
-          if (state.status == PostStatus.initial) {
-            return const SliverPostGridPlaceHolder();
-          } else if (state.status == PostStatus.success) {
-            return SliverPostGrid(
-                posts: state.posts,
-                scrollController: controller,
-                onItemChanged: (_) {});
-          } else if (state.status == PostStatus.loading) {
-            return const SliverToBoxAdapter(
-              child: SizedBox.shrink(),
-            );
-          } else {
-            return const SliverToBoxAdapter(
-              child: Center(
-                child: Text("Something went wrong"),
-              ),
-            );
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildBottomIndicator() {
-    return BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => current.status == PostStatus.loading,
-        builder: (context, state) {
-          return const SliverPadding(
-            padding: EdgeInsets.only(
-                bottom: kBottomNavigationBarHeight + 20, top: 20),
-            sliver: SliverToBoxAdapter(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          );
-        });
   }
 
   Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {

@@ -10,39 +10,42 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-enum PostStatus { initial, loading, success, failure }
-
 @immutable
 class PostState extends Equatable {
   const PostState({
     required this.status,
     required this.posts,
     required this.page,
+    required this.hasMore,
   });
 
   final List<Post> posts;
-  final PostStatus status;
+  final LoadStatus status;
   final int page;
+  final bool hasMore;
 
   PostState copyWith({
-    PostStatus? status,
+    LoadStatus? status,
     List<Post>? posts,
     int? page,
+    bool? hasMore,
   }) =>
       PostState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
         page: page ?? this.page,
+        hasMore: hasMore ?? this.hasMore,
       );
 
   factory PostState.initial() => const PostState(
-        status: PostStatus.initial,
+        status: LoadStatus.initial,
         posts: [],
         page: 1,
+        hasMore: true,
       );
 
   @override
-  List<Object?> get props => [status, posts, page];
+  List<Object?> get props => [status, posts, page, hasMore];
 }
 
 @immutable
@@ -78,14 +81,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<PostFetched>(
       (event, emit) => tryAsync<List<Post>>(
         action: () => postRepository.getPosts(event.tags, state.page + 1),
-        onLoading: () => emit(state.copyWith(status: PostStatus.loading)),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: PostStatus.failure)),
+            emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (posts) => emit(
           state.copyWith(
-            status: PostStatus.success,
+            status: LoadStatus.success,
             posts: [...state.posts, ...posts],
             page: state.page + 1,
+            hasMore: posts.isNotEmpty,
           ),
         ),
       ),
@@ -95,14 +99,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<PostRefreshed>(
       (event, emit) => tryAsync<List<Post>>(
         action: () => postRepository.getPosts(event.tag ?? '', 1),
-        onLoading: () => emit(state.copyWith(status: PostStatus.initial)),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: PostStatus.failure)),
+            emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (posts) => emit(
           state.copyWith(
-            status: PostStatus.success,
+            status: LoadStatus.success,
             posts: posts,
             page: 1,
+            hasMore: posts.isNotEmpty,
           ),
         ),
       ),

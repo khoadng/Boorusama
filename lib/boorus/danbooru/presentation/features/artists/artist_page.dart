@@ -1,26 +1,26 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags/flutter_tags.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artist.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
 
-class ArtistPage extends HookWidget {
+class ArtistPage extends StatefulWidget {
   const ArtistPage({
     Key? key,
     required this.artistName,
@@ -31,75 +31,122 @@ class ArtistPage extends HookWidget {
   final String backgroundImageUrl;
 
   @override
+  State<ArtistPage> createState() => _ArtistPageState();
+}
+
+class _ArtistPageState extends State<ArtistPage> {
+  final RefreshController refreshController = RefreshController();
+  final AutoScrollController scrollController = AutoScrollController();
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - 24;
-    final posts = useState(<Post>[]);
-    final isMounted = useIsMounted();
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data.removeWhere((post) {
-            final p = posts.value.firstWhere(
-              (sPost) => sPost.id == post.id,
-              orElse: () => Post.empty(),
-            );
-            return p.id == post.id;
-          });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      refreshBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
-          .getPosts(artistName, page),
-      loadMoreBuilder: (page) => RepositoryProvider.of<IPostRepository>(context)
-          .getPosts(artistName, page),
-    ));
-
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [artistName]);
-
-    useEffect(() {
-      ReadContext(context).read<ArtistCubit>().getArtist(artistName);
-    }, []);
 
     return Scaffold(
       body: SlidingUpPanel(
+        scrollController: scrollController,
         color: Colors.transparent,
         margin: const EdgeInsets.symmetric(horizontal: 6),
         maxHeight: height,
         minHeight: height * 0.55,
-        panelBuilder: (scrollController) => Container(
+        panelBuilder: (_) => Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
             borderRadius: const BorderRadius.all(Radius.circular(24.0)),
           ),
           child: Padding(
             padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 32),
-            child: InfiniteLoadList(
-              scrollController: scrollController,
-              enableRefresh: false,
-              controller: infiniteListController.value,
-              posts: posts.value,
-              child: isRefreshing.value
-                  ? const SliverPadding(
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      sliver: SliverPostGridPlaceHolder(),
-                    )
-                  : null,
+            child: BlocBuilder<PostBloc, PostState>(
+              buildWhen: (previous, current) => !current.hasMore,
+              builder: (context, state) {
+                return InfiniteLoadList(
+                  scrollController: scrollController,
+                  refreshController: refreshController,
+                  enableLoadMore: state.hasMore,
+                  onLoadMore: () => context
+                      .read<PostBloc>()
+                      .add(PostFetched(tags: widget.artistName)),
+                  onRefresh: (controller) {
+                    context
+                        .read<PostBloc>()
+                        .add(PostRefreshed(tag: widget.artistName));
+                    Future.delayed(const Duration(milliseconds: 500),
+                        () => controller.refreshCompleted());
+                  },
+                  builder: (context, controller) => CustomScrollView(
+                    controller: controller,
+                    slivers: <Widget>[
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                        sliver: BlocBuilder<PostBloc, PostState>(
+                          buildWhen: (previous, current) =>
+                              current.status != LoadStatus.loading,
+                          builder: (context, state) {
+                            if (state.status == LoadStatus.initial) {
+                              return const SliverPostGridPlaceHolder();
+                            } else if (state.status == LoadStatus.success) {
+                              if (state.posts.isEmpty) {
+                                return const SliverToBoxAdapter(
+                                    child: Center(child: Text("No data")));
+                              }
+                              return SliverPostGrid(
+                                posts: state.posts,
+                                scrollController: controller,
+                                onTap: (post, index) =>
+                                    AppRouter.router.navigateTo(
+                                  context,
+                                  "/post/detail",
+                                  routeSettings: RouteSettings(
+                                    arguments: [
+                                      state.posts,
+                                      index,
+                                      controller,
+                                    ],
+                                  ),
+                                ),
+                              );
+                            } else if (state.status == LoadStatus.loading) {
+                              return const SliverToBoxAdapter(
+                                child: SizedBox.shrink(),
+                              );
+                            } else {
+                              return const SliverToBoxAdapter(
+                                child: Center(
+                                  child: Text("Something went wrong"),
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                      BlocBuilder<PostBloc, PostState>(
+                        builder: (context, state) {
+                          if (state.status == LoadStatus.loading) {
+                            return const SliverPadding(
+                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              sliver: SliverToBoxAdapter(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const SliverToBoxAdapter(
+                              child: SizedBox.shrink(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         ),
@@ -107,7 +154,7 @@ class ArtistPage extends HookWidget {
           children: [
             Positioned.fill(
               child: CachedNetworkImage(
-                imageUrl: backgroundImageUrl,
+                imageUrl: widget.backgroundImageUrl,
                 fit: BoxFit.cover,
               ),
             ),
@@ -126,7 +173,7 @@ class ArtistPage extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    artistName.removeUnderscoreWithSpace(),
+                    widget.artistName.removeUnderscoreWithSpace(),
                     style: Theme.of(context)
                         .textTheme
                         .headline6!

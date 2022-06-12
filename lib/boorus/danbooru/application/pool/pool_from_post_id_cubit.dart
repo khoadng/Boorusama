@@ -1,24 +1,47 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
+import 'package:boorusama/common/bloc_stream_transformer.dart';
 
-class PoolFromPostIdCubit extends Cubit<AsyncLoadState<List<Pool>>> {
-  PoolFromPostIdCubit({
-    required this.poolRepository,
-  }) : super(const AsyncLoadState.initial());
+@immutable
+abstract class PoolFromPostIdEvent extends Equatable {
+  const PoolFromPostIdEvent();
+}
 
-  final PoolRepository poolRepository;
+class PoolFromPostIdRequested extends PoolFromPostIdEvent {
+  const PoolFromPostIdRequested({
+    required this.postId,
+  });
+  final int postId;
 
-  void getPools(int postId) {
-    tryAsync<List<Pool>>(
-      action: () => poolRepository.getPoolsByPostId(postId),
-      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-      onLoading: () => emit(const AsyncLoadState.loading()),
-      onSuccess: (pools) => emit(AsyncLoadState.success(pools)),
+  @override
+  List<Object?> get props => [postId];
+}
+
+class PoolFromPostIdBloc
+    extends Bloc<PoolFromPostIdEvent, AsyncLoadState<List<Pool>>> {
+  PoolFromPostIdBloc({
+    required PoolRepository poolRepository,
+  }) : super(const AsyncLoadState.initial()) {
+    on<PoolFromPostIdRequested>(
+      (event, emit) async {
+        await tryAsync<List<Pool>>(
+          action: () => poolRepository.getPoolsByPostId(event.postId),
+          onFailure: (stackTrace, error) =>
+              emit(const AsyncLoadState.failure()),
+          onLoading: () => emit(const AsyncLoadState.loading()),
+          onSuccess: (pools) => emit(AsyncLoadState.success(pools)),
+        );
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
   }
 }

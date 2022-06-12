@@ -3,76 +3,100 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
-class FavoritesPage extends HookWidget {
-  const FavoritesPage({Key? key}) : super(key: key);
+class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({
+    Key? key,
+    required this.username,
+  }) : super(key: key);
+
+  final String username;
 
   @override
   Widget build(BuildContext context) {
-    final posts = useState(<Post>[]);
-    final isMounted = useIsMounted();
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data.removeWhere((post) {
-            final p = posts.value.firstWhere(
-              (sPost) => sPost.id == post.id,
-              orElse: () => Post.empty(),
-            );
-            return p.id == post.id;
-          });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      refreshBuilder: (page) async {
-        final account =
-            await RepositoryProvider.of<IAccountRepository>(context).get();
-        return RepositoryProvider.of<IPostRepository>(context)
-            .getPosts("ordfav:${account.username}", page);
-      },
-      loadMoreBuilder: (page) async {
-        final account =
-            await RepositoryProvider.of<IAccountRepository>(context).get();
-        return RepositoryProvider.of<IPostRepository>(context)
-            .getPosts("ordfav:${account.username}", page);
-      },
-    ));
-
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, []);
-
     return SafeArea(
-      child: InfiniteLoadList(
-          controller: infiniteListController.value,
-          posts: posts.value,
-          child: isRefreshing.value
-              ? const SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  sliver: SliverPostGridPlaceHolder())
-              : null),
+      child: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => !current.hasMore,
+        builder: (context, state) {
+          return InfiniteLoadList(
+            enableLoadMore: state.hasMore,
+            onLoadMore: () => context
+                .read<PostBloc>()
+                .add(PostFetched(tags: "ordfav:$username")),
+            onRefresh: (controller) {
+              context
+                  .read<PostBloc>()
+                  .add(PostRefreshed(tag: "ordfav:$username"));
+              Future.delayed(const Duration(milliseconds: 500),
+                  () => controller.refreshCompleted());
+            },
+            builder: (context, controller) => CustomScrollView(
+              controller: controller,
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  sliver: BlocBuilder<PostBloc, PostState>(
+                    buildWhen: (previous, current) =>
+                        current.status != LoadStatus.loading,
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.initial) {
+                        return const SliverPostGridPlaceHolder();
+                      } else if (state.status == LoadStatus.success) {
+                        if (state.posts.isEmpty) {
+                          return const SliverToBoxAdapter(
+                              child: Center(child: Text("No data")));
+                        }
+                        return SliverPostGrid(
+                          posts: state.posts,
+                          scrollController: controller,
+                          onTap: (post, index) => AppRouter.router.navigateTo(
+                            context,
+                            "/post/detail",
+                            routeSettings: RouteSettings(
+                              arguments: [
+                                state.posts,
+                                index,
+                                controller,
+                              ],
+                            ),
+                          ),
+                        );
+                      } else if (state.status == LoadStatus.loading) {
+                        return const SliverToBoxAdapter(
+                          child: SizedBox.shrink(),
+                        );
+                      } else {
+                        return const SliverToBoxAdapter(
+                          child: Center(
+                            child: Text("Something went wrong"),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                if (state.status == LoadStatus.loading && state.hasMore)
+                  const SliverPadding(
+                    padding: EdgeInsets.only(bottom: 20, top: 20),
+                    sliver: SliverToBoxAdapter(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

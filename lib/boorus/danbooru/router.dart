@@ -17,6 +17,9 @@ class AppRouter {
     router.define("/artist",
         handler: artistHandler, transitionType: TransitionType.inFromRight);
 
+    router.define("/post/detail",
+        handler: postDetailHandler, transitionType: TransitionType.inFromRight);
+
     router.define("/posts/search",
         handler: postSearchHandler, transitionType: TransitionType.fadeIn);
 
@@ -35,5 +38,8 @@ class AppRouter {
 
     router.define("/pool/detail",
         handler: poolDetailHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/favorites",
+        handler: favoritesHandler, transitionType: TransitionType.inFromRight);
   }
 }

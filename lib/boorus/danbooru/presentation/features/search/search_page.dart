@@ -10,22 +10,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import '../../shared/tag_suggestion_items.dart';
 import 'services/query_processor.dart';
 
 class SearchPage extends HookWidget {
-  const SearchPage({Key? key, this.initialQuery = ''}) : super(key: key);
+  const SearchPage({
+    Key? key,
+    this.initialQuery = '',
+  }) : super(key: key);
 
   final String initialQuery;
 
@@ -34,60 +40,14 @@ class SearchPage extends HookWidget {
     final queryEditingController = useTextEditingController
         .fromValue(TextEditingValue(text: initialQuery));
     final searchDisplayState = useState(SearchDisplayState.searchOptions());
-    final posts = useState(<Post>[]);
     final suggestions = useState(<Tag>[]);
 
     final completedQueryItems = useState(<String>[]);
-
-    final isMounted = useIsMounted();
+    final refreshController = useState(RefreshController());
 
     useEffect(() {
       ReadContext(context).read<SearchHistoryCubit>().getSearchHistory();
     }, []);
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-          if (data.isEmpty &&
-              searchDisplayState.value == SearchDisplayState.results()) {
-            searchDisplayState.value = SearchDisplayState.noResults();
-          }
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data.removeWhere((post) {
-            final p = posts.value.firstWhere(
-              (sPost) => sPost.id == post.id,
-              orElse: () => Post.empty(),
-            );
-            return p.id == post.id;
-          });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        if (searchDisplayState.value == SearchDisplayState.results()) {
-          searchDisplayState.value = SearchDisplayState.error(message);
-        }
-      },
-      refreshBuilder: (page) {
-        return RepositoryProvider.of<IPostRepository>(context)
-            .getPosts(completedQueryItems.value.join(' '), page);
-      },
-      loadMoreBuilder: (page) {
-        return RepositoryProvider.of<IPostRepository>(context)
-            .getPosts(completedQueryItems.value.join(' '), page);
-      },
-    ));
-
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
-        refreshWhen: () =>
-            completedQueryItems.value.isNotEmpty &&
-            queryEditingController.text.isEmpty);
 
     useEffect(() {
       queryEditingController.addListener(() {
@@ -218,7 +178,10 @@ class SearchPage extends HookWidget {
 
       FocusScope.of(context).unfocus();
       searchDisplayState.value = SearchDisplayState.results();
-      infiniteListController.value.refresh();
+
+      context
+          .read<PostBloc>()
+          .add(PostRefreshed(tag: completedQueryItems.value.join(' ')));
     }
 
     Widget _buildTags() {
@@ -317,14 +280,94 @@ class SearchPage extends HookWidget {
                     onItemTap: (tag) => addTag(tag.rawName),
                   ),
                   results: () {
-                    return InfiniteLoadList(
-                      controller: infiniteListController.value,
-                      posts: posts.value,
-                      child: isRefreshing.value
-                          ? const SliverPadding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              sliver: SliverPostGridPlaceHolder())
-                          : null,
+                    return BlocBuilder<PostBloc, PostState>(
+                      buildWhen: (previous, current) => !current.hasMore,
+                      builder: (context, state) {
+                        return InfiniteLoadList(
+                          refreshController: refreshController.value,
+                          enableLoadMore: state.hasMore,
+                          onLoadMore: () => context.read<PostBloc>().add(
+                              PostFetched(
+                                  tags: completedQueryItems.value.join(' '))),
+                          onRefresh: (controller) {
+                            context.read<PostBloc>().add(PostRefreshed(
+                                tag: completedQueryItems.value.join(' ')));
+                            Future.delayed(const Duration(milliseconds: 500),
+                                () => controller.refreshCompleted());
+                          },
+                          builder: (context, controller) => CustomScrollView(
+                            controller: controller,
+                            slivers: <Widget>[
+                              SliverPadding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14.0),
+                                sliver: BlocBuilder<PostBloc, PostState>(
+                                  buildWhen: (previous, current) =>
+                                      current.status != LoadStatus.loading,
+                                  builder: (context, state) {
+                                    if (state.status == LoadStatus.initial) {
+                                      return const SliverPostGridPlaceHolder();
+                                    } else if (state.status ==
+                                        LoadStatus.success) {
+                                      if (state.posts.isEmpty) {
+                                        return const SliverToBoxAdapter(
+                                            child:
+                                                Center(child: Text("No data")));
+                                      }
+                                      return SliverPostGrid(
+                                        posts: state.posts,
+                                        scrollController: controller,
+                                        onTap: (post, index) =>
+                                            AppRouter.router.navigateTo(
+                                          context,
+                                          "/post/detail",
+                                          routeSettings: RouteSettings(
+                                            arguments: [
+                                              state.posts,
+                                              index,
+                                              controller,
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    } else if (state.status ==
+                                        LoadStatus.loading) {
+                                      return const SliverToBoxAdapter(
+                                        child: SizedBox.shrink(),
+                                      );
+                                    } else {
+                                      return const SliverToBoxAdapter(
+                                        child: Center(
+                                          child: Text("Something went wrong"),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                ),
+                              ),
+                              BlocBuilder<PostBloc, PostState>(
+                                builder: (context, state) {
+                                  if (state.status == LoadStatus.loading) {
+                                    return const SliverPadding(
+                                      padding:
+                                          EdgeInsets.only(bottom: 20, top: 20),
+                                      sliver: SliverToBoxAdapter(
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return const SliverToBoxAdapter(
+                                      child: SizedBox.shrink(),
+                                    );
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     );
                   },
                   noResults: () => const EmptyResult(

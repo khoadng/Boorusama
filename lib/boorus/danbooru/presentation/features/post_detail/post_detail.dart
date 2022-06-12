@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -66,16 +65,7 @@ class PostDetail extends HookWidget {
     final scrollController = useScrollController();
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
-
-    useEffect(() {
-      context
-          .read<RecommendedArtistPostCubit>()
-          .getRecommendedPosts(post.artistTags);
-      context
-          .read<RecommendedCharacterPostCubit>()
-          .getRecommendedPosts(post.characterTags);
-      context.read<PoolFromPostIdCubit>().getPools(post.id);
-    }, []);
+    final isMounted = useIsMounted();
     final imagePath = useState<String?>(null);
 
     useEffect(() {
@@ -122,6 +112,7 @@ class PostDetail extends HookWidget {
             DefaultCacheManager()
                 .getFileFromCache(post.normalImageUrl)
                 .then((file) {
+              if (!isMounted()) return;
               imagePath.value = file!.file.path;
             });
             return Image(image: imageProvider);
@@ -262,7 +253,7 @@ class PostDetail extends HookWidget {
                 SliverToBoxAdapter(
                   child: postWidget,
                 ),
-                BlocBuilder<PoolFromPostIdCubit, AsyncLoadState<List<Pool>>>(
+                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                   builder: (context, state) {
                     if (state.status == LoadStatus.success) {
                       return SliverToBoxAdapter(
@@ -298,11 +289,8 @@ class PostDetail extends HookWidget {
                           ),
                         ),
                       );
-                    } else if (state.status == LoadStatus.failure) {
-                      return const SliverToBoxAdapter(child: SizedBox.shrink());
                     } else {
-                      return const SliverToBoxAdapter(
-                          child: LinearProgressIndicator());
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
                     }
                   },
                 ),

@@ -67,7 +67,10 @@ dependencies:
   scroll_to_index: ^2.1.1
   settings_ui: ^2.0.2
   shared_preferences: ^2.0.7
-  sliding_up_panel: ^2.0.0+1
+  sliding_up_panel:
+    git:
+      url: https://github.com/khoadng/sliding_up_panel.git
+      ref: custom-scroll-controller
   timeago: ^3.2.2
   easy_localization: ^3.0.0
   equatable: ^2.0.3
