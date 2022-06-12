@@ -76,40 +76,44 @@ class PostMostViewedBloc
     required IPostRepository postRepository,
   }) : super(PostMostViewedState.initial()) {
     on<PostMostViewedFetched>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getMostViewedPosts(
-          event.date,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: [...state.posts, ...posts],
-            hasMore: false,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getMostViewedPosts(
+            event.date,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: [...state.posts, ...posts],
+              hasMore: false,
+            ),
+          ),
+        );
+      },
       transformer: droppable(),
     );
 
     on<PostMostViewedRefreshed>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getMostViewedPosts(
-          event.date,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: posts,
-            hasMore: false,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getMostViewedPosts(
+            event.date,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: posts,
+              hasMore: false,
+            ),
+          ),
+        );
+      },
       transformer: restartable(),
     );
   }

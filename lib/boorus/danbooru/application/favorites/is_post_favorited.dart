@@ -2,7 +2,6 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 @immutable
 abstract class IsPostFavoritedEvent extends Equatable {
@@ -32,19 +32,22 @@ class IsPostFavoritedBloc
     required IFavoritePostRepository favoritePostRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<IsPostFavoritedRequested>(
-      (event, emit) => tryAsync<bool>(
-        action: () async {
-          final account = await accountRepository.get();
-          final isFaved = favoritePostRepository.checkIfFavoritedByUser(
-              account.id, event.postId);
+      (event, emit) async {
+        await tryAsync<bool>(
+          action: () async {
+            final account = await accountRepository.get();
+            final isFaved = favoritePostRepository.checkIfFavoritedByUser(
+                account.id, event.postId);
 
-          return isFaved;
-        },
-        onLoading: () => emit(const AsyncLoadState.loading()),
-        onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (value) => emit(AsyncLoadState.success(value)),
-      ),
-      transformer: restartable(),
+            return isFaved;
+          },
+          onLoading: () => emit(const AsyncLoadState.loading()),
+          onFailure: (stackTrace, error) =>
+              emit(const AsyncLoadState.failure()),
+          onSuccess: (value) => emit(AsyncLoadState.success(value)),
+        );
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 400)),
     );
   }
 }

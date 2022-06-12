@@ -87,17 +87,20 @@ final postDetailHandler = Handler(handlerFunc: (
           accountRepository: RepositoryProvider.of<IAccountRepository>(context),
           favoritePostRepository:
               RepositoryProvider.of<IFavoritePostRepository>(context),
-        ),
+        )..add(IsPostFavoritedRequested(postId: posts[index].id)),
       ),
       BlocProvider(
           create: (context) => RecommendedArtistPostCubit(
-              postRepository: RepositoryProvider.of<IPostRepository>(context))),
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(RecommendedPostRequested(tags: posts[index].artistTags))),
       BlocProvider(
           create: (context) => PoolFromPostIdBloc(
-              poolRepository: RepositoryProvider.of<PoolRepository>(context))),
+              poolRepository: RepositoryProvider.of<PoolRepository>(context))
+            ..add(PoolFromPostIdRequested(postId: posts[index].id))),
       BlocProvider(
           create: (context) => RecommendedCharacterPostCubit(
-              postRepository: RepositoryProvider.of<IPostRepository>(context))),
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(RecommendedPostRequested(tags: posts[index].characterTags))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
     ],

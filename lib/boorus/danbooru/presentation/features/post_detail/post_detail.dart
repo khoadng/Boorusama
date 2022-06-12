@@ -66,18 +66,6 @@ class PostDetail extends HookWidget {
     final scrollControllerWithAnim =
         useScrollControllerForAnimation(animController, scrollController);
     final isMounted = useIsMounted();
-
-    useEffect(() {
-      context
-          .read<RecommendedArtistPostCubit>()
-          .getRecommendedPosts(post.artistTags);
-      context
-          .read<RecommendedCharacterPostCubit>()
-          .getRecommendedPosts(post.characterTags);
-      context
-          .read<PoolFromPostIdBloc>()
-          .add(PoolFromPostIdRequested(postId: post.id));
-    }, []);
     final imagePath = useState<String?>(null);
 
     useEffect(() {

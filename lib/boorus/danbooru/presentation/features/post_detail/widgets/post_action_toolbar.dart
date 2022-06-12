@@ -30,12 +30,6 @@ class PostActionToolbar extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      ReadContext(context)
-          .read<IsPostFavoritedBloc>()
-          .add(IsPostFavoritedRequested(postId: post.id));
-    }, []);
-
     final favCount = useState(post.favCount);
 
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(

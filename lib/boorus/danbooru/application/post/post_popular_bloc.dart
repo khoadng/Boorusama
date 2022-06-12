@@ -84,46 +84,50 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
     required IPostRepository postRepository,
   }) : super(PostPopularState.initial()) {
     on<PostPopularFetched>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPopularPosts(
-          event.date,
-          state.page + 1,
-          event.scale,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: [...state.posts, ...posts],
-            page: state.page + 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getPopularPosts(
+            event.date,
+            state.page + 1,
+            event.scale,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: [...state.posts, ...posts],
+              page: state.page + 1,
+              hasMore: posts.isNotEmpty,
+            ),
+          ),
+        );
+      },
       transformer: droppable(),
     );
 
     on<PostPopularRefreshed>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPopularPosts(
-          event.date,
-          1,
-          event.scale,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: posts,
-            page: 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getPopularPosts(
+            event.date,
+            1,
+            event.scale,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: posts,
+              page: 1,
+              hasMore: posts.isNotEmpty,
+            ),
+          ),
+        );
+      },
       transformer: restartable(),
     );
   }

@@ -8,6 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
@@ -152,6 +155,18 @@ class PostDetailPage extends HookWidget {
                   context
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
+
+                  context.read<RecommendedArtistPostCubit>().add(
+                      RecommendedPostRequested(tags: posts[index].artistTags));
+                  context.read<RecommendedCharacterPostCubit>().add(
+                      RecommendedPostRequested(
+                          tags: posts[index].characterTags));
+                  context
+                      .read<PoolFromPostIdBloc>()
+                      .add(PoolFromPostIdRequested(postId: posts[index].id));
+                  ReadContext(context)
+                      .read<IsPostFavoritedBloc>()
+                      .add(IsPostFavoritedRequested(postId: post.id));
                 },
                 height: MediaQuery.of(context).size.height,
                 viewportFraction: 1,

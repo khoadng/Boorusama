@@ -84,46 +84,50 @@ class PostCuratedBloc extends Bloc<PostCuratedEvent, PostCuratedState> {
     required IPostRepository postRepository,
   }) : super(PostCuratedState.initial()) {
     on<PostCuratedFetched>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getCuratedPosts(
-          event.date,
-          state.page + 1,
-          event.scale,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: [...state.posts, ...posts],
-            page: state.page + 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getCuratedPosts(
+            event.date,
+            state.page + 1,
+            event.scale,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: [...state.posts, ...posts],
+              page: state.page + 1,
+              hasMore: posts.isNotEmpty,
+            ),
+          ),
+        );
+      },
       transformer: droppable(),
     );
 
     on<PostCuratedRefreshed>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getCuratedPosts(
-          event.date,
-          1,
-          event.scale,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: posts,
-            page: 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getCuratedPosts(
+            event.date,
+            1,
+            event.scale,
           ),
-        ),
-      ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: posts,
+              page: 1,
+              hasMore: posts.isNotEmpty,
+            ),
+          ),
+        );
+      },
       transformer: restartable(),
     );
   }
