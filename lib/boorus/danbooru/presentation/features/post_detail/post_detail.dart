@@ -301,11 +301,8 @@ class PostDetail extends HookWidget {
                           ),
                         ),
                       );
-                    } else if (state.status == LoadStatus.failure) {
-                      return const SliverToBoxAdapter(child: SizedBox.shrink());
                     } else {
-                      return const SliverToBoxAdapter(
-                          child: LinearProgressIndicator());
+                      return const SliverToBoxAdapter(child: SizedBox.shrink());
                     }
                   },
                 ),

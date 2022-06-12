@@ -1,4 +1,5 @@
-// Flutter imports:
+// Dart imports:
+import 'dart:collection';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -22,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/application/recommended/recommended_po
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
@@ -50,9 +52,17 @@ final artistHandler = Handler(handlerFunc: (
 ) {
   final args = context!.settings!.arguments as List;
 
-  return ArtistPage(
-    artistName: args[0],
-    backgroundImageUrl: args[1],
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PostBloc(
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..add(PostRefreshed(tag: args[0]))),
+    ],
+    child: ArtistPage(
+      artistName: args[0],
+      backgroundImageUrl: args[1],
+    ),
   );
 });
 
@@ -124,7 +134,10 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
           create: (context) => SearchHistoryCubit(
               searchHistoryRepository:
-                  RepositoryProvider.of<ISearchHistoryRepository>(context))),
+                  context.read<ISearchHistoryRepository>())),
+      BlocProvider(
+          create: (context) =>
+              PostBloc(postRepository: context.read<IPostRepository>())),
     ],
     child: SearchPage(
       initialQuery: args[0],
@@ -182,6 +195,7 @@ final settingsHandler =
 final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
+  final pool = args[0] as Pool;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {
@@ -189,8 +203,10 @@ final poolDetailHandler =
         providers: [
           BlocProvider(
               create: (context) => PoolDetailCubit(
+                  ids: Queue.from(pool.postIds.reversed),
                   postRepository:
-                      RepositoryProvider.of<IPostRepository>(context))),
+                      RepositoryProvider.of<IPostRepository>(context))
+                ..load()),
           BlocProvider(
               create: (context) =>
                   PoolDescriptionCubit(endpoint: state.booru.url)),
@@ -200,7 +216,7 @@ final poolDetailHandler =
                       RepositoryProvider.of<INoteRepository>(context))),
         ],
         child: PoolDetailPage(
-          pool: args[0],
+          pool: pool,
         ),
       );
     },

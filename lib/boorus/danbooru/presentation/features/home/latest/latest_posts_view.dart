@@ -69,7 +69,7 @@ class _LatestViewState extends State<LatestView> {
     return BlocBuilder<PostBloc, PostState>(
       buildWhen: (previous, current) => !current.hasMore,
       builder: (context, state) {
-        return InfiniteLoadList2(
+        return InfiniteLoadList(
           extendBody: true,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context
@@ -88,18 +88,21 @@ class _LatestViewState extends State<LatestView> {
               _buildMostSearchTagList(),
               _buildPostList(controller),
               BlocBuilder<PostBloc, PostState>(
-                buildWhen: (previous, current) =>
-                    current.status == LoadStatus.loading && current.hasMore,
                 builder: (context, state) {
-                  return const SliverPadding(
-                    padding: EdgeInsets.only(
-                        bottom: kBottomNavigationBarHeight + 20, top: 20),
-                    sliver: SliverToBoxAdapter(
-                      child: Center(
-                        child: CircularProgressIndicator(),
+                  if (state.status == LoadStatus.loading) {
+                    return const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
-                  );
+                    );
+                  } else {
+                    return const SliverToBoxAdapter(
+                      child: SizedBox.shrink(),
+                    );
+                  }
                 },
               ),
             ],

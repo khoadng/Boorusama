@@ -2,23 +2,20 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:animations/animations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_detail_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_reader_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
@@ -34,10 +31,11 @@ class PoolDetailPage extends StatefulWidget {
 }
 
 class _PoolDetailPageState extends State<PoolDetailPage> {
+  final RefreshController refreshController = RefreshController();
+
   @override
   void initState() {
     super.initState();
-    context.read<PoolDetailCubit>().getPoolDetail(widget.pool.postIds);
     context.read<PoolDescriptionCubit>().getDescription(widget.pool.id);
   }
 
@@ -45,146 +43,111 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: ListTile(
-                title: Text(
-                  widget.pool.name.value.removeUnderscoreWithSpace(),
-                  style: Theme.of(context).textTheme.headline6!,
+      body: SafeArea(child: BlocBuilder<PoolDetailCubit, PoolDetailState>(
+        builder: (context, state) {
+          return InfiniteLoadList(
+            refreshController: refreshController,
+            enableRefresh: false,
+            onLoadMore: () => context.read<PoolDetailCubit>().load(),
+            builder: (context, controller) => CustomScrollView(
+              controller: controller,
+              slivers: <Widget>[
+                SliverToBoxAdapter(
+                  child: ListTile(
+                    title: Text(
+                      widget.pool.name.value.removeUnderscoreWithSpace(),
+                      style: Theme.of(context).textTheme.headline6!,
+                    ),
+                    subtitle: Text(
+                        "Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}"),
+                  ),
                 ),
-                subtitle: Text(
-                    "Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}"),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: BlocBuilder<PoolDescriptionCubit,
-                  AsyncLoadState<PoolDescriptionState>>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.success) {
-                    return Html(
-                      onLinkTap: (url, context, attributes, element) =>
-                          _onHtmlLinkTapped(attributes, url,
-                              state.data!.descriptionEndpointRefUrl),
-                      data: state.data!.description,
-                    );
-                  } else if (state.status == LoadStatus.failure) {
-                    return const SizedBox.shrink();
-                  } else {
-                    return const Center(
-                      child: LinearProgressIndicator(),
-                    );
-                  }
-                },
-              ),
-            ),
-            BlocBuilder<PoolDetailCubit, AsyncLoadState<List<Post>>>(
-              builder: (context, state) {
-                if (state.status == LoadStatus.success) {
-                  return SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 0.65,
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 10.0,
-                      crossAxisSpacing: 10.0,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        final post = state.data![index];
-                        final items = <Widget>[];
-
-                        if (post.isAnimated) {
-                          items.add(
-                            const Icon(
-                              Icons.play_circle_outline,
-                              color: Colors.white70,
-                            ),
-                          );
-                        }
-
-                        if (post.isTranslated) {
-                          items.add(
-                            const Icon(
-                              Icons.g_translate_outlined,
-                              color: Colors.white70,
-                            ),
-                          );
-                        }
-
-                        if (post.hasComment) {
-                          items.add(
-                            const Icon(
-                              Icons.comment,
-                              color: Colors.white70,
-                            ),
-                          );
-                        }
-
-                        return OpenContainer(
-                          closedBuilder: (context, action) => Stack(
-                            children: <Widget>[
-                              PostImage(
-                                imageUrl: post.isAnimated
-                                    ? post.previewImageUrl
-                                    : post.normalImageUrl,
-                                placeholderUrl: post.previewImageUrl,
-                              ),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: ShadowGradientOverlay(
-                                  alignment: Alignment.topCenter,
-                                  colors: <Color>[
-                                    const Color(0x2F000000),
-                                    Colors.black12.withOpacity(0.0)
-                                  ],
-                                ),
-                              ),
-                              Positioned(
-                                top: 6,
-                                left: 6,
-                                child: IgnorePointer(
-                                  child: Column(
-                                    children: items,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          openColor: Colors.transparent,
-                          closedColor: Colors.transparent,
-                          openBuilder: (_, action) =>
-                              MultiBlocProvider(providers: [
-                            BlocProvider.value(
-                                value: BlocProvider.of<NoteBloc>(context)
-                                  ..add(NoteRequested(postId: post.id))),
-                            BlocProvider(
-                              create: (_) => PoolReadCubit(
-                                initialState: PoolReadState(
-                                  imageUrl: post.normalImageUrl,
-                                  currentIdx: index,
-                                  post: post,
-                                ),
-                                posts: state.data!,
-                              ),
-                            )
-                          ], child: const PoolReaderPage()),
+                SliverToBoxAdapter(
+                  child: BlocBuilder<PoolDescriptionCubit,
+                      AsyncLoadState<PoolDescriptionState>>(
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.success) {
+                        return Html(
+                          onLinkTap: (url, context, attributes, element) =>
+                              _onHtmlLinkTapped(attributes, url,
+                                  state.data!.descriptionEndpointRefUrl),
+                          data: state.data!.description,
                         );
-                      },
-                      childCount: state.data!.length,
-                    ),
-                  );
-                } else if (state.status == LoadStatus.failure) {
-                  return const SizedBox.shrink();
-                } else {
-                  return const SliverPostGridPlaceHolder();
-                }
-              },
-            )
-          ],
-        ),
-      ),
+                      } else if (state.status == LoadStatus.failure) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return const Center(
+                          child: LinearProgressIndicator(),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  sliver: BlocBuilder<PoolDetailCubit, PoolDetailState>(
+                    buildWhen: (previous, current) =>
+                        current.status != LoadStatus.loading,
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.initial) {
+                        return const SliverPostGridPlaceHolder();
+                      } else if (state.status == LoadStatus.success) {
+                        if (state.posts.isEmpty) {
+                          return const SliverToBoxAdapter(
+                              child: Center(child: Text("No data")));
+                        }
+                        return SliverPostGrid(
+                          posts: state.posts,
+                          scrollController: controller,
+                          onTap: (post, index) => AppRouter.router.navigateTo(
+                            context,
+                            "/post/detail",
+                            routeSettings: RouteSettings(
+                              arguments: [
+                                state.posts,
+                                index,
+                                controller,
+                              ],
+                            ),
+                          ),
+                        );
+                      } else if (state.status == LoadStatus.loading) {
+                        return const SliverToBoxAdapter(
+                          child: SizedBox.shrink(),
+                        );
+                      } else {
+                        return const SliverToBoxAdapter(
+                          child: Center(
+                            child: Text("Something went wrong"),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                ),
+                BlocBuilder<PoolDetailCubit, PoolDetailState>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.loading) {
+                      return const SliverPadding(
+                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        sliver: SliverToBoxAdapter(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                      );
+                    } else {
+                      return const SliverToBoxAdapter(
+                        child: SizedBox.shrink(),
+                      );
+                    }
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      )),
     );
   }
 }

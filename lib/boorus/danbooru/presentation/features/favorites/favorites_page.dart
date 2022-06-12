@@ -26,7 +26,7 @@ class FavoritesPage extends StatelessWidget {
       child: BlocBuilder<PostBloc, PostState>(
         buildWhen: (previous, current) => !current.hasMore,
         builder: (context, state) {
-          return InfiniteLoadList2(
+          return InfiniteLoadList(
             enableLoadMore: state.hasMore,
             onLoadMore: () => context
                 .read<PostBloc>()

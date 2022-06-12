@@ -1221,9 +1221,11 @@ packages:
   sliding_up_panel:
     dependency: "direct main"
     description:
-      name: sliding_up_panel
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: custom-scroll-controller
+      resolved-ref: "310514aad96a40c1fbf6be78d4b40358acf79bdf"
+      url: "https://github.com/khoadng/sliding_up_panel.git"
+    source: git
     version: "2.0.0+1"
   source_gen:
     dependency: transitive

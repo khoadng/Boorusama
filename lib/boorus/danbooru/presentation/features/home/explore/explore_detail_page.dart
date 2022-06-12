@@ -206,7 +206,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteLoadList2(
+    return InfiniteLoadList(
       enableLoadMore: hasMore,
       scrollController: scrollController,
       refreshController: controller,
