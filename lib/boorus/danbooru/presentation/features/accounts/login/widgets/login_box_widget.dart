@@ -213,13 +213,13 @@ class LoginField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useTextEditingController();
+    TextEditingController defaultController = useTextEditingController();
 
     return TextFormField(
       onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,
-      controller: controller,
+      controller: controller ?? defaultController,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,
@@ -229,8 +229,8 @@ class LoginField extends HookWidget {
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Theme.of(context).colorScheme.secondary, width: 2.0),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary, width: 2.0),
           borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
         errorBorder: OutlineInputBorder(
