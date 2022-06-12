@@ -92,3 +92,10 @@ flutter build apk --split-per-abi --debug
 ## Fix app crashes on certain devices on Android 6.0
 
 > Read more [here](https://docs.flutter.dev/deployment/android#building-the-app-for-release)
+
+## Paste text on Android Emulator
+
+```bash
+#!/bin/bash
+adb shell input text 'my string here. With some characters escaped like \$ that'
+```
