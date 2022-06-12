@@ -26,9 +26,9 @@ class CommentItem extends StatelessWidget {
         Row(
           children: [
             Text(
-              comment.author.displayName,
+              comment.author.name.value.replaceAll("_", " "),
               style: TextStyle(
-                color: Color(comment.author.level.level.hexColor),
+                color: Color(comment.author.level.hexColor),
               ),
             ),
             const SizedBox(

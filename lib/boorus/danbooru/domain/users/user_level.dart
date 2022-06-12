@@ -1,31 +1,25 @@
-class UserLevel {
-  final int _level;
-
-  UserLevel(this._level);
-
-  Level get level {
-    switch (_level) {
-      case 20:
-        return Level.member;
-      case 30:
-        return Level.gold;
-      case 31:
-        return Level.platinum;
-      case 32:
-        return Level.builder;
-      case 35:
-        return Level.janitor;
-      case 40:
-        return Level.moderator;
-      case 50:
-        return Level.admin;
-      default:
-        return Level.member;
-    }
+UserLevel intToUserLevel(int value) {
+  switch (value) {
+    case 20:
+      return UserLevel.member;
+    case 30:
+      return UserLevel.gold;
+    case 31:
+      return UserLevel.platinum;
+    case 32:
+      return UserLevel.builder;
+    case 35:
+      return UserLevel.janitor;
+    case 40:
+      return UserLevel.moderator;
+    case 50:
+      return UserLevel.admin;
+    default:
+      return UserLevel.member;
   }
 }
 
-enum Level {
+enum UserLevel {
   member,
   gold,
   platinum,
@@ -35,22 +29,22 @@ enum Level {
   admin,
 }
 
-extension LevelExtension on Level {
+extension LevelExtension on UserLevel {
   int get hexColor {
     switch (this) {
-      case Level.member:
+      case UserLevel.member:
         return 0xff0073ff;
-      case Level.gold:
+      case UserLevel.gold:
         return 0xff0000ff;
-      case Level.platinum:
+      case UserLevel.platinum:
         return 0xff808080;
-      case Level.builder:
+      case UserLevel.builder:
         return 0xff6633ff;
-      case Level.janitor:
+      case UserLevel.janitor:
         return 0xffffa500;
-      case Level.moderator:
+      case UserLevel.moderator:
         return 0xffffa500;
-      case Level.admin:
+      case UserLevel.admin:
         return 0xffff0000;
       default:
         return 0xff0073ff;

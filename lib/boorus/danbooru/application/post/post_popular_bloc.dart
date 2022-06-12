@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/main.dart';
+import 'common.dart';
 
 @immutable
 class PostPopularState extends Equatable {
@@ -82,9 +84,12 @@ class PostPopularRefreshed extends PostPopularEvent {
 class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
   PostPopularBloc({
     required IPostRepository postRepository,
+    required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(PostPopularState.initial()) {
     on<PostPopularFetched>(
       (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
         await tryAsync<List<Post>>(
           action: () => postRepository.getPopularPosts(
             event.date,
@@ -97,7 +102,7 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onSuccess: (posts) => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: [...state.posts, ...posts],
+              posts: [...state.posts, ...filter(posts, blacklisted)],
               page: state.page + 1,
               hasMore: posts.isNotEmpty,
             ),
@@ -109,6 +114,8 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
 
     on<PostPopularRefreshed>(
       (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
         await tryAsync<List<Post>>(
           action: () => postRepository.getPopularPosts(
             event.date,
@@ -121,7 +128,7 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onSuccess: (posts) => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: posts,
+              posts: filter(posts, blacklisted),
               page: 1,
               hasMore: posts.isNotEmpty,
             ),

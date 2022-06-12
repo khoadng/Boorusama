@@ -32,7 +32,7 @@ class CommentCubit extends Cubit<AsyncLoadState<List<Comment>>> {
           final commentsWithAuthor =
               (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {
             final author =
-                users.where((user) => user.id == comment.creatorId).first;
+                users.where((user) => user.id.value == comment.creatorId).first;
             return comment.copyWith(author: author);
           }).toList();
 

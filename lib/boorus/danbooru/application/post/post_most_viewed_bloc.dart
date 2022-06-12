@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/main.dart';
+import 'common.dart';
 
 @immutable
 class PostMostViewedState extends Equatable {
@@ -74,9 +76,12 @@ class PostMostViewedBloc
     extends Bloc<PostMostViewedEvent, PostMostViewedState> {
   PostMostViewedBloc({
     required IPostRepository postRepository,
+    required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(PostMostViewedState.initial()) {
     on<PostMostViewedFetched>(
       (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
         await tryAsync<List<Post>>(
           action: () => postRepository.getMostViewedPosts(
             event.date,
@@ -87,7 +92,7 @@ class PostMostViewedBloc
           onSuccess: (posts) => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: [...state.posts, ...posts],
+              posts: [...state.posts, ...filter(posts, blacklisted)],
               hasMore: false,
             ),
           ),
@@ -98,6 +103,8 @@ class PostMostViewedBloc
 
     on<PostMostViewedRefreshed>(
       (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
         await tryAsync<List<Post>>(
           action: () => postRepository.getMostViewedPosts(
             event.date,
@@ -108,7 +115,7 @@ class PostMostViewedBloc
           onSuccess: (posts) => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: posts,
+              posts: filter(posts, blacklisted),
               hasMore: false,
             ),
           ),
