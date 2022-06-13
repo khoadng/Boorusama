@@ -34,17 +34,17 @@ class PreviewPostGrid extends StatelessWidget {
     }
 
     return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: posts.length <= 3 ? 1 : 2,
       ),
       shrinkWrap: true,
       physics: physics ?? const NeverScrollableScrollPhysics(),
       scrollDirection: Axis.horizontal,
       itemCount: posts.length,
       itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(1.5),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(4),
           child: GestureDetector(
             onTap: () => handleTap(posts[index], index),
             child: CachedNetworkImage(
@@ -55,7 +55,7 @@ class PreviewPostGrid extends StatelessWidget {
               placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(4),
                 ),
               ),
             ),

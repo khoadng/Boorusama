@@ -8,14 +8,18 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/common/collection_utils.dart';
 
+typedef TagCategoryOrder = int;
+
 class TagGroupItem {
   TagGroupItem({
     required this.groupName,
     required this.tags,
+    required this.order,
   });
 
   final String groupName;
   final List<Tag> tags;
+  final TagCategoryOrder order;
 }
 
 String tagCategoryToString(TagCategory category) {
@@ -53,11 +57,31 @@ class TagCubit extends Cubit<AsyncLoadState<List<TagGroupItem>>> {
             .groupBy((e) => e.category)
             .entries
             .map((e) => TagGroupItem(
-                groupName: tagCategoryToString(e.key), tags: e.value))
-            .toList();
-
+                  groupName: tagCategoryToString(e.key),
+                  tags: e.value,
+                  order: tagCategoryToOrder(e.key),
+                ))
+            .toList()
+          ..sort((a, b) => a.order.compareTo(b.order));
         emit(AsyncLoadState.success(group));
       },
     );
+  }
+}
+
+TagCategoryOrder tagCategoryToOrder(TagCategory category) {
+  switch (category) {
+    case TagCategory.artist:
+      return 0;
+    case TagCategory.copyright:
+      return 1;
+    case TagCategory.charater:
+      return 2;
+    case TagCategory.general:
+      return 3;
+    case TagCategory.meta:
+      return 4;
+    default:
+      return 5;
   }
 }

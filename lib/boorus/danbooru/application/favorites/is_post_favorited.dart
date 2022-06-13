@@ -47,7 +47,7 @@ class IsPostFavoritedBloc
           onSuccess: (value) => emit(AsyncLoadState.success(value)),
         );
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+      transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
   }
 }

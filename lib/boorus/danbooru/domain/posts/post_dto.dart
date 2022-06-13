@@ -153,7 +153,7 @@ class PostDto {
   final String? previewFileUrl;
 }
 
-List<String> splitTag(String tags) => tags.split(' ');
+List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
 
 Post postDtoToPost(PostDto dto) {
   try {

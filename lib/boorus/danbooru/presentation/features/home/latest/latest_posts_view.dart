@@ -49,7 +49,7 @@ class _LatestViewState extends State<LatestView> {
     _selectedTag.addListener(() => _selectedTagStream.add(_selectedTag.value));
 
     _selectedTagStream
-        .debounceTime(const Duration(milliseconds: 500))
+        .debounceTime(const Duration(milliseconds: 350))
         .distinct()
         .listen(_sendRefresh)
         .addTo(_compositeSubscription);
@@ -208,6 +208,8 @@ class _LatestViewState extends State<LatestView> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
+                disabledColor: Theme.of(context).cardColor,
+                backgroundColor: Theme.of(context).cardColor,
                 selectedColor: Colors.white,
                 selected: selected,
                 onSelected: (selected) => selected

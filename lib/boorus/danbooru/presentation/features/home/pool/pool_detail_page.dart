@@ -42,7 +42,9 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        title: const Text('Pool'),
+      ),
       body: SafeArea(child: BlocBuilder<PoolDetailCubit, PoolDetailState>(
         builder: (context, state) {
           return InfiniteLoadList(

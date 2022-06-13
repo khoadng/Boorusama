@@ -41,7 +41,7 @@ class PoolFromPostIdBloc
           onSuccess: (pools) => emit(AsyncLoadState.success(pools)),
         );
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+      transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
   }
 }

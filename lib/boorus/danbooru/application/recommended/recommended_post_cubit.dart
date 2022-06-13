@@ -48,7 +48,7 @@ class RecommendedPostBloc
             onLoading: () => emit(const AsyncLoadState.loading()),
             onSuccess: (posts) => emit(AsyncLoadState.success(posts)));
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 400)),
+      transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
   }
 }

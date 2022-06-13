@@ -34,7 +34,6 @@ import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
 
 class Recommended {
-
   Recommended({
     required String title,
     required List<Post> posts,
@@ -43,8 +42,7 @@ class Recommended {
   final String _title;
   final List<Post> _posts;
 
-  String get title =>
-      _title.split(' ').join(', ').removeUnderscoreWithSpace().titleCase;
+  String get title => _title.split(' ').join(', ').removeUnderscoreWithSpace();
   List<Post> get posts => _posts;
 }
 
@@ -178,8 +176,7 @@ class PostDetail extends HookWidget {
                   artists.length,
                   (index) => RecommendPostSectionPlaceHolder(
                     header: ListTile(
-                      title: Text(
-                          artists[index].removeUnderscoreWithSpace().titleCase),
+                      title: Text(artists[index].removeUnderscoreWithSpace()),
                       trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
@@ -230,9 +227,8 @@ class PostDetail extends HookWidget {
                   characters.length,
                   (index) => RecommendPostSectionPlaceHolder(
                     header: ListTile(
-                      title: Text(characters[index]
-                          .removeUnderscoreWithSpace()
-                          .titleCase),
+                      title:
+                          Text(characters[index].removeUnderscoreWithSpace()),
                       trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     ),
                   ),
@@ -399,7 +395,8 @@ class RecommendPostSection extends HookWidget {
         Padding(
           padding: const EdgeInsets.all(4),
           child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
+            height: MediaQuery.of(context).size.height *
+                (posts.length <= 3 ? 0.15 : 0.3),
             child: PreviewPostGrid(posts: posts),
           ),
         ),

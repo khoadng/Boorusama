@@ -137,7 +137,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           )),
         );
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 100)),
+      transformer: debounceRestartable(const Duration(milliseconds: 50)),
     );
 
     on<TagSearchNewTagSelected>((event, emit) => emit(state.copyWith(

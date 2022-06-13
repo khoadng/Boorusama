@@ -47,11 +47,21 @@ class SideBarMenu extends StatelessWidget {
                                 .navigateTo(context, '/users/profile');
                           },
                         ),
-                      const Divider(),
+                      if (state.data! != Account.empty)
+                        ListTile(
+                          leading: const FaIcon(FontAwesomeIcons.solidHeart),
+                          title: Text('profile.favorites'.tr()),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(context, '/favorites',
+                                routeSettings: RouteSettings(
+                                    arguments: [state.data!.username]));
+                          },
+                        ),
                       if (state.data! != Account.empty)
                         ListTile(
                           leading: const FaIcon(FontAwesomeIcons.ban),
-                          title: const Text('Blacklisted Tags'),
+                          title: const Text('Blacklisted tags'),
                           onTap: () {
                             Navigator.of(context).pop();
                             AppRouter.router.navigateTo(
@@ -60,7 +70,6 @@ class SideBarMenu extends StatelessWidget {
                                     RouteSettings(arguments: [state.data!.id]));
                           },
                         ),
-                      const Divider(),
                       ListTile(
                         leading: const Icon(Icons.settings),
                         title: Text('sideMenu.settings'.tr()),

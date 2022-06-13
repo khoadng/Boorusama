@@ -22,13 +22,13 @@ class PreviewPostGridPlaceHolder extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: itemCount,
       itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(3),
+        padding: const EdgeInsets.all(1.5),
         child: Container(
           height: MediaQuery.of(context).size.height * 0.2,
           width: MediaQuery.of(context).size.width * 0.3,
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4),
           ),
         ),
       ),
