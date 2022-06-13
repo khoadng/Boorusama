@@ -17,32 +17,37 @@ class PostMostViewedState extends Equatable {
   const PostMostViewedState({
     required this.status,
     required this.posts,
+    required this.filteredPosts,
     required this.hasMore,
   });
 
   factory PostMostViewedState.initial() => const PostMostViewedState(
         status: LoadStatus.initial,
         posts: [],
+        filteredPosts: [],
         hasMore: true,
       );
 
   final List<Post> posts;
+  final List<Post> filteredPosts;
   final LoadStatus status;
   final bool hasMore;
 
   PostMostViewedState copyWith({
     LoadStatus? status,
     List<Post>? posts,
+    List<Post>? filteredPosts,
     bool? hasMore,
   }) =>
       PostMostViewedState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
+        filteredPosts: filteredPosts ?? this.filteredPosts,
         hasMore: hasMore ?? this.hasMore,
       );
 
   @override
-  List<Object?> get props => [status, posts, hasMore];
+  List<Object?> get props => [status, posts, filteredPosts, hasMore];
 }
 
 @immutable
@@ -89,13 +94,23 @@ class PostMostViewedBloc
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) => emit(
-            state.copyWith(
-              status: LoadStatus.success,
-              posts: [...state.posts, ...filter(posts, blacklisted)],
-              hasMore: false,
-            ),
-          ),
+          onSuccess: (posts) {
+            final filteredPosts = filterBlacklisted(posts, blacklisted);
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: [
+                  ...state.posts,
+                  ...filter(posts, blacklisted),
+                ],
+                filteredPosts: [
+                  ...state.filteredPosts,
+                  ...filteredPosts,
+                ],
+                hasMore: false,
+              ),
+            );
+          },
         );
       },
       transformer: droppable(),
@@ -116,6 +131,7 @@ class PostMostViewedBloc
             state.copyWith(
               status: LoadStatus.success,
               posts: filter(posts, blacklisted),
+              filteredPosts: filterBlacklisted(posts, blacklisted),
               hasMore: false,
             ),
           ),

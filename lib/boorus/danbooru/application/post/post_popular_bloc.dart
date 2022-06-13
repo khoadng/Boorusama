@@ -17,6 +17,7 @@ class PostPopularState extends Equatable {
   const PostPopularState({
     required this.status,
     required this.posts,
+    required this.filteredPosts,
     required this.page,
     required this.hasMore,
   });
@@ -24,11 +25,13 @@ class PostPopularState extends Equatable {
   factory PostPopularState.initial() => const PostPopularState(
         status: LoadStatus.initial,
         posts: [],
+        filteredPosts: [],
         page: 1,
         hasMore: true,
       );
 
   final List<Post> posts;
+  final List<Post> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
@@ -36,18 +39,20 @@ class PostPopularState extends Equatable {
   PostPopularState copyWith({
     LoadStatus? status,
     List<Post>? posts,
+    List<Post>? filteredPosts,
     int? page,
     bool? hasMore,
   }) =>
       PostPopularState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
+        filteredPosts: filteredPosts ?? this.filteredPosts,
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
       );
 
   @override
-  List<Object?> get props => [status, posts, page, hasMore];
+  List<Object?> get props => [status, posts, filteredPosts, page, hasMore];
 }
 
 @immutable
@@ -99,14 +104,25 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) => emit(
-            state.copyWith(
-              status: LoadStatus.success,
-              posts: [...state.posts, ...filter(posts, blacklisted)],
-              page: state.page + 1,
-              hasMore: posts.isNotEmpty,
-            ),
-          ),
+          onSuccess: (posts) {
+            final filteredPosts = filterBlacklisted(posts, blacklisted);
+
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: [
+                  ...state.posts,
+                  ...filter(posts, blacklisted),
+                ],
+                filteredPosts: [
+                  ...state.filteredPosts,
+                  ...filteredPosts,
+                ],
+                page: state.page + 1,
+                hasMore: posts.isNotEmpty,
+              ),
+            );
+          },
         );
       },
       transformer: droppable(),
@@ -129,6 +145,7 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
             state.copyWith(
               status: LoadStatus.success,
               posts: filter(posts, blacklisted),
+              filteredPosts: filterBlacklisted(posts, blacklisted),
               page: 1,
               hasMore: posts.isNotEmpty,
             ),

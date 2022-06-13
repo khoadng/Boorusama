@@ -187,14 +187,6 @@ void main() async {
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
-                  final mostViewedCubit =
-                      MostViewedCubit(postRepository: postRepo)
-                        ..getMostViewed();
-                  final popularCubit = PopularCubit(postRepository: postRepo)
-                    ..getPopular();
-                  final curatedCubit = CuratedCubit(postRepository: postRepo)
-                    ..getCurated();
-
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final artistCubit = ArtistCubit(artistRepository: artistRepo);
@@ -255,9 +247,6 @@ void main() async {
                           BlocProvider.value(value: profileCubit),
                           BlocProvider.value(value: commentCubit),
                           BlocProvider.value(value: artistCommentaryCubit),
-                          BlocProvider.value(value: mostViewedCubit),
-                          BlocProvider.value(value: popularCubit),
-                          BlocProvider.value(value: curatedCubit),
                           BlocProvider.value(value: accountCubit),
                           BlocProvider.value(value: authenticationCubit),
                           BlocProvider.value(value: poolCubit),
@@ -284,10 +273,36 @@ void main() async {
                                 blacklistedTagRepo
                                     ._refresh(state.blacklistedTags);
                               },
-                              child: Container(),
                             )
                           ],
-                          child: const App(),
+                          child: BlocBuilder<UserBlacklistedTagsBloc,
+                              UserBlacklistedTagsState>(
+                            buildWhen: (previous, current) =>
+                                previous.blacklistedTags !=
+                                current.blacklistedTags,
+                            builder: (context, state) {
+                              final mostViewedCubit = MostViewedCubit(
+                                postRepository: postRepo,
+                                blacklistedTagsRepository: blacklistedTagRepo,
+                              )..getMostViewed();
+                              final popularCubit = PopularCubit(
+                                postRepository: postRepo,
+                                blacklistedTagsRepository: blacklistedTagRepo,
+                              )..getPopular();
+                              final curatedCubit = CuratedCubit(
+                                postRepository: postRepo,
+                                blacklistedTagsRepository: blacklistedTagRepo,
+                              )..getCurated();
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider.value(value: mostViewedCubit),
+                                  BlocProvider.value(value: popularCubit),
+                                  BlocProvider.value(value: curatedCubit),
+                                ],
+                                child: const App(),
+                              );
+                            },
+                          ),
                         ),
                       ));
                 },
