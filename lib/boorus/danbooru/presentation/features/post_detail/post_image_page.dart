@@ -99,7 +99,7 @@ class PostImagePage extends HookWidget {
         return PhotoView(
           imageProvider: imageProvider,
           backgroundDecoration: BoxDecoration(
-            color: Theme.of(context).appBarTheme.color,
+            color: Theme.of(context).appBarTheme.backgroundColor,
           ),
         );
       },

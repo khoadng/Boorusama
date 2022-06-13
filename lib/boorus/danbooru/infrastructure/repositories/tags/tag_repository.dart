@@ -33,7 +33,7 @@ class TagRepository implements ITagRepository {
               account.apiKey,
               page,
               "yes",
-              stringPattern + "*",
+              "$stringPattern*",
               "count",
               30,
             ),

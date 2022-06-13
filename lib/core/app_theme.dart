@@ -8,9 +8,7 @@ class AppTheme {
   static final lightTheme = ThemeData.light().copyWith(
     colorScheme: const ColorScheme.light(
       primary: Color.fromARGB(255, 114, 137, 218),
-      primaryVariant: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
-      secondaryVariant: Color.fromARGB(255, 114, 137, 218),
     ),
     appBarTheme: ThemeData.light().appBarTheme.copyWith(
           color: ThemeData.light().scaffoldBackgroundColor,
@@ -22,9 +20,7 @@ class AppTheme {
         ),
     colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(255, 114, 137, 218),
-      primaryVariant: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
-      secondaryVariant: Color.fromARGB(255, 114, 137, 218),
     ).copyWith(secondary: const Color.fromARGB(255, 114, 137, 218)),
   );
 }

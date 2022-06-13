@@ -69,17 +69,17 @@ class _PoolPageState extends State<PoolPage> {
                             ),
                             Container(
                               width: MediaQuery.of(context).size.width,
-                              child: Text(
-                                state.data![index].pool.name.value
-                                    .removeUnderscoreWithSpace(),
-                                style: const TextStyle(color: Colors.black),
-                              ),
                               decoration: const BoxDecoration(
                                 color: Colors.white70,
                                 borderRadius: BorderRadius.only(
                                   bottomLeft: Radius.circular(8.0),
                                   bottomRight: Radius.circular(8.0),
                                 ),
+                              ),
+                              child: Text(
+                                state.data![index].pool.name.value
+                                    .removeUnderscoreWithSpace(),
+                                style: const TextStyle(color: Colors.black),
                               ),
                             ),
                           ],

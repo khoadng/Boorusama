@@ -1,16 +1,14 @@
 // Dart imports:
 import 'dart:async';
-import 'dart:ui';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -43,7 +41,7 @@ class SliverPostGrid extends HookWidget {
   Widget build(BuildContext context) {
     // Workaround to prevent memory leak, clear images every 10 seconds
     final timer = useState(Timer.periodic(const Duration(seconds: 10), (_) {
-      PaintingBinding.instance!.imageCache!.clearLiveImages();
+      PaintingBinding.instance.imageCache.clearLiveImages();
     }));
 
     useEffect(() {
@@ -52,7 +50,7 @@ class SliverPostGrid extends HookWidget {
 
     // Clear live image cache everytime this widget built
     useEffect(() {
-      PaintingBinding.instance!.imageCache!.clearLiveImages();
+      PaintingBinding.instance.imageCache.clearLiveImages();
 
       return () {};
     });

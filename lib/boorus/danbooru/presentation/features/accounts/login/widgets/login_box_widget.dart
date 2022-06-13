@@ -21,8 +21,8 @@ class LoginBox extends HookWidget {
     final tickerProvider = useSingleTickerProvider();
     final animationController = useAnimationController(
         vsync: tickerProvider, duration: const Duration(milliseconds: 150));
-    final _formKey = useState(GlobalKey<FormState>());
-    final _isValidUsernameAndPassword = useState(true);
+    final formKey = useState(GlobalKey<FormState>());
+    final isValidUsernameAndPassword = useState(true);
 
     final usernameTextController = useTextEditingController();
     final passwordTextController = useTextEditingController();
@@ -39,18 +39,18 @@ class LoginBox extends HookWidget {
     });
 
     void onTextChanged() {
-      _isValidUsernameAndPassword.value = true;
+      isValidUsernameAndPassword.value = true;
     }
 
     return BlocListener<AuthenticationCubit, AuthenticationState>(
       listener: (context, state) {
         if (state is Authenticated) {
-          _isValidUsernameAndPassword.value = true;
+          isValidUsernameAndPassword.value = true;
           Navigator.of(context).pop();
         } else if (state is AuthenticationError &&
             state.exception is InvalidUsernameOrPassword) {
-          _isValidUsernameAndPassword.value = false;
-          _formKey.value.currentState!.validate();
+          isValidUsernameAndPassword.value = false;
+          formKey.value.currentState!.validate();
         } else if (state is AuthenticationError &&
             state.exception is Exception) {
           const snackbar = SnackBar(
@@ -65,7 +65,7 @@ class LoginBox extends HookWidget {
       },
       child: Form(
         autovalidateMode: AutovalidateMode.disabled,
-        key: _formKey.value,
+        key: formKey.value,
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.5,
@@ -80,7 +80,7 @@ class LoginBox extends HookWidget {
                     return 'login.errors.missingUsername'.tr();
                   }
 
-                  if (!_isValidUsernameAndPassword.value) {
+                  if (!isValidUsernameAndPassword.value) {
                     return 'login.errors.invalidUsernameOrPassword'.tr();
                   }
                   return null;
@@ -109,7 +109,7 @@ class LoginBox extends HookWidget {
                   if (value == null || value.isEmpty) {
                     return 'login.errors.missingPassword'.tr();
                   }
-                  if (!_isValidUsernameAndPassword.value) {
+                  if (!isValidUsernameAndPassword.value) {
                     return 'login.errors.invalidUsernameOrPassword'.tr();
                   }
                   return null;
@@ -157,10 +157,10 @@ class LoginBox extends HookWidget {
                     ? const CircularProgressIndicator()
                     : _buildLoginButton(
                         context,
-                        _formKey,
+                        formKey,
                         usernameTextController,
                         passwordTextController,
-                        _isValidUsernameAndPassword,
+                        isValidUsernameAndPassword,
                       ),
               )
             ],
@@ -172,21 +172,21 @@ class LoginBox extends HookWidget {
 
   Widget _buildLoginButton(
       BuildContext context,
-      ValueNotifier<GlobalKey<FormState>> _formKey,
+      ValueNotifier<GlobalKey<FormState>> formKey,
       TextEditingController usernameTextController,
       TextEditingController passwordTextController,
-      ValueNotifier<bool> _isValidUsernameAndPassword) {
+      ValueNotifier<bool> isValidUsernameAndPassword) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(onPrimary: Colors.white),
       child: Text('login.form.login'.tr()),
       onPressed: () {
-        if (_formKey.value.currentState!.validate()) {
+        if (formKey.value.currentState!.validate()) {
           ReadContext(context)
               .read<AuthenticationCubit>()
               .logIn(usernameTextController.text, passwordTextController.text);
           FocusScope.of(context).unfocus();
         } else {
-          _isValidUsernameAndPassword.value = true;
+          isValidUsernameAndPassword.value = true;
         }
       },
     );
@@ -213,13 +213,13 @@ class LoginField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _controller = useTextEditingController();
+    TextEditingController defaultController = useTextEditingController();
 
     return TextFormField(
       onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,
-      controller: controller ?? _controller,
+      controller: controller ?? defaultController,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,
@@ -229,8 +229,8 @@ class LoginField extends HookWidget {
           borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Theme.of(context).accentColor, width: 2.0),
+          borderSide: BorderSide(
+              color: Theme.of(context).colorScheme.secondary, width: 2.0),
           borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
         errorBorder: OutlineInputBorder(

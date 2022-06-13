@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -46,7 +45,7 @@ class PostDetailPage extends HookWidget {
         useState(SlideShowConfiguration(interval: 4, skipAnimation: false));
     useValueChanged(showSlideShowConfig.value, (bool _, void __) {
       if (showSlideShowConfig.value) {
-        WidgetsBinding.instance!.addPostFrameCallback((_) async {
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
           final confirm = await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
