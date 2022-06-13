@@ -110,194 +110,194 @@ void main() async {
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
 
-  void run() => runApp(
-        EasyLocalization(
-          useOnlyLangCode: true,
-          supportedLocales: const [Locale('en', ''), Locale('vi', '')],
-          path: 'assets/translations',
-          fallbackLocale: const Locale('en', ''),
-          child: MultiRepositoryProvider(
+  void run() {
+    runApp(
+      EasyLocalization(
+        useOnlyLangCode: true,
+        supportedLocales: const [Locale('en', ''), Locale('vi', '')],
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en', ''),
+        child: MultiRepositoryProvider(
+          providers: [
+            RepositoryProvider.value(value: packageInfo),
+          ],
+          child: MultiBlocProvider(
             providers: [
-              RepositoryProvider.value(value: packageInfo),
-            ],
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider(create: (_) => NetworkBloc()),
-                BlocProvider(
-                  create: (_) => ApiCubit(
-                    defaultUrl: getBooru(settings.safeMode).url,
-                  ),
+              BlocProvider(create: (_) => NetworkBloc()),
+              BlocProvider(
+                create: (_) => ApiCubit(
+                  defaultUrl: getBooru(settings.safeMode).url,
                 ),
-                BlocProvider(
-                    create: (_) => ApiEndpointCubit(
-                        initialValue: getBooru(settings.safeMode))),
-                BlocProvider(
-                    create: (_) => SettingsCubit(
-                        settingRepository: settingRepository,
-                        settings: settings)),
-              ],
-              child: MultiBlocListener(
-                listeners: [
-                  BlocListener<SettingsCubit, SettingsState>(
-                    listenWhen: (previous, current) =>
-                        previous.settings.safeMode != current.settings.safeMode,
-                    listener: (context, state) {
-                      ReadContext(context)
-                          .read<ApiEndpointCubit>()
-                          .changeApi(state.settings.safeMode);
-                    },
-                  ),
-                  BlocListener<ApiEndpointCubit, ApiEndpointState>(
-                    listener: (context, state) => ReadContext(context)
-                        .read<ApiCubit>()
-                        .changeApi(state.booru),
-                  ),
-                ],
-                child: BlocBuilder<ApiCubit, ApiState>(
-                  builder: (context, state) {
-                    final api = state.api;
-
-                    final popularSearchRepo = PopularSearchRepository(
-                        accountRepository: accountRepo, api: api);
-
-                    final tagRepo = TagRepository(api, accountRepo);
-
-                    final artistRepo = ArtistRepository(api: api);
-
-                    final profileRepo = ProfileRepository(
-                        accountRepository: accountRepo, api: api);
-
-                    final postRepo = PostRepository(api, accountRepo);
-
-                    final commentRepo = CommentRepository(api, accountRepo);
-
-                    final userRepo = UserRepository(
-                        api, accountRepo, defaultBlacklistedTags);
-
-                    final nopeRepo = NoteRepository(api);
-
-                    final favoriteRepo =
-                        FavoritePostRepository(api, accountRepo);
-
-                    final artistCommentaryRepo =
-                        ArtistCommentaryRepository(api, accountRepo);
-
-                    final poolRepo = PoolRepository(api, accountRepo);
-
-                    final blacklistedTagRepo =
-                        BlacklistedTagsRepository(userRepo, accountRepo);
-
-                    final mostViewedCubit =
-                        MostViewedCubit(postRepository: postRepo)
-                          ..getMostViewed();
-                    final popularCubit = PopularCubit(postRepository: postRepo)
-                      ..getPopular();
-                    final curatedCubit = CuratedCubit(postRepository: postRepo)
-                      ..getCurated();
-
-                    final favoritedCubit =
-                        FavoritesCubit(postRepository: postRepo);
-                    final artistCubit =
-                        ArtistCubit(artistRepository: artistRepo);
-                    final popularSearchCubit =
-                        SearchKeywordCubit(popularSearchRepo)..getTags();
-                    final profileCubit =
-                        ProfileCubit(profileRepository: profileRepo);
-                    final commentCubit = CommentCubit(
-                        commentRepository: commentRepo,
-                        userRepository: userRepo);
-                    final artistCommentaryCubit = ArtistCommentaryCubit(
-                        artistCommentaryRepository: artistCommentaryRepo);
-                    final accountCubit =
-                        AccountCubit(accountRepository: accountRepo)
-                          ..getCurrentAccount();
-                    final authenticationCubit = AuthenticationCubit(
-                      accountRepository: accountRepo,
-                      profileRepository: profileRepo,
-                    );
-                    final poolCubit = PoolCubit(
-                        poolRepository: poolRepo, postRepository: postRepo);
-                    final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
-                        userRepository: userRepo,
-                        blacklistedTagsRepository: blacklistedTagRepo);
-
-                    return MultiRepositoryProvider(
-                        providers: [
-                          RepositoryProvider<ITagRepository>.value(
-                              value: tagRepo),
-                          RepositoryProvider<IProfileRepository>.value(
-                              value: profileRepo),
-                          RepositoryProvider<IFavoritePostRepository>.value(
-                              value: favoriteRepo),
-                          RepositoryProvider<IAccountRepository>.value(
-                              value: accountRepo),
-                          RepositoryProvider<IDownloadService>.value(
-                              value: downloader),
-                          RepositoryProvider<ISettingRepository>.value(
-                              value: settingRepository),
-                          RepositoryProvider<INoteRepository>.value(
-                              value: nopeRepo),
-                          RepositoryProvider<IPostRepository>.value(
-                              value: postRepo),
-                          RepositoryProvider<ISearchHistoryRepository>.value(
-                              value: searchHistoryRepo),
-                          RepositoryProvider<IConfig>.value(value: config),
-                          RepositoryProvider<PoolRepository>.value(
-                              value: poolRepo),
-                          RepositoryProvider<IUserRepository>.value(
-                              value: userRepo),
-                          RepositoryProvider<BlacklistedTagsRepository>.value(
-                              value: blacklistedTagRepo),
-                        ],
-                        child: MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: popularSearchCubit),
-                            BlocProvider.value(value: artistCubit),
-                            BlocProvider.value(value: favoritedCubit),
-                            BlocProvider.value(value: profileCubit),
-                            BlocProvider.value(value: commentCubit),
-                            BlocProvider.value(value: artistCommentaryCubit),
-                            BlocProvider.value(value: mostViewedCubit),
-                            BlocProvider.value(value: popularCubit),
-                            BlocProvider.value(value: curatedCubit),
-                            BlocProvider.value(value: accountCubit),
-                            BlocProvider.value(value: authenticationCubit),
-                            BlocProvider.value(value: poolCubit),
-                            BlocProvider.value(value: userBlacklistedTagsBloc),
-                          ],
-                          child: MultiBlocListener(
-                            listeners: [
-                              BlocListener<AuthenticationCubit,
-                                  AuthenticationState>(
-                                listener: (context, state) {
-                                  if (state is Authenticated) {
-                                    accountCubit.setAccount(state.account);
-                                  } else if (state is Unauthenticated) {
-                                    accountCubit.removeAccount();
-                                  }
-                                },
-                              ),
-                              BlocListener<UserBlacklistedTagsBloc,
-                                  UserBlacklistedTagsState>(
-                                listenWhen: (previous, current) =>
-                                    current.blacklistedTags !=
-                                    previous.blacklistedTags,
-                                listener: (context, state) {
-                                  blacklistedTagRepo.clearCache();
-                                },
-                                child: Container(),
-                              )
-                            ],
-                            child: const App(),
-                          ),
-                        ));
+              ),
+              BlocProvider(
+                  create: (_) => ApiEndpointCubit(
+                      initialValue: getBooru(settings.safeMode))),
+              BlocProvider(
+                  create: (_) => SettingsCubit(
+                      settingRepository: settingRepository,
+                      settings: settings)),
+            ],
+            child: MultiBlocListener(
+              listeners: [
+                BlocListener<SettingsCubit, SettingsState>(
+                  listenWhen: (previous, current) =>
+                      previous.settings.safeMode != current.settings.safeMode,
+                  listener: (context, state) {
+                    ReadContext(context)
+                        .read<ApiEndpointCubit>()
+                        .changeApi(state.settings.safeMode);
                   },
                 ),
+                BlocListener<ApiEndpointCubit, ApiEndpointState>(
+                  listener: (context, state) => ReadContext(context)
+                      .read<ApiCubit>()
+                      .changeApi(state.booru),
+                ),
+              ],
+              child: BlocBuilder<ApiCubit, ApiState>(
+                builder: (context, state) {
+                  final api = state.api;
+
+                  final popularSearchRepo = PopularSearchRepository(
+                      accountRepository: accountRepo, api: api);
+
+                  final tagRepo = TagRepository(api, accountRepo);
+
+                  final artistRepo = ArtistRepository(api: api);
+
+                  final profileRepo = ProfileRepository(
+                      accountRepository: accountRepo, api: api);
+
+                  final postRepo = PostRepository(api, accountRepo);
+
+                  final commentRepo = CommentRepository(api, accountRepo);
+
+                  final userRepo =
+                      UserRepository(api, accountRepo, defaultBlacklistedTags);
+
+                  final nopeRepo = NoteRepository(api);
+
+                  final favoriteRepo = FavoritePostRepository(api, accountRepo);
+
+                  final artistCommentaryRepo =
+                      ArtistCommentaryRepository(api, accountRepo);
+
+                  final poolRepo = PoolRepository(api, accountRepo);
+
+                  final blacklistedTagRepo =
+                      BlacklistedTagsRepository(userRepo, accountRepo);
+
+                  final mostViewedCubit =
+                      MostViewedCubit(postRepository: postRepo)
+                        ..getMostViewed();
+                  final popularCubit = PopularCubit(postRepository: postRepo)
+                    ..getPopular();
+                  final curatedCubit = CuratedCubit(postRepository: postRepo)
+                    ..getCurated();
+
+                  final favoritedCubit =
+                      FavoritesCubit(postRepository: postRepo);
+                  final artistCubit = ArtistCubit(artistRepository: artistRepo);
+                  final popularSearchCubit =
+                      SearchKeywordCubit(popularSearchRepo)..getTags();
+                  final profileCubit =
+                      ProfileCubit(profileRepository: profileRepo);
+                  final commentCubit = CommentCubit(
+                      commentRepository: commentRepo, userRepository: userRepo);
+                  final artistCommentaryCubit = ArtistCommentaryCubit(
+                      artistCommentaryRepository: artistCommentaryRepo);
+                  final accountCubit =
+                      AccountCubit(accountRepository: accountRepo)
+                        ..getCurrentAccount();
+                  final authenticationCubit = AuthenticationCubit(
+                    accountRepository: accountRepo,
+                    profileRepository: profileRepo,
+                  );
+                  final poolCubit = PoolCubit(
+                      poolRepository: poolRepo, postRepository: postRepo);
+                  final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
+                      userRepository: userRepo,
+                      blacklistedTagsRepository: blacklistedTagRepo);
+
+                  return MultiRepositoryProvider(
+                      providers: [
+                        RepositoryProvider<ITagRepository>.value(
+                            value: tagRepo),
+                        RepositoryProvider<IProfileRepository>.value(
+                            value: profileRepo),
+                        RepositoryProvider<IFavoritePostRepository>.value(
+                            value: favoriteRepo),
+                        RepositoryProvider<IAccountRepository>.value(
+                            value: accountRepo),
+                        RepositoryProvider<IDownloadService>.value(
+                            value: downloader),
+                        RepositoryProvider<ISettingRepository>.value(
+                            value: settingRepository),
+                        RepositoryProvider<INoteRepository>.value(
+                            value: nopeRepo),
+                        RepositoryProvider<IPostRepository>.value(
+                            value: postRepo),
+                        RepositoryProvider<ISearchHistoryRepository>.value(
+                            value: searchHistoryRepo),
+                        RepositoryProvider<IConfig>.value(value: config),
+                        RepositoryProvider<PoolRepository>.value(
+                            value: poolRepo),
+                        RepositoryProvider<IUserRepository>.value(
+                            value: userRepo),
+                        RepositoryProvider<BlacklistedTagsRepository>.value(
+                            value: blacklistedTagRepo),
+                      ],
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: popularSearchCubit),
+                          BlocProvider.value(value: artistCubit),
+                          BlocProvider.value(value: favoritedCubit),
+                          BlocProvider.value(value: profileCubit),
+                          BlocProvider.value(value: commentCubit),
+                          BlocProvider.value(value: artistCommentaryCubit),
+                          BlocProvider.value(value: mostViewedCubit),
+                          BlocProvider.value(value: popularCubit),
+                          BlocProvider.value(value: curatedCubit),
+                          BlocProvider.value(value: accountCubit),
+                          BlocProvider.value(value: authenticationCubit),
+                          BlocProvider.value(value: poolCubit),
+                          BlocProvider.value(value: userBlacklistedTagsBloc),
+                        ],
+                        child: MultiBlocListener(
+                          listeners: [
+                            BlocListener<AuthenticationCubit,
+                                AuthenticationState>(
+                              listener: (context, state) {
+                                if (state is Authenticated) {
+                                  accountCubit.setAccount(state.account);
+                                } else if (state is Unauthenticated) {
+                                  accountCubit.removeAccount();
+                                }
+                              },
+                            ),
+                            BlocListener<UserBlacklistedTagsBloc,
+                                UserBlacklistedTagsState>(
+                              listenWhen: (previous, current) =>
+                                  current.blacklistedTags !=
+                                  previous.blacklistedTags,
+                              listener: (context, state) {
+                                blacklistedTagRepo
+                                    ._refresh(state.blacklistedTags);
+                              },
+                              child: Container(),
+                            )
+                          ],
+                          child: const App(),
+                        ),
+                      ));
+                },
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   if (kDebugMode) {
     run();
@@ -347,5 +347,7 @@ class BlacklistedTagsRepository {
     return _tags!;
   }
 
-  void clearCache() => _tags = null;
+  Future<void> _refresh(List<String> tags) async {
+    _tags = tags;
+  }
 }

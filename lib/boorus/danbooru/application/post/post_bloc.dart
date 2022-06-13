@@ -17,6 +17,7 @@ class PostState extends Equatable {
   const PostState({
     required this.status,
     required this.posts,
+    required this.filteredPosts,
     required this.page,
     required this.hasMore,
   });
@@ -24,11 +25,13 @@ class PostState extends Equatable {
   factory PostState.initial() => const PostState(
         status: LoadStatus.initial,
         posts: [],
+        filteredPosts: [],
         page: 1,
         hasMore: true,
       );
 
   final List<Post> posts;
+  final List<Post> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
@@ -36,18 +39,20 @@ class PostState extends Equatable {
   PostState copyWith({
     LoadStatus? status,
     List<Post>? posts,
+    List<Post>? filteredPosts,
     int? page,
     bool? hasMore,
   }) =>
       PostState(
         status: status ?? this.status,
         posts: posts ?? this.posts,
+        filteredPosts: filteredPosts ?? this.filteredPosts,
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
       );
 
   @override
-  List<Object?> get props => [status, posts, page, hasMore];
+  List<Object?> get props => [status, posts, filteredPosts, page, hasMore];
 }
 
 @immutable
@@ -90,14 +95,26 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) => emit(
-            state.copyWith(
-              status: LoadStatus.success,
-              posts: [...state.posts, ...filter(posts, blacklisted)],
-              page: state.page + 1,
-              hasMore: posts.isNotEmpty,
-            ),
-          ),
+          onSuccess: (posts) {
+            final filteredPosts = filterBlacklisted(posts, blacklisted);
+            // print(
+            //     '${filteredPosts.length} posts got filtered. Total: ${state.filteredPosts.length + filteredPosts.length}');
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: [
+                  ...state.posts,
+                  ...filter(posts, blacklisted),
+                ],
+                filteredPosts: [
+                  ...state.filteredPosts,
+                  ...filteredPosts,
+                ],
+                page: state.page + 1,
+                hasMore: posts.isNotEmpty,
+              ),
+            );
+          },
         );
       },
       transformer: droppable(),
@@ -116,6 +133,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             state.copyWith(
               status: LoadStatus.success,
               posts: filter(posts, blacklisted),
+              filteredPosts: filterBlacklisted(posts, blacklisted),
               page: 1,
               hasMore: posts.isNotEmpty,
             ),

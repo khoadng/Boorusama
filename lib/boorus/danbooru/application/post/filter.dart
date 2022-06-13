@@ -2,6 +2,10 @@
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
+import 'package:boorusama/common/string_utils.dart';
+
 enum FilterGroupType {
   single,
   multiple,
@@ -62,17 +66,6 @@ class FilterItem extends Equatable {
   String toString() => '${operator.toString().split('.').last}.$tag';
 }
 
-FilterOperator _stringToFilterOperator(String value) {
-  switch (value) {
-    case '-':
-      return FilterOperator.not;
-    case '~':
-      return FilterOperator.or;
-    default:
-      return FilterOperator.none;
-  }
-}
-
 String _stripFilterOperator(String value, FilterOperator operator) {
   switch (operator) {
     case FilterOperator.not:
@@ -83,13 +76,9 @@ String _stripFilterOperator(String value, FilterOperator operator) {
   }
 }
 
-// ignore: unnecessary_string_interpolations
-String _getFirstCharacter(String value) => value == '' ? '' : '${value[0]}';
-
 FilterItem? _stringToFilterItem(String value, FilterGroupType groupType) {
   if (value.isEmpty) return null;
-  final firstChar = _getFirstCharacter(value);
-  final operator = _stringToFilterOperator(firstChar);
+  final operator = stringToFilterOperator(value.getFirstCharacter());
   final tag = _stripFilterOperator(value, operator);
 
   if (groupType == FilterGroupType.single) {
@@ -103,10 +92,4 @@ FilterItem? _stringToFilterItem(String value, FilterGroupType groupType) {
     tag: tag,
     operator: operator,
   );
-}
-
-enum FilterOperator {
-  none,
-  not,
-  or,
 }

@@ -3,12 +3,19 @@ import 'package:collection/collection.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/filter.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 List<Post> filter(List<Post> posts, List<String> blacklistedTags) {
   final groups = _parse(blacklistedTags);
 
   return posts.whereNot((post) => _hasBlacklistedTag(post, groups)).toList();
+}
+
+List<Post> filterBlacklisted(List<Post> posts, List<String> blacklistedTags) {
+  final groups = _parse(blacklistedTags);
+
+  return posts.where((post) => _hasBlacklistedTag(post, groups)).toList();
 }
 
 List<FilterGroup> _parse(List<String> tags) =>
