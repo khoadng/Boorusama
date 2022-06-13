@@ -17,17 +17,17 @@ class User extends Equatable {
     required this.blacklistedTags,
   });
 
+  factory User.placeholder() => const User(
+        id: UserId(0),
+        level: UserLevel.member,
+        name: Username('User'),
+        blacklistedTags: [],
+      );
+
   final UserId id;
   final UserLevel level;
   final Username name;
   final List<String> blacklistedTags;
-
-  factory User.placeholder() => const User(
-        id: UserId(0),
-        level: UserLevel.member,
-        name: Username("User"),
-        blacklistedTags: [],
-      );
 
   @override
   List<Object?> get props => [id, level, name, blacklistedTags];
@@ -57,7 +57,7 @@ User userDtoToUser(UserDto d) {
       blacklistedTags: tagStringToListTagString(d.blacklistedTags ?? ''),
     );
   } catch (e) {
-    throw Exception("fail to parse one of the required field\n $e");
+    throw Exception('fail to parse one of the required field\n $e');
   }
 }
 

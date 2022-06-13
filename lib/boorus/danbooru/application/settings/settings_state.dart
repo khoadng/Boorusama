@@ -8,11 +8,11 @@ class SettingsState extends Equatable {
   const SettingsState({
     required this.settings,
   });
-  final Settings settings;
 
   factory SettingsState.defaultSettings() => const SettingsState(
         settings: Settings.defaultSettings,
       );
+  final Settings settings;
 
   @override
   List<Object?> get props => [settings];

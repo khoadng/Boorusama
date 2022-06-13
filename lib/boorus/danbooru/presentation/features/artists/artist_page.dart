@@ -58,10 +58,10 @@ class _ArtistPageState extends State<ArtistPage> {
         panelBuilder: (_) => Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+            borderRadius: const BorderRadius.all(Radius.circular(24)),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 32),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 32),
             child: BlocBuilder<PostBloc, PostState>(
               buildWhen: (previous, current) => !current.hasMore,
               builder: (context, state) {
@@ -83,7 +83,7 @@ class _ArtistPageState extends State<ArtistPage> {
                     controller: controller,
                     slivers: <Widget>[
                       SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 14),
                         sliver: BlocBuilder<PostBloc, PostState>(
                           buildWhen: (previous, current) =>
                               current.status != LoadStatus.loading,
@@ -93,7 +93,7 @@ class _ArtistPageState extends State<ArtistPage> {
                             } else if (state.status == LoadStatus.success) {
                               if (state.posts.isEmpty) {
                                 return const SliverToBoxAdapter(
-                                    child: Center(child: Text("No data")));
+                                    child: Center(child: Text('No data')));
                               }
                               return SliverPostGrid(
                                 posts: state.posts,
@@ -101,7 +101,7 @@ class _ArtistPageState extends State<ArtistPage> {
                                 onTap: (post, index) =>
                                     AppRouter.router.navigateTo(
                                   context,
-                                  "/post/detail",
+                                  '/post/detail',
                                   routeSettings: RouteSettings(
                                     arguments: [
                                       state.posts,
@@ -118,7 +118,7 @@ class _ArtistPageState extends State<ArtistPage> {
                             } else {
                               return const SliverToBoxAdapter(
                                 child: Center(
-                                  child: Text("Something went wrong"),
+                                  child: Text('Something went wrong'),
                                 ),
                               );
                             }
@@ -180,8 +180,7 @@ class _ArtistPageState extends State<ArtistPage> {
                         .copyWith(fontWeight: FontWeight.w900),
                   ),
                   BlocBuilder<ArtistCubit, AsyncLoadState<Artist>>(
-                    builder: (context, state) =>
-                        _buildArtistAltNameTags(context, state),
+                    builder: _buildArtistAltNameTags,
                   ),
                 ],
               ),
@@ -206,8 +205,8 @@ class _ArtistPageState extends State<ArtistPage> {
           itemBuilder: (index) {
             return Chip(
               shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
-              padding: const EdgeInsets.all(4.0),
-              labelPadding: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(4),
+              labelPadding: const EdgeInsets.all(1),
               visualDensity: VisualDensity.compact,
               label: ConstrainedBox(
                 constraints: BoxConstraints(

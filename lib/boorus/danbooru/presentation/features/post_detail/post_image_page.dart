@@ -28,7 +28,7 @@ class PostImagePage extends HookWidget {
     return Align(
       alignment: const Alignment(-0.9, -0.96),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
@@ -41,7 +41,7 @@ class PostImagePage extends HookWidget {
     return Align(
       alignment: const Alignment(0.9, -0.96),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: PopupMenuButton<PostAction>(
           onSelected: (value) async {
             switch (value) {
@@ -56,7 +56,7 @@ class PostImagePage extends HookWidget {
               value: PostAction.download,
               child: ListTile(
                 leading: Icon(Icons.download_rounded),
-                title: Text("Download"),
+                title: Text('Download'),
               ),
             ),
           ],
@@ -72,7 +72,7 @@ class PostImagePage extends HookWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
 
-    for (var note in notes) {
+    for (final note in notes) {
       final coordinate = note.coordinate.calibrate(screenHeight, screenWidth,
           screenAspectRatio, post.height, post.width, post.aspectRatio);
 
@@ -124,7 +124,7 @@ class PostImagePage extends HookWidget {
                   alignment: Alignment.topCenter,
                   colors: <Color>[
                     const Color(0x8A000000),
-                    Colors.black12.withOpacity(0.0)
+                    Colors.black12.withOpacity(0)
                   ]),
               _buildBackButton(context),
               _buildMoreButton(context),

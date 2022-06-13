@@ -13,9 +13,9 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
 
   final ISearchHistoryRepository searchHistoryRepository;
 
-  void clearHistory() async {
-    tryAsync<bool>(
-        action: () => searchHistoryRepository.clearAll(),
+  Future<void> clearHistory() async {
+    await tryAsync<bool>(
+        action: searchHistoryRepository.clearAll,
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (success) => emit(const AsyncLoadState.success([])));
@@ -31,7 +31,7 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
 
   void getSearchHistory() {
     tryAsync<List<SearchHistory>>(
-        action: () => searchHistoryRepository.getHistories(),
+        action: searchHistoryRepository.getHistories,
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (hist) {

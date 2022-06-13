@@ -1,8 +1,4 @@
 class Wiki {
-  int id;
-  String title;
-  String body;
-  List<dynamic> otherNames;
 
   Wiki({
     required this.id,
@@ -12,9 +8,13 @@ class Wiki {
   });
 
   factory Wiki.empty() => Wiki(
-        body: "",
+        body: '',
         id: 0,
-        title: "",
+        title: '',
         otherNames: [],
       );
+  int id;
+  String title;
+  String body;
+  List<dynamic> otherNames;
 }

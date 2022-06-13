@@ -47,7 +47,7 @@ class HomePage extends HookWidget {
                     padding: EdgeInsets.only(bottom: 10),
                     child: Material(
                       color: Colors.black,
-                      child: Text("Network unavailable"),
+                      child: Text('Network unavailable'),
                     ),
                   );
                 } else {

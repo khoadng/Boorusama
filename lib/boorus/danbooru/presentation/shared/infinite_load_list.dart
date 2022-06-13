@@ -128,19 +128,18 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
                   child: FloatingActionButton(
                     heroTag: null,
                     child: const FaIcon(FontAwesomeIcons.angleUp),
-                    onPressed: () => _scrollController.jumpTo(0.0),
+                    onPressed: () => _scrollController.jumpTo(0),
                   ),
                 )
               : FloatingActionButton(
                   heroTag: null,
                   child: const FaIcon(FontAwesomeIcons.angleUp),
-                  onPressed: () => _scrollController.jumpTo(0.0),
+                  onPressed: () => _scrollController.jumpTo(0),
                 ),
         ),
       ),
       body: SmartRefresher(
         controller: _refreshController,
-        enablePullUp: false,
         enablePullDown: widget.enableRefresh,
         header: const MaterialClassicHeader(),
         onRefresh: () => widget.onRefresh?.call(_refreshController),

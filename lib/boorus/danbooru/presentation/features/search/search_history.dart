@@ -22,7 +22,6 @@ class SearchHistorySection extends HookWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchHistoryCubit, AsyncLoadState<List<SearchHistory>>>(
       builder: (context, state) => Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (state.status == LoadStatus.success)
@@ -56,7 +55,7 @@ class SearchHistorySection extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              "History".toUpperCase(),
+              'History'.toUpperCase(),
               style: Theme.of(context).textTheme.subtitle2!.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -65,18 +64,19 @@ class SearchHistorySection extends HookWidget {
               onPressed: () => ReadContext(context)
                   .read<SearchHistoryCubit>()
                   .clearHistory(),
-              child: const Text("Clear"),
+              child: const Text('Clear'),
             ),
           ],
         ),
       );
-      widgets.insert(0, header);
-      widgets.insert(
-          0,
-          const Divider(
-            indent: 10,
-            endIndent: 10,
-          ));
+      widgets
+        ..insert(0, header)
+        ..insert(
+            0,
+            const Divider(
+              indent: 10,
+              endIndent: 10,
+            ));
     }
 
     return widgets;

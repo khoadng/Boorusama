@@ -12,38 +12,31 @@ class AppRouter {
   static FluroRouter router = FluroRouter.appRouter;
 
   void setupRoutes() {
-    router.define("/", handler: rootHandler);
-
-    router.define("/artist",
-        handler: artistHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/post/detail",
-        handler: postDetailHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/posts/search",
-        handler: postSearchHandler, transitionType: TransitionType.fadeIn);
-
-    router.define("/posts/image",
-        handler: postDetailImageHandler,
-        transitionType: TransitionType.inFromRight);
-
-    router.define("/users/profile",
-        handler: userHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/login",
-        handler: loginHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/settings",
-        handler: settingsHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/pool/detail",
-        handler: poolDetailHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/favorites",
-        handler: favoritesHandler, transitionType: TransitionType.inFromRight);
-
-    router.define("/users/blacklisted_tags",
-        handler: blacklistedTagsHandler,
-        transitionType: TransitionType.inFromRight);
+    router
+      ..define('/', handler: rootHandler)
+      ..define('/artist',
+          handler: artistHandler, transitionType: TransitionType.inFromRight)
+      ..define('/post/detail',
+          handler: postDetailHandler,
+          transitionType: TransitionType.inFromRight)
+      ..define('/posts/search',
+          handler: postSearchHandler, transitionType: TransitionType.fadeIn)
+      ..define('/posts/image',
+          handler: postDetailImageHandler,
+          transitionType: TransitionType.inFromRight)
+      ..define('/users/profile',
+          handler: userHandler, transitionType: TransitionType.inFromRight)
+      ..define('/login',
+          handler: loginHandler, transitionType: TransitionType.inFromRight)
+      ..define('/settings',
+          handler: settingsHandler, transitionType: TransitionType.inFromRight)
+      ..define('/pool/detail',
+          handler: poolDetailHandler,
+          transitionType: TransitionType.inFromRight)
+      ..define('/favorites',
+          handler: favoritesHandler, transitionType: TransitionType.inFromRight)
+      ..define('/users/blacklisted_tags',
+          handler: blacklistedTagsHandler,
+          transitionType: TransitionType.inFromRight);
   }
 }

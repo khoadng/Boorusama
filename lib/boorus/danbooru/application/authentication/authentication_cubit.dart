@@ -19,7 +19,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
   final IAccountRepository accountRepository;
   final IProfileRepository profileRepository;
 
-  void logIn([String username = '', String password = '']) async {
+  Future<void> logIn([String username = '', String password = '']) async {
     if (state is AuthenticationInitial) {
       final account = await accountRepository.get();
       if (account != Account.empty) {
@@ -34,9 +34,9 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     } else {
       try {
         emit(AuthenticationInProgress());
-        var profile = await profileRepository.getProfile(
+        final profile = await profileRepository.getProfile(
             username: username, apiKey: password);
-        var account = Account.create(username, password, profile!.id);
+        final account = Account.create(username, password, profile!.id);
 
         emit(Authenticated(account: account));
       } on InvalidUsernameOrPassword catch (ex, stack) {
@@ -47,7 +47,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     }
   }
 
-  void logOut() async {
+  Future<void> logOut() async {
     emit(Unauthenticated());
   }
 }

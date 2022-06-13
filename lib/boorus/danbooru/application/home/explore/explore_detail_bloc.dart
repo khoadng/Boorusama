@@ -22,6 +22,10 @@ class ExploreDetailState extends Equatable {
     required this.scale,
     required this.date,
   });
+  factory ExploreDetailState.initial() => ExploreDetailState(
+        scale: TimeScale.day,
+        date: DateTime.now(),
+      );
 
   final TimeScale scale;
   final DateTime date;
@@ -33,11 +37,6 @@ class ExploreDetailState extends Equatable {
       ExploreDetailState(
         scale: scale ?? this.scale,
         date: date ?? this.date,
-      );
-
-  factory ExploreDetailState.initial() => ExploreDetailState(
-        scale: TimeScale.day,
-        date: DateTime.now(),
       );
 
   @override
@@ -66,9 +65,7 @@ class ExploreDetailTimeScaleChanged extends ExploreDetailEvent {
 }
 
 class ExploreDetailBloc extends Bloc<ExploreDetailEvent, ExploreDetailState> {
-  ExploreDetailBloc({
-    required IPostRepository postRepository,
-  }) : super(ExploreDetailState.initial()) {
+  ExploreDetailBloc() : super(ExploreDetailState.initial()) {
     on<ExploreDetailDateChanged>(
       (event, emit) => emit(state.copyWith(date: event.date)),
       transformer: debounce(const Duration(milliseconds: 200)),

@@ -44,7 +44,7 @@ class PostActionToolbar extends HookWidget {
                       const snackbar = SnackBar(
                         behavior: SnackBarBehavior.floating,
                         duration: Duration(seconds: 3),
-                        elevation: 6.0,
+                        elevation: 6,
                         content: Text(
                           'You have to log in to perform this action',
                         ),
@@ -66,7 +66,7 @@ class PostActionToolbar extends HookWidget {
                         .read<IsPostFavoritedBloc>()
                         .add(IsPostFavoritedRequested(postId: post.id));
                     // ignore: avoid_print
-                    print("operation success = $success");
+                    print('operation success = $success');
                   },
                   icon: state.data!
                       ? const FaIcon(FontAwesomeIcons.solidHeart,
@@ -121,7 +121,7 @@ class PostActionToolbar extends HookWidget {
               builder: (context, state) {
                 return ModalShare(
                   endpoint: state.booru.url,
-                  onTap: (value) => Share.share(value),
+                  onTap: Share.share,
                   onTapFile: (filePath) => Share.shareFiles([filePath]),
                   post: post,
                   imagePath: imagePath,
@@ -152,7 +152,7 @@ enum ShareMode {
 }
 
 String getShareContent(ShareMode mode, Post post, String endpoint) {
-  final booruLink = "${endpoint}posts/${post.id}";
+  final booruLink = '${endpoint}posts/${post.id}';
   if (mode == ShareMode.booru) return booruLink;
   if (post.source.uri == null) return booruLink;
 

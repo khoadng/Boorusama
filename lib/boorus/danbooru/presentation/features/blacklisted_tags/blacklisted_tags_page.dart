@@ -100,7 +100,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
                 children: [
                   if (state.selectedTags.isNotEmpty) ...[
                     Container(
-                      margin: const EdgeInsets.only(left: 8.0),
+                      margin: const EdgeInsets.only(left: 8),
                       height: 50,
                       child: ListView.builder(
                         shrinkWrap: true,
@@ -109,10 +109,10 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
                         itemBuilder: (context, index) {
                           return Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
+                                const EdgeInsets.symmetric(horizontal: 4),
                             child: Chip(
-                              padding: const EdgeInsets.all(4.0),
-                              labelPadding: const EdgeInsets.all(1.0),
+                              padding: const EdgeInsets.all(4),
+                              labelPadding: const EdgeInsets.all(1),
                               visualDensity: VisualDensity.compact,
                               deleteIcon: const Icon(
                                 FontAwesomeIcons.xmark,
@@ -176,7 +176,7 @@ class BlacklistedTagsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Blacklisted tags"),
+        title: const Text('Blacklisted tags'),
       ),
       body: SafeArea(
         child: BlocConsumer<UserBlacklistedTagsBloc, UserBlacklistedTagsState>(
@@ -185,7 +185,7 @@ class BlacklistedTagsPage extends StatelessWidget {
           listener: (context, state) {
             final snackbar = SnackBar(
               behavior: SnackBarBehavior.floating,
-              elevation: 6.0,
+              elevation: 6,
               content: Text((state as UserBlacklistedTagsError).errorMessage),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackbar);
@@ -198,12 +198,12 @@ class BlacklistedTagsPage extends StatelessWidget {
                 slivers: [
                   SliverToBoxAdapter(
                       child: Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16),
                     child: OpenContainer(
                       closedColor: Colors.transparent,
                       closedBuilder: (context, action) => ElevatedButton(
                           onPressed: () => action.call(),
-                          child: const Text("Add tag(s)")),
+                          child: const Text('Add tag(s)')),
                       openColor: Colors.transparent,
                       openBuilder: (context, action) => MultiBlocProvider(
                         providers: [
@@ -248,7 +248,7 @@ class BlacklistedTagsPage extends StatelessWidget {
               );
             } else if (state.status == LoadStatus.failure) {
               return const Center(
-                child: Text("Failed to load blacklisted tags"),
+                child: Text('Failed to load blacklisted tags'),
               );
             } else {
               return const Center(child: CircularProgressIndicator());

@@ -39,7 +39,7 @@ class UserRepository implements IUserRepository {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception("Failed to get users for $idComma");
+        throw Exception('Failed to get users for $idComma');
       }
     }
   }
@@ -58,7 +58,7 @@ class UserRepository implements IUserRepository {
       .then((e) => UserDto.fromJson(e))
       .then(userDtoToUser)
       .catchError(
-          (Object obj) => throw Exception("Failed to get user info for $id"));
+          (Object obj) => throw Exception('Failed to get user info for $id'));
 
   @override
   Future<void> setUserBlacklistedTags(int id, String blacklistedTags) =>
@@ -73,5 +73,5 @@ class UserRepository implements IUserRepository {
             ),
           )
           .catchError((Object obj) =>
-              throw Exception("Failed to save $blacklistedTags for $id"));
+              throw Exception('Failed to save $blacklistedTags for $id'));
 }

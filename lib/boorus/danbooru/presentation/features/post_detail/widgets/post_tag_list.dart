@@ -27,7 +27,7 @@ class PostTagList extends StatefulWidget {
   final String apiEndpoint;
 
   @override
-  _PostTagListState createState() => _PostTagListState();
+  State<PostTagList> createState() => _PostTagListState();
 }
 
 class _PostTagListState extends State<PostTagList> {
@@ -48,7 +48,7 @@ class _PostTagListState extends State<PostTagList> {
         return GestureDetector(
           onTap: () => AppRouter.router.navigateTo(
             context,
-            "/posts/search",
+            '/posts/search',
             routeSettings: RouteSettings(arguments: [tag.rawName]),
           ),
           onLongPress: () {
@@ -60,7 +60,6 @@ class _PostTagListState extends State<PostTagList> {
           },
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
             key: tagKey,
             children: [
               Chip(
@@ -112,7 +111,6 @@ class _PostTagListState extends State<PostTagList> {
       context: context,
       config: popup_menu.MenuConfig(
         backgroundColor: Theme.of(context).cardColor,
-        maxColumn: 4,
       ),
       items: [
         popup_menu.MenuItem(
@@ -126,7 +124,7 @@ class _PostTagListState extends State<PostTagList> {
       onClickMenu: (_) {
         launchExternalUrl(
           Uri.parse(
-              "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}"),
+              '${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}'),
           mode: LaunchMode.platformDefault,
         );
       },
@@ -136,12 +134,13 @@ class _PostTagListState extends State<PostTagList> {
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
           final widgets = <Widget>[];
-          for (var g in state.data!) {
-            widgets.add(_TagBlockTitle(
-              title: g.groupName,
-              isFirstBlock: g.groupName == state.data!.first.groupName,
-            ));
-            widgets.add(_buildTags(g.tags));
+          for (final g in state.data!) {
+            widgets
+              ..add(_TagBlockTitle(
+                title: g.groupName,
+                isFirstBlock: g.groupName == state.data!.first.groupName,
+              ))
+              ..add(_buildTags(g.tags));
           }
 
           return Column(
@@ -170,17 +169,14 @@ class _TagBlockTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 5,
-          ),
-          _TagHeader(
-            title: title,
-          ),
-        ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(
+        height: 5,
+      ),
+      _TagHeader(
+        title: title,
+      ),
+    ]);
   }
 }
 
@@ -195,7 +191,7 @@ class _TagHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1.0),
+      padding: const EdgeInsets.symmetric(vertical: 1),
       child: Text(
         title,
         style: Theme.of(context)

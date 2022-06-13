@@ -19,7 +19,7 @@ Future<bool> launchExternalUrl(
 }
 
 extension StringX on String {
-  String removeUnderscoreWithSpace() => replaceAll("_", " ");
+  String removeUnderscoreWithSpace() => replaceAll('_', ' ');
 }
 
 String dateTimeToStringTimeAgo(DateTime time) {

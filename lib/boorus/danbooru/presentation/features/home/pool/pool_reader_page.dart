@@ -23,7 +23,7 @@ class PoolReaderPage extends StatelessWidget {
     return Align(
       alignment: const Alignment(-0.9, -0.96),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
@@ -39,7 +39,7 @@ class PoolReaderPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
 
-    for (var note in notes) {
+    for (final note in notes) {
       final coordinate = note.coordinate.calibrate(screenHeight, screenWidth,
           screenAspectRatio, post.height, post.width, post.aspectRatio);
 
@@ -78,7 +78,6 @@ class PoolReaderPage extends StatelessWidget {
               builder: (context, state) => Stack(
                 children: [
                   Align(
-                    alignment: Alignment.center,
                     child: CachedNetworkImage(
                       imageUrl: prs.imageUrl,
                       progressIndicatorBuilder: (context, url, progress) =>
@@ -96,7 +95,7 @@ class PoolReaderPage extends StatelessWidget {
                         alignment: Alignment.topCenter,
                         colors: <Color>[
                           const Color(0x8A000000),
-                          Colors.black12.withOpacity(0.0)
+                          Colors.black12.withOpacity(0)
                         ]),
                     _buildBackButton(context),
                     // _buildMoreButton(context),

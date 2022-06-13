@@ -13,10 +13,8 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/widgets/slide_in_route.dart';
 
 class ProfilePage extends HookWidget {
   const ProfilePage({
@@ -39,7 +37,7 @@ class ProfilePage extends HookWidget {
                 icon: const Icon(Icons.logout),
                 onPressed: () {
                   ReadContext(context).read<AuthenticationCubit>().logOut();
-                  AppRouter.router.navigateTo(context, "/",
+                  AppRouter.router.navigateTo(context, '/',
                       clearStack: true, replace: true);
                 }),
           ],
@@ -60,25 +58,25 @@ class ProfilePage extends HookWidget {
                         child: Column(
                           children: [
                             ListTile(
-                              leading: const Text("User ID"),
+                              leading: const Text('User ID'),
                               trailing: Text(
                                 profile.id.toString(),
                               ),
                             ),
                             ListTile(
-                              leading: const Text("Level"),
+                              leading: const Text('Level'),
                               trailing: Text(
                                 profile.levelString,
                               ),
                             ),
                             ListTile(
-                              leading: const Text("Favorites"),
+                              leading: const Text('Favorites'),
                               trailing: Text(
                                 profile.favoriteCount.toString(),
                               ),
                             ),
                             ListTile(
-                              leading: const Text("Comments"),
+                              leading: const Text('Comments'),
                               trailing: Text(
                                 profile.commentCount.toString(),
                               ),
@@ -103,7 +101,7 @@ class ProfilePage extends HookWidget {
                                 context, '/favorites',
                                 routeSettings:
                                     RouteSettings(arguments: [profile.name])),
-                            child: const Text("See more"),
+                            child: const Text('See more'),
                           ),
                         ),
                       ),
@@ -139,7 +137,7 @@ class ProfilePage extends HookWidget {
                   );
                 } else if (state.status == LoadStatus.failure) {
                   return const Center(
-                    child: Text("Fail to load profile"),
+                    child: Text('Fail to load profile'),
                   );
                 } else {
                   return const Center(

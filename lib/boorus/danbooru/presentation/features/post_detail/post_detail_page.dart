@@ -37,7 +37,7 @@ class PostDetailPage extends HookWidget {
     final tickerProvider = useSingleTickerProvider();
     final spinningIconpanelAnimationController = useAnimationController(
         vsync: tickerProvider, duration: const Duration(seconds: 200));
-    final rotateAnimation = Tween<double>(begin: 0.0, end: 360.0)
+    final rotateAnimation = Tween<double>(begin: 0, end: 360)
         .animate(spinningIconpanelAnimationController);
     final showSlideShowConfig = useState(false);
     final autoPlay = useState(false);
@@ -68,8 +68,9 @@ class PostDetailPage extends HookWidget {
       if (autoPlay.value) {
         spinningIconpanelAnimationController.repeat();
       } else {
-        spinningIconpanelAnimationController.stop();
-        spinningIconpanelAnimationController.reset();
+        spinningIconpanelAnimationController
+          ..stop()
+          ..reset();
       }
     });
 
@@ -81,16 +82,17 @@ class PostDetailPage extends HookWidget {
         alignment: const Alignment(0.9, -0.96),
         child: ButtonBar(
           children: [
-            autoPlay.value
-                ? AnimatedSpinningIcon(
-                    icon: const Icon(Icons.sync),
-                    animation: rotateAnimation,
-                    onPressed: () => autoPlay.value = false,
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.slideshow),
-                    onPressed: () => showSlideShowConfig.value = true,
-                  ),
+            if (autoPlay.value)
+              AnimatedSpinningIcon(
+                icon: const Icon(Icons.sync),
+                animation: rotateAnimation,
+                onPressed: () => autoPlay.value = false,
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.slideshow),
+                onPressed: () => showSlideShowConfig.value = true,
+              ),
             PopupMenuButton<PostAction>(
               onSelected: (value) async {
                 switch (value) {
@@ -107,7 +109,7 @@ class PostDetailPage extends HookWidget {
                   value: PostAction.download,
                   child: ListTile(
                     leading: Icon(Icons.download_rounded),
-                    title: Text("Download"),
+                    title: Text('Download'),
                   ),
                 ),
               ],
@@ -121,7 +123,7 @@ class PostDetailPage extends HookWidget {
       return Align(
         alignment: const Alignment(-0.9, -0.96),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(8),
           child: IconButton(
             icon: const Icon(Icons.arrow_back_ios),
             onPressed: () {
@@ -140,7 +142,7 @@ class PostDetailPage extends HookWidget {
             builder: (context, config, child) => CarouselSlider.builder(
               itemCount: posts.length,
               itemBuilder: (context, index, realIndex) {
-                WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                   currentPostIndex.value = index;
                 });
                 return PostDetail(
@@ -171,14 +173,11 @@ class PostDetailPage extends HookWidget {
                 viewportFraction: 1,
                 enableInfiniteScroll: false,
                 initialPage: intitialIndex,
-                reverse: false,
-                autoPlayCurve: Curves.fastOutSlowIn,
                 autoPlay: autoPlay.value,
                 autoPlayAnimationDuration: config.skipAnimation
                     ? const Duration(microseconds: 1)
                     : const Duration(milliseconds: 600),
                 autoPlayInterval: Duration(seconds: config.interval),
-                scrollDirection: Axis.horizontal,
               ),
             ),
           ),
@@ -186,7 +185,7 @@ class PostDetailPage extends HookWidget {
             alignment: Alignment.topCenter,
             colors: <Color>[
               const Color(0x5D000000),
-              Colors.black12.withOpacity(0.0)
+              Colors.black12.withOpacity(0)
             ],
           ),
           _buildBackButton(),

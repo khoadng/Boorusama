@@ -5,17 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/widgets/non_quote.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/widgets/quote.dart';
 
+// ignore: avoid_classes_with_only_static_members
 class Dtext {
   static Widget parse(String content, String startString, String endString) {
     final widgets = <Widget>[];
     var target = content;
     while (target.isNotEmpty) {
-      var start = target.indexOf(startString);
+      final start = target.indexOf(startString);
 
       if (!start.isNegative) {
-        var end = target.indexOf(endString);
+        final end = target.indexOf(endString);
         if (!end.isNegative) {
-          var text = target.substring(start + startString.length, end);
+          final text = target.substring(start + startString.length, end);
           widgets.add(Quote(text: text));
           target = target.substring(end + endString.length);
         } else {
@@ -29,7 +30,6 @@ class Dtext {
     }
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: widgets,
     );

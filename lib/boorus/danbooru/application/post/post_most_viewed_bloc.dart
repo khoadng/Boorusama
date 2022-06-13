@@ -20,6 +20,12 @@ class PostMostViewedState extends Equatable {
     required this.hasMore,
   });
 
+  factory PostMostViewedState.initial() => const PostMostViewedState(
+        status: LoadStatus.initial,
+        posts: [],
+        hasMore: true,
+      );
+
   final List<Post> posts;
   final LoadStatus status;
   final bool hasMore;
@@ -33,12 +39,6 @@ class PostMostViewedState extends Equatable {
         status: status ?? this.status,
         posts: posts ?? this.posts,
         hasMore: hasMore ?? this.hasMore,
-      );
-
-  factory PostMostViewedState.initial() => const PostMostViewedState(
-        status: LoadStatus.initial,
-        posts: [],
-        hasMore: true,
       );
 
   @override

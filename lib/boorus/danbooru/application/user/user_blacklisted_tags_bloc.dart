@@ -108,8 +108,8 @@ class UserBlacklistedTagsBloc
           blacklistedTags: state.blacklistedTags,
           status: LoadStatus.failure,
           errorMessage: state.blacklistedTags.length > event.tags.length
-              ? "Fail to remove tag"
-              : "Fail to add tag",
+              ? 'Fail to remove tag'
+              : 'Fail to add tag',
         )),
         onSuccess: (_) => emit(state.copyWith(
           blacklistedTags: event.tags,

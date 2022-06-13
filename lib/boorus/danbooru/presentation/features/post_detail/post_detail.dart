@@ -34,14 +34,14 @@ import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
 
 class Recommended {
-  final String _title;
-  final List<Post> _posts;
 
   Recommended({
     required String title,
     required List<Post> posts,
   })  : _posts = posts,
         _title = title;
+  final String _title;
+  final List<Post> _posts;
 
   String get title =>
       _title.split(' ').join(', ').removeUnderscoreWithSpace().titleCase;
@@ -76,13 +76,13 @@ class PostDetail extends HookWidget {
 
     Widget postWidget;
     if (post.isVideo) {
-      if (p.extension(post.normalImageUrl) == ".webm") {
-        final String videoHtml = """
+      if (p.extension(post.normalImageUrl) == '.webm') {
+        final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${post.normalImageUrl}#t=0.01 type="video/webm" />
               </video>
-            </center>""";
+            </center>''';
         postWidget = Container(
           color: Colors.black,
           height: MediaQuery.of(context).size.height,
@@ -104,7 +104,7 @@ class PostDetail extends HookWidget {
     } else {
       postWidget = GestureDetector(
         onTap: () {
-          AppRouter.router.navigateTo(context, "/posts/image",
+          AppRouter.router.navigateTo(context, '/posts/image',
               routeSettings: RouteSettings(arguments: [post]));
         },
         child: CachedNetworkImage(
@@ -153,7 +153,7 @@ class PostDetail extends HookWidget {
                       header: ListTile(
                         onTap: () => AppRouter.router.navigateTo(
                           context,
-                          "/artist",
+                          '/artist',
                           routeSettings: RouteSettings(
                             arguments: [
                               item._title,
@@ -205,7 +205,7 @@ class PostDetail extends HookWidget {
                       header: ListTile(
                         onTap: () => AppRouter.router.navigateTo(
                           context,
-                          "/artist",
+                          '/artist',
                           routeSettings: RouteSettings(
                             arguments: [
                               item._title,
@@ -297,7 +297,6 @@ class PostDetail extends HookWidget {
                 ),
                 SliverToBoxAdapter(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -350,7 +349,7 @@ class InformationSection extends HookWidget {
                 children: [
                   Text(
                     post.characterTags.isEmpty
-                        ? "Original"
+                        ? 'Original'
                         : post.name.characterOnly
                             .removeUnderscoreWithSpace()
                             .titleCase,
@@ -360,7 +359,7 @@ class InformationSection extends HookWidget {
                   const SizedBox(height: 5),
                   Text(
                       post.copyrightTags.isEmpty
-                          ? "Original"
+                          ? 'Original'
                           : post.name.copyRightOnly
                               .removeUnderscoreWithSpace()
                               .titleCase,

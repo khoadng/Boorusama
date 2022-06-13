@@ -21,15 +21,15 @@ class TagGroupItem {
 String tagCategoryToString(TagCategory category) {
   switch (category) {
     case TagCategory.artist:
-      return "Artist";
+      return 'Artist';
     case TagCategory.charater:
-      return "Character";
+      return 'Character';
     case TagCategory.copyright:
-      return "Copyright";
+      return 'Copyright';
     case TagCategory.general:
-      return "General";
+      return 'General';
     case TagCategory.meta:
-      return "Meta";
+      return 'Meta';
     default:
       return '';
   }

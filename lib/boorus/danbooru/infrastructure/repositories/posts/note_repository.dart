@@ -14,9 +14,9 @@ List<Note> parseNote(HttpResponse<dynamic> value) => parse(
     ).map((e) => e.toEntity()).toList();
 
 class NoteRepository implements INoteRepository {
-  final IApi _api;
 
   NoteRepository(this._api);
+  final IApi _api;
 
   @override
   Future<List<Note>> getNotesFrom(
@@ -35,7 +35,7 @@ class NoteRepository implements INoteRepository {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception("Failed to get notes from $postId");
+        throw Exception('Failed to get notes from $postId');
       }
     }
   }

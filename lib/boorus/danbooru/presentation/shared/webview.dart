@@ -15,7 +15,7 @@ class WebView extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final loadProgress = useState(0.0);
+    final loadProgress = useState<double>(0);
 
     return SafeArea(
       child: Column(

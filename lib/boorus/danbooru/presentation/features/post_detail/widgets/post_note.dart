@@ -73,7 +73,7 @@ class PostNote extends HookWidget {
               height: coordinate.height,
               decoration: BoxDecoration(
                   color: Colors.white54,
-                  border: Border.all(color: Colors.red, width: 1)),
+                  border: Border.all(color: Colors.red)),
             ),
           ),
         ),

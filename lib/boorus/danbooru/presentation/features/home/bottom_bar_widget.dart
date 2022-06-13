@@ -11,16 +11,16 @@ class BottomBar extends StatefulWidget {
   final ValueChanged<int> onTabChanged;
 
   @override
-  _BottomBarState createState() => _BottomBarState();
+  State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
   late int currentIndex;
 
   final labels = [
-    "Home",
-    "Explore",
-    "Pool",
+    'Home',
+    'Explore',
+    'Pool',
     // "Favorites",
   ];
 
@@ -50,7 +50,7 @@ class _BottomBarState extends State<BottomBar> {
         FaIcon(Icons.explore),
         FaIcon(FontAwesomeIcons.images),
       ],
-      onTap: (index) => changePage(index),
+      onTap: changePage,
     );
   }
 }

@@ -23,7 +23,7 @@ class PreviewPostGrid extends StatelessWidget {
     void handleTap(Post post, int index) {
       AppRouter.router.navigateTo(
         context,
-        "/post/detail",
+        '/post/detail',
         routeSettings: RouteSettings(
           arguments: [
             posts,
@@ -42,9 +42,9 @@ class PreviewPostGrid extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: posts.length,
       itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(3),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(8),
           child: GestureDetector(
             onTap: () => handleTap(posts[index], index),
             child: CachedNetworkImage(
@@ -55,7 +55,7 @@ class PreviewPostGrid extends StatelessWidget {
               placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
             ),

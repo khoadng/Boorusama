@@ -212,7 +212,7 @@ packages:
     source: hosted
     version: "4.1.0"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -624,7 +624,7 @@ packages:
     source: hosted
     version: "1.0.4"
   html:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: html
       url: "https://pub.dartlang.org"
@@ -1424,7 +1424,7 @@ packages:
     source: hosted
     version: "2.1.2"
   video_player:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: video_player
       url: "https://pub.dartlang.org"

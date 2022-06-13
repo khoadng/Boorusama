@@ -1,5 +1,6 @@
 # Boorusama
 
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) 
 ## Run the generator
 
 Use build_runner to generate boilerplate files

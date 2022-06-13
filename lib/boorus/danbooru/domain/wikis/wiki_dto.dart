@@ -13,6 +13,17 @@ class WikiDto {
     required this.isDeleted,
   });
 
+  factory WikiDto.fromJson(Map<String, dynamic> json) => WikiDto(
+        id: json['id'],
+        createdAt: DateTime.parse(json['created_at']),
+        updatedAt: DateTime.parse(json['updated_at']),
+        title: json['title'],
+        body: json['body'],
+        isLocked: json['is_locked'],
+        otherNames: List<dynamic>.from(json['other_names'].map((x) => x)),
+        isDeleted: json['is_deleted'],
+      );
+
   final int id;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -21,17 +32,6 @@ class WikiDto {
   final bool isLocked;
   final List<dynamic> otherNames;
   final bool isDeleted;
-
-  factory WikiDto.fromJson(Map<String, dynamic> json) => WikiDto(
-        id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        title: json["title"],
-        body: json["body"],
-        isLocked: json["is_locked"],
-        otherNames: List<dynamic>.from(json["other_names"].map((x) => x)),
-        isDeleted: json["is_deleted"],
-      );
 }
 
 extension WikiDtoX on WikiDto {

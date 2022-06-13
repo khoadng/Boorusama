@@ -1,10 +1,14 @@
 class NoteCoordinate {
+  NoteCoordinate(
+    this._x,
+    this._y,
+    this._width,
+    this._height,
+  );
   final double _x;
   final double _y;
   final double _width;
   final double _height;
-
-  NoteCoordinate(this._x, this._y, this._width, this._height);
 
   double get x => _x;
 
@@ -15,12 +19,13 @@ class NoteCoordinate {
   double get height => _height;
 
   NoteCoordinate calibrate(
-      double screenHeight,
-      double screenWidth,
-      double screenAspectRatio,
-      double postHeight,
-      double postWidth,
-      double postAspectRatio) {
+    double screenHeight,
+    double screenWidth,
+    double screenAspectRatio,
+    double postHeight,
+    double postWidth,
+    double postAspectRatio,
+  ) {
     var aspectRatio = 1.0;
     double offset = 0;
     double newX;
@@ -57,6 +62,11 @@ class NoteCoordinate {
     newWidth = width * aspectRatio;
     newHeight = height * aspectRatio;
 
-    return NoteCoordinate(newX, newY, newWidth, newHeight);
+    return NoteCoordinate(
+      newX,
+      newY,
+      newWidth,
+      newHeight,
+    );
   }
 }

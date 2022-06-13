@@ -9,30 +9,6 @@ import 'package:boorusama/core/domain/i_downloadable.dart';
 import 'post_name.dart';
 
 class Post extends Equatable implements IDownloadable {
-  final int id;
-  final String previewImageUrl;
-  final String normalImageUrl;
-  final String fullImageUrl;
-  final List<String> copyrightTags;
-  final List<String> characterTags;
-  final List<String> artistTags;
-  final List<String> generalTags;
-  final List<String> tags;
-  final double width;
-  final double height;
-  final String format;
-  final DateTime? lastCommentAt;
-  final ImageSource source;
-  final DateTime createdAt;
-  final int score;
-  final int upScore;
-  final int downScore;
-  final int favCount;
-  final int uploaderId;
-  final Rating rating;
-  final int fileSize;
-  final int? pixivId;
-  final bool isBanned;
 
   const Post({
     required this.id,
@@ -61,46 +37,11 @@ class Post extends Equatable implements IDownloadable {
     required this.isBanned,
   });
 
-  double get aspectRatio => width / height;
-
-  PostName get name {
-    return PostName(
-      artistTags: artistTags.join(' '),
-      characterTags: characterTags.join(' '),
-      copyrightTags: copyrightTags.join(' '),
-    );
-  }
-
-  bool get isVideo {
-    //TODO: handle other kind of video format
-    final supportVideoFormat = ["mp4", "webm", "zip"];
-    if (supportVideoFormat.contains(format)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  bool get isAnimated {
-    return isVideo || (format == "gif");
-  }
-
-  bool get isTranslated => tags.contains("translated");
-
-  bool get hasComment => lastCommentAt != null;
-
-  @override
-  String get fileName => "${name.full} - ${path.basename(downloadUrl)}"
-      .fixInvalidCharacterForPathName();
-
-  @override
-  String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
-
   factory Post.empty() => Post(
         id: 0,
-        previewImageUrl: "",
-        normalImageUrl: "",
-        fullImageUrl: "",
+        previewImageUrl: '',
+        normalImageUrl: '',
+        fullImageUrl: '',
         copyrightTags: const [],
         characterTags: const [],
         artistTags: const [],
@@ -108,9 +49,9 @@ class Post extends Equatable implements IDownloadable {
         tags: const [],
         width: 1,
         height: 1,
-        format: "png",
+        format: 'png',
         lastCommentAt: null,
-        source: ImageSource("", null),
+        source: ImageSource('', null),
         createdAt: DateTime.now(),
         score: 0,
         upScore: 0,
@@ -147,9 +88,9 @@ class Post extends Equatable implements IDownloadable {
   }) =>
       Post(
         id: -1,
-        previewImageUrl: "",
-        normalImageUrl: "",
-        fullImageUrl: "",
+        previewImageUrl: '',
+        normalImageUrl: '',
+        fullImageUrl: '',
         copyrightTags: copyrightTags,
         characterTags: characterTags,
         artistTags: artistTags,
@@ -171,6 +112,65 @@ class Post extends Equatable implements IDownloadable {
         pixivId: pixivId,
         isBanned: isBanned,
       );
+  final int id;
+  final String previewImageUrl;
+  final String normalImageUrl;
+  final String fullImageUrl;
+  final List<String> copyrightTags;
+  final List<String> characterTags;
+  final List<String> artistTags;
+  final List<String> generalTags;
+  final List<String> tags;
+  final double width;
+  final double height;
+  final String format;
+  final DateTime? lastCommentAt;
+  final ImageSource source;
+  final DateTime createdAt;
+  final int score;
+  final int upScore;
+  final int downScore;
+  final int favCount;
+  final int uploaderId;
+  final Rating rating;
+  final int fileSize;
+  final int? pixivId;
+  final bool isBanned;
+
+  double get aspectRatio => width / height;
+
+  PostName get name {
+    return PostName(
+      artistTags: artistTags.join(' '),
+      characterTags: characterTags.join(' '),
+      copyrightTags: copyrightTags.join(' '),
+    );
+  }
+
+  bool get isVideo {
+    //TODO: handle other kind of video format
+    final supportVideoFormat = ['mp4', 'webm', 'zip'];
+    if (supportVideoFormat.contains(format)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  bool get isAnimated {
+    return isVideo || (format == 'gif');
+  }
+
+  bool get isTranslated => tags.contains('translated');
+
+  bool get hasComment => lastCommentAt != null;
+
+  @override
+  String get fileName => '${name.full} - ${path.basename(downloadUrl)}'
+      .fixInvalidCharacterForPathName();
+
+  @override
+  String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
   @override
   List<Object?> get props => [id];
@@ -181,6 +181,6 @@ bool isPostValid(Post post) => post.id > 0;
 
 extension InvalidFileCharsExtension on String {
   String fixInvalidCharacterForPathName() {
-    return replaceAll(RegExp(r'[\\/*?:"<>|]'), "_");
+    return replaceAll(RegExp(r'[\\/*?:"<>|]'), '_');
   }
 }

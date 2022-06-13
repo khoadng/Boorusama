@@ -99,7 +99,7 @@ class SearchPage extends HookWidget {
     }, [completedQueryItems.value]);
 
     void addTag(String tag) {
-      queryEditingController.text = "";
+      queryEditingController.text = '';
       completedQueryItems.value = LinkedHashSet<String>.from(
           [...completedQueryItems.value, ...tag.split(' ')]).toList();
     }
@@ -108,7 +108,7 @@ class SearchPage extends HookWidget {
       completedQueryItems.value = [...completedQueryItems.value..remove(tag)];
     }
 
-    void onTextInputChanged(String text) async {
+    Future<void> onTextInputChanged(String text) async {
       if (text.trim().isEmpty) {
         // Make sure input is not empty
         return;
@@ -129,7 +129,7 @@ class SearchPage extends HookWidget {
     void onSearchClearButtonTap() {
       searchDisplayState.value.maybeWhen(
         orElse: () {
-          queryEditingController.text = "";
+          queryEditingController.text = '';
           return Null;
         },
         results: () {
@@ -187,7 +187,7 @@ class SearchPage extends HookWidget {
 
     Widget _buildTags() {
       return Container(
-        margin: const EdgeInsets.only(left: 8.0),
+        margin: const EdgeInsets.only(left: 8),
         height: 50,
         child: ListView.builder(
           shrinkWrap: true,
@@ -195,10 +195,10 @@ class SearchPage extends HookWidget {
           itemCount: completedQueryItems.value.length,
           itemBuilder: (context, index) {
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: Chip(
-                padding: const EdgeInsets.all(4.0),
-                labelPadding: const EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(4),
+                labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
                 deleteIcon: const Icon(
                   FontAwesomeIcons.xmark,
@@ -230,7 +230,7 @@ class SearchPage extends HookWidget {
         floatingActionButton: searchDisplayState.value.maybeWhen(
           results: () => const SizedBox.shrink(),
           orElse: () => FloatingActionButton(
-            onPressed: () => onSearchButtonTap(),
+            onPressed: onSearchButtonTap,
             heroTag: null,
             child: const Icon(Icons.search),
           ),
@@ -245,15 +245,15 @@ class SearchPage extends HookWidget {
             queryEditingController: queryEditingController,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back),
-              onPressed: () => onBackButtonTap(),
+              onPressed: onBackButtonTap,
             ),
             trailing: queryEditingController.text.isNotEmpty
                 ? IconButton(
                     icon: const Icon(Icons.close),
-                    onPressed: () => onSearchClearButtonTap(),
+                    onPressed: onSearchClearButtonTap,
                   )
                 : null,
-            onChanged: (value) => onTextInputChanged(value),
+            onChanged: onTextInputChanged,
           ),
         ),
         body: SafeArea(
@@ -272,7 +272,7 @@ class SearchPage extends HookWidget {
                 child: searchDisplayState.value.when(
                   searchOptions: () => SearchOptions(
                     onOptionTap: (searchOption) =>
-                        queryEditingController.text = "$searchOption:",
+                        queryEditingController.text = '$searchOption:',
                     onHistoryTap: (history) =>
                         queryEditingController.text = history,
                   ),
@@ -301,7 +301,7 @@ class SearchPage extends HookWidget {
                             slivers: <Widget>[
                               SliverPadding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 14.0),
+                                    horizontal: 14),
                                 sliver: BlocBuilder<PostBloc, PostState>(
                                   buildWhen: (previous, current) =>
                                       current.status != LoadStatus.loading,
@@ -313,7 +313,7 @@ class SearchPage extends HookWidget {
                                       if (state.posts.isEmpty) {
                                         return const SliverToBoxAdapter(
                                             child:
-                                                Center(child: Text("No data")));
+                                                Center(child: Text('No data')));
                                       }
                                       return SliverPostGrid(
                                         posts: state.posts,
@@ -321,7 +321,7 @@ class SearchPage extends HookWidget {
                                         onTap: (post, index) =>
                                             AppRouter.router.navigateTo(
                                           context,
-                                          "/post/detail",
+                                          '/post/detail',
                                           routeSettings: RouteSettings(
                                             arguments: [
                                               state.posts,
@@ -339,7 +339,7 @@ class SearchPage extends HookWidget {
                                     } else {
                                       return const SliverToBoxAdapter(
                                         child: Center(
-                                          child: Text("Something went wrong"),
+                                          child: Text('Something went wrong'),
                                         ),
                                       );
                                     }
@@ -373,7 +373,7 @@ class SearchPage extends HookWidget {
                   },
                   noResults: () => const EmptyResult(
                       text:
-                          "We searched far and wide, but no results were found."),
+                          'We searched far and wide, but no results were found.'),
                   error: (message) {
                     return ErrorResult(text: message);
                   },
@@ -399,17 +399,16 @@ class EmptyResult extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: Lottie.asset(
-              "assets/animations/search-file.json",
+              'assets/animations/search-file.json',
               fit: BoxFit.scaleDown,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
               text,
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -434,17 +433,16 @@ class ErrorResult extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: Lottie.asset(
-              "assets/animations/server-error.json",
+              'assets/animations/server-error.json',
               fit: BoxFit.scaleDown,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
               text,
               style: const TextStyle(fontWeight: FontWeight.bold),
@@ -507,7 +505,7 @@ class Results extends SearchDisplayState {
   }
 
   @override
-  List<Object> get props => ["results"];
+  List<Object> get props => ['results'];
 }
 
 class Suggestions extends SearchDisplayState {
@@ -536,7 +534,7 @@ class Suggestions extends SearchDisplayState {
   }
 
   @override
-  List<Object> get props => ["suggestions"];
+  List<Object> get props => ['suggestions'];
 }
 
 class __SearchOptions extends SearchDisplayState {
@@ -565,7 +563,7 @@ class __SearchOptions extends SearchDisplayState {
   }
 
   @override
-  List<Object> get props => ["searchOptions"];
+  List<Object> get props => ['searchOptions'];
 }
 
 class NoResults extends SearchDisplayState {
@@ -594,7 +592,7 @@ class NoResults extends SearchDisplayState {
   }
 
   @override
-  List<Object> get props => ["noResults"];
+  List<Object> get props => ['noResults'];
 }
 
 class Error extends SearchDisplayState {
@@ -628,5 +626,5 @@ class Error extends SearchDisplayState {
   }
 
   @override
-  List<Object> get props => ["error", message];
+  List<Object> get props => ['error', message];
 }

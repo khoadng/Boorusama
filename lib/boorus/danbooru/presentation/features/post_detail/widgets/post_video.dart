@@ -16,7 +16,7 @@ class PostVideo extends StatefulWidget {
   final Post post;
 
   @override
-  _PostVideoState createState() => _PostVideoState();
+  State<PostVideo> createState() => _PostVideoState();
 }
 
 class _PostVideoState extends State<PostVideo> {

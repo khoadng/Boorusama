@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/home/explore/explore_detai
 import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_most_viewed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
@@ -224,7 +223,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
         controller: controller,
         slivers: <Widget>[
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+            padding: const EdgeInsets.symmetric(horizontal: 14),
             sliver: mapLoadStatusToWidget(context, status, controller),
           ),
           if (status == LoadStatus.loading)
@@ -251,7 +250,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
     } else if (status == LoadStatus.success) {
       if (posts.isEmpty) {
         return const SliverToBoxAdapter(
-          child: Center(child: Text("No data")),
+          child: Center(child: Text('No data')),
         );
       }
       return SliverPostGrid(
@@ -259,7 +258,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
         scrollController: controller,
         onTap: (post, index) => AppRouter.router.navigateTo(
           context,
-          "/post/detail",
+          '/post/detail',
           routeSettings: RouteSettings(
             arguments: [
               posts,
@@ -278,7 +277,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
           scrollController: controller,
           onTap: (post, index) => AppRouter.router.navigateTo(
             context,
-            "/post/detail",
+            '/post/detail',
             routeSettings: RouteSettings(
               arguments: [
                 posts,
@@ -292,7 +291,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
     } else {
       return const SliverToBoxAdapter(
         child: Center(
-          child: Text("Something went wrong"),
+          child: Text('Something went wrong'),
         ),
       );
     }
@@ -357,13 +356,13 @@ class _ExploreListItemHeader extends StatelessWidget {
                 backgroundColor: Theme.of(context).cardColor,
                 primary: Theme.of(context).textTheme.headline6!.color,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
+                  borderRadius: BorderRadius.circular(18),
                 ),
               ),
               onPressed: () => DatePicker.showDatePicker(
                 context,
                 theme: const DatePickerTheme(),
-                onConfirm: (time) => onDateChanged(time),
+                onConfirm: onDateChanged,
                 currentTime: DateTime.now(),
               ),
               child: Row(
@@ -383,21 +382,18 @@ class _ExploreListItemHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            selectedCategory == ExploreCategory.mostViewed
-                ? const Center()
-                : TextButton(
+            if (selectedCategory == ExploreCategory.mostViewed) const Center() else TextButton(
                     style: TextButton.styleFrom(
                       backgroundColor: Theme.of(context).cardColor,
                       primary: Theme.of(context).textTheme.headline6!.color,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
+                        borderRadius: BorderRadius.circular(18),
                       ),
                     ),
                     onPressed: () async {
                       final timeScale = await showMaterialModalBottomSheet(
                               context: context,
-                              builder: (context) =>
-                                  _buildModalTimeScalePicker(context)) ??
+                              builder: _buildModalTimeScalePicker) ??
                           scale;
                       onTimeScaleChanged(timeScale);
                     },

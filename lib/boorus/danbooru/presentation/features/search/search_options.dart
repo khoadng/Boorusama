@@ -24,12 +24,12 @@ class SearchOptions extends HookWidget {
 
   static const icons = {
     // "fav": Icons.favorite,
-    "favcount": FontAwesomeIcons.arrowUpWideShort,
+    'favcount': FontAwesomeIcons.arrowUpWideShort,
     // "id": FontAwesomeIcons.idCard,
     // "date": FontAwesomeIcons.calendar,
-    "age": FontAwesomeIcons.clock,
-    "rating": FontAwesomeIcons.exclamation,
-    "score": FontAwesomeIcons.star,
+    'age': FontAwesomeIcons.clock,
+    'rating': FontAwesomeIcons.exclamation,
+    'score': FontAwesomeIcons.star,
   };
 
   @override
@@ -39,7 +39,7 @@ class SearchOptions extends HookWidget {
 
     useEffect(() {
       Future.delayed(const Duration(milliseconds: 100),
-          () => animationController.forward());
+          animationController.forward);
       return null;
     }, [animationController]);
 
@@ -49,17 +49,15 @@ class SearchOptions extends HookWidget {
         child: Padding(
           padding: const EdgeInsets.only(top: 10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding: const EdgeInsets.only(left: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Search Options".toUpperCase(),
+                      'Search Options'.toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -89,14 +87,14 @@ class SearchOptions extends HookWidget {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                  text: "$option:",
+                                  text: '$option:',
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
                                   text:
-                                      " ${RepositoryProvider.of<IConfig>(context).searchOptionHitns[option]}",
+                                      ' ${RepositoryProvider.of<IConfig>(context).searchOptionHitns[option]}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!

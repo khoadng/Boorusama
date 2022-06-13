@@ -6,15 +6,15 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 
 class AccountRepository implements IAccountRepository {
-  final Future<Box> _db;
 
   AccountRepository(this._db);
+  final Future<Box> _db;
 
   @override
   Future<void> add(Account account) async {
     final db = await _db;
 
-    db.put("accounts", account.toMap());
+    await db.put('accounts', account.toMap());
   }
 
   @override

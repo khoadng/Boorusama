@@ -29,7 +29,7 @@ class ExplorePage extends HookWidget {
       return _ExploreCarousel(posts: state.data!);
     } else if (state.status == LoadStatus.failure) {
       return const Center(
-        child: Text("Something went wrong"),
+        child: Text('Something went wrong'),
       );
     } else {
       return const CarouselPlaceholder();
@@ -70,7 +70,7 @@ class ExplorePage extends HookWidget {
 
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: "Popular",
+          title: 'Popular',
           category: ExploreCategory.popular,
           builder: (_) => BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -79,7 +79,7 @@ class ExplorePage extends HookWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: "Curated",
+          title: 'Curated',
           category: ExploreCategory.curated,
           builder: (_) => BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -88,7 +88,7 @@ class ExplorePage extends HookWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: "Most viewed",
+          title: 'Most viewed',
           category: ExploreCategory.mostViewed,
           builder: (_) =>
               BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
@@ -122,7 +122,7 @@ class _ExploreCarousel extends StatelessWidget {
         return GestureDetector(
           onTap: () => AppRouter.router.navigateTo(
             context,
-            "/post/detail",
+            '/post/detail',
             routeSettings: RouteSettings(
               arguments: [
                 posts,
@@ -142,13 +142,13 @@ class _ExploreCarousel extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 colors: <Color>[
                   const Color(0xC2000000),
-                  Colors.black12.withOpacity(0.0)
+                  Colors.black12.withOpacity(0)
                 ],
               ),
               Align(
                 alignment: const Alignment(-0.9, 1),
                 child: Text(
-                  "${index + 1}",
+                  '${index + 1}',
                   style: Theme.of(context)
                       .textTheme
                       .headline2!
@@ -162,10 +162,7 @@ class _ExploreCarousel extends StatelessWidget {
       options: CarouselOptions(
         aspectRatio: 1.5,
         viewportFraction: 0.5,
-        initialPage: 0,
         enlargeCenterPage: true,
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        scrollDirection: Axis.horizontal,
       ),
     );
   }

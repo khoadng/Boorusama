@@ -10,11 +10,11 @@ class SearchHistory {
     required this.createdAt,
   });
 
-  final DateTime createdAt;
-  final String query;
-
   factory SearchHistory.fromJson(Map<String, dynamic> json) =>
       _$SearchHistoryFromJson(json);
+
+  final DateTime createdAt;
+  final String query;
 
   Map<String, dynamic> toJson() => _$SearchHistoryToJson(this);
 }

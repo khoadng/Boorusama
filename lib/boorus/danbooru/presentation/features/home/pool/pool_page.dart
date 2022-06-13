@@ -48,11 +48,11 @@ class _PoolPageState extends State<PoolPage> {
                     crossAxisCount: 2,
                   ),
                   itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.all(3.0),
+                    padding: const EdgeInsets.all(3),
                     child: ClipRRect(
                       borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(8.0),
-                        topRight: Radius.circular(8.0),
+                        topLeft: Radius.circular(8),
+                        topRight: Radius.circular(8),
                       ),
                       child: GestureDetector(
                         onTap: () => AppRouter.router.navigateTo(
@@ -72,8 +72,8 @@ class _PoolPageState extends State<PoolPage> {
                               decoration: const BoxDecoration(
                                 color: Colors.white70,
                                 borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(8.0),
-                                  bottomRight: Radius.circular(8.0),
+                                  bottomLeft: Radius.circular(8),
+                                  bottomRight: Radius.circular(8),
                                 ),
                               ),
                               child: Text(
@@ -91,7 +91,7 @@ class _PoolPageState extends State<PoolPage> {
                 );
               } else if (state.status == LoadStatus.failure) {
                 return const Center(
-                  child: Text("Failed to load pool, please try again later"),
+                  child: Text('Failed to load pool, please try again later'),
                 );
               } else {
                 return const Center(
@@ -117,8 +117,8 @@ class _PoolPageState extends State<PoolPage> {
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                   borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8.0),
-                    topRight: Radius.circular(8.0),
+                    topLeft: Radius.circular(8),
+                    topRight: Radius.circular(8),
                   ),
                 ),
               ),
@@ -128,8 +128,8 @@ class _PoolPageState extends State<PoolPage> {
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
+                  topLeft: Radius.circular(8),
+                  topRight: Radius.circular(8),
                 ),
               ),
               child: const Center(
@@ -166,7 +166,7 @@ class _PoolPageState extends State<PoolPage> {
                 backgroundColor: Theme.of(context).cardColor,
                 primary: Theme.of(context).textTheme.headline6!.color,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
+                  borderRadius: BorderRadius.circular(18),
                 ),
               ),
               onPressed: () => showMaterialModalBottomSheet(

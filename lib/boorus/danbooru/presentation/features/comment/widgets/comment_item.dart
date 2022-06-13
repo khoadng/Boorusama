@@ -10,23 +10,22 @@ import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
 
 class CommentItem extends StatelessWidget {
-  final Comment comment;
 
   const CommentItem({
     Key? key,
     required this.comment,
   }) : super(key: key);
+  final Comment comment;
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
             Text(
-              comment.author.name.value.replaceAll("_", " "),
+              comment.author.name.value.replaceAll('_', ' '),
               style: TextStyle(
                 color: Color(comment.author.level.hexColor),
               ),
@@ -42,8 +41,8 @@ class CommentItem extends StatelessWidget {
         ),
         Dtext.parse(
           comment.body,
-          "[quote]",
-          "[/quote]",
+          '[quote]',
+          '[/quote]',
         ),
       ],
     );

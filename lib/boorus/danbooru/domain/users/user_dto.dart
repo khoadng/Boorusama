@@ -70,6 +70,90 @@ class UserDto {
     required this.negativeFeedbackCount,
   });
 
+  factory UserDto.fromJson(Map<String, dynamic> json) {
+    return UserDto(
+      id: json['id'],
+      name: json['name'],
+      level: json['level'],
+      inviterId: json['inviter_id'],
+      createdAt: json['created_at'] != null
+          ? DateTime.parse(json['created_at'])
+          : null,
+      lastLoggedInAt: json['last_logged_in_at'] != null
+          ? DateTime.parse(json['last_logged_in_at'])
+          : null,
+      lastForumReadAt: json['last_forum_read_at'] != null
+          ? DateTime.parse(json['last_forum_read_at'])
+          : null,
+      commentThreshold: json['comment_threshold'],
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
+      defaultImageSize: json['default_image_size'],
+      favoriteTags: json['favorite_tags'],
+      blacklistedTags: json['blacklisted_tags'],
+      timeZone: json['time_zone'],
+      postUpdateCount: json['post_update_count'],
+      noteUpdateCount: json['note_update_count'],
+      favoriteCount: json['favorite_count'],
+      postUploadCount: json['post_upload_count'],
+      perPage: json['per_page'],
+      customStyle: json['custom_style'],
+      theme: json['theme'],
+      isBanned: json['is_banned'],
+      canApprovePosts: json['can_approve_posts'],
+      canUploadFree: json['can_upload_free'],
+      levelString: json['level_string'],
+      unusedHasMail: json['_unused_has_mail'],
+      receiveEmailNotifications: json['receive_email_notifications'],
+      unusedAlwaysResizeImages: json['_unused_always_resize_images'],
+      unusedEnablePostNavigation: json['_unused_enable_post_navigation'],
+      newPostNavigationLayout: json['new_post_navigation_layout'],
+      enablePrivateFavorites: json['enable_private_favorites'],
+      unusedEnableSequentialPostNavigation:
+          json['_unused_enable_sequential_post_navigation'],
+      unusedHideDeletedPosts: json['_unused_hide_deleted_posts'],
+      styleUsernames: json['style_usernames'],
+      unusedEnableAutoComplete: json['_unused_enable_auto_complete'],
+      showDeletedChildren: json['show_deleted_children'],
+      unusedHasSavedSearches: json['_unused_has_saved_searches'],
+      disableCategorizedSavedSearches:
+          json['disable_categorized_saved_searches'],
+      unusedIsSuperVoter: json['_unused_is_super_voter'],
+      disableTaggedFilenames: json['disable_tagged_filenames'],
+      unusedEnableRecentSearches: json['_unused_enable_recent_searches'],
+      unusedDisableCroppedThumbnails:
+          json['_unused_disable_cropped_thumbnails'],
+      disableMobileGestures: json['disable_mobile_gestures'],
+      enableSafeMode: json['enable_safe_mode'],
+      enableDesktopMode: json['enable_desktop_mode'],
+      disablePostTooltips: json['disable_post_tooltips'],
+      unusedEnableRecommendedPosts: json['_unused_enable_recommended_posts'],
+      unusedOptOutTracking: json['_unused_opt_out_tracking'],
+      unusedNoFlagging: json['_unused_no_flagging'],
+      unusedNoFeedback: json['_unused_no_feedback'],
+      requiresVerification: json['requires_verification'],
+      isVerified: json['is_verified'],
+      showDeletedPosts: json['show_deleted_posts'],
+      statementTimeout: json['statement_timeout'],
+      favoriteGroupLimit: json['favorite_group_limit'],
+      tagQueryLimit: json['tag_query_limit'],
+      maxSavedSearches: json['max_saved_searches'],
+      wikiPageVersionCount: json['wiki_page_version_count'],
+      artistVersionCount: json['artist_version_count'],
+      artistCommentaryVersionCount: json['artist_commentary_version_count'],
+      poolVersionCount: json['pool_version_count'],
+      forumPostCount: json['forum_post_count'],
+      commentCount: json['comment_count'],
+      favoriteGroupCount: json['favorite_group_count'],
+      appealCount: json['appeal_count'],
+      flagCount: json['flag_count'],
+      positiveFeedbackCount: json['positive_feedback_count'],
+      neutralFeedbackCount: json['neutral_feedback_count'],
+      negativeFeedbackCount: json['negative_feedback_count'],
+    );
+  }
+
   final int? id;
   final String? name;
   final int? level;
@@ -138,88 +222,4 @@ class UserDto {
   final int? positiveFeedbackCount;
   final int? neutralFeedbackCount;
   final int? negativeFeedbackCount;
-
-  factory UserDto.fromJson(Map<String, dynamic> json) {
-    return UserDto(
-      id: json["id"],
-      name: json["name"],
-      level: json["level"],
-      inviterId: json["inviter_id"],
-      createdAt: json["created_at"] != null
-          ? DateTime.parse(json["created_at"])
-          : null,
-      lastLoggedInAt: json["last_logged_in_at"] != null
-          ? DateTime.parse(json["last_logged_in_at"])
-          : null,
-      lastForumReadAt: json["last_forum_read_at"] != null
-          ? DateTime.parse(json["last_forum_read_at"])
-          : null,
-      commentThreshold: json["comment_threshold"],
-      updatedAt: json["updated_at"] != null
-          ? DateTime.parse(json["updated_at"])
-          : null,
-      defaultImageSize: json["default_image_size"],
-      favoriteTags: json["favorite_tags"],
-      blacklistedTags: json["blacklisted_tags"],
-      timeZone: json["time_zone"],
-      postUpdateCount: json["post_update_count"],
-      noteUpdateCount: json["note_update_count"],
-      favoriteCount: json["favorite_count"],
-      postUploadCount: json["post_upload_count"],
-      perPage: json["per_page"],
-      customStyle: json["custom_style"],
-      theme: json["theme"],
-      isBanned: json["is_banned"],
-      canApprovePosts: json["can_approve_posts"],
-      canUploadFree: json["can_upload_free"],
-      levelString: json["level_string"],
-      unusedHasMail: json["_unused_has_mail"],
-      receiveEmailNotifications: json["receive_email_notifications"],
-      unusedAlwaysResizeImages: json["_unused_always_resize_images"],
-      unusedEnablePostNavigation: json["_unused_enable_post_navigation"],
-      newPostNavigationLayout: json["new_post_navigation_layout"],
-      enablePrivateFavorites: json["enable_private_favorites"],
-      unusedEnableSequentialPostNavigation:
-          json["_unused_enable_sequential_post_navigation"],
-      unusedHideDeletedPosts: json["_unused_hide_deleted_posts"],
-      styleUsernames: json["style_usernames"],
-      unusedEnableAutoComplete: json["_unused_enable_auto_complete"],
-      showDeletedChildren: json["show_deleted_children"],
-      unusedHasSavedSearches: json["_unused_has_saved_searches"],
-      disableCategorizedSavedSearches:
-          json["disable_categorized_saved_searches"],
-      unusedIsSuperVoter: json["_unused_is_super_voter"],
-      disableTaggedFilenames: json["disable_tagged_filenames"],
-      unusedEnableRecentSearches: json["_unused_enable_recent_searches"],
-      unusedDisableCroppedThumbnails:
-          json["_unused_disable_cropped_thumbnails"],
-      disableMobileGestures: json["disable_mobile_gestures"],
-      enableSafeMode: json["enable_safe_mode"],
-      enableDesktopMode: json["enable_desktop_mode"],
-      disablePostTooltips: json["disable_post_tooltips"],
-      unusedEnableRecommendedPosts: json["_unused_enable_recommended_posts"],
-      unusedOptOutTracking: json["_unused_opt_out_tracking"],
-      unusedNoFlagging: json["_unused_no_flagging"],
-      unusedNoFeedback: json["_unused_no_feedback"],
-      requiresVerification: json["requires_verification"],
-      isVerified: json["is_verified"],
-      showDeletedPosts: json["show_deleted_posts"],
-      statementTimeout: json["statement_timeout"],
-      favoriteGroupLimit: json["favorite_group_limit"],
-      tagQueryLimit: json["tag_query_limit"],
-      maxSavedSearches: json["max_saved_searches"],
-      wikiPageVersionCount: json["wiki_page_version_count"],
-      artistVersionCount: json["artist_version_count"],
-      artistCommentaryVersionCount: json["artist_commentary_version_count"],
-      poolVersionCount: json["pool_version_count"],
-      forumPostCount: json["forum_post_count"],
-      commentCount: json["comment_count"],
-      favoriteGroupCount: json["favorite_group_count"],
-      appealCount: json["appeal_count"],
-      flagCount: json["flag_count"],
-      positiveFeedbackCount: json["positive_feedback_count"],
-      neutralFeedbackCount: json["neutral_feedback_count"],
-      negativeFeedbackCount: json["negative_feedback_count"],
-    );
-  }
 }

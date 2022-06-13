@@ -7,7 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/home/explore/explore_detail_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'explore_detail_page.dart';
 
 class ExploreSection extends StatelessWidget {
@@ -38,8 +37,7 @@ class ExploreSection extends StatelessWidget {
               onPressed: () => showBarModalBottomSheet(
                     context: context,
                     builder: (context) => BlocProvider(
-                      create: (context) => ExploreDetailBloc(
-                          postRepository: context.read<IPostRepository>()),
+                      create: (context) => ExploreDetailBloc(),
                       child: ExploreDetailPage(
                         title: Text(
                           title,
@@ -53,7 +51,7 @@ class ExploreSection extends StatelessWidget {
                     ),
                   ),
               child:
-                  Text("See more", style: Theme.of(context).textTheme.button)),
+                  Text('See more', style: Theme.of(context).textTheme.button)),
         ),
         builder(context),
       ],
