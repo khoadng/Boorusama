@@ -10,16 +10,25 @@ import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
 
-List<User> parseUser(HttpResponse<dynamic> value) => parse(
+List<User> parseUser(
+  HttpResponse<dynamic> value,
+  List<String> defaultBlacklistedTags,
+) =>
+    parse(
       value: value,
       converter: (item) => UserDto.fromJson(item),
-    ).map(userDtoToUser).toList();
+    ).map((u) => userDtoToUser(u, defaultBlacklistedTags)).toList();
 
 class UserRepository implements IUserRepository {
-  UserRepository(this._api, this._accountRepository);
+  UserRepository(
+    this._api,
+    this._accountRepository,
+    this.defaultBlacklistedTags,
+  );
 
   final IAccountRepository _accountRepository;
   final IApi _api;
+  final List<String> defaultBlacklistedTags;
 
   @override
   Future<List<User>> getUsersByIdStringComma(
@@ -33,7 +42,7 @@ class UserRepository implements IUserRepository {
             1000,
             cancelToken: cancelToken,
           )
-          .then(parseUser);
+          .then((u) => parseUser(u, defaultBlacklistedTags));
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
@@ -56,7 +65,7 @@ class UserRepository implements IUserRepository {
       )
       .then((value) => Map<String, dynamic>.from(value.response.data))
       .then((e) => UserDto.fromJson(e))
-      .then(userDtoToUser)
+      .then((d) => userDtoToUser(d, defaultBlacklistedTags))
       .catchError(
           (Object obj) => throw Exception('Failed to get user info for $id'));
 

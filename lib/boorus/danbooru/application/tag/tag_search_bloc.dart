@@ -7,9 +7,27 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
+import 'package:boorusama/common/string_utils.dart';
+
+@immutable
+class TagSearchItem extends Equatable {
+  const TagSearchItem({
+    required this.tag,
+    required this.operator,
+  });
+
+  final Tag tag;
+  final FilterOperator operator;
+
+  @override
+  List<Object?> get props => [tag, operator];
+  @override
+  String toString() => '${filterOperatorToString(operator)}${tag.rawName}';
+}
 
 @immutable
 class TagSearchState extends Equatable {
@@ -18,6 +36,7 @@ class TagSearchState extends Equatable {
     required this.selectedTags,
     required this.suggestionTags,
     required this.isDone,
+    required this.operator,
   });
 
   factory TagSearchState.initial() => const TagSearchState(
@@ -25,27 +44,32 @@ class TagSearchState extends Equatable {
         selectedTags: [],
         suggestionTags: [],
         isDone: false,
+        operator: FilterOperator.none,
       );
-  final List<Tag> selectedTags;
+  final List<TagSearchItem> selectedTags;
   final List<Tag> suggestionTags;
   final String query;
   final bool isDone;
+  final FilterOperator operator;
 
   TagSearchState copyWith({
     String? query,
-    List<Tag>? selectedTags,
+    List<TagSearchItem>? selectedTags,
     List<Tag>? suggestionTags,
     bool? isDone,
+    FilterOperator? operator,
   }) =>
       TagSearchState(
         query: query ?? this.query,
         selectedTags: selectedTags ?? this.selectedTags,
         suggestionTags: suggestionTags ?? this.suggestionTags,
         isDone: isDone ?? this.isDone,
+        operator: operator ?? this.operator,
       );
 
   @override
-  List<Object?> get props => [query, selectedTags, suggestionTags, isDone];
+  List<Object?> get props =>
+      [query, selectedTags, suggestionTags, isDone, operator];
 }
 
 @immutable
@@ -79,7 +103,7 @@ class TagSearchCleared extends TagSearchEvent {
 class TagSearchSelectedTagRemoved extends TagSearchEvent {
   const TagSearchSelectedTagRemoved(this.tag);
 
-  final Tag tag;
+  final TagSearchItem tag;
 
   @override
   List<Object?> get props => [tag];
@@ -98,14 +122,18 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
-        if (event.query.trim().isEmpty) {
-          return;
-        }
+        final query = event.query.trim();
+        if (query.isEmpty) return;
+        final operator = stringToFilterOperator(query.getFirstCharacter());
+        if (query.length == 1 && operator != FilterOperator.none) return;
+
         await tryAsync<List<Tag>>(
-          action: () => tagRepository.getTagsByNamePattern(event.query, 1),
+          action: () =>
+              tagRepository.getTagsByNamePattern(getQuery(query, operator), 1),
           onSuccess: (tags) => emit(state.copyWith(
             suggestionTags: tags,
-            query: event.query,
+            query: query,
+            operator: operator,
           )),
         );
       },
@@ -113,7 +141,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     );
 
     on<TagSearchNewTagSelected>((event, emit) => emit(state.copyWith(
-          selectedTags: [...state.selectedTags, event.tag],
+          selectedTags: [
+            ...state.selectedTags,
+            TagSearchItem(
+              tag: event.tag,
+              operator: state.operator,
+            )
+          ],
           query: '',
           suggestionTags: [],
         )));
@@ -128,4 +162,9 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchDone>((event, emit) => emit(state.copyWith(isDone: true)));
   }
+}
+
+String getQuery(String query, FilterOperator operator) {
+  if (operator != FilterOperator.none) return query.substring(1);
+  return query;
 }
