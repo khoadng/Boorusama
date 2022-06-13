@@ -41,7 +41,7 @@ class CommentRepository implements ICommentRepository {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception("Failed to get comments for $postId");
+        throw Exception('Failed to get comments for $postId');
       }
     }
   }

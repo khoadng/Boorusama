@@ -8,12 +8,12 @@ List<T> parse<T>({
 }) {
   final dtos = <T>[];
 
-  for (var item in value.response.data) {
+  for (final item in value.response.data) {
     try {
       dtos.add(converter(item));
     } catch (e) {
       // ignore: avoid_print
-      print("Cant parse item");
+      print('Cant parse item');
       onError?.call(item);
     }
   }

@@ -16,7 +16,7 @@ class AppearancePage extends StatefulWidget {
   final Settings settings;
 
   @override
-  _AppearancePageState createState() => _AppearancePageState();
+  State<AppearancePage> createState() => _AppearancePageState();
 }
 
 class _AppearancePageState extends State<AppearancePage> {
@@ -28,21 +28,7 @@ class _AppearancePageState extends State<AppearancePage> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const <Widget>[
-            // Text('settings.appSettings.appearance.theme._string'.tr()),
-            // RadioListTile<ThemeMode>(
-            //   title: Text('settings.appSettings.appearance.theme.dark'.tr()),
-            //   value: ThemeMode.dark,
-            //   groupValue: widget.settings.themeMode,
-            //   onChanged: (value) => setTheme(value, context),
-            // ),
-            // RadioListTile<ThemeMode>(
-            //   title: Text('settings.appSettings.appearance.theme.light'.tr()),
-            //   value: ThemeMode.light,
-            //   groupValue: widget.settings.themeMode,
-            //   onChanged: (value) => setTheme(value, context),
-            // ),
-          ],
+          
         ),
       ),
     );

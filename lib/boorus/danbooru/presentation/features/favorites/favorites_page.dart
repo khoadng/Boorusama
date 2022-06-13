@@ -30,11 +30,11 @@ class FavoritesPage extends StatelessWidget {
             enableLoadMore: state.hasMore,
             onLoadMore: () => context
                 .read<PostBloc>()
-                .add(PostFetched(tags: "ordfav:$username")),
+                .add(PostFetched(tags: 'ordfav:$username')),
             onRefresh: (controller) {
               context
                   .read<PostBloc>()
-                  .add(PostRefreshed(tag: "ordfav:$username"));
+                  .add(PostRefreshed(tag: 'ordfav:$username'));
               Future.delayed(const Duration(milliseconds: 500),
                   () => controller.refreshCompleted());
             },
@@ -42,7 +42,7 @@ class FavoritesPage extends StatelessWidget {
               controller: controller,
               slivers: <Widget>[
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   sliver: BlocBuilder<PostBloc, PostState>(
                     buildWhen: (previous, current) =>
                         current.status != LoadStatus.loading,
@@ -52,14 +52,14 @@ class FavoritesPage extends StatelessWidget {
                       } else if (state.status == LoadStatus.success) {
                         if (state.posts.isEmpty) {
                           return const SliverToBoxAdapter(
-                              child: Center(child: Text("No data")));
+                              child: Center(child: Text('No data')));
                         }
                         return SliverPostGrid(
                           posts: state.posts,
                           scrollController: controller,
                           onTap: (post, index) => AppRouter.router.navigateTo(
                             context,
-                            "/post/detail",
+                            '/post/detail',
                             routeSettings: RouteSettings(
                               arguments: [
                                 state.posts,
@@ -76,7 +76,7 @@ class FavoritesPage extends StatelessWidget {
                       } else {
                         return const SliverToBoxAdapter(
                           child: Center(
-                            child: Text("Something went wrong"),
+                            child: Text('Something went wrong'),
                           ),
                         );
                       }

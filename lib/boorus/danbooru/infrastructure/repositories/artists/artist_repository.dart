@@ -33,11 +33,11 @@ class ArtistRepository implements IArtistRepository {
         // Cancel token triggered, skip this request
         return Artist.empty();
       } else if (e.response == null) {
-        throw Exception("Response is null");
+        throw Exception('Response is null');
       } else if (e.response!.statusCode == 422) {
         return Artist.empty();
       } else {
-        throw Exception("Failed to get artist $name");
+        throw Exception('Failed to get artist $name');
       }
     }
   }

@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
@@ -21,7 +20,6 @@ class PostRepository implements IPostRepository {
   PostRepository(
     IApi api,
     IAccountRepository accountRepository,
-    IFavoritePostRepository favoritePostRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
@@ -42,8 +40,8 @@ class PostRepository implements IPostRepository {
             (account) => _api.getCuratedPosts(
               account.username,
               account.apiKey,
-              "${date.year}-${date.month}-${date.day}",
-              scale.toString().split(".").last,
+              '${date.year}-${date.month}-${date.day}',
+              scale.toString().split('.').last,
               page,
               _limit,
             ),
@@ -54,13 +52,13 @@ class PostRepository implements IPostRepository {
           case DioError:
             final response = (obj as DioError).response;
             if (response == null) {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
-                  "Your search took too long to execute and was cancelled.");
+                  'Your search took too long to execute and was cancelled.');
             } else {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
           default:
         }
@@ -77,7 +75,7 @@ class PostRepository implements IPostRepository {
             (account) => _api.getMostViewedPosts(
               account.username,
               account.apiKey,
-              "${date.year}-${date.month}-${date.day}",
+              '${date.year}-${date.month}-${date.day}',
             ),
           )
           .then(parsePost)
@@ -86,13 +84,13 @@ class PostRepository implements IPostRepository {
           case DioError:
             final response = (obj as DioError).response;
             if (response == null) {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
-                  "Your search took too long to execute and was cancelled.");
+                  'Your search took too long to execute and was cancelled.');
             } else {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
           default:
         }
@@ -111,8 +109,8 @@ class PostRepository implements IPostRepository {
             (account) => _api.getPopularPosts(
               account.username,
               account.apiKey,
-              "${date.year}-${date.month}-${date.day}",
-              scale.toString().split(".").last,
+              '${date.year}-${date.month}-${date.day}',
+              scale.toString().split('.').last,
               page,
               _limit,
             ),
@@ -123,13 +121,13 @@ class PostRepository implements IPostRepository {
           case DioError:
             final response = (obj as DioError).response;
             if (response == null) {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
             if (response.statusCode == 500) {
               throw DatabaseTimeOut(
-                  "Your search took too long to execute and was cancelled.");
+                  'Your search took too long to execute and was cancelled.');
             } else {
-              throw Exception("Failed to get popular posts for $date");
+              throw Exception('Failed to get popular posts for $date');
             }
           default:
         }
@@ -163,15 +161,15 @@ class PostRepository implements IPostRepository {
         // Cancel token triggered, skip this request
         return [];
       } else if (e.response == null) {
-        throw Exception("Failed to get posts for $tags");
+        throw Exception('Failed to get posts for $tags');
       } else if (e.response!.statusCode == 422) {
         throw CannotSearchMoreThanTwoTags(
             "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
       } else if (e.response!.statusCode == 500) {
         throw DatabaseTimeOut(
-            "Your search took too long to execute and was cancelled.");
+            'Your search took too long to execute and was cancelled.');
       } else {
-        throw Exception("Failed to get posts for $tags");
+        throw Exception('Failed to get posts for $tags');
       }
     }
   }

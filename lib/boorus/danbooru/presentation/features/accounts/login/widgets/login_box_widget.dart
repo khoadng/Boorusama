@@ -51,11 +51,10 @@ class LoginBox extends HookWidget {
             state.exception is InvalidUsernameOrPassword) {
           isValidUsernameAndPassword.value = false;
           formKey.value.currentState!.validate();
-        } else if (state is AuthenticationError &&
-            state.exception is Exception) {
+        } else if (state is AuthenticationError) {
           const snackbar = SnackBar(
             behavior: SnackBarBehavior.floating,
-            elevation: 6.0,
+            elevation: 6,
             content: Text(
               'Something went wrong, please try again later',
             ),
@@ -71,7 +70,6 @@ class LoginBox extends HookWidget {
           height: MediaQuery.of(context).size.height * 0.5,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LoginField(
                 labelText: 'login.form.username'.tr(),
@@ -91,13 +89,13 @@ class LoginBox extends HookWidget {
                     ? ScaleTransition(
                         scale: CurvedAnimation(
                           parent: animationController,
-                          curve: const Interval(0.0, 1.0, curve: Curves.linear),
+                          curve: const Interval(0, 1),
                         ),
                         child: IconButton(
                             splashColor: Colors.transparent,
                             icon:
                                 const FaIcon(FontAwesomeIcons.solidCircleXmark),
-                            onPressed: () => usernameTextController.clear()),
+                            onPressed: usernameTextController.clear),
                       )
                     : null,
               ),
@@ -132,7 +130,7 @@ class LoginBox extends HookWidget {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text("Cancel"),
+                            child: const Text('Cancel'),
                           ),
                           BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                             builder: (context, state) => TextButton(
@@ -140,7 +138,7 @@ class LoginBox extends HookWidget {
                                 Navigator.of(context).pop();
                                 launchExternalUrl(Uri.parse(state.booru.url));
                               },
-                              child: const Text("Open web browser"),
+                              child: const Text('Open web browser'),
                             ),
                           ),
                         ],
@@ -149,7 +147,7 @@ class LoginBox extends HookWidget {
                       );
                     }),
                 icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
-                label: const Text("API key?"),
+                label: const Text('API key?'),
               ),
               const SizedBox(height: 20),
               BlocBuilder<AuthenticationCubit, AuthenticationState>(
@@ -213,7 +211,7 @@ class LoginField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController defaultController = useTextEditingController();
+    final TextEditingController defaultController = useTextEditingController();
 
     return TextFormField(
       onChanged: onChanged,
@@ -226,23 +224,19 @@ class LoginField extends HookWidget {
         fillColor: Theme.of(context).cardColor,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide.none,
-          borderRadius: BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary, width: 2.0),
-          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+              color: Theme.of(context).colorScheme.secondary, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Theme.of(context).errorColor),
-          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderSide:
-              BorderSide(color: Theme.of(context).errorColor, width: 2.0),
-          borderRadius: const BorderRadius.all(Radius.circular(4.0)),
+              BorderSide(color: Theme.of(context).errorColor, width: 2),
         ),
-        contentPadding: const EdgeInsets.all(12.0),
+        contentPadding: const EdgeInsets.all(12),
         labelText: labelText,
       ),
     );

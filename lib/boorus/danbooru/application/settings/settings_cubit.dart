@@ -14,7 +14,7 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   final ISettingRepository settingRepository;
 
-  void update(Settings settings) async {
+  Future<void> update(Settings settings) async {
     final success = await settingRepository.save(settings);
     if (success) {
       emit(

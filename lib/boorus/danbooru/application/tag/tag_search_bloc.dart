@@ -19,6 +19,13 @@ class TagSearchState extends Equatable {
     required this.suggestionTags,
     required this.isDone,
   });
+
+  factory TagSearchState.initial() => const TagSearchState(
+        query: '',
+        selectedTags: [],
+        suggestionTags: [],
+        isDone: false,
+      );
   final List<Tag> selectedTags;
   final List<Tag> suggestionTags;
   final String query;
@@ -35,13 +42,6 @@ class TagSearchState extends Equatable {
         selectedTags: selectedTags ?? this.selectedTags,
         suggestionTags: suggestionTags ?? this.suggestionTags,
         isDone: isDone ?? this.isDone,
-      );
-
-  factory TagSearchState.initial() => const TagSearchState(
-        query: '',
-        selectedTags: [],
-        suggestionTags: [],
-        isDone: false,
       );
 
   @override
@@ -98,7 +98,9 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
-        if (event.query.trim().isEmpty) return;
+        if (event.query.trim().isEmpty) {
+          return;
+        }
         await tryAsync<List<Tag>>(
           action: () => tagRepository.getTagsByNamePattern(event.query, 1),
           onSuccess: (tags) => emit(state.copyWith(

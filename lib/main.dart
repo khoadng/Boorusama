@@ -82,13 +82,13 @@ void main() async {
   }
 
   final settingRepository = SettingRepository(
-    Hive.openBox("settings"),
+    Hive.openBox('settings'),
     Settings.defaultSettings,
   );
 
   final settings = await settingRepository.load();
 
-  final accountBox = Hive.openBox("accounts");
+  final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
   final downloader = DownloadService();
@@ -104,7 +104,7 @@ void main() async {
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
 
-  run() => runApp(
+  void run() => runApp(
         EasyLocalization(
           useOnlyLangCode: true,
           supportedLocales: const [Locale('en', ''), Locale('vi', '')],
@@ -161,11 +161,7 @@ void main() async {
                     final profileRepo = ProfileRepository(
                         accountRepository: accountRepo, api: api);
 
-                    final favoritesRepo =
-                        FavoritePostRepository(api, accountRepo);
-
-                    final postRepo =
-                        PostRepository(api, accountRepo, favoritesRepo);
+                    final postRepo = PostRepository(api, accountRepo);
 
                     final commentRepo = CommentRepository(api, accountRepo);
 
@@ -304,9 +300,10 @@ void main() async {
     );
     await SentryFlutter.init(
       (options) {
-        options.dsn =
-            'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740';
-        options.tracesSampleRate = 0.9;
+        options
+          ..dsn =
+              'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740'
+          ..tracesSampleRate = 0.9;
       },
       appRunner: run,
     );
@@ -321,9 +318,7 @@ class PackageInfoProvider {
   PackageInfo getPackageInfo() => packageInfo;
 }
 
-Future<PackageInfo> getPackageInfo() async {
-  return await PackageInfo.fromPlatform();
-}
+Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
 
 class BlacklistedTagsRepository {
   BlacklistedTagsRepository(this.userRepository, this.accountRepository);
@@ -335,7 +330,9 @@ class BlacklistedTagsRepository {
     // ignore: prefer_conditional_assignment
     if (_tags == null) {
       final account = await accountRepository.get();
-      if (account == Account.empty) return [];
+      if (account == Account.empty) {
+        return [];
+      }
       _tags ??= await userRepository
           .getUserById(account.id)
           .then((value) => value.blacklistedTags);

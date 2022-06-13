@@ -17,19 +17,19 @@ class Settings extends Equatable {
   });
 
   Settings.fromJson(Map<String, dynamic> json)
-      : safeMode = json["safeMode"],
-        blacklistedTags = json["hideBlacklist"],
-        themeMode = ThemeMode.values[json["themeMode"]],
-        language = json["language"],
-        searchHistories = List<SearchHistory>.from(json["searchHistories"]
+      : safeMode = json['safeMode'],
+        blacklistedTags = json['hideBlacklist'],
+        themeMode = ThemeMode.values[json['themeMode']],
+        language = json['language'],
+        searchHistories = List<SearchHistory>.from(json['searchHistories']
             ?.map((item) => SearchHistory.fromJson(item))
             ?.toList());
 
   static const defaultSettings = Settings(
     safeMode: true,
-    blacklistedTags: "",
+    blacklistedTags: '',
     themeMode: ThemeMode.dark,
-    language: "en",
+    language: 'en',
     searchHistories: [],
   );
 

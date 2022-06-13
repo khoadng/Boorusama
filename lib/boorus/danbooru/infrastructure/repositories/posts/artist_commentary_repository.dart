@@ -8,10 +8,10 @@ import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repos
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 
 class ArtistCommentaryRepository implements IArtistCommentaryRepository {
-  final IApi _api;
-  final IAccountRepository _accountRepository;
 
   ArtistCommentaryRepository(this._api, this._accountRepository);
+  final IApi _api;
+  final IAccountRepository _accountRepository;
 
   @override
   Future<ArtistCommentaryDto> getCommentary(
@@ -26,9 +26,9 @@ class ArtistCommentaryRepository implements IArtistCommentaryRepository {
           cancelToken: cancelToken);
       final commentaries = <ArtistCommentaryDto>[];
 
-      for (var item in value.response.data) {
+      for (final item in value.response.data) {
         try {
-          var commentary = ArtistCommentaryDto.fromJson(item);
+          final commentary = ArtistCommentaryDto.fromJson(item);
           commentaries.add(commentary);
         } catch (e) {
           // ignore: avoid_print

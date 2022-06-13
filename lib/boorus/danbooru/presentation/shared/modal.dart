@@ -11,7 +11,7 @@ class Modal extends StatelessWidget {
   final Widget child;
   final String? title;
 
-  static const Radius _borderRadius = Radius.circular(30.0);
+  static const Radius _borderRadius = Radius.circular(30);
 
   @override
   Widget build(BuildContext context) {

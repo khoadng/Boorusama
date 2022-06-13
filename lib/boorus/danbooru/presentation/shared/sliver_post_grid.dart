@@ -59,8 +59,8 @@ class SliverPostGrid extends HookWidget {
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         childAspectRatio: 0.65,
         crossAxisCount: 2,
-        mainAxisSpacing: 10.0,
-        crossAxisSpacing: 10.0,
+        mainAxisSpacing: 10,
+        crossAxisSpacing: 10,
       ),
       delegate: SliverChildBuilderDelegate(
         (BuildContext context, int index) {
@@ -123,12 +123,12 @@ class SliverPostGrid extends HookWidget {
                   ),
                 ),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
+                  borderRadius: BorderRadius.circular(8),
                   child: ShadowGradientOverlay(
                     alignment: Alignment.topCenter,
                     colors: <Color>[
                       const Color(0x2F000000),
-                      Colors.black12.withOpacity(0.0)
+                      Colors.black12.withOpacity(0)
                     ],
                   ),
                 ),
@@ -191,9 +191,9 @@ class PostPreviewSheet extends HookWidget {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(24.0),
+              padding: const EdgeInsets.all(24),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(8),
                 child: GestureDetector(
                   onTap: () {
                     Navigator.of(context).pop();
@@ -212,15 +212,14 @@ class PostPreviewSheet extends HookWidget {
           SliverToBoxAdapter(
             child: Tags(
               runSpacing: 0,
-              alignment: WrapAlignment.center,
               itemCount: tags.length,
               itemBuilder: (index) {
                 return Chip(
-                    padding: const EdgeInsets.all(4.0),
-                    labelPadding: const EdgeInsets.all(1.0),
+                    padding: const EdgeInsets.all(4),
+                    labelPadding: const EdgeInsets.all(1),
                     visualDensity: VisualDensity.compact,
-                    backgroundColor: Color(
-                        TagHelper.hexColorOf(tags[index][1] as TagCategory)),
+                    backgroundColor:
+                        Color(hexColorOf(tags[index][1] as TagCategory)),
                     label: ConstrainedBox(
                       constraints: BoxConstraints(
                           maxWidth: MediaQuery.of(context).size.width * 0.85),
@@ -235,30 +234,30 @@ class PostPreviewSheet extends HookWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(Icons.file_download),
-                    title: const Text("Download"),
+                    title: const Text('Download'),
                     onTap: () {
                       RepositoryProvider.of<IDownloadService>(context)
                           .download(post);
                       Navigator.of(context).pop();
                     },
                   ),
-                  post.isTranslated
-                      ? ListTile(
-                          leading: const FaIcon(FontAwesomeIcons.language),
-                          title: const Text("View translated notes"),
-                          onTap: () {
-                            Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(context, "/posts/image",
-                                routeSettings:
-                                    RouteSettings(arguments: [post]));
-                          },
-                        )
-                      : const SizedBox.shrink(),
+                  if (post.isTranslated)
+                    ListTile(
+                      leading: const FaIcon(FontAwesomeIcons.language),
+                      title: const Text('View translated notes'),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        AppRouter.router.navigateTo(context, '/posts/image',
+                            routeSettings: RouteSettings(arguments: [post]));
+                      },
+                    )
+                  else
+                    const SizedBox.shrink(),
                   // isLoggedIn
                   //     ? ListTile(
                   //         leading: const FaIcon(FontAwesomeIcons.commentAlt),

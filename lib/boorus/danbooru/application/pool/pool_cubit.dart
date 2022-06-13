@@ -34,7 +34,7 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
 
   void getPools(PoolCategory category) {
     tryAsync<List<Pool>>(
-      action: () => poolRepository.getPools(),
+      action: poolRepository.getPools,
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onSuccess: (pools) async {
@@ -49,7 +49,7 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
 
         final posts = await postRepository.getPostsFromIds(poolCoverIds);
 
-        for (var p in posts) {
+        for (final p in posts) {
           poolCoveridsMap[p.id] = p;
         }
 

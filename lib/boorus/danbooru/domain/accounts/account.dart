@@ -8,15 +8,15 @@ class Account extends Equatable {
     required this.id,
   });
 
+  factory Account.create(String username, String apiKey, int id) {
+    return Account(username: username, apiKey: apiKey, id: id);
+  }
+
   final String username;
   final String apiKey;
   final int id;
 
-  static const empty = Account(username: "", apiKey: "", id: 0);
-
-  factory Account.create(String username, String apiKey, int id) {
-    return Account(username: username, apiKey: apiKey, id: id);
-  }
+  static const empty = Account(username: '', apiKey: '', id: 0);
 
   Map<String, dynamic> toMap() {
     return {
@@ -28,7 +28,7 @@ class Account extends Equatable {
 
   @override
   String toString() {
-    return "$username ($id)";
+    return '$username ($id)';
   }
 
   @override

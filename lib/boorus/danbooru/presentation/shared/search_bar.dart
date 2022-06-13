@@ -31,7 +31,7 @@ class SearchBar extends StatefulWidget {
   final String? hintText;
 
   @override
-  _SearchBarState createState() => _SearchBarState();
+  State<SearchBar> createState() => _SearchBarState();
 }
 
 class _SearchBarState extends State<SearchBar> {
@@ -55,9 +55,9 @@ class _SearchBarState extends State<SearchBar> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      elevation: 4.0,
+      elevation: 4,
       color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6.0)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
       child: Theme(
           data: Theme.of(context).copyWith(
             splashColor: Colors.transparent,

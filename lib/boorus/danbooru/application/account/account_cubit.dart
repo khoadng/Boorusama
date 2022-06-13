@@ -38,7 +38,7 @@ class AccountCubit extends Cubit<AsyncLoadState<Account>> {
 
   void getCurrentAccount() {
     tryAsync<Account>(
-        action: () => accountRepository.get(),
+        action: accountRepository.get,
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onSuccess: (acc) {

@@ -114,7 +114,7 @@ class _LatestViewState extends State<LatestView> {
 
   Widget _buildPostList(AutoScrollController controller) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 14.0),
+      padding: const EdgeInsets.symmetric(horizontal: 14),
       sliver: BlocBuilder<PostBloc, PostState>(
         buildWhen: (previous, current) => current.status != LoadStatus.loading,
         builder: (context, state) {
@@ -123,14 +123,14 @@ class _LatestViewState extends State<LatestView> {
           } else if (state.status == LoadStatus.success) {
             if (state.posts.isEmpty) {
               return const SliverToBoxAdapter(
-                  child: Center(child: Text("No data")));
+                  child: Center(child: Text('No data')));
             }
             return SliverPostGrid(
               posts: state.posts,
               scrollController: controller,
               onTap: (post, index) => AppRouter.router.navigateTo(
                 context,
-                "/post/detail",
+                '/post/detail',
                 routeSettings: RouteSettings(
                   arguments: [
                     state.posts,
@@ -147,7 +147,7 @@ class _LatestViewState extends State<LatestView> {
           } else {
             return const SliverToBoxAdapter(
               child: Center(
-                child: Text("Something went wrong"),
+                child: Text('Something went wrong'),
               ),
             );
           }
@@ -165,7 +165,7 @@ class _LatestViewState extends State<LatestView> {
           icon: const Icon(Icons.menu),
           onPressed: () => widget.onMenuTap(),
         ),
-        onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
+        onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
             routeSettings: const RouteSettings(arguments: [''])),
       ),
       floating: true,
@@ -197,7 +197,7 @@ class _LatestViewState extends State<LatestView> {
     return ValueListenableBuilder(
       valueListenable: _selectedTag,
       builder: (context, selectedTag, child) => Container(
-        margin: const EdgeInsets.only(left: 8.0),
+        margin: const EdgeInsets.only(left: 8),
         height: 50,
         child: ListView.builder(
           shrinkWrap: true,
@@ -206,15 +206,15 @@ class _LatestViewState extends State<LatestView> {
           itemBuilder: (context, index) {
             final selected = selectedTag == searches[index].keyword;
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
                 selectedColor: Colors.white,
                 selected: selected,
                 onSelected: (selected) => selected
                     ? _selectedTag.value = searches[index].keyword
-                    : _selectedTag.value = "",
-                padding: const EdgeInsets.all(4.0),
-                labelPadding: const EdgeInsets.all(1.0),
+                    : _selectedTag.value = '',
+                padding: const EdgeInsets.all(4),
+                labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
                 label: ConstrainedBox(
                   constraints: BoxConstraints(

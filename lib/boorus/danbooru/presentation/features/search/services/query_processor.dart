@@ -3,7 +3,7 @@ class QueryProcessor {
       String currentQuery, String lastQuery, List<String> completedQueries) {
     final removeMode = currentQuery.length < lastQuery.length;
     String currentInputQuery;
-    var queryItems = completedQueries;
+    final queryItems = completedQueries;
     final queries = currentQuery.split(' ');
 
     if (!currentQuery.endsWith(' ')) {

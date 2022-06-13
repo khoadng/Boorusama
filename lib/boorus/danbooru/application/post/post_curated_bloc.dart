@@ -21,6 +21,13 @@ class PostCuratedState extends Equatable {
     required this.hasMore,
   });
 
+  factory PostCuratedState.initial() => const PostCuratedState(
+        status: LoadStatus.initial,
+        posts: [],
+        page: 1,
+        hasMore: true,
+      );
+
   final List<Post> posts;
   final LoadStatus status;
   final int page;
@@ -37,13 +44,6 @@ class PostCuratedState extends Equatable {
         posts: posts ?? this.posts,
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
-      );
-
-  factory PostCuratedState.initial() => const PostCuratedState(
-        status: LoadStatus.initial,
-        posts: [],
-        page: 1,
-        hasMore: true,
       );
 
   @override

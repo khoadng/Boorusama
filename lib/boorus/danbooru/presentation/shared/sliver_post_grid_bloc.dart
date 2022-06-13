@@ -14,6 +14,9 @@ class SliverPostGridState extends Equatable {
     required this.currentIndex,
   });
 
+  factory SliverPostGridState.initial() =>
+      const SliverPostGridState(currentIndex: 0);
+
   final int currentIndex;
 
   SliverPostGridState copyWith({
@@ -23,9 +26,6 @@ class SliverPostGridState extends Equatable {
       SliverPostGridState(
         currentIndex: currentIndex ?? this.currentIndex,
       );
-
-  factory SliverPostGridState.initial() =>
-      const SliverPostGridState(currentIndex: 0);
 
   @override
   List<Object?> get props => [currentIndex];

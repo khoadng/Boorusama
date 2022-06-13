@@ -27,7 +27,7 @@ class CommentCubit extends Cubit<AsyncLoadState<List<Comment>>> {
 
           final userList = comments.map((e) => e.creatorId).toSet().toList();
           final users =
-              await userRepository.getUsersByIdStringComma(userList.join(","));
+              await userRepository.getUsersByIdStringComma(userList.join(','));
 
           final commentsWithAuthor =
               (comments..sort((a, b) => a.id.compareTo(b.id))).map((comment) {

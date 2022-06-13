@@ -52,6 +52,60 @@ class PostDto {
     required this.previewFileUrl,
   });
 
+  factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
+        id: json['id'],
+        createdAt: DateTime.parse(json['created_at']),
+        uploaderId: json['uploader_id'],
+        score: json['score'],
+        source: json['source'],
+        md5: json['md5'],
+        lastCommentBumpedAt: json['last_comment_bumped_at'] != null
+            ? DateTime.parse(json['last_comment_bumped_at'])
+            : null,
+        rating: json['rating'],
+        imageWidth: json['image_width'],
+        imageHeight: json['image_height'],
+        tags: json['tag_string'],
+        favCount: json['fav_count'],
+        fileExt: json['file_ext'],
+        lastNotedAt: json['last_noted_at'] != null
+            ? DateTime.parse(json['last_noted_at'])
+            : null,
+        parentId: json['parent_id'],
+        hasChildren: json['has_children'],
+        approverId: json['approver_id'],
+        tagCountGeneral: json['tag_count_general'],
+        tagCountArtist: json['tag_count_artist'],
+        tagCountCharacter: json['tag_count_character'],
+        tagCountCopyright: json['tag_count_copyright'],
+        fileSize: json['file_size'],
+        upScore: json['up_score'],
+        downScore: json['down_score'],
+        isPending: json['is_pending'],
+        isFlagged: json['is_flagged'],
+        isDeleted: json['is_deleted'],
+        tagCount: json['tag_count'],
+        updatedAt: DateTime.parse(json['updated_at']),
+        isBanned: json['is_banned'],
+        pixivId: json['pixiv_id'],
+        lastCommentedAt: json['last_commented_at'] != null
+            ? DateTime.parse(json['last_commented_at'])
+            : null,
+        hasActiveChildren: json['has_active_children'],
+        bitFlags: json['bit_flags'],
+        tagCountMeta: json['tag_count_meta'],
+        hasLarge: json['has_large'],
+        hasVisibleChildren: json['has_visible_children'],
+        generalTags: json['tag_string_general'],
+        characterTags: json['tag_string_character'],
+        copyrightTags: json['tag_string_copyright'],
+        artistTags: json['tag_string_artist'],
+        tagsMeta: json['tag_string_meta'],
+        fileUrl: json['file_url'],
+        largeFileUrl: json['large_file_url'],
+        previewFileUrl: json['preview_file_url'],
+      );
+
   final int? id;
   final DateTime createdAt;
   final int uploaderId;
@@ -97,60 +151,6 @@ class PostDto {
   final String? fileUrl;
   final String? largeFileUrl;
   final String? previewFileUrl;
-
-  factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
-        id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        uploaderId: json["uploader_id"],
-        score: json["score"],
-        source: json["source"],
-        md5: json["md5"],
-        lastCommentBumpedAt: json["last_comment_bumped_at"] != null
-            ? DateTime.parse(json["last_comment_bumped_at"])
-            : null,
-        rating: json["rating"],
-        imageWidth: json["image_width"],
-        imageHeight: json["image_height"],
-        tags: json["tag_string"],
-        favCount: json["fav_count"],
-        fileExt: json["file_ext"],
-        lastNotedAt: json["last_noted_at"] != null
-            ? DateTime.parse(json["last_noted_at"])
-            : null,
-        parentId: json["parent_id"],
-        hasChildren: json["has_children"],
-        approverId: json["approver_id"],
-        tagCountGeneral: json["tag_count_general"],
-        tagCountArtist: json["tag_count_artist"],
-        tagCountCharacter: json["tag_count_character"],
-        tagCountCopyright: json["tag_count_copyright"],
-        fileSize: json["file_size"],
-        upScore: json["up_score"],
-        downScore: json["down_score"],
-        isPending: json["is_pending"],
-        isFlagged: json["is_flagged"],
-        isDeleted: json["is_deleted"],
-        tagCount: json["tag_count"],
-        updatedAt: DateTime.parse(json["updated_at"]),
-        isBanned: json["is_banned"],
-        pixivId: json["pixiv_id"],
-        lastCommentedAt: json["last_commented_at"] != null
-            ? DateTime.parse(json["last_commented_at"])
-            : null,
-        hasActiveChildren: json["has_active_children"],
-        bitFlags: json["bit_flags"],
-        tagCountMeta: json["tag_count_meta"],
-        hasLarge: json["has_large"],
-        hasVisibleChildren: json["has_visible_children"],
-        generalTags: json["tag_string_general"],
-        characterTags: json["tag_string_character"],
-        copyrightTags: json["tag_string_copyright"],
-        artistTags: json["tag_string_artist"],
-        tagsMeta: json["tag_string_meta"],
-        fileUrl: json["file_url"],
-        largeFileUrl: json["large_file_url"],
-        previewFileUrl: json["preview_file_url"],
-      );
 }
 
 List<String> splitTag(String tags) => tags.split(' ');

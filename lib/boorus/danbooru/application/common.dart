@@ -9,7 +9,7 @@ Future<void> tryAsync<T extends Object?>({
 }) async {
   try {
     onLoading?.call();
-    var data = await action();
+    final data = await action();
     onSuccess(data);
   } catch (e, stacktrace) {
     onFailure?.call(stacktrace, e);
@@ -19,6 +19,12 @@ Future<void> tryAsync<T extends Object?>({
 enum LoadStatus { initial, loading, success, failure }
 
 class AsyncLoadState<T extends Object> extends Equatable {
+  const AsyncLoadState.success(T data)
+      : this._(status: LoadStatus.success, data: data);
+  const AsyncLoadState.failure() : this._(status: LoadStatus.failure);
+  const AsyncLoadState.loading() : this._();
+
+  const AsyncLoadState.initial() : this._();
   const AsyncLoadState._({
     this.status = LoadStatus.initial,
     this.data,
@@ -26,12 +32,6 @@ class AsyncLoadState<T extends Object> extends Equatable {
 
   final LoadStatus status;
   final T? data;
-
-  const AsyncLoadState.initial() : this._();
-  const AsyncLoadState.loading() : this._();
-  const AsyncLoadState.success(T data)
-      : this._(status: LoadStatus.success, data: data);
-  const AsyncLoadState.failure() : this._(status: LoadStatus.failure);
 
   @override
   List<Object?> get props => [status, data];

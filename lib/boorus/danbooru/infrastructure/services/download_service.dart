@@ -10,7 +10,7 @@ import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'package:boorusama/core/infrastructure/IOHelper.dart';
+import 'package:boorusama/core/infrastructure/io_helper.dart';
 
 class DownloadService implements IDownloadService {
   DownloadService();
@@ -21,28 +21,30 @@ class DownloadService implements IDownloadService {
   String _savedDir = '';
 
   @override
-  void download(IDownloadable downloadable) async {
+  Future<void> download(IDownloadable downloadable) async {
+    //TODO: display a toast or snack and redirect to permission settings.
+    if (!_permissionReady) {
+      return;
+    }
     await FlutterDownloader.enqueue(
         saveInPublicStorage: true,
         url: downloadable.downloadUrl,
         fileName: downloadable.fileName,
-        savedDir: _savedDir,
-        showNotification: true,
-        openFileFromNotification: true);
+        savedDir: _savedDir);
   }
 
   Future<void> _prepare() async {
     //TODO: refactor to use configurable input
     final savedDir = io.Directory(_localPath);
-    bool hasExisted = await savedDir.exists();
+    final bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
-      savedDir.create();
+      await savedDir.create();
     }
     _savedDir = savedDir.path;
   }
 
   void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(
+    final bool isSuccess = IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     if (!isSuccess) {
       _unbindBackgroundIsolate();
@@ -67,16 +69,16 @@ class DownloadService implements IDownloadService {
     final bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
       try {
-        savedDir.create();
+        await savedDir.create();
         _savedDir = savedDir.path;
       } catch (e) {
         _savedDir = await IOHelper.getLocalPathFallback();
       }
     }
 
-    _prepare();
+    await _prepare();
     // ignore: avoid_print
-    print("Download service initialized");
+    print('Download service initialized');
   }
 
   static void downloadCallback(

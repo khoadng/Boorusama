@@ -13,7 +13,7 @@ class SlideInRoute extends PageRouteBuilder {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child) {
-    var tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
+    final tween = Tween(begin: const Offset(1, 0), end: Offset.zero);
 
     return SlideTransition(
       position: animation.drive(tween),

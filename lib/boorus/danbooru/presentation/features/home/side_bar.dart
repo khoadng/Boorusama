@@ -34,7 +34,7 @@ class SideBarMenu extends StatelessWidget {
                           title: Text('sideMenu.login'.tr()),
                           onTap: () {
                             Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(context, "/login");
+                            AppRouter.router.navigateTo(context, '/login');
                           },
                         )
                       else
@@ -44,7 +44,7 @@ class SideBarMenu extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).pop();
                             AppRouter.router
-                                .navigateTo(context, "/users/profile");
+                                .navigateTo(context, '/users/profile');
                           },
                         ),
                       const Divider(),
@@ -55,7 +55,7 @@ class SideBarMenu extends StatelessWidget {
                           onTap: () {
                             Navigator.of(context).pop();
                             AppRouter.router.navigateTo(
-                                context, "/users/blacklisted_tags",
+                                context, '/users/blacklisted_tags',
                                 routeSettings:
                                     RouteSettings(arguments: [state.data!.id]));
                           },
@@ -66,7 +66,7 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('sideMenu.settings'.tr()),
                         onTap: () {
                           Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(context, "/settings");
+                          AppRouter.router.navigateTo(context, '/settings');
                         },
                       )
                     ]);

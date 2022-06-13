@@ -24,7 +24,7 @@ class SettingsPage extends StatelessWidget {
         title: Text('settings._string'.tr()),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 16.0),
+        padding: const EdgeInsets.only(top: 16),
         child: BlocBuilder<SettingsCubit, SettingsState>(
           buildWhen: (previous, current) =>
               previous.settings != current.settings,
@@ -73,12 +73,12 @@ class SettingsPage extends StatelessWidget {
                         },
                         items: <DropdownMenuItem<String>>[
                           DropdownMenuItem(
-                            value: "en",
+                            value: 'en',
                             child: Text(
                                 'settings.appSettings.language.english'.tr()),
                           ),
                           DropdownMenuItem(
-                            value: "vi",
+                            value: 'vi',
                             child: Text(
                                 'settings.appSettings.language.vietnamese'
                                     .tr()),
@@ -99,10 +99,10 @@ class SettingsPage extends StatelessWidget {
                 ),
                 SettingsSection(
                   title: Text(
-                      "App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}"),
+                      'App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),
                   tiles: [
                     SettingsTile(
-                      title: const Text("Acknowledgements"),
+                      title: const Text('Acknowledgements'),
                       leading: const Icon(Icons.info),
                       onPressed: (context) => showAboutDialog(
                         context: context,
@@ -114,7 +114,7 @@ class SettingsPage extends StatelessWidget {
                         applicationVersion: getVersion(
                             RepositoryProvider.of<PackageInfoProvider>(context)
                                 .getPackageInfo()),
-                        applicationLegalese: "\u{a9} 2020-2022 Nguyen Duc Khoa",
+                        applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
                         applicationName: AppConstants.appName,
                       ),
                     ),
@@ -131,4 +131,4 @@ class SettingsPage extends StatelessWidget {
 
 String getVersion(PackageInfo info) => info.version;
 String getVersionText(PackageInfo info) =>
-    "(v${info.version} - Build ${info.buildNumber})";
+    '(v${info.version} - Build ${info.buildNumber})';

@@ -21,7 +21,7 @@ class CommentPage extends StatefulWidget {
   final int postId;
 
   @override
-  _CommentPageState createState() => _CommentPageState();
+  State<CommentPage> createState() => _CommentPageState();
 }
 
 class _CommentPageState extends State<CommentPage> {
@@ -33,7 +33,7 @@ class _CommentPageState extends State<CommentPage> {
   Widget _buildCommentSection(List<Comment> comments) {
     if (comments.isNotEmpty) {
       return Container(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: ListView.builder(
           itemBuilder: (context, index) {
             final comment = comments[index];
@@ -122,7 +122,7 @@ class _CommentPageState extends State<CommentPage> {
               children: <Widget>[
                 Expanded(
                   child: Padding(
-                      padding: const EdgeInsets.only(bottom: 20.0),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: BlocBuilder<CommentCubit,
                           AsyncLoadState<List<Comment>>>(
                         builder: (context, state) {
@@ -132,7 +132,8 @@ class _CommentPageState extends State<CommentPage> {
                                 .where((comment) => comment.isDeleted == false)
                                 .toList();
 
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((timeStamp) {
                               setState(() {
                                 if (_showDeleted) {
                                   _comments = _commentsWithDeleted;
@@ -145,11 +146,11 @@ class _CommentPageState extends State<CommentPage> {
                             return _buildCommentSection(_comments);
                           } else if (state.status == LoadStatus.failure) {
                             return const Center(
-                              child: Text("Something went wrong"),
+                              child: Text('Something went wrong'),
                             );
                           } else {
                             return Lottie.asset(
-                                "assets/animations/comment_loading.json");
+                                'assets/animations/comment_loading.json');
                           }
                         },
                       )),

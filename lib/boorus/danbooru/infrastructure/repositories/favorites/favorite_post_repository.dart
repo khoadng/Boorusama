@@ -59,7 +59,7 @@ class FavoritePostRepository implements IFavoritePostRepository {
             postId,
             account.username,
             account.apiKey,
-            "delete",
+            'delete',
           ),
         )
         .then((value) {
@@ -116,6 +116,6 @@ class FavoritePostRepository implements IFavoritePostRepository {
               20,
             ),
           )
-          .then((value) => (value.response.data as List).isEmpty ? false : true)
+          .then((value) => (value.response.data as List).isNotEmpty)
           .catchError((Object obj) => false);
 }

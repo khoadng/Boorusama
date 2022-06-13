@@ -32,15 +32,15 @@ class TagRepository implements ITagRepository {
               account.username,
               account.apiKey,
               page,
-              "yes",
-              "$stringPattern*",
-              "count",
+              'yes',
+              '$stringPattern*',
+              'count',
               30,
             ),
           )
           .then(parseTag)
           .catchError((Object obj) =>
-              throw Exception("Failed to get tags for $stringPattern"));
+              throw Exception('Failed to get tags for $stringPattern'));
 
   @override
   Future<List<Tag>> getTagsByNameComma(
@@ -55,9 +55,9 @@ class TagRepository implements ITagRepository {
                 account.username,
                 account.apiKey,
                 page,
-                "yes",
+                'yes',
                 stringComma,
-                "count",
+                'count',
                 1000,
                 cancelToken: cancelToken,
               ))
@@ -67,7 +67,7 @@ class TagRepository implements ITagRepository {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception("Failed to get posts for $stringComma");
+        throw Exception('Failed to get posts for $stringComma');
       }
     }
   }

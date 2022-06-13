@@ -118,7 +118,7 @@ final postDetailHandler = Handler(handlerFunc: (
               previous.currentIndex != current.currentIndex,
           listener: (context, state) async {
             if (controller == null) return;
-            return await controller.scrollToIndex(state.currentIndex);
+            await controller.scrollToIndex(state.currentIndex);
           },
           child: PostDetailPage(
             post: posts[index],
@@ -249,7 +249,7 @@ final favoritesHandler =
                         RepositoryProvider.of<IPostRepository>(context),
                     blacklistedTagsRepository:
                         context.read<BlacklistedTagsRepository>(),
-                  )..add(PostRefreshed(tag: "ordfav:$username"))),
+                  )..add(PostRefreshed(tag: 'ordfav:$username'))),
         ],
         child: FavoritesPage(
           username: username,

@@ -31,8 +31,9 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
       if (!settings.searchHistories.any((item) => item.query == query)) {
         shs.add(sh);
       } else {
-        shs.removeWhere((item) => item.query == query);
-        shs.add(sh);
+        shs
+          ..removeWhere((item) => item.query == query)
+          ..add(sh);
       }
 
       await settingRepository.save(settings.copyWith(searchHistories: shs));

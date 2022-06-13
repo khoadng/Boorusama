@@ -15,6 +15,25 @@ class PoolDto {
     this.postCount,
   });
 
+  factory PoolDto.fromJson(Map<String, dynamic> json) => PoolDto(
+        id: json['id'],
+        name: json['name'],
+        createdAt: json['created_at'] == null
+            ? null
+            : DateTime.parse(json['created_at']),
+        updatedAt: json['updated_at'] == null
+            ? null
+            : DateTime.parse(json['updated_at']),
+        description: json['description'],
+        isActive: json['is_active'],
+        isDeleted: json['is_deleted'],
+        postIds: json['post_ids'] == null
+            ? null
+            : List<int>.from(json['post_ids'].map((x) => x)),
+        category: json['category'],
+        postCount: json['post_count'],
+      );
+
   final int? id;
   final String? name;
   final DateTime? createdAt;
@@ -25,25 +44,6 @@ class PoolDto {
   final List<int>? postIds;
   final String? category;
   final int? postCount;
-
-  factory PoolDto.fromJson(Map<String, dynamic> json) => PoolDto(
-        id: json["id"],
-        name: json["name"],
-        createdAt: json["created_at"] == null
-            ? null
-            : DateTime.parse(json["created_at"]),
-        updatedAt: json["updated_at"] == null
-            ? null
-            : DateTime.parse(json["updated_at"]),
-        description: json["description"],
-        isActive: json["is_active"],
-        isDeleted: json["is_deleted"],
-        postIds: json["post_ids"] == null
-            ? null
-            : List<int>.from(json["post_ids"].map((x) => x)),
-        category: json["category"],
-        postCount: json["post_count"],
-      );
 }
 
 Pool poolDtoToPool(PoolDto dto) => Pool(
@@ -59,9 +59,9 @@ Pool poolDtoToPool(PoolDto dto) => Pool(
 
 PoolCategory _stringToPoolCategory(String? value) {
   switch (value) {
-    case "collection":
+    case 'collection':
       return PoolCategory.collection;
-    case "series":
+    case 'series':
       return PoolCategory.series;
     default:
       return PoolCategory.unknown;

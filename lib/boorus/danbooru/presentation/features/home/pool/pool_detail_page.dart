@@ -59,7 +59,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       style: Theme.of(context).textTheme.headline6!,
                     ),
                     subtitle: Text(
-                        "Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}"),
+                        'Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}'),
                   ),
                 ),
                 SliverToBoxAdapter(
@@ -84,7 +84,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                   ),
                 ),
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
                   sliver: BlocBuilder<PoolDetailCubit, PoolDetailState>(
                     buildWhen: (previous, current) =>
                         current.status != LoadStatus.loading,
@@ -94,14 +94,14 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       } else if (state.status == LoadStatus.success) {
                         if (state.posts.isEmpty) {
                           return const SliverToBoxAdapter(
-                              child: Center(child: Text("No data")));
+                              child: Center(child: Text('No data')));
                         }
                         return SliverPostGrid(
                           posts: state.posts,
                           scrollController: controller,
                           onTap: (post, index) => AppRouter.router.navigateTo(
                             context,
-                            "/post/detail",
+                            '/post/detail',
                             routeSettings: RouteSettings(
                               arguments: [
                                 state.posts,
@@ -118,7 +118,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       } else {
                         return const SliverToBoxAdapter(
                           child: Center(
-                            child: Text("Something went wrong"),
+                            child: Text('Something went wrong'),
                           ),
                         );
                       }
@@ -169,7 +169,7 @@ void _onHtmlLinkTapped(
     );
   } else if (att.contains('dtext-wiki-link')) {
     launchExternalUrl(
-      Uri.parse("$endpoint$url"),
+      Uri.parse('$endpoint$url'),
       mode: LaunchMode.inAppWebView,
     );
   } else if (att.contains('dtext-post-search-link')) {

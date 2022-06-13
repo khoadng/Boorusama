@@ -52,7 +52,7 @@ class PostInfoModal extends HookWidget {
                 SliverToBoxAdapter(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.0),
+                      borderRadius: BorderRadius.circular(8),
                       color: Theme.of(context).cardColor),
                   margin: const EdgeInsets.all(10),
                   child: Column(
@@ -60,20 +60,20 @@ class PostInfoModal extends HookWidget {
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text("Size"),
+                        title: const Text('Size'),
                         trailing: Text(filesize(post.fileSize, 1)),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text("Resolution"),
+                        title: const Text('Resolution'),
                         trailing: Text(
-                            "${post.width.toInt()}x${post.height.toInt()}"),
+                            '${post.width.toInt()}x${post.height.toInt()}'),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text("Rating"),
+                        title: const Text('Rating'),
                         trailing: Text(
                             post.rating.toString().split('.').last.pascalCase),
                       ),
@@ -116,7 +116,6 @@ class ArtistSection extends HookWidget {
 
   Widget _buildLoading(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
@@ -127,19 +126,19 @@ class ArtistSection extends HookWidget {
             height: 20,
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8.0)),
+                borderRadius: BorderRadius.circular(8)),
           ),
         ),
         ...List.generate(
           4,
           (index) => Container(
-            margin: const EdgeInsets.only(bottom: 10.0),
+            margin: const EdgeInsets.only(bottom: 10),
             width: MediaQuery.of(context).size.width * 0.1 +
                 Random().nextDouble() * MediaQuery.of(context).size.width * 0.9,
             height: 20,
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8.0)),
+                borderRadius: BorderRadius.circular(8)),
           ),
         ),
       ],
@@ -173,7 +172,7 @@ class ArtistSection extends HookWidget {
                       .then((results) {
                     const snackbar = SnackBar(
                       behavior: SnackBarBehavior.floating,
-                      elevation: 6.0,
+                      elevation: 6,
                       content: Text(
                         'Copied',
                       ),
@@ -241,9 +240,9 @@ ArtistCommentaryTranlationState getTranslationNextState(
 
 String getTranslationText(ArtistCommentaryTranlationState currentState) {
   if (currentState == ArtistCommentaryTranlationState.translated) {
-    return "Show Original";
+    return 'Show Original';
   } else {
-    return "Show Translated";
+    return 'Show Translated';
   }
 }
 
@@ -252,8 +251,8 @@ String getDescriptionText(
   ArtistCommentary artistCommentary,
 ) {
   if (currentState == ArtistCommentaryTranlationState.translated) {
-    return "${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}";
+    return '${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}';
   } else {
-    return "${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}";
+    return '${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}';
   }
 }

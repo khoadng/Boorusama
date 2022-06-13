@@ -1,10 +1,12 @@
 // Dart imports:
 import 'dart:async';
 
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
 // Package imports:
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 
 @immutable
 abstract class NetworkEvent {}
@@ -23,7 +25,6 @@ class NetworkConnectedState extends NetworkState {}
 class NetworkDisconnectedState extends NetworkState {}
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
-  StreamSubscription? subscription;
 
   NetworkBloc() : super(NetworkInitialState()) {
     on<ConnectedEvent>((event, emit) => emit(NetworkConnectedState()));
@@ -40,6 +41,7 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
       }
     });
   }
+  StreamSubscription? subscription;
   @override
   Future<void> close() {
     subscription?.cancel();

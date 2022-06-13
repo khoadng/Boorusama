@@ -19,7 +19,7 @@ class TagSuggestionItems extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
-      elevation: 4.0,
+      elevation: 4,
       borderRadius: BorderRadius.circular(8),
       child: ListView.builder(
         // shrinkWrap: true,

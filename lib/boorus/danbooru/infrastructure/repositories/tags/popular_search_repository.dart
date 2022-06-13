@@ -36,7 +36,7 @@ class PopularSearchRepository implements IPopularSearchRepository {
             (account) => _api.getPopularSearchByDate(
               account.username,
               account.apiKey,
-              "${date.year}-${date.month}-${date.day}",
+              '${date.year}-${date.month}-${date.day}',
             ),
           )
           .then(parseSearch);
@@ -45,7 +45,7 @@ class PopularSearchRepository implements IPopularSearchRepository {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception("Failed to get search stats for $date");
+        throw Exception('Failed to get search stats for $date');
       }
     }
   }

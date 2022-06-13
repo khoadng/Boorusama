@@ -10,7 +10,7 @@ class TagChipsPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 8.0),
+      margin: const EdgeInsets.only(left: 8),
       height: 50,
       child: ListView.builder(
         shrinkWrap: true,
@@ -18,12 +18,12 @@ class TagChipsPlaceholder extends StatelessWidget {
         itemCount: 20,
         itemBuilder: (context, index) {
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: ChoiceChip(
               label: SizedBox(width: Random().nextInt(40).toDouble() + 40),
               selected: false,
-              padding: const EdgeInsets.all(4.0),
-              labelPadding: const EdgeInsets.all(1.0),
+              padding: const EdgeInsets.all(4),
+              labelPadding: const EdgeInsets.all(1),
               visualDensity: VisualDensity.compact,
             ),
           );

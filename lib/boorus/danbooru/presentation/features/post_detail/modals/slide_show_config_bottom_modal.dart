@@ -23,7 +23,7 @@ class SlideShowConfigBottomModal extends HookWidget {
     final numberEditingController = useTextEditingController();
 
     return Modal(
-      title: "Slide Show",
+      title: 'Slide Show',
       child: Padding(
         padding: EdgeInsets.only(
           left: 26,
@@ -36,9 +36,8 @@ class SlideShowConfigBottomModal extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Flexible(flex: 3, child: Text("Interval (seconds)")),
+                const Flexible(flex: 3, child: Text('Interval (seconds)')),
                 Flexible(
-                  flex: 1,
                   child: NumberInputWithIncrementDecrement(
                     initialValue: config.value.interval,
                     onDecrement: (value) =>
@@ -49,7 +48,6 @@ class SlideShowConfigBottomModal extends HookWidget {
                         config.value = config.value.copyWith(
                       interval: value,
                     ),
-                    min: 0,
                     controller: numberEditingController,
                   ),
                 ),
@@ -58,9 +56,8 @@ class SlideShowConfigBottomModal extends HookWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                const Flexible(flex: 3, child: Text("Skip animation")),
+                const Flexible(flex: 3, child: Text('Skip animation')),
                 Flexible(
-                  flex: 1,
                   child: Switch(
                     value: config.value.skipAnimation,
                     onChanged: (value) => config.value =
@@ -74,11 +71,11 @@ class SlideShowConfigBottomModal extends HookWidget {
               children: [
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text("Cancel"),
+                  child: const Text('Cancel'),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text("OK"),
+                  child: const Text('OK'),
                 ),
               ],
             ),

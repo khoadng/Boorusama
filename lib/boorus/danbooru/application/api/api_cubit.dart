@@ -33,12 +33,13 @@ class Booru extends Equatable {
 
 String getEndpoint(BooruType booru) {
   if (booru == BooruType.danbooru) {
-    return "https://danbooru.donmai.us/";
+    return 'https://danbooru.donmai.us/';
   } else {
-    return "https://safebooru.donmai.us/";
+    return 'https://safebooru.donmai.us/';
   }
 }
 
+// ignore: avoid_positional_boolean_parameters
 Booru getBooru(bool isSafeMode) {
   if (isSafeMode) {
     return Booru(
@@ -69,6 +70,7 @@ class ApiEndpointCubit extends Cubit<ApiEndpointState> {
     required Booru initialValue,
   }) : super(ApiEndpointState(booru: initialValue));
 
+  // ignore: avoid_positional_boolean_parameters
   void changeApi(bool isSafeMode) {
     if (isSafeMode) {
       emit(ApiEndpointState(
@@ -86,13 +88,12 @@ class ApiState extends Equatable {
   const ApiState({
     required this.api,
   });
+  factory ApiState.initial(Dio dio) => ApiState(api: DanbooruApi(dio));
 
   final IApi api;
 
   @override
   List<Object?> get props => [api];
-
-  factory ApiState.initial(Dio dio) => ApiState(api: DanbooruApi(dio));
 }
 
 class ApiCubit extends Cubit<ApiState> {
