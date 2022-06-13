@@ -86,6 +86,12 @@ void main() async {
     Settings.defaultSettings,
   );
 
+  final List<String> defaultBlacklistedTags = [
+    'guro',
+    'scat',
+    'furry -rating:s'
+  ];
+
   final settings = await settingRepository.load();
 
   final accountBox = Hive.openBox('accounts');
@@ -165,7 +171,8 @@ void main() async {
 
                     final commentRepo = CommentRepository(api, accountRepo);
 
-                    final userRepo = UserRepository(api, accountRepo);
+                    final userRepo = UserRepository(
+                        api, accountRepo, defaultBlacklistedTags);
 
                     final nopeRepo = NoteRepository(api);
 

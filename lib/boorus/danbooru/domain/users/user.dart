@@ -47,14 +47,19 @@ class UserId extends Equatable {
   List<Object?> get props => [value];
 }
 
-User userDtoToUser(UserDto d) {
+User userDtoToUser(
+  UserDto d,
+  List<String> defaultBlacklistedTags,
+) {
   try {
     return User(
       id: UserId(d.id!),
       level: intToUserLevel(d.level!),
       name: Username(d.name!),
       //TODO: need to find a way to distinguish between other user and current user.
-      blacklistedTags: tagStringToListTagString(d.blacklistedTags ?? ''),
+      blacklistedTags: d.blacklistedTags == null
+          ? defaultBlacklistedTags
+          : tagStringToListTagString(d.blacklistedTags!),
     );
   } catch (e) {
     throw Exception('fail to parse one of the required field\n $e');
