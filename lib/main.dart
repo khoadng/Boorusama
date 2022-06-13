@@ -29,12 +29,14 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
@@ -58,6 +60,7 @@ import 'boorus/danbooru/application/artist_commentary/artist_commentary_cubit.da
 import 'boorus/danbooru/application/comment/comment_cubit.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
+import 'boorus/danbooru/domain/accounts/account.dart';
 import 'boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 import 'firebase_options.dart';
@@ -178,6 +181,9 @@ void main() async {
 
                     final poolRepo = PoolRepository(api, accountRepo);
 
+                    final blacklistedTagRepo =
+                        BlacklistedTagsRepository(userRepo, accountRepo);
+
                     final mostViewedCubit =
                         MostViewedCubit(postRepository: postRepo)
                           ..getMostViewed();
@@ -208,59 +214,80 @@ void main() async {
                     );
                     final poolCubit = PoolCubit(
                         poolRepository: poolRepo, postRepository: postRepo);
+                    final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
+                        userRepository: userRepo,
+                        blacklistedTagsRepository: blacklistedTagRepo);
 
                     return MultiRepositoryProvider(
-                      providers: [
-                        RepositoryProvider<ITagRepository>.value(
-                            value: tagRepo),
-                        RepositoryProvider<IProfileRepository>.value(
-                            value: profileRepo),
-                        RepositoryProvider<IFavoritePostRepository>.value(
-                            value: favoriteRepo),
-                        RepositoryProvider<IAccountRepository>.value(
-                            value: accountRepo),
-                        RepositoryProvider<IDownloadService>.value(
-                            value: downloader),
-                        RepositoryProvider<ISettingRepository>.value(
-                            value: settingRepository),
-                        RepositoryProvider<INoteRepository>.value(
-                            value: nopeRepo),
-                        RepositoryProvider<IPostRepository>.value(
-                            value: postRepo),
-                        RepositoryProvider<ISearchHistoryRepository>.value(
-                            value: searchHistoryRepo),
-                        RepositoryProvider<IConfig>.value(value: config),
-                        RepositoryProvider<PoolRepository>.value(
-                            value: poolRepo),
-                      ],
-                      child: MultiBlocProvider(
                         providers: [
-                          BlocProvider.value(value: popularSearchCubit),
-                          BlocProvider.value(value: artistCubit),
-                          BlocProvider.value(value: favoritedCubit),
-                          BlocProvider.value(value: profileCubit),
-                          BlocProvider.value(value: commentCubit),
-                          BlocProvider.value(value: artistCommentaryCubit),
-                          BlocProvider.value(value: mostViewedCubit),
-                          BlocProvider.value(value: popularCubit),
-                          BlocProvider.value(value: curatedCubit),
-                          BlocProvider.value(value: accountCubit),
-                          BlocProvider.value(value: authenticationCubit),
-                          BlocProvider.value(value: poolCubit),
+                          RepositoryProvider<ITagRepository>.value(
+                              value: tagRepo),
+                          RepositoryProvider<IProfileRepository>.value(
+                              value: profileRepo),
+                          RepositoryProvider<IFavoritePostRepository>.value(
+                              value: favoriteRepo),
+                          RepositoryProvider<IAccountRepository>.value(
+                              value: accountRepo),
+                          RepositoryProvider<IDownloadService>.value(
+                              value: downloader),
+                          RepositoryProvider<ISettingRepository>.value(
+                              value: settingRepository),
+                          RepositoryProvider<INoteRepository>.value(
+                              value: nopeRepo),
+                          RepositoryProvider<IPostRepository>.value(
+                              value: postRepo),
+                          RepositoryProvider<ISearchHistoryRepository>.value(
+                              value: searchHistoryRepo),
+                          RepositoryProvider<IConfig>.value(value: config),
+                          RepositoryProvider<PoolRepository>.value(
+                              value: poolRepo),
+                          RepositoryProvider<IUserRepository>.value(
+                              value: userRepo),
+                          RepositoryProvider<BlacklistedTagsRepository>.value(
+                              value: blacklistedTagRepo),
                         ],
-                        child: BlocListener<AuthenticationCubit,
-                            AuthenticationState>(
-                          listener: (context, state) {
-                            if (state is Authenticated) {
-                              accountCubit.setAccount(state.account);
-                            } else if (state is Unauthenticated) {
-                              accountCubit.removeAccount();
-                            }
-                          },
-                          child: const App(),
-                        ),
-                      ),
-                    );
+                        child: MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: popularSearchCubit),
+                            BlocProvider.value(value: artistCubit),
+                            BlocProvider.value(value: favoritedCubit),
+                            BlocProvider.value(value: profileCubit),
+                            BlocProvider.value(value: commentCubit),
+                            BlocProvider.value(value: artistCommentaryCubit),
+                            BlocProvider.value(value: mostViewedCubit),
+                            BlocProvider.value(value: popularCubit),
+                            BlocProvider.value(value: curatedCubit),
+                            BlocProvider.value(value: accountCubit),
+                            BlocProvider.value(value: authenticationCubit),
+                            BlocProvider.value(value: poolCubit),
+                            BlocProvider.value(value: userBlacklistedTagsBloc),
+                          ],
+                          child: MultiBlocListener(
+                            listeners: [
+                              BlocListener<AuthenticationCubit,
+                                  AuthenticationState>(
+                                listener: (context, state) {
+                                  if (state is Authenticated) {
+                                    accountCubit.setAccount(state.account);
+                                  } else if (state is Unauthenticated) {
+                                    accountCubit.removeAccount();
+                                  }
+                                },
+                              ),
+                              BlocListener<UserBlacklistedTagsBloc,
+                                  UserBlacklistedTagsState>(
+                                listenWhen: (previous, current) =>
+                                    current.blacklistedTags !=
+                                    previous.blacklistedTags,
+                                listener: (context, state) {
+                                  blacklistedTagRepo.clearCache();
+                                },
+                                child: Container(),
+                              )
+                            ],
+                            child: const App(),
+                          ),
+                        ));
                   },
                 ),
               ),
@@ -296,4 +323,25 @@ class PackageInfoProvider {
 
 Future<PackageInfo> getPackageInfo() async {
   return await PackageInfo.fromPlatform();
+}
+
+class BlacklistedTagsRepository {
+  BlacklistedTagsRepository(this.userRepository, this.accountRepository);
+  final IUserRepository userRepository;
+  final IAccountRepository accountRepository;
+  List<String>? _tags;
+
+  Future<List<String>> getBlacklistedTags() async {
+    // ignore: prefer_conditional_assignment
+    if (_tags == null) {
+      final account = await accountRepository.get();
+      if (account == Account.empty) return [];
+      _tags ??= await userRepository
+          .getUserById(account.id)
+          .then((value) => value.blacklistedTags);
+    }
+    return _tags!;
+  }
+
+  void clearCache() => _tags = null;
 }

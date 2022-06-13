@@ -41,5 +41,9 @@ class AppRouter {
 
     router.define("/favorites",
         handler: favoritesHandler, transitionType: TransitionType.inFromRight);
+
+    router.define("/users/blacklisted_tags",
+        handler: blacklistedTagsHandler,
+        transitionType: TransitionType.inFromRight);
   }
 }

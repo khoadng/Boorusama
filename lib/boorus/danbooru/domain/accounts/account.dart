@@ -1,4 +1,7 @@
-class Account {
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+class Account extends Equatable {
   const Account({
     required this.username,
     required this.apiKey,
@@ -27,4 +30,7 @@ class Account {
   String toString() {
     return "$username ($id)";
   }
+
+  @override
+  List<Object?> get props => [id, username, apiKey];
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
@@ -44,6 +45,19 @@ class SideBarMenu extends StatelessWidget {
                             Navigator.of(context).pop();
                             AppRouter.router
                                 .navigateTo(context, "/users/profile");
+                          },
+                        ),
+                      const Divider(),
+                      if (state.data! != Account.empty)
+                        ListTile(
+                          leading: const FaIcon(FontAwesomeIcons.ban),
+                          title: const Text('Blacklisted Tags'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(
+                                context, "/users/blacklisted_tags",
+                                routeSettings:
+                                    RouteSettings(arguments: [state.data!.id]));
                           },
                         ),
                       const Divider(),

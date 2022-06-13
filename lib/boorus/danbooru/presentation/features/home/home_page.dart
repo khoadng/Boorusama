@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/main.dart';
 import 'bottom_bar_widget.dart';
 import 'explore/explore_page.dart';
 import 'latest/latest_posts_view.dart';
@@ -72,10 +73,12 @@ class HomePage extends HookWidget {
                         providers: [
                           BlocProvider(
                               create: (context) => PostBloc(
-                                  postRepository:
-                                      RepositoryProvider.of<IPostRepository>(
-                                          context))
-                                ..add(const PostRefreshed())),
+                                    postRepository:
+                                        RepositoryProvider.of<IPostRepository>(
+                                            context),
+                                    blacklistedTagsRepository: context
+                                        .read<BlacklistedTagsRepository>(),
+                                  )..add(const PostRefreshed())),
                         ],
                         child: LatestView(
                           onMenuTap: () =>

@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/main.dart';
+import 'common.dart';
 
 @immutable
 class PostState extends Equatable {
@@ -77,40 +79,49 @@ class PostRefreshed extends PostEvent {
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required IPostRepository postRepository,
+    required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(PostState.initial()) {
     on<PostFetched>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tags, state.page + 1),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: [...state.posts, ...posts],
-            page: state.page + 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getPosts(event.tags, state.page + 1),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: [...state.posts, ...filter(posts, blacklisted)],
+              page: state.page + 1,
+              hasMore: posts.isNotEmpty,
+            ),
           ),
-        ),
-      ),
+        );
+      },
       transformer: droppable(),
     );
 
     on<PostRefreshed>(
-      (event, emit) => tryAsync<List<Post>>(
-        action: () => postRepository.getPosts(event.tag ?? '', 1),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (posts) => emit(
-          state.copyWith(
-            status: LoadStatus.success,
-            posts: posts,
-            page: 1,
-            hasMore: posts.isNotEmpty,
+      (event, emit) async {
+        final blacklisted =
+            await blacklistedTagsRepository.getBlacklistedTags();
+        await tryAsync<List<Post>>(
+          action: () => postRepository.getPosts(event.tag ?? '', 1),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (posts) => emit(
+            state.copyWith(
+              status: LoadStatus.success,
+              posts: filter(posts, blacklisted),
+              page: 1,
+              hasMore: posts.isNotEmpty,
+            ),
           ),
-        ),
-      ),
+        );
+      },
       transformer: restartable(),
     );
   }

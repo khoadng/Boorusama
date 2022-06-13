@@ -146,6 +146,14 @@ abstract class IApi {
     int id,
   );
 
+  Future<HttpResponse> setBlacklistedTags(
+    String login,
+    String apiKey,
+    int id,
+    String blacklistedTags, {
+    CancelToken? cancelToken,
+  });
+
   Future<HttpResponse> getWiki(
     String subject, {
     CancelToken? cancelToken,

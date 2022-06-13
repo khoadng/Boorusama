@@ -197,6 +197,17 @@ abstract class DanbooruApi implements IApi {
     @Path() int id,
   );
 
+  @PATCH("/users/{id}.json")
+  @FormUrlEncoded()
+  @override
+  Future<HttpResponse> setBlacklistedTags(
+    @Query("login") String login,
+    @Query("api_key") String apiKey,
+    @Path() int id,
+    @Field("user[blacklisted_tags]") String blacklistedTags, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
   @GET("/wiki_pages/{subject}.json")
   @override
   Future<HttpResponse> getWiki(

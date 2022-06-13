@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/main.dart';
 
 class ExploreDetailPage extends StatefulWidget {
   const ExploreDetailPage({
@@ -95,14 +96,15 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
   ) {
     if (category == ExploreCategory.popular) {
       return BlocProvider(
-        create: (context) =>
-            PostPopularBloc(postRepository: context.read<IPostRepository>())
-              ..add(
-                PostPopularRefreshed(
-                  date: state.date,
-                  scale: state.scale,
-                ),
-              ),
+        create: (context) => PostPopularBloc(
+          postRepository: context.read<IPostRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+        )..add(
+            PostPopularRefreshed(
+              date: state.date,
+              scale: state.scale,
+            ),
+          ),
         child: BlocBuilder<PostPopularBloc, PostPopularState>(
           builder: (context, ppstate) => InfiniteLoadListForExplorePost(
             hasMore: ppstate.hasMore,
@@ -123,14 +125,15 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
       );
     } else if (category == ExploreCategory.curated) {
       return BlocProvider(
-        create: (context) =>
-            PostCuratedBloc(postRepository: context.read<IPostRepository>())
-              ..add(
-                PostCuratedRefreshed(
-                  date: state.date,
-                  scale: state.scale,
-                ),
-              ),
+        create: (context) => PostCuratedBloc(
+          postRepository: context.read<IPostRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+        )..add(
+            PostCuratedRefreshed(
+              date: state.date,
+              scale: state.scale,
+            ),
+          ),
         child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
           builder: (context, ppstate) => InfiniteLoadListForExplorePost(
             hasMore: ppstate.hasMore,
@@ -151,13 +154,14 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
       );
     } else {
       return BlocProvider(
-        create: (context) =>
-            PostMostViewedBloc(postRepository: context.read<IPostRepository>())
-              ..add(
-                PostMostViewedRefreshed(
-                  date: state.date,
-                ),
-              ),
+        create: (context) => PostMostViewedBloc(
+          postRepository: context.read<IPostRepository>(),
+          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+        )..add(
+            PostMostViewedRefreshed(
+              date: state.date,
+            ),
+          ),
         child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
           builder: (context, ppstate) => InfiniteLoadListForExplorePost(
             hasMore: ppstate.hasMore,

@@ -10,4 +10,5 @@ abstract class IUserRepository {
     CancelToken? cancelToken,
   });
   Future<User> getUserById(int id);
+  Future<void> setUserBlacklistedTags(int id, String blacklistedTags);
 }
