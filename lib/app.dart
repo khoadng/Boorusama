@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
 import 'app_constants.dart';
+import 'boorus/danbooru/application/theme/theme_bloc.dart';
 import 'boorus/danbooru/router.dart';
 import 'core/app_theme.dart';
 
@@ -30,20 +32,24 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return Portal(
-      child: MaterialApp(
-        builder: (context, child) => ScrollConfiguration(
-          behavior: NoGlowScrollBehavior(),
-          child: child!,
-        ),
-        theme: AppTheme.lightTheme,
-        darkTheme: AppTheme.darkTheme,
-        themeMode: ThemeMode.dark,
-        localizationsDelegates: context.localizationDelegates,
-        supportedLocales: context.supportedLocales,
-        locale: context.locale,
-        debugShowCheckedModeBanner: false,
-        onGenerateRoute: AppRouter.router.generator,
-        title: AppConstants.appName,
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            builder: (context, child) => ScrollConfiguration(
+              behavior: NoGlowScrollBehavior(),
+              child: child!,
+            ),
+            theme: AppTheme.lightTheme,
+            darkTheme: AppTheme.darkTheme,
+            themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            onGenerateRoute: AppRouter.router.generator,
+            title: AppConstants.appName,
+          );
+        },
       ),
     );
   }

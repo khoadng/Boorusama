@@ -29,6 +29,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -143,15 +144,14 @@ void main() async {
                   listenWhen: (previous, current) =>
                       previous.settings.safeMode != current.settings.safeMode,
                   listener: (context, state) {
-                    ReadContext(context)
+                    context
                         .read<ApiEndpointCubit>()
                         .changeApi(state.settings.safeMode);
                   },
                 ),
                 BlocListener<ApiEndpointCubit, ApiEndpointState>(
-                  listener: (context, state) => ReadContext(context)
-                      .read<ApiCubit>()
-                      .changeApi(state.booru),
+                  listener: (context, state) =>
+                      context.read<ApiCubit>().changeApi(state.booru),
                 ),
               ],
               child: BlocBuilder<ApiCubit, ApiState>(
@@ -251,6 +251,9 @@ void main() async {
                           BlocProvider.value(value: authenticationCubit),
                           BlocProvider.value(value: poolCubit),
                           BlocProvider.value(value: userBlacklistedTagsBloc),
+                          BlocProvider(
+                              create: (context) =>
+                                  ThemeBloc(initialTheme: settings.themeMode))
                         ],
                         child: MultiBlocListener(
                           listeners: [
@@ -273,7 +276,16 @@ void main() async {
                                 blacklistedTagRepo
                                     ._refresh(state.blacklistedTags);
                               },
-                            )
+                            ),
+                            BlocListener<SettingsCubit, SettingsState>(
+                              listenWhen: (previous, current) =>
+                                  previous.settings.themeMode !=
+                                  current.settings.themeMode,
+                              listener: (context, state) {
+                                context.read<ThemeBloc>().add(ThemeChanged(
+                                    theme: state.settings.themeMode));
+                              },
+                            ),
                           ],
                           child: BlocBuilder<UserBlacklistedTagsBloc,
                               UserBlacklistedTagsState>(
