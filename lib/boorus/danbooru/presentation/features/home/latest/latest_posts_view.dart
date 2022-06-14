@@ -158,6 +158,7 @@ class _LatestViewState extends State<LatestView> {
 
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
       title: SearchBar(
         enabled: false,
@@ -208,9 +209,9 @@ class _LatestViewState extends State<LatestView> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
-                disabledColor: Theme.of(context).cardColor,
-                backgroundColor: Theme.of(context).cardColor,
-                selectedColor: Colors.white,
+                disabledColor: Theme.of(context).chipTheme.disabledColor,
+                backgroundColor: Theme.of(context).chipTheme.backgroundColor,
+                selectedColor: Theme.of(context).chipTheme.selectedColor,
                 selected: selected,
                 onSelected: (selected) => selected
                     ? _selectedTag.value = searches[index].keyword

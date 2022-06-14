@@ -73,7 +73,6 @@ class PostActionToolbar extends HookWidget {
                           color: Colors.red)
                       : const FaIcon(
                           FontAwesomeIcons.heart,
-                          color: Colors.white,
                         ),
                   label: Text(
                     favCount.value.toString(),
@@ -87,7 +86,6 @@ class PostActionToolbar extends HookWidget {
                     onPressed: null,
                     icon: const FaIcon(
                       FontAwesomeIcons.spinner,
-                      color: Colors.white,
                     ),
                     label: Text(
                       post.favCount.toString(),
@@ -107,7 +105,6 @@ class PostActionToolbar extends HookWidget {
           ),
           icon: const FaIcon(
             FontAwesomeIcons.comment,
-            color: Colors.white,
           ),
         ),
         IconButton(
@@ -131,14 +128,12 @@ class PostActionToolbar extends HookWidget {
           ),
           icon: const FaIcon(
             FontAwesomeIcons.shareFromSquare,
-            color: Colors.white,
           ),
         ),
         IconButton(
           onPressed: () => context.read<IDownloadService>().download(post),
           icon: const FaIcon(
             FontAwesomeIcons.download,
-            color: Colors.white,
           ),
         )
       ]),

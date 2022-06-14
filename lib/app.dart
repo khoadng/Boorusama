@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
@@ -40,7 +40,9 @@ class _AppState extends State<App> {
               child: child!,
             ),
             theme: AppTheme.lightTheme,
-            darkTheme: AppTheme.darkTheme,
+            darkTheme: state.theme == ThemeMode.amoledDark
+                ? AppTheme.darkAmoledTheme
+                : AppTheme.darkTheme,
             themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,

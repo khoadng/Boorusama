@@ -42,8 +42,7 @@ class _BottomBarState extends State<BottomBar> {
     return CurvedNavigationBar(
       animationDuration: const Duration(milliseconds: 300),
       height: 60,
-      //TODO: shouldn't use hardcode value, not working great when using multiple themes
-      color: Colors.black,
+      color: Theme.of(context).bottomNavigationBarTheme.backgroundColor!,
       backgroundColor: Colors.transparent,
       items: const [
         FaIcon(FontAwesomeIcons.house),

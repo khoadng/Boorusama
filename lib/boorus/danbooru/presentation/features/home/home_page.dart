@@ -34,7 +34,7 @@ class HomePage extends HookWidget {
     }, []);
 
     return Container(
-      color: Colors.black,
+      color: Theme.of(context).scaffoldBackgroundColor,
       child: SafeArea(
         child: Column(
           children: <Widget>[
