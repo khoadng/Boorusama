@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -108,6 +109,7 @@ final postDetailHandler = Handler(handlerFunc: (
             ..add(RecommendedPostRequested(tags: posts[index].characterTags))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
+      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),
@@ -149,6 +151,7 @@ final postSearchHandler = Handler(handlerFunc: (
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
               )),
+      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
     ],
     child: SearchPage(
       initialQuery: args[0],

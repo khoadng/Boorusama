@@ -225,10 +225,6 @@ class _LatestViewState extends State<LatestView> {
                   child: Text(
                     searches[index].keyword.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: selected ? Colors.black : Colors.white,
-                    ),
                   ),
                 ),
               ),

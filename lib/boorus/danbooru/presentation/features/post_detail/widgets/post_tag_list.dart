@@ -1,7 +1,7 @@
 // Flutter imports:
 
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -58,41 +59,50 @@ class _PostTagListState extends State<PostTagList> {
             _currentPopupTag = tag;
             _menu!.show(widgetKey: _tagKeys[tag.rawName]);
           },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            key: tagKey,
-            children: [
-              Chip(
-                  visualDensity:
-                      const VisualDensity(horizontal: -4, vertical: -4),
-                  backgroundColor: Color(tag.tagHexColor),
-                  shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8))),
-                  label: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.70),
-                    child: Text(
-                      tag.displayName,
-                      overflow: TextOverflow.fade,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+          child: BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                key: tagKey,
+                children: [
+                  Chip(
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      backgroundColor: getTagColor(tag.category, state.theme),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8))),
+                      label: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.70),
+                        child: Text(
+                          tag.displayName,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: state.theme == ThemeMode.light
+                                  ? Colors.white
+                                  : Colors.white),
+                        ),
+                      )),
+                  Chip(
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
+                    backgroundColor: Colors.grey[800],
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8))),
+                    label: Text(
+                      tag.postCount.toString(),
+                      style:
+                          const TextStyle(color: Colors.white60, fontSize: 12),
                     ),
-                  )),
-              Chip(
-                visualDensity:
-                    const VisualDensity(horizontal: -4, vertical: -4),
-                backgroundColor: Colors.grey[800],
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        bottomRight: Radius.circular(8))),
-                label: Text(
-                  tag.postCount.toString(),
-                  style: const TextStyle(color: Colors.white60, fontSize: 12),
-                ),
-              )
-            ],
+                  )
+                ],
+              );
+            },
           ),
         );
       },

@@ -204,7 +204,7 @@ void main() async {
                   final authenticationCubit = AuthenticationCubit(
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
-                  );
+                  )..logIn();
                   final poolCubit = PoolCubit(
                       poolRepository: poolRepo, postRepository: postRepo);
                   final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(

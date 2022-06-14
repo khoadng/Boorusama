@@ -3,7 +3,6 @@ import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 
 class Tag {
-
   Tag(this._name, this._category, this._postCount);
 
   factory Tag.fromJson(Map<String, dynamic> json) {
@@ -25,7 +24,6 @@ class Tag {
 
   String get displayName => _name.replaceAll('_', ' ');
   String get rawName => _name;
-  int get tagHexColor => _category.hexColor;
   PostCountType get postCount => _postCount;
   TagCategory get category => _category;
 

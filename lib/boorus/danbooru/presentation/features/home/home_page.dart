@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
@@ -26,12 +25,6 @@ class HomePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final bottomTabIndex = useState(0);
-
-    useEffect(() {
-      Future.microtask(
-          () => ReadContext(context).read<AuthenticationCubit>().logIn());
-      return () => {};
-    }, []);
 
     return Container(
       color: Theme.of(context).scaffoldBackgroundColor,

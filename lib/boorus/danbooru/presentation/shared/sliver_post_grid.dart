@@ -14,8 +14,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/helpers.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/post_image.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -214,21 +215,29 @@ class PostPreviewSheet extends HookWidget {
               runSpacing: 0,
               itemCount: tags.length,
               itemBuilder: (index) {
-                return Chip(
-                    padding: const EdgeInsets.all(4),
-                    labelPadding: const EdgeInsets.all(1),
-                    visualDensity: VisualDensity.compact,
-                    backgroundColor:
-                        Color(hexColorOf(tags[index][1] as TagCategory)),
-                    label: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.85),
-                      child: Text(
-                        (tags[index][0] as String).removeUnderscoreWithSpace(),
-                        overflow: TextOverflow.fade,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ));
+                return BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return Chip(
+                        padding: const EdgeInsets.all(4),
+                        labelPadding: const EdgeInsets.all(1),
+                        visualDensity: VisualDensity.compact,
+                        backgroundColor: getTagColor(
+                          tags[index][1] as TagCategory,
+                          state.theme,
+                        ),
+                        label: ConstrainedBox(
+                          constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.85),
+                          child: Text(
+                            (tags[index][0] as String)
+                                .removeUnderscoreWithSpace(),
+                            overflow: TextOverflow.fade,
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ));
+                  },
+                );
               },
             ),
           ),

@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,6 +13,7 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artist.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
@@ -172,12 +173,18 @@ class _ArtistPageState extends State<ArtistPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    widget.artistName.removeUnderscoreWithSpace(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.w900),
+                  BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) {
+                      return Text(
+                        widget.artistName.removeUnderscoreWithSpace(),
+                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: state.theme == ThemeMode.light
+                                  ? Colors.white
+                                  : Colors.black,
+                            ),
+                      );
+                    },
                   ),
                   BlocBuilder<ArtistCubit, AsyncLoadState<Artist>>(
                     builder: _buildArtistAltNameTags,
