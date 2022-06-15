@@ -173,4 +173,13 @@ abstract class IApi {
     int limit, {
     CancelToken? cancelToken,
   });
+
+  Future<HttpResponse> autocomplete(
+    String login,
+    String apiKey,
+    String query,
+    String type,
+    int limit, {
+    CancelToken? cancelToken,
+  });
 }

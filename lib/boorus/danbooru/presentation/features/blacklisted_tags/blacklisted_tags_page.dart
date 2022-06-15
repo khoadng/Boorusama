@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -273,8 +273,8 @@ class BlacklistedTagsPage extends StatelessWidget {
                         providers: [
                           BlocProvider(
                               create: (context) => TagSearchBloc(
-                                  tagRepository:
-                                      context.read<ITagRepository>())),
+                                  autocompleteRepository:
+                                      context.read<AutocompleteRepository>())),
                         ],
                         child: BlacklistedTagsSearchPage(
                           onSelectedDone: (tagItems) =>

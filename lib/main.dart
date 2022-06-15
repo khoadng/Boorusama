@@ -43,6 +43,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
@@ -187,6 +188,9 @@ void main() async {
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
+                  final autocompleteRepo = AutocompleteRepository(
+                      api: api, accountRepository: accountRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -239,6 +243,8 @@ void main() async {
                             value: blacklistedTagRepo),
                         RepositoryProvider<IArtistRepository>.value(
                             value: artistRepo),
+                        RepositoryProvider<AutocompleteRepository>.value(
+                            value: autocompleteRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [

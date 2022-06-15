@@ -8,8 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
 import 'package:boorusama/common/string_utils.dart';
 
@@ -118,7 +121,7 @@ class TagSearchDone extends TagSearchEvent {
 
 class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   TagSearchBloc({
-    required ITagRepository tagRepository,
+    required AutocompleteRepository autocompleteRepository,
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
@@ -127,11 +130,17 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
-        await tryAsync<List<Tag>>(
+        await tryAsync<List<Autocomplete>>(
           action: () =>
-              tagRepository.getTagsByNamePattern(getQuery(query, operator), 1),
+              autocompleteRepository.getAutocomplete(getQuery(query, operator)),
           onSuccess: (tags) => emit(state.copyWith(
-            suggestionTags: tags,
+            suggestionTags: tags
+                .map((e) => Tag(
+                      e.value,
+                      TagCategory.values[e.category],
+                      PostCountType(e.postCount),
+                    ))
+                .toList(),
             query: query,
             operator: operator,
           )),
