@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
+import 'package:boorusama/core/infrastructure/caching/cacher.dart';
 
 @immutable
 abstract class PoolFromPostIdEvent extends Equatable {
@@ -43,5 +44,30 @@ class PoolFromPostIdBloc
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
+  }
+}
+
+class PoolFromPostCacher implements PoolRepository {
+  const PoolFromPostCacher({
+    required this.cache,
+    required this.poolRepository,
+  });
+
+  final Cacher<int, List<Pool>> cache;
+  final PoolRepository poolRepository;
+
+  @override
+  Future<List<Pool>> getPools() => poolRepository.getPools();
+
+  @override
+  Future<List<Pool>> getPoolsByPostId(int postId) async {
+    final pools = cache.get(postId);
+
+    if (pools != null) return pools;
+
+    final freshPools = await poolRepository.getPoolsByPostId(postId);
+    cache.put(postId, freshPools);
+
+    return freshPools;
   }
 }

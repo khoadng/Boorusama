@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/moda
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
@@ -124,73 +125,91 @@ class PostDetailPage extends HookWidget {
         alignment: const Alignment(-0.9, -0.96),
         child: Padding(
           padding: const EdgeInsets.all(8),
-          child: IconButton(
-            icon: const Icon(Icons.arrow_back_ios),
-            onPressed: () {
-              Navigator.pop(context);
+          child: BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
+            builder: (context, state) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back_ios),
+                onPressed: () {
+                  context
+                      .read<SliverPostGridBloc>()
+                      .add(SliverPostGridExited(lastIndex: state.currentIndex));
+                  AppRouter.router.pop(context);
+                },
+              );
             },
           ),
         ),
       );
     }
 
-    return Scaffold(
-      body: Stack(
-        children: [
-          ValueListenableBuilder<SlideShowConfiguration>(
-            valueListenable: slideShowConfig,
-            builder: (context, config, child) => CarouselSlider.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index, realIndex) {
-                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                  currentPostIndex.value = index;
-                });
-                return PostDetail(
-                  post: posts[index],
-                  minimal: autoPlay.value,
-                  animController: hideFabAnimController,
-                );
-              },
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  context
-                      .read<SliverPostGridBloc>()
-                      .add(SliverPostGridItemChanged(index: index));
+    return BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
+      selector: (state) => state.currentIndex,
+      builder: (context, index) => WillPopScope(
+        onWillPop: () {
+          context
+              .read<SliverPostGridBloc>()
+              .add(SliverPostGridExited(lastIndex: index));
+          return Future.value(true);
+        },
+        child: Scaffold(
+          body: Stack(
+            children: [
+              ValueListenableBuilder<SlideShowConfiguration>(
+                valueListenable: slideShowConfig,
+                builder: (context, config, child) => CarouselSlider.builder(
+                  itemCount: posts.length,
+                  itemBuilder: (context, index, realIndex) {
+                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                      currentPostIndex.value = index;
+                    });
+                    return PostDetail(
+                      post: posts[index],
+                      minimal: autoPlay.value,
+                      animController: hideFabAnimController,
+                    );
+                  },
+                  options: CarouselOptions(
+                    onPageChanged: (index, reason) {
+                      context
+                          .read<SliverPostGridBloc>()
+                          .add(SliverPostGridItemChanged(index: index));
 
-                  context.read<RecommendedArtistPostCubit>().add(
-                      RecommendedPostRequested(tags: posts[index].artistTags));
-                  context.read<RecommendedCharacterPostCubit>().add(
-                      RecommendedPostRequested(
-                          tags: posts[index].characterTags));
-                  context
-                      .read<PoolFromPostIdBloc>()
-                      .add(PoolFromPostIdRequested(postId: posts[index].id));
-                  ReadContext(context)
-                      .read<IsPostFavoritedBloc>()
-                      .add(IsPostFavoritedRequested(postId: post.id));
-                },
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: intitialIndex,
-                autoPlay: autoPlay.value,
-                autoPlayAnimationDuration: config.skipAnimation
-                    ? const Duration(microseconds: 1)
-                    : const Duration(milliseconds: 600),
-                autoPlayInterval: Duration(seconds: config.interval),
+                      context.read<RecommendedArtistPostCubit>().add(
+                          RecommendedPostRequested(
+                              tags: posts[index].artistTags));
+                      context.read<RecommendedCharacterPostCubit>().add(
+                          RecommendedPostRequested(
+                              tags: posts[index].characterTags));
+                      context.read<PoolFromPostIdBloc>().add(
+                          PoolFromPostIdRequested(postId: posts[index].id));
+                      ReadContext(context)
+                          .read<IsPostFavoritedBloc>()
+                          .add(IsPostFavoritedRequested(postId: post.id));
+                    },
+                    height: MediaQuery.of(context).size.height,
+                    viewportFraction: 1,
+                    enableInfiniteScroll: false,
+                    initialPage: intitialIndex,
+                    autoPlay: autoPlay.value,
+                    autoPlayAnimationDuration: config.skipAnimation
+                        ? const Duration(microseconds: 1)
+                        : const Duration(milliseconds: 600),
+                    autoPlayInterval: Duration(seconds: config.interval),
+                  ),
+                ),
               ),
-            ),
-          ),
-          ShadowGradientOverlay(
-            alignment: Alignment.topCenter,
-            colors: <Color>[
-              const Color(0x5D000000),
-              Colors.black12.withOpacity(0)
+              ShadowGradientOverlay(
+                alignment: Alignment.topCenter,
+                colors: <Color>[
+                  const Color(0x5D000000),
+                  Colors.black12.withOpacity(0)
+                ],
+              ),
+              _buildBackButton(),
+              _buildSlideShowButton(),
             ],
           ),
-          _buildBackButton(),
-          _buildSlideShowButton(),
-        ],
+        ),
       ),
     );
   }
