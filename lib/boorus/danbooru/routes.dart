@@ -95,7 +95,7 @@ final postDetailHandler = Handler(handlerFunc: (
 
   return MultiBlocProvider(
     providers: [
-      BlocProvider(create: (context) => SliverPostGridBloc(posts: posts)),
+      BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider(
         create: (context) => IsPostFavoritedBloc(
           accountRepository: context.read<IAccountRepository>(),
@@ -134,10 +134,13 @@ final postDetailHandler = Handler(handlerFunc: (
         builder: (context) =>
             BlocListener<SliverPostGridBloc, SliverPostGridState>(
           listenWhen: (previous, current) =>
-              previous.currentIndex != current.currentIndex,
-          listener: (context, state) async {
+              previous.nextIndex != current.nextIndex,
+          listener: (context, state) {
             if (controller == null) return;
-            await controller.scrollToIndex(state.currentIndex);
+            controller.scrollToIndex(
+              state.nextIndex,
+              duration: const Duration(milliseconds: 200),
+            );
           },
           child: PostDetailPage(
             post: posts[index],
