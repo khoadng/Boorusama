@@ -30,6 +30,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repos
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
@@ -41,6 +42,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_d
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
+import 'package:boorusama/core/infrastructure/caching/default_cacher.dart';
 import 'package:boorusama/main.dart';
 import 'application/note/note_bloc.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
@@ -96,23 +98,41 @@ final postDetailHandler = Handler(handlerFunc: (
       BlocProvider(create: (context) => SliverPostGridBloc(posts: posts)),
       BlocProvider(
         create: (context) => IsPostFavoritedBloc(
-          accountRepository: RepositoryProvider.of<IAccountRepository>(context),
-          favoritePostRepository:
-              RepositoryProvider.of<IFavoritePostRepository>(context),
+          accountRepository: context.read<IAccountRepository>(),
+          favoritePostRepository: context.read<IFavoritePostRepository>(),
         )..add(IsPostFavoritedRequested(postId: posts[index].id)),
       ),
       BlocProvider(
           create: (context) => RecommendedArtistPostCubit(
-              postRepository: RepositoryProvider.of<IPostRepository>(context))
-            ..add(RecommendedPostRequested(tags: posts[index].artistTags))),
+                postRepository: RecommendedPostCacher(
+                  cache: DefaultCacher<List<Post>>(
+                    currentTimeBuilder: () => DateTime.now(),
+                  ),
+                  postRepository: context.read<IPostRepository>(),
+                  staleDuration: const Duration(minutes: 1),
+                ),
+              )..add(RecommendedPostRequested(tags: posts[index].artistTags))),
       BlocProvider(
           create: (context) => PoolFromPostIdBloc(
-              poolRepository: RepositoryProvider.of<PoolRepository>(context))
-            ..add(PoolFromPostIdRequested(postId: posts[index].id))),
+                  poolRepository: PoolFromPostCacher(
+                cache: DefaultCacher<List<Pool>>(
+                  currentTimeBuilder: () => DateTime.now(),
+                ),
+                poolRepository: context.read<PoolRepository>(),
+                staleDuration: const Duration(minutes: 3),
+              ))
+                ..add(PoolFromPostIdRequested(postId: posts[index].id))),
       BlocProvider(
           create: (context) => RecommendedCharacterPostCubit(
-              postRepository: RepositoryProvider.of<IPostRepository>(context))
-            ..add(RecommendedPostRequested(tags: posts[index].characterTags))),
+                postRepository: RecommendedPostCacher(
+                  cache: DefaultCacher<List<Post>>(
+                    currentTimeBuilder: () => DateTime.now(),
+                  ),
+                  postRepository: context.read<IPostRepository>(),
+                  staleDuration: const Duration(minutes: 1),
+                ),
+              )..add(
+                  RecommendedPostRequested(tags: posts[index].characterTags))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
