@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -174,10 +174,10 @@ class _ArtistPageState extends State<ArtistPage> {
                 children: [
                   Text(
                     widget.artistName.removeUnderscoreWithSpace(),
-                    style: Theme.of(context)
-                        .textTheme
-                        .headline6!
-                        .copyWith(fontWeight: FontWeight.w900),
+                    style: Theme.of(context).textTheme.headline6!.copyWith(
+                          fontWeight: FontWeight.w900,
+                          color: Colors.white,
+                        ),
                   ),
                   BlocBuilder<ArtistCubit, AsyncLoadState<Artist>>(
                     builder: _buildArtistAltNameTags,

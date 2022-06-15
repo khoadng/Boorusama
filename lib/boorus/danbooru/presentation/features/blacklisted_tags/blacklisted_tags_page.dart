@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
 class BlacklistedTagsSearchPage extends StatefulWidget {
   const BlacklistedTagsSearchPage({
@@ -80,6 +81,10 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             builder: (context, state) => SearchBar(
               autofocus: true,
               queryEditingController: queryEditingController,
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => AppRouter.router.pop(context),
+              ),
               trailing: state.query.isNotEmpty
                   ? IconButton(
                       icon: const Icon(Icons.close),
@@ -258,6 +263,8 @@ class BlacklistedTagsPage extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     child: OpenContainer(
                       closedColor: Colors.transparent,
+                      closedElevation: 0,
+                      openElevation: 0,
                       closedBuilder: (context, action) => ElevatedButton(
                           onPressed: () => action.call(),
                           child: const Text('Add tag(s)')),

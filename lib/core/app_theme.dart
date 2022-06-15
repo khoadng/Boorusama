@@ -12,15 +12,80 @@ class AppTheme {
     ),
     appBarTheme: ThemeData.light().appBarTheme.copyWith(
           color: ThemeData.light().scaffoldBackgroundColor,
+          foregroundColor: Colors.black,
         ),
+    cardColor: const Color.fromARGB(255, 235, 235, 235),
+    backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+    chipTheme: const ChipThemeData().copyWith(
+      backgroundColor: const Color.fromARGB(255, 230, 230, 230),
+      disabledColor: const Color.fromARGB(255, 115, 127, 141),
+      selectedColor: const Color.fromARGB(255, 114, 137, 218),
+      labelStyle:
+          const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+      secondaryLabelStyle:
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+    ),
+    floatingActionButtonTheme:
+        const FloatingActionButtonThemeData(foregroundColor: Colors.white),
+    iconTheme: ThemeData.light()
+        .iconTheme
+        .copyWith(color: const Color.fromARGB(255, 79, 86, 96)),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData()
+        .copyWith(backgroundColor: const Color.fromARGB(255, 225, 227, 229)),
   );
   static final darkTheme = ThemeData.dark().copyWith(
     appBarTheme: ThemeData.dark().appBarTheme.copyWith(
           color: ThemeData.dark().scaffoldBackgroundColor,
         ),
+    backgroundColor: const Color.fromARGB(255, 36, 36, 36),
+    chipTheme: ThemeData.dark().chipTheme.copyWith(
+          backgroundColor: const Color.fromARGB(255, 72, 72, 72),
+          disabledColor: const Color.fromARGB(255, 72, 72, 72),
+          selectedColor: Colors.white,
+          labelStyle:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          secondaryLabelStyle:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
     colorScheme: const ColorScheme.dark(
       primary: Color.fromARGB(255, 114, 137, 218),
       secondary: Color.fromARGB(255, 114, 137, 218),
-    ).copyWith(secondary: const Color.fromARGB(255, 114, 137, 218)),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData()
+        .copyWith(backgroundColor: Colors.black),
+  );
+
+  static final darkAmoledTheme = ThemeData.dark().copyWith(
+    scaffoldBackgroundColor: Colors.black,
+    backgroundColor: const Color.fromARGB(255, 18, 18, 18),
+    cardColor: const Color.fromARGB(255, 36, 36, 36),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      ),
+    ),
+    floatingActionButtonTheme:
+        const FloatingActionButtonThemeData(foregroundColor: Colors.white),
+    drawerTheme: ThemeData.dark()
+        .drawerTheme
+        .copyWith(backgroundColor: const Color.fromARGB(255, 18, 18, 18)),
+    appBarTheme: ThemeData.dark().appBarTheme.copyWith(
+          color: const Color.fromARGB(255, 18, 18, 18),
+        ),
+    chipTheme: ThemeData.dark().chipTheme.copyWith(
+          backgroundColor: const Color.fromARGB(255, 36, 36, 36),
+          disabledColor: const Color.fromARGB(255, 36, 36, 36),
+          selectedColor: Colors.white,
+          labelStyle:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          secondaryLabelStyle:
+              const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+    colorScheme: const ColorScheme.dark(
+      primary: Color.fromARGB(255, 86, 99, 233),
+      secondary: Color.fromARGB(255, 86, 99, 233),
+    ),
+    bottomNavigationBarTheme: const BottomNavigationBarThemeData()
+        .copyWith(backgroundColor: Colors.black),
   );
 }

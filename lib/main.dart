@@ -18,7 +18,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
@@ -29,8 +28,10 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
@@ -143,15 +144,14 @@ void main() async {
                   listenWhen: (previous, current) =>
                       previous.settings.safeMode != current.settings.safeMode,
                   listener: (context, state) {
-                    ReadContext(context)
+                    context
                         .read<ApiEndpointCubit>()
                         .changeApi(state.settings.safeMode);
                   },
                 ),
                 BlocListener<ApiEndpointCubit, ApiEndpointState>(
-                  listener: (context, state) => ReadContext(context)
-                      .read<ApiCubit>()
-                      .changeApi(state.booru),
+                  listener: (context, state) =>
+                      context.read<ApiCubit>().changeApi(state.booru),
                 ),
               ],
               child: BlocBuilder<ApiCubit, ApiState>(
@@ -189,7 +189,6 @@ void main() async {
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final artistCubit = ArtistCubit(artistRepository: artistRepo);
                   final popularSearchCubit =
                       SearchKeywordCubit(popularSearchRepo)..getTags();
                   final profileCubit =
@@ -204,7 +203,7 @@ void main() async {
                   final authenticationCubit = AuthenticationCubit(
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
-                  );
+                  )..logIn();
                   final poolCubit = PoolCubit(
                       poolRepository: poolRepo, postRepository: postRepo);
                   final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
@@ -238,11 +237,12 @@ void main() async {
                             value: userRepo),
                         RepositoryProvider<BlacklistedTagsRepository>.value(
                             value: blacklistedTagRepo),
+                        RepositoryProvider<IArtistRepository>.value(
+                            value: artistRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: popularSearchCubit),
-                          BlocProvider.value(value: artistCubit),
                           BlocProvider.value(value: favoritedCubit),
                           BlocProvider.value(value: profileCubit),
                           BlocProvider.value(value: commentCubit),
@@ -251,6 +251,9 @@ void main() async {
                           BlocProvider.value(value: authenticationCubit),
                           BlocProvider.value(value: poolCubit),
                           BlocProvider.value(value: userBlacklistedTagsBloc),
+                          BlocProvider(
+                              create: (context) =>
+                                  ThemeBloc(initialTheme: settings.themeMode))
                         ],
                         child: MultiBlocListener(
                           listeners: [
@@ -273,7 +276,16 @@ void main() async {
                                 blacklistedTagRepo
                                     ._refresh(state.blacklistedTags);
                               },
-                            )
+                            ),
+                            BlocListener<SettingsCubit, SettingsState>(
+                              listenWhen: (previous, current) =>
+                                  previous.settings.themeMode !=
+                                  current.settings.themeMode,
+                              listener: (context, state) {
+                                context.read<ThemeBloc>().add(ThemeChanged(
+                                    theme: state.settings.themeMode));
+                              },
+                            ),
                           ],
                           child: BlocBuilder<UserBlacklistedTagsBloc,
                               UserBlacklistedTagsState>(

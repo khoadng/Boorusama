@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
@@ -21,8 +22,10 @@ import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
@@ -63,6 +66,10 @@ final artistHandler = Handler(handlerFunc: (
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
+      BlocProvider(
+          create: (context) =>
+              ArtistCubit(artistRepository: context.read<IArtistRepository>())
+                ..getArtist(args[0]))
     ],
     child: ArtistPage(
       artistName: args[0],
@@ -108,6 +115,7 @@ final postDetailHandler = Handler(handlerFunc: (
             ..add(RecommendedPostRequested(tags: posts[index].characterTags))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
+      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),
@@ -149,6 +157,7 @@ final postSearchHandler = Handler(handlerFunc: (
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
               )),
+      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
     ],
     child: SearchPage(
       initialQuery: args[0],

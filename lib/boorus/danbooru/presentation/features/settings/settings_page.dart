@@ -1,9 +1,10 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 
@@ -11,8 +12,8 @@ import 'package:settings_ui/settings_ui.dart';
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/main.dart';
-import 'appearance_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -45,19 +46,35 @@ class SettingsPage extends StatelessWidget {
                       },
                       initialValue: settings.safeMode,
                     ),
-                    // SettingsTile(
-                    //   leading: const Icon(Icons.tag),
-                    //   title: Text('settings.appSettings.blacklistedTags'.tr()),
-                    //   onPressed: (context) {
-                    //     Navigator.of(context).push(
-                    //       MaterialPageRoute(
-                    //         builder: (BuildContext context) => TagSettingsPage(
-                    //           settings: settings,
-                    //         ),
-                    //       ),
-                    //     );
-                    //   },
-                    // ),
+                    SettingsTile(
+                      leading: const FaIcon(FontAwesomeIcons.paintRoller),
+                      title: Text(
+                          'settings.appSettings.appearance.theme._string'.tr()),
+                      trailing: DropdownButton<ThemeMode>(
+                        value: settings.themeMode,
+                        icon: const Icon(Icons.keyboard_arrow_right),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          context
+                              .read<SettingsCubit>()
+                              .update(settings.copyWith(themeMode: value));
+                        },
+                        items: const <DropdownMenuItem<ThemeMode>>[
+                          DropdownMenuItem(
+                            value: ThemeMode.light,
+                            child: Text('Light'),
+                          ),
+                          DropdownMenuItem(
+                            value: ThemeMode.dark,
+                            child: Text('Dark'),
+                          ),
+                          DropdownMenuItem(
+                            value: ThemeMode.amoledDark,
+                            child: Text('AMOLED dark'),
+                          ),
+                        ],
+                      ),
+                    ),
                     SettingsTile(
                       leading: const Icon(Icons.translate),
                       title: Text('settings.appSettings.language._string'.tr()),
@@ -85,15 +102,6 @@ class SettingsPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                      onPressed: (context) {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (BuildContext context) => AppearancePage(
-                              settings: settings,
-                            ),
-                          ),
-                        );
-                      },
                     )
                   ],
                 ),

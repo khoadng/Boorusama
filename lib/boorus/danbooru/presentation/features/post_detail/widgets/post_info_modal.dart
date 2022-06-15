@@ -40,6 +40,7 @@ class PostInfoModal extends HookWidget {
         child: Container(
           margin: const EdgeInsets.all(8),
           child: Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
             body: CustomScrollView(
               controller: scrollController,
               shrinkWrap: true,

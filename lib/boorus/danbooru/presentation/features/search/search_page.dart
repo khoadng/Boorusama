@@ -238,6 +238,7 @@ class SearchPage extends HookWidget {
         appBar: AppBar(
           toolbarHeight: kToolbarHeight * 1.2,
           elevation: 0,
+          backgroundColor: Colors.transparent,
           shadowColor: Colors.transparent,
           automaticallyImplyLeading: false,
           title: SearchBar(
@@ -300,8 +301,8 @@ class SearchPage extends HookWidget {
                             controller: controller,
                             slivers: <Widget>[
                               SliverPadding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 14),
                                 sliver: BlocBuilder<PostBloc, PostState>(
                                   buildWhen: (previous, current) =>
                                       current.status != LoadStatus.loading,
