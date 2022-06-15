@@ -18,7 +18,6 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/artist/artist_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit.dart';
@@ -32,6 +31,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_state.da
 import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
@@ -189,7 +189,6 @@ void main() async {
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final artistCubit = ArtistCubit(artistRepository: artistRepo);
                   final popularSearchCubit =
                       SearchKeywordCubit(popularSearchRepo)..getTags();
                   final profileCubit =
@@ -238,11 +237,12 @@ void main() async {
                             value: userRepo),
                         RepositoryProvider<BlacklistedTagsRepository>.value(
                             value: blacklistedTagRepo),
+                        RepositoryProvider<IArtistRepository>.value(
+                            value: artistRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: popularSearchCubit),
-                          BlocProvider.value(value: artistCubit),
                           BlocProvider.value(value: favoritedCubit),
                           BlocProvider.value(value: profileCubit),
                           BlocProvider.value(value: commentCubit),

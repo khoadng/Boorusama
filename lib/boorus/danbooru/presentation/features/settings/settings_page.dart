@@ -61,10 +61,6 @@ class SettingsPage extends StatelessWidget {
                         },
                         items: const <DropdownMenuItem<ThemeMode>>[
                           DropdownMenuItem(
-                            value: ThemeMode.system,
-                            child: Text('System'),
-                          ),
-                          DropdownMenuItem(
                             value: ThemeMode.light,
                             child: Text('Light'),
                           ),
