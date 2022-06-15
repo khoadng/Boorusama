@@ -26,9 +26,12 @@ class SettingRepository implements ISettingRepository {
     }
 
     final json = jsonDecode(jsonString);
-    final settings = Settings.fromJson(json);
-
-    return settings;
+    try {
+      final settings = Settings.fromJson(json);
+      return settings;
+    } catch (e) {
+      return Settings.defaultSettings;
+    }
   }
 
   @override

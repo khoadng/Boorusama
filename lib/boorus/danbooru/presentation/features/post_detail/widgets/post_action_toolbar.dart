@@ -76,7 +76,8 @@ class PostActionToolbar extends HookWidget {
                         ),
                   label: Text(
                     favCount.value.toString(),
-                    style: const TextStyle(color: Colors.white),
+                    style:
+                        state.data! ? const TextStyle(color: Colors.red) : null,
                   ));
             } else if (state.status == LoadStatus.failure) {
               return const SizedBox.shrink();

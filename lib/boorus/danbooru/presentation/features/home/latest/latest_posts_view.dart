@@ -14,10 +14,9 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -86,7 +85,7 @@ class _LatestViewState extends State<LatestView> {
             slivers: <Widget>[
               _buildAppBar(context),
               _buildMostSearchTagList(),
-              _buildPostList(controller),
+              HomePostGrid(controller: controller),
               BlocBuilder<PostBloc, PostState>(
                 builder: (context, state) {
                   if (state.status == LoadStatus.loading) {
@@ -109,50 +108,6 @@ class _LatestViewState extends State<LatestView> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPostList(AutoScrollController controller) {
-    return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: 14),
-      sliver: BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => current.status != LoadStatus.loading,
-        builder: (context, state) {
-          if (state.status == LoadStatus.initial) {
-            return const SliverPostGridPlaceHolder();
-          } else if (state.status == LoadStatus.success) {
-            if (state.posts.isEmpty) {
-              return const SliverToBoxAdapter(
-                  child: Center(child: Text('No data')));
-            }
-            return SliverPostGrid(
-              posts: state.posts,
-              scrollController: controller,
-              onTap: (post, index) => AppRouter.router.navigateTo(
-                context,
-                '/post/detail',
-                routeSettings: RouteSettings(
-                  arguments: [
-                    state.posts,
-                    index,
-                    controller,
-                  ],
-                ),
-              ),
-            );
-          } else if (state.status == LoadStatus.loading) {
-            return const SliverToBoxAdapter(
-              child: SizedBox.shrink(),
-            );
-          } else {
-            return const SliverToBoxAdapter(
-              child: Center(
-                child: Text('Something went wrong'),
-              ),
-            );
-          }
-        },
-      ),
     );
   }
 

@@ -8,11 +8,13 @@ class PostImage extends StatefulWidget {
   const PostImage({
     Key? key,
     required this.imageUrl,
-    required this.placeholderUrl,
+    this.placeholderUrl,
+    this.borderRadius,
   }) : super(key: key);
 
   final String imageUrl;
-  final String placeholderUrl;
+  final String? placeholderUrl;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
   State<PostImage> createState() => _PostImageState();
@@ -45,26 +47,34 @@ class _PostImageState extends State<PostImage> {
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
             image: DecorationImage(image: myImage.image, fit: BoxFit.cover),
           ),
         );
       },
-      placeholder: (context, url) => CachedNetworkImage(
-        imageUrl: widget.placeholderUrl,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-          ),
-        ),
-        placeholder: (context, url) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: Theme.of(context).cardColor,
-          ),
-        ),
-      ),
+      placeholder: (context, url) => widget.placeholderUrl != null
+          ? CachedNetworkImage(
+              imageUrl: widget.placeholderUrl!,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                  color: Theme.of(context).cardColor,
+                ),
+              ),
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                color: Theme.of(context).cardColor,
+              ),
+            ),
       errorWidget: (context, url, error) =>
           const Center(child: Icon(Icons.error)),
       fadeInDuration: const Duration(microseconds: 10),

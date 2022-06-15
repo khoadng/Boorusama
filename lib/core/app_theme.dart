@@ -16,6 +16,9 @@ class AppTheme {
         ),
     cardColor: const Color.fromARGB(255, 235, 235, 235),
     backgroundColor: const Color.fromARGB(255, 240, 240, 240),
+    buttonBarTheme: ThemeData.dark()
+        .buttonBarTheme
+        .copyWith(buttonTextTheme: ButtonTextTheme.normal),
     chipTheme: const ChipThemeData().copyWith(
       backgroundColor: const Color.fromARGB(255, 230, 230, 230),
       disabledColor: const Color.fromARGB(255, 115, 127, 141),
@@ -38,6 +41,9 @@ class AppTheme {
           color: ThemeData.dark().scaffoldBackgroundColor,
         ),
     backgroundColor: const Color.fromARGB(255, 36, 36, 36),
+    buttonBarTheme: ThemeData.dark()
+        .buttonBarTheme
+        .copyWith(buttonTextTheme: ButtonTextTheme.normal),
     chipTheme: ThemeData.dark().chipTheme.copyWith(
           backgroundColor: const Color.fromARGB(255, 72, 72, 72),
           disabledColor: const Color.fromARGB(255, 72, 72, 72),
@@ -72,6 +78,9 @@ class AppTheme {
     appBarTheme: ThemeData.dark().appBarTheme.copyWith(
           color: const Color.fromARGB(255, 18, 18, 18),
         ),
+    buttonBarTheme: ThemeData.dark()
+        .buttonBarTheme
+        .copyWith(buttonTextTheme: ButtonTextTheme.normal),
     chipTheme: ThemeData.dark().chipTheme.copyWith(
           backgroundColor: const Color.fromARGB(255, 36, 36, 36),
           disabledColor: const Color.fromARGB(255, 36, 36, 36),
