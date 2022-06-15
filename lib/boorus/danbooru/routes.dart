@@ -42,7 +42,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_d
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
-import 'package:boorusama/core/infrastructure/caching/default_cacher.dart';
+import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/main.dart';
 import 'application/note/note_bloc.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
@@ -105,31 +105,22 @@ final postDetailHandler = Handler(handlerFunc: (
       BlocProvider(
           create: (context) => RecommendedArtistPostCubit(
                 postRepository: RecommendedPostCacher(
-                  cache: DefaultCacher<List<Post>>(
-                    currentTimeBuilder: () => DateTime.now(),
-                  ),
+                  cache: FifoCacher<String, List<Post>>(capacity: 100),
                   postRepository: context.read<IPostRepository>(),
-                  staleDuration: const Duration(minutes: 1),
                 ),
               )..add(RecommendedPostRequested(tags: posts[index].artistTags))),
       BlocProvider(
           create: (context) => PoolFromPostIdBloc(
                   poolRepository: PoolFromPostCacher(
-                cache: DefaultCacher<List<Pool>>(
-                  currentTimeBuilder: () => DateTime.now(),
-                ),
+                cache: FifoCacher<int, List<Pool>>(capacity: 100),
                 poolRepository: context.read<PoolRepository>(),
-                staleDuration: const Duration(minutes: 3),
               ))
                 ..add(PoolFromPostIdRequested(postId: posts[index].id))),
       BlocProvider(
           create: (context) => RecommendedCharacterPostCubit(
                 postRepository: RecommendedPostCacher(
-                  cache: DefaultCacher<List<Post>>(
-                    currentTimeBuilder: () => DateTime.now(),
-                  ),
+                  cache: FifoCacher<String, List<Post>>(capacity: 100),
                   postRepository: context.read<IPostRepository>(),
-                  staleDuration: const Duration(minutes: 1),
                 ),
               )..add(
                   RecommendedPostRequested(tags: posts[index].characterTags))),

@@ -13,7 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
-import 'package:boorusama/core/infrastructure/caching/i_cache.dart';
+import 'package:boorusama/core/infrastructure/caching/cacher.dart';
 
 @immutable
 abstract class RecommendedPostEvent extends Equatable {
@@ -71,12 +71,10 @@ class RecommendedPostCacher implements IPostRepository {
   const RecommendedPostCacher({
     required this.cache,
     required this.postRepository,
-    required this.staleDuration,
   });
 
-  final ICache cache;
+  final Cacher cache;
   final IPostRepository postRepository;
-  final Duration staleDuration;
 
   @override
   Future<List<Post>> getCuratedPosts(
@@ -109,7 +107,7 @@ class RecommendedPostCacher implements IPostRepository {
       cancelToken: cancelToken,
       skipFavoriteCheck: skipFavoriteCheck,
     );
-    cache.put(key, fresh, staleDuration);
+    cache.put(key, fresh);
 
     return fresh;
   }

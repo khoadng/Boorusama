@@ -2,65 +2,87 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/infrastructure/caching/default_cacher.dart';
-
-class TestClock {
-  DateTime current = DateTime.now();
-
-  // ignore: use_setters_to_change_properties
-  void setTime(DateTime time) => current = time;
-  DateTime getTime() => current;
-}
+import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 
 void main() {
   test(
-    'cache get immediately should return cached value',
+    'get a cached item should return cached value',
     () {
       const key = 'foo';
       const value = 'bar';
-      final cacher = DefaultCacher<String>(
-        currentTimeBuilder: () => DateTime(2017, 1, 1, 17, 30),
-      )..put(key, value, const Duration(minutes: 1));
+      final cacher = FifoCacher<String, String>()..put(key, value);
 
-      final actual = cacher.get(key);
-
-      expect(actual, value);
+      expect(cacher.get(key), value);
     },
   );
 
   test(
-    'cache get when almost staled should return cached value',
+    'get a non-existed item should return null',
     () {
-      const key = 'foo';
-      const value = 'bar';
-      final clock = TestClock()..setTime(DateTime(2017, 1, 1, 17, 31));
-      final cacher = DefaultCacher<String>(
-        currentTimeBuilder: clock.getTime,
-      )..put(key, value, const Duration(minutes: 1));
+      final cacher = FifoCacher<String, String>();
 
-      clock.setTime(DateTime(2017, 1, 1, 17, 31, 59));
-
-      final actual = cacher.get(key);
-
-      expect(actual, value);
+      expect(cacher.get('a'), isNull);
     },
   );
 
   test(
-    'cache get when staled should return null',
+    'clear cache should clear all cached items',
     () {
       const key = 'foo';
       const value = 'bar';
-      final clock = TestClock()..setTime(DateTime(2017, 1, 1, 17, 31));
-      final cacher = DefaultCacher<String>(
-        currentTimeBuilder: clock.getTime,
-      )..put(key, value, const Duration(minutes: 1));
+      const key2 = 'foo2';
+      const value2 = 'bar2';
+      final cacher = FifoCacher<String, String>()
+        ..put(key, value)
+        ..put(key2, value2)
+        ..clear();
 
-      clock.setTime(DateTime(2017, 1, 1, 17, 32, 1));
+      expect(cacher.get(key), isNull);
+      expect(cacher.get(key2), isNull);
+    },
+  );
 
-      final actual = cacher.get(key);
+  test(
+    'cache item existence check should be successful when there is a item in cache',
+    () {
+      const key = 'foo';
+      const value = 'bar';
+      final cacher = FifoCacher<String, String>()..put(key, value);
 
-      expect(actual, isNull);
+      expect(cacher.exist(key), true);
+    },
+  );
+
+  test(
+    'cache item existence check should fail when there is no equivalent item in cache',
+    () {
+      const key = 'foo';
+      const value = 'bar';
+      final cacher = FifoCacher<String, String>()..put(key, value);
+
+      expect(cacher.exist('bar'), false);
+    },
+  );
+
+  test(
+    'when at max capacity, adding a new item will invalidate the first item',
+    () {
+      const key = 'foo';
+      const value = 'bar';
+      const key2 = 'foo2';
+      const value2 = 'bar2';
+      const key3 = 'foo3';
+      const value3 = 'bar3';
+      final cacher = FifoCacher<String, String>(
+        capacity: 2,
+      )
+        ..put(key, value)
+        ..put(key2, value2)
+        ..put(key3, value3);
+
+      expect(cacher.get(key), isNull);
+      expect(cacher.get(key2), value2);
+      expect(cacher.get(key3), value3);
     },
   );
 }
