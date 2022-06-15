@@ -13,6 +13,7 @@ import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
+import 'package:boorusama/core/presentation/grid_size.dart';
 import 'package:boorusama/main.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -71,6 +72,34 @@ class SettingsPage extends StatelessWidget {
                           DropdownMenuItem(
                             value: ThemeMode.amoledDark,
                             child: Text('AMOLED dark'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SettingsTile(
+                      leading: const FaIcon(FontAwesomeIcons.tableCells),
+                      title: const Text('Grid size'),
+                      trailing: DropdownButton<GridSize>(
+                        value: settings.gridSize,
+                        icon: const Icon(Icons.keyboard_arrow_right),
+                        onChanged: (value) {
+                          if (value == null) return;
+                          context
+                              .read<SettingsCubit>()
+                              .update(settings.copyWith(gridSize: value));
+                        },
+                        items: const <DropdownMenuItem<GridSize>>[
+                          DropdownMenuItem(
+                            value: GridSize.small,
+                            child: Text('Small'),
+                          ),
+                          DropdownMenuItem(
+                            value: GridSize.normal,
+                            child: Text('Normal'),
+                          ),
+                          DropdownMenuItem(
+                            value: GridSize.large,
+                            child: Text('Large'),
                           ),
                         ],
                       ),
