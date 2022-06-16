@@ -16,9 +16,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
@@ -40,7 +38,7 @@ class SearchPage extends HookWidget {
     final queryEditingController = useTextEditingController
         .fromValue(TextEditingValue(text: initialQuery));
     final searchDisplayState = useState(SearchDisplayState.searchOptions());
-    final suggestions = useState(<Tag>[]);
+    final suggestions = useState(<AutocompleteData>[]);
 
     final completedQueryItems = useState(<String>[]);
     final refreshController = useState(RefreshController());
@@ -122,12 +120,7 @@ class SearchPage extends HookWidget {
           text, queryEditingController.text, completedQueryItems.value);
 
       final tags = await RepositoryProvider.of<AutocompleteRepository>(context)
-          .getAutocomplete(lastTag)
-          .then((value) => value.map((e) => Tag(
-                e.value,
-                TagCategory.values[e.category],
-                PostCountType(e.postCount),
-              )));
+          .getAutocomplete(lastTag);
       suggestions.value = [...tags];
     }
 
@@ -284,7 +277,7 @@ class SearchPage extends HookWidget {
                   ),
                   suggestions: () => TagSuggestionItems(
                     tags: suggestions.value,
-                    onItemTap: (tag) => addTag(tag.rawName),
+                    onItemTap: (tag) => addTag(tag.value),
                   ),
                   results: () {
                     return BlocBuilder<PostBloc, PostState>(

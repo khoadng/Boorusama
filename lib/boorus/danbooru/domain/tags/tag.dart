@@ -2,6 +2,8 @@
 import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 
+typedef PostCount = int;
+
 class Tag {
   Tag(this._name, this._category, this._postCount);
 

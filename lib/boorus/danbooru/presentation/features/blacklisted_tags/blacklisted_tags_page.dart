@@ -165,7 +165,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85),
             child: Text(
-              tagSearchItem.tag.rawName.replaceAll('_', ' '),
+              tagSearchItem.tag.label,
               overflow: TextOverflow.fade,
             ),
           ));
@@ -205,7 +205,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85),
             child: Text(
-              tagSearchItem.tag.rawName.replaceAll('_', ' '),
+              tagSearchItem.tag.label,
               overflow: TextOverflow.fade,
             ),
           ),

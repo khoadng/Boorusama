@@ -49,7 +49,7 @@ class PoolDto {
 Pool poolDtoToPool(PoolDto dto) => Pool(
       id: PoolId(dto.id!),
       postIds: dto.postIds!,
-      category: _stringToPoolCategory(dto.category),
+      category: stringToPoolCategory(dto.category),
       description: PoolDescription(dto.description!),
       postCount: PoolPostCount(dto.postCount!),
       name: PoolName(dto.name!),
@@ -57,7 +57,7 @@ Pool poolDtoToPool(PoolDto dto) => Pool(
       updatedAt: dto.updatedAt!,
     );
 
-PoolCategory _stringToPoolCategory(String? value) {
+PoolCategory stringToPoolCategory(String? value) {
   switch (value) {
     case 'collection':
       return PoolCategory.collection;

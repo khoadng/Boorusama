@@ -19,6 +19,27 @@ UserLevel intToUserLevel(int value) {
   }
 }
 
+UserLevel stringToUserLevel(String value) {
+  switch (value.toLowerCase()) {
+    case 'member':
+      return UserLevel.member;
+    case 'gold':
+      return UserLevel.gold;
+    case 'platinum':
+      return UserLevel.platinum;
+    case 'builder':
+      return UserLevel.builder;
+    case 'janitor':
+      return UserLevel.janitor;
+    case 'moderator':
+      return UserLevel.moderator;
+    case 'admin':
+      return UserLevel.admin;
+    default:
+      return UserLevel.member;
+  }
+}
+
 enum UserLevel {
   member,
   gold,

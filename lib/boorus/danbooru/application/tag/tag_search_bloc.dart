@@ -9,9 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
 import 'package:boorusama/common/string_utils.dart';
@@ -23,13 +20,13 @@ class TagSearchItem extends Equatable {
     required this.operator,
   });
 
-  final Tag tag;
+  final AutocompleteData tag;
   final FilterOperator operator;
 
   @override
   List<Object?> get props => [tag, operator];
   @override
-  String toString() => '${filterOperatorToString(operator)}${tag.rawName}';
+  String toString() => '${filterOperatorToString(operator)}${tag.value}';
 }
 
 @immutable
@@ -50,7 +47,7 @@ class TagSearchState extends Equatable {
         operator: FilterOperator.none,
       );
   final List<TagSearchItem> selectedTags;
-  final List<Tag> suggestionTags;
+  final List<AutocompleteData> suggestionTags;
   final String query;
   final bool isDone;
   final FilterOperator operator;
@@ -58,7 +55,7 @@ class TagSearchState extends Equatable {
   TagSearchState copyWith({
     String? query,
     List<TagSearchItem>? selectedTags,
-    List<Tag>? suggestionTags,
+    List<AutocompleteData>? suggestionTags,
     bool? isDone,
     FilterOperator? operator,
   }) =>
@@ -90,7 +87,7 @@ class TagSearchChanged extends TagSearchEvent {
 
 class TagSearchNewTagSelected extends TagSearchEvent {
   const TagSearchNewTagSelected(this.tag);
-  final Tag tag;
+  final AutocompleteData tag;
 
   @override
   List<Object?> get props => [tag];
@@ -130,17 +127,11 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
-        await tryAsync<List<Autocomplete>>(
+        await tryAsync<List<AutocompleteData>>(
           action: () =>
               autocompleteRepository.getAutocomplete(getQuery(query, operator)),
           onSuccess: (tags) => emit(state.copyWith(
-            suggestionTags: tags
-                .map((e) => Tag(
-                      e.value,
-                      TagCategory.values[e.category],
-                      PostCountType(e.postCount),
-                    ))
-                .toList(),
+            suggestionTags: tags,
             query: query,
             operator: operator,
           )),
