@@ -98,3 +98,4 @@ flutter:
     - assets/animations/
     - assets/icon/
     - assets/translations/
+    - assets/information.json

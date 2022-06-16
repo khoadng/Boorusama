@@ -16,6 +16,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
@@ -114,6 +115,7 @@ void main() async {
 
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
+  final appInfo = AppInfoProvider(await getAppInfo());
 
   void run() {
     runApp(
@@ -125,6 +127,7 @@ void main() async {
         child: MultiRepositoryProvider(
           providers: [
             RepositoryProvider.value(value: packageInfo),
+            RepositoryProvider.value(value: appInfo),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -364,6 +367,14 @@ class PackageInfoProvider {
   final PackageInfo packageInfo;
 
   PackageInfo getPackageInfo() => packageInfo;
+}
+
+class AppInfoProvider {
+  AppInfoProvider(this.appInfo);
+
+  final AppInfo appInfo;
+
+  AppInfo getAppInfo() => appInfo;
 }
 
 Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
