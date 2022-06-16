@@ -59,20 +59,22 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 
 class AutocompleteRepository {
   const AutocompleteRepository({
-    required this.api,
-    required this.accountRepository,
-  });
+    required IApi api,
+    required IAccountRepository accountRepository,
+  })  : _accountRepository = accountRepository,
+        _api = api;
 
-  final IApi api;
-  final IAccountRepository accountRepository;
+  final IApi _api;
+  final IAccountRepository _accountRepository;
 
-  Future<List<AutocompleteData>> getAutocomplete(String query) =>
-      accountRepository
-          .get()
-          .then((account) => api.autocomplete(
-              account.username, account.apiKey, query, 'tag_query', 10))
-          .then(parseAutocomplete)
-          .then(mapDtoToAutocomplete)
-          .catchError((Object e) =>
-              throw Exception('Failed to get autocomplete for $query'));
+  Future<List<AutocompleteData>>
+      getAutocomplete(String query) =>
+          _accountRepository
+              .get()
+              .then((account) => _api.autocomplete(
+                  account.username, account.apiKey, query, 'tag_query', 10))
+              .then(parseAutocomplete)
+              .then(mapDtoToAutocomplete)
+              .catchError((Object e) =>
+                  throw Exception('Failed to get autocomplete for $query'));
 }
