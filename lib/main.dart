@@ -32,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
@@ -43,6 +44,8 @@ import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/artists/artist_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_cache_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
@@ -56,6 +59,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_r
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/artist_commentary/artist_commentary_cubit.dart';
 import 'boorus/danbooru/application/comment/comment_cubit.dart';
@@ -187,6 +191,14 @@ void main() async {
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
+                  final autocompleteRepo = AutocompleteCacheRepository(
+                    cacher: LruCacher<String, List<AutocompleteData>>(
+                      capacity: 100,
+                    ),
+                    repo: AutocompleteRepository(
+                        api: api, accountRepository: accountRepo),
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -239,6 +251,8 @@ void main() async {
                             value: blacklistedTagRepo),
                         RepositoryProvider<IArtistRepository>.value(
                             value: artistRepo),
+                        RepositoryProvider<AutocompleteRepository>.value(
+                            value: autocompleteRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [

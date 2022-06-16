@@ -233,4 +233,15 @@ abstract class DanbooruApi implements IApi {
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET('/autocomplete.json')
+  @override
+  Future<HttpResponse> autocomplete(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Query('search[query]') String query,
+    @Query('search[type]') String type,
+    @Query('limit') int limit, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }
