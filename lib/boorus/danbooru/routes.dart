@@ -2,6 +2,9 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag_search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -172,6 +175,12 @@ final postSearchHandler = Handler(handlerFunc: (
                     context.read<BlacklistedTagsRepository>(),
               )),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
+      BlocProvider(
+          create: (context) => TagSearchBloc(
+              autocompleteRepository: context.read<AutocompleteRepository>())),
+      BlocProvider(
+          create: (context) => SearchBloc(
+              initial: const SearchState(displayState: DisplayState.options)))
     ],
     child: SearchPage(
       initialQuery: args[0],

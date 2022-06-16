@@ -93,6 +93,14 @@ class TagSearchNewTagSelected extends TagSearchEvent {
   List<Object?> get props => [tag];
 }
 
+class TagSearchRawStringTagSelected extends TagSearchEvent {
+  const TagSearchRawStringTagSelected(this.tag);
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
+
 class TagSearchCleared extends TagSearchEvent {
   const TagSearchCleared();
 
@@ -123,7 +131,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     on<TagSearchChanged>(
       (event, emit) async {
         final query = event.query.trim();
-        if (query.isEmpty) return;
+        if (query.isEmpty) {
+          emit(state.copyWith(query: ''));
+          return;
+        }
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
@@ -137,7 +148,6 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           )),
         );
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 50)),
     );
 
     on<TagSearchNewTagSelected>((event, emit) => emit(state.copyWith(
@@ -161,6 +171,21 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         selectedTags: [...state.selectedTags]..remove(event.tag))));
 
     on<TagSearchDone>((event, emit) => emit(state.copyWith(isDone: true)));
+
+    on<TagSearchRawStringTagSelected>((event, emit) => emit(state.copyWith(
+          selectedTags: [
+            ...state.selectedTags,
+            TagSearchItem(
+              tag: AutocompleteData(
+                label: event.tag.replaceAll('_', ' '),
+                value: event.tag,
+              ),
+              operator: state.operator,
+            )
+          ],
+          query: '',
+          suggestionTags: [],
+        )));
   }
 }
 
