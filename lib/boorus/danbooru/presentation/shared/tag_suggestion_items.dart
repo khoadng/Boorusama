@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
@@ -44,17 +45,47 @@ class TagSuggestionItems extends StatelessWidget {
                     ? Text(NumberFormat.compact().format(tag.postCount),
                         style: const TextStyle(color: Colors.grey))
                     : null,
-                title: Text(
-                  tag.label,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: _getTagColor(tag, state.theme),
-                  ),
-                ),
+                title: _getTitle(tag, state.theme),
               );
             },
           );
         },
+      ),
+    );
+  }
+}
+
+Widget _getTitle(AutocompleteData tag, ThemeMode theme) {
+  if (tag.hasAlias) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '${tag.antecedent!.replaceAll('_', '')}  ',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: _getTagColor(tag, theme),
+            ),
+          ),
+          const WidgetSpan(
+            child: FaIcon(FontAwesomeIcons.arrowRightLong, size: 14),
+          ),
+          TextSpan(
+            text: '  ${tag.label}',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: _getTagColor(tag, theme),
+            ),
+          ),
+        ],
+      ),
+    );
+  } else {
+    return Text(
+      tag.label,
+      style: TextStyle(
+        fontWeight: FontWeight.w600,
+        color: _getTagColor(tag, theme),
       ),
     );
   }
