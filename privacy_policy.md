@@ -1,6 +1,6 @@
 # Privacy Policy
 
-Last updated: June 15, 2022
+Last updated: June 19, 2022
 
 This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.
 
@@ -78,18 +78,6 @@ We may also collect information that Your browser sends whenever You visit our S
 
 
 
-
-### Information Collected while Using the Application
-
-While using Our Application, in order to provide features of Our Application, We may collect, with Your prior permission:
-
-- Information regarding your location
-
-
-
-We use this information to provide features of Our Service, to improve and customize Our Service. The information may be uploaded to the Company's servers and/or a Service Provider's server or it may be simply stored on Your device.
-
-You can enable or disable access to this information at any time, through Your Device settings.
 
 
 
