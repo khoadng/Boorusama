@@ -19,9 +19,11 @@ class HomePostGrid extends StatelessWidget {
   const HomePostGrid({
     Key? key,
     required this.controller,
+    this.onTap,
   }) : super(key: key);
 
   final AutoScrollController controller;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -48,17 +50,20 @@ class HomePostGrid extends StatelessWidget {
                   scrollController: controller,
                   gridSize: gridSize,
                   borderRadius: _gridSizeToBorderRadius(gridSize),
-                  onTap: (post, index) => AppRouter.router.navigateTo(
-                    context,
-                    '/post/detail',
-                    routeSettings: RouteSettings(
-                      arguments: [
-                        state.posts,
-                        index,
-                        controller,
-                      ],
-                    ),
-                  ),
+                  onTap: (post, index) {
+                    onTap?.call();
+                    AppRouter.router.navigateTo(
+                      context,
+                      '/post/detail',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          state.posts,
+                          index,
+                          controller,
+                        ],
+                      ),
+                    );
+                  },
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(

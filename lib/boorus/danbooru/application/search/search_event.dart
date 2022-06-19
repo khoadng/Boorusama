@@ -29,20 +29,8 @@ class SearchRequested extends SearchEvent {
   List<Object?> get props => [];
 }
 
-class SearchNoData extends SearchEvent {
-  const SearchNoData();
-  @override
-  List<Object?> get props => [];
-}
-
-class SearchError extends SearchEvent {
-  const SearchError();
-  @override
-  List<Object?> get props => [];
-}
-
-class SearchCompleted extends SearchEvent {
-  const SearchCompleted();
+class SearchGoBackToSearchOptionsRequested extends SearchEvent {
+  const SearchGoBackToSearchOptionsRequested();
   @override
   List<Object?> get props => [];
 }
