@@ -78,8 +78,6 @@ dependencies:
   share_plus: ^4.0.6
   flutter_cache_manager: ^3.3.0
   sentry_flutter: ^6.5.1
-  firebase_analytics: ^9.1.1
-  firebase_performance: ^0.8.0+6
   package_info_plus: ^1.4.2
 
 dev_dependencies:
