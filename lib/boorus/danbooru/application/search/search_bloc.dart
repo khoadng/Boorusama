@@ -30,5 +30,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       if (state.displayState == DisplayState.result) return;
       emit(state.copyWith(displayState: DisplayState.options));
     });
+
+    on<SearchNoData>((event, emit) {
+      emit(state.copyWith(displayState: DisplayState.noResult));
+    });
+
+    on<SearchError>((event, emit) {
+      emit(state.copyWith(displayState: DisplayState.error));
+    });
   }
 }

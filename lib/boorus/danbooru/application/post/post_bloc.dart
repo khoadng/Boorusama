@@ -9,6 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
+import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/main.dart';
 import 'common.dart';
 
@@ -20,6 +22,7 @@ class PostState extends Equatable {
     required this.filteredPosts,
     required this.page,
     required this.hasMore,
+    this.exceptionMessage,
   });
 
   factory PostState.initial() => const PostState(
@@ -35,6 +38,7 @@ class PostState extends Equatable {
   final LoadStatus status;
   final int page;
   final bool hasMore;
+  final String? exceptionMessage;
 
   PostState copyWith({
     LoadStatus? status,
@@ -42,6 +46,7 @@ class PostState extends Equatable {
     List<Post>? filteredPosts,
     int? page,
     bool? hasMore,
+    String? exceptionMessage,
   }) =>
       PostState(
         status: status ?? this.status,
@@ -49,10 +54,12 @@ class PostState extends Equatable {
         filteredPosts: filteredPosts ?? this.filteredPosts,
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
+        exceptionMessage: exceptionMessage ?? this.exceptionMessage,
       );
 
   @override
-  List<Object?> get props => [status, posts, filteredPosts, page, hasMore];
+  List<Object?> get props =>
+      [status, posts, filteredPosts, page, hasMore, exceptionMessage];
 }
 
 @immutable
@@ -93,8 +100,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         await tryAsync<List<Post>>(
           action: () => postRepository.getPosts(event.tags, state.page + 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) =>
-              emit(state.copyWith(status: LoadStatus.failure)),
+          onFailure: (stackTrace, error) {
+            if (error is CannotSearchMoreThanTwoTags) {
+              emit(state.copyWith(
+                status: LoadStatus.failure,
+                exceptionMessage: error.message,
+              ));
+            } else {
+              emit(state.copyWith(
+                status: LoadStatus.failure,
+                exceptionMessage:
+                    'Unknown exception has occured, please try again later',
+              ));
+            }
+          },
           onSuccess: (posts) {
             final filteredPosts = filterBlacklisted(posts, blacklisted);
             // print(
@@ -127,8 +146,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         await tryAsync<List<Post>>(
           action: () => postRepository.getPosts(event.tag ?? '', 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-          onFailure: (stackTrace, error) =>
-              emit(state.copyWith(status: LoadStatus.failure)),
+          onFailure: (stackTrace, error) {
+            if (error is BooruException) {
+              emit(state.copyWith(
+                status: LoadStatus.failure,
+                exceptionMessage: error.message,
+              ));
+            } else {
+              emit(state.copyWith(
+                status: LoadStatus.failure,
+                exceptionMessage:
+                    'Unknown exception has occured, please try again later',
+              ));
+            }
+          },
           onSuccess: (posts) => emit(
             state.copyWith(
               status: LoadStatus.success,

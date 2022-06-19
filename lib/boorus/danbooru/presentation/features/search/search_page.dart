@@ -101,7 +101,8 @@ class _SearchPageState extends State<SearchPage> {
             return Scaffold(
               resizeToAvoidBottomInset: false,
               floatingActionButton:
-                  searchState.displayState == DisplayState.result
+                  searchState.displayState != DisplayState.options &&
+                          searchState.displayState != DisplayState.suggestion
                       ? const SizedBox.shrink()
                       : BlocBuilder<TagSearchBloc, TagSearchState>(
                           builder: (context, state) {
@@ -137,8 +138,8 @@ class _SearchPageState extends State<SearchPage> {
                       builder: (context, state) {
                         return IconButton(
                           icon: const Icon(Icons.arrow_back),
-                          onPressed: () => state.displayState ==
-                                  DisplayState.result
+                          onPressed: () => state.displayState !=
+                                  DisplayState.options
                               ? context.read<SearchBloc>().add(
                                   const SearchGoBackToSearchOptionsRequested())
                               : AppRouter.router.pop(context),
@@ -163,145 +164,186 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               ),
               body: SafeArea(
-                child: BlocBuilder<TagSearchBloc, TagSearchState>(
-                  builder: (context, tagSearchState) {
-                    return Column(
-                      children: [
-                        if (tagSearchState.selectedTags.isNotEmpty) ...[
-                          Container(
-                            margin: const EdgeInsets.only(left: 8),
-                            height: 35,
-                            child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: tagSearchState.selectedTags.length,
-                              itemBuilder: (context, index) {
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 4),
-                                  child: _buildSelectedTagChip(
-                                      tagSearchState.selectedTags[index]),
-                                );
+                child: MultiBlocListener(
+                  listeners: [
+                    BlocListener<PostBloc, PostState>(
+                        listenWhen: (previous, current) =>
+                            current.status == LoadStatus.success &&
+                            current.posts.isEmpty &&
+                            previous.posts.isEmpty &&
+                            searchState.displayState == DisplayState.result,
+                        listener: (context, state) {
+                          context.read<SearchBloc>().add(const SearchNoData());
+                        }),
+                    BlocListener<PostBloc, PostState>(
+                        listenWhen: (previous, current) =>
+                            current.status == LoadStatus.failure &&
+                            searchState.displayState == DisplayState.result,
+                        listener: (context, state) {
+                          context.read<SearchBloc>().add(const SearchError());
+                        }),
+                    BlocListener<PostBloc, PostState>(
+                        listenWhen: (previous, current) =>
+                            current.status == LoadStatus.failure &&
+                            searchState.displayState == DisplayState.result,
+                        listener: (context, state) {
+                          final snackbar = SnackBar(
+                            duration: const Duration(seconds: 6),
+                            behavior: SnackBarBehavior.floating,
+                            elevation: 6,
+                            content: Text(
+                              state.exceptionMessage!,
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackbar);
+                        }),
+                  ],
+                  child: BlocBuilder<TagSearchBloc, TagSearchState>(
+                    builder: (context, tagSearchState) {
+                      return Column(
+                        children: [
+                          if (tagSearchState.selectedTags.isNotEmpty) ...[
+                            Container(
+                              margin: const EdgeInsets.only(left: 8),
+                              height: 35,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: tagSearchState.selectedTags.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4),
+                                    child: _buildSelectedTagChip(
+                                        tagSearchState.selectedTags[index]),
+                                  );
+                                },
+                              ),
+                            ),
+                            const Divider(
+                              height: 15,
+                              thickness: 3,
+                              indent: 10,
+                              endIndent: 10,
+                            ),
+                          ],
+                          Expanded(
+                            child: BlocSelector<SearchBloc, SearchState,
+                                DisplayState>(
+                              selector: (state) => state.displayState,
+                              builder: (context, displayState) {
+                                if (displayState == DisplayState.suggestion) {
+                                  return TagSuggestionItems(
+                                    tags: tagSearchState.suggestionTags,
+                                    onItemTap: (tag) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      context
+                                          .read<TagSearchBloc>()
+                                          .add(TagSearchNewTagSelected(tag));
+                                    },
+                                  );
+                                } else if (displayState ==
+                                    DisplayState.result) {
+                                  return BlocBuilder<PostBloc, PostState>(
+                                    buildWhen: (previous, current) =>
+                                        !current.hasMore,
+                                    builder: (context, state) {
+                                      return InfiniteLoadList(
+                                        refreshController: refreshController,
+                                        enableLoadMore: state.hasMore,
+                                        onLoadMore: () => context
+                                            .read<PostBloc>()
+                                            .add(PostFetched(
+                                              tags: tagSearchState.selectedTags
+                                                  .map((e) => e.toString())
+                                                  .join(' '),
+                                            )),
+                                        onRefresh: (controller) {
+                                          context.read<PostBloc>().add(
+                                              PostRefreshed(
+                                                  tag: tagSearchState
+                                                      .selectedTags
+                                                      .map((e) => e.toString())
+                                                      .join(' ')));
+                                          Future.delayed(
+                                              const Duration(milliseconds: 500),
+                                              () => controller
+                                                  .refreshCompleted());
+                                        },
+                                        builder: (context, controller) =>
+                                            CustomScrollView(
+                                          controller: controller,
+                                          slivers: <Widget>[
+                                            HomePostGrid(
+                                              controller: controller,
+                                              onTap: () =>
+                                                  FocusScope.of(context)
+                                                      .unfocus(),
+                                            ),
+                                            BlocBuilder<PostBloc, PostState>(
+                                              builder: (context, state) {
+                                                if (state.status ==
+                                                    LoadStatus.loading) {
+                                                  return const SliverPadding(
+                                                    padding: EdgeInsets.only(
+                                                        bottom: 20, top: 20),
+                                                    sliver: SliverToBoxAdapter(
+                                                      child: Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return const SliverToBoxAdapter(
+                                                    child: SizedBox.shrink(),
+                                                  );
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    },
+                                  );
+                                } else if (displayState == DisplayState.error) {
+                                  return const ErrorResult(
+                                      text: 'Something went wrong');
+                                } else if (displayState ==
+                                    DisplayState.loadingResult) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (displayState ==
+                                    DisplayState.noResult) {
+                                  return const EmptyResult(
+                                      text:
+                                          'We searched far and wide, but no results were found.');
+                                } else {
+                                  return SearchOptions(
+                                    onOptionTap: (value) {
+                                      context
+                                          .read<TagSearchBloc>()
+                                          .add(TagSearchChanged(value));
+                                      queryEditingController.text = '$value:';
+                                    },
+                                    onHistoryTap: (value) {
+                                      FocusManager.instance.primaryFocus
+                                          ?.unfocus();
+                                      context.read<TagSearchBloc>().add(
+                                          TagSearchTagFromHistorySelected(
+                                              value));
+                                    },
+                                  );
+                                }
                               },
                             ),
                           ),
-                          const Divider(
-                            height: 15,
-                            thickness: 3,
-                            indent: 10,
-                            endIndent: 10,
-                          ),
                         ],
-                        BlocSelector<SearchBloc, SearchState, DisplayState>(
-                          selector: (state) => state.displayState,
-                          builder: (context, displayState) {
-                            if (displayState == DisplayState.suggestion) {
-                              return Expanded(
-                                child: TagSuggestionItems(
-                                  tags: tagSearchState.suggestionTags,
-                                  onItemTap: (tag) {
-                                    FocusManager.instance.primaryFocus
-                                        ?.unfocus();
-                                    context
-                                        .read<TagSearchBloc>()
-                                        .add(TagSearchNewTagSelected(tag));
-                                  },
-                                ),
-                              );
-                            } else if (displayState == DisplayState.result) {
-                              return Expanded(
-                                child: BlocBuilder<PostBloc, PostState>(
-                                  buildWhen: (previous, current) =>
-                                      !current.hasMore,
-                                  builder: (context, state) {
-                                    return InfiniteLoadList(
-                                      refreshController: refreshController,
-                                      enableLoadMore: state.hasMore,
-                                      onLoadMore: () => context
-                                          .read<PostBloc>()
-                                          .add(PostFetched(
-                                            tags: tagSearchState.selectedTags
-                                                .map((e) => e.toString())
-                                                .join(' '),
-                                          )),
-                                      onRefresh: (controller) {
-                                        context.read<PostBloc>().add(
-                                            PostRefreshed(
-                                                tag: tagSearchState.selectedTags
-                                                    .map((e) => e.toString())
-                                                    .join(' ')));
-                                        Future.delayed(
-                                            const Duration(milliseconds: 500),
-                                            () =>
-                                                controller.refreshCompleted());
-                                      },
-                                      builder: (context, controller) =>
-                                          CustomScrollView(
-                                        controller: controller,
-                                        slivers: <Widget>[
-                                          HomePostGrid(
-                                            controller: controller,
-                                            onTap: () => FocusScope.of(context)
-                                                .unfocus(),
-                                          ),
-                                          BlocBuilder<PostBloc, PostState>(
-                                            builder: (context, state) {
-                                              if (state.status ==
-                                                  LoadStatus.loading) {
-                                                return const SliverPadding(
-                                                  padding: EdgeInsets.only(
-                                                      bottom: 20, top: 20),
-                                                  sliver: SliverToBoxAdapter(
-                                                    child: Center(
-                                                      child:
-                                                          CircularProgressIndicator(),
-                                                    ),
-                                                  ),
-                                                );
-                                              } else {
-                                                return const SliverToBoxAdapter(
-                                                  child: SizedBox.shrink(),
-                                                );
-                                              }
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                ),
-                              );
-                            } else if (displayState == DisplayState.error) {
-                              return const ErrorResult(
-                                  text: 'Something went wrong');
-                            } else if (displayState ==
-                                DisplayState.loadingResult) {
-                              return const Center(
-                                child: CircularProgressIndicator(),
-                              );
-                            } else if (displayState == DisplayState.noResult) {
-                              return const EmptyResult(
-                                  text:
-                                      'We searched far and wide, but no results were found.');
-                            } else {
-                              return SearchOptions(
-                                onOptionTap: (value) {
-                                  context
-                                      .read<TagSearchBloc>()
-                                      .add(TagSearchChanged(value));
-                                  queryEditingController.text = '$value:';
-                                },
-                                onHistoryTap: (value) {
-                                  context.read<TagSearchBloc>().add(
-                                      TagSearchTagFromHistorySelected(value));
-                                },
-                              );
-                            }
-                          },
-                        ),
-                      ],
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
               ),
             );
