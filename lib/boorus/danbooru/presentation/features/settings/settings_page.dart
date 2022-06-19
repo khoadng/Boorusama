@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -103,7 +104,19 @@ class SettingsPage extends HookWidget {
                       ),
                     );
                   },
-                )
+                ),
+                SettingsTile.switchTile(
+                  leading: Icon(Icons.privacy_tip),
+                  title: Text('Send anonymous data for error logging'),
+                  onToggle: (value) {
+                    settings.dataCollectingStatus = value
+                        ? DataCollectingStatus.allow
+                        : DataCollectingStatus.prohibit;
+                    context.read(settingsNotifier).save(settings);
+                  },
+                  initialValue: settings.dataCollectingStatus ==
+                      DataCollectingStatus.allow,
+                ),
               ],
             ),
             SettingsSection(

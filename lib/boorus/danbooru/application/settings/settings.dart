@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 
+enum DataCollectingStatus {
+  allow,
+  prohibit,
+}
+
 class Settings {
   Settings({
     required this.safeMode,
@@ -11,6 +16,7 @@ class Settings {
     required this.themeMode,
     required this.language,
     required this.searchHistories,
+    required this.dataCollectingStatus,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -18,6 +24,9 @@ class Settings {
         blacklistedTags = json["hideBlacklist"],
         themeMode = ThemeMode.values[json["themeMode"]],
         language = json["language"],
+        dataCollectingStatus = json["dataCollectingStatus"] == null
+            ? DataCollectingStatus.allow
+            : DataCollectingStatus.values[json["dataCollectingStatus"]],
         searchHistories = List<SearchHistory>.from(json["searchHistories"]
             ?.map((item) => SearchHistory.fromJson(item))
             ?.toList());
@@ -28,6 +37,7 @@ class Settings {
     themeMode: ThemeMode.dark,
     language: "en",
     searchHistories: [],
+    dataCollectingStatus: DataCollectingStatus.allow,
   );
 
   String blacklistedTags;
@@ -35,11 +45,13 @@ class Settings {
   bool safeMode;
   ThemeMode themeMode;
   List<SearchHistory> searchHistories;
+  DataCollectingStatus dataCollectingStatus;
 
   Map<String, dynamic> toJson() => {
         'safeMode': safeMode,
         'hideBlacklist': blacklistedTags,
         'themeMode': themeMode.index,
+        'dataCollectingStatus': dataCollectingStatus.index,
         'language': language,
         'searchHistories':
             searchHistories.map((item) => item.toJson()).toList(),

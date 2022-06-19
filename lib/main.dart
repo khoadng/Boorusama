@@ -65,14 +65,18 @@ void main() async {
   if (kDebugMode) {
     run();
   } else {
-    await SentryFlutter.init(
-      (options) {
-        options.dsn =
-            'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740';
-        options.tracesSampleRate = 0.9;
-      },
-      appRunner: run,
-    );
+    if (settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      await SentryFlutter.init(
+        (options) {
+          options.dsn =
+              'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740';
+          options.tracesSampleRate = 0.8;
+        },
+        appRunner: run,
+      );
+    } else {
+      run();
+    }
   }
 }
 
