@@ -21,7 +21,9 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cub
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
@@ -33,6 +35,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
@@ -172,6 +175,12 @@ final postSearchHandler = Handler(handlerFunc: (
                     context.read<BlacklistedTagsRepository>(),
               )),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
+      BlocProvider(
+          create: (context) => TagSearchBloc(
+              autocompleteRepository: context.read<AutocompleteRepository>())),
+      BlocProvider(
+          create: (context) => SearchBloc(
+              initial: const SearchState(displayState: DisplayState.options)))
     ],
     child: SearchPage(
       initialQuery: args[0],

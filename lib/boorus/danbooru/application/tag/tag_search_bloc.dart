@@ -10,7 +10,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/filter_operator.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
 import 'package:boorusama/common/string_utils.dart';
 
 @immutable
@@ -93,6 +92,29 @@ class TagSearchNewTagSelected extends TagSearchEvent {
   List<Object?> get props => [tag];
 }
 
+class TagSearchNewRawStringTagSelected extends TagSearchEvent {
+  const TagSearchNewRawStringTagSelected(this.tag);
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
+
+class TagSearchTagFromHistorySelected extends TagSearchEvent {
+  const TagSearchTagFromHistorySelected(this.tags);
+  final String tags;
+
+  @override
+  List<Object?> get props => [tags];
+}
+
+class TagSearchSubmitted extends TagSearchEvent {
+  const TagSearchSubmitted();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TagSearchCleared extends TagSearchEvent {
   const TagSearchCleared();
 
@@ -123,7 +145,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     on<TagSearchChanged>(
       (event, emit) async {
         final query = event.query.trim();
-        if (query.isEmpty) return;
+        if (query.isEmpty) {
+          emit(state.copyWith(query: ''));
+          return;
+        }
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
@@ -137,20 +162,53 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           )),
         );
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 50)),
     );
 
-    on<TagSearchNewTagSelected>((event, emit) => emit(state.copyWith(
-          selectedTags: [
-            ...state.selectedTags,
-            TagSearchItem(
-              tag: event.tag,
-              operator: state.operator,
-            )
-          ],
-          query: '',
-          suggestionTags: [],
-        )));
+    on<TagSearchTagFromHistorySelected>((event, emit) {
+      emit(state.copyWith(
+        selectedTags: [
+          ...state.selectedTags,
+          ...event.tags.split(' ').map(
+                (tag) => TagSearchItem(
+                  tag: AutocompleteData(
+                      label: tag.replaceAll('_', ' '), value: tag),
+                  operator: state.operator,
+                ),
+              ),
+        ],
+        query: '',
+        suggestionTags: [],
+      ));
+    });
+
+    on<TagSearchNewRawStringTagSelected>((event, emit) {
+      emit(state.copyWith(
+        selectedTags: [
+          ...state.selectedTags,
+          TagSearchItem(
+            tag: AutocompleteData(
+                label: event.tag.replaceAll('_', ' '), value: event.tag),
+            operator: state.operator,
+          )
+        ],
+        query: '',
+        suggestionTags: [],
+      ));
+    });
+
+    on<TagSearchNewTagSelected>((event, emit) {
+      emit(state.copyWith(
+        selectedTags: [
+          ...state.selectedTags,
+          TagSearchItem(
+            tag: event.tag,
+            operator: state.operator,
+          )
+        ],
+        query: '',
+        suggestionTags: [],
+      ));
+    });
 
     on<TagSearchCleared>((event, emit) => emit(state.copyWith(
           query: '',
@@ -161,6 +219,24 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         selectedTags: [...state.selectedTags]..remove(event.tag))));
 
     on<TagSearchDone>((event, emit) => emit(state.copyWith(isDone: true)));
+
+    on<TagSearchSubmitted>((event, emit) {
+      if (state.query.isEmpty) return;
+      emit(state.copyWith(
+        selectedTags: [
+          ...state.selectedTags,
+          TagSearchItem(
+            tag: AutocompleteData(
+              label: state.query.replaceAll('_', ' '),
+              value: state.query,
+            ),
+            operator: state.operator,
+          )
+        ],
+        query: '',
+        suggestionTags: [],
+      ));
+    });
   }
 }
 

@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
@@ -141,9 +142,8 @@ class PostRepository implements IPostRepository {
     int limit = 50,
     CancelToken? cancelToken,
     bool skipFavoriteCheck = false,
-  }) async {
-    try {
-      return _accountRepository
+  }) =>
+      _accountRepository
           .get()
           .then(
             (account) => _api.getPosts(
@@ -155,24 +155,27 @@ class PostRepository implements IPostRepository {
               cancelToken: cancelToken,
             ),
           )
-          .then(parsePost);
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.cancel) {
-        // Cancel token triggered, skip this request
-        return [];
-      } else if (e.response == null) {
-        throw Exception('Failed to get posts for $tags');
-      } else if (e.response!.statusCode == 422) {
-        throw CannotSearchMoreThanTwoTags(
-            "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
-      } else if (e.response!.statusCode == 500) {
-        throw DatabaseTimeOut(
-            'Your search took too long to execute and was cancelled.');
-      } else {
-        throw Exception('Failed to get posts for $tags');
-      }
-    }
-  }
+          .then(parsePost)
+          .catchError((Object e) {
+        if (e is DioError) {
+          if (e.type == DioErrorType.cancel) {
+            // Cancel token triggered, skip this request
+            return <Post>[];
+          } else if (e.response == null) {
+            throw Exception('Failed to get posts for $tags');
+          } else if (e.response!.statusCode == 422) {
+            throw CannotSearchMoreThanTwoTags(
+                "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
+          } else if (e.response!.statusCode == 500) {
+            throw DatabaseTimeOut(
+                'Your search took too long to execute and was cancelled.');
+          } else {
+            throw Exception('Failed to get posts for $tags');
+          }
+        } else {
+          throw Exception('Failed to get posts for $tags');
+        }
+      });
 
   @override
   Future<List<Post>> getPostsFromIds(List<int> ids) =>
@@ -190,11 +193,5 @@ class DatabaseTimeOut implements BooruException {
   DatabaseTimeOut(this.message);
 
   @override
-  final String message;
-}
-
-class BooruException implements Exception {
-  BooruException(this.message);
-
   final String message;
 }

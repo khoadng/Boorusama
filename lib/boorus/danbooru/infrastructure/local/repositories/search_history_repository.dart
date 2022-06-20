@@ -14,7 +14,7 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
   Future<List<SearchHistory>> getHistories() async {
     final settings = await settingRepository.load();
 
-    return settings.searchHistories;
+    return settings.searchHistories.toList();
   }
 
   @override
@@ -23,9 +23,9 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
       final settings = await settingRepository.load();
 
       if (query.isEmpty) {
-        return settings.searchHistories;
+        return settings.searchHistories.toList();
       }
-      final shs = settings.searchHistories;
+      final shs = settings.searchHistories.toList();
       final sh = SearchHistory(query: query, createdAt: DateTime.now());
 
       if (!settings.searchHistories.any((item) => item.query == query)) {
