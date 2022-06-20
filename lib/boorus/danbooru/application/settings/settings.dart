@@ -6,6 +6,11 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/core/presentation/grid_size.dart';
 
+enum DataCollectingStatus {
+  allow,
+  prohibit,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -14,6 +19,7 @@ class Settings extends Equatable {
     required this.language,
     required this.searchHistories,
     required this.gridSize,
+    required this.dataCollectingStatus,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -22,6 +28,9 @@ class Settings extends Equatable {
         themeMode = json['themeMode'] != null
             ? ThemeMode.values[json['themeMode']]
             : ThemeMode.dark,
+        dataCollectingStatus = json['dataCollectingStatus'] != null
+            ? DataCollectingStatus.values[json['dataCollectingStatus']]
+            : DataCollectingStatus.allow,
         language = json['language'] ?? 'en',
         gridSize = json['gridSize'] != null
             ? GridSize.values[json['gridSize']]
@@ -37,6 +46,7 @@ class Settings extends Equatable {
     language: 'en',
     searchHistories: [],
     gridSize: GridSize.normal,
+    dataCollectingStatus: DataCollectingStatus.allow,
   );
 
   final String blacklistedTags;
@@ -45,6 +55,7 @@ class Settings extends Equatable {
   final ThemeMode themeMode;
   final List<SearchHistory> searchHistories;
   final GridSize gridSize;
+  final DataCollectingStatus dataCollectingStatus;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -53,6 +64,7 @@ class Settings extends Equatable {
     ThemeMode? themeMode,
     List<SearchHistory>? searchHistories,
     GridSize? gridSize,
+    DataCollectingStatus? dataCollectingStatus,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -61,12 +73,14 @@ class Settings extends Equatable {
         language: language ?? this.language,
         searchHistories: searchHistories ?? this.searchHistories,
         gridSize: gridSize ?? this.gridSize,
+        dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
       );
 
   Map<String, dynamic> toJson() => {
         'safeMode': safeMode,
         'hideBlacklist': blacklistedTags,
         'themeMode': themeMode.index,
+        'dataCollectingStatus': dataCollectingStatus.index,
         'language': language,
         'searchHistories':
             searchHistories.map((item) => item.toJson()).toList(),
@@ -80,6 +94,7 @@ class Settings extends Equatable {
         themeMode,
         language,
         searchHistories,
-        gridSize
+        gridSize,
+        dataCollectingStatus,
       ];
 }

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
@@ -31,11 +30,12 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.da
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_note_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
@@ -50,6 +50,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomple
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/comments/comment_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
@@ -66,10 +67,6 @@ import 'boorus/danbooru/application/artist_commentary/artist_commentary_cubit.da
 import 'boorus/danbooru/application/comment/comment_cubit.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
-import 'boorus/danbooru/domain/accounts/account.dart';
-import 'boorus/danbooru/domain/posts/i_post_repository.dart';
-import 'boorus/danbooru/infrastructure/repositories/posts/artist_commentary_repository.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -346,18 +343,19 @@ void main() async {
   if (kDebugMode) {
     run();
   } else {
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-    await SentryFlutter.init(
-      (options) {
-        options
-          ..dsn =
-              'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740'
-          ..tracesSampleRate = 0.9;
-      },
-      appRunner: run,
-    );
+    if (settings.dataCollectingStatus == DataCollectingStatus.allow) {
+      await SentryFlutter.init(
+        (options) {
+          options
+            ..dsn =
+                'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740'
+            ..tracesSampleRate = 0.8;
+        },
+        appRunner: run,
+      );
+    } else {
+      run();
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 name: boorusama
 description: A mobile client for Danbooru.
 publish_to: "none"
-version: 1.0.6+8
+version: 1.0.7+11
 
 environment:
   sdk: ">=2.14.0 <3.0.0"
@@ -23,9 +23,6 @@ dependencies:
   easy_localization: ^3.0.1
   equatable: ^2.0.3
   filesize: ^2.0.1
-  firebase_analytics: ^9.1.9
-  firebase_core: ^1.17.1
-  firebase_performance: ^0.8.0+13
   fluro: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_cache_manager: ^3.3.0
