@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -88,7 +90,16 @@ class HomePage extends HookWidget {
                             ),
                           ),
                           const ExplorePage(),
-                          const PoolPage(),
+                          MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                  create: (context) => PoolOverviewBloc()),
+                            ],
+                            child: const PoolPage(
+                              category: PoolCategory.series,
+                              order: PoolOrder.lastUpdated,
+                            ),
+                          ),
                         ],
                       ),
                     ),

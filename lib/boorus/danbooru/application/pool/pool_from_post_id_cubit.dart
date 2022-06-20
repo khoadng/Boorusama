@@ -57,9 +57,6 @@ class PoolFromPostCacher implements PoolRepository {
   final PoolRepository poolRepository;
 
   @override
-  Future<List<Pool>> getPools() => poolRepository.getPools();
-
-  @override
   Future<List<Pool>> getPoolsByPostId(int postId) async {
     final pools = cache.get(postId);
 
@@ -70,4 +67,18 @@ class PoolFromPostCacher implements PoolRepository {
 
     return freshPools;
   }
+
+  @override
+  Future<List<Pool>> getPools({
+    PoolCategory? category,
+    PoolOrder? order,
+    String? name,
+    String? description,
+  }) =>
+      poolRepository.getPools(
+        category: category,
+        order: order,
+        name: name,
+        description: description,
+      );
 }

@@ -32,16 +32,14 @@ class PoolCubit extends Cubit<AsyncLoadState<List<PoolItem>>> {
   final PoolRepository poolRepository;
   final IPostRepository postRepository;
 
-  void getPools(PoolCategory category) {
+  void getPools(PoolCategory category, PoolOrder order) {
     tryAsync<List<Pool>>(
-      action: poolRepository.getPools,
+      action: () => poolRepository.getPools(category: category, order: order),
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onSuccess: (pools) async {
-        final poolFiltered = pools
-            .where((element) => element.postIds.isNotEmpty)
-            .where((element) => element.category == category)
-            .toList();
+        final poolFiltered =
+            pools.where((element) => element.postIds.isNotEmpty).toList();
 
         final poolCoverIds = poolFiltered.map((e) => e.postIds.last).toList();
 

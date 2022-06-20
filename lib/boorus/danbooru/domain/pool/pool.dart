@@ -27,10 +27,24 @@ class Pool {
   final DateTime updatedAt;
 }
 
+enum PoolOrder {
+  lastUpdated('updated_at'),
+  recentlyCreated('created_at'),
+  postCount('post_count'),
+  name('name');
+
+  const PoolOrder(this.key);
+
+  final String key;
+}
+
 enum PoolCategory {
   unknown,
   collection,
-  series,
+  series;
+
+  @override
+  String toString() => name;
 }
 
 class PoolName extends Equatable {

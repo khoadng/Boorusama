@@ -4,7 +4,7 @@ publish_to: "none"
 version: 1.0.7+11
 
 environment:
-  sdk: ">=2.14.0 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -75,6 +75,7 @@ dependencies:
   html: ^0.15.0
   collection: ^1.16.0
   video_player: ^2.4.4
+  toggle_switch: ^2.0.1
 
 dev_dependencies:
   flutter_localizations:

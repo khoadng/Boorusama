@@ -163,6 +163,10 @@ abstract class IApi {
     String login,
     String apiKey,
     int limit, {
+    String? category,
+    String? order,
+    String? name,
+    String? description,
     CancelToken? cancelToken,
   });
 
