@@ -39,7 +39,7 @@ class PoolFromPostIdBloc
           onFailure: (stackTrace, error) =>
               emit(const AsyncLoadState.failure()),
           onLoading: () => emit(const AsyncLoadState.loading()),
-          onSuccess: (pools) => emit(AsyncLoadState.success(pools)),
+          onSuccess: (pools) async => emit(AsyncLoadState.success(pools)),
         );
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
@@ -57,9 +57,6 @@ class PoolFromPostCacher implements PoolRepository {
   final PoolRepository poolRepository;
 
   @override
-  Future<List<Pool>> getPools() => poolRepository.getPools();
-
-  @override
   Future<List<Pool>> getPoolsByPostId(int postId) async {
     final pools = cache.get(postId);
 
@@ -70,4 +67,20 @@ class PoolFromPostCacher implements PoolRepository {
 
     return freshPools;
   }
+
+  @override
+  Future<List<Pool>> getPools(
+    int page, {
+    PoolCategory? category,
+    PoolOrder? order,
+    String? name,
+    String? description,
+  }) =>
+      poolRepository.getPools(
+        page,
+        category: category,
+        order: order,
+        name: name,
+        description: description,
+      );
 }

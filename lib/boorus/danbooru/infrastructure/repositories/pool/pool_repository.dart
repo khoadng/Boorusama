@@ -21,14 +21,25 @@ class PoolRepository {
 
   final IApi _api;
   final IAccountRepository _accountRepository;
-  final _limit = 50;
+  final _limit = 20;
 
-  Future<List<Pool>> getPools() =>
+  Future<List<Pool>> getPools(
+    int page, {
+    PoolCategory? category,
+    PoolOrder? order,
+    String? name,
+    String? description,
+  }) =>
       _accountRepository.get().then((account) => _api
           .getPools(
             account.username,
             account.apiKey,
+            page,
             _limit,
+            category: category?.toString(),
+            order: order?.key,
+            name: name,
+            description: description,
           )
           .then(parsePool));
 

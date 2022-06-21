@@ -18,7 +18,7 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
         action: searchHistoryRepository.clearAll,
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (success) => emit(const AsyncLoadState.success([])));
+        onSuccess: (success) async => emit(const AsyncLoadState.success([])));
   }
 
   void addHistory(String history) {
@@ -26,7 +26,7 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
         action: () => searchHistoryRepository.addHistory(history),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
-        onSuccess: (sh) => emit(AsyncLoadState.success(sh)));
+        onSuccess: (sh) async => emit(AsyncLoadState.success(sh)));
   }
 
   void getSearchHistory() {
@@ -34,7 +34,7 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
         action: searchHistoryRepository.getHistories,
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
-        onSuccess: (hist) {
+        onSuccess: (hist) async {
           hist.sort((a, b) {
             return b.createdAt.compareTo(a.createdAt);
           });

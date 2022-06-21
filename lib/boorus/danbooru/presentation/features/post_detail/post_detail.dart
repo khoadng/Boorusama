@@ -269,7 +269,7 @@ class PostDetail extends HookWidget {
                                   visualDensity: const VisualDensity(
                                       horizontal: -4, vertical: -4),
                                   title: Text(
-                                    e.name.value.removeUnderscoreWithSpace(),
+                                    e.name.removeUnderscoreWithSpace(),
                                     overflow: TextOverflow.fade,
                                     maxLines: 1,
                                     softWrap: false,

@@ -22,7 +22,7 @@ class NoteBloc extends Bloc<NoteEvent, AsyncLoadState<List<Note>>> {
           onLoading: () => emit(const AsyncLoadState.loading()),
           onFailure: (stackTrace, error) =>
               emit(const AsyncLoadState.failure()),
-          onSuccess: (notes) => emit(AsyncLoadState.success(notes)),
+          onSuccess: (notes) async => emit(AsyncLoadState.success(notes)),
         );
       },
       transformer: debounce(const Duration(milliseconds: 200)),

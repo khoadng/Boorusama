@@ -34,12 +34,11 @@ class PoolDescriptionCubit extends Cubit<AsyncLoadState<PoolDescriptionState>> {
 
   void getDescription(PoolId id) {
     tryAsync<String>(
-        action: () => Dio()
-            .get('${endpoint}pools/${id.value}')
-            .then((value) => value.data),
+        action: () =>
+            Dio().get('${endpoint}pools/$id').then((value) => value.data),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
-        onSuccess: (html) {
+        onSuccess: (html) async {
           final description = htmlStringToDescriptionHtmlString(html);
           emit(description != null
               ? AsyncLoadState.success(PoolDescriptionState(

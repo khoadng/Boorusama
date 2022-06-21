@@ -18,7 +18,7 @@ class ProfileCubit extends Cubit<AsyncLoadState<Profile>> {
         action: profileRepository.getProfile,
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (profile) {
+        onSuccess: (profile) async {
           if (profile == null) {
             emit(const AsyncLoadState.failure());
             return;

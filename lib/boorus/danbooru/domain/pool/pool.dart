@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 
-// Package imports:
-import 'package:equatable/equatable.dart';
-
 @immutable
 class Pool {
   const Pool({
@@ -27,40 +24,27 @@ class Pool {
   final DateTime updatedAt;
 }
 
+enum PoolOrder {
+  latest('updated_at'),
+  newest('created_at'),
+  postCount('post_count'),
+  name('name');
+
+  const PoolOrder(this.key);
+
+  final String key;
+}
+
 enum PoolCategory {
   unknown,
   collection,
-  series,
-}
-
-class PoolName extends Equatable {
-  const PoolName(this.value);
-  final String value;
+  series;
 
   @override
-  List<Object?> get props => [value];
+  String toString() => name;
 }
 
-class PoolDescription extends Equatable {
-  const PoolDescription(this.value);
-  final String value;
-
-  @override
-  List<Object?> get props => [value];
-}
-
-class PoolPostCount extends Equatable {
-  const PoolPostCount(this.value);
-  final int value;
-
-  @override
-  List<Object?> get props => [value];
-}
-
-class PoolId extends Equatable {
-  const PoolId(this.value);
-  final int value;
-
-  @override
-  List<Object?> get props => [value];
-}
+typedef PoolName = String;
+typedef PoolDescription = String;
+typedef PoolPostCount = int;
+typedef PoolId = int;

@@ -104,7 +104,7 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) {
+          onSuccess: (posts) async {
             final filteredPosts = filterBlacklisted(posts, blacklisted);
 
             emit(
@@ -141,7 +141,7 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) => emit(
+          onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
               posts: filter(posts, blacklisted),

@@ -155,7 +155,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         await tryAsync<List<AutocompleteData>>(
           action: () =>
               autocompleteRepository.getAutocomplete(getQuery(query, operator)),
-          onSuccess: (tags) => emit(state.copyWith(
+          onSuccess: (tags) async => emit(state.copyWith(
             suggestionTags: tags,
             query: query,
             operator: operator,

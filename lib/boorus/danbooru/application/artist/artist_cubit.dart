@@ -18,7 +18,7 @@ class ArtistCubit extends Cubit<AsyncLoadState<Artist>> {
       action: () => artistRepository.getArtist(name),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-      onSuccess: (artist) => emit(AsyncLoadState.success(artist)),
+      onSuccess: (artist) async => emit(AsyncLoadState.success(artist)),
     );
   }
 }

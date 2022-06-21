@@ -220,7 +220,12 @@ abstract class DanbooruApi implements IApi {
   Future<HttpResponse> getPools(
     @Query('login') String login,
     @Query('api_key') String apiKey,
+    @Query('page') int page,
     @Query('limit') int limit, {
+    @Query('search[category]') String? category,
+    @Query('search[order]') String? order,
+    @Query('search[name_matches]') String? name,
+    @Query('search[description_matches]') String? description,
     @CancelRequest() CancelToken? cancelToken,
   });
 

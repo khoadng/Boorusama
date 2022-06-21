@@ -17,7 +17,7 @@ class ArtistCommentaryCubit extends Cubit<AsyncLoadState<ArtistCommentary>> {
         action: () => artistCommentaryRepository.getCommentary(postId),
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (dto) {
+        onSuccess: (dto) async {
           emit(AsyncLoadState.success(dto.toEntity()));
         });
   }

@@ -8,9 +8,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/main.dart';
@@ -88,7 +91,16 @@ class HomePage extends HookWidget {
                             ),
                           ),
                           const ExplorePage(),
-                          const PoolPage(),
+                          MultiBlocProvider(providers: [
+                            BlocProvider(
+                              create: (context) => PoolBloc(
+                                poolRepository: context.read<PoolRepository>(),
+                                postRepository: context.read<IPostRepository>(),
+                              )..add(const PoolRefreshed(
+                                  category: PoolCategory.series,
+                                  order: PoolOrder.latest)),
+                            ),
+                          ], child: const PoolPage()),
                         ],
                       ),
                     ),
