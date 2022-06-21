@@ -58,7 +58,7 @@ class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
           order: event.order ?? state.order,
         ));
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 500)),
+      transformer: debounceRestartable(const Duration(milliseconds: 350)),
     );
   }
 }

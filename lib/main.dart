@@ -24,7 +24,6 @@ import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
@@ -34,8 +33,8 @@ import 'package:boorusama/boorus/danbooru/application/user/user_blacklisted_tags
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/i_artist_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
@@ -68,6 +67,9 @@ import 'boorus/danbooru/application/artist_commentary/artist_commentary_cubit.da
 import 'boorus/danbooru/application/comment/comment_cubit.dart';
 import 'boorus/danbooru/application/home/lastest/tag_list.dart';
 import 'boorus/danbooru/application/settings/settings.dart';
+
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    hide PoolCategory;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -217,11 +219,14 @@ void main() async {
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
                   )..logIn();
-                  final poolBloc = PoolBloc(
-                      poolRepository: poolRepo, postRepository: postRepo);
                   final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
                       userRepository: userRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
+                  final poolOverviewBloc = PoolOverviewBloc()
+                    ..add(const PoolOverviewChanged(
+                      category: PoolCategory.series,
+                      order: PoolOrder.lastUpdated,
+                    ));
 
                   return MultiRepositoryProvider(
                       providers: [
@@ -264,12 +269,11 @@ void main() async {
                           BlocProvider.value(value: artistCommentaryCubit),
                           BlocProvider.value(value: accountCubit),
                           BlocProvider.value(value: authenticationCubit),
-                          BlocProvider.value(value: poolBloc),
                           BlocProvider.value(value: userBlacklistedTagsBloc),
                           BlocProvider(
                               create: (context) =>
                                   ThemeBloc(initialTheme: settings.themeMode)),
-                          BlocProvider(create: (_) => PoolOverviewBloc()),
+                          BlocProvider.value(value: poolOverviewBloc),
                         ],
                         child: MultiBlocListener(
                           listeners: [

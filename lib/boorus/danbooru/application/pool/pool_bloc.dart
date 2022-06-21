@@ -115,46 +115,73 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
       (event, emit) async {
         await tryAsync<List<Pool>>(
           action: () => poolRepository.getPools(
-              category: event.category, order: event.order),
+            1,
+            category: event.category,
+            order: event.order,
+          ),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (pools) async {
-            final poolFiltered =
-                pools.where((element) => element.postIds.isNotEmpty).toList();
-
-            final poolCoverIds =
-                poolFiltered.map((e) => e.postIds.last).toList();
-
-            final poolCoveridsMap = {
-              for (var e in poolCoverIds) e: Post.empty()
-            };
-
-            final posts = await postRepository.getPostsFromIds(poolCoverIds);
-
-            for (final p in posts) {
-              poolCoveridsMap[p.id] = p;
-            }
-
-            final poolItems = [
-              for (final pair
-                  in zip([poolCoveridsMap.values.toList(), poolFiltered]))
-                PoolItem(
-                  coverUrl: _(pair).item1.id == 0
-                      ? null
-                      : _(pair).item1.normalImageUrl,
-                  pool: _(pair).item2,
-                ),
-            ];
+            final poolItems = await poolsToPoolItems(pools, postRepository);
             emit(state.copyWith(
               pools: poolItems,
               status: LoadStatus.success,
+              page: 1,
+              hasMore: poolItems.isNotEmpty,
             ));
           },
         );
       },
       transformer: restartable(),
     );
+
+    on<PoolFetched>((event, emit) async {
+      await tryAsync<List<Pool>>(
+        action: () => poolRepository.getPools(
+          state.page + 1,
+          category: event.category,
+          order: event.order,
+        ),
+        onFailure: (stackTrace, error) =>
+            emit(state.copyWith(status: LoadStatus.failure)),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+        onSuccess: (pools) async {
+          final poolItems = await poolsToPoolItems(pools, postRepository);
+          emit(state.copyWith(
+            pools: [...state.pools, ...poolItems],
+            status: LoadStatus.success,
+            page: state.page + 1,
+            hasMore: poolItems.isNotEmpty,
+          ));
+        },
+      );
+    });
+  }
+
+  Future<List<PoolItem>> poolsToPoolItems(
+      List<Pool> pools, IPostRepository postRepository) async {
+    final poolFiltered =
+        pools.where((element) => element.postIds.isNotEmpty).toList();
+
+    final poolCoverIds = poolFiltered.map((e) => e.postIds.last).toList();
+
+    final poolCoveridsMap = {for (var e in poolCoverIds) e: Post.empty()};
+
+    final posts = await postRepository.getPostsFromIds(poolCoverIds);
+
+    for (final p in posts) {
+      poolCoveridsMap[p.id] = p;
+    }
+
+    final poolItems = [
+      for (final pair in zip([poolCoveridsMap.values.toList(), poolFiltered]))
+        PoolItem(
+          coverUrl: _(pair).item1.id == 0 ? null : _(pair).item1.normalImageUrl,
+          pool: _(pair).item2,
+        ),
+    ];
+    return poolItems;
   }
 }
 

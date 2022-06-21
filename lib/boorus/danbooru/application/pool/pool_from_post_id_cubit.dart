@@ -69,13 +69,15 @@ class PoolFromPostCacher implements PoolRepository {
   }
 
   @override
-  Future<List<Pool>> getPools({
+  Future<List<Pool>> getPools(
+    int page, {
     PoolCategory? category,
     PoolOrder? order,
     String? name,
     String? description,
   }) =>
       poolRepository.getPools(
+        page,
         category: category,
         order: order,
         name: name,
