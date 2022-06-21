@@ -6,6 +6,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:recase/recase.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -171,12 +173,29 @@ class _PoolPageState extends State<PoolPage> {
       );
 
   Widget _buildHeader() {
-    return BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
-      builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            TextButton(
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        ToggleSwitch(
+          minHeight: 30,
+          minWidth: 100,
+          cornerRadius: 10,
+          totalSwitches: 2,
+          borderWidth: 1,
+          activeBgColor: [Theme.of(context).colorScheme.primary],
+          labels: [PoolCategory.series.name, PoolCategory.collection.name],
+          onToggle: (index) {
+            context.read<PoolOverviewBloc>().add(PoolOverviewCategoryChanged(
+                  category: index == 0
+                      ? PoolCategory.series
+                      : PoolCategory.collection,
+                ));
+          },
+        ),
+        BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
+          buildWhen: (previous, current) => previous.order != current.order,
+          builder: (context, state) {
+            return TextButton(
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).cardColor,
                 primary: Theme.of(context).textTheme.headline6!.color,
@@ -192,45 +211,32 @@ class _PoolPageState extends State<PoolPage> {
                           child: SafeArea(
                             top: false,
                             child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                ListTile(
-                                  title: const Text('Series'),
-                                  onTap: () {
-                                    AppRouter.router.pop(context);
-                                    context
-                                        .read<PoolOverviewBloc>()
-                                        .add(const PoolOverviewCategoryChanged(
-                                          category: PoolCategory.series,
-                                        ));
-                                  },
-                                ),
-                                ListTile(
-                                  title: const Text('Collection'),
-                                  onTap: () {
-                                    AppRouter.router.pop(context);
-                                    context
-                                        .read<PoolOverviewBloc>()
-                                        .add(const PoolOverviewCategoryChanged(
-                                          category: PoolCategory.collection,
-                                        ));
-                                  },
-                                ),
-                              ],
-                            ),
+                                mainAxisSize: MainAxisSize.min,
+                                children: PoolOrder.values
+                                    .map((e) => ListTile(
+                                          title: Text(e.name.sentenceCase),
+                                          onTap: () {
+                                            AppRouter.router.pop(context);
+                                            context
+                                                .read<PoolOverviewBloc>()
+                                                .add(PoolOverviewOrderChanged(
+                                                    order: e));
+                                          },
+                                        ))
+                                    .toList()),
                           ),
                         ),
                       )),
               child: Row(
                 children: <Widget>[
-                  Text(state.category.toString().toUpperCase()),
+                  Text(state.order.name.sentenceCase),
                   const Icon(Icons.arrow_drop_down)
                 ],
               ),
-            )
-          ],
-        );
-      },
+            );
+          },
+        ),
+      ],
     );
   }
 }

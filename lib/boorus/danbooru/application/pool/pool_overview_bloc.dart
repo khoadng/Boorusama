@@ -1,3 +1,4 @@
+// Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -65,7 +66,7 @@ class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
           category: event.category,
         ));
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 150)),
+      transformer: debounceRestartable(const Duration(milliseconds: 500)),
     );
 
     on<PoolOverviewOrderChanged>(
@@ -74,7 +75,7 @@ class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
           order: event.order,
         ));
       },
-      transformer: debounceRestartable(const Duration(milliseconds: 150)),
+      transformer: debounceRestartable(const Duration(milliseconds: 500)),
     );
   }
 }
