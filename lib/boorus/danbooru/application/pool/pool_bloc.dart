@@ -138,29 +138,32 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
       transformer: restartable(),
     );
 
-    on<PoolFetched>((event, emit) async {
-      await tryAsync<List<Pool>>(
-        action: () => poolRepository.getPools(
-          state.page + 1,
-          category: event.category,
-          order: event.order,
-          name: event.name,
-          description: event.description,
-        ),
-        onFailure: (stackTrace, error) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onSuccess: (pools) async {
-          final poolItems = await poolsToPoolItems(pools, postRepository);
-          emit(state.copyWith(
-            pools: [...state.pools, ...poolItems],
-            status: LoadStatus.success,
-            page: state.page + 1,
-            hasMore: poolItems.isNotEmpty,
-          ));
-        },
-      );
-    });
+    on<PoolFetched>(
+      (event, emit) async {
+        await tryAsync<List<Pool>>(
+          action: () => poolRepository.getPools(
+            state.page + 1,
+            category: event.category,
+            order: event.order,
+            name: event.name,
+            description: event.description,
+          ),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onSuccess: (pools) async {
+            final poolItems = await poolsToPoolItems(pools, postRepository);
+            emit(state.copyWith(
+              pools: [...state.pools, ...poolItems],
+              status: LoadStatus.success,
+              page: state.page + 1,
+              hasMore: poolItems.isNotEmpty,
+            ));
+          },
+        );
+      },
+      transformer: droppable(),
+    );
   }
 
   Future<List<PoolItem>> poolsToPoolItems(

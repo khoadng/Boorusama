@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/core/utils.dart';
-import 'pool_page.dart';
+import 'sliver_pool_grid.dart';
 
 class PoolSearchPage extends StatefulWidget {
   const PoolSearchPage({Key? key}) : super(key: key);
@@ -169,7 +169,6 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
 
   Widget _buildSearchBar(
     BuildContext context,
-    // PoolOverviewDisplayMode displayMode,
   ) {
     return Container(
       decoration: BoxDecoration(

@@ -19,8 +19,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_
 import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/utils.dart';
-import 'pool_image.dart';
+import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatefulWidget {
   const PoolPage({
@@ -48,6 +47,7 @@ class _PoolPageState extends State<PoolPage> {
       child: Scaffold(
         appBar: _buildAppBar(),
         body: SafeArea(
+          bottom: false,
           child: BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
             builder: (context, poState) {
               return BlocBuilder<PoolBloc, PoolState>(
@@ -253,68 +253,6 @@ class PoolOptionsHeader extends StatelessWidget {
             },
           ),
         ],
-      ),
-    );
-  }
-}
-
-class SliverPoolGrid extends StatelessWidget {
-  const SliverPoolGrid({
-    Key? key,
-    required this.pools,
-  }) : super(key: key);
-
-  final List<PoolItem> pools;
-
-  @override
-  Widget build(BuildContext context) {
-    return SliverGrid(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          return Padding(
-            padding: const EdgeInsets.all(3),
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(8),
-                topRight: Radius.circular(8),
-              ),
-              child: GestureDetector(
-                onTap: () => AppRouter.router.navigateTo(
-                  context,
-                  'pool/detail',
-                  routeSettings: RouteSettings(arguments: [
-                    pools[index].pool,
-                  ]),
-                ),
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: PoolImage(pool: pools[index]),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                        color: Colors.white70,
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(8),
-                          bottomRight: Radius.circular(8),
-                        ),
-                      ),
-                      child: Text(
-                        pools[index].pool.name.removeUnderscoreWithSpace(),
-                        style: const TextStyle(color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-        childCount: pools.length,
       ),
     );
   }
