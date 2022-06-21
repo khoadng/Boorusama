@@ -50,7 +50,7 @@ class RecommendedPostBloc
             onFailure: (stackTrace, error) =>
                 emit(const AsyncLoadState.failure()),
             onLoading: () => emit(const AsyncLoadState.loading()),
-            onSuccess: (posts) => emit(AsyncLoadState.success(posts)));
+            onSuccess: (posts) async => emit(AsyncLoadState.success(posts)));
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );

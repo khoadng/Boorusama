@@ -38,7 +38,7 @@ class PoolDescriptionCubit extends Cubit<AsyncLoadState<PoolDescriptionState>> {
             Dio().get('${endpoint}pools/$id').then((value) => value.data),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
-        onSuccess: (html) {
+        onSuccess: (html) async {
           final description = htmlStringToDescriptionHtmlString(html);
           emit(description != null
               ? AsyncLoadState.success(PoolDescriptionState(

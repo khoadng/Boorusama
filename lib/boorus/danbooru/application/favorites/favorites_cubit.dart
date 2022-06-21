@@ -17,7 +17,7 @@ class FavoritesCubit extends Cubit<AsyncLoadState<List<Post>>> {
       action: () => postRepository.getPosts('ordfav:$username', 1, limit: 10),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-      onSuccess: (posts) => emit(AsyncLoadState.success(posts)),
+      onSuccess: (posts) async => emit(AsyncLoadState.success(posts)),
     );
   }
 }

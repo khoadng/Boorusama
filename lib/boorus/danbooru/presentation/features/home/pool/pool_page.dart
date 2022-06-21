@@ -11,7 +11,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -20,12 +20,7 @@ import 'package:boorusama/core/utils.dart';
 class PoolPage extends StatefulWidget {
   const PoolPage({
     Key? key,
-    required this.category,
-    required this.order,
   }) : super(key: key);
-
-  final PoolCategory category;
-  final PoolOrder order;
 
   @override
   State<PoolPage> createState() => _PoolPageState();
@@ -37,8 +32,9 @@ class _PoolPageState extends State<PoolPage> {
   @override
   void initState() {
     super.initState();
-    context.read<PoolOverviewBloc>().add(PoolOverviewCategoryChanged(
-          category: widget.category,
+    context.read<PoolOverviewBloc>().add(const PoolOverviewChanged(
+          category: PoolCategory.series,
+          order: PoolOrder.lastUpdated,
         ));
   }
 
@@ -48,7 +44,10 @@ class _PoolPageState extends State<PoolPage> {
       listeners: [
         BlocListener<PoolOverviewBloc, PoolOverviewState>(
           listener: (context, state) {
-            context.read<PoolCubit>().getPools(state.category, state.order);
+            context.read<PoolBloc>().add(PoolRefreshed(
+                  category: state.category,
+                  order: state.order,
+                ));
           },
         )
       ],
@@ -59,7 +58,7 @@ class _PoolPageState extends State<PoolPage> {
             children: [
               _buildHeader(),
               Expanded(
-                child: BlocBuilder<PoolCubit, AsyncLoadState<List<PoolItem>>>(
+                child: BlocBuilder<PoolBloc, PoolState>(
                   builder: (context, state) {
                     if (state.status == LoadStatus.success) {
                       return GridView.builder(
@@ -79,13 +78,13 @@ class _PoolPageState extends State<PoolPage> {
                                 context,
                                 'pool/detail',
                                 routeSettings: RouteSettings(arguments: [
-                                  state.data![index].pool,
+                                  state.pools[index].pool,
                                 ]),
                               ),
                               child: Column(
                                 children: [
                                   Expanded(
-                                    child: _buildPoolImage(state.data![index]),
+                                    child: _buildPoolImage(state.pools[index]),
                                   ),
                                   Container(
                                     width: MediaQuery.of(context).size.width,
@@ -97,7 +96,7 @@ class _PoolPageState extends State<PoolPage> {
                                       ),
                                     ),
                                     child: Text(
-                                      state.data![index].pool.name
+                                      state.pools[index].pool.name
                                           .removeUnderscoreWithSpace(),
                                       style:
                                           const TextStyle(color: Colors.black),
@@ -108,7 +107,7 @@ class _PoolPageState extends State<PoolPage> {
                             ),
                           ),
                         ),
-                        itemCount: state.data!.length,
+                        itemCount: state.pools.length,
                       );
                     } else if (state.status == LoadStatus.failure) {
                       return const Center(
@@ -249,7 +248,7 @@ class _PoolPageState extends State<PoolPage> {
           activeBgColor: [Theme.of(context).colorScheme.primary],
           labels: [PoolCategory.series.name, PoolCategory.collection.name],
           onToggle: (index) {
-            context.read<PoolOverviewBloc>().add(PoolOverviewCategoryChanged(
+            context.read<PoolOverviewBloc>().add(PoolOverviewChanged(
                   category: index == 0
                       ? PoolCategory.series
                       : PoolCategory.collection,
@@ -283,7 +282,7 @@ class _PoolPageState extends State<PoolPage> {
                                             AppRouter.router.pop(context);
                                             context
                                                 .read<PoolOverviewBloc>()
-                                                .add(PoolOverviewOrderChanged(
+                                                .add(PoolOverviewChanged(
                                                     order: e));
                                           },
                                         ))

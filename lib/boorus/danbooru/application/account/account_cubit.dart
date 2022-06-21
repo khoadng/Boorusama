@@ -18,7 +18,7 @@ class AccountCubit extends Cubit<AsyncLoadState<Account>> {
         action: () => accountRepository.add(account),
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (_) {
+        onSuccess: (_) async {
           emit(AsyncLoadState.success(account));
         });
   }
@@ -31,7 +31,7 @@ class AccountCubit extends Cubit<AsyncLoadState<Account>> {
         },
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (_) {
+        onSuccess: (_) async {
           emit(const AsyncLoadState.success(Account.empty));
         });
   }
@@ -41,7 +41,7 @@ class AccountCubit extends Cubit<AsyncLoadState<Account>> {
         action: accountRepository.get,
         onLoading: () => emit(const AsyncLoadState.loading()),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-        onSuccess: (acc) {
+        onSuccess: (acc) async {
           emit(AsyncLoadState.success(acc));
         });
   }

@@ -24,7 +24,7 @@ import 'package:boorusama/boorus/danbooru/application/home/explore/curated_cubit
 import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
@@ -217,7 +217,7 @@ void main() async {
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
                   )..logIn();
-                  final poolCubit = PoolCubit(
+                  final poolBloc = PoolBloc(
                       poolRepository: poolRepo, postRepository: postRepo);
                   final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
                       userRepository: userRepo,
@@ -264,7 +264,7 @@ void main() async {
                           BlocProvider.value(value: artistCommentaryCubit),
                           BlocProvider.value(value: accountCubit),
                           BlocProvider.value(value: authenticationCubit),
-                          BlocProvider.value(value: poolCubit),
+                          BlocProvider.value(value: poolBloc),
                           BlocProvider.value(value: userBlacklistedTagsBloc),
                           BlocProvider(
                               create: (context) =>

@@ -55,7 +55,7 @@ class TagCubit extends Cubit<AsyncLoadState<List<TagGroupItem>>> {
       action: () => tagRepository.getTagsByNameComma(tagsComma, 1),
       onLoading: () => emit(const AsyncLoadState.loading()),
       onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
-      onSuccess: (tags) {
+      onSuccess: (tags) async {
         tags.sort((a, b) => a.rawName.compareTo(b.rawName));
         final group = tags
             .groupBy((e) => e.category)

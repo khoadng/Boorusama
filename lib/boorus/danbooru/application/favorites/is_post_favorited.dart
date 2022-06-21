@@ -44,7 +44,7 @@ class IsPostFavoritedBloc
           onLoading: () => emit(const AsyncLoadState.loading()),
           onFailure: (stackTrace, error) =>
               emit(const AsyncLoadState.failure()),
-          onSuccess: (value) => emit(AsyncLoadState.success(value)),
+          onSuccess: (value) async => emit(AsyncLoadState.success(value)),
         );
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),

@@ -55,7 +55,7 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
       onFailure: (stackTrace, error) =>
           emit(state.copyWith(status: LoadStatus.failure)),
       onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-      onSuccess: (posts) {
+      onSuccess: (posts) async {
         emit(state.copyWith(
             status: LoadStatus.success, posts: [...state.posts, ...posts]));
       },

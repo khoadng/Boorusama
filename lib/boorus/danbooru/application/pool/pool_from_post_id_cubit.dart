@@ -39,7 +39,7 @@ class PoolFromPostIdBloc
           onFailure: (stackTrace, error) =>
               emit(const AsyncLoadState.failure()),
           onLoading: () => emit(const AsyncLoadState.loading()),
-          onSuccess: (pools) => emit(AsyncLoadState.success(pools)),
+          onSuccess: (pools) async => emit(AsyncLoadState.success(pools)),
         );
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),

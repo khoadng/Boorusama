@@ -114,7 +114,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               ));
             }
           },
-          onSuccess: (posts) {
+          onSuccess: (posts) async {
             final filteredPosts = filterBlacklisted(posts, blacklisted);
             // print(
             //     '${filteredPosts.length} posts got filtered. Total: ${state.filteredPosts.length + filteredPosts.length}');
@@ -160,7 +160,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               ));
             }
           },
-          onSuccess: (posts) => emit(
+          onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
               posts: filter(posts, blacklisted),

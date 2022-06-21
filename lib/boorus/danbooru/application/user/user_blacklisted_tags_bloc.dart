@@ -111,7 +111,7 @@ class UserBlacklistedTagsBloc
               ? 'Fail to remove tag'
               : 'Fail to add tag',
         )),
-        onSuccess: (_) => emit(state.copyWith(
+        onSuccess: (_) async => emit(state.copyWith(
           blacklistedTags: event.tags,
           status: LoadStatus.success,
         )),
@@ -124,7 +124,7 @@ class UserBlacklistedTagsBloc
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (tags) => emit(state.copyWith(
+        onSuccess: (tags) async => emit(state.copyWith(
           blacklistedTags: tags,
           status: LoadStatus.success,
         )),

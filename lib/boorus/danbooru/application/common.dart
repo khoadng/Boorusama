@@ -3,14 +3,14 @@ import 'package:equatable/equatable.dart';
 
 Future<void> tryAsync<T extends Object?>({
   required Future<T> Function() action,
-  required void Function(T data) onSuccess,
+  required Future<void> Function(T data) onSuccess,
   void Function(StackTrace stackTrace, Object error)? onFailure,
   void Function()? onLoading,
 }) async {
   try {
     onLoading?.call();
     final data = await action();
-    onSuccess(data);
+    await onSuccess(data);
   } catch (e, stacktrace) {
     onFailure?.call(stacktrace, e);
   }

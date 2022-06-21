@@ -32,26 +32,17 @@ abstract class PoolOverviewEvent extends Equatable {
   const PoolOverviewEvent();
 }
 
-class PoolOverviewCategoryChanged extends PoolOverviewEvent {
-  const PoolOverviewCategoryChanged({
-    required this.category,
+class PoolOverviewChanged extends PoolOverviewEvent {
+  const PoolOverviewChanged({
+    this.category,
+    this.order,
   });
 
-  final PoolCategory category;
+  final PoolCategory? category;
+  final PoolOrder? order;
 
   @override
-  List<Object?> get props => [category];
-}
-
-class PoolOverviewOrderChanged extends PoolOverviewEvent {
-  const PoolOverviewOrderChanged({
-    required this.order,
-  });
-
-  final PoolOrder order;
-
-  @override
-  List<Object?> get props => [order];
+  List<Object?> get props => [category, order];
 }
 
 class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
@@ -60,19 +51,11 @@ class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
           category: PoolCategory.series,
           order: PoolOrder.lastUpdated,
         )) {
-    on<PoolOverviewCategoryChanged>(
+    on<PoolOverviewChanged>(
       (event, emit) {
         emit(state.copyWith(
-          category: event.category,
-        ));
-      },
-      transformer: debounceRestartable(const Duration(milliseconds: 500)),
-    );
-
-    on<PoolOverviewOrderChanged>(
-      (event, emit) {
-        emit(state.copyWith(
-          order: event.order,
+          category: event.category ?? state.category,
+          order: event.order ?? state.order,
         ));
       },
       transformer: debounceRestartable(const Duration(milliseconds: 500)),
