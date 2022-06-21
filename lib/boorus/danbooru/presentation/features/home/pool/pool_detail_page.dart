@@ -57,7 +57,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                 SliverToBoxAdapter(
                   child: ListTile(
                     title: Text(
-                      widget.pool.name.value.removeUnderscoreWithSpace(),
+                      widget.pool.name.removeUnderscoreWithSpace(),
                       style: Theme.of(context).textTheme.headline6!,
                     ),
                     subtitle: Text(

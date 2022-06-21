@@ -92,7 +92,7 @@ class _PoolPageState extends State<PoolPage> {
                                   ),
                                 ),
                                 child: Text(
-                                  state.data![index].pool.name.value
+                                  state.data![index].pool.name
                                       .removeUnderscoreWithSpace(),
                                   style: const TextStyle(color: Colors.black),
                                 ),
@@ -162,7 +162,7 @@ class _PoolPageState extends State<PoolPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Text(
-                    pool.pool.postCount.value.toString(),
+                    pool.pool.postCount.toString(),
                   ),
                   const FaIcon(FontAwesomeIcons.image)
                 ],
