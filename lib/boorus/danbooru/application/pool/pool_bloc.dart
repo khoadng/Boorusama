@@ -118,6 +118,8 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
             1,
             category: event.category,
             order: event.order,
+            name: event.name,
+            description: event.description,
           ),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
@@ -142,6 +144,8 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
           state.page + 1,
           category: event.category,
           order: event.order,
+          name: event.name,
+          description: event.description,
         ),
         onFailure: (stackTrace, error) =>
             emit(state.copyWith(status: LoadStatus.failure)),

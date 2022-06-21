@@ -25,8 +25,8 @@ class Pool {
 }
 
 enum PoolOrder {
-  lastUpdated('updated_at'),
-  recentlyCreated('created_at'),
+  latest('updated_at'),
+  newest('created_at'),
   postCount('post_count'),
   name('name');
 

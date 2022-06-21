@@ -12,6 +12,11 @@ class PoolOverviewState extends Equatable {
     required this.order,
   });
 
+  factory PoolOverviewState.initial() => const PoolOverviewState(
+        category: PoolCategory.series,
+        order: PoolOrder.latest,
+      );
+
   final PoolCategory category;
   final PoolOrder order;
 
@@ -46,11 +51,7 @@ class PoolOverviewChanged extends PoolOverviewEvent {
 }
 
 class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
-  PoolOverviewBloc()
-      : super(const PoolOverviewState(
-          category: PoolCategory.series,
-          order: PoolOrder.lastUpdated,
-        )) {
+  PoolOverviewBloc() : super(PoolOverviewState.initial()) {
     on<PoolOverviewChanged>(
       (event, emit) {
         emit(state.copyWith(

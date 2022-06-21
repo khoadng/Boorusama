@@ -225,7 +225,7 @@ void main() async {
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
                       category: PoolCategory.series,
-                      order: PoolOrder.lastUpdated,
+                      order: PoolOrder.latest,
                     ));
 
                   return MultiRepositoryProvider(
