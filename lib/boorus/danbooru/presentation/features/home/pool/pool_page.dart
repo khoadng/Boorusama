@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
@@ -30,13 +30,9 @@ class PoolPage extends StatefulWidget {
 }
 
 class _PoolPageState extends State<PoolPage> {
-  // final ValueNotifier<PoolCategory> _currentCategory =
-  //     ValueNotifier(PoolCategory.series);
-
   @override
   void initState() {
     super.initState();
-    context.read<PoolCubit>().getPools(widget.category, widget.order);
     context.read<PoolOverviewBloc>().add(PoolOverviewCategoryChanged(
           category: widget.category,
         ));
@@ -176,60 +172,65 @@ class _PoolPageState extends State<PoolPage> {
 
   Widget _buildHeader() {
     return BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
-      builder: (context, state) => Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          TextButton(
-            style: TextButton.styleFrom(
-              backgroundColor: Theme.of(context).cardColor,
-              primary: Theme.of(context).textTheme.headline6!.color,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).cardColor,
+                primary: Theme.of(context).textTheme.headline6!.color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
+                ),
               ),
-            ),
-            onPressed: () => showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) => Material(
-                      child: SafeArea(
-                        top: false,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            ListTile(
-                              title: const Text('Series'),
-                              onTap: () {
-                                AppRouter.router.pop(context);
-                                context
-                                    .read<PoolOverviewBloc>()
-                                    .add(const PoolOverviewCategoryChanged(
-                                      category: PoolCategory.series,
-                                    ));
-                              },
+              onPressed: () => showMaterialModalBottomSheet(
+                  context: context,
+                  builder: (context) => BlocProvider.value(
+                        value: BlocProvider.of<PoolOverviewBloc>(context),
+                        child: Material(
+                          child: SafeArea(
+                            top: false,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                ListTile(
+                                  title: const Text('Series'),
+                                  onTap: () {
+                                    AppRouter.router.pop(context);
+                                    context
+                                        .read<PoolOverviewBloc>()
+                                        .add(const PoolOverviewCategoryChanged(
+                                          category: PoolCategory.series,
+                                        ));
+                                  },
+                                ),
+                                ListTile(
+                                  title: const Text('Collection'),
+                                  onTap: () {
+                                    AppRouter.router.pop(context);
+                                    context
+                                        .read<PoolOverviewBloc>()
+                                        .add(const PoolOverviewCategoryChanged(
+                                          category: PoolCategory.collection,
+                                        ));
+                                  },
+                                ),
+                              ],
                             ),
-                            ListTile(
-                              title: const Text('Collection'),
-                              onTap: () {
-                                AppRouter.router.pop(context);
-                                context
-                                    .read<PoolOverviewBloc>()
-                                    .add(const PoolOverviewCategoryChanged(
-                                      category: PoolCategory.collection,
-                                    ));
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    )),
-            child: Row(
-              children: <Widget>[
-                Text(state.category.toString().toUpperCase()),
-                const Icon(Icons.arrow_drop_down)
-              ],
-            ),
-          )
-        ],
-      ),
+                      )),
+              child: Row(
+                children: <Widget>[
+                  Text(state.category.toString().toUpperCase()),
+                  const Icon(Icons.arrow_drop_down)
+                ],
+              ),
+            )
+          ],
+        );
+      },
     );
   }
 }

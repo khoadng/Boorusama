@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/application/home/explore/most_viewed_c
 import 'package:boorusama/boorus/danbooru/application/home/explore/popular_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_overview_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
@@ -267,7 +268,8 @@ void main() async {
                           BlocProvider.value(value: userBlacklistedTagsBloc),
                           BlocProvider(
                               create: (context) =>
-                                  ThemeBloc(initialTheme: settings.themeMode))
+                                  ThemeBloc(initialTheme: settings.themeMode)),
+                          BlocProvider(create: (_) => PoolOverviewBloc()),
                         ],
                         child: MultiBlocListener(
                           listeners: [

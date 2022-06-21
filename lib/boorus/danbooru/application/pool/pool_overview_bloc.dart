@@ -1,8 +1,9 @@
-import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
+import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 class PoolOverviewState extends Equatable {
   const PoolOverviewState({
@@ -60,18 +61,18 @@ class PoolOverviewBloc extends Bloc<PoolOverviewEvent, PoolOverviewState> {
         )) {
     on<PoolOverviewCategoryChanged>(
       (event, emit) {
-        state.copyWith(
+        emit(state.copyWith(
           category: event.category,
-        );
+        ));
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
 
     on<PoolOverviewOrderChanged>(
       (event, emit) {
-        state.copyWith(
+        emit(state.copyWith(
           order: event.order,
-        );
+        ));
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );
