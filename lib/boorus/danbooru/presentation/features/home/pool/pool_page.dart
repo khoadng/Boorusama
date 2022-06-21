@@ -32,6 +32,8 @@ class PoolPage extends StatefulWidget {
 }
 
 class _PoolPageState extends State<PoolPage> {
+  final ValueNotifier<bool> _searching = ValueNotifier(false);
+
   @override
   void initState() {
     super.initState();
@@ -50,74 +52,136 @@ class _PoolPageState extends State<PoolPage> {
           },
         )
       ],
-      child: Column(
-        children: [
-          _buildHeader(),
-          Expanded(
-            child: BlocBuilder<PoolCubit, AsyncLoadState<List<PoolItem>>>(
-              builder: (context, state) {
-                if (state.status == LoadStatus.success) {
-                  return GridView.builder(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                    ),
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.all(3),
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          topRight: Radius.circular(8),
+      child: Scaffold(
+        appBar: _buildAppBar(),
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildHeader(),
+              Expanded(
+                child: BlocBuilder<PoolCubit, AsyncLoadState<List<PoolItem>>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return GridView.builder(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
                         ),
-                        child: GestureDetector(
-                          onTap: () => AppRouter.router.navigateTo(
-                            context,
-                            'pool/detail',
-                            routeSettings: RouteSettings(arguments: [
-                              state.data![index].pool,
-                            ]),
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: _buildPoolImage(state.data![index]),
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.all(3),
+                          child: ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              topRight: Radius.circular(8),
+                            ),
+                            child: GestureDetector(
+                              onTap: () => AppRouter.router.navigateTo(
+                                context,
+                                'pool/detail',
+                                routeSettings: RouteSettings(arguments: [
+                                  state.data![index].pool,
+                                ]),
                               ),
-                              Container(
-                                width: MediaQuery.of(context).size.width,
-                                decoration: const BoxDecoration(
-                                  color: Colors.white70,
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(8),
-                                    bottomRight: Radius.circular(8),
+                              child: Column(
+                                children: [
+                                  Expanded(
+                                    child: _buildPoolImage(state.data![index]),
                                   ),
-                                ),
-                                child: Text(
-                                  state.data![index].pool.name
-                                      .removeUnderscoreWithSpace(),
-                                  style: const TextStyle(color: Colors.black),
-                                ),
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white70,
+                                      borderRadius: BorderRadius.only(
+                                        bottomLeft: Radius.circular(8),
+                                        bottomRight: Radius.circular(8),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      state.data![index].pool.name
+                                          .removeUnderscoreWithSpace(),
+                                      style:
+                                          const TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                    itemCount: state.data!.length,
-                  );
-                } else if (state.status == LoadStatus.failure) {
-                  return const Center(
-                    child: Text('Failed to load pool, please try again later'),
-                  );
-                } else {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                }
-              },
-            ),
+                        itemCount: state.data!.length,
+                      );
+                    } else if (state.status == LoadStatus.failure) {
+                      return const Center(
+                        child:
+                            Text('Failed to load pool, please try again later'),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: ValueListenableBuilder<bool>(
+        valueListenable: _searching,
+        builder: (context, value, child) {
+          if (value) {
+            return Container(
+              color: Theme.of(context).cardColor,
+              child: Row(
+                children: [
+                  IconButton(
+                      onPressed: () => _searching.value = false,
+                      icon: const FaIcon(FontAwesomeIcons.arrowLeft)),
+                  const Expanded(
+                      child: TextField(
+                    decoration: InputDecoration(
+                      floatingLabelBehavior: FloatingLabelBehavior.never,
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      errorBorder: InputBorder.none,
+                      disabledBorder: InputBorder.none,
+                      contentPadding:
+                          EdgeInsets.only(bottom: 11, top: 11, right: 15),
+                      hintText: 'Search a pool',
+                    ),
+                  )),
+                ],
+              ),
+            );
+          } else {
+            return const Text('Pool Gallery');
+          }
+        },
+      ),
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      actions: [
+        ValueListenableBuilder<bool>(
+          valueListenable: _searching,
+          builder: (context, value, child) {
+            if (value) {
+              return const SizedBox.shrink();
+            } else {
+              return IconButton(
+                onPressed: () => _searching.value = true,
+                icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+              );
+            }
+          },
+        ),
+      ],
     );
   }
 
