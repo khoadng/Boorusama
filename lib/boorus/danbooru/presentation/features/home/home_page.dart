@@ -14,11 +14,11 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/main.dart';
 import 'bottom_bar_widget.dart';
-import 'explore/explore_page.dart';
 import 'latest/latest_posts_view.dart';
 import 'side_bar.dart';
 
@@ -91,16 +91,21 @@ class HomePage extends HookWidget {
                             ),
                           ),
                           const ExplorePage(),
-                          MultiBlocProvider(providers: [
-                            BlocProvider(
-                              create: (context) => PoolBloc(
-                                poolRepository: context.read<PoolRepository>(),
-                                postRepository: context.read<IPostRepository>(),
-                              )..add(const PoolRefreshed(
-                                  category: PoolCategory.series,
-                                  order: PoolOrder.latest)),
-                            ),
-                          ], child: const PoolPage()),
+                          MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => PoolBloc(
+                                  poolRepository:
+                                      context.read<PoolRepository>(),
+                                  postRepository:
+                                      context.read<IPostRepository>(),
+                                )..add(const PoolRefreshed(
+                                    category: PoolCategory.series,
+                                    order: PoolOrder.latest)),
+                              ),
+                            ],
+                            child: const PoolPage(),
+                          ),
                         ],
                       ),
                     ),

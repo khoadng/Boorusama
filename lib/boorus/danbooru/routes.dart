@@ -41,7 +41,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/l
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';

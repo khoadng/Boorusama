@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool_search_bloc.dart
 import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/pool/pool_search_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'sliver_pool_grid.dart';
