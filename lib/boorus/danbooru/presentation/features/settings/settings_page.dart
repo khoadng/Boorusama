@@ -1,19 +1,19 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:settings_ui/settings_ui.dart';
 
 // Project imports:
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/language_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/privacy_page.dart';
+import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/main.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -26,150 +26,90 @@ class SettingsPage extends StatelessWidget {
         title: Text('settings._string'.tr()),
       ),
       body: Padding(
-        padding: const EdgeInsets.only(top: 16),
+        padding: const EdgeInsets.only(top: 8),
         child: BlocBuilder<SettingsCubit, SettingsState>(
           buildWhen: (previous, current) =>
               previous.settings != current.settings,
           builder: (context, state) {
             final settings = state.settings;
-            return SettingsList(
-              sections: [
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 SettingsSection(
-                  title: Text('settings.appSettings._string'.tr()),
-                  tiles: [
-                    SettingsTile.switchTile(
-                      leading: const Icon(Icons.admin_panel_settings),
-                      title: Text('settings.appSettings.safeMode'.tr()),
-                      onToggle: (value) {
+                  label: 'settings.appSettings._string'.tr(),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.admin_panel_settings),
+                  title: Text('settings.appSettings.safeMode'.tr()),
+                  trailing: Switch(
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      value: settings.safeMode,
+                      onChanged: (value) {
                         context
                             .read<SettingsCubit>()
                             .update(settings.copyWith(safeMode: value));
-                      },
-                      initialValue: settings.safeMode,
-                    ),
-                    SettingsTile(
-                      leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                      title: Text(
-                          'settings.appSettings.appearance.theme._string'.tr()),
-                      trailing: DropdownButton<ThemeMode>(
-                        value: settings.themeMode,
-                        icon: const Icon(Icons.keyboard_arrow_right),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(themeMode: value));
-                        },
-                        items: const <DropdownMenuItem<ThemeMode>>[
-                          DropdownMenuItem(
-                            value: ThemeMode.light,
-                            child: Text('Light'),
-                          ),
-                          DropdownMenuItem(
-                            value: ThemeMode.dark,
-                            child: Text('Dark'),
-                          ),
-                          DropdownMenuItem(
-                            value: ThemeMode.amoledDark,
-                            child: Text('AMOLED dark'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SettingsTile(
-                      leading: const FaIcon(FontAwesomeIcons.tableCells),
-                      title: const Text('Grid size'),
-                      trailing: DropdownButton<GridSize>(
-                        value: settings.gridSize,
-                        icon: const Icon(Icons.keyboard_arrow_right),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(gridSize: value));
-                        },
-                        items: const <DropdownMenuItem<GridSize>>[
-                          DropdownMenuItem(
-                            value: GridSize.small,
-                            child: Text('Small'),
-                          ),
-                          DropdownMenuItem(
-                            value: GridSize.normal,
-                            child: Text('Normal'),
-                          ),
-                          DropdownMenuItem(
-                            value: GridSize.large,
-                            child: Text('Large'),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SettingsTile(
-                      leading: const Icon(Icons.translate),
-                      title: Text('settings.appSettings.language._string'.tr()),
-                      trailing: DropdownButton<String>(
-                        value: settings.language,
-                        icon: const Icon(Icons.keyboard_arrow_right),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(language: value));
-                          context.setLocale(Locale(value));
-                        },
-                        items: <DropdownMenuItem<String>>[
-                          DropdownMenuItem(
-                            value: 'en',
-                            child: Text(
-                                'settings.appSettings.language.english'.tr()),
-                          ),
-                          DropdownMenuItem(
-                            value: 'vi',
-                            child: Text(
-                                'settings.appSettings.language.vietnamese'
-                                    .tr()),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SettingsTile.switchTile(
-                      leading: const Icon(Icons.privacy_tip),
-                      title:
-                          const Text('Send anonymous data for error logging'),
-                      onToggle: (value) {
-                        context.read<SettingsCubit>().update(settings.copyWith(
-                            dataCollectingStatus: value
-                                ? DataCollectingStatus.allow
-                                : DataCollectingStatus.prohibit));
-                      },
-                      initialValue: settings.dataCollectingStatus ==
-                          DataCollectingStatus.allow,
-                    ),
-                  ],
+                      }),
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.paintRoller),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.chevronRight,
+                    size: 18,
+                  ),
+                  title: Text('settings.appSettings.appearance._string'.tr()),
+                  onTap: () =>
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                    enterWidget: AppearancePage(settings: settings),
+                    oldWidget: this,
+                  )),
+                ),
+                ListTile(
+                  title: Text('settings.appSettings.language._string'.tr()),
+                  leading: const Icon(Icons.translate),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.chevronRight,
+                    size: 18,
+                  ),
+                  onTap: () =>
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                    enterWidget: const LanguagePage(),
+                    oldWidget: this,
+                  )),
+                ),
+                ListTile(
+                  title: const Text('Privacy'),
+                  leading: const FaIcon(FontAwesomeIcons.shieldHalved),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.chevronRight,
+                    size: 18,
+                  ),
+                  onTap: () =>
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                    enterWidget: const PrivacyPage(),
+                    oldWidget: this,
+                  )),
                 ),
                 SettingsSection(
-                  title: Text(
-                      'App Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),
-                  tiles: [
-                    SettingsTile(
-                      title: const Text('Acknowledgements'),
-                      leading: const Icon(Icons.info),
-                      onPressed: (context) => showAboutDialog(
-                        context: context,
-                        applicationIcon: Image.asset(
-                          'assets/icon/icon-512x512.png',
-                          width: 64,
-                          height: 64,
-                        ),
-                        applicationVersion: getVersion(
-                            RepositoryProvider.of<PackageInfoProvider>(context)
-                                .getPackageInfo()),
-                        applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                        applicationName: AppConstants.appName,
-                      ),
+                    label:
+                        'Build Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),
+                ListTile(
+                  title: const Text('Acknowledgements'),
+                  leading: const Icon(Icons.info),
+                  onTap: () => showAboutDialog(
+                    context: context,
+                    applicationIcon: Image.asset(
+                      'assets/icon/icon-512x512.png',
+                      width: 64,
+                      height: 64,
                     ),
-                  ],
-                )
+                    applicationVersion: getVersion(
+                        RepositoryProvider.of<PackageInfoProvider>(context)
+                            .getPackageInfo()),
+                    applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                    applicationName: AppConstants.appName,
+                  ),
+                ),
               ],
             );
           },
@@ -179,6 +119,25 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
+class SettingsSection extends StatelessWidget {
+  const SettingsSection({
+    Key? key,
+    required this.label,
+  }) : super(key: key);
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Text(
+        label,
+        style: Theme.of(context).textTheme.titleLarge,
+      ),
+    );
+  }
+}
+
 String getVersion(PackageInfo info) => info.version;
-String getVersionText(PackageInfo info) =>
-    '(v${info.version} - Build ${info.buildNumber})';
+String getVersionText(PackageInfo info) => '${info.version}';
