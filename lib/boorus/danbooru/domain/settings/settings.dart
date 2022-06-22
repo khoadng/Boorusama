@@ -20,6 +20,7 @@ class Settings extends Equatable {
     required this.searchHistories,
     required this.gridSize,
     required this.dataCollectingStatus,
+    required this.downloadPath,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -35,8 +36,10 @@ class Settings extends Equatable {
         gridSize = json['gridSize'] != null
             ? GridSize.values[json['gridSize']]
             : GridSize.normal,
-        searchHistories = List<SearchHistory>.from(
-            json['searchHistories']?.map(SearchHistory.fromJson)?.toList());
+        downloadPath = json['downloadPath'],
+        searchHistories = List<SearchHistory>.from(json['searchHistories']
+            ?.map((e) => SearchHistory.fromJson(e))
+            ?.toList());
 
   static const defaultSettings = Settings(
     safeMode: true,
@@ -46,6 +49,7 @@ class Settings extends Equatable {
     searchHistories: [],
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
+    downloadPath: null,
   );
 
   final String blacklistedTags;
@@ -55,6 +59,7 @@ class Settings extends Equatable {
   final List<SearchHistory> searchHistories;
   final GridSize gridSize;
   final DataCollectingStatus dataCollectingStatus;
+  final String? downloadPath;
 
   Settings copyWith({
     String? blacklistedTags,
@@ -64,6 +69,7 @@ class Settings extends Equatable {
     List<SearchHistory>? searchHistories,
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
+    String? downloadPath,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -73,6 +79,7 @@ class Settings extends Equatable {
         searchHistories: searchHistories ?? this.searchHistories,
         gridSize: gridSize ?? this.gridSize,
         dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
+        downloadPath: downloadPath ?? this.downloadPath,
       );
 
   Map<String, dynamic> toJson() => {
@@ -84,6 +91,7 @@ class Settings extends Equatable {
         'searchHistories':
             searchHistories.map((item) => item.toJson()).toList(),
         'gridSize': gridSize.index,
+        'downloadPath': downloadPath,
       };
 
   @override
@@ -95,5 +103,6 @@ class Settings extends Equatable {
         searchHistories,
         gridSize,
         dataCollectingStatus,
+        downloadPath,
       ];
 }

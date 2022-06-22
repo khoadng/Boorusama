@@ -11,6 +11,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/privacy_page.dart';
 import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
@@ -53,10 +54,6 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   title: Text('settings.appSettings.appearance._string'.tr()),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
@@ -67,10 +64,6 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   title: Text('settings.appSettings.language._string'.tr()),
                   leading: const Icon(Icons.translate),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const LanguagePage(),
@@ -78,18 +71,24 @@ class SettingsPage extends StatelessWidget {
                   )),
                 ),
                 ListTile(
+                  title: const Text('Download'),
+                  leading: const FaIcon(FontAwesomeIcons.download),
+                  onTap: () =>
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                    enterWidget: const DownloadPage(),
+                    oldWidget: this,
+                  )),
+                ),
+                ListTile(
                   title: const Text('Privacy'),
                   leading: const FaIcon(FontAwesomeIcons.shieldHalved),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const PrivacyPage(),
                     oldWidget: this,
                   )),
                 ),
+                const Divider(height: 2),
                 SettingsSection(
                     label:
                         'Build Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),

@@ -10,6 +10,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
@@ -94,26 +95,34 @@ class PostDetailPage extends HookWidget {
                 icon: const Icon(Icons.slideshow),
                 onPressed: () => showSlideShowConfig.value = true,
               ),
-            PopupMenuButton<PostAction>(
-              onSelected: (value) async {
-                switch (value) {
-                  case PostAction.download:
-                    RepositoryProvider.of<IDownloadService>(context)
-                        .download(posts[currentPostIndex.value]);
-                    break;
-                  default:
-                }
+            BlocSelector<SettingsCubit, SettingsState, String?>(
+              selector: (state) => state.settings.downloadPath,
+              builder: (context, path) {
+                return PopupMenuButton<PostAction>(
+                  onSelected: (value) async {
+                    switch (value) {
+                      case PostAction.download:
+                        RepositoryProvider.of<IDownloadService>(context)
+                            .download(
+                          posts[currentPostIndex.value],
+                          path: path,
+                        );
+                        break;
+                      default:
+                    }
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<PostAction>>[
+                    const PopupMenuItem<PostAction>(
+                      value: PostAction.download,
+                      child: ListTile(
+                        leading: Icon(Icons.download_rounded),
+                        title: Text('Download'),
+                      ),
+                    ),
+                  ],
+                );
               },
-              itemBuilder: (BuildContext context) =>
-                  <PopupMenuEntry<PostAction>>[
-                const PopupMenuItem<PostAction>(
-                  value: PostAction.download,
-                  child: ListTile(
-                    leading: Icon(Icons.download_rounded),
-                    title: Text('Download'),
-                  ),
-                ),
-              ],
             ),
           ],
         ),

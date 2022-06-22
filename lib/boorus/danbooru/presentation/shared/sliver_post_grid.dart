@@ -14,6 +14,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -353,13 +354,21 @@ class PostPreviewSheet extends HookWidget {
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
-                  ListTile(
-                    leading: const Icon(Icons.file_download),
-                    title: const Text('Download'),
-                    onTap: () {
-                      RepositoryProvider.of<IDownloadService>(context)
-                          .download(post);
-                      Navigator.of(context).pop();
+                  BlocSelector<SettingsCubit, SettingsState, String?>(
+                    selector: (state) => state.settings.downloadPath,
+                    builder: (context, path) {
+                      return ListTile(
+                        leading: const Icon(Icons.file_download),
+                        title: const Text('Download'),
+                        onTap: () {
+                          RepositoryProvider.of<IDownloadService>(context)
+                              .download(
+                            post,
+                            path: path,
+                          );
+                          Navigator.of(context).pop();
+                        },
+                      );
                     },
                   ),
                   if (post.isTranslated)

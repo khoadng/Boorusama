@@ -48,6 +48,19 @@ class IOHelper {
     return path;
   }
 
+  static Future<String> getDownloadPath() async {
+    if (Platform.isAndroid) {
+      final root = Directory.fromUri(Uri(path: '/storage/emulated/0/Download'));
+      return root.path;
+    } else if (Platform.isWindows) {
+      final root = (await getDownloadsDirectory()) ??
+          (await getApplicationDocumentsDirectory());
+      return root.path;
+    } else {
+      throw UnimplementedError();
+    }
+  }
+
   static Future<bool> checkPermission() async {
     if (Platform.isAndroid) {
       final status = await Permission.storage.status;
