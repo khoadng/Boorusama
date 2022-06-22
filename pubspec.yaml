@@ -76,6 +76,7 @@ dependencies:
   collection: ^1.16.0
   video_player: ^2.4.4
   toggle_switch: ^2.0.1
+  file_picker: ^4.6.1
 
 dev_dependencies:
   flutter_localizations:

@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
@@ -131,11 +132,19 @@ class PostActionToolbar extends HookWidget {
             FontAwesomeIcons.shareFromSquare,
           ),
         ),
-        IconButton(
-          onPressed: () => context.read<IDownloadService>().download(post),
-          icon: const FaIcon(
-            FontAwesomeIcons.download,
-          ),
+        BlocSelector<SettingsCubit, SettingsState, String?>(
+          selector: (state) => state.settings.downloadPath,
+          builder: (context, downloadPath) {
+            return IconButton(
+              onPressed: () => context.read<IDownloadService>().download(
+                    post,
+                    path: downloadPath,
+                  ),
+              icon: const FaIcon(
+                FontAwesomeIcons.download,
+              ),
+            );
+          },
         )
       ]),
     );

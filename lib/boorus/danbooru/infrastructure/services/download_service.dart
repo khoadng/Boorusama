@@ -21,16 +21,20 @@ class DownloadService implements IDownloadService {
   String _savedDir = '';
 
   @override
-  Future<void> download(IDownloadable downloadable) async {
+  Future<void> download(
+    IDownloadable downloadable, {
+    String? path,
+  }) async {
     //TODO: display a toast or snack and redirect to permission settings.
     if (!_permissionReady) {
       return;
     }
     await FlutterDownloader.enqueue(
-        saveInPublicStorage: true,
-        url: downloadable.downloadUrl,
-        fileName: downloadable.fileName,
-        savedDir: _savedDir);
+      saveInPublicStorage: path == null,
+      url: downloadable.downloadUrl,
+      fileName: downloadable.fileName,
+      savedDir: path ?? _savedDir,
+    );
   }
 
   Future<void> _prepare() async {
