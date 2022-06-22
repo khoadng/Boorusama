@@ -72,12 +72,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                                   state.data!.descriptionEndpointRefUrl),
                           data: state.data!.description,
                         );
-                      } else if (state.status == LoadStatus.failure) {
-                        return const SizedBox.shrink();
                       } else {
-                        return const Center(
-                          child: LinearProgressIndicator(),
-                        );
+                        return const SizedBox.shrink();
                       }
                     },
                   ),
@@ -128,7 +124,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                   builder: (context, state) {
                     if (state.status == LoadStatus.loading) {
                       return const SliverPadding(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        padding: EdgeInsets.only(bottom: 20, top: 60),
                         sliver: SliverToBoxAdapter(
                           child: Center(
                             child: CircularProgressIndicator(),

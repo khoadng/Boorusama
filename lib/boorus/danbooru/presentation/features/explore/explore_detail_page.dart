@@ -60,7 +60,10 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
         title: widget.title,
       ),
       body: BlocConsumer<ExploreDetailBloc, ExploreDetailState>(
-        listener: (context, state) => _refreshController.requestRefresh(),
+        listener: (context, state) {
+          _scrollController.jumpTo(0);
+          _refreshController.requestRefresh();
+        },
         builder: (context, state) {
           return Column(
             children: [

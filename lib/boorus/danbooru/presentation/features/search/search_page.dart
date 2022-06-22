@@ -106,6 +106,7 @@ class _SearchPageState extends State<SearchPage> {
                 appBar: AppBar(
                   toolbarHeight: kToolbarHeight * 1.2,
                   elevation: 0,
+                  backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   automaticallyImplyLeading: false,
                   title: _buildSearchBar(),
