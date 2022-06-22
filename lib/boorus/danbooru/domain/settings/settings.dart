@@ -21,6 +21,8 @@ class Settings extends Equatable {
     required this.gridSize,
     required this.dataCollectingStatus,
     required this.downloadPath,
+    required this.imageBorderRadius,
+    required this.imageGridSpacing,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -39,7 +41,9 @@ class Settings extends Equatable {
         downloadPath = json['downloadPath'],
         searchHistories = List<SearchHistory>.from(json['searchHistories']
             ?.map((e) => SearchHistory.fromJson(e))
-            ?.toList());
+            ?.toList()),
+        imageBorderRadius = json['imageBorderRadius'],
+        imageGridSpacing = json['imageGridSpacing'];
 
   static const defaultSettings = Settings(
     safeMode: true,
@@ -50,6 +54,8 @@ class Settings extends Equatable {
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
     downloadPath: null,
+    imageBorderRadius: 4,
+    imageGridSpacing: 4,
   );
 
   final String blacklistedTags;
@@ -61,6 +67,9 @@ class Settings extends Equatable {
   final DataCollectingStatus dataCollectingStatus;
   final String? downloadPath;
 
+  final double imageBorderRadius;
+  final double imageGridSpacing;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -70,6 +79,8 @@ class Settings extends Equatable {
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,
+    double? imageBorderRadius,
+    double? imageGridSpacing,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -80,6 +91,8 @@ class Settings extends Equatable {
         gridSize: gridSize ?? this.gridSize,
         dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
         downloadPath: downloadPath ?? this.downloadPath,
+        imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
+        imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
       );
 
   Map<String, dynamic> toJson() => {
@@ -92,6 +105,8 @@ class Settings extends Equatable {
             searchHistories.map((item) => item.toJson()).toList(),
         'gridSize': gridSize.index,
         'downloadPath': downloadPath,
+        'imageBorderRadius': imageBorderRadius,
+        'imageGridSpacing': imageGridSpacing,
       };
 
   @override
@@ -104,5 +119,7 @@ class Settings extends Equatable {
         gridSize,
         dataCollectingStatus,
         downloadPath,
+        imageBorderRadius,
+        imageGridSpacing,
       ];
 }
