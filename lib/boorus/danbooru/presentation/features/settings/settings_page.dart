@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
@@ -11,10 +11,12 @@ import 'package:settings_ui/settings_ui.dart';
 // Project imports:
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/main.dart';
+
+import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart'
+    hide SettingsTile;
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -49,60 +51,17 @@ class SettingsPage extends StatelessWidget {
                     ),
                     SettingsTile(
                       leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                      title: Text(
-                          'settings.appSettings.appearance.theme._string'.tr()),
-                      trailing: DropdownButton<ThemeMode>(
-                        value: settings.themeMode,
-                        icon: const Icon(Icons.keyboard_arrow_right),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(themeMode: value));
-                        },
-                        items: const <DropdownMenuItem<ThemeMode>>[
-                          DropdownMenuItem(
-                            value: ThemeMode.light,
-                            child: Text('Light'),
-                          ),
-                          DropdownMenuItem(
-                            value: ThemeMode.dark,
-                            child: Text('Dark'),
-                          ),
-                          DropdownMenuItem(
-                            value: ThemeMode.amoledDark,
-                            child: Text('AMOLED dark'),
-                          ),
-                        ],
+                      trailing: const FaIcon(
+                        FontAwesomeIcons.chevronRight,
+                        size: 18,
                       ),
-                    ),
-                    SettingsTile(
-                      leading: const FaIcon(FontAwesomeIcons.tableCells),
-                      title: const Text('Grid size'),
-                      trailing: DropdownButton<GridSize>(
-                        value: settings.gridSize,
-                        icon: const Icon(Icons.keyboard_arrow_right),
-                        onChanged: (value) {
-                          if (value == null) return;
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(gridSize: value));
-                        },
-                        items: const <DropdownMenuItem<GridSize>>[
-                          DropdownMenuItem(
-                            value: GridSize.small,
-                            child: Text('Small'),
-                          ),
-                          DropdownMenuItem(
-                            value: GridSize.normal,
-                            child: Text('Normal'),
-                          ),
-                          DropdownMenuItem(
-                            value: GridSize.large,
-                            child: Text('Large'),
-                          ),
-                        ],
-                      ),
+                      title:
+                          Text('settings.appSettings.appearance._string'.tr()),
+                      onPressed: (context) =>
+                          Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        enterWidget: AppearancePage(settings: settings),
+                        oldWidget: this,
+                      )),
                     ),
                     SettingsTile(
                       leading: const Icon(Icons.translate),
