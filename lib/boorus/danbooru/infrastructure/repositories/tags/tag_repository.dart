@@ -3,10 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/i_tag_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
 
 List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
@@ -20,7 +19,7 @@ class TagRepository implements ITagRepository {
     this._accountRepository,
   );
 
-  final IApi _api;
+  final Api _api;
   final IAccountRepository _accountRepository;
 
   @override

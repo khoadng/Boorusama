@@ -6,7 +6,7 @@ import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/presentation/material_desktop_controls.dart';
 
 //TODO: implement caching video

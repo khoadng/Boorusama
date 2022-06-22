@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/presentation/grid_size.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {

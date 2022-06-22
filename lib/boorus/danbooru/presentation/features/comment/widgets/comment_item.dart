@@ -6,11 +6,10 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
 
 class CommentItem extends StatelessWidget {
-
   const CommentItem({
     Key? key,
     required this.comment,

@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 
 class ArtistCommentaryDto {
   ArtistCommentaryDto({

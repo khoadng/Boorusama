@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'settings.dart';
+import '../../domain/settings/settings.dart';
 
 class SettingsState extends Equatable {
   const SettingsState({

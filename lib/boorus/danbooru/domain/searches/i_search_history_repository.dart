@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 abstract class ISearchHistoryRepository {
   Future<List<SearchHistory>> getHistories();

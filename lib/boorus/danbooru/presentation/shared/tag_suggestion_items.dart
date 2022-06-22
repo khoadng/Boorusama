@@ -7,11 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({

@@ -7,13 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/networking/network_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool_repository.dart';
+import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';

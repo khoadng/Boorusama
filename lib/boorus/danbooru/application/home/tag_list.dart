@@ -2,9 +2,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/i_popular_search_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
-import '../../common.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import '../common.dart';
 
 class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
   SearchKeywordCubit(

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
@@ -27,9 +27,7 @@ class _AppearancePageState extends State<AppearancePage> {
         title: Text('settings.appSettings.appearance._string'.tr()),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          
-        ),
+        child: Column(),
       ),
     );
   }

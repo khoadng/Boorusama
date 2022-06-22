@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 //TODO: remove the author fuckery here, make it pure!
 class Comment {

@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
+import 'user_dto.dart';
 import 'user_level.dart';
 
 @immutable

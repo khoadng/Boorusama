@@ -1,7 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
-import 'post.dart';
-import 'rating.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PostDto {
   PostDto({

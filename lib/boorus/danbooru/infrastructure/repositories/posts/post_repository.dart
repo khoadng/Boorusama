@@ -3,12 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_post_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
 
@@ -19,13 +16,13 @@ List<Post> parsePost(HttpResponse<dynamic> value) => parse(
 
 class PostRepository implements IPostRepository {
   PostRepository(
-    IApi api,
+    Api api,
     IAccountRepository accountRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
   final IAccountRepository _accountRepository;
-  final IApi _api;
+  final Api _api;
 
   static const int _limit = 60;
 

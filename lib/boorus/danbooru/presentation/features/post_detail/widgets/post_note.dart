@@ -7,7 +7,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PostNote extends HookWidget {
   const PostNote({
@@ -72,8 +72,7 @@ class PostNote extends HookWidget {
               width: coordinate.width,
               height: coordinate.height,
               decoration: BoxDecoration(
-                  color: Colors.white54,
-                  border: Border.all(color: Colors.red)),
+                  color: Colors.white54, border: Border.all(color: Colors.red)),
             ),
           ),
         ),

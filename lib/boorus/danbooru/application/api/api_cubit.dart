@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
 
 enum BooruType {
   unknown,
@@ -90,7 +90,7 @@ class ApiState extends Equatable {
   });
   factory ApiState.initial(Dio dio) => ApiState(api: DanbooruApi(dio));
 
-  final IApi api;
+  final Api api;
 
   @override
   List<Object?> get props => [api];

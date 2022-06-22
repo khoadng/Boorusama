@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 
 class PoolDto {
   PoolDto({

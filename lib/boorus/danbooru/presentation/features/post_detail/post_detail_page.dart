@@ -8,17 +8,17 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_image_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_bloc.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'post_image_page.dart';
 import 'providers/slide_show_providers.dart';
 
 class PostDetailPage extends HookWidget {

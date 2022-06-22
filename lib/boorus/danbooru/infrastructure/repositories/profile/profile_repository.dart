@@ -3,19 +3,19 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 
 class ProfileRepository implements IProfileRepository {
   ProfileRepository(
-      {required IAccountRepository accountRepository, required IApi api})
+      {required IAccountRepository accountRepository, required Api api})
       : _api = api,
         _accountRepository = accountRepository;
 
   final IAccountRepository _accountRepository;
-  final IApi _api;
+  final Api _api;
 
   @override
   Future<Profile?> getProfile({

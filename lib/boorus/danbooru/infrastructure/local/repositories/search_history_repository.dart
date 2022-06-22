@@ -1,6 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 
 class SearchHistoryRepository implements ISearchHistoryRepository {

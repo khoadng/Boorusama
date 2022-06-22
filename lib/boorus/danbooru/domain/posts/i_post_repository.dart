@@ -2,8 +2,8 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/time_scale.dart';
 import 'post.dart';
+import 'time_scale.dart';
 
 abstract class IPostRepository {
   Future<List<Post>> getPosts(

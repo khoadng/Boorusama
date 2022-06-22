@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/pool/pool_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+
+// Project imports:
 
 class PoolImage extends StatelessWidget {
   const PoolImage({

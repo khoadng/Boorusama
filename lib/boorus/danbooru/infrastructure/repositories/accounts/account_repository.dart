@@ -2,11 +2,9 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
 class AccountRepository implements IAccountRepository {
-
   AccountRepository(this._db);
   final Future<Box> _db;
 

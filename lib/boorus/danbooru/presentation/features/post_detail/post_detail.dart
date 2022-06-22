@@ -20,12 +20,11 @@ import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_from_post_id_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended_post_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/preview_post_grid_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/utils.dart';

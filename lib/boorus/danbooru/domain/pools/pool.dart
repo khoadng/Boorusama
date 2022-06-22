@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/cupertino.dart';
 
+// Project imports:
+import 'pool_category.dart';
+
 @immutable
 class Pool {
   const Pool({
@@ -33,15 +36,6 @@ enum PoolOrder {
   const PoolOrder(this.key);
 
   final String key;
-}
-
-enum PoolCategory {
-  unknown,
-  collection,
-  series;
-
-  @override
-  String toString() => name;
 }
 
 typedef PoolName = String;

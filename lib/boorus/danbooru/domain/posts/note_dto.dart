@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 import 'note.dart';
+import 'note_coordinate.dart';
 
 class NoteDto {
   NoteDto({

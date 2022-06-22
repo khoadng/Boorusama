@@ -11,9 +11,8 @@ import 'package:settings_ui/settings_ui.dart';
 // Project imports:
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/core/presentation/grid_size.dart';
 import 'package:boorusama/main.dart';
 

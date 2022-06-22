@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
-abstract class IApi {
+abstract class Api {
   Future<HttpResponse> addToFavorites(
     String login,
     String apiKey,

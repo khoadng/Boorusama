@@ -1,9 +1,3 @@
-// Package imports:
-import 'package:json_annotation/json_annotation.dart';
-
-part 'artist_commentary.g.dart';
-
-@JsonSerializable()
 class ArtistCommentary {
   ArtistCommentary({
     required this.originalTitle,
@@ -18,9 +12,6 @@ class ArtistCommentary {
         translatedTitle: '',
         translatedDescription: '',
       );
-
-  factory ArtistCommentary.fromJson(Map<String, dynamic> json) =>
-      _$ArtistCommentaryFromJson(json);
   final String originalTitle;
   final String originalDescription;
   final String translatedTitle;
@@ -30,6 +21,4 @@ class ArtistCommentary {
       translatedTitle.isNotEmpty || translatedDescription.isNotEmpty;
   bool get hasCommentary =>
       originalTitle.isNotEmpty || originalDescription.isNotEmpty;
-
-  Map<String, dynamic> toJson() => _$ArtistCommentaryToJson(this);
 }

@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/comment_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'widgets/comment_item.dart';

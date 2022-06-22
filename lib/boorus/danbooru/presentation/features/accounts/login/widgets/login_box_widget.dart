@@ -8,8 +8,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/api/api.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
 import 'package:boorusama/core/utils.dart';
 
@@ -233,8 +233,7 @@ class LoginField extends HookWidget {
           borderSide: BorderSide(color: Theme.of(context).errorColor),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderSide:
-              BorderSide(color: Theme.of(context).errorColor, width: 2),
+          borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
         ),
         contentPadding: const EdgeInsets.all(12),
         labelText: labelText,

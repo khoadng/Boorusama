@@ -3,13 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/image_source.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/rating.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'post_name.dart';
 
 class Post extends Equatable implements IDownloadable {
-
   const Post({
     required this.id,
     required this.previewImageUrl,

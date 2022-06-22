@@ -7,7 +7,7 @@ import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/providers/slide_show_providers.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/modal.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 
 class SlideShowConfigBottomModal extends HookWidget {
   const SlideShowConfigBottomModal({

@@ -2,15 +2,13 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/artist_commentary_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/i_artist_commentary_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 
 class ArtistCommentaryRepository implements IArtistCommentaryRepository {
-
   ArtistCommentaryRepository(this._api, this._accountRepository);
-  final IApi _api;
+  final Api _api;
   final IAccountRepository _accountRepository;
 
   @override

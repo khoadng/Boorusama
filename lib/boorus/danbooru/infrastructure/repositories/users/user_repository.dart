@@ -3,11 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user_dto.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
 
 List<User> parseUser(
@@ -27,7 +25,7 @@ class UserRepository implements IUserRepository {
   );
 
   final IAccountRepository _accountRepository;
-  final IApi _api;
+  final Api _api;
   final List<String> defaultBlacklistedTags;
 
   @override

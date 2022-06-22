@@ -3,8 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
   SearchHistoryCubit({

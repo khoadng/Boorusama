@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'artist_commentary_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 
 abstract class IArtistCommentaryRepository {
   Future<ArtistCommentaryDto> getCommentary(

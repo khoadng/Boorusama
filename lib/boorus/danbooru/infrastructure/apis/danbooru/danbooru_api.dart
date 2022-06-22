@@ -3,12 +3,12 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 
 part 'danbooru_api.g.dart';
 
 @RestApi()
-abstract class DanbooruApi implements IApi {
+abstract class DanbooruApi implements Api {
   factory DanbooruApi(Dio dio, {String baseUrl}) = _DanbooruApi;
 
   @POST('/favorites')
