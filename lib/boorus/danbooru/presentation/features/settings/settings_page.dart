@@ -54,10 +54,6 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   title: Text('settings.appSettings.appearance._string'.tr()),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
@@ -68,10 +64,6 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   title: Text('settings.appSettings.language._string'.tr()),
                   leading: const Icon(Icons.translate),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const LanguagePage(),
@@ -81,10 +73,6 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   title: const Text('Download'),
                   leading: const FaIcon(FontAwesomeIcons.download),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const DownloadPage(),
@@ -94,10 +82,6 @@ class SettingsPage extends StatelessWidget {
                 ListTile(
                   title: const Text('Privacy'),
                   leading: const FaIcon(FontAwesomeIcons.shieldHalved),
-                  trailing: const FaIcon(
-                    FontAwesomeIcons.chevronRight,
-                    size: 18,
-                  ),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const PrivacyPage(),

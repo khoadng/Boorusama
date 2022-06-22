@@ -1,13 +1,44 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/core/infrastructure/io_helper.dart';
+
+bool _hasScopeStorage(BuildContext context) {
+  if (Platform.isAndroid) {
+    return context.read<DeviceInfo>().versionCode >= 30;
+  }
+
+  return false;
+}
+
+const String _basePath = '/storage/emulated/0/';
+const List<String> _allowedFolders = ['Download', 'Documents', 'Pictures'];
+
+bool _isInvalidDownloadPath(String? path) {
+  try {
+    if (path == null) return false;
+
+    final nonBasePath = path.replaceAll(_basePath, '');
+    final paths = nonBasePath.split('/');
+
+    if (paths.isEmpty) return true;
+    if (!_allowedFolders.contains(paths.first)) return true;
+    return false;
+  } catch (e) {
+    return false;
+  }
+}
 
 class DownloadPage extends StatelessWidget {
   const DownloadPage({Key? key}) : super(key: key);
@@ -24,39 +55,13 @@ class DownloadPage extends StatelessWidget {
           ),
           body: SafeArea(
               child: Column(children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 8,
+            if (_hasScopeStorage(context))
+              _DownloadPathWarning(
+                releaseName: context.read<DeviceInfo>().release,
+                allowedFolders: _allowedFolders,
               ),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: Theme.of(context).colorScheme.error,
-                ),
-                width: MediaQuery.of(context).size.width,
-                child: Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: RichText(
-                      text: TextSpan(
-                          style: TextStyle(
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
-                          children: const [
-                        TextSpan(
-                            text:
-                                'Only subfolders created inside public directories '),
-                        TextSpan(
-                            text: '(Download, Pictures, Documents) ',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
-                        TextSpan(
-                            text:
-                                "are allowed in Android 11+. Picking anything else won't work.")
-                      ])),
-                ),
-              ),
-            ),
             ListTile(
+              leading: const FaIcon(FontAwesomeIcons.folder),
               onTap: () async {
                 final bloc = context.read<SettingsCubit>();
                 final path = await FilePicker.platform.getDirectoryPath();
@@ -78,9 +83,77 @@ class DownloadPage extends StatelessWidget {
                     ),
               title: const Text('Download path'),
             ),
+            if (_hasScopeStorage(context) &&
+                _isInvalidDownloadPath(state.settings.downloadPath))
+              WarningContainer(
+                  contentBuilder: (context) =>
+                      const Text('Download might fail if using this path.'))
           ])),
         );
       },
+    );
+  }
+}
+
+class WarningContainer extends StatelessWidget {
+  const WarningContainer({
+    Key? key,
+    required this.contentBuilder,
+  }) : super(key: key);
+
+  final Widget Function(BuildContext context) contentBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Theme.of(context).colorScheme.error,
+        ),
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: contentBuilder(context),
+        ),
+      ),
+    );
+  }
+}
+
+class _DownloadPathWarning extends StatelessWidget {
+  const _DownloadPathWarning({
+    Key? key,
+    required this.releaseName,
+    required this.allowedFolders,
+  }) : super(key: key);
+
+  final String releaseName;
+  final List<String> allowedFolders;
+
+  @override
+  Widget build(BuildContext context) {
+    return WarningContainer(
+      contentBuilder: (context) => RichText(
+          text: TextSpan(
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onBackground,
+              ),
+              children: [
+            const TextSpan(
+                text: 'Only subfolders created inside public directories '),
+            TextSpan(
+                text: '(${allowedFolders.join(',')}) ',
+                style: const TextStyle(fontWeight: FontWeight.bold)),
+            const TextSpan(
+                text:
+                    "are allowed in Android 11+. Picking anything else won't work."),
+            TextSpan(text: "\n\nThis device's version is $releaseName")
+          ])),
     );
   }
 }

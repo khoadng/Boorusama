@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
@@ -39,6 +40,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
@@ -97,6 +99,8 @@ void main() async {
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
+  final deviceInfo =
+      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
   void run() {
     runApp(
@@ -109,6 +113,7 @@ void main() async {
           providers: [
             RepositoryProvider.value(value: packageInfo),
             RepositoryProvider.value(value: appInfo),
+            RepositoryProvider.value(value: deviceInfo),
           ],
           child: MultiBlocProvider(
             providers: [
