@@ -46,24 +46,27 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
           crossAxisSpacing: crossAxisSpacing,
           mainAxisSpacing: mainAxisSpacing,
         );
-  factory SliverPostGridDelegate.normal() => SliverPostGridDelegate(
+  factory SliverPostGridDelegate.normal(double spacing) =>
+      SliverPostGridDelegate(
         childAspectRatio: 0.65,
         crossAxisCount: 2,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
+        mainAxisSpacing: spacing,
+        crossAxisSpacing: spacing,
       );
 
-  factory SliverPostGridDelegate.small() => SliverPostGridDelegate(
+  factory SliverPostGridDelegate.small(double spacing) =>
+      SliverPostGridDelegate(
         childAspectRatio: 1,
         crossAxisCount: 3,
-        mainAxisSpacing: 2.5,
-        crossAxisSpacing: 2.5,
+        mainAxisSpacing: spacing,
+        crossAxisSpacing: spacing,
       );
-  factory SliverPostGridDelegate.large() => SliverPostGridDelegate(
+  factory SliverPostGridDelegate.large(double spacing) =>
+      SliverPostGridDelegate(
         childAspectRatio: 0.65,
         crossAxisCount: 1,
-        mainAxisSpacing: 5,
-        crossAxisSpacing: 5,
+        mainAxisSpacing: spacing,
+        crossAxisSpacing: spacing,
       );
 }
 
@@ -108,31 +111,44 @@ class SliverPostGrid extends HookWidget {
       return () {};
     });
 
-    return SliverGrid(
-      gridDelegate: gridSizeToGridDelegate(gridSize),
-      delegate: SliverChildBuilderDelegate(
-        (BuildContext context, int index) {
-          final post = posts[index];
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: SliverPostGridItem(
-                  post: post,
-                  index: index,
-                  borderRadius: borderRadius,
-                  gridSize: gridSize,
-                  scrollController: scrollController,
-                  onTap: onTap,
-                ),
-              ),
-              postAnnotationBuilder?.call(context, post, index) ??
-                  const SizedBox.shrink(),
-            ],
-          );
-        },
-        childCount: posts.length,
-      ),
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) =>
+          previous.settings.imageBorderRadius !=
+              current.settings.imageBorderRadius ||
+          previous.settings.imageGridSpacing !=
+              current.settings.imageGridSpacing,
+      builder: (context, state) {
+        return SliverGrid(
+          gridDelegate: gridSizeToGridDelegate(
+            gridSize,
+            state.settings.imageGridSpacing,
+          ),
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final post = posts[index];
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: SliverPostGridItem(
+                      post: post,
+                      index: index,
+                      borderRadius: BorderRadius.circular(
+                          state.settings.imageBorderRadius),
+                      gridSize: gridSize,
+                      scrollController: scrollController,
+                      onTap: onTap,
+                    ),
+                  ),
+                  postAnnotationBuilder?.call(context, post, index) ??
+                      const SizedBox.shrink(),
+                ],
+              );
+            },
+            childCount: posts.length,
+          ),
+        );
+      },
     );
   }
 }
@@ -153,7 +169,7 @@ class SliverPostGridItem extends StatelessWidget {
   final AutoScrollController scrollController;
   final void Function(Post post, int index)? onTap;
   final GridSize gridSize;
-  final BorderRadiusGeometry? borderRadius;
+  final BorderRadius? borderRadius;
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[];
@@ -213,7 +229,7 @@ class SliverPostGridItem extends StatelessWidget {
             ),
           ),
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: borderRadius ?? BorderRadius.circular(8),
             child: ShadowGradientOverlay(
               alignment: Alignment.topCenter,
               colors: <Color>[
@@ -237,14 +253,14 @@ class SliverPostGridItem extends StatelessWidget {
   }
 }
 
-SliverGridDelegate gridSizeToGridDelegate(GridSize size) {
+SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
   switch (size) {
     case GridSize.large:
-      return SliverPostGridDelegate.large();
+      return SliverPostGridDelegate.large(spacing);
     case GridSize.small:
-      return SliverPostGridDelegate.small();
+      return SliverPostGridDelegate.small(spacing);
     default:
-      return SliverPostGridDelegate.normal();
+      return SliverPostGridDelegate.normal(spacing);
   }
 }
 
