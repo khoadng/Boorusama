@@ -31,47 +31,44 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final bottomTabIndex = useState(0);
 
-    return Column(
-      children: <Widget>[
-        BlocBuilder<NetworkBloc, NetworkState>(
-          builder: (context, state) {
-            if (state is NetworkConnectedState) {
-              return const SizedBox.shrink();
-            } else if (state is NetworkDisconnectedState) {
-              return const Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Material(
-                  color: Colors.black,
-                  child: Text('Network unavailable'),
-                ),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
-        Expanded(
-          child: BlocBuilder<ThemeBloc, ThemeState>(
-            builder: (context, state) {
-              return AnnotatedRegion<SystemUiOverlayStyle>(
-                value: SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent,
-                  statusBarIconBrightness: state.theme == ThemeMode.light
-                      ? Brightness.dark
-                      : Brightness.light,
-                ),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(16),
-                    topRight: Radius.circular(16),
-                  ),
-                  child: Scaffold(
-                    extendBody: true,
-                    key: scaffoldKey,
-                    drawer: const SideBarMenu(),
-                    resizeToAvoidBottomInset: false,
-                    body: SafeArea(
-                      bottom: false,
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: state.theme == ThemeMode.light
+                ? Brightness.dark
+                : Brightness.light,
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            child: Scaffold(
+              extendBody: true,
+              key: scaffoldKey,
+              drawer: const SideBarMenu(),
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                bottom: false,
+                child: Column(
+                  children: [
+                    BlocBuilder<NetworkBloc, NetworkState>(
+                      builder: (context, state) {
+                        if (state is NetworkConnectedState) {
+                          return const SizedBox.shrink();
+                        } else if (state is NetworkDisconnectedState) {
+                          return const Material(
+                            color: Colors.black,
+                            child: Text('Network unavailable'),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
+                    ),
+                    Expanded(
                       child: AnimatedIndexedStack(
                         index: bottomTabIndex.value,
                         children: <Widget>[
@@ -109,16 +106,16 @@ class HomePage extends HookWidget {
                         ],
                       ),
                     ),
-                    bottomNavigationBar: BottomBar(
-                      onTabChanged: (value) => bottomTabIndex.value = value,
-                    ),
-                  ),
+                  ],
                 ),
-              );
-            },
+              ),
+              bottomNavigationBar: BottomBar(
+                onTabChanged: (value) => bottomTabIndex.value = value,
+              ),
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
