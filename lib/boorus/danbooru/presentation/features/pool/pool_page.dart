@@ -66,6 +66,7 @@ class _PoolPageState extends State<PoolPage> {
     PoolOverviewState poState,
   ) {
     return InfiniteLoadList(
+      extendBody: true,
       enableRefresh: false,
       enableLoadMore: pState.hasMore,
       onLoadMore: () => context.read<PoolBloc>().add(PoolFetched(
