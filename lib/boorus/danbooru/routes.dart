@@ -180,6 +180,8 @@ final postSearchHandler = Handler(handlerFunc: (
               initial: const SearchState(displayState: DisplayState.options)))
     ],
     child: SearchPage(
+      metatags: context.read<TagInfo>().metatags,
+      metatagHighlightColor: Theme.of(context).colorScheme.primary,
       initialQuery: args[0],
     ),
   );

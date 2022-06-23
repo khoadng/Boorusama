@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -23,16 +24,29 @@ class SearchPage extends StatefulWidget {
   const SearchPage({
     Key? key,
     this.initialQuery = '',
+    required this.metatags,
+    required this.metatagHighlightColor,
   }) : super(key: key);
 
   final String initialQuery;
+  final List<String> metatags;
+  final Color metatagHighlightColor;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final queryEditingController = TextEditingController();
+  late final tags = widget.metatags.join('|');
+  late final queryEditingController = RichTextController(
+    patternMatchMap: {
+      RegExp('($tags)+:'): TextStyle(
+        fontWeight: FontWeight.w800,
+        color: widget.metatagHighlightColor,
+      ),
+    },
+    onMatch: (List<String> match) {},
+  );
   final refreshController = RefreshController();
 
   @override
