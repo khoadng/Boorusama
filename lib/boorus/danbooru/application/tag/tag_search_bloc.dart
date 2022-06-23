@@ -32,7 +32,7 @@ class TagSearchItem extends Equatable {
 
     if (!_hasMetatag(query)) {
       return TagSearchItem(
-        tag: query.replaceAll('_', ' '),
+        tag: stripFilterOperator(query, operator).replaceAll('_', ' '),
         operator: operator,
       );
     }

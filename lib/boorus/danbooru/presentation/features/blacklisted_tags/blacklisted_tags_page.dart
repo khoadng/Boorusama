@@ -289,6 +289,25 @@ class BlacklistedTagsPage extends StatelessWidget {
                       ),
                     ),
                   )),
+                  SliverToBoxAdapter(
+                    child: WarningContainer(contentBuilder: (context) {
+                      return RichText(
+                          text: const TextSpan(children: [
+                        TextSpan(text: 'Only support '),
+                        TextSpan(
+                            text: 'NOT ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: 'operator and '),
+                        TextSpan(
+                            text: 'OR ',
+                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        TextSpan(text: 'operator.'),
+                        TextSpan(
+                            text:
+                                "\n\nBlacklisting using metatags won't work for current version."),
+                      ]));
+                    }),
+                  ),
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
