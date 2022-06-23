@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/user/user.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
@@ -163,7 +164,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85),
             child: Text(
-              tagSearchItem.tag.label,
+              tagSearchItem.tag,
               overflow: TextOverflow.fade,
             ),
           ));
@@ -203,7 +204,7 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85),
             child: Text(
-              tagSearchItem.tag.label,
+              tagSearchItem.tag,
               overflow: TextOverflow.fade,
             ),
           ),
@@ -271,6 +272,7 @@ class BlacklistedTagsPage extends StatelessWidget {
                         providers: [
                           BlocProvider(
                               create: (context) => TagSearchBloc(
+                                  tagInfo: context.read<TagInfo>(),
                                   autocompleteRepository:
                                       context.read<AutocompleteRepository>())),
                         ],

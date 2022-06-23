@@ -99,3 +99,4 @@ flutter:
     - assets/icon/
     - assets/translations/
     - assets/information.json
+    - assets/tagdef.json
