@@ -13,7 +13,7 @@ class DanbooruConfig implements IConfig {
         // "id": "1000, >=1000,",
         // "date": "2007-01-01",
         'age': '2weeks..1year or age:2w..1y',
-        'rating': 'safe or s,...',
+        'rating': 's',
         'score': '100',
       };
 

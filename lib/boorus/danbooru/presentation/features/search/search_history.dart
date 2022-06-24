@@ -74,6 +74,7 @@ class SearchHistorySection extends HookWidget {
         ..insert(
             0,
             const Divider(
+              thickness: 1,
               indent: 10,
               endIndent: 10,
             ));
