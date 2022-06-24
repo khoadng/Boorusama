@@ -66,7 +66,7 @@ class FilterItem extends Equatable {
   String toString() => '${operator.toString().split('.').last}.$tag';
 }
 
-String _stripFilterOperator(String value, FilterOperator operator) {
+String stripFilterOperator(String value, FilterOperator operator) {
   switch (operator) {
     case FilterOperator.not:
     case FilterOperator.or:
@@ -79,7 +79,7 @@ String _stripFilterOperator(String value, FilterOperator operator) {
 FilterItem? _stringToFilterItem(String value, FilterGroupType groupType) {
   if (value.isEmpty) return null;
   final operator = stringToFilterOperator(value.getFirstCharacter());
-  final tag = _stripFilterOperator(value, operator);
+  final tag = stripFilterOperator(value, operator);
 
   if (groupType == FilterGroupType.single) {
     return FilterItem(

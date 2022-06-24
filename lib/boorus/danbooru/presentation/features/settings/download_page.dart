@@ -12,6 +12,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/infrastructure/io_helper.dart';
 
 bool _hasScopeStorage(BuildContext context) {
@@ -91,36 +92,6 @@ class DownloadPage extends StatelessWidget {
           ])),
         );
       },
-    );
-  }
-}
-
-class WarningContainer extends StatelessWidget {
-  const WarningContainer({
-    Key? key,
-    required this.contentBuilder,
-  }) : super(key: key);
-
-  final Widget Function(BuildContext context) contentBuilder;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).colorScheme.error,
-        ),
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: contentBuilder(context),
-        ),
-      ),
     );
   }
 }

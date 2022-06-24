@@ -78,6 +78,7 @@ dependencies:
   toggle_switch: ^2.0.1
   file_picker: ^4.6.1
   device_info_plus: ^4.0.0
+  rich_text_controller: ^1.4.0
 
 dev_dependencies:
   flutter_localizations:
@@ -99,3 +100,4 @@ flutter:
     - assets/icon/
     - assets/translations/
     - assets/information.json
+    - assets/tagdef.json

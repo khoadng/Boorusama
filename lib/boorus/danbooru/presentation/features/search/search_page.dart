@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -23,16 +24,29 @@ class SearchPage extends StatefulWidget {
   const SearchPage({
     Key? key,
     this.initialQuery = '',
+    required this.metatags,
+    required this.metatagHighlightColor,
   }) : super(key: key);
 
   final String initialQuery;
+  final List<String> metatags;
+  final Color metatagHighlightColor;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final queryEditingController = TextEditingController();
+  late final tags = widget.metatags.join('|');
+  late final queryEditingController = RichTextController(
+    patternMatchMap: {
+      RegExp('($tags)+:'): TextStyle(
+        fontWeight: FontWeight.w800,
+        color: widget.metatagHighlightColor,
+      ),
+    },
+    onMatch: (List<String> match) {},
+  );
   final refreshController = RefreshController();
 
   @override
@@ -321,11 +335,10 @@ class _SearchPageState extends State<SearchPage> {
       builder: (context, state) {
         return FloatingActionButton(
           onPressed: () {
+            final tags = state.selectedTags.map((e) => e.toString()).join(' ');
             context.read<SearchBloc>().add(const SearchRequested());
-            context.read<PostBloc>().add(PostRefreshed(
-                tag: state.selectedTags.map((e) => e.toString()).join(' ')));
-            context.read<SearchHistoryCubit>().addHistory(
-                state.selectedTags.map((e) => e.toString()).join(' '));
+            context.read<PostBloc>().add(PostRefreshed(tag: tags));
+            context.read<SearchHistoryCubit>().addHistory(tags);
           },
           heroTag: null,
           child: const Icon(Icons.search),
@@ -334,54 +347,59 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
-    if (tagSearchItem.operator == FilterOperator.none) {
-      return Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Colors.grey[800],
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          deleteIcon: const Icon(
-            FontAwesomeIcons.xmark,
-            color: Colors.red,
-            size: 15,
-          ),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-          onDeleted: () => context
-              .read<TagSearchBloc>()
-              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
-            child: Text(
-              tagSearchItem.tag.label,
-              overflow: TextOverflow.fade,
-            ),
-          ));
+  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
+    if (!hasOperator) {
+      return const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        bottomLeft: Radius.circular(8),
+      ));
+    } else {
+      return const RoundedRectangleBorder();
     }
+  }
 
+  Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
+    final hasOperator = tagSearchItem.operator != FilterOperator.none;
+    final hasMeta = tagSearchItem.metatag != null;
+    final hasAny = hasMeta || hasOperator;
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Theme.of(context).colorScheme.secondary,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 1),
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))),
-          label: Text(
-            filterOperatorToStringCharacter(tagSearchItem.operator),
+        if (hasOperator)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Colors.purple,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8))),
+            label: Text(
+              filterOperatorToStringCharacter(tagSearchItem.operator),
+              style: const TextStyle(color: Colors.white70),
+            ),
           ),
-        ),
+        if (hasMeta)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: _getOutlineBorderForMetaChip(hasOperator),
+            label: Text(
+              tagSearchItem.metatag!,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
         Chip(
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           backgroundColor: Colors.grey[800],
-          shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8))),
+          shape: hasAny
+              ? const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8)))
+              : null,
           deleteIcon: const Icon(
             FontAwesomeIcons.xmark,
             color: Colors.red,
@@ -395,8 +413,9 @@ class _SearchPageState extends State<SearchPage> {
             constraints: BoxConstraints(
                 maxWidth: MediaQuery.of(context).size.width * 0.85),
             child: Text(
-              tagSearchItem.tag.label,
+              tagSearchItem.tag,
               overflow: TextOverflow.fade,
+              style: const TextStyle(color: Colors.white70),
             ),
           ),
         )

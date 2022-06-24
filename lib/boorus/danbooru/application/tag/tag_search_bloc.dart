@@ -7,25 +7,60 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/common/string_utils.dart';
+
+bool _hasMetatag(String query) => query.contains(':');
 
 @immutable
 class TagSearchItem extends Equatable {
   const TagSearchItem({
     required this.tag,
     required this.operator,
+    this.metatag,
   });
 
-  final AutocompleteData tag;
+  factory TagSearchItem.fromString(
+    String query,
+    TagInfo tagInfo,
+  ) {
+    final operator = stringToFilterOperator(query.getFirstCharacter());
+
+    if (!_hasMetatag(query)) {
+      return TagSearchItem(
+        tag: stripFilterOperator(query, operator).replaceAll('_', ' '),
+        operator: operator,
+      );
+    }
+
+    final metatag = getMetatagFromString(query, operator);
+    final tag = stripFilterOperator(query, operator)
+        .replaceAll('$metatag:', '')
+        .replaceAll('_', ' ');
+
+    final isValidMetatag = tagInfo.metatags.contains(metatag);
+
+    return TagSearchItem(
+      tag: isValidMetatag ? tag : '$metatag:$tag',
+      operator: operator,
+      metatag: isValidMetatag ? metatag : null,
+    );
+  }
+
+  final String tag;
   final FilterOperator operator;
+  final String? metatag;
 
   @override
-  List<Object?> get props => [tag, operator];
+  List<Object?> get props => [tag, operator, metatag];
   @override
-  String toString() => '${filterOperatorToString(operator)}${tag.value}';
+  String toString() =>
+      '${filterOperatorToString(operator)}${metatag ?? ''}${metatag != null ? ':' : ''}$tag'
+          .replaceAll(' ', '_');
 }
 
 @immutable
@@ -141,6 +176,7 @@ class TagSearchDone extends TagSearchEvent {
 class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   TagSearchBloc({
     required AutocompleteRepository autocompleteRepository,
+    required TagInfo tagInfo,
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
@@ -149,6 +185,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           emit(state.copyWith(query: ''));
           return;
         }
+
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
@@ -168,13 +205,9 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
       emit(state.copyWith(
         selectedTags: [
           ...state.selectedTags,
-          ...event.tags.split(' ').map(
-                (tag) => TagSearchItem(
-                  tag: AutocompleteData(
-                      label: tag.replaceAll('_', ' '), value: tag),
-                  operator: state.operator,
-                ),
-              ),
+          ...event.tags
+              .split(' ')
+              .map((e) => TagSearchItem.fromString(e, tagInfo)),
         ],
         query: '',
         suggestionTags: [],
@@ -185,11 +218,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
       emit(state.copyWith(
         selectedTags: [
           ...state.selectedTags,
-          TagSearchItem(
-            tag: AutocompleteData(
-                label: event.tag.replaceAll('_', ' '), value: event.tag),
-            operator: state.operator,
-          )
+          TagSearchItem.fromString(
+            '${filterOperatorToString(state.operator)}${event.tag}',
+            tagInfo,
+          ),
         ],
         query: '',
         suggestionTags: [],
@@ -200,10 +232,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
       emit(state.copyWith(
         selectedTags: [
           ...state.selectedTags,
-          TagSearchItem(
-            tag: event.tag,
-            operator: state.operator,
-          )
+          TagSearchItem.fromString(
+            '${filterOperatorToString(state.operator)}${event.tag.value}',
+            tagInfo,
+          ),
         ],
         query: '',
         suggestionTags: [],
@@ -225,13 +257,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
       emit(state.copyWith(
         selectedTags: [
           ...state.selectedTags,
-          TagSearchItem(
-            tag: AutocompleteData(
-              label: state.query.replaceAll('_', ' '),
-              value: state.query,
-            ),
-            operator: state.operator,
-          )
+          TagSearchItem.fromString(
+            state.query,
+            tagInfo,
+          ),
         ],
         query: '',
         suggestionTags: [],
@@ -243,4 +272,26 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 String getQuery(String query, FilterOperator operator) {
   if (operator != FilterOperator.none) return query.substring(1);
   return query;
+}
+
+String? getMetatagWithSemicolonEnding(
+  String query,
+  FilterOperator operator,
+) {
+  if (query.endsWith(':')) {
+    final nonOpQuery = stripFilterOperator(query, operator);
+    return nonOpQuery.substring(0, nonOpQuery.length - 1);
+  }
+  return null;
+}
+
+String? getMetatagFromString(
+  String str,
+  FilterOperator operator,
+) {
+  final query = str.split(':');
+  if (query.length <= 1) return null;
+  if (query.first.isEmpty) return null;
+
+  return stripFilterOperator(query.first, operator);
 }

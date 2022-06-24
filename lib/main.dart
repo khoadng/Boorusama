@@ -42,6 +42,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'app.dart';
@@ -99,6 +100,8 @@ void main() async {
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
+  final tagInfo =
+      await TagInfoService.create().then((value) => value.getInfo());
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
@@ -114,6 +117,7 @@ void main() async {
             RepositoryProvider.value(value: packageInfo),
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
+            RepositoryProvider.value(value: tagInfo),
           ],
           child: MultiBlocProvider(
             providers: [

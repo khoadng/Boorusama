@@ -32,6 +32,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tags_page.dart';
@@ -171,12 +172,16 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
           create: (context) => TagSearchBloc(
-              autocompleteRepository: context.read<AutocompleteRepository>())),
+                tagInfo: context.read<TagInfo>(),
+                autocompleteRepository: context.read<AutocompleteRepository>(),
+              )),
       BlocProvider(
           create: (context) => SearchBloc(
               initial: const SearchState(displayState: DisplayState.options)))
     ],
     child: SearchPage(
+      metatags: context.read<TagInfo>().metatags,
+      metatagHighlightColor: Theme.of(context).colorScheme.primary,
       initialQuery: args[0],
     ),
   );
