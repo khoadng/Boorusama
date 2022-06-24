@@ -25,3 +25,14 @@ String filterOperatorToString(FilterOperator operator) {
       return '';
   }
 }
+
+String filterOperatorToStringCharacter(FilterOperator operator) {
+  switch (operator) {
+    case FilterOperator.not:
+      return 'not'.toUpperCase();
+    case FilterOperator.or:
+      return 'or'.toUpperCase();
+    default:
+      return '';
+  }
+}

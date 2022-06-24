@@ -63,5 +63,10 @@
       "replacements",
       "upvote",
       "downvote"
+    ],
+    "default_blacklisted_tags" : [
+      "guro",
+      "scat",
+      "furry -rating:s"
     ]
   }
