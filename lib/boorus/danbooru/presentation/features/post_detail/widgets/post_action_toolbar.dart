@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
@@ -12,14 +11,14 @@ import 'package:share_plus/share_plus.dart';
 import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 
-class PostActionToolbar extends HookWidget {
+class PostActionToolbar extends StatefulWidget {
   const PostActionToolbar({
     Key? key,
     required this.post,
@@ -30,123 +29,141 @@ class PostActionToolbar extends HookWidget {
   final String? imagePath;
 
   @override
+  State<PostActionToolbar> createState() => _PostActionToolbarState();
+}
+
+class _PostActionToolbarState extends State<PostActionToolbar> {
+  @override
   Widget build(BuildContext context) {
-    final favCount = useState(post.favCount);
-
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) =>
-          ButtonBar(alignment: MainAxisAlignment.spaceEvenly, children: [
-        BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              return TextButton.icon(
-                  onPressed: () async {
-                    if (authState is Unauthenticated) {
-                      const snackbar = SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        duration: Duration(seconds: 3),
-                        elevation: 6,
-                        content: Text(
-                          'You have to log in to perform this action',
-                        ),
-                      );
-                      ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                      return;
-                    }
+      builder: (context, authState) => ButtonBar(
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(authState),
+          _buildCommentButton(),
+          _buildDownloadButton(),
+          _buildShareButton(),
+        ],
+      ),
+    );
+  }
 
-                    final result = state.data!
-                        ? RepositoryProvider.of<IFavoritePostRepository>(
-                                context)
-                            .removeFromFavorites(post.id)
-                        : RepositoryProvider.of<IFavoritePostRepository>(
-                                context)
-                            .addToFavorites(post.id);
-
-                    final success = await result;
-                    ReadContext(context)
-                        .read<IsPostFavoritedBloc>()
-                        .add(IsPostFavoritedRequested(postId: post.id));
-                    // ignore: avoid_print
-                    print('operation success = $success');
-                  },
-                  icon: state.data!
-                      ? const FaIcon(FontAwesomeIcons.solidHeart,
-                          color: Colors.red)
-                      : const FaIcon(
-                          FontAwesomeIcons.heart,
-                        ),
-                  label: Text(
-                    favCount.value.toString(),
-                    style:
-                        state.data! ? const TextStyle(color: Colors.red) : null,
-                  ));
-            } else if (state.status == LoadStatus.failure) {
-              return const SizedBox.shrink();
-            } else {
-              return Center(
-                child: TextButton.icon(
-                    onPressed: null,
-                    icon: const FaIcon(
-                      FontAwesomeIcons.spinner,
-                    ),
-                    label: Text(
-                      post.favCount.toString(),
-                      style: const TextStyle(color: Colors.white),
-                    )),
-              );
-            }
-          },
-        ),
-        IconButton(
-          onPressed: () => showBarModalBottomSheet(
-            expand: false,
-            context: context,
-            builder: (context) => CommentPage(
-              postId: post.id,
-            ),
-          ),
-          icon: const FaIcon(
-            FontAwesomeIcons.comment,
-          ),
-        ),
-        IconButton(
-          onPressed: () => showMaterialModalBottomSheet(
-            expand: false,
-            context: context,
-            barrierColor: Colors.black45,
-            backgroundColor: Colors.transparent,
-            builder: (context) =>
-                BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-              builder: (context, state) {
-                return ModalShare(
-                  endpoint: state.booru.url,
-                  onTap: Share.share,
-                  onTapFile: (filePath) => Share.shareFiles([filePath]),
-                  post: post,
-                  imagePath: imagePath,
-                );
-              },
-            ),
-          ),
-          icon: const FaIcon(
-            FontAwesomeIcons.shareFromSquare,
-          ),
-        ),
-        BlocSelector<SettingsCubit, SettingsState, String?>(
-          selector: (state) => state.settings.downloadPath,
-          builder: (context, downloadPath) {
-            return IconButton(
-              onPressed: () => context.read<IDownloadService>().download(
-                    post,
-                    path: downloadPath,
-                  ),
-              icon: const FaIcon(
-                FontAwesomeIcons.download,
+  Widget _buildDownloadButton() {
+    return BlocSelector<SettingsCubit, SettingsState, String?>(
+      selector: (state) => state.settings.downloadPath,
+      builder: (context, downloadPath) {
+        return IconButton(
+          onPressed: () => context.read<IDownloadService>().download(
+                widget.post,
+                path: downloadPath,
               ),
+          icon: const FaIcon(
+            FontAwesomeIcons.download,
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildShareButton() {
+    return IconButton(
+      onPressed: () => showMaterialModalBottomSheet(
+        expand: false,
+        context: context,
+        barrierColor: Colors.black45,
+        backgroundColor: Colors.transparent,
+        builder: (context) => BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+          builder: (context, state) {
+            return ModalShare(
+              endpoint: state.booru.url,
+              onTap: Share.share,
+              onTapFile: (filePath) => Share.shareFiles([filePath]),
+              post: widget.post,
+              imagePath: widget.imagePath,
             );
           },
-        )
-      ]),
+        ),
+      ),
+      icon: const FaIcon(
+        FontAwesomeIcons.shareFromSquare,
+      ),
+    );
+  }
+
+  Widget _buildCommentButton() {
+    return IconButton(
+      onPressed: () => showBarModalBottomSheet(
+        expand: false,
+        context: context,
+        builder: (context) => CommentPage(
+          postId: widget.post.id,
+        ),
+      ),
+      icon: const FaIcon(
+        FontAwesomeIcons.comment,
+      ),
+    );
+  }
+
+  Widget _buildFavoriteButton(AuthenticationState authState) {
+    return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          return TextButton.icon(
+            onPressed: () async {
+              final favBloc = context.read<IsPostFavoritedBloc>();
+              if (authState is Unauthenticated) {
+                const snackbar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(seconds: 3),
+                  elevation: 6,
+                  content: Text(
+                    'You have to log in to perform this action',
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              }
+
+              final result = state.data!
+                  ? RepositoryProvider.of<IFavoritePostRepository>(context)
+                      .removeFromFavorites(widget.post.id)
+                  : RepositoryProvider.of<IFavoritePostRepository>(context)
+                      .addToFavorites(widget.post.id);
+
+              await result;
+
+              favBloc.add(IsPostFavoritedRequested(postId: widget.post.id));
+            },
+            icon: state.data!
+                ? const FaIcon(
+                    FontAwesomeIcons.solidHeart,
+                    color: Colors.red,
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.heart,
+                  ),
+            label: Text(
+              widget.post.favCount.toString(),
+              style: state.data! ? const TextStyle(color: Colors.red) : null,
+            ),
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return const SizedBox.shrink();
+        } else {
+          return Center(
+            child: TextButton.icon(
+              onPressed: null,
+              icon: const FaIcon(
+                FontAwesomeIcons.spinner,
+              ),
+              label: Text(
+                widget.post.favCount.toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 }

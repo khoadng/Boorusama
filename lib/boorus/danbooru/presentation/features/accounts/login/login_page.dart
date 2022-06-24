@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
+        backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
       resizeToAvoidBottomInset: false,
