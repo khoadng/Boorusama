@@ -210,7 +210,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildSearchBar() {
     return BlocBuilder<TagSearchBloc, TagSearchState>(
       builder: (context, state) => SearchBar(
-        autofocus: true,
+        autofocus: _enableAutofocusOnSearchbar(),
         queryEditingController: queryEditingController,
         leading: BlocBuilder<SearchBloc, SearchState>(
           builder: (context, state) {
@@ -347,18 +347,6 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
-    if (!hasOperator) {
-      return const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(8),
-        bottomLeft: Radius.circular(8),
-      ));
-    } else {
-      return const RoundedRectangleBorder();
-    }
-  }
-
   Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
     final hasOperator = tagSearchItem.operator != FilterOperator.none;
     final hasMeta = tagSearchItem.metatag != null;
@@ -422,6 +410,20 @@ class _SearchPageState extends State<SearchPage> {
       ],
     );
   }
+
+  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
+    if (!hasOperator) {
+      return const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        bottomLeft: Radius.circular(8),
+      ));
+    } else {
+      return const RoundedRectangleBorder();
+    }
+  }
+
+  bool _enableAutofocusOnSearchbar() => widget.initialQuery.isEmpty;
 }
 
 bool _shouldShowSearchButton(
