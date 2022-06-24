@@ -21,16 +21,24 @@ import 'package:webview_flutter/webview_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/main.dart';
 import 'widgets/post_action_toolbar.dart';
 import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
+
+String _getPostParentChildTextDescription(Post post) {
+  if (post.hasParent) return 'This post belongs to a parent and has siblings';
+  return 'This post has children';
+}
 
 class Recommended {
   Recommended({
@@ -245,72 +253,134 @@ class PostDetail extends HookWidget {
         backgroundColor: Colors.transparent,
         body: minimal
             ? Center(child: postWidget)
-            : CustomScrollView(controller: scrollControllerWithAnim, slivers: [
-                SliverToBoxAdapter(
-                  child: postWidget,
-                ),
-                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return SliverToBoxAdapter(
-                        child: Material(
-                          color: Theme.of(context).cardColor,
-                          child: Column(
-                            children: [
-                              ...state.data!.mapIndexed(
-                                (index, e) => ListTile(
-                                  onTap: () => AppRouter.router.navigateTo(
-                                    context,
-                                    'pool/detail',
-                                    routeSettings:
-                                        RouteSettings(arguments: [e]),
-                                  ),
-                                  visualDensity: const VisualDensity(
-                                      horizontal: -4, vertical: -4),
-                                  title: Text(
-                                    e.name.removeUnderscoreWithSpace(),
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                    softWrap: false,
-                                    style:
-                                        Theme.of(context).textTheme.subtitle2,
-                                  ),
-                                  trailing: const FaIcon(
-                                    FontAwesomeIcons.angleRight,
-                                    size: 12,
-                                  ),
-                                ),
-                              )
-                            ],
+            : CustomScrollView(
+                controller: scrollControllerWithAnim,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: postWidget,
+                  ),
+                  const PoolTiles(),
+                  SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InformationSection(post: post),
+                        ValueListenableBuilder<String?>(
+                          valueListenable: imagePath,
+                          builder: (context, value, child) => PostActionToolbar(
+                            post: post,
+                            imagePath: value,
                           ),
                         ),
-                      );
-                    } else {
-                      return const SliverToBoxAdapter(child: SizedBox.shrink());
-                    }
-                  },
-                ),
-                SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InformationSection(post: post),
-                      ValueListenableBuilder<String?>(
-                        valueListenable: imagePath,
-                        builder: (context, value, child) => PostActionToolbar(
-                          post: post,
-                          imagePath: value,
-                        ),
-                      ),
-                      const Divider(height: 8, thickness: 1),
-                      buildRecommendedArtistList(),
-                      buildRecommendedCharacterList(),
-                    ],
+                        if (post.hasChildren || post.hasParent) ...[
+                          Container(
+                            color: Theme.of(context).hintColor,
+                            height: 1,
+                          ),
+                          ListTile(
+                            dense: true,
+                            tileColor: Theme.of(context).cardColor,
+                            title:
+                                Text(_getPostParentChildTextDescription(post)),
+                            trailing: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: ElevatedButton(
+                                onPressed: () => showBarModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider(
+                                        create: (context) => PostBloc(
+                                          postRepository:
+                                              context.read<IPostRepository>(),
+                                          blacklistedTagsRepository:
+                                              context.read<
+                                                  BlacklistedTagsRepository>(),
+                                        )..add(PostRefreshed(
+                                            tag: post.hasParent
+                                                ? 'parent:${post.parentId}'
+                                                : 'parent:${post.id}')),
+                                      )
+                                    ],
+                                    child: ParentChildPostPage(
+                                        parentPostId: post.hasParent
+                                            ? post.parentId!
+                                            : post.id),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'View',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            color: Theme.of(context).hintColor,
+                            height: 1,
+                          ),
+                        ],
+                        if (!post.hasChildren && !post.hasParent)
+                          const Divider(height: 8, thickness: 1),
+                        buildRecommendedArtistList(),
+                        buildRecommendedCharacterList(),
+                      ],
+                    ),
                   ),
-                ),
-              ]),
+                ],
+              ),
       ),
+    );
+  }
+}
+
+class PoolTiles extends StatelessWidget {
+  const PoolTiles({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          return SliverToBoxAdapter(
+            child: Material(
+              color: Theme.of(context).cardColor,
+              child: Column(
+                children: [
+                  ...state.data!.mapIndexed(
+                    (index, e) => ListTile(
+                      dense: true,
+                      onTap: () => AppRouter.router.navigateTo(
+                        context,
+                        'pool/detail',
+                        routeSettings: RouteSettings(arguments: [e]),
+                      ),
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      title: Text(
+                        e.name.removeUnderscoreWithSpace(),
+                        overflow: TextOverflow.fade,
+                        maxLines: 1,
+                        softWrap: false,
+                        style: Theme.of(context).textTheme.subtitle2,
+                      ),
+                      trailing: const FaIcon(
+                        FontAwesomeIcons.angleRight,
+                        size: 12,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        } else {
+          return const SliverToBoxAdapter(child: SizedBox.shrink());
+        }
+      },
     );
   }
 }
@@ -333,7 +403,7 @@ class InformationSection extends HookWidget {
             post: post, scrollController: ModalScrollController.of(context)!),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

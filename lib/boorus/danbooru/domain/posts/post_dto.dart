@@ -177,6 +177,9 @@ Post postDtoToPost(PostDto dto) {
         fileSize: dto.fileSize,
         pixivId: dto.pixivId,
         isBanned: dto.isBanned,
+        hasChildren: dto.hasChildren,
+        hasParent: dto.parentId != null,
+        parentId: dto.parentId,
       );
     }
 
@@ -205,6 +208,9 @@ Post postDtoToPost(PostDto dto) {
       fileSize: dto.fileSize,
       pixivId: dto.pixivId,
       isBanned: dto.isBanned,
+      hasChildren: dto.hasChildren,
+      hasParent: dto.parentId != null,
+      parentId: dto.parentId,
     );
   } catch (e) {
     return Post.empty();
