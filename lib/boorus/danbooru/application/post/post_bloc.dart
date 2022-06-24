@@ -14,6 +14,11 @@ import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/main.dart';
 import 'common.dart';
 
+enum PostsOrder {
+  popular,
+  newest,
+}
+
 @immutable
 class PostState extends Equatable {
   const PostState({
@@ -70,22 +75,26 @@ abstract class PostEvent extends Equatable {
 class PostFetched extends PostEvent {
   const PostFetched({
     required this.tags,
+    this.order,
   }) : super();
   final String tags;
+  final PostsOrder? order;
 
   @override
-  List<Object?> get props => [tags];
+  List<Object?> get props => [tags, order];
 }
 
 class PostRefreshed extends PostEvent {
   const PostRefreshed({
     this.tag,
+    this.order,
   }) : super();
 
   final String? tag;
+  final PostsOrder? order;
 
   @override
-  List<Object?> get props => [tag];
+  List<Object?> get props => [tag, order];
 }
 
 class PostBloc extends Bloc<PostEvent, PostState> {
@@ -97,8 +106,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       (event, emit) async {
         final blacklisted =
             await blacklistedTagsRepository.getBlacklistedTags();
+        final query = '${event.tags} ${_postsOrderToString(event.order)}';
         await tryAsync<List<Post>>(
-          action: () => postRepository.getPosts(event.tags, state.page + 1),
+          action: () => postRepository.getPosts(query, state.page + 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) {
             if (error is CannotSearchMoreThanTwoTags) {
@@ -143,8 +153,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       (event, emit) async {
         final blacklisted =
             await blacklistedTagsRepository.getBlacklistedTags();
+        final query = '${event.tag ?? ''} ${_postsOrderToString(event.order)}';
+
         await tryAsync<List<Post>>(
-          action: () => postRepository.getPosts(event.tag ?? '', 1),
+          action: () => postRepository.getPosts(query, 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) {
             if (error is BooruException) {
@@ -173,5 +185,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       },
       transformer: restartable(),
     );
+  }
+}
+
+String _postsOrderToString(PostsOrder? order) {
+  switch (order) {
+    case PostsOrder.popular:
+      return 'order:favcount';
+    default:
+      return '';
   }
 }

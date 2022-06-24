@@ -8,6 +8,7 @@ import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
@@ -39,6 +40,7 @@ class _ArtistPageState extends State<ArtistPage> {
   @override
   void dispose() {
     refreshController.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -59,7 +61,7 @@ class _ArtistPageState extends State<ArtistPage> {
             borderRadius: const BorderRadius.all(Radius.circular(24)),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 32),
+            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
             child: BlocBuilder<PostBloc, PostState>(
               buildWhen: (previous, current) => !current.hasMore,
               builder: (context, state) {
@@ -80,6 +82,22 @@ class _ArtistPageState extends State<ArtistPage> {
                   builder: (context, controller) => CustomScrollView(
                     controller: controller,
                     slivers: <Widget>[
+                      SliverPadding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        sliver: SliverToBoxAdapter(
+                          child: CategoryToggleSwitch(
+                            onToggle: (category) => context
+                                .read<PostBloc>()
+                                .add(
+                                  PostRefreshed(
+                                    tag: widget.artistName,
+                                    order:
+                                        _artistCategoryToPostsOrder(category),
+                                  ),
+                                ),
+                          ),
+                        ),
+                      ),
                       SliverPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 14),
                         sliver: BlocBuilder<PostBloc, PostState>(
@@ -221,5 +239,50 @@ class _ArtistPageState extends State<ArtistPage> {
       default:
         return const SizedBox.shrink();
     }
+  }
+}
+
+enum ArtistCategory {
+  popular,
+  newest,
+}
+
+PostsOrder _artistCategoryToPostsOrder(ArtistCategory category) {
+  if (category == ArtistCategory.popular) return PostsOrder.popular;
+  return PostsOrder.newest;
+}
+
+class CategoryToggleSwitch extends StatelessWidget {
+  const CategoryToggleSwitch({
+    Key? key,
+    required this.onToggle,
+  }) : super(key: key);
+
+  final void Function(ArtistCategory category) onToggle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ToggleSwitch(
+        customTextStyles: const [
+          TextStyle(
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+          ),
+          TextStyle(fontWeight: FontWeight.w700),
+        ],
+        minWidth: 80,
+        minHeight: 30,
+        cornerRadius: 5,
+        labels: const ['New', 'Popular'],
+        activeBgColor: [Theme.of(context).colorScheme.primary],
+        inactiveBgColor: Theme.of(context).colorScheme.background,
+        borderWidth: 1,
+        borderColor: [Theme.of(context).colorScheme.onBackground],
+        onToggle: (index) => index == 0
+            ? onToggle(ArtistCategory.newest)
+            : onToggle(ArtistCategory.popular),
+      ),
+    );
   }
 }
