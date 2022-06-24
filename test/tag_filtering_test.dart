@@ -32,6 +32,8 @@ Post createPost(int id, List<String> tags) => Post(
       fileSize: 1,
       pixivId: null,
       isBanned: false,
+      hasChildren: false,
+      hasParent: false,
     );
 
 void main() {

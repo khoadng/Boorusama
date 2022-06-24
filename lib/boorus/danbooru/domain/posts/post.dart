@@ -32,6 +32,9 @@ class Post extends Equatable implements IDownloadable {
     required this.fileSize,
     required this.pixivId,
     required this.isBanned,
+    required this.hasChildren,
+    required this.hasParent,
+    this.parentId,
   });
 
   factory Post.empty() => Post(
@@ -59,6 +62,8 @@ class Post extends Equatable implements IDownloadable {
         fileSize: 0,
         pixivId: 0,
         isBanned: false,
+        hasChildren: false,
+        hasParent: false,
       );
 
   factory Post.banned({
@@ -82,6 +87,9 @@ class Post extends Equatable implements IDownloadable {
     required List<String> characterTags,
     required List<String> copyrightTags,
     required List<String> artistTags,
+    required bool hasChildren,
+    required bool hasParent,
+    int? parentId,
   }) =>
       Post(
         id: -1,
@@ -108,6 +116,9 @@ class Post extends Equatable implements IDownloadable {
         fileSize: fileSize,
         pixivId: pixivId,
         isBanned: isBanned,
+        hasChildren: hasChildren,
+        hasParent: hasParent,
+        parentId: parentId,
       );
   final int id;
   final String previewImageUrl;
@@ -133,6 +144,9 @@ class Post extends Equatable implements IDownloadable {
   final int fileSize;
   final int? pixivId;
   final bool isBanned;
+  final bool hasChildren;
+  final bool hasParent;
+  final int? parentId;
 
   double get aspectRatio => width / height;
 

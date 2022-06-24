@@ -62,7 +62,8 @@
       "approvals",
       "replacements",
       "upvote",
-      "downvote"
+      "downvote",
+      "has"
     ],
     "default_blacklisted_tags" : [
       "guro",
