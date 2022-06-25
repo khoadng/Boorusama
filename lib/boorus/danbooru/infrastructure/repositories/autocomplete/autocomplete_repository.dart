@@ -47,6 +47,14 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             value: e.value!,
             level: stringToUserLevel(e.level!),
           );
+        } else if (e.type == 'tag-abbreviation') {
+          return AutocompleteData(
+            label: e.label!,
+            value: e.value!,
+            category: TagCategory(category: t.intToTagCategory(e.category)),
+            postCount: e.postCount!,
+            antecedent: e.antecedent!,
+          );
         } else {
           return AutocompleteData(label: e.label!, value: e.value!);
         }
