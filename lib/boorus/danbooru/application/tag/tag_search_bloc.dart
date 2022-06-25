@@ -189,6 +189,11 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         final operator = stringToFilterOperator(query.getFirstCharacter());
         if (query.length == 1 && operator != FilterOperator.none) return;
 
+        emit(state.copyWith(
+          query: query,
+          operator: operator,
+        ));
+
         await tryAsync<List<AutocompleteData>>(
           action: () =>
               autocompleteRepository.getAutocomplete(getQuery(query, operator)),
