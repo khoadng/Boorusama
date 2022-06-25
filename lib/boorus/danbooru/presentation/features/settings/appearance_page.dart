@@ -19,10 +19,7 @@ import 'settings_tile.dart';
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
     Key? key,
-    required this.settings,
   }) : super(key: key);
-
-  final Settings settings;
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();

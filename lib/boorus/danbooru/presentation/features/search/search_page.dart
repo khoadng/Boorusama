@@ -13,7 +13,9 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -330,17 +332,32 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildSearchButton() {
-    return BlocBuilder<TagSearchBloc, TagSearchState>(
-      builder: (context, state) {
-        return FloatingActionButton(
-          onPressed: () {
-            final tags = state.selectedTags.map((e) => e.toString()).join(' ');
-            context.read<SearchBloc>().add(const SearchRequested());
-            context.read<PostBloc>().add(PostRefreshed(tag: tags));
-            context.read<SearchHistoryCubit>().addHistory(tags);
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, ss) {
+        return BlocListener<SearchHistoryCubit,
+            AsyncLoadState<List<SearchHistory>>>(
+          listenWhen: (previous, current) =>
+              current.status == LoadStatus.success,
+          listener: (context, state) {
+            context
+                .read<SettingsCubit>()
+                .update(ss.settings.copyWith(searchHistories: state.data!));
           },
-          heroTag: null,
-          child: const Icon(Icons.search),
+          child: BlocBuilder<TagSearchBloc, TagSearchState>(
+            builder: (context, state) {
+              return FloatingActionButton(
+                onPressed: () {
+                  final tags =
+                      state.selectedTags.map((e) => e.toString()).join(' ');
+                  context.read<SearchBloc>().add(const SearchRequested());
+                  context.read<PostBloc>().add(PostRefreshed(tag: tags));
+                  context.read<SearchHistoryCubit>().addHistory(tags);
+                },
+                heroTag: null,
+                child: const Icon(Icons.search),
+              );
+            },
+          ),
         );
       },
     );
