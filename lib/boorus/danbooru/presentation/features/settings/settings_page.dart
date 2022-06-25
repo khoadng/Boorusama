@@ -29,8 +29,6 @@ class SettingsPage extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.only(top: 8),
         child: BlocBuilder<SettingsCubit, SettingsState>(
-          buildWhen: (previous, current) =>
-              previous.settings != current.settings,
           builder: (context, state) {
             final settings = state.settings;
 
@@ -57,7 +55,7 @@ class SettingsPage extends StatelessWidget {
                   title: Text('settings.appSettings.appearance._string'.tr()),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
-                    enterWidget: AppearancePage(settings: settings),
+                    enterWidget: const AppearancePage(),
                     oldWidget: this,
                   )),
                 ),

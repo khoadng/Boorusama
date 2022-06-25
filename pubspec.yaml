@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none" 
-version: 1.0.7+12
+version: 2.0.0+16
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -10,17 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  animations: ^2.0.3
-  auto_size_text: ^3.0.0
   bloc_concurrency: ^0.2.0
   cached_network_image: ^3.2.1
   carousel_slider: ^4.1.1
   chewie: ^1.3.3
   connectivity_plus: ^2.3.3
-  cupertino_icons: ^1.0.5
   curved_navigation_bar: ^1.0.3
   dio: ^4.0.6
-  dio_cookie_manager: ^2.0.0
   easy_localization: ^3.0.1
   equatable: ^2.0.3
   filesize: ^2.0.1
@@ -31,17 +27,12 @@ dependencies:
   flutter_downloader: ^1.8.0+1
   flutter_hooks: ^0.18.4
   flutter_html: ^3.0.0-alpha.5
-  flutter_inappwebview: ^5.4.3+7
   flutter_portal: ^1.1.0
   flutter_tags_x: ^1.1.0
   font_awesome_flutter: ^10.1.0
   hive: ^2.2.2
-  hooks_riverpod: ^1.0.4
-  http: ^0.13.4
   intl: ^0.17.0
   jiffy: ^5.0.0
-  json_annotation: ^4.5.0
-  json_serializable: ^6.2.0
   lottie: ^1.3.0
   mockito: ^5.2.0
   modal_bottom_sheet: ^2.0.1
@@ -63,7 +54,6 @@ dependencies:
   scroll_to_index: ^3.0.1
   sentry_flutter: ^6.5.1
   share_plus: ^4.0.7
-  shared_preferences: ^2.0.15
   sliding_up_panel:
     git:
       url: https://github.com/khoadng/sliding_up_panel.git

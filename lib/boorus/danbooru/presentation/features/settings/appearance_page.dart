@@ -19,10 +19,7 @@ import 'settings_tile.dart';
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
     Key? key,
-    required this.settings,
   }) : super(key: key);
-
-  final Settings settings;
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();
@@ -84,45 +81,7 @@ class _AppearancePageState extends State<AppearancePage> {
           return SafeArea(
               child: ListView(
             children: [
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 8,
-                  horizontal: MediaQuery.of(context).size.width / 3,
-                ),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: Theme.of(context).backgroundColor,
-                  ),
-                  height: 200,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: ValueListenableBuilder<double>(
-                      valueListenable: _spacingSliderValue,
-                      builder: (context, value, _) => GridView.builder(
-                          itemCount: 20,
-                          gridDelegate: _gridSizeToGridDelegate(
-                            state.settings.gridSize,
-                            spacing: value,
-                          ),
-                          itemBuilder: (context, index) {
-                            return ValueListenableBuilder<double>(
-                              valueListenable: _borderRadiusSliderValue,
-                              builder: (context, value, _) => Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context).cardColor,
-                                  borderRadius: BorderRadius.circular(value),
-                                ),
-                                child: const Center(
-                                  child: FaIcon(FontAwesomeIcons.image),
-                                ),
-                              ),
-                            );
-                          }),
-                    ),
-                  ),
-                ),
-              ),
+              _buildPreview(context, state),
               SettingsTile(
                 leading: const FaIcon(FontAwesomeIcons.paintbrush),
                 title: const Text('Theme'),
@@ -130,7 +89,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
                   context: context,
                   items: [...ThemeMode.values]..remove(ThemeMode.system),
-                  titleBuilder: (item) => Text(item.name.headerCase),
+                  titleBuilder: (item) => Text(item.name.sentenceCase),
                   groupValue: state.settings.themeMode,
                   onChanged: (value) => context
                       .read<SettingsCubit>()
@@ -151,51 +110,113 @@ class _AppearancePageState extends State<AppearancePage> {
                       .update(state.settings.copyWith(gridSize: value)),
                 ),
               ),
-              const Divider(thickness: 1.5),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Text('Spacing'),
               ),
-              ValueListenableBuilder<double>(
-                valueListenable: _spacingSliderValue,
-                builder: (context, value, child) {
-                  return Slider.adaptive(
-                    label: value.toInt().toString(),
-                    divisions: 10,
-                    max: 10,
-                    value: value,
-                    onChangeEnd: (value) => context
-                        .read<SettingsCubit>()
-                        .update(
-                            state.settings.copyWith(imageGridSpacing: value)),
-                    onChanged: (value) => _spacingSliderValue.value = value,
-                  );
-                },
-              ),
+              _buildSpacingSlider(state),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Text('Corner radius'),
               ),
-              ValueListenableBuilder<double>(
-                valueListenable: _borderRadiusSliderValue,
-                builder: (context, value, child) {
-                  return Slider.adaptive(
-                    label: value.toInt().toString(),
-                    divisions: 10,
-                    max: 10,
-                    value: value,
-                    onChangeEnd: (value) => context
-                        .read<SettingsCubit>()
-                        .update(
-                            state.settings.copyWith(imageBorderRadius: value)),
-                    onChanged: (value) =>
-                        _borderRadiusSliderValue.value = value,
-                  );
-                },
+              _buildBorderRadiusSlider(state),
+              const Divider(thickness: 1.5),
+              SettingsTile(
+                leading: const FaIcon(FontAwesomeIcons.xmarksLines),
+                title: const Text('Action bar dislay'),
+                selectedOption:
+                    state.settings.actionBarDisplayBehavior.name.sentenceCase,
+                onTap: () =>
+                    showRadioOptionsModalBottomSheet<ActionBarDisplayBehavior>(
+                  context: context,
+                  items: ActionBarDisplayBehavior.values,
+                  titleBuilder: (item) => Text(item.name.sentenceCase),
+                  groupValue: state.settings.actionBarDisplayBehavior,
+                  onChanged: (value) => context.read<SettingsCubit>().update(
+                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                ),
               ),
             ],
           ));
         },
+      ),
+    );
+  }
+
+  Widget _buildBorderRadiusSlider(SettingsState state) {
+    return ValueListenableBuilder<double>(
+      valueListenable: _borderRadiusSliderValue,
+      builder: (context, value, child) {
+        return Slider.adaptive(
+          label: value.toInt().toString(),
+          divisions: 10,
+          max: 10,
+          value: value,
+          onChangeEnd: (value) => context
+              .read<SettingsCubit>()
+              .update(state.settings.copyWith(imageBorderRadius: value)),
+          onChanged: (value) => _borderRadiusSliderValue.value = value,
+        );
+      },
+    );
+  }
+
+  Widget _buildSpacingSlider(SettingsState state) {
+    return ValueListenableBuilder<double>(
+      valueListenable: _spacingSliderValue,
+      builder: (context, value, child) {
+        return Slider.adaptive(
+          label: value.toInt().toString(),
+          divisions: 10,
+          max: 10,
+          value: value,
+          onChangeEnd: (value) => context
+              .read<SettingsCubit>()
+              .update(state.settings.copyWith(imageGridSpacing: value)),
+          onChanged: (value) => _spacingSliderValue.value = value,
+        );
+      },
+    );
+  }
+
+  Widget _buildPreview(BuildContext context, SettingsState state) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        vertical: 8,
+        horizontal: MediaQuery.of(context).size.width / 3,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Theme.of(context).backgroundColor,
+        ),
+        height: 200,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ValueListenableBuilder<double>(
+            valueListenable: _spacingSliderValue,
+            builder: (context, value, _) => GridView.builder(
+                itemCount: 20,
+                gridDelegate: _gridSizeToGridDelegate(
+                  state.settings.gridSize,
+                  spacing: value,
+                ),
+                itemBuilder: (context, index) {
+                  return ValueListenableBuilder<double>(
+                    valueListenable: _borderRadiusSliderValue,
+                    builder: (context, value, _) => Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(value),
+                      ),
+                      child: const Center(
+                        child: FaIcon(FontAwesomeIcons.image),
+                      ),
+                    ),
+                  );
+                }),
+          ),
+        ),
       ),
     );
   }

@@ -36,18 +36,15 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) => Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: ButtonBar(
-          buttonPadding: EdgeInsets.zero,
-          alignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildFavoriteButton(authState),
-            _buildCommentButton(),
-            _buildDownloadButton(),
-            _buildShareButton(),
-          ],
-        ),
+      builder: (context, authState) => ButtonBar(
+        buttonPadding: EdgeInsets.zero,
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(authState),
+          _buildCommentButton(),
+          _buildDownloadButton(),
+          _buildShareButton(),
+        ],
       ),
     );
   }
@@ -119,7 +116,7 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
               if (authState is Unauthenticated) {
                 const snackbar = SnackBar(
                   behavior: SnackBarBehavior.floating,
-                  duration: Duration(seconds: 3),
+                  duration: Duration(seconds: 1),
                   elevation: 6,
                   content: Text(
                     'You have to log in to perform this action',
