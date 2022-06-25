@@ -1,61 +1,25 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'app_constants.dart';
-import 'boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'boorus/danbooru/domain/accounts/account.dart';
-import 'boorus/danbooru/infrastructure/repositories/users/user_repository.dart';
-import 'boorus/danbooru/infrastructure/services/download_service.dart';
 import 'boorus/danbooru/router.dart';
 import 'core/app_theme.dart';
 
 class App extends StatefulWidget {
-  App();
+  const App({
+    Key? key,
+  }) : super(key: key);
 
   @override
-  _AppState createState() => _AppState();
+  State<App> createState() => _AppState();
 }
-
-final _language = Provider<Locale>((ref) {
-  final lang = ref.watch(settingsNotifier.state).settings.language;
-  return Locale(lang);
-});
-
-final _accountState = Provider<AccountState>((ref) {
-  return ref.watch(authenticationStateNotifierProvider.state).state;
-});
-final _account = Provider<Account?>((ref) {
-  return ref.watch(authenticationStateNotifierProvider.state).account;
-});
-
-final blacklistedTagsProvider = FutureProvider<List<String>>((ref) async {
-  final accountState = ref.watch(_accountState);
-  final userRepository = ref.watch(userProvider);
-  var blacklistedTags = <String>[];
-
-  if (accountState == AccountState.loggedIn) {
-    final account = ref.watch(_account);
-
-    if (account == null) return [];
-
-    final user = await userRepository.getUserById(account.id);
-
-    blacklistedTags = user.blacklistedTags;
-  }
-
-  return blacklistedTags;
-});
 
 class _AppState extends State<App> {
   @override
@@ -63,49 +27,31 @@ class _AppState extends State<App> {
     super.initState();
 
     AppRouter().setupRoutes();
-
-    if (Platform.isAndroid || Platform.isIOS) {
-      Future.delayed(
-          Duration.zero, () => context.read(downloadServiceProvider).init());
-    }
-
-    // Future.delayed(
-    //     Duration.zero,
-    //     () => context
-    //         .read(themeStateNotifierProvider)
-    //         .changeTheme(widget.settings.themeMode));
   }
 
   @override
   Widget build(BuildContext context) {
-    return ProviderListener(
-      provider: blacklistedTagsProvider,
-      onChange: (context, AsyncValue<List<String>> tags) {
-        tags.whenData((data) {
-          final settings = context.read(settingsNotifier.state).settings;
-
-          settings.blacklistedTags = data.join("\n");
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            context.read(settingsNotifier).save(settings);
-          });
-        });
-      },
-      child: Portal(
-        child: MaterialApp(
-          builder: (context, child) => ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
-            child: child!,
-          ),
-          theme: AppTheme.lightTheme,
-          darkTheme: AppTheme.darkTheme,
-          themeMode: ThemeMode.dark,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          locale: context.locale,
-          debugShowCheckedModeBanner: false,
-          onGenerateRoute: AppRouter.router.generator,
-          title: AppConstants.appName,
-        ),
+    return Portal(
+      child: BlocBuilder<ThemeBloc, ThemeState>(
+        builder: (context, state) {
+          return MaterialApp(
+            builder: (context, child) => ScrollConfiguration(
+              behavior: NoGlowScrollBehavior(),
+              child: child!,
+            ),
+            theme: AppTheme.lightTheme,
+            darkTheme: state.theme == ThemeMode.amoledDark
+                ? AppTheme.darkAmoledTheme
+                : AppTheme.darkTheme,
+            themeMode: mapAppThemeModeToSystemThemeMode(state.theme),
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            locale: context.locale,
+            debugShowCheckedModeBanner: false,
+            onGenerateRoute: AppRouter.router.generator,
+            title: AppConstants.appName,
+          );
+        },
       ),
     );
   }

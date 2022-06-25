@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_dto.dart';
+import 'favorite_dto.dart';
 
 abstract class IFavoritePostRepository {
   Future<bool> addToFavorites(int postId);

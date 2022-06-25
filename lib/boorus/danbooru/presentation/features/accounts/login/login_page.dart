@@ -2,17 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_html/style.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_html/style.dart';
 
 // Project imports:
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
-  LoginPage({Key? key}) : super(key: key);
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _LoginPageState createState() => _LoginPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
@@ -20,7 +20,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        elevation: 0.0,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         shadowColor: Colors.transparent,
       ),
       resizeToAvoidBottomInset: false,
@@ -35,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
                 fontSize: FontSize.xLarge.size,
               ),
             ),
-            Center(
+            const Center(
               child: LoginBox(),
             )
           ],

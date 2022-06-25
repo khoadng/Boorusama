@@ -25,18 +25,18 @@ class PreviewPostList extends StatelessWidget {
       scrollDirection: Axis.horizontal,
       itemCount: posts.length,
       itemBuilder: (context, index) => Padding(
-        padding: EdgeInsets.all(3.0),
+        padding: const EdgeInsets.all(3),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(8),
           child: CachedNetworkImage(
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.width * 0.3,
             fit: BoxFit.cover,
-            imageUrl: posts[index].previewImageUri.toString(),
+            imageUrl: posts[index].previewImageUrl,
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(8),
               ),
             ),
           ),

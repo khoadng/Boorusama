@@ -2,37 +2,23 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:dio/dio.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
+import 'package:boorusama/boorus/danbooru/application/api/api.dart';
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 
-final _isFavedProvider =
-    FutureProvider.autoDispose.family<bool, int>((ref, postId) async {
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(favoriteProvider);
-  final account = await ref.watch(accountProvider).get();
-  final isFaved = repo.checkIfFavoritedByUser(account.id, postId);
-
-  ref.maintainState = true;
-  return isFaved;
-});
-
-class PostActionToolbar extends HookWidget {
+class PostActionToolbar extends StatefulWidget {
   const PostActionToolbar({
     Key? key,
     required this.post,
@@ -43,152 +29,146 @@ class PostActionToolbar extends HookWidget {
   final String? imagePath;
 
   @override
+  State<PostActionToolbar> createState() => _PostActionToolbarState();
+}
+
+class _PostActionToolbarState extends State<PostActionToolbar> {
+  @override
   Widget build(BuildContext context) {
-    // final comments = useProvider(_commentsProvider(post.id));
-    final isLoggedIn = useProvider(isLoggedInProvider);
-    final endpoint = useProvider(apiEndpointProvider);
-
-    bool displayNoticeIfNotLoggedIn() {
-      if (!isLoggedIn) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(
-            'You need to log in to perform this action',
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-        return false;
-      }
-      return true;
-    }
-
-    final isFaved = useProvider(_isFavedProvider(post.id));
-    final favCount = useState(post.favCount);
-
-    final buttons = <Widget>[
-      // TextButton.icon(
-      //     onPressed: () {},
-      //     icon: FaIcon(FontAwesomeIcons.thumbsUp, color: Colors.white),
-      //     label: Text(
-      //       post.upScore.toString(),
-      //       style: TextStyle(color: Colors.white),
-      //     )),
-      // TextButton.icon(
-      //     onPressed: () {},
-      //     icon: FaIcon(
-      //       FontAwesomeIcons.thumbsDown,
-      //       color: Colors.white,
-      //     ),
-      //     label: Text(
-      //       post.downScore.toString(),
-      //       style: TextStyle(color: Colors.white),
-      //     )),
-    ];
-    final favbutton = isFaved.when(
-        data: (value) {
-          final button = TextButton.icon(
-              onPressed: () {
-                if (!isLoggedIn) {
-                  final snackbar = SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    duration: Duration(seconds: 3),
-                    elevation: 6.0,
-                    content: Text(
-                      'You have to log in to perform this action',
-                    ),
-                  );
-                  ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                  return;
-                }
-
-                isFaved.whenData((value) async {
-                  final result = value
-                      ? context
-                          .read(favoriteProvider)
-                          .removeFromFavorites(post.id)
-                      : context.read(favoriteProvider).addToFavorites(post.id);
-
-                  await result;
-                  context.refresh(_isFavedProvider(post.id));
-                });
-              },
-              icon: value
-                  ? FaIcon(FontAwesomeIcons.solidHeart, color: Colors.red)
-                  : FaIcon(
-                      FontAwesomeIcons.heart,
-                      color: Colors.white,
-                    ),
-              label: Text(
-                favCount.value.toString(),
-                style: TextStyle(color: Colors.white),
-              ));
-          return button;
-        },
-        loading: () => Center(
-              child: TextButton.icon(
-                  onPressed: null,
-                  icon: FaIcon(
-                    FontAwesomeIcons.spinner,
-                    color: Colors.white,
-                  ),
-                  label: Text(
-                    post.favCount.toString(),
-                    style: TextStyle(color: Colors.white),
-                  )),
-            ),
-        error: (e, m) => SizedBox.shrink());
-    buttons.add(favbutton);
-
-    final commentButton = IconButton(
-      onPressed: () => showBarModalBottomSheet(
-        expand: false,
-        context: context,
-        builder: (context) => CommentPage(
-          postId: post.id,
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) => Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: ButtonBar(
+          buttonPadding: EdgeInsets.zero,
+          alignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildFavoriteButton(authState),
+            _buildCommentButton(),
+            _buildDownloadButton(),
+            _buildShareButton(),
+          ],
         ),
       ),
-      icon: FaIcon(
-        FontAwesomeIcons.comment,
-        color: Colors.white,
-      ),
     );
+  }
 
-    buttons.add(commentButton);
+  Widget _buildDownloadButton() {
+    return BlocSelector<SettingsCubit, SettingsState, String?>(
+      selector: (state) => state.settings.downloadPath,
+      builder: (context, downloadPath) {
+        return IconButton(
+          onPressed: () => context.read<IDownloadService>().download(
+                widget.post,
+                path: downloadPath,
+              ),
+          icon: const FaIcon(
+            FontAwesomeIcons.download,
+          ),
+        );
+      },
+    );
+  }
 
-    final shareButton = IconButton(
+  Widget _buildShareButton() {
+    return IconButton(
       onPressed: () => showMaterialModalBottomSheet(
         expand: false,
         context: context,
         barrierColor: Colors.black45,
         backgroundColor: Colors.transparent,
-        builder: (context) => ModalShare(
-          endpoint: endpoint,
-          onTap: (value) => Share.share(value),
-          onTapFile: (filePath) => Share.shareFiles([filePath]),
-          post: post,
-          imagePath: imagePath,
+        builder: (context) => BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+          builder: (context, state) {
+            return ModalShare(
+              endpoint: state.booru.url,
+              onTap: Share.share,
+              onTapFile: (filePath) => Share.shareFiles([filePath]),
+              post: widget.post,
+              imagePath: widget.imagePath,
+            );
+          },
         ),
       ),
-      icon: FaIcon(
+      icon: const FaIcon(
         FontAwesomeIcons.shareFromSquare,
-        color: Colors.white,
       ),
     );
+  }
 
-    final downloadButton = IconButton(
-      onPressed: () => context.read(downloadServiceProvider).download(post),
-      icon: FaIcon(
-        FontAwesomeIcons.download,
-        color: Colors.white,
+  Widget _buildCommentButton() {
+    return IconButton(
+      onPressed: () => showBarModalBottomSheet(
+        expand: false,
+        context: context,
+        builder: (context) => CommentPage(
+          postId: widget.post.id,
+        ),
+      ),
+      icon: const FaIcon(
+        FontAwesomeIcons.comment,
       ),
     );
+  }
 
-    buttons.add(downloadButton);
-    buttons.add(shareButton);
+  Widget _buildFavoriteButton(AuthenticationState authState) {
+    return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          return TextButton.icon(
+            onPressed: () async {
+              final favBloc = context.read<IsPostFavoritedBloc>();
+              if (authState is Unauthenticated) {
+                const snackbar = SnackBar(
+                  behavior: SnackBarBehavior.floating,
+                  duration: Duration(seconds: 3),
+                  elevation: 6,
+                  content: Text(
+                    'You have to log in to perform this action',
+                  ),
+                );
+                ScaffoldMessenger.of(context).showSnackBar(snackbar);
+              }
 
-    return ButtonBar(
-        alignment: MainAxisAlignment.spaceEvenly, children: buttons);
+              final result = state.data!
+                  ? RepositoryProvider.of<IFavoritePostRepository>(context)
+                      .removeFromFavorites(widget.post.id)
+                  : RepositoryProvider.of<IFavoritePostRepository>(context)
+                      .addToFavorites(widget.post.id);
+
+              await result;
+
+              favBloc.add(IsPostFavoritedRequested(postId: widget.post.id));
+            },
+            icon: state.data!
+                ? const FaIcon(
+                    FontAwesomeIcons.solidHeart,
+                    color: Colors.red,
+                  )
+                : const FaIcon(
+                    FontAwesomeIcons.heart,
+                  ),
+            label: Text(
+              widget.post.favCount.toString(),
+              style: state.data! ? const TextStyle(color: Colors.red) : null,
+            ),
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return const SizedBox.shrink();
+        } else {
+          return Center(
+            child: TextButton.icon(
+              onPressed: null,
+              icon: const FaIcon(
+                FontAwesomeIcons.spinner,
+              ),
+              label: Text(
+                widget.post.favCount.toString(),
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
@@ -198,7 +178,7 @@ enum ShareMode {
 }
 
 String getShareContent(ShareMode mode, Post post, String endpoint) {
-  final booruLink = "${endpoint}posts/${post.id}";
+  final booruLink = '${endpoint}posts/${post.id}';
   if (mode == ShareMode.booru) return booruLink;
   if (post.source.uri == null) return booruLink;
 
@@ -231,16 +211,16 @@ class ModalShare extends StatelessWidget {
         children: <Widget>[
           if (post.source.uri != null)
             ListTile(
-              title: Text('Share source link'),
-              leading: FaIcon(FontAwesomeIcons.link),
+              title: const Text('Share source link'),
+              leading: const FaIcon(FontAwesomeIcons.link),
               onTap: () {
                 Navigator.of(context).pop();
                 onTap.call(getShareContent(ShareMode.source, post, endpoint));
               },
             ),
           ListTile(
-            title: Text('Share booru link'),
-            leading: FaIcon(FontAwesomeIcons.box),
+            title: const Text('Share booru link'),
+            leading: const FaIcon(FontAwesomeIcons.box),
             onTap: () {
               Navigator.of(context).pop();
               onTap.call(getShareContent(ShareMode.booru, post, endpoint));
@@ -248,8 +228,8 @@ class ModalShare extends StatelessWidget {
           ),
           if (imagePath != null)
             ListTile(
-              title: Text('Share image'),
-              leading: FaIcon(FontAwesomeIcons.fileImage),
+              title: const Text('Share image'),
+              leading: const FaIcon(FontAwesomeIcons.fileImage),
               onTap: () {
                 Navigator.of(context).pop();
                 onTapFile.call(imagePath!);

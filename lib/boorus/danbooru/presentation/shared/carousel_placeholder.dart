@@ -14,7 +14,7 @@ class CarouselPlaceholder extends StatelessWidget {
       itemBuilder: (context, index, realIndex) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0),
+            borderRadius: BorderRadius.circular(16),
             color: Theme.of(context).cardColor,
           ),
         );
@@ -22,10 +22,7 @@ class CarouselPlaceholder extends StatelessWidget {
       options: CarouselOptions(
         aspectRatio: 1.5,
         viewportFraction: 0.5,
-        initialPage: 0,
         enlargeCenterPage: true,
-        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-        scrollDirection: Axis.horizontal,
       ),
     );
   }

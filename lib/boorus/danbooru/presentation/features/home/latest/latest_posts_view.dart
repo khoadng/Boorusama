@@ -1,38 +1,25 @@
+// Dart imports:
+import 'dart:async';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/search.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/popular_search_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/tag_chips_placeholder.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/home/tag_list.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/core/utils.dart';
 
-final _popularSearchProvider =
-    FutureProvider.autoDispose<List<Search>>((ref) async {
-  final repo = ref.watch(popularSearchProvider);
-
-  var searches = await repo.getSearchByDate(DateTime.now());
-  if (searches.isEmpty) {
-    searches =
-        await repo.getSearchByDate(DateTime.now().subtract(Duration(days: 1)));
-  }
-
-  ref.maintainState = true;
-
-  return searches;
-});
-
-class LatestView extends HookWidget {
+class LatestView extends StatefulWidget {
   const LatestView({
     Key? key,
     required this.onMenuTap,
@@ -41,122 +28,163 @@ class LatestView extends HookWidget {
   final VoidCallback onMenuTap;
 
   @override
+  State<LatestView> createState() => _LatestViewState();
+}
+
+class _LatestViewState extends State<LatestView> {
+  final AutoScrollController _autoScrollController = AutoScrollController();
+  final ValueNotifier<String> _selectedTag = ValueNotifier('');
+  final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
+  final CompositeSubscription _compositeSubscription = CompositeSubscription();
+
+  void _sendRefresh(String tag) =>
+      context.read<PostBloc>().add(PostRefreshed(tag: tag));
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTag.addListener(() => _selectedTagStream.add(_selectedTag.value));
+
+    _selectedTagStream
+        .debounceTime(const Duration(milliseconds: 350))
+        .distinct()
+        .listen(_sendRefresh)
+        .addTo(_compositeSubscription);
+  }
+
+  @override
+  void dispose() {
+    _autoScrollController.dispose();
+    _compositeSubscription.dispose();
+    _selectedTagStream.close();
+    _selectedTag.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final posts = useState(<Post>[]);
-
-    final popularSearches = useProvider(_popularSearchProvider);
-    final selectedTag = useState("");
-
-    final isMounted = useIsMounted();
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
-              );
-              return p.id == post.id;
-            });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
+    return BlocBuilder<PostBloc, PostState>(
+      buildWhen: (previous, current) => !current.hasMore,
+      builder: (context, state) {
+        return InfiniteLoadList(
+          extendBody: true,
+          enableLoadMore: state.hasMore,
+          onLoadMore: () => context
+              .read<PostBloc>()
+              .add(PostFetched(tags: _selectedTag.value)),
+          onRefresh: (controller) {
+            _sendRefresh(_selectedTag.value);
+            Future.delayed(const Duration(seconds: 1),
+                () => controller.refreshCompleted());
+          },
+          scrollController: _autoScrollController,
+          builder: (context, controller) => CustomScrollView(
+            controller: controller,
+            slivers: <Widget>[
+              _buildAppBar(context),
+              _buildMostSearchTagList(),
+              HomePostGrid(controller: controller),
+              BlocBuilder<PostBloc, PostState>(
+                builder: (context, state) {
+                  if (state.status == LoadStatus.loading) {
+                    return const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SliverToBoxAdapter(
+                      child: SizedBox.shrink(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
       },
-      refreshBuilder: (page) =>
-          context.read(postProvider).getPosts(selectedTag.value, page),
-      loadMoreBuilder: (page) =>
-          context.read(postProvider).getPosts(selectedTag.value, page),
-    ));
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [selectedTag.value]);
+    );
+  }
 
-    Widget _buildTags(List<Search> searches) {
-      return Container(
-        margin: EdgeInsets.only(left: 8.0),
+  Widget _buildAppBar(BuildContext context) {
+    return SliverAppBar(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      toolbarHeight: kToolbarHeight * 1.2,
+      title: SearchBar(
+        enabled: false,
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () => widget.onMenuTap(),
+        ),
+        onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
+            routeSettings: const RouteSettings(arguments: [''])),
+      ),
+      floating: true,
+      snap: true,
+      automaticallyImplyLeading: false,
+    );
+  }
+
+  Widget _buildMostSearchTagList() {
+    return BlocBuilder<SearchKeywordCubit, AsyncLoadState<List<Search>>>(
+      builder: (context, state) => SliverToBoxAdapter(
+        child: mapStateToTagList(state),
+      ),
+    );
+  }
+
+  Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
+    switch (state.status) {
+      case LoadStatus.success:
+        return _buildTags(state.data!);
+      case LoadStatus.failure:
+        return const SizedBox.shrink();
+      default:
+        return const TagChipsPlaceholder();
+    }
+  }
+
+  Widget _buildTags(List<Search> searches) {
+    return ValueListenableBuilder(
+      valueListenable: _selectedTag,
+      builder: (context, selectedTag, child) => Container(
+        margin: const EdgeInsets.only(left: 8),
         height: 50,
         child: ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
           itemCount: searches.length,
           itemBuilder: (context, index) {
-            final selected = selectedTag.value == searches[index].keyword;
+            final selected = selectedTag == searches[index].keyword;
             return Padding(
-              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
-                selectedColor: Colors.white,
+                disabledColor: Theme.of(context).chipTheme.disabledColor,
+                backgroundColor: Theme.of(context).chipTheme.backgroundColor,
+                selectedColor: Theme.of(context).chipTheme.selectedColor,
                 selected: selected,
                 onSelected: (selected) => selected
-                    ? selectedTag.value = searches[index].keyword
-                    : selectedTag.value = "",
-                padding: EdgeInsets.all(4.0),
-                labelPadding: EdgeInsets.all(1.0),
+                    ? _selectedTag.value = searches[index].keyword
+                    : _selectedTag.value = '',
+                padding: const EdgeInsets.all(4),
+                labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.85),
                   child: Text(
-                    searches[index].keyword.pretty,
+                    searches[index].keyword.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: selected ? Colors.black : Colors.white,
-                    ),
                   ),
                 ),
               ),
             );
           },
         ),
-      );
-    }
-
-    return InfiniteLoadList(
-      controller: infiniteListController.value,
-      extendBody: true,
-      headers: [
-        SliverAppBar(
-          toolbarHeight: kToolbarHeight * 1.2,
-          title: SearchBar(
-            enabled: false,
-            leading: IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () => onMenuTap(),
-            ),
-            onTap: () => AppRouter.router.navigateTo(context, "/posts/search",
-                routeSettings: RouteSettings(arguments: [''])),
-          ),
-          floating: true,
-          snap: true,
-          automaticallyImplyLeading: false,
-        ),
-        SliverToBoxAdapter(
-          child: popularSearches.maybeWhen(
-            data: (searches) => _buildTags(searches),
-            orElse: () => TagChipsPlaceholder(),
-          ),
-        ),
-      ],
-      posts: posts.value,
-      child: isRefreshing.value
-          ? SliverPadding(
-              padding: EdgeInsets.symmetric(horizontal: 12.0),
-              sliver: SliverPostGridPlaceHolder())
-          : null,
+      ),
     );
   }
 }

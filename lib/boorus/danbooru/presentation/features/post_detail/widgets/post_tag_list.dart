@@ -1,63 +1,40 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+
+// Flutter imports:
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_tags/flutter_tags.dart' hide TagsState;
-import 'package:popup_menu/popup_menu.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
+import 'package:popup_menu/popup_menu.dart' as popup_menu;
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
 
-final _tagsProvider = FutureProvider.autoDispose
-    .family<List<Tag>, String>((ref, tagStringComma) async {
-  // Cancel the HTTP request if the user leaves the detail page before
-  // the request completes.
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(tagProvider);
-  final tags = await repo.getTagsByNameComma(
-    tagStringComma,
-    1,
-    cancelToken: cancelToken,
-  );
-
-  /// Cache the tags once it was successfully obtained.
-  ref.maintainState = true;
-
-  return tags;
-});
-
 class PostTagList extends StatefulWidget {
-  PostTagList({
+  const PostTagList({
     Key? key,
-    required this.tagStringComma,
+    required this.tagsComma,
     required this.apiEndpoint,
   }) : super(key: key);
 
-  final String tagStringComma;
+  final String tagsComma;
   final String apiEndpoint;
 
   @override
-  _PostTagListState createState() => _PostTagListState();
+  State<PostTagList> createState() => _PostTagListState();
 }
 
 class _PostTagListState extends State<PostTagList> {
-  List<Tag> _artistTags = <Tag>[];
-  List<Tag> _characterTags = <Tag>[];
-  List<Tag> _copyrightTags = <Tag>[];
   Tag? _currentPopupTag;
-  List<Tag> _generalTags = <Tag>[];
-  PopupMenu? _menu;
-  List<Tag> _metaTags = <Tag>[];
-  Map<String, GlobalKey> _tagKeys = Map<String, GlobalKey>();
+  popup_menu.PopupMenu? _menu;
+  final Map<String, GlobalKey> _tagKeys = <String, GlobalKey>{};
 
   Widget _buildTags(List<Tag> tags) {
     return Tags(
@@ -72,7 +49,7 @@ class _PostTagListState extends State<PostTagList> {
         return GestureDetector(
           onTap: () => AppRouter.router.navigateTo(
             context,
-            "/posts/search",
+            '/posts/search',
             routeSettings: RouteSettings(arguments: [tag.rawName]),
           ),
           onLongPress: () {
@@ -82,40 +59,50 @@ class _PostTagListState extends State<PostTagList> {
             _currentPopupTag = tag;
             _menu!.show(widgetKey: _tagKeys[tag.rawName]);
           },
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            key: tagKey,
-            children: [
-              Chip(
-                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                  backgroundColor: Color(tag.tagHexColor),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(8),
-                          bottomLeft: Radius.circular(8))),
-                  label: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxWidth: MediaQuery.of(context).size.width * 0.70),
-                    child: Text(
-                      tag.displayName,
-                      overflow: TextOverflow.fade,
-                      style: TextStyle(fontWeight: FontWeight.bold),
+          child: BlocBuilder<ThemeBloc, ThemeState>(
+            builder: (context, state) {
+              return Row(
+                mainAxisSize: MainAxisSize.min,
+                key: tagKey,
+                children: [
+                  Chip(
+                      visualDensity:
+                          const VisualDensity(horizontal: -4, vertical: -4),
+                      backgroundColor: getTagColor(tag.category, state.theme),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(8),
+                              bottomLeft: Radius.circular(8))),
+                      label: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width * 0.70),
+                        child: Text(
+                          tag.displayName,
+                          overflow: TextOverflow.fade,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: state.theme == ThemeMode.light
+                                  ? Colors.white
+                                  : Colors.white),
+                        ),
+                      )),
+                  Chip(
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
+                    backgroundColor: Colors.grey[800],
+                    shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(8),
+                            bottomRight: Radius.circular(8))),
+                    label: Text(
+                      tag.postCount.toString(),
+                      style:
+                          const TextStyle(color: Colors.white60, fontSize: 12),
                     ),
-                  )),
-              Chip(
-                visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-                backgroundColor: Colors.grey[800],
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(8),
-                        bottomRight: Radius.circular(8))),
-                label: Text(
-                  tag.postCount.toString(),
-                  style: TextStyle(color: Colors.white60, fontSize: 12),
-                ),
-              )
-            ],
+                  )
+                ],
+              );
+            },
           ),
         );
       },
@@ -123,17 +110,22 @@ class _PostTagListState extends State<PostTagList> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    context.read<TagCubit>().getTagsByNameComma(widget.tagsComma);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    _menu ??= PopupMenu(
+    _menu ??= popup_menu.PopupMenu(
       context: context,
-      config: MenuConfig(
+      config: popup_menu.MenuConfig(
         backgroundColor: Theme.of(context).cardColor,
-        maxColumn: 4,
       ),
       items: [
-        MenuItem(
+        popup_menu.MenuItem(
           title: 'Wiki',
-          image: Icon(
+          image: const Icon(
             Icons.info,
             color: Colors.white70,
           ),
@@ -142,60 +134,36 @@ class _PostTagListState extends State<PostTagList> {
       onClickMenu: (_) {
         launchExternalUrl(
           Uri.parse(
-              "${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}"),
+              '${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}'),
           mode: LaunchMode.platformDefault,
         );
       },
     );
 
-    return Consumer(
-      builder: (context, watch, child) {
-        final state = watch(_tagsProvider(widget.tagStringComma));
-        return state.when(
-          loading: () => Center(child: CircularProgressIndicator()),
-          data: (tags) {
-            tags.sort((a, b) => a.rawName.compareTo(b.rawName));
-            _artistTags = tags
-                .where((tag) => tag.category == TagCategory.artist)
-                .toList();
-            _copyrightTags = tags
-                .where((tag) => tag.category == TagCategory.copyright)
-                .toList();
-            _characterTags = tags
-                .where((tag) => tag.category == TagCategory.charater)
-                .toList();
-            _generalTags = tags
-                .where((tag) => tag.category == TagCategory.general)
-                .toList();
-            _metaTags =
-                tags.where((tag) => tag.category == TagCategory.meta).toList();
-            final headers = [];
-            if (_artistTags.length > 0) headers.add(["Artist", _artistTags]);
-            if (_characterTags.length > 0)
-              headers.add(["Character", _characterTags]);
-            if (_copyrightTags.length > 0)
-              headers.add(["Copyright", _copyrightTags]);
-            if (_generalTags.length > 0) headers.add(["General", _generalTags]);
-            if (_metaTags.length > 0) headers.add(["Meta", _metaTags]);
+    return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final widgets = <Widget>[];
+          for (final g in state.data!) {
+            widgets
+              ..add(_TagBlockTitle(
+                title: g.groupName,
+                isFirstBlock: g.groupName == state.data!.first.groupName,
+              ))
+              ..add(_buildTags(g.tags));
+          }
 
-            final widgets = <Widget>[];
-            for (var header in headers) {
-              widgets.add(_TagBlockTitle(
-                title: header[0],
-                isFirstBlock: header[0] == headers.first[0],
-              ));
-              widgets.add(_buildTags(header[1]));
-            }
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...widgets,
-              ],
-            );
-          },
-          error: (e, m) => Center(child: CircularProgressIndicator()),
-        );
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...widgets,
+            ],
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return const SizedBox.shrink();
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
       },
     );
   }
@@ -211,17 +179,14 @@ class _TagBlockTitle extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 5,
-          ),
-          _TagHeader(
-            title: title,
-          ),
-        ]);
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      const SizedBox(
+        height: 5,
+      ),
+      _TagHeader(
+        title: title,
+      ),
+    ]);
   }
 }
 
@@ -236,7 +201,7 @@ class _TagHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 1.0),
+      padding: const EdgeInsets.symmetric(vertical: 1),
       child: Text(
         title,
         style: Theme.of(context)

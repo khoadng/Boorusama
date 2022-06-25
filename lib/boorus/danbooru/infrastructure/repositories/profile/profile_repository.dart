@@ -1,31 +1,21 @@
 // Package imports:
 import 'package:dio/dio.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meta/meta.dart';
+import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/i_api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-
-final profileProvider = Provider<IProfileRepository>((ref) {
-  return ProfileRepository(
-    accountRepository: ref.watch(accountProvider),
-    api: ref.watch(apiProvider),
-  );
-});
+import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 
 class ProfileRepository implements IProfileRepository {
   ProfileRepository(
-      {required IAccountRepository accountRepository, required IApi api})
+      {required IAccountRepository accountRepository, required Api api})
       : _api = api,
         _accountRepository = accountRepository;
 
   final IAccountRepository _accountRepository;
-  final IApi _api;
+  final Api _api;
 
   @override
   Future<Profile?> getProfile({
@@ -33,7 +23,7 @@ class ProfileRepository implements IProfileRepository {
     String? apiKey,
     String? username,
   }) async {
-    var value;
+    HttpResponse value;
     try {
       if (apiKey != null && username != null) {
         value =

@@ -1,24 +1,22 @@
 // Package imports:
-import 'package:meta/meta.dart';
+import 'package:equatable/equatable.dart';
 
-class Account {
+class Account extends Equatable {
   const Account({
     required this.username,
     required this.apiKey,
     required this.id,
-  })  : assert(username != null),
-        assert(apiKey != null),
-        assert(id != null);
+  });
+
+  factory Account.create(String username, String apiKey, int id) {
+    return Account(username: username, apiKey: apiKey, id: id);
+  }
 
   final String username;
   final String apiKey;
   final int id;
 
-  static const empty = Account(username: "", apiKey: "", id: 0);
-
-  factory Account.create(String username, String apiKey, int id) {
-    return Account(username: username, apiKey: apiKey, id: id);
-  }
+  static const empty = Account(username: '', apiKey: '', id: 0);
 
   Map<String, dynamic> toMap() {
     return {
@@ -30,6 +28,9 @@ class Account {
 
   @override
   String toString() {
-    return "$username ($id)";
+    return '$username ($id)';
   }
+
+  @override
+  List<Object?> get props => [id, username, apiKey];
 }

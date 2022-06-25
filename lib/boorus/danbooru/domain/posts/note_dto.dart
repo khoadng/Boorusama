@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/note_coordinate.dart';
 import 'note.dart';
+import 'note_coordinate.dart';
 
 class NoteDto {
   NoteDto({
@@ -17,6 +17,20 @@ class NoteDto {
     required this.version,
   });
 
+  factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
+        id: json['id'],
+        createdAt: DateTime.parse(json['created_at']),
+        updatedAt: DateTime.parse(json['updated_at']),
+        x: json['x'],
+        y: json['y'],
+        width: json['width'],
+        height: json['height'],
+        isActive: json['is_active'],
+        postId: json['post_id'],
+        body: json['body'],
+        version: json['version'],
+      );
+
   final int id;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -28,20 +42,6 @@ class NoteDto {
   final int postId;
   final String body;
   final int version;
-
-  factory NoteDto.fromJson(Map<String, dynamic> json) => NoteDto(
-        id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        updatedAt: DateTime.parse(json["updated_at"]),
-        x: json["x"],
-        y: json["y"],
-        width: json["width"],
-        height: json["height"],
-        isActive: json["is_active"],
-        postId: json["post_id"],
-        body: json["body"],
-        version: json["version"],
-      );
 }
 
 extension NoteDtoX on NoteDto {

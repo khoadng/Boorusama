@@ -3,34 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/note.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/note_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
-
-final _notesProvider =
-    FutureProvider.autoDispose.family<List<Note>, int>((ref, postId) async {
-  // Cancel the HTTP request if the user leaves the detail page before
-  // the request completes.
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
-
-  final repo = ref.watch(noteProvider);
-  final notes = await repo.getNotesFrom(postId, cancelToken: cancelToken);
-
-  ref.maintainState = true;
-
-  return notes;
-});
 
 class PostImagePage extends HookWidget {
   const PostImagePage({
@@ -42,11 +26,11 @@ class PostImagePage extends HookWidget {
 
   Widget _buildBackButton(BuildContext context) {
     return Align(
-      alignment: Alignment(-0.9, -0.96),
+      alignment: const Alignment(-0.9, -0.96),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(8),
         child: IconButton(
-          icon: Icon(Icons.arrow_back_ios),
+          icon: const Icon(Icons.arrow_back_ios),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -55,27 +39,36 @@ class PostImagePage extends HookWidget {
 
   Widget _buildMoreButton(BuildContext context) {
     return Align(
-      alignment: Alignment(0.9, -0.96),
+      alignment: const Alignment(0.9, -0.96),
       child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: PopupMenuButton<PostAction>(
-          onSelected: (value) async {
-            switch (value) {
-              case PostAction.download:
-                context.read(downloadServiceProvider).download(post);
-                break;
-              default:
-            }
+        padding: const EdgeInsets.all(8),
+        child: BlocSelector<SettingsCubit, SettingsState, String?>(
+          selector: (state) => state.settings.downloadPath,
+          builder: (context, path) {
+            return PopupMenuButton<PostAction>(
+              onSelected: (value) async {
+                switch (value) {
+                  case PostAction.download:
+                    RepositoryProvider.of<IDownloadService>(context).download(
+                      post,
+                      path: path,
+                    );
+                    break;
+                  default:
+                }
+              },
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<PostAction>>[
+                const PopupMenuItem<PostAction>(
+                  value: PostAction.download,
+                  child: ListTile(
+                    leading: Icon(Icons.download_rounded),
+                    title: Text('Download'),
+                  ),
+                ),
+              ],
+            );
           },
-          itemBuilder: (BuildContext context) => <PopupMenuEntry<PostAction>>[
-            PopupMenuItem<PostAction>(
-              value: PostAction.download,
-              child: ListTile(
-                leading: const Icon(Icons.download_rounded),
-                title: Text("Download"),
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -88,7 +81,7 @@ class PostImagePage extends HookWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
 
-    for (var note in notes) {
+    for (final note in notes) {
       final coordinate = note.coordinate.calibrate(screenHeight, screenWidth,
           screenAspectRatio, post.height, post.width, post.aspectRatio);
 
@@ -106,17 +99,16 @@ class PostImagePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final hideOverlay = useState(false);
-    final notes = useProvider(_notesProvider(post.id));
 
     final image = CachedNetworkImage(
       fit: BoxFit.fitWidth,
-      imageUrl: post.normalImageUri.toString(),
+      imageUrl: post.normalImageUrl,
       imageBuilder: (context, imageProvider) {
         precacheImage(imageProvider, context);
         return PhotoView(
           imageProvider: imageProvider,
           backgroundDecoration: BoxDecoration(
-            color: Theme.of(context).appBarTheme.color,
+            color: Theme.of(context).appBarTheme.backgroundColor,
           ),
         );
       },
@@ -125,32 +117,33 @@ class PostImagePage extends HookWidget {
           value: progress.progress,
         ),
       ),
-      errorWidget: (context, url, error) => Icon(Icons.error),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
     return Scaffold(
-      body: Stack(
-        children: [
-          InkWell(
-              onTap: () {
-                hideOverlay.value = !hideOverlay.value;
-              },
-              child: image),
-          if (!hideOverlay.value) ...[
-            ShadowGradientOverlay(
-                alignment: Alignment.topCenter,
-                colors: <Color>[
-                  const Color(0x8A000000),
-                  Colors.black12.withOpacity(0.0)
-                ]),
-            _buildBackButton(context),
-            _buildMoreButton(context),
-            ...notes.when(
-              loading: () => [SizedBox.shrink()],
-              data: (notes) => buildNotes(context, notes, post),
-              error: (name, message) => [SizedBox.shrink()],
-            ),
+      body: BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
+        builder: (context, state) => Stack(
+          children: [
+            InkWell(
+                onTap: () {
+                  hideOverlay.value = !hideOverlay.value;
+                },
+                child: image),
+            if (!hideOverlay.value) ...[
+              ShadowGradientOverlay(
+                  alignment: Alignment.topCenter,
+                  colors: <Color>[
+                    const Color(0x8A000000),
+                    Colors.black12.withOpacity(0)
+                  ]),
+              _buildBackButton(context),
+              _buildMoreButton(context),
+              if (state.status == LoadStatus.success)
+                ...buildNotes(context, state.data!, post)
+              else
+                const SizedBox.shrink()
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

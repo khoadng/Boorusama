@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 //TODO: remove the author fuckery here, make it pure!
 class Comment {
@@ -17,6 +17,21 @@ class Comment {
     required this.isSticky,
     required this.author,
   });
+
+  factory Comment.fromJson(Map<String, dynamic> json) => Comment(
+        id: json['id'],
+        createdAt: DateTime.parse(json['created_at']),
+        postId: json['post_id'],
+        creatorId: json['creator_id'],
+        body: json['body'],
+        score: json['score'],
+        updatedAt: json['updated_at'],
+        updaterId: json['updater_id'],
+        doNotBumpPost: json['do_not_bump_post'],
+        isDeleted: json['is_deleted'],
+        isSticky: json['is_sticky'],
+        author: User.placeholder(),
+      );
 
   final int id;
   final DateTime createdAt;
@@ -59,20 +74,5 @@ class Comment {
         isDeleted: isDeleted ?? this.isDeleted,
         isSticky: isSticky ?? this.isSticky,
         author: author ?? this.author,
-      );
-
-  factory Comment.fromJson(Map<String, dynamic> json) => Comment(
-        id: json["id"],
-        createdAt: DateTime.parse(json["created_at"]),
-        postId: json["post_id"],
-        creatorId: json["creator_id"],
-        body: json["body"],
-        score: json["score"],
-        updatedAt: json["updated_at"],
-        updaterId: json["updater_id"],
-        doNotBumpPost: json["do_not_bump_post"],
-        isDeleted: json["is_deleted"],
-        isSticky: json["is_sticky"],
-        author: User.placeholder(),
       );
 }

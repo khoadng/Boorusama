@@ -2,79 +2,147 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/application/download/i_download_service.dart';
 
-class FavoritesPage extends HookWidget {
-  const FavoritesPage({Key? key}) : super(key: key);
+enum _Action {
+  downloadAll,
+}
+
+class FavoritesPage extends StatelessWidget {
+  const FavoritesPage({
+    Key? key,
+    required this.username,
+  }) : super(key: key);
+
+  final String username;
 
   @override
   Widget build(BuildContext context) {
-    final posts = useState(<Post>[]);
-    final isMounted = useIsMounted();
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
+    return Scaffold(
+      appBar: AppBar(
+        actions: [
+          BlocBuilder<PostBloc, PostState>(
+            buildWhen: (previous, current) =>
+                previous.posts.length != current.posts.length,
+            builder: (context, state) {
+              return BlocSelector<SettingsCubit, SettingsState, String?>(
+                selector: (state) => state.settings.downloadPath,
+                builder: (context, path) {
+                  return PopupMenuButton<_Action>(
+                    onSelected: (value) async {
+                      switch (value) {
+                        case _Action.downloadAll:
+                          // ignore: avoid_function_literals_in_foreach_calls
+                          state.posts.forEach(
+                              (p) => context.read<IDownloadService>().download(
+                                    p,
+                                    path: path,
+                                  ));
+                          break;
+                        default:
+                      }
+                    },
+                    itemBuilder: (BuildContext context) =>
+                        <PopupMenuEntry<_Action>>[
+                      PopupMenuItem<_Action>(
+                        value: _Action.downloadAll,
+                        child: ListTile(
+                          leading: const Icon(Icons.download_rounded),
+                          title: Text('Download ${state.posts.length} images'),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               );
-              return p.id == post.id;
-            });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6.0,
-          content: Text(message),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      refreshBuilder: (page) async {
-        final account = await context.read(accountProvider).get();
-        return context
-            .read(postProvider)
-            .getPosts("ordfav:${account.username}", page);
-      },
-      loadMoreBuilder: (page) async {
-        final account = await context.read(accountProvider).get();
-        return context
-            .read(postProvider)
-            .getPosts("ordfav:${account.username}", page);
-      },
-    ));
-
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, []);
-
-    return SafeArea(
-      child: InfiniteLoadList(
-          controller: infiniteListController.value,
-          posts: posts.value,
-          child: isRefreshing.value
-              ? SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 12.0),
-                  sliver: SliverPostGridPlaceHolder())
-              : null),
+            },
+          ),
+        ],
+      ),
+      body: SafeArea(
+        child: BlocBuilder<PostBloc, PostState>(
+          buildWhen: (previous, current) => !current.hasMore,
+          builder: (context, state) {
+            return InfiniteLoadList(
+              enableLoadMore: state.hasMore,
+              onLoadMore: () => context
+                  .read<PostBloc>()
+                  .add(PostFetched(tags: 'ordfav:$username')),
+              onRefresh: (controller) {
+                context
+                    .read<PostBloc>()
+                    .add(PostRefreshed(tag: 'ordfav:$username'));
+                Future.delayed(const Duration(milliseconds: 500),
+                    () => controller.refreshCompleted());
+              },
+              builder: (context, controller) => CustomScrollView(
+                controller: controller,
+                slivers: <Widget>[
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    sliver: BlocBuilder<PostBloc, PostState>(
+                      buildWhen: (previous, current) =>
+                          current.status != LoadStatus.loading,
+                      builder: (context, state) {
+                        if (state.status == LoadStatus.initial) {
+                          return const SliverPostGridPlaceHolder();
+                        } else if (state.status == LoadStatus.success) {
+                          if (state.posts.isEmpty) {
+                            return const SliverToBoxAdapter(
+                                child: Center(child: Text('No data')));
+                          }
+                          return SliverPostGrid(
+                            posts: state.posts,
+                            scrollController: controller,
+                            onTap: (post, index) => AppRouter.router.navigateTo(
+                              context,
+                              '/post/detail',
+                              routeSettings: RouteSettings(
+                                arguments: [
+                                  state.posts,
+                                  index,
+                                  controller,
+                                ],
+                              ),
+                            ),
+                          );
+                        } else if (state.status == LoadStatus.loading) {
+                          return const SliverToBoxAdapter(
+                            child: SizedBox.shrink(),
+                          );
+                        } else {
+                          return const SliverToBoxAdapter(
+                            child: Center(
+                              child: Text('Something went wrong'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  if (state.status == LoadStatus.loading && state.hasMore)
+                    const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

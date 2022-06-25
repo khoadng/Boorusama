@@ -6,17 +6,17 @@ import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/presentation/material_desktop_controls.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
-  PostVideo({Key? key, required this.post}) : super(key: key);
+  const PostVideo({Key? key, required this.post}) : super(key: key);
 
   final Post post;
 
   @override
-  _PostVideoState createState() => _PostVideoState();
+  State<PostVideo> createState() => _PostVideoState();
 }
 
 class _PostVideoState extends State<PostVideo> {
@@ -27,12 +27,12 @@ class _PostVideoState extends State<PostVideo> {
   void initState() {
     super.initState();
     _videoPlayerController =
-        VideoPlayerController.network(widget.post.normalImageUri.toString());
+        VideoPlayerController.network(widget.post.normalImageUrl);
     _chewieController = ChewieController(
       videoPlayerController: _videoPlayerController,
       aspectRatio: widget.post.aspectRatio,
       autoPlay: true,
-      customControls: MaterialDesktopControls(),
+      customControls: const MaterialDesktopControls(),
       looping: true,
     );
   }

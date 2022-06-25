@@ -1,10 +1,14 @@
 class NoteCoordinate {
+  NoteCoordinate(
+    this._x,
+    this._y,
+    this._width,
+    this._height,
+  );
   final double _x;
   final double _y;
   final double _width;
   final double _height;
-
-  NoteCoordinate(this._x, this._y, this._width, this._height);
 
   double get x => _x;
 
@@ -15,12 +19,13 @@ class NoteCoordinate {
   double get height => _height;
 
   NoteCoordinate calibrate(
-      double screenHeight,
-      double screenWidth,
-      double screenAspectRatio,
-      double postHeight,
-      double postWidth,
-      double postAspectRatio) {
+    double screenHeight,
+    double screenWidth,
+    double screenAspectRatio,
+    double postHeight,
+    double postWidth,
+    double postAspectRatio,
+  ) {
     var aspectRatio = 1.0;
     double offset = 0;
     double newX;
@@ -32,31 +37,36 @@ class NoteCoordinate {
       if (screenAspectRatio < postAspectRatio) {
         aspectRatio = screenWidth / postWidth;
         offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = this.x * aspectRatio;
-        newY = this.y * aspectRatio + offset;
+        newX = x * aspectRatio;
+        newY = y * aspectRatio + offset;
       } else {
         aspectRatio = screenHeight / postHeight;
         offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = this.x * aspectRatio + offset;
-        newY = this.y * aspectRatio;
+        newX = x * aspectRatio + offset;
+        newY = y * aspectRatio;
       }
     } else {
       if (screenAspectRatio > postAspectRatio) {
         aspectRatio = screenHeight / postHeight;
         offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = this.x * aspectRatio + offset;
-        newY = this.y * aspectRatio;
+        newX = x * aspectRatio + offset;
+        newY = y * aspectRatio;
       } else {
         aspectRatio = screenWidth / postWidth;
         offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = this.x * aspectRatio;
-        newY = this.y * aspectRatio + offset;
+        newX = x * aspectRatio;
+        newY = y * aspectRatio + offset;
       }
     }
 
-    newWidth = this.width * aspectRatio;
-    newHeight = this.height * aspectRatio;
+    newWidth = width * aspectRatio;
+    newHeight = height * aspectRatio;
 
-    return NoteCoordinate(newX, newY, newWidth, newHeight);
+    return NoteCoordinate(
+      newX,
+      newY,
+      newWidth,
+      newHeight,
+    );
   }
 }

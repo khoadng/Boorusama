@@ -1,16 +1,24 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication_state_notifier.dart';
-import 'package:boorusama/core/infrastructure/networking/network_info.dart';
+import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/main.dart';
 import 'bottom_bar_widget.dart';
-import 'explore/explore_page.dart';
 import 'latest/latest_posts_view.dart';
 import 'side_bar.dart';
 
@@ -23,76 +31,91 @@ class HomePage extends HookWidget {
   Widget build(BuildContext context) {
     final bottomTabIndex = useState(0);
 
-    final networkStatus = useProvider(networkStatusProvider);
-
-    useEffect(() {
-      Future.microtask(
-          () => context.read(authenticationStateNotifierProvider).logIn());
-      return () => {};
-    }, []);
-
-    return Container(
-      color: Colors.black,
-      child: SafeArea(
-        child: Column(
-          children: <Widget>[
-            networkStatus.when(
-              data: (value) {
-                if (value == NetworkStatus.unavailable) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Material(
-                      color: Colors.black,
-                      child: Text("Network unavailable"),
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: state.theme == ThemeMode.light
+                ? Brightness.dark
+                : Brightness.light,
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+            child: Scaffold(
+              extendBody: true,
+              key: scaffoldKey,
+              drawer: const SideBarMenu(),
+              resizeToAvoidBottomInset: false,
+              body: SafeArea(
+                bottom: false,
+                child: Column(
+                  children: [
+                    BlocBuilder<NetworkBloc, NetworkState>(
+                      builder: (context, state) {
+                        if (state is NetworkConnectedState) {
+                          return const SizedBox.shrink();
+                        } else if (state is NetworkDisconnectedState) {
+                          return const Material(
+                            color: Colors.black,
+                            child: Text('Network unavailable'),
+                          );
+                        } else {
+                          return const SizedBox.shrink();
+                        }
+                      },
                     ),
-                  );
-                } else {
-                  return SizedBox.shrink();
-                }
-              },
-              loading: () => Padding(
-                padding: EdgeInsets.only(bottom: 10),
-                child: Material(
-                  color: Theme.of(context).appBarTheme.color,
-                  child: Text("Connecting"),
-                ),
-              ),
-              error: (error, stackTrace) => Material(
-                color: Theme.of(context).appBarTheme.color,
-                child: Padding(
-                    padding: EdgeInsets.only(bottom: 10),
-                    child: Text("Something went wrong")),
-              ),
-            ),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-                child: Scaffold(
-                  extendBody: true,
-                  key: scaffoldKey,
-                  drawer: SideBarMenu(),
-                  resizeToAvoidBottomInset: false,
-                  body: AnimatedIndexedStack(
-                    index: bottomTabIndex.value,
-                    children: <Widget>[
-                      LatestView(
-                        onMenuTap: () => scaffoldKey.currentState!.openDrawer(),
+                    Expanded(
+                      child: AnimatedIndexedStack(
+                        index: bottomTabIndex.value,
+                        children: <Widget>[
+                          MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                  create: (context) => PostBloc(
+                                        postRepository: RepositoryProvider.of<
+                                            IPostRepository>(context),
+                                        blacklistedTagsRepository: context
+                                            .read<BlacklistedTagsRepository>(),
+                                      )..add(const PostRefreshed())),
+                            ],
+                            child: LatestView(
+                              onMenuTap: () =>
+                                  scaffoldKey.currentState!.openDrawer(),
+                            ),
+                          ),
+                          const ExplorePage(),
+                          MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => PoolBloc(
+                                  poolRepository:
+                                      context.read<PoolRepository>(),
+                                  postRepository:
+                                      context.read<IPostRepository>(),
+                                )..add(const PoolRefreshed(
+                                    category: PoolCategory.series,
+                                    order: PoolOrder.latest)),
+                              ),
+                            ],
+                            child: const PoolPage(),
+                          ),
+                        ],
                       ),
-                      ExplorePage(),
-                    ],
-                  ),
-                  bottomNavigationBar: BottomBar(
-                    onTabChanged: (value) => bottomTabIndex.value = value,
-                  ),
+                    ),
+                  ],
                 ),
               ),
+              bottomNavigationBar: BottomBar(
+                onTabChanged: (value) => bottomTabIndex.value = value,
+              ),
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

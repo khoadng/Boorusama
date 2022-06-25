@@ -1,26 +1,18 @@
 // Package imports:
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-
-final accountProvider = Provider<IAccountRepository>((ref) {
-  final box = Hive.openBox("accounts");
-  return AccountRepository(box);
-});
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
 class AccountRepository implements IAccountRepository {
-  final Future<Box> _db;
-
   AccountRepository(this._db);
+  final Future<Box> _db;
 
   @override
   Future<void> add(Account account) async {
     final db = await _db;
 
-    db.put("accounts", account.toMap());
+    await db.put('accounts', account.toMap());
   }
 
   @override

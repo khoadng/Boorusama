@@ -1,68 +1,57 @@
-// Package imports:
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:meta/meta.dart';
-
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state_notifier.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-
-final searchHistoryProvider = Provider<ISearchHistoryRepository>((ref) {
-  return SearchHistoryRepository(ref: ref);
-});
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/i_setting_repository.dart';
 
 class SearchHistoryRepository implements ISearchHistoryRepository {
   SearchHistoryRepository({
-    required ProviderReference ref,
-  }) : _ref = ref;
+    required this.settingRepository,
+  });
 
-  ProviderReference _ref;
+  final ISettingRepository settingRepository;
 
   @override
   Future<List<SearchHistory>> getHistories() async {
-    final settings = _ref.watch(settingsNotifier.state).settings;
+    final settings = await settingRepository.load();
 
-    return settings.searchHistories;
+    return settings.searchHistories.toList();
   }
 
   @override
-  Future<bool> addHistory(String query) async {
+  Future<List<SearchHistory>> addHistory(String query) async {
     try {
-      final settings = _ref.watch(settingsNotifier.state).settings;
+      final settings = await settingRepository.load();
 
       if (query.isEmpty) {
-        return true;
+        return settings.searchHistories.toList();
       }
+      final shs = settings.searchHistories.toList();
+      final sh = SearchHistory(query: query, createdAt: DateTime.now());
 
       if (!settings.searchHistories.any((item) => item.query == query)) {
-        settings.searchHistories.add(
-          SearchHistory(query: query, createdAt: DateTime.now()),
-        );
+        shs.add(sh);
       } else {
-        settings.searchHistories.removeWhere((item) => item.query == query);
-        settings.searchHistories.add(
-          SearchHistory(query: query, createdAt: DateTime.now()),
-        );
+        shs
+          ..removeWhere((item) => item.query == query)
+          ..add(sh);
       }
 
-      final success = _ref.read(settingsNotifier).save(settings);
+      await settingRepository.save(settings.copyWith(searchHistories: shs));
 
-      return true;
+      return shs;
     } on Exception {
-      return Future.value(false);
+      return Future.value([]);
     }
   }
 
   @override
   Future<bool> clearAll() async {
     try {
-      final settings = _ref.watch(settingsNotifier.state).settings;
+      final settings = await settingRepository.load();
 
-      settings.searchHistories.clear();
+      final success =
+          await settingRepository.save(settings.copyWith(searchHistories: []));
 
-      final success = _ref.read(settingsNotifier).save(settings);
-
-      return true;
+      return success;
     } on Exception {
       return Future.value(false);
     }

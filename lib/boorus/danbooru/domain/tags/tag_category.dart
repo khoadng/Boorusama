@@ -7,39 +7,19 @@ enum TagCategory {
   meta,
 }
 
-//TODO: should be removed ?
-extension TagCategoryExtension on TagCategory {
-  int get value {
-    switch (this) {
-      case TagCategory.general:
-        return 0;
-      case TagCategory.artist:
-        return 1;
-      case TagCategory.copyright:
-        return 3;
-      case TagCategory.charater:
-        return 4;
-      case TagCategory.meta:
-        return 5;
-      default:
-        return 0;
-    }
-  }
-
-  int get hexColor {
-    switch (this) {
-      case TagCategory.general:
-        return 0xff0375ff;
-      case TagCategory.artist:
-        return 0xffb11616;
-      case TagCategory.copyright:
-        return 0xffb015b0;
-      case TagCategory.charater:
-        return 0xff12b012;
-      case TagCategory.meta:
-        return 0xffff9824;
-      default:
-        return 0xffffffff;
-    }
+TagCategory intToTagCategory(int value) {
+  switch (value) {
+    case 0:
+      return TagCategory.general;
+    case 1:
+      return TagCategory.artist;
+    case 3:
+      return TagCategory.copyright;
+    case 4:
+      return TagCategory.charater;
+    case 5:
+      return TagCategory.meta;
+    default:
+      return TagCategory.general;
   }
 }

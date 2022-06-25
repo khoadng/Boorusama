@@ -1,347 +1,443 @@
-// Dart imports:
-import 'dart:collection';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:equatable/equatable.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_tags/flutter_tags.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:lottie/lottie.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
+import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/infinite_load_list.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/sliver_post_grid_placeholder.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
-import '../../shared/tag_suggestion_items.dart';
-import 'services/query_processor.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 
-class SearchPage extends HookWidget {
-  const SearchPage({Key? key, this.initialQuery = ''}) : super(key: key);
+class SearchPage extends StatefulWidget {
+  const SearchPage({
+    Key? key,
+    this.initialQuery = '',
+    required this.metatags,
+    required this.metatagHighlightColor,
+  }) : super(key: key);
 
   final String initialQuery;
+  final List<String> metatags;
+  final Color metatagHighlightColor;
+
+  @override
+  State<SearchPage> createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  late final tags = widget.metatags.join('|');
+  late final queryEditingController = RichTextController(
+    patternMatchMap: {
+      RegExp('($tags)+:'): TextStyle(
+        fontWeight: FontWeight.w800,
+        color: widget.metatagHighlightColor,
+      ),
+    },
+    onMatch: (List<String> match) {},
+  );
+  final refreshController = RefreshController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialQuery.isNotEmpty) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context
+            .read<TagSearchBloc>()
+            .add(TagSearchNewRawStringTagSelected(widget.initialQuery));
+        context.read<SearchBloc>().add(const SearchRequested());
+        context.read<PostBloc>().add(PostRefreshed(tag: widget.initialQuery));
+        FocusScope.of(context).unfocus();
+      });
+    }
+
+    context.read<SearchHistoryCubit>().getSearchHistory();
+
+    queryEditingController.addListener(() {
+      queryEditingController.selection = TextSelection.fromPosition(
+          TextPosition(offset: queryEditingController.text.length));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final queryEditingController = useTextEditingController
-        .fromValue(TextEditingValue(text: initialQuery));
-    final searchDisplayState = useState(SearchDisplayState.searchOptions());
-    final posts = useState(<Post>[]);
-    final suggestions = useState(<Tag>[]);
-
-    final completedQueryItems = useState(<String>[]);
-
-    final isMounted = useIsMounted();
-
-    final infiniteListController = useState(InfiniteLoadListController<Post>(
-      onData: (data) {
-        if (isMounted()) {
-          posts.value = [...data];
-          if (data.isEmpty &&
-              searchDisplayState.value == SearchDisplayState.results()) {
-            searchDisplayState.value = SearchDisplayState.noResults();
-          }
-        }
-      },
-      onMoreData: (data, page) {
-        if (page > 1) {
-          // Dedupe
-          data
-            ..removeWhere((post) {
-              final p = posts.value.firstWhere(
-                (sPost) => sPost.id == post.id,
-                orElse: () => Post.empty(),
-              );
-              return p.id == post.id;
-            });
-        }
-        posts.value = [...posts.value, ...data];
-      },
-      onError: (message) {
-        if (searchDisplayState.value == SearchDisplayState.results()) {
-          searchDisplayState.value = SearchDisplayState.error(message);
-        }
-      },
-      refreshBuilder: (page) {
-        return context
-            .read(postProvider)
-            .getPosts(completedQueryItems.value.join(' '), page);
-      },
-      loadMoreBuilder: (page) {
-        return context
-            .read(postProvider)
-            .getPosts(completedQueryItems.value.join(' '), page);
-      },
-    ));
-
-    final isRefreshing = useRefreshingState(infiniteListController.value);
-    useAutoRefresh(infiniteListController.value, [completedQueryItems.value],
-        refreshWhen: () =>
-            completedQueryItems.value.isNotEmpty &&
-            queryEditingController.text.isEmpty);
-
-    useEffect(() {
-      queryEditingController.addListener(() {
-        if (searchDisplayState.value != SearchDisplayState.results()) {
-          if (queryEditingController.text.isEmpty) {
-            searchDisplayState.value = SearchDisplayState.searchOptions();
-          } else {
-            searchDisplayState.value = SearchDisplayState.suggestions();
-          }
-        }
-      });
-      return null;
-    }, [queryEditingController]);
-
-    useEffect(() {
-      if (queryEditingController.text.isNotEmpty) {
-        searchDisplayState.value = SearchDisplayState.suggestions();
-      }
-
-      queryEditingController.selection = TextSelection.fromPosition(
-          TextPosition(offset: queryEditingController.text.length));
-      return () => {};
-    }, [queryEditingController.text]);
-
-    useEffect(() {
-      void switchToSearchOptionsView() {
-        if (completedQueryItems.value.isEmpty) {
-          searchDisplayState.value = SearchDisplayState.searchOptions();
-        }
-      }
-
-      searchDisplayState.value.when(results: () {
-        switchToSearchOptionsView();
-        return Null;
-      }, suggestions: () {
-        return Null;
-      }, searchOptions: () {
-        return Null;
-      }, noResults: () {
-        switchToSearchOptionsView();
-        return Null;
-      }, error: (message) {
-        switchToSearchOptionsView();
-        return Null;
-      });
-
-      return null;
-    }, [completedQueryItems.value]);
-
-    void addTag(String tag) {
-      queryEditingController.text = "";
-      completedQueryItems.value = LinkedHashSet<String>.from(
-          [...completedQueryItems.value, ...tag.split(' ')]).toList();
-    }
-
-    void removeTag(String tag) {
-      completedQueryItems.value = [...completedQueryItems.value..remove(tag)];
-    }
-
-    void onTextInputChanged(String text) async {
-      if (text.trim().isEmpty) {
-        // Make sure input is not empty
-        return;
-      }
-
-      if (text.endsWith(' ')) {
-        queryEditingController.text = '';
-      }
-
-      final lastTag = context.read(queryProcessorProvider).process(
-          text, queryEditingController.text, completedQueryItems.value);
-
-      final tags =
-          await context.read(tagProvider).getTagsByNamePattern(lastTag, 1);
-      suggestions.value = [...tags];
-    }
-
-    void onSearchClearButtonTap() {
-      searchDisplayState.value.maybeWhen(
-        orElse: () {
-          queryEditingController.text = "";
-          return Null;
-        },
-        results: () {
-          searchDisplayState.value = SearchDisplayState.searchOptions();
-
-          return Null;
-        },
-      );
-    }
-
-    void onBackButtonTap() {
-      void clear() => completedQueryItems.value = [];
-      void pop() => Navigator.of(context).pop();
-
-      searchDisplayState.value.when(
-        results: () {
-          clear();
-          return Null;
-        },
-        suggestions: () {
-          pop();
-          return Null;
-        },
-        searchOptions: () {
-          pop();
-          return Null;
-        },
-        noResults: () {
-          clear();
-          return Null;
-        },
-        error: (e) {
-          clear();
-          return Null;
-        },
-      );
-    }
-
-    void onSearchButtonTap() {
-      if (queryEditingController.text.isNotEmpty) {
-        addTag(queryEditingController.text);
-      }
-
-      context
-          .read(searchHistoryProvider)
-          .addHistory(completedQueryItems.value.join(' '));
-
-      FocusScope.of(context).unfocus();
-      searchDisplayState.value = SearchDisplayState.results();
-      infiniteListController.value.refresh();
-    }
-
-    Widget _buildTags() {
-      return Container(
-        margin: const EdgeInsets.only(left: 8.0),
-        height: 50,
-        child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: completedQueryItems.value.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-              child: Chip(
-                padding: const EdgeInsets.all(4.0),
-                labelPadding: const EdgeInsets.all(1.0),
-                visualDensity: VisualDensity.compact,
-                deleteIcon: const Icon(
-                  FontAwesomeIcons.xmark,
-                  color: Colors.red,
-                  size: 15,
-                ),
-                onDeleted: () => removeTag(completedQueryItems.value[index]),
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.85),
-                  child: Text(
-                    completedQueryItems.value[index].replaceAll('_', ' '),
-                    overflow: TextOverflow.fade,
-                  ),
-                ),
-              ),
-            );
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<TagSearchBloc, TagSearchState>(
+          listenWhen: (previous, current) => current.query.isEmpty,
+          listener: (context, state) {
+            context.read<SearchBloc>().add(const SearchQueryEmpty());
+            context.read<TagSearchBloc>().add(const TagSearchCleared());
+            queryEditingController.clear();
           },
         ),
-      );
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(16),
-        topRight: Radius.circular(16),
-      ),
-      child: Scaffold(
-        floatingActionButton: searchDisplayState.value.maybeWhen(
-          results: () => SizedBox.shrink(),
-          orElse: () => FloatingActionButton(
-            onPressed: () => onSearchButtonTap(),
-            heroTag: null,
-            child: Icon(Icons.search),
-          ),
+        BlocListener<TagSearchBloc, TagSearchState>(
+          listenWhen: (previous, current) => current.suggestionTags.isNotEmpty,
+          listener: (context, state) =>
+              context.read<SearchBloc>().add(const SearchSuggestionReceived()),
         ),
-        appBar: AppBar(
-          toolbarHeight: kToolbarHeight * 1.2,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          automaticallyImplyLeading: false,
-          title: SearchBar(
-            autofocus: true,
-            queryEditingController: queryEditingController,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () => onBackButtonTap(),
-            ),
-            trailing: queryEditingController.text.isNotEmpty
-                ? IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () => onSearchClearButtonTap(),
-                  )
-                : null,
-            onChanged: (value) => onTextInputChanged(value),
-          ),
+        BlocListener<TagSearchBloc, TagSearchState>(
+          listenWhen: (previous, current) =>
+              current.selectedTags.isEmpty && previous.selectedTags.length == 1,
+          listener: (context, state) =>
+              context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              if (completedQueryItems.value.length > 0) ...[
-                _buildTags(),
-                Divider(
-                  height: 15,
-                  thickness: 3,
-                  indent: 10,
-                  endIndent: 10,
+        BlocListener<TagSearchBloc, TagSearchState>(
+            listenWhen: (previous, current) =>
+                current.selectedTags != previous.selectedTags,
+            listener: (context, state) {
+              context.read<PostBloc>().add(PostRefreshed(
+                  tag: state.selectedTags.map((e) => e.toString()).join(' ')));
+            }),
+      ],
+      child: ClipRRect(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        ),
+        child: BlocBuilder<TagSearchBloc, TagSearchState>(
+          builder: (context, tagSearchState) =>
+              BlocBuilder<SearchBloc, SearchState>(
+            builder: (context, searchState) {
+              return Scaffold(
+                resizeToAvoidBottomInset: false,
+                floatingActionButton: _shouldShowSearchButton(
+                        searchState.displayState, tagSearchState)
+                    ? _buildSearchButton()
+                    : const SizedBox.shrink(),
+                appBar: AppBar(
+                  toolbarHeight: kToolbarHeight * 1.2,
+                  elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  automaticallyImplyLeading: false,
+                  title: _buildSearchBar(),
                 ),
-              ],
-              Expanded(
-                child: searchDisplayState.value.when(
-                  searchOptions: () => SearchOptions(
-                    onOptionTap: (searchOption) =>
-                        queryEditingController.text = "$searchOption:",
-                    onHistoryTap: (history) =>
-                        queryEditingController.text = history,
+                body: SafeArea(
+                  child: MultiBlocListener(
+                    listeners: [
+                      BlocListener<PostBloc, PostState>(
+                          listenWhen: (previous, current) =>
+                              current.status == LoadStatus.success &&
+                              current.posts.isEmpty &&
+                              previous.posts.isEmpty &&
+                              searchState.displayState == DisplayState.result,
+                          listener: (context, state) {
+                            context
+                                .read<SearchBloc>()
+                                .add(const SearchNoData());
+                          }),
+                      BlocListener<PostBloc, PostState>(
+                          listenWhen: (previous, current) =>
+                              current.status == LoadStatus.failure &&
+                              searchState.displayState == DisplayState.result,
+                          listener: (context, state) {
+                            context.read<SearchBloc>().add(const SearchError());
+                          }),
+                      BlocListener<PostBloc, PostState>(
+                          listenWhen: (previous, current) =>
+                              current.status == LoadStatus.failure &&
+                              searchState.displayState == DisplayState.result,
+                          listener: (context, state) {
+                            final snackbar = SnackBar(
+                              duration: const Duration(seconds: 6),
+                              behavior: SnackBarBehavior.floating,
+                              elevation: 6,
+                              content: Text(
+                                state.exceptionMessage!,
+                              ),
+                            );
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackbar);
+                          }),
+                    ],
+                    child: BlocBuilder<TagSearchBloc, TagSearchState>(
+                      builder: (context, tagSearchState) {
+                        return Column(
+                          children: [
+                            if (tagSearchState.selectedTags.isNotEmpty) ...[
+                              Container(
+                                margin: const EdgeInsets.only(left: 8),
+                                height: 35,
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: tagSearchState.selectedTags.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 4),
+                                      child: _buildSelectedTagChip(
+                                          tagSearchState.selectedTags[index]),
+                                    );
+                                  },
+                                ),
+                              ),
+                              const Divider(
+                                height: 15,
+                                thickness: 3,
+                                indent: 10,
+                                endIndent: 10,
+                              ),
+                            ],
+                            _buildSearchBody(tagSearchState),
+                          ],
+                        );
+                      },
+                    ),
                   ),
-                  suggestions: () => TagSuggestionItems(
-                    tags: suggestions.value,
-                    onItemTap: (tag) => addTag(tag.rawName),
-                  ),
-                  results: () {
-                    return InfiniteLoadList(
-                      controller: infiniteListController.value,
-                      posts: posts.value,
-                      child: isRefreshing.value
-                          ? SliverPadding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              sliver: SliverPostGridPlaceHolder())
-                          : null,
-                    );
-                  },
-                  noResults: () => EmptyResult(
-                      text:
-                          "We searched far and wide, but no results were found."),
-                  error: (message) {
-                    return ErrorResult(text: message);
-                  },
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ),
       ),
     );
   }
+
+  Widget _buildSearchBar() {
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) => SearchBar(
+        autofocus: _enableAutofocusOnSearchbar(),
+        queryEditingController: queryEditingController,
+        leading: BlocBuilder<SearchBloc, SearchState>(
+          builder: (context, state) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => state.displayState != DisplayState.options
+                  ? context
+                      .read<SearchBloc>()
+                      .add(const SearchGoBackToSearchOptionsRequested())
+                  : AppRouter.router.pop(context),
+            );
+          },
+        ),
+        trailing: state.query.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () =>
+                    context.read<TagSearchBloc>().add(const TagSearchCleared()),
+              )
+            : null,
+        onChanged: (value) =>
+            context.read<TagSearchBloc>().add(TagSearchChanged(value)),
+        onSubmitted: (value) =>
+            context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
+      ),
+    );
+  }
+
+  Widget _buildSearchBody(TagSearchState tagSearchState) {
+    return Expanded(
+      child: BlocSelector<SearchBloc, SearchState, DisplayState>(
+        selector: (state) => state.displayState,
+        builder: (context, displayState) {
+          if (displayState == DisplayState.suggestion) {
+            return TagSuggestionItems(
+              tags: tagSearchState.suggestionTags,
+              onItemTap: (tag) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+              },
+            );
+          } else if (displayState == DisplayState.result) {
+            return BlocBuilder<PostBloc, PostState>(
+              buildWhen: (previous, current) => !current.hasMore,
+              builder: (context, state) {
+                return InfiniteLoadList(
+                  refreshController: refreshController,
+                  enableLoadMore: state.hasMore,
+                  onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                        tags: tagSearchState.selectedTags
+                            .map((e) => e.toString())
+                            .join(' '),
+                      )),
+                  onRefresh: (controller) {
+                    context.read<PostBloc>().add(PostRefreshed(
+                        tag: tagSearchState.selectedTags
+                            .map((e) => e.toString())
+                            .join(' ')));
+                    Future.delayed(const Duration(milliseconds: 500),
+                        () => controller.refreshCompleted());
+                  },
+                  builder: (context, controller) => CustomScrollView(
+                    controller: controller,
+                    slivers: <Widget>[
+                      HomePostGrid(
+                        controller: controller,
+                        onTap: () => FocusScope.of(context).unfocus(),
+                      ),
+                      BlocBuilder<PostBloc, PostState>(
+                        builder: (context, state) {
+                          if (state.status == LoadStatus.loading) {
+                            return const SliverPadding(
+                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              sliver: SliverToBoxAdapter(
+                                child: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const SliverToBoxAdapter(
+                              child: SizedBox.shrink(),
+                            );
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          } else if (displayState == DisplayState.error) {
+            return const ErrorResult(text: 'Something went wrong');
+          } else if (displayState == DisplayState.loadingResult) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (displayState == DisplayState.noResult) {
+            return const EmptyResult(
+                text: 'We searched far and wide, but no results were found.');
+          } else {
+            return SearchOptions(
+              onOptionTap: (value) {
+                context.read<TagSearchBloc>().add(TagSearchChanged(value));
+                queryEditingController.text = '$value:';
+              },
+              onHistoryTap: (value) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context
+                    .read<TagSearchBloc>()
+                    .add(TagSearchTagFromHistorySelected(value));
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildSearchButton() {
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) {
+        return FloatingActionButton(
+          onPressed: () {
+            final tags = state.selectedTags.map((e) => e.toString()).join(' ');
+            context.read<SearchBloc>().add(const SearchRequested());
+            context.read<PostBloc>().add(PostRefreshed(tag: tags));
+            context.read<SearchHistoryCubit>().addHistory(tags);
+          },
+          heroTag: null,
+          child: const Icon(Icons.search),
+        );
+      },
+    );
+  }
+
+  Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
+    final hasOperator = tagSearchItem.operator != FilterOperator.none;
+    final hasMeta = tagSearchItem.metatag != null;
+    final hasAny = hasMeta || hasOperator;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (hasOperator)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Colors.purple,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8))),
+            label: Text(
+              filterOperatorToStringCharacter(tagSearchItem.operator),
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        if (hasMeta)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: _getOutlineBorderForMetaChip(hasOperator),
+            label: Text(
+              tagSearchItem.metatag!,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: Colors.grey[800],
+          shape: hasAny
+              ? const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8)))
+              : null,
+          deleteIcon: const Icon(
+            FontAwesomeIcons.xmark,
+            color: Colors.red,
+            size: 15,
+          ),
+          onDeleted: () => context
+              .read<TagSearchBloc>()
+              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
+          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+          label: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.85),
+            child: Text(
+              tagSearchItem.tag,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
+    if (!hasOperator) {
+      return const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        bottomLeft: Radius.circular(8),
+      ));
+    } else {
+      return const RoundedRectangleBorder();
+    }
+  }
+
+  bool _enableAutofocusOnSearchbar() => widget.initialQuery.isEmpty;
+}
+
+bool _shouldShowSearchButton(
+  DisplayState displayState,
+  TagSearchState tagSearchState,
+) {
+  if (displayState == DisplayState.options) {
+    if (tagSearchState.selectedTags.isEmpty) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  if (displayState == DisplayState.suggestion) return false;
+  return false;
 }
 
 class EmptyResult extends StatelessWidget {
@@ -356,20 +452,19 @@ class EmptyResult extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: Lottie.asset(
-              "assets/animations/search-file.json",
+              'assets/animations/search-file.json',
               fit: BoxFit.scaleDown,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
               text,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
@@ -391,20 +486,19 @@ class ErrorResult extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Flexible(
             child: Lottie.asset(
-              "assets/animations/server-error.json",
+              'assets/animations/server-error.json',
               fit: BoxFit.scaleDown,
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+            padding: const EdgeInsets.symmetric(horizontal: 40),
             child: Text(
               text,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
           ),
@@ -412,178 +506,4 @@ class ErrorResult extends StatelessWidget {
       ),
     );
   }
-}
-
-abstract class SearchDisplayState extends Equatable {
-  SearchDisplayState();
-  factory SearchDisplayState.results() => Results();
-  factory SearchDisplayState.suggestions() => Suggestions();
-  factory SearchDisplayState.searchOptions() => __SearchOptions();
-  factory SearchDisplayState.noResults() => NoResults();
-  factory SearchDisplayState.error(String message) => Error(message: message);
-  TResult when<TResult extends Object>({
-    required TResult results()?,
-    required TResult suggestions()?,
-    required TResult searchOptions()?,
-    required TResult noResults()?,
-    required TResult error(String message)?,
-  });
-  TResult maybeWhen<TResult extends Object>({
-    TResult results()?,
-    TResult suggestions()?,
-    TResult searchOptions()?,
-    TResult noResults()?,
-    TResult error(String message)?,
-    required TResult orElse(),
-  });
-}
-
-class Results extends SearchDisplayState {
-  @override
-  TResult maybeWhen<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?,
-      required TResult orElse()}) {
-    if (results != null) {
-      return results();
-    }
-    return orElse();
-  }
-
-  @override
-  TResult when<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?}) {
-    return results!();
-  }
-
-  @override
-  List<Object> get props => ["results"];
-}
-
-class Suggestions extends SearchDisplayState {
-  @override
-  TResult maybeWhen<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?,
-      required TResult orElse()}) {
-    if (suggestions != null) {
-      return suggestions();
-    }
-    return orElse();
-  }
-
-  @override
-  TResult when<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?}) {
-    return suggestions!();
-  }
-
-  @override
-  List<Object> get props => ["suggestions"];
-}
-
-class __SearchOptions extends SearchDisplayState {
-  @override
-  TResult maybeWhen<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?,
-      required TResult orElse()}) {
-    if (searchOptions != null) {
-      return searchOptions();
-    }
-    return orElse();
-  }
-
-  @override
-  TResult when<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?}) {
-    return searchOptions!();
-  }
-
-  @override
-  List<Object> get props => ["searchOptions"];
-}
-
-class NoResults extends SearchDisplayState {
-  @override
-  TResult maybeWhen<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?,
-      required TResult orElse()}) {
-    if (noResults != null) {
-      return noResults();
-    }
-    return orElse();
-  }
-
-  @override
-  TResult when<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?}) {
-    return noResults!();
-  }
-
-  @override
-  List<Object> get props => ["noResults"];
-}
-
-class Error extends SearchDisplayState {
-  Error({
-    required this.message,
-  });
-  final String message;
-
-  @override
-  TResult maybeWhen<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?,
-      required TResult orElse()}) {
-    if (error != null) {
-      return error(message);
-    }
-    return orElse();
-  }
-
-  @override
-  TResult when<TResult extends Object>(
-      {TResult results()?,
-      TResult suggestions()?,
-      TResult searchOptions()?,
-      TResult noResults()?,
-      TResult error(String message)?}) {
-    return error!(message);
-  }
-
-  @override
-  List<Object> get props => ["error", message];
 }

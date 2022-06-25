@@ -1,16 +1,4 @@
-// Package imports:
-import 'package:meta/meta.dart';
-
 class Artist {
-  final int id;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final bool isDeleted;
-  final String groupName;
-  final bool isBanned;
-  final List<String> otherNames;
-  final String name;
-
   Artist({
     required this.id,
     required this.createdAt,
@@ -25,11 +13,19 @@ class Artist {
   factory Artist.empty() => Artist(
         createdAt: DateTime.now(),
         id: 0,
-        name: "",
-        groupName: "",
+        name: '',
+        groupName: '',
         isBanned: false,
         isDeleted: false,
         otherNames: [],
         updatedAt: DateTime.now(),
       );
+  final int id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final bool isDeleted;
+  final String groupName;
+  final bool isBanned;
+  final List<String> otherNames;
+  final String name;
 }

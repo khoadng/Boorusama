@@ -3,22 +3,23 @@ import 'package:flutter/material.dart';
 
 class Modal extends StatelessWidget {
   const Modal({
+    Key? key,
     this.title,
     required this.child,
-  });
+  }) : super(key: key);
 
   final Widget child;
   final String? title;
 
-  static const Radius _borderRadius = Radius.circular(30.0);
+  static const Radius _borderRadius = Radius.circular(30);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: 14),
+      padding: const EdgeInsets.only(top: 14),
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: BorderRadius.only(
+        color: Theme.of(context).backgroundColor,
+        borderRadius: const BorderRadius.only(
           topLeft: _borderRadius,
           topRight: _borderRadius,
         ),
@@ -44,8 +45,8 @@ class _DragLine extends StatelessWidget {
       width: width,
       height: 3,
       decoration: ShapeDecoration(
-        shape: StadiumBorder(),
-        color: Theme.of(context).accentColor,
+        shape: const StadiumBorder(),
+        color: Theme.of(context).colorScheme.secondary,
       ),
     );
   }
@@ -59,17 +60,17 @@ class _Title extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (text == null) {
-      return SizedBox();
+      return const SizedBox();
     }
 
     return Padding(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
         top: 18,
         bottom: 8,
       ),
       child: Text(
         text!,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.w900,
         ),

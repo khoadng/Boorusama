@@ -2,24 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-
-final _historyProvider =
-    FutureProvider.autoDispose<List<SearchHistory>>((ref) async {
-  final repo = ref.watch(searchHistoryProvider);
-  final searchHistories = await repo.getHistories();
-
-  searchHistories.sort((a, b) {
-    return b.createdAt.compareTo(a.createdAt);
-  });
-
-  return searchHistories.take(5).toList();
-});
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 class SearchHistorySection extends HookWidget {
   const SearchHistorySection({
@@ -31,63 +20,66 @@ class SearchHistorySection extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchHistories = useProvider(_historyProvider);
-
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ...searchHistories.maybeWhen(
-          data: (histories) {
-            final widgets = <Widget>[];
-
-            final historyTiles = histories
-                .map(
-                  (item) => ListTile(
-                    visualDensity: VisualDensity.compact,
-                    title: Text(item.query),
-                    onTap: () => onHistoryTap(item.query),
-                  ),
-                )
-                .toList();
-            widgets..addAll(historyTiles);
-
-            if (historyTiles.isNotEmpty) {
-              final header = Padding(
-                padding: EdgeInsets.only(left: 10),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "History".toUpperCase(),
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        await context.read(searchHistoryProvider).clearAll();
-                        context.refresh(_historyProvider);
-                      },
-                      child: Text("Clear"),
-                    ),
-                  ],
-                ),
-              );
-              widgets.insert(0, header);
-              widgets.insert(
-                  0,
-                  Divider(
-                    indent: 10,
-                    endIndent: 10,
-                  ));
-            }
-
-            return widgets;
-          },
-          orElse: () => [SizedBox.shrink()],
-        ),
-      ],
+    return BlocBuilder<SearchHistoryCubit, AsyncLoadState<List<SearchHistory>>>(
+      builder: (context, state) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (state.status == LoadStatus.success)
+            ..._buildHistories(context, state.data!)
+          else
+            const SizedBox.shrink()
+        ],
+      ),
     );
+  }
+
+  List<Widget> _buildHistories(
+      BuildContext context, List<SearchHistory> histories) {
+    final widgets = <Widget>[];
+
+    final historyTiles = histories
+        .map(
+          (item) => ListTile(
+            visualDensity: VisualDensity.compact,
+            title: Text(item.query),
+            onTap: () => onHistoryTap(item.query),
+          ),
+        )
+        .toList();
+    widgets.addAll(historyTiles);
+
+    if (historyTiles.isNotEmpty) {
+      final header = Padding(
+        padding: const EdgeInsets.only(left: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'History'.toUpperCase(),
+              style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            TextButton(
+              onPressed: () => ReadContext(context)
+                  .read<SearchHistoryCubit>()
+                  .clearHistory(),
+              child: const Text('Clear'),
+            ),
+          ],
+        ),
+      );
+      widgets
+        ..insert(0, header)
+        ..insert(
+            0,
+            const Divider(
+              thickness: 1,
+              indent: 10,
+              endIndent: 10,
+            ));
+    }
+
+    return widgets;
   }
 }

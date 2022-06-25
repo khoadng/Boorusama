@@ -8,14 +8,16 @@ class PostImage extends StatefulWidget {
   const PostImage({
     Key? key,
     required this.imageUrl,
-    required this.placeholderUrl,
+    this.placeholderUrl,
+    this.borderRadius,
   }) : super(key: key);
 
   final String imageUrl;
-  final String placeholderUrl;
+  final String? placeholderUrl;
+  final BorderRadiusGeometry? borderRadius;
 
   @override
-  _PostImageState createState() => _PostImageState();
+  State<PostImage> createState() => _PostImageState();
 }
 
 class _PostImageState extends State<PostImage> {
@@ -33,7 +35,7 @@ class _PostImageState extends State<PostImage> {
       image: CachedNetworkImageProvider(widget.imageUrl),
     );
     myImage.image
-        .resolve(ImageConfiguration())
+        .resolve(const ImageConfiguration())
         .addListener(ImageStreamListener((_, __) {}));
     super.initState();
   }
@@ -45,28 +47,37 @@ class _PostImageState extends State<PostImage> {
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
             image: DecorationImage(image: myImage.image, fit: BoxFit.cover),
           ),
         );
       },
-      placeholder: (context, url) => CachedNetworkImage(
-        imageUrl: widget.placeholderUrl,
-        imageBuilder: (context, imageProvider) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
-          ),
-        ),
-        placeholder: (context, url) => Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            color: Theme.of(context).cardColor,
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => Center(child: Icon(Icons.error)),
-      fadeInDuration: Duration(microseconds: 10),
+      placeholder: (context, url) => widget.placeholderUrl != null
+          ? CachedNetworkImage(
+              imageUrl: widget.placeholderUrl!,
+              imageBuilder: (context, imageProvider) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                  image:
+                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                ),
+              ),
+              placeholder: (context, url) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                  color: Theme.of(context).cardColor,
+                ),
+              ),
+            )
+          : Container(
+              decoration: BoxDecoration(
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+                color: Theme.of(context).cardColor,
+              ),
+            ),
+      errorWidget: (context, url, error) =>
+          const Center(child: Icon(Icons.error)),
+      fadeInDuration: const Duration(microseconds: 10),
     );
   }
 }

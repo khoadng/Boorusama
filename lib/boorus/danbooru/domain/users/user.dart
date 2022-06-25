@@ -1,18 +1,69 @@
+// Flutter imports:
+import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
+import 'user_dto.dart';
 import 'user_level.dart';
 
-class User {
-  int _id;
-  String _name;
-  UserLevel level;
-  String _blacklistedTagString;
+@immutable
+class User extends Equatable {
+  const User({
+    required this.id,
+    required this.level,
+    required this.name,
+    required this.blacklistedTags,
+  });
 
-  User(this._id, this._name, this.level, this._blacklistedTagString);
+  factory User.placeholder() => const User(
+        id: UserId(0),
+        level: UserLevel.member,
+        name: Username('User'),
+        blacklistedTags: [],
+      );
 
-  int get id => _id;
-  String get displayName => _name.replaceAll("_", " ");
-  String get rawName => _name;
-  List<String> get blacklistedTags => _blacklistedTagString.split("\n");
+  final UserId id;
+  final UserLevel level;
+  final Username name;
+  final List<String> blacklistedTags;
 
-  factory User.placeholder() => User(0, "User", UserLevel(20), "");
+  @override
+  List<Object?> get props => [id, level, name, blacklistedTags];
 }
+
+class Username extends Equatable {
+  const Username(this.value);
+  final String value;
+  @override
+  List<Object?> get props => [value];
+}
+
+class UserId extends Equatable {
+  const UserId(this.value);
+  final int value;
+  @override
+  List<Object?> get props => [value];
+}
+
+User userDtoToUser(
+  UserDto d,
+  List<String> defaultBlacklistedTags,
+) {
+  try {
+    return User(
+      id: UserId(d.id!),
+      level: intToUserLevel(d.level!),
+      name: Username(d.name!),
+      //TODO: need to find a way to distinguish between other user and current user.
+      blacklistedTags: d.blacklistedTags == null
+          ? defaultBlacklistedTags
+          : tagStringToListTagString(d.blacklistedTags!),
+    );
+  } catch (e) {
+    throw Exception('fail to parse one of the required field\n $e');
+  }
+}
+
+List<String> tagStringToListTagString(String str) => str.split('\n');

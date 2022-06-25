@@ -2,20 +2,15 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/config_provider.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
-
-final _config = Provider<IConfig>((ref) {
-  return ref.watch(configProvider);
-});
 
 class SearchOptions extends HookWidget {
   const SearchOptions({
@@ -29,23 +24,22 @@ class SearchOptions extends HookWidget {
 
   static const icons = {
     // "fav": Icons.favorite,
-    "favcount": FontAwesomeIcons.arrowUpWideShort,
+    'favcount': FontAwesomeIcons.arrowUpWideShort,
     // "id": FontAwesomeIcons.idCard,
     // "date": FontAwesomeIcons.calendar,
-    "age": FontAwesomeIcons.clock,
-    "rating": FontAwesomeIcons.exclamation,
-    "score": FontAwesomeIcons.star,
+    'age': FontAwesomeIcons.clock,
+    'rating': FontAwesomeIcons.exclamation,
+    'score': FontAwesomeIcons.star,
   };
 
   @override
   Widget build(BuildContext context) {
     final animationController =
         useAnimationController(duration: kThemeAnimationDuration);
-    final config = useProvider(_config);
 
     useEffect(() {
-      Future.delayed(
-          Duration(milliseconds: 100), () => animationController.forward());
+      Future.delayed(const Duration(milliseconds: 100),
+          animationController.forward);
       return null;
     }, [animationController]);
 
@@ -53,19 +47,17 @@ class SearchOptions extends HookWidget {
       opacity: animationController,
       child: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(top: 10),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 10),
+                padding: const EdgeInsets.only(left: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Search Options".toUpperCase(),
+                      'Search Options'.toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),
@@ -73,11 +65,12 @@ class SearchOptions extends HookWidget {
                     IconButton(
                       onPressed: () {
                         launchExternalUrl(
-                          Uri.parse(config.cheatSheetUrl),
+                          Uri.parse(RepositoryProvider.of<IConfig>(context)
+                              .cheatSheetUrl),
                           mode: LaunchMode.platformDefault,
                         );
                       },
-                      icon: FaIcon(
+                      icon: const FaIcon(
                         FontAwesomeIcons.circleQuestion,
                         size: 18,
                       ),
@@ -85,7 +78,8 @@ class SearchOptions extends HookWidget {
                   ],
                 ),
               ),
-              ...config.searchOptions
+              ...RepositoryProvider.of<IConfig>(context)
+                  .searchOptions
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
                         onTap: () => onOptionTap?.call(option),
@@ -93,13 +87,14 @@ class SearchOptions extends HookWidget {
                           text: TextSpan(
                             children: <TextSpan>[
                               TextSpan(
-                                  text: "$option:",
+                                  text: '$option:',
                                   style: Theme.of(context)
                                       .textTheme
                                       .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
-                                  text: " ${config.searchOptionHitns[option]}",
+                                  text:
+                                      ' ${RepositoryProvider.of<IConfig>(context).searchOptionHitns[option]}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!

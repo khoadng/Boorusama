@@ -5,72 +5,56 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // Project imports:
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'package:boorusama/core/infrastructure/IOHelper.dart';
-
-final downloadServiceProvider = Provider<IDownloadService>((ref) {
-  final downloader = DownloadService();
-
-  return downloader;
-});
+import 'package:boorusama/core/infrastructure/io_helper.dart';
 
 class DownloadService implements IDownloadService {
   DownloadService();
 
-  ReceivePort _port = ReceivePort();
+  final ReceivePort _port = ReceivePort();
   bool _permissionReady = false;
   String _localPath = '';
   String _savedDir = '';
 
   @override
-  void download(IDownloadable downloadable) async {
+  Future<void> download(
+    IDownloadable downloadable, {
+    String? path,
+  }) async {
+    //TODO: display a toast or snack and redirect to permission settings.
+    if (!_permissionReady) {
+      return;
+    }
     await FlutterDownloader.enqueue(
-        saveInPublicStorage: true,
-        url: downloadable.downloadUrl,
-        fileName: downloadable.fileName,
-        savedDir: _savedDir,
-        showNotification: true,
-        openFileFromNotification: true);
+      saveInPublicStorage: path == null,
+      url: downloadable.downloadUrl,
+      fileName: downloadable.fileName,
+      savedDir: path ?? _savedDir,
+    );
   }
 
-  Future<Null> _prepare() async {
-    final tasks = await FlutterDownloader.loadTasks();
-
+  Future<void> _prepare() async {
     //TODO: refactor to use configurable input
     final savedDir = io.Directory(_localPath);
-    bool hasExisted = await savedDir.exists();
+    final bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
-      savedDir.create();
+      await savedDir.create();
     }
     _savedDir = savedDir.path;
   }
 
   void _bindBackgroundIsolate() {
-    bool isSuccess = IsolateNameServer.registerPortWithName(
+    final bool isSuccess = IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
     if (!isSuccess) {
       _unbindBackgroundIsolate();
       _bindBackgroundIsolate();
       return;
     }
-    _port.listen((dynamic data) {
-      String id = data[0];
-      DownloadTaskStatus status = data[1];
-      int progress = data[2];
-
-      // final task = _tasks?.firstWhere((task) => task.taskId == id);
-      // if (task != null) {
-      //   setState(() {
-      //     task.status = status;
-      //     task.progress = progress;
-      //   });
-      // }
-    });
   }
 
   void _unbindBackgroundIsolate() {
@@ -78,7 +62,7 @@ class DownloadService implements IDownloadService {
   }
 
   @override
-  Future<Null> init() async {
+  Future<void> init() async {
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
 
@@ -89,15 +73,16 @@ class DownloadService implements IDownloadService {
     final bool hasExisted = await savedDir.exists();
     if (!hasExisted) {
       try {
-        savedDir.create();
+        await savedDir.create();
         _savedDir = savedDir.path;
       } catch (e) {
         _savedDir = await IOHelper.getLocalPathFallback();
       }
     }
 
-    _prepare();
-    print("Download service initialized");
+    await _prepare();
+    // ignore: avoid_print
+    print('Download service initialized');
   }
 
   static void downloadCallback(

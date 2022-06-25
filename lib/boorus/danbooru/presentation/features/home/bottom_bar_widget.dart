@@ -11,15 +11,16 @@ class BottomBar extends StatefulWidget {
   final ValueChanged<int> onTabChanged;
 
   @override
-  _BottomBarState createState() => _BottomBarState();
+  State<BottomBar> createState() => _BottomBarState();
 }
 
 class _BottomBarState extends State<BottomBar> {
   late int currentIndex;
 
   final labels = [
-    "Home",
-    "Explore",
+    'Home',
+    'Explore',
+    'Pool',
     // "Favorites",
   ];
 
@@ -39,16 +40,16 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
-      animationDuration: Duration(milliseconds: 300),
+      animationDuration: const Duration(milliseconds: 300),
       height: 60,
-      //TODO: shouldn't use hardcode value, not working great when using multiple themes
-      color: Colors.black,
+      color: Theme.of(context).bottomNavigationBarTheme.backgroundColor!,
       backgroundColor: Colors.transparent,
-      items: [
-        FaIcon(FontAwesomeIcons.home),
+      items: const [
+        FaIcon(FontAwesomeIcons.house),
         FaIcon(Icons.explore),
+        FaIcon(FontAwesomeIcons.images),
       ],
-      onTap: (index) => changePage(index),
+      onTap: changePage,
     );
   }
 }
