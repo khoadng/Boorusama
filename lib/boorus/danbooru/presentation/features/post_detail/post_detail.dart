@@ -1,6 +1,7 @@
 // Dart imports:
 import 'dart:convert';
 import 'dart:io';
+import 'dart:ui';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -8,31 +9,29 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
-import 'package:recase/recase.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';
+import 'widgets/information_section.dart';
+import 'widgets/pool_tiles.dart';
 import 'widgets/post_action_toolbar.dart';
-import 'widgets/post_info_modal.dart';
 import 'widgets/post_video.dart';
 
 String _getPostParentChildTextDescription(Post post) {
@@ -82,7 +81,8 @@ class PostDetail extends HookWidget {
     Widget postWidget;
     if (post.isVideo) {
       if (p.extension(post.normalImageUrl) == '.webm') {
-        final String videoHtml = '''
+        final String videoHtml =
+            '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${post.normalImageUrl}#t=0.01 type="video/webm" />
@@ -144,304 +144,257 @@ class PostDetail extends HookWidget {
       );
     }
 
-    Widget buildRecommendedArtistList() {
-      if (post.artistTags.isEmpty) return const SizedBox.shrink();
-      return BlocBuilder<RecommendedArtistPostCubit,
-          AsyncLoadState<List<Recommended>>>(
-        builder: (context, state) {
-          if (state.status == LoadStatus.success) {
-            final recommendedItems = state.data!;
-            return Column(
-              children: recommendedItems
-                  .map(
-                    (item) => RecommendPostSection(
-                      header: ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                          context,
-                          '/artist',
-                          routeSettings: RouteSettings(
-                            arguments: [
-                              item._title,
-                              post.normalImageUrl,
-                            ],
-                          ),
-                        ),
-                        title: Text(item.title),
-                        trailing:
-                            const Icon(Icons.keyboard_arrow_right_rounded),
-                      ),
-                      posts: item.posts,
-                    ),
-                  )
-                  .toList(),
-            );
-          } else {
-            final artists = post.artistTags;
-            return Column(
-              children: [
-                ...List.generate(
-                  artists.length,
-                  (index) => RecommendPostSectionPlaceHolder(
-                    header: ListTile(
-                      title: Text(artists[index].removeUnderscoreWithSpace()),
-                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }
-        },
-      );
-    }
-
-    Widget buildRecommendedCharacterList() {
-      if (post.characterTags.isEmpty) return const SizedBox.shrink();
-      return BlocBuilder<RecommendedCharacterPostCubit,
-          AsyncLoadState<List<Recommended>>>(
-        builder: (context, state) {
-          if (state.status == LoadStatus.success) {
-            final recommendedItems = state.data!;
-            return Column(
-              children: recommendedItems
-                  .map(
-                    (item) => RecommendPostSection(
-                      header: ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                          context,
-                          '/artist',
-                          routeSettings: RouteSettings(
-                            arguments: [
-                              item._title,
-                              post.normalImageUrl,
-                            ],
-                          ),
-                        ),
-                        title: Text(item.title),
-                        trailing:
-                            const Icon(Icons.keyboard_arrow_right_rounded),
-                      ),
-                      posts: item.posts,
-                    ),
-                  )
-                  .toList(),
-            );
-          } else {
-            final characters = post.characterTags;
-            return Column(
-              children: [
-                ...List.generate(
-                  characters.length,
-                  (index) => RecommendPostSectionPlaceHolder(
-                    header: ListTile(
-                      title:
-                          Text(characters[index].removeUnderscoreWithSpace()),
-                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                  ),
-                )
-              ],
-            );
-          }
-        },
-      );
-    }
-
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: minimal
-            ? Center(child: postWidget)
-            : CustomScrollView(
-                controller: scrollControllerWithAnim,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: postWidget,
-                  ),
-                  const PoolTiles(),
-                  SliverToBoxAdapter(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        InformationSection(post: post),
-                        ValueListenableBuilder<String?>(
-                          valueListenable: imagePath,
-                          builder: (context, value, child) => PostActionToolbar(
-                            post: post,
-                            imagePath: value,
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        buildWhen: (previous, current) =>
+            previous.settings.actionBarDisplayBehavior !=
+            current.settings.actionBarDisplayBehavior,
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: minimal
+                ? Center(child: postWidget)
+                : Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      CustomScrollView(
+                        controller: scrollControllerWithAnim,
+                        slivers: [
+                          SliverToBoxAdapter(
+                            child: postWidget,
                           ),
-                        ),
-                        if (post.hasChildren || post.hasParent) ...[
-                          Container(
-                            color: Theme.of(context).hintColor,
-                            height: 1,
-                          ),
-                          ListTile(
-                            dense: true,
-                            tileColor: Theme.of(context).cardColor,
-                            title:
-                                Text(_getPostParentChildTextDescription(post)),
-                            trailing: Padding(
-                              padding: const EdgeInsets.all(4),
-                              child: ElevatedButton(
-                                onPressed: () => showBarModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider(
-                                        create: (context) => PostBloc(
-                                          postRepository:
-                                              context.read<IPostRepository>(),
-                                          blacklistedTagsRepository:
-                                              context.read<
-                                                  BlacklistedTagsRepository>(),
-                                        )..add(PostRefreshed(
-                                            tag: post.hasParent
-                                                ? 'parent:${post.parentId}'
-                                                : 'parent:${post.id}')),
-                                      )
-                                    ],
-                                    child: ParentChildPostPage(
-                                        parentPostId: post.hasParent
-                                            ? post.parentId!
-                                            : post.id),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'View',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Container(
-                            color: Theme.of(context).hintColor,
-                            height: 1,
+                          const PoolTiles(),
+                          _buildPostInformation(
+                            state,
+                            imagePath,
+                            context,
                           ),
                         ],
-                        if (!post.hasChildren && !post.hasParent)
-                          const Divider(height: 8, thickness: 1),
-                        buildRecommendedArtistList(),
-                        buildRecommendedCharacterList(),
-                      ],
-                    ),
+                      ),
+                      if (state.settings.actionBarDisplayBehavior ==
+                          ActionBarDisplayBehavior.staticAtBottom)
+                        _buildBottomActionBar(context, imagePath),
+                    ],
                   ),
-                ],
-              ),
+          );
+        },
       ),
     );
   }
-}
 
-class PoolTiles extends StatelessWidget {
-  const PoolTiles({
-    Key? key,
-  }) : super(key: key);
+  Widget _buildBottomActionBar(
+    BuildContext context,
+    ValueNotifier<String?> imagePath,
+  ) {
+    return Positioned(
+      bottom: 6,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Material(
+            elevation: 12,
+            color: Theme.of(context).cardColor.withOpacity(0.7),
+            type: MaterialType.card,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: _buildActionBar(imagePath),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+  Widget _buildPostInformation(
+    SettingsState state,
+    ValueNotifier<String?> imagePath,
+    BuildContext context,
+  ) {
+    return SliverToBoxAdapter(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          InformationSection(post: post),
+          if (state.settings.actionBarDisplayBehavior ==
+              ActionBarDisplayBehavior.scrolling)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: _buildActionBar(imagePath),
+            ),
+          if (post.hasChildren || post.hasParent) ...[
+            const _Divider(),
+            _buildParentChildTile(context),
+            const _Divider(),
+          ],
+          if (!post.hasChildren && !post.hasParent)
+            const Divider(height: 8, thickness: 1),
+          _buildRecommendedArtistList(),
+          _buildRecommendedCharacterList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildParentChildTile(BuildContext context) {
+    return ListTile(
+      dense: true,
+      tileColor: Theme.of(context).cardColor,
+      title: Text(_getPostParentChildTextDescription(post)),
+      trailing: Padding(
+        padding: const EdgeInsets.all(4),
+        child: ElevatedButton(
+          onPressed: () => showBarModalBottomSheet(
+            context: context,
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => PostBloc(
+                    postRepository: context.read<IPostRepository>(),
+                    blacklistedTagsRepository:
+                        context.read<BlacklistedTagsRepository>(),
+                  )..add(PostRefreshed(
+                      tag: post.hasParent
+                          ? 'parent:${post.parentId}'
+                          : 'parent:${post.id}')),
+                )
+              ],
+              child: ParentChildPostPage(
+                  parentPostId: post.hasParent ? post.parentId! : post.id),
+            ),
+          ),
+          child: const Text(
+            'View',
+            style: TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildRecommendedArtistList() {
+    if (post.artistTags.isEmpty) return const SizedBox.shrink();
+    return BlocBuilder<RecommendedArtistPostCubit,
+        AsyncLoadState<List<Recommended>>>(
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
-          return SliverToBoxAdapter(
-            child: Material(
-              color: Theme.of(context).cardColor,
-              child: Column(
-                children: [
-                  ...state.data!.mapIndexed(
-                    (index, e) => ListTile(
-                      dense: true,
+          final recommendedItems = state.data!;
+          return Column(
+            children: recommendedItems
+                .map(
+                  (item) => RecommendPostSection(
+                    header: ListTile(
                       onTap: () => AppRouter.router.navigateTo(
                         context,
-                        'pool/detail',
-                        routeSettings: RouteSettings(arguments: [e]),
+                        '/artist',
+                        routeSettings: RouteSettings(
+                          arguments: [
+                            item._title,
+                            post.normalImageUrl,
+                          ],
+                        ),
                       ),
-                      visualDensity:
-                          const VisualDensity(horizontal: -4, vertical: -4),
-                      title: Text(
-                        e.name.removeUnderscoreWithSpace(),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: Theme.of(context).textTheme.subtitle2,
-                      ),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.angleRight,
-                        size: 12,
-                      ),
+                      title: Text(item.title),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                     ),
-                  )
-                ],
-              ),
-            ),
+                    posts: item.posts,
+                  ),
+                )
+                .toList(),
           );
         } else {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
+          final artists = post.artistTags;
+          return Column(
+            children: [
+              ...List.generate(
+                artists.length,
+                (index) => RecommendPostSectionPlaceHolder(
+                  header: ListTile(
+                    title: Text(artists[index].removeUnderscoreWithSpace()),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                ),
+              )
+            ],
+          );
         }
       },
     );
   }
+
+  Widget _buildRecommendedCharacterList() {
+    if (post.characterTags.isEmpty) return const SizedBox.shrink();
+    return BlocBuilder<RecommendedCharacterPostCubit,
+        AsyncLoadState<List<Recommended>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final recommendedItems = state.data!;
+          return Column(
+            children: recommendedItems
+                .map(
+                  (item) => RecommendPostSection(
+                    header: ListTile(
+                      onTap: () => AppRouter.router.navigateTo(
+                        context,
+                        '/artist',
+                        routeSettings: RouteSettings(
+                          arguments: [
+                            item._title,
+                            post.normalImageUrl,
+                          ],
+                        ),
+                      ),
+                      title: Text(item.title),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                    posts: item.posts,
+                  ),
+                )
+                .toList(),
+          );
+        } else {
+          final characters = post.characterTags;
+          return Column(
+            children: [
+              ...List.generate(
+                characters.length,
+                (index) => RecommendPostSectionPlaceHolder(
+                  header: ListTile(
+                    title: Text(characters[index].removeUnderscoreWithSpace()),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
+                ),
+              )
+            ],
+          );
+        }
+      },
+    );
+  }
+
+  Widget _buildActionBar(ValueNotifier<String?> imagePath) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: imagePath,
+      builder: (context, value, child) => PostActionToolbar(
+        post: post,
+        imagePath: value,
+      ),
+    );
+  }
 }
 
-class InformationSection extends HookWidget {
-  const InformationSection({
+class _Divider extends StatelessWidget {
+  const _Divider({
     Key? key,
-    required this.post,
   }) : super(key: key);
-
-  final Post post;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => showMaterialModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) => PostInfoModal(
-            post: post, scrollController: ModalScrollController.of(context)!),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Flexible(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    post.characterTags.isEmpty
-                        ? 'Original'
-                        : post.name.characterOnly
-                            .removeUnderscoreWithSpace()
-                            .titleCase,
-                    overflow: TextOverflow.fade,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                      post.copyrightTags.isEmpty
-                          ? 'Original'
-                          : post.name.copyRightOnly
-                              .removeUnderscoreWithSpace()
-                              .titleCase,
-                      overflow: TextOverflow.fade,
-                      style: Theme.of(context).textTheme.bodyText2),
-                  const SizedBox(height: 5),
-                  Text(
-                    dateTimeToStringTimeAgo(post.createdAt),
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ],
-              ),
-            ),
-            const Flexible(child: Icon(Icons.keyboard_arrow_down)),
-          ],
-        ),
-      ),
+    return Container(
+      color: Theme.of(context).hintColor,
+      height: 1,
     );
   }
 }

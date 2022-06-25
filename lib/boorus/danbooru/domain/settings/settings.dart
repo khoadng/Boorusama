@@ -11,6 +11,11 @@ enum DataCollectingStatus {
   prohibit,
 }
 
+enum ActionBarDisplayBehavior {
+  scrolling,
+  staticAtBottom,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -23,6 +28,7 @@ class Settings extends Equatable {
     required this.downloadPath,
     required this.imageBorderRadius,
     required this.imageGridSpacing,
+    required this.actionBarDisplayBehavior,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -42,6 +48,9 @@ class Settings extends Equatable {
         searchHistories = List<SearchHistory>.from(json['searchHistories']
             ?.map((e) => SearchHistory.fromJson(e))
             ?.toList()),
+        actionBarDisplayBehavior = json['actionBarDisplayBehavior'] != null
+            ? ActionBarDisplayBehavior.values[json['actionBarDisplayBehavior']]
+            : ActionBarDisplayBehavior.scrolling,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -56,6 +65,7 @@ class Settings extends Equatable {
     downloadPath: null,
     imageBorderRadius: 4,
     imageGridSpacing: 4,
+    actionBarDisplayBehavior: ActionBarDisplayBehavior.scrolling,
   );
 
   final String blacklistedTags;
@@ -70,6 +80,8 @@ class Settings extends Equatable {
   final double imageBorderRadius;
   final double imageGridSpacing;
 
+  final ActionBarDisplayBehavior actionBarDisplayBehavior;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -81,6 +93,7 @@ class Settings extends Equatable {
     String? downloadPath,
     double? imageBorderRadius,
     double? imageGridSpacing,
+    ActionBarDisplayBehavior? actionBarDisplayBehavior,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -93,6 +106,8 @@ class Settings extends Equatable {
         downloadPath: downloadPath ?? this.downloadPath,
         imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
         imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
+        actionBarDisplayBehavior:
+            actionBarDisplayBehavior ?? this.actionBarDisplayBehavior,
       );
 
   Map<String, dynamic> toJson() => {
@@ -107,6 +122,7 @@ class Settings extends Equatable {
         'downloadPath': downloadPath,
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
+        'actionBarDisplayBehavior': actionBarDisplayBehavior.index,
       };
 
   @override
@@ -121,5 +137,6 @@ class Settings extends Equatable {
         downloadPath,
         imageBorderRadius,
         imageGridSpacing,
+        actionBarDisplayBehavior,
       ];
 }
