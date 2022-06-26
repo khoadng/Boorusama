@@ -21,6 +21,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
       try {
         if (e.type == 'tag') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
@@ -28,6 +29,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
           );
         } else if (e.type == 'tag-alias') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
@@ -36,6 +38,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
           );
         } else if (e.type == 'pool') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: PoolCategory(category: stringToPoolCategory(e.category)),
@@ -43,12 +46,23 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
           );
         } else if (e.type == 'user') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             level: stringToUserLevel(e.level!),
           );
         } else if (e.type == 'tag-abbreviation') {
           return AutocompleteData(
+            type: e.type,
+            label: e.label!,
+            value: e.value!,
+            category: TagCategory(category: t.intToTagCategory(e.category)),
+            postCount: e.postCount!,
+            antecedent: e.antecedent!,
+          );
+        } else if (e.type == 'tag-other-name') {
+          return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
