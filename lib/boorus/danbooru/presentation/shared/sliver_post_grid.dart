@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -25,12 +26,6 @@ import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/presentation/grid_size.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/utils.dart';
-
-enum ImageQuality {
-  low,
-  high,
-  original,
-}
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -116,7 +111,8 @@ class SliverPostGrid extends HookWidget {
           previous.settings.imageBorderRadius !=
               current.settings.imageBorderRadius ||
           previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing,
+              current.settings.imageGridSpacing ||
+          previous.settings.imageQuality != current.settings.imageQuality,
       builder: (context, state) {
         return SliverGrid(
           gridDelegate: gridSizeToGridDelegate(
@@ -137,6 +133,7 @@ class SliverPostGrid extends HookWidget {
                           state.settings.imageBorderRadius),
                       gridSize: gridSize,
                       scrollController: scrollController,
+                      imageQuality: state.settings.imageQuality,
                       onTap: onTap,
                     ),
                   ),
@@ -154,15 +151,16 @@ class SliverPostGrid extends HookWidget {
 }
 
 class SliverPostGridItem extends StatelessWidget {
-  const SliverPostGridItem(
-      {Key? key,
-      required this.post,
-      required this.index,
-      required this.borderRadius,
-      required this.gridSize,
-      this.onTap,
-      required this.scrollController})
-      : super(key: key);
+  const SliverPostGridItem({
+    Key? key,
+    required this.post,
+    required this.index,
+    required this.borderRadius,
+    required this.gridSize,
+    this.onTap,
+    required this.imageQuality,
+    required this.scrollController,
+  }) : super(key: key);
 
   final Post post;
   final int index;
@@ -170,6 +168,8 @@ class SliverPostGridItem extends StatelessWidget {
   final void Function(Post post, int index)? onTap;
   final GridSize gridSize;
   final BorderRadius? borderRadius;
+  final ImageQuality imageQuality;
+
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[];
@@ -223,7 +223,8 @@ class SliverPostGridItem extends StatelessWidget {
               );
             },
             child: PostImage(
-              imageUrl: _getImageUrl(post, _gridSizeToImageQuality(gridSize)),
+              imageUrl: _getImageUrl(
+                  post, _gridSizeToImageQuality(gridSize, imageQuality)),
               placeholderUrl: post.previewImageUrl,
               borderRadius: borderRadius,
             ),
@@ -264,7 +265,11 @@ SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
   }
 }
 
-ImageQuality _gridSizeToImageQuality(GridSize size) {
+ImageQuality _gridSizeToImageQuality(
+  GridSize size,
+  ImageQuality imageQuality,
+) {
+  if (imageQuality != ImageQuality.automatic) return imageQuality;
   if (size == GridSize.small) return ImageQuality.low;
 
   return ImageQuality.high;
