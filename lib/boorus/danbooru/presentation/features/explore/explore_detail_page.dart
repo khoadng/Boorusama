@@ -13,9 +13,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_most_viewed_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -201,7 +199,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
   final DateTime date;
   final TimeScale scale;
   final LoadStatus status;
-  final List<Post> posts;
+  final List<PostOverviewItem> posts;
   final void Function(DateTime date, TimeScale scale) onLoadMore;
   final void Function(DateTime date, TimeScale scale) onRefresh;
   final RefreshController controller;

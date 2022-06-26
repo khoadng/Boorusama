@@ -8,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/main.dart';
-import 'common.dart';
 
 @immutable
 class PostCuratedState extends Equatable {
@@ -30,16 +30,16 @@ class PostCuratedState extends Equatable {
         hasMore: true,
       );
 
-  final List<Post> posts;
-  final List<Post> filteredPosts;
+  final List<PostOverviewItem> posts;
+  final List<PostOverviewItem> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
 
   PostCuratedState copyWith({
     LoadStatus? status,
-    List<Post>? posts,
-    List<Post>? filteredPosts,
+    List<PostOverviewItem>? posts,
+    List<PostOverviewItem>? filteredPosts,
     int? page,
     bool? hasMore,
   }) =>
@@ -105,7 +105,8 @@ class PostCuratedBloc extends Bloc<PostCuratedEvent, PostCuratedState> {
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
           onSuccess: (posts) async {
-            final filteredPosts = filterBlacklisted(posts, blacklisted);
+            final filteredPosts = filterBlacklisted(posts, blacklisted)
+                .map(postToPostOverviewItem);
             // print(
             //     '${filteredPosts.length} posts got filtered. Total: ${state.filteredPosts.length + filteredPosts.length}');
             emit(
@@ -113,7 +114,7 @@ class PostCuratedBloc extends Bloc<PostCuratedEvent, PostCuratedState> {
                 status: LoadStatus.success,
                 posts: [
                   ...state.posts,
-                  ...filter(posts, blacklisted),
+                  ...filter(posts, blacklisted).map(postToPostOverviewItem),
                 ],
                 filteredPosts: [
                   ...state.filteredPosts,
@@ -145,8 +146,12 @@ class PostCuratedBloc extends Bloc<PostCuratedEvent, PostCuratedState> {
           onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: filter(posts, blacklisted),
-              filteredPosts: filterBlacklisted(posts, blacklisted),
+              posts: filter(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
+              filteredPosts: filterBlacklisted(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
               page: 1,
               hasMore: posts.isNotEmpty,
             ),

@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositori
 import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/main.dart';
 import 'common.dart';
+import 'post_overview_item.dart';
 
 enum PostsOrder {
   popular,
@@ -38,8 +39,8 @@ class PostState extends Equatable {
         hasMore: true,
       );
 
-  final List<Post> posts;
-  final List<Post> filteredPosts;
+  final List<PostOverviewItem> posts;
+  final List<PostOverviewItem> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
@@ -47,8 +48,8 @@ class PostState extends Equatable {
 
   PostState copyWith({
     LoadStatus? status,
-    List<Post>? posts,
-    List<Post>? filteredPosts,
+    List<PostOverviewItem>? posts,
+    List<PostOverviewItem>? filteredPosts,
     int? page,
     bool? hasMore,
     String? exceptionMessage,
@@ -133,11 +134,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 status: LoadStatus.success,
                 posts: [
                   ...state.posts,
-                  ...filter(posts, blacklisted),
+                  ...filter(posts, blacklisted).map(postToPostOverviewItem),
                 ],
                 filteredPosts: [
                   ...state.filteredPosts,
-                  ...filteredPosts,
+                  ...filteredPosts.map(postToPostOverviewItem),
                 ],
                 page: state.page + 1,
                 hasMore: posts.isNotEmpty,
@@ -175,8 +176,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: filter(posts, blacklisted),
-              filteredPosts: filterBlacklisted(posts, blacklisted),
+              posts: filter(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
+              filteredPosts: filterBlacklisted(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
               page: 1,
               hasMore: posts.isNotEmpty,
             ),

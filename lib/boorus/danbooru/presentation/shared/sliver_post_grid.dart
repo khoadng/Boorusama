@@ -14,10 +14,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -83,14 +83,14 @@ class SliverPostGrid extends HookWidget {
     this.postAnnotationBuilder,
   }) : super(key: key);
 
-  final List<Post> posts;
+  final List<PostOverviewItem> posts;
   final AutoScrollController scrollController;
   final ValueChanged<int>? onItemChanged;
-  final void Function(Post post, int index)? onTap;
+  final void Function(PostOverviewItem post, int index)? onTap;
   final ImageQuality? quality;
   final GridSize gridSize;
   final BorderRadiusGeometry? borderRadius;
-  final Widget Function(BuildContext context, Post post, int index)?
+  final Widget Function(BuildContext context, PostOverviewItem post, int index)?
       postAnnotationBuilder;
 
   @override
@@ -164,10 +164,10 @@ class SliverPostGridItem extends StatelessWidget {
       required this.scrollController})
       : super(key: key);
 
-  final Post post;
+  final PostOverviewItem post;
   final int index;
   final AutoScrollController scrollController;
-  final void Function(Post post, int index)? onTap;
+  final void Function(PostOverviewItem post, int index)? onTap;
   final GridSize gridSize;
   final BorderRadius? borderRadius;
   @override
@@ -192,7 +192,7 @@ class SliverPostGridItem extends StatelessWidget {
       );
     }
 
-    if (post.hasComment) {
+    if (post.hasComments) {
       items.add(
         const Icon(
           Icons.comment,
@@ -270,7 +270,7 @@ ImageQuality _gridSizeToImageQuality(GridSize size) {
   return ImageQuality.high;
 }
 
-String _getImageUrl(Post post, ImageQuality quality) {
+String _getImageUrl(PostOverviewItem post, ImageQuality quality) {
   if (post.isAnimated) return post.previewImageUrl;
   if (quality == ImageQuality.low) return post.previewImageUrl;
   return post.normalImageUrl;
@@ -284,7 +284,7 @@ class PostPreviewSheet extends HookWidget {
     this.onImageTap,
   }) : super(key: key);
 
-  final Post post;
+  final PostOverviewItem post;
   final ScrollController? scrollController;
   final VoidCallback? onImageTap;
 

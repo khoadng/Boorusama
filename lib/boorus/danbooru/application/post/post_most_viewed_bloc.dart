@@ -8,9 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/main.dart';
-import 'common.dart';
 
 @immutable
 class PostMostViewedState extends Equatable {
@@ -28,15 +28,15 @@ class PostMostViewedState extends Equatable {
         hasMore: true,
       );
 
-  final List<Post> posts;
-  final List<Post> filteredPosts;
+  final List<PostOverviewItem> posts;
+  final List<PostOverviewItem> filteredPosts;
   final LoadStatus status;
   final bool hasMore;
 
   PostMostViewedState copyWith({
     LoadStatus? status,
-    List<Post>? posts,
-    List<Post>? filteredPosts,
+    List<PostOverviewItem>? posts,
+    List<PostOverviewItem>? filteredPosts,
     bool? hasMore,
   }) =>
       PostMostViewedState(
@@ -101,11 +101,11 @@ class PostMostViewedBloc
                 status: LoadStatus.success,
                 posts: [
                   ...state.posts,
-                  ...filter(posts, blacklisted),
+                  ...filter(posts, blacklisted).map(postToPostOverviewItem),
                 ],
                 filteredPosts: [
                   ...state.filteredPosts,
-                  ...filteredPosts,
+                  ...filteredPosts.map(postToPostOverviewItem),
                 ],
                 hasMore: false,
               ),
@@ -130,8 +130,12 @@ class PostMostViewedBloc
           onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
-              posts: filter(posts, blacklisted),
-              filteredPosts: filterBlacklisted(posts, blacklisted),
+              posts: filter(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
+              filteredPosts: filterBlacklisted(posts, blacklisted)
+                  .map(postToPostOverviewItem)
+                  .toList(),
               hasMore: false,
             ),
           ),

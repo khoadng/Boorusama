@@ -4,3 +4,4 @@ export 'post_bloc.dart';
 export 'post_curated_bloc.dart';
 export 'post_most_viewed_bloc.dart';
 export 'post_popular_bloc.dart';
+export 'post_overview_item.dart';
