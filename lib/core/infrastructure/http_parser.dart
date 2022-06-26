@@ -20,3 +20,5 @@ List<T> parse<T>({
 
   return dtos;
 }
+
+Map<String, dynamic> extractData(HttpResponse<dynamic> value) => value.data;

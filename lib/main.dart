@@ -186,6 +186,8 @@ void main() async {
                         api: api, accountRepository: accountRepo),
                   );
 
+                  final relatedTagRepo = RelatedTagApiRepository(api);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -243,6 +245,8 @@ void main() async {
                             value: artistRepo),
                         RepositoryProvider<AutocompleteRepository>.value(
                             value: autocompleteRepo),
+                        RepositoryProvider<RelatedTagRepository>.value(
+                            value: relatedTagRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [
