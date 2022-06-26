@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/collection_utils.dart';
 
@@ -22,7 +21,7 @@ class PoolDetailState extends Equatable {
   });
 
   PoolDetailState copyWith({
-    List<PostOverviewItem>? posts,
+    List<Post>? posts,
     LoadStatus? status,
   }) =>
       PoolDetailState(
@@ -30,7 +29,7 @@ class PoolDetailState extends Equatable {
         status: status ?? this.status,
       );
 
-  final List<PostOverviewItem> posts;
+  final List<Post> posts;
   final LoadStatus status;
 
   @override
@@ -58,12 +57,7 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
       onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
       onSuccess: (posts) async {
         emit(state.copyWith(
-          status: LoadStatus.success,
-          posts: [
-            ...state.posts,
-            ...posts.map(postToPostOverviewItem),
-          ],
-        ));
+            status: LoadStatus.success, posts: [...state.posts, ...posts]));
       },
     );
   }
