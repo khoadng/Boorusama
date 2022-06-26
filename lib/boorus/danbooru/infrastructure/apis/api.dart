@@ -187,4 +187,9 @@ abstract class Api {
     int limit, {
     CancelToken? cancelToken,
   });
+
+  Future<HttpResponse> getRelatedTag(
+    String query, {
+    CancelToken? cancelToken,
+  });
 }

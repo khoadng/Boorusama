@@ -7,7 +7,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:popup_menu/popup_menu.dart' as popup_menu;
-import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -15,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/application/utils.dart';
 
 class PostTagList extends StatefulWidget {
   const PostTagList({
@@ -131,13 +130,8 @@ class _PostTagListState extends State<PostTagList> {
           ),
         )
       ],
-      onClickMenu: (_) {
-        launchExternalUrl(
-          Uri.parse(
-              '${widget.apiEndpoint}/wiki_pages/${_currentPopupTag!.rawName}'),
-          mode: LaunchMode.platformDefault,
-        );
-      },
+      onClickMenu: (_) =>
+          launchWikiPage(widget.apiEndpoint, _currentPopupTag!.rawName),
     );
 
     return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
