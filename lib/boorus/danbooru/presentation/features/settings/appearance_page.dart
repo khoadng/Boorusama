@@ -12,7 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/core.dart';
 import 'settings_options.dart';
 import 'settings_tile.dart';
 
@@ -119,6 +119,14 @@ class _AppearancePageState extends State<AppearancePage> {
                   items: [...ImageQuality.values]
                     ..remove(ImageQuality.original),
                   titleBuilder: (item) => Text(item.name.headerCase),
+                  subtitleBuilder: (item) => item == ImageQuality.high
+                      ? Text(
+                          'High quality image will take longer to load.',
+                          style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                          ),
+                        )
+                      : null,
                   groupValue: state.settings.imageQuality,
                   onChanged: (value) => context
                       .read<SettingsCubit>()

@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/core.dart';
 
 enum DataCollectingStatus {
   allow,
@@ -14,13 +14,6 @@ enum DataCollectingStatus {
 enum ActionBarDisplayBehavior {
   scrolling,
   staticAtBottom,
-}
-
-enum ImageQuality {
-  automatic,
-  low,
-  high,
-  original,
 }
 
 class Settings extends Equatable {
