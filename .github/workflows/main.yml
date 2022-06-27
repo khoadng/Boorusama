@@ -1,6 +1,11 @@
 name: unit test
 
-on: [push, workflow_dispatch]
+on:
+  pull_request:
+    branches:
+      - master
+      - dev
+    
 jobs:
   build:
     runs-on: macos-latest
