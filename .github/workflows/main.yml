@@ -1,6 +1,9 @@
 name: unit test
 
 on:
+  push:
+    branches:
+      - dev
   pull_request:
     branches:
       - master
@@ -22,6 +25,9 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Check flutter version
+        run: flutter --version
 
       - name: Generate boilerplates
         run: flutter pub run build_runner build --delete-conflicting-outputs
