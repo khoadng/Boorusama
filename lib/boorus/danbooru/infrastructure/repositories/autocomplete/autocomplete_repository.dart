@@ -13,6 +13,13 @@ import 'package:boorusama/core/infrastructure/http_parser.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart'
     hide PoolCategory;
 
+bool _isTagType(String? type) => [
+      'tag-alias',
+      'tag-abbreviation',
+      'tag-other-name',
+      'tag-autocorrect',
+    ].contains(type);
+
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
     parse(value: value, converter: (data) => AutocompleteDto.fromJson(data));
 
@@ -27,7 +34,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             category: TagCategory(category: t.intToTagCategory(e.category)),
             postCount: e.postCount!,
           );
-        } else if (e.type == 'tag-alias') {
+        } else if (_isTagType(e.type)) {
           return AutocompleteData(
             type: e.type,
             label: e.label!,
@@ -50,24 +57,6 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             label: e.label!,
             value: e.value!,
             level: stringToUserLevel(e.level!),
-          );
-        } else if (e.type == 'tag-abbreviation') {
-          return AutocompleteData(
-            type: e.type,
-            label: e.label!,
-            value: e.value!,
-            category: TagCategory(category: t.intToTagCategory(e.category)),
-            postCount: e.postCount!,
-            antecedent: e.antecedent!,
-          );
-        } else if (e.type == 'tag-other-name') {
-          return AutocompleteData(
-            type: e.type,
-            label: e.label!,
-            value: e.value!,
-            category: TagCategory(category: t.intToTagCategory(e.category)),
-            postCount: e.postCount!,
-            antecedent: e.antecedent!,
           );
         } else {
           return AutocompleteData(label: e.label!, value: e.value!);
