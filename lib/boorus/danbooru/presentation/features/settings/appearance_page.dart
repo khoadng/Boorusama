@@ -110,6 +110,21 @@ class _AppearancePageState extends State<AppearancePage> {
                       .update(state.settings.copyWith(gridSize: value)),
                 ),
               ),
+              SettingsTile(
+                leading: const FaIcon(FontAwesomeIcons.images),
+                title: const Text('Image quality'),
+                selectedOption: state.settings.imageQuality.name.sentenceCase,
+                onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
+                  context: context,
+                  items: [...ImageQuality.values]
+                    ..remove(ImageQuality.original),
+                  titleBuilder: (item) => Text(item.name.headerCase),
+                  groupValue: state.settings.imageQuality,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(imageQuality: value)),
+                ),
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Text('Spacing'),
