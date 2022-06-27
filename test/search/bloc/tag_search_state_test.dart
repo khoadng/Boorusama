@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import '../common.dart';
-import 'search_test.mocks.dart';
+import 'tag_search_state_test.mocks.dart';
 
 @GenerateMocks([AutocompleteRepository, TagInfo])
 void main() {
