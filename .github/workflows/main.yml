@@ -12,6 +12,9 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
+          cache: true
+          cache-key: flutter-latest
+        run: flutter --version
 
       - name: Install dependencies
         run: flutter pub get
