@@ -50,3 +50,4 @@ app.*.map.json
 generated_plugin*
 
 .env
+lcov.info

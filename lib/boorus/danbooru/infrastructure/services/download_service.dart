@@ -40,7 +40,7 @@ class DownloadService implements IDownloadService {
   Future<void> _prepare() async {
     //TODO: refactor to use configurable input
     final savedDir = io.Directory(_localPath);
-    final bool hasExisted = await savedDir.exists();
+    final bool hasExisted = savedDir.existsSync();
     if (!hasExisted) {
       await savedDir.create();
     }
@@ -70,7 +70,7 @@ class DownloadService implements IDownloadService {
     _localPath = await IOHelper.getLocalPath(AppConstants.appName);
     _permissionReady = await IOHelper.checkPermission();
     final savedDir = io.Directory(_localPath);
-    final bool hasExisted = await savedDir.exists();
+    final bool hasExisted = savedDir.existsSync();
     if (!hasExisted) {
       try {
         await savedDir.create();
