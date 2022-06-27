@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/core.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {
   const SliverPostGridPlaceHolder({

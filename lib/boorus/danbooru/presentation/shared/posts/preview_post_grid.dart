@@ -7,16 +7,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
     Key? key,
     required this.posts,
+    required this.imageQuality,
     this.physics,
   }) : super(key: key);
 
   final List<Post> posts;
   final ScrollPhysics? physics;
+  final ImageQuality imageQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +54,10 @@ class PreviewPostGrid extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.2,
               width: MediaQuery.of(context).size.width * 0.3,
               fit: BoxFit.cover,
-              imageUrl: posts[index].previewImageUrl,
+              imageUrl: _getImageUrl(
+                posts[index],
+                imageQuality,
+              ),
               placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
@@ -64,4 +70,10 @@ class PreviewPostGrid extends StatelessWidget {
       ),
     );
   }
+}
+
+String _getImageUrl(Post post, ImageQuality quality) {
+  if (post.isAnimated) return post.previewImageUrl;
+  if (quality == ImageQuality.high) return post.normalImageUrl;
+  return post.previewImageUrl;
 }
