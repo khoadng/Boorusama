@@ -18,14 +18,12 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
-import 'package:boorusama/core/utils.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -223,8 +221,12 @@ class SliverPostGridItem extends StatelessWidget {
               );
             },
             child: PostImage(
-              imageUrl: _getImageUrl(
-                  post, _gridSizeToImageQuality(gridSize, imageQuality)),
+              imageUrl: getImageUrlForDisplay(
+                  post,
+                  getImageQuality(
+                    size: gridSize,
+                    presetImageQuality: imageQuality,
+                  )),
               placeholderUrl: post.previewImageUrl,
               borderRadius: borderRadius,
             ),
@@ -263,22 +265,6 @@ SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
     default:
       return SliverPostGridDelegate.normal(spacing);
   }
-}
-
-ImageQuality _gridSizeToImageQuality(
-  GridSize size,
-  ImageQuality imageQuality,
-) {
-  if (imageQuality != ImageQuality.automatic) return imageQuality;
-  if (size == GridSize.small) return ImageQuality.low;
-
-  return ImageQuality.high;
-}
-
-String _getImageUrl(Post post, ImageQuality quality) {
-  if (post.isAnimated) return post.previewImageUrl;
-  if (quality == ImageQuality.low) return post.previewImageUrl;
-  return post.normalImageUrl;
 }
 
 class PostPreviewSheet extends HookWidget {
