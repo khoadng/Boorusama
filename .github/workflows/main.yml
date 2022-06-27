@@ -29,11 +29,11 @@ jobs:
       - name: Check flutter version
         run: flutter --version
 
-      - name: Analyze
-        run: flutter analyze lib test
-
       - name: Generate boilerplates
         run: flutter pub run build_runner build --delete-conflicting-outputs
+
+      - name: Analyze
+        run: flutter analyze lib test
 
       - name: Run unit tests
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random test

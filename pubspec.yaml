@@ -23,7 +23,6 @@ dependencies:
   fluro: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_cache_manager: ^3.3.0
-  flutter_datetime_picker: ^1.5.1
   flutter_downloader: ^1.8.0+1
   flutter_hooks: ^0.18.4
   flutter_html: ^3.0.0-alpha.5
@@ -46,7 +45,10 @@ dependencies:
     git:
       url: https://github.com/chinabrant/popup_menu.git
       ref: master
-  pull_to_refresh: ^2.0.0
+  pull_to_refresh:
+    git:
+      url: https://github.com/khoadng/flutter_pulltorefresh.git
+      ref: flutter-3.0
   quiver: ^3.1.0
   recase: ^4.0.0
   retrofit: ^3.0.1+1
@@ -68,7 +70,10 @@ dependencies:
   toggle_switch: ^2.0.1
   file_picker: ^4.6.1
   device_info_plus: ^4.0.0
-  rich_text_controller: ^1.4.0
+  rich_text_controller:
+    git:
+      url: https://github.com/khoadng/rich_text_controller.git
+      ref: flutter-3.0
 
 dev_dependencies:
   flutter_localizations:
