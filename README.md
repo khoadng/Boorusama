@@ -1,6 +1,6 @@
 # Boorusama
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) 
+[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![codecov](https://codecov.io/gh/khoadng/Boorusama/branch/master/graph/badge.svg?token=Q1YK0TAUIK)](https://codecov.io/gh/khoadng/Boorusama)
 ## Run the generator
 
 Use build_runner to generate boilerplate files
