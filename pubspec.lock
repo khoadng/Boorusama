@@ -945,15 +945,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
-  popup_menu:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: bab3bd8e4ddd8d42f41a980fcd7817d0b9c5a525
-      url: "https://github.com/chinabrant/popup_menu.git"
-    source: git
-    version: "2.0.0"
   process:
     dependency: transitive
     description:

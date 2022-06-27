@@ -1,18 +1,16 @@
 // Flutter imports:
-
-// Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
-import 'package:popup_menu/popup_menu.dart' as popup_menu;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/modal_options.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/utils.dart';
 
@@ -31,9 +29,41 @@ class PostTagList extends StatefulWidget {
 }
 
 class _PostTagListState extends State<PostTagList> {
-  Tag? _currentPopupTag;
-  popup_menu.PopupMenu? _menu;
-  final Map<String, GlobalKey> _tagKeys = <String, GlobalKey>{};
+  @override
+  void initState() {
+    super.initState();
+    context.read<TagCubit>().getTagsByNameComma(widget.tagsComma);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final widgets = <Widget>[];
+          for (final g in state.data!) {
+            widgets
+              ..add(_TagBlockTitle(
+                title: g.groupName,
+                isFirstBlock: g.groupName == state.data!.first.groupName,
+              ))
+              ..add(_buildTags(g.tags));
+          }
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ...widgets,
+            ],
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return const SizedBox.shrink();
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
 
   Widget _buildTags(List<Tag> tags) {
     return Tags(
@@ -43,7 +73,6 @@ class _PostTagListState extends State<PostTagList> {
       itemBuilder: (index) {
         final tag = tags[index];
         final tagKey = GlobalKey();
-        _tagKeys[tag.rawName] = tagKey;
 
         return GestureDetector(
           onTap: () => AppRouter.router.navigateTo(
@@ -52,11 +81,28 @@ class _PostTagListState extends State<PostTagList> {
             routeSettings: RouteSettings(arguments: [tag.rawName]),
           ),
           onLongPress: () {
-            if (_menu!.isShow) {
-              _menu!.dismiss();
-            }
-            _currentPopupTag = tag;
-            _menu!.show(widgetKey: _tagKeys[tag.rawName]);
+            showActionListModalBottomSheet(
+              context: context,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.info),
+                  title: const Text('Open wiki'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    launchWikiPage(widget.apiEndpoint, tag.rawName);
+                  },
+                ),
+                // ListTile(
+                //   leading: const FaIcon(
+                //     FontAwesomeIcons.ban,
+                //   ),
+                //   title: const Text('Add to blacklist'),
+                //   onTap: () {
+                //     Navigator.of(context).pop();
+                //   },
+                // ),
+              ],
+            );
           },
           child: BlocBuilder<ThemeBloc, ThemeState>(
             builder: (context, state) {
@@ -104,60 +150,6 @@ class _PostTagListState extends State<PostTagList> {
             },
           ),
         );
-      },
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<TagCubit>().getTagsByNameComma(widget.tagsComma);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    _menu ??= popup_menu.PopupMenu(
-      context: context,
-      config: popup_menu.MenuConfig(
-        backgroundColor: Theme.of(context).cardColor,
-      ),
-      items: [
-        popup_menu.MenuItem(
-          title: 'Wiki',
-          image: const Icon(
-            Icons.info,
-            color: Colors.white70,
-          ),
-        )
-      ],
-      onClickMenu: (_) =>
-          launchWikiPage(widget.apiEndpoint, _currentPopupTag!.rawName),
-    );
-
-    return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final widgets = <Widget>[];
-          for (final g in state.data!) {
-            widgets
-              ..add(_TagBlockTitle(
-                title: g.groupName,
-                isFirstBlock: g.groupName == state.data!.first.groupName,
-              ))
-              ..add(_buildTags(g.tags));
-          }
-
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...widgets,
-            ],
-          );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
       },
     );
   }

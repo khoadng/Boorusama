@@ -41,10 +41,6 @@ dependencies:
   path_provider: ^2.0.11
   permission_handler: ^9.2.0
   photo_view: ^0.14.0
-  popup_menu:
-    git:
-      url: https://github.com/chinabrant/popup_menu.git
-      ref: master
   pull_to_refresh:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
