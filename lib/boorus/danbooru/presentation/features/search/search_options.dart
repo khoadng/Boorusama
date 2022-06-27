@@ -15,6 +15,7 @@ import 'search_history.dart';
 class SearchOptions extends HookWidget {
   const SearchOptions({
     Key? key,
+    required this.config,
     this.onOptionTap,
     this.onHistoryTap,
   }) : super(key: key);
@@ -32,14 +33,18 @@ class SearchOptions extends HookWidget {
     'score': FontAwesomeIcons.star,
   };
 
+  final IConfig config;
+
   @override
   Widget build(BuildContext context) {
     final animationController =
         useAnimationController(duration: kThemeAnimationDuration);
 
     useEffect(() {
-      Future.delayed(const Duration(milliseconds: 100),
-          animationController.forward);
+      Future.delayed(
+        const Duration(milliseconds: 100),
+        animationController.forward,
+      );
       return null;
     }, [animationController]);
 
@@ -65,8 +70,7 @@ class SearchOptions extends HookWidget {
                     IconButton(
                       onPressed: () {
                         launchExternalUrl(
-                          Uri.parse(RepositoryProvider.of<IConfig>(context)
-                              .cheatSheetUrl),
+                          Uri.parse(config.cheatSheetUrl),
                           mode: LaunchMode.platformDefault,
                         );
                       },
@@ -78,8 +82,7 @@ class SearchOptions extends HookWidget {
                   ],
                 ),
               ),
-              ...RepositoryProvider.of<IConfig>(context)
-                  .searchOptions
+              ...config.searchOptions
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
                         onTap: () => onOptionTap?.call(option),
@@ -93,8 +96,7 @@ class SearchOptions extends HookWidget {
                                       .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
-                                  text:
-                                      ' ${RepositoryProvider.of<IConfig>(context).searchOptionHitns[option]}',
+                                  text: ' ${config.searchOptionHitns[option]}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!
