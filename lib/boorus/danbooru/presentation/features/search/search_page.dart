@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/related_tag.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -89,8 +90,9 @@ class _SearchPageState extends State<SearchPage> {
         ),
         BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) => current.suggestionTags.isNotEmpty,
-          listener: (context, state) =>
-              context.read<SearchBloc>().add(const SearchSuggestionReceived()),
+          listener: (context, state) {
+            context.read<SearchBloc>().add(const SearchSuggestionReceived());
+          },
         ),
         BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) =>
@@ -345,6 +347,7 @@ class _SearchPageState extends State<SearchPage> {
                 text: 'We searched far and wide, but no results were found.');
           } else {
             return SearchOptions(
+              config: context.read<IConfig>(),
               onOptionTap: (value) {
                 context.read<TagSearchBloc>().add(TagSearchChanged(value));
                 queryEditingController.text = '$value:';

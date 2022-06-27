@@ -46,6 +46,7 @@ app.*.map.json
 # Generated file
 *.freezed.dart
 *.g.dart
+*.mocks.dart
 generated_plugin*
 
 .env
