@@ -21,16 +21,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
-import 'package:boorusama/core/presentation/grid_size.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
-import 'package:boorusama/core/utils.dart';
-
-enum ImageQuality {
-  low,
-  high,
-  original,
-}
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -116,7 +109,8 @@ class SliverPostGrid extends HookWidget {
           previous.settings.imageBorderRadius !=
               current.settings.imageBorderRadius ||
           previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing,
+              current.settings.imageGridSpacing ||
+          previous.settings.imageQuality != current.settings.imageQuality,
       builder: (context, state) {
         return SliverGrid(
           gridDelegate: gridSizeToGridDelegate(
@@ -137,6 +131,7 @@ class SliverPostGrid extends HookWidget {
                           state.settings.imageBorderRadius),
                       gridSize: gridSize,
                       scrollController: scrollController,
+                      imageQuality: state.settings.imageQuality,
                       onTap: onTap,
                     ),
                   ),
@@ -154,15 +149,16 @@ class SliverPostGrid extends HookWidget {
 }
 
 class SliverPostGridItem extends StatelessWidget {
-  const SliverPostGridItem(
-      {Key? key,
-      required this.post,
-      required this.index,
-      required this.borderRadius,
-      required this.gridSize,
-      this.onTap,
-      required this.scrollController})
-      : super(key: key);
+  const SliverPostGridItem({
+    Key? key,
+    required this.post,
+    required this.index,
+    required this.borderRadius,
+    required this.gridSize,
+    this.onTap,
+    required this.imageQuality,
+    required this.scrollController,
+  }) : super(key: key);
 
   final Post post;
   final int index;
@@ -170,6 +166,8 @@ class SliverPostGridItem extends StatelessWidget {
   final void Function(Post post, int index)? onTap;
   final GridSize gridSize;
   final BorderRadius? borderRadius;
+  final ImageQuality imageQuality;
+
   @override
   Widget build(BuildContext context) {
     final items = <Widget>[];
@@ -223,7 +221,12 @@ class SliverPostGridItem extends StatelessWidget {
               );
             },
             child: PostImage(
-              imageUrl: _getImageUrl(post, _gridSizeToImageQuality(gridSize)),
+              imageUrl: getImageUrlForDisplay(
+                  post,
+                  getImageQuality(
+                    size: gridSize,
+                    presetImageQuality: imageQuality,
+                  )),
               placeholderUrl: post.previewImageUrl,
               borderRadius: borderRadius,
             ),
@@ -262,18 +265,6 @@ SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
     default:
       return SliverPostGridDelegate.normal(spacing);
   }
-}
-
-ImageQuality _gridSizeToImageQuality(GridSize size) {
-  if (size == GridSize.small) return ImageQuality.low;
-
-  return ImageQuality.high;
-}
-
-String _getImageUrl(Post post, ImageQuality quality) {
-  if (post.isAnimated) return post.previewImageUrl;
-  if (quality == ImageQuality.low) return post.previewImageUrl;
-  return post.normalImageUrl;
 }
 
 class PostPreviewSheet extends HookWidget {
@@ -370,22 +361,15 @@ class PostPreviewSheet extends HookWidget {
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
-                  BlocSelector<SettingsCubit, SettingsState, String?>(
-                    selector: (state) => state.settings.downloadPath,
-                    builder: (context, path) {
-                      return ListTile(
-                        leading: const Icon(Icons.file_download),
-                        title: const Text('Download'),
-                        onTap: () {
-                          RepositoryProvider.of<IDownloadService>(context)
-                              .download(
-                            post,
-                            path: path,
-                          );
-                          Navigator.of(context).pop();
-                        },
-                      );
-                    },
+                  DownloadProviderWidget(
+                    builder: (context, download) => ListTile(
+                      leading: const Icon(Icons.file_download),
+                      title: const Text('Download'),
+                      onTap: () {
+                        download(post);
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                   if (post.isTranslated)
                     ListTile(

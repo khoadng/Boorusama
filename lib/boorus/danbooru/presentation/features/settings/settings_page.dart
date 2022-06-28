@@ -11,7 +11,6 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/privacy_page.dart';
 import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
@@ -68,15 +67,16 @@ class SettingsPage extends StatelessWidget {
                     oldWidget: this,
                   )),
                 ),
-                ListTile(
-                  title: const Text('Download'),
-                  leading: const FaIcon(FontAwesomeIcons.download),
-                  onTap: () =>
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                    enterWidget: const DownloadPage(),
-                    oldWidget: this,
-                  )),
-                ),
+                //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
+                // ListTile(
+                //   title: const Text('Download'),
+                //   leading: const FaIcon(FontAwesomeIcons.download),
+                //   onTap: () =>
+                //       Navigator.of(context).push(ParallaxSlideInPageRoute(
+                //     enterWidget: const DownloadPage(),
+                //     oldWidget: this,
+                //   )),
+                // ),
                 ListTile(
                   title: const Text('Privacy'),
                   leading: const FaIcon(FontAwesomeIcons.shieldHalved),
@@ -86,12 +86,8 @@ class SettingsPage extends StatelessWidget {
                     oldWidget: this,
                   )),
                 ),
-                const Divider(height: 2),
-                SettingsSection(
-                    label:
-                        'Build Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),
                 ListTile(
-                  title: const Text('Acknowledgements'),
+                  title: const Text('Information'),
                   leading: const Icon(Icons.info),
                   onTap: () => showAboutDialog(
                     context: context,
@@ -127,10 +123,13 @@ class SettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleLarge,
+        label.toUpperCase(),
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: Theme.of(context).hintColor),
       ),
     );
   }

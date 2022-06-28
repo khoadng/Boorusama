@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
@@ -71,21 +72,10 @@ class HomePage extends HookWidget {
                     Expanded(
                       child: AnimatedIndexedStack(
                         index: bottomTabIndex.value,
-                        children: <Widget>[
-                          MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                  create: (context) => PostBloc(
-                                        postRepository: RepositoryProvider.of<
-                                            IPostRepository>(context),
-                                        blacklistedTagsRepository: context
-                                            .read<BlacklistedTagsRepository>(),
-                                      )..add(const PostRefreshed())),
-                            ],
-                            child: LatestView(
-                              onMenuTap: () =>
-                                  scaffoldKey.currentState!.openDrawer(),
-                            ),
+                        children: [
+                          LatestView(
+                            onMenuTap: () =>
+                                scaffoldKey.currentState!.openDrawer(),
                           ),
                           const ExplorePage(),
                           MultiBlocProvider(

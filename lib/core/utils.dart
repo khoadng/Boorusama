@@ -2,6 +2,9 @@
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
+// Project imports:
+import 'package:boorusama/core/core.dart';
+
 Future<bool> launchExternalUrl(
   Uri url, {
   void Function()? onError,
@@ -16,6 +19,16 @@ Future<bool> launchExternalUrl(
   }
 
   return true;
+}
+
+ImageQuality getImageQuality({
+  required ImageQuality presetImageQuality,
+  GridSize? size,
+}) {
+  if (presetImageQuality != ImageQuality.automatic) return presetImageQuality;
+  if (size == GridSize.small) return ImageQuality.low;
+
+  return ImageQuality.high;
 }
 
 extension StringX on String {

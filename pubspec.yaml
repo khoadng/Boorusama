@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none" 
-version: 2.0.0+16
+version: 2.0.0+17
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -23,7 +23,6 @@ dependencies:
   fluro: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_cache_manager: ^3.3.0
-  flutter_datetime_picker: ^1.5.1
   flutter_downloader: ^1.8.0+1
   flutter_hooks: ^0.18.4
   flutter_html: ^3.0.0-alpha.5
@@ -42,11 +41,10 @@ dependencies:
   path_provider: ^2.0.11
   permission_handler: ^9.2.0
   photo_view: ^0.14.0
-  popup_menu:
+  pull_to_refresh:
     git:
-      url: https://github.com/chinabrant/popup_menu.git
-      ref: master
-  pull_to_refresh: ^2.0.0
+      url: https://github.com/khoadng/flutter_pulltorefresh.git
+      ref: flutter-3.0
   quiver: ^3.1.0
   recase: ^4.0.0
   retrofit: ^3.0.1+1
@@ -68,7 +66,10 @@ dependencies:
   toggle_switch: ^2.0.1
   file_picker: ^4.6.1
   device_info_plus: ^4.0.0
-  rich_text_controller: ^1.4.0
+  rich_text_controller:
+    git:
+      url: https://github.com/khoadng/rich_text_controller.git
+      ref: flutter-3.0
 
 dev_dependencies:
   flutter_localizations:
@@ -82,6 +83,7 @@ dev_dependencies:
   import_sorter: ^4.6.0
   retrofit_generator: ^4.0.1
   test: ^1.21.1
+  bloc_test: ^9.0.3
 
 flutter:
   uses-material-design: true

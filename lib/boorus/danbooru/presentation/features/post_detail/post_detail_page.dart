@@ -10,13 +10,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'post_image_page.dart';
@@ -95,34 +94,27 @@ class PostDetailPage extends HookWidget {
                 icon: const Icon(Icons.slideshow),
                 onPressed: () => showSlideShowConfig.value = true,
               ),
-            BlocSelector<SettingsCubit, SettingsState, String?>(
-              selector: (state) => state.settings.downloadPath,
-              builder: (context, path) {
-                return PopupMenuButton<PostAction>(
-                  onSelected: (value) async {
-                    switch (value) {
-                      case PostAction.download:
-                        RepositoryProvider.of<IDownloadService>(context)
-                            .download(
-                          posts[currentPostIndex.value],
-                          path: path,
-                        );
-                        break;
-                      default:
-                    }
-                  },
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<PostAction>>[
-                    const PopupMenuItem<PostAction>(
-                      value: PostAction.download,
-                      child: ListTile(
-                        leading: Icon(Icons.download_rounded),
-                        title: Text('Download'),
-                      ),
+            DownloadProviderWidget(
+              builder: (context, download) => PopupMenuButton<PostAction>(
+                onSelected: (value) async {
+                  switch (value) {
+                    case PostAction.download:
+                      download(posts[currentPostIndex.value]);
+                      break;
+                    default:
+                  }
+                },
+                itemBuilder: (BuildContext context) =>
+                    <PopupMenuEntry<PostAction>>[
+                  const PopupMenuItem<PostAction>(
+                    value: PostAction.download,
+                    child: ListTile(
+                      leading: Icon(Icons.download_rounded),
+                      title: Text('Download'),
                     ),
-                  ],
-                );
-              },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -191,9 +183,8 @@ class PostDetailPage extends HookWidget {
                               tags: posts[index].characterTags));
                       context.read<PoolFromPostIdBloc>().add(
                           PoolFromPostIdRequested(postId: posts[index].id));
-                      ReadContext(context)
-                          .read<IsPostFavoritedBloc>()
-                          .add(IsPostFavoritedRequested(postId: post.id));
+                      ReadContext(context).read<IsPostFavoritedBloc>().add(
+                          IsPostFavoritedRequested(postId: posts[index].id));
                     },
                     height: MediaQuery.of(context).size.height,
                     viewportFraction: 1,

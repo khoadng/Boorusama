@@ -12,11 +12,10 @@ import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/presentation/download_provider_widget.dart';
 
 class PostActionToolbar extends StatefulWidget {
   const PostActionToolbar({
@@ -50,19 +49,11 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
   }
 
   Widget _buildDownloadButton() {
-    return BlocSelector<SettingsCubit, SettingsState, String?>(
-      selector: (state) => state.settings.downloadPath,
-      builder: (context, downloadPath) {
-        return IconButton(
-          onPressed: () => context.read<IDownloadService>().download(
-                widget.post,
-                path: downloadPath,
-              ),
-          icon: const FaIcon(
-            FontAwesomeIcons.download,
-          ),
-        );
-      },
+    return DownloadProviderWidget(
+      builder: (context, download) => IconButton(
+        onPressed: () => download(widget.post),
+        icon: const FaIcon(FontAwesomeIcons.download),
+      ),
     );
   }
 

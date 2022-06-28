@@ -249,4 +249,11 @@ abstract class DanbooruApi implements Api {
     @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @GET('/related_tag.json')
+  @override
+  Future<HttpResponse> getRelatedTag(
+    @Query('search[query]') String query, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
 }

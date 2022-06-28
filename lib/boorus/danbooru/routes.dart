@@ -177,7 +177,10 @@ final postSearchHandler = Handler(handlerFunc: (
               )),
       BlocProvider(
           create: (context) => SearchBloc(
-              initial: const SearchState(displayState: DisplayState.options)))
+              initial: const SearchState(displayState: DisplayState.options))),
+      BlocProvider(
+          create: (context) => RelatedTagBloc(
+              relatedTagRepository: context.read<RelatedTagRepository>())),
     ],
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,

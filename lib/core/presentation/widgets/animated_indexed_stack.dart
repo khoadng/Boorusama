@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Project imports:
+import 'lazy_indexed_stack.dart';
+
 // https://gist.github.com/cirnok/e1b70f5d841e47c9d85ccdf6ae866984
 
 class AnimatedIndexedStack extends StatefulWidget {
@@ -70,7 +73,7 @@ class _AnimatedIndexedStackState extends State<AnimatedIndexedStack>
           ),
         );
       },
-      child: IndexedStack(
+      child: LazyIndexedStack(
         index: _index,
         children: widget.children,
       ),

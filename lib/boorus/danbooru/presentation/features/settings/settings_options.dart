@@ -1,32 +1,23 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-
-Future<T?> showOptionsModalBottomSheet<T>({
-  required BuildContext context,
-  required Widget Function(BuildContext context) builder,
-}) =>
-    showMaterialModalBottomSheet(
-      duration: const Duration(milliseconds: 200),
-      backgroundColor: Theme.of(context).backgroundColor,
-      context: context,
-      builder: builder,
-    );
+// Project imports:
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 
 Future<T?> showRadioOptionsModalBottomSheet<T>({
   required BuildContext context,
   required List<T> items,
   required Widget Function(T item) titleBuilder,
+  Widget? Function(T item)? subtitleBuilder,
   required T groupValue,
   required void Function(T value) onChanged,
 }) =>
-    showOptionsModalBottomSheet(
+    showAppModalBottomSheet(
       context: context,
       builder: (context) => SettingsOptions<T>.radio(
         items: items,
         titleBuilder: titleBuilder,
+        subtitleBuilder: subtitleBuilder,
         groupValue: groupValue,
         onChanged: onChanged,
       ),
@@ -37,11 +28,13 @@ class SettingsOptions<T> extends StatelessWidget {
     Key? key,
     required this.items,
     required this.itemBuilder,
+    this.subtitleBuilder,
   }) : super(key: key);
 
   factory SettingsOptions.radio({
     required List<T> items,
     required Widget Function(T item) titleBuilder,
+    Widget? Function(T item)? subtitleBuilder,
     required T groupValue,
     required void Function(T value) onChanged,
   }) =>
@@ -51,6 +44,7 @@ class SettingsOptions<T> extends StatelessWidget {
           value: item,
           activeColor: Theme.of(context).colorScheme.primary,
           title: titleBuilder(item),
+          subtitle: subtitleBuilder?.call(item),
           groupValue: groupValue,
           onChanged: (value) {
             if (value == null) return;
@@ -62,6 +56,7 @@ class SettingsOptions<T> extends StatelessWidget {
 
   final List<T> items;
   final Widget Function(BuildContext context, T item) itemBuilder;
+  final Widget? Function(BuildContext context, T item)? subtitleBuilder;
 
   @override
   Widget build(BuildContext context) {

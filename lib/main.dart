@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
@@ -186,6 +187,8 @@ void main() async {
                         api: api, accountRepository: accountRepo),
                   );
 
+                  final relatedTagRepo = RelatedTagApiRepository(api);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -211,6 +214,11 @@ void main() async {
                       category: PoolCategory.series,
                       order: PoolOrder.latest,
                     ));
+
+                  final postBloc = PostBloc(
+                    postRepository: postRepo,
+                    blacklistedTagsRepository: blacklistedTagRepo,
+                  )..add(const PostRefreshed());
 
                   return MultiRepositoryProvider(
                       providers: [
@@ -243,6 +251,8 @@ void main() async {
                             value: artistRepo),
                         RepositoryProvider<AutocompleteRepository>.value(
                             value: autocompleteRepo),
+                        RepositoryProvider<RelatedTagRepository>.value(
+                            value: relatedTagRepo),
                       ],
                       child: MultiBlocProvider(
                         providers: [
@@ -258,6 +268,7 @@ void main() async {
                               create: (context) =>
                                   ThemeBloc(initialTheme: settings.themeMode)),
                           BlocProvider.value(value: poolOverviewBloc),
+                          BlocProvider.value(value: postBloc),
                         ],
                         child: MultiBlocListener(
                           listeners: [

@@ -26,8 +26,8 @@ import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
-import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';
 import 'widgets/information_section.dart';
 import 'widgets/pool_tiles.dart';
@@ -81,8 +81,7 @@ class PostDetail extends HookWidget {
     Widget postWidget;
     if (post.isVideo) {
       if (p.extension(post.normalImageUrl) == '.webm') {
-        final String videoHtml =
-            '''
+        final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${post.normalImageUrl}#t=0.01 type="video/webm" />
@@ -283,25 +282,7 @@ class PostDetail extends HookWidget {
           final recommendedItems = state.data!;
           return Column(
             children: recommendedItems
-                .map(
-                  (item) => RecommendPostSection(
-                    header: ListTile(
-                      onTap: () => AppRouter.router.navigateTo(
-                        context,
-                        '/artist',
-                        routeSettings: RouteSettings(
-                          arguments: [
-                            item._title,
-                            post.normalImageUrl,
-                          ],
-                        ),
-                      ),
-                      title: Text(item.title),
-                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    posts: item.posts,
-                  ),
-                )
+                .map((item) => _buildRecommendPostSection(context, item))
                 .toList(),
           );
         } else {
@@ -324,6 +305,34 @@ class PostDetail extends HookWidget {
     );
   }
 
+  Widget _buildRecommendPostSection(
+    BuildContext context,
+    Recommended item,
+  ) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return RecommendPostSection(
+          imageQuality: state.settings.imageQuality,
+          header: ListTile(
+            onTap: () => AppRouter.router.navigateTo(
+              context,
+              '/artist',
+              routeSettings: RouteSettings(
+                arguments: [
+                  item._title,
+                  post.normalImageUrl,
+                ],
+              ),
+            ),
+            title: Text(item.title),
+            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+          ),
+          posts: item.posts,
+        );
+      },
+    );
+  }
+
   Widget _buildRecommendedCharacterList() {
     if (post.characterTags.isEmpty) return const SizedBox.shrink();
     return BlocBuilder<RecommendedCharacterPostCubit,
@@ -333,25 +342,7 @@ class PostDetail extends HookWidget {
           final recommendedItems = state.data!;
           return Column(
             children: recommendedItems
-                .map(
-                  (item) => RecommendPostSection(
-                    header: ListTile(
-                      onTap: () => AppRouter.router.navigateTo(
-                        context,
-                        '/artist',
-                        routeSettings: RouteSettings(
-                          arguments: [
-                            item._title,
-                            post.normalImageUrl,
-                          ],
-                        ),
-                      ),
-                      title: Text(item.title),
-                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                    ),
-                    posts: item.posts,
-                  ),
-                )
+                .map((item) => _buildRecommendPostSection(context, item))
                 .toList(),
           );
         } else {
@@ -404,10 +395,12 @@ class RecommendPostSection extends HookWidget {
     Key? key,
     required this.posts,
     required this.header,
+    required this.imageQuality,
   }) : super(key: key);
 
   final List<Post> posts;
   final Widget header;
+  final ImageQuality imageQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -419,7 +412,10 @@ class RecommendPostSection extends HookWidget {
           child: SizedBox(
             height: MediaQuery.of(context).size.height *
                 (posts.length <= 3 ? 0.15 : 0.3),
-            child: PreviewPostGrid(posts: posts),
+            child: PreviewPostGrid(
+              posts: posts,
+              imageQuality: imageQuality,
+            ),
           ),
         ),
       ],

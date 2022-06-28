@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
+  bloc_test:
+    dependency: "direct dev"
+    description:
+      name: bloc_test
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "9.0.3"
   boolean_selector:
     dependency: transitive
     description:
@@ -182,7 +189,7 @@ packages:
       name: chewie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.3"
+    version: "1.3.4"
   clock:
     dependency: transitive
     description:
@@ -210,7 +217,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.4"
+    version: "2.3.5"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -224,7 +231,7 @@ packages:
       name: connectivity_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.3"
+    version: "1.2.4"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -294,7 +301,7 @@ packages:
       name: dart_code_metrics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.15.2"
+    version: "4.16.0"
   dart_style:
     dependency: transitive
     description:
@@ -351,6 +358,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  diff_match_patch:
+    dependency: transitive
+    description:
+      name: diff_match_patch
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.1"
   dio:
     dependency: "direct main"
     description:
@@ -454,13 +468,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_datetime_picker:
-    dependency: "direct main"
-    description:
-      name: flutter_datetime_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.5.1"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -474,7 +481,7 @@ packages:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.5"
+    version: "0.18.5+1"
   flutter_html:
     dependency: "direct main"
     description:
@@ -700,13 +707,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "5.2.0"
+  mocktail:
+    dependency: transitive
+    description:
+      name: mocktail
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.0"
   modal_bottom_sheet:
     dependency: "direct main"
     description:
       name: modal_bottom_sheet
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.1"
+    version: "2.1.0"
   nested:
     dependency: transitive
     description:
@@ -818,7 +832,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.15"
+    version: "2.0.16"
   path_provider_ios:
     dependency: transitive
     description:
@@ -931,15 +945,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.5.1"
-  popup_menu:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: bab3bd8e4ddd8d42f41a980fcd7817d0b9c5a525
-      url: "https://github.com/chinabrant/popup_menu.git"
-    source: git
-    version: "2.0.0"
   process:
     dependency: transitive
     description:
@@ -971,9 +976,11 @@ packages:
   pull_to_refresh:
     dependency: "direct main"
     description:
-      name: pull_to_refresh
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "flutter-3.0"
+      resolved-ref: "5be6d6db9fe926c02564cbe9014d1693894465b0"
+      url: "https://github.com/khoadng/flutter_pulltorefresh.git"
+    source: git
     version: "2.0.0"
   quiver:
     dependency: "direct main"
@@ -1006,9 +1013,11 @@ packages:
   rich_text_controller:
     dependency: "direct main"
     description:
-      name: rich_text_controller
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: "flutter-3.0"
+      resolved-ref: "1c956b6e43ff78c8c3e8a908cae997f8127574a7"
+      url: "https://github.com/khoadng/rich_text_controller.git"
+    source: git
     version: "1.4.0"
   rxdart:
     dependency: "direct main"
@@ -1030,21 +1039,21 @@ packages:
       name: sentry
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.5.1"
+    version: "6.6.1"
   sentry_flutter:
     dependency: "direct main"
     description:
       name: sentry_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.5.1"
+    version: "6.6.1"
   share_plus:
     dependency: "direct main"
     description:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.8"
+    version: "4.0.10"
   share_plus_linux:
     dependency: transitive
     description:
@@ -1331,7 +1340,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.3"
+    version: "6.1.4"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1506,7 +1515,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.11"
+    version: "2.8.14"
   webview_flutter_platform_interface:
     dependency: transitive
     description:

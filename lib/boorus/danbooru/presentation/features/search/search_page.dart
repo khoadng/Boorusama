@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,11 +15,15 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/related_tag.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'related_tag_header.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -38,10 +42,10 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late final tags = widget.metatags.join('|');
+  late final _tags = widget.metatags.join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
-      RegExp('($tags)+:'): TextStyle(
+      RegExp('($_tags)+:'): TextStyle(
         fontWeight: FontWeight.w800,
         color: widget.metatagHighlightColor,
       ),
@@ -86,8 +90,9 @@ class _SearchPageState extends State<SearchPage> {
         ),
         BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) => current.suggestionTags.isNotEmpty,
-          listener: (context, state) =>
-              context.read<SearchBloc>().add(const SearchSuggestionReceived()),
+          listener: (context, state) {
+            context.read<SearchBloc>().add(const SearchSuggestionReceived());
+          },
         ),
         BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) =>
@@ -99,8 +104,13 @@ class _SearchPageState extends State<SearchPage> {
             listenWhen: (previous, current) =>
                 current.selectedTags != previous.selectedTags,
             listener: (context, state) {
-              context.read<PostBloc>().add(PostRefreshed(
-                  tag: state.selectedTags.map((e) => e.toString()).join(' ')));
+              final tags =
+                  state.selectedTags.map((e) => e.toString()).join(' ');
+
+              context.read<PostBloc>().add(PostRefreshed(tag: tags));
+              context
+                  .read<RelatedTagBloc>()
+                  .add(RelatedTagRequested(query: tags));
             }),
       ],
       child: ClipRRect(
@@ -276,6 +286,29 @@ class _SearchPageState extends State<SearchPage> {
                   builder: (context, controller) => CustomScrollView(
                     controller: controller,
                     slivers: <Widget>[
+                      SliverToBoxAdapter(
+                        child: BlocBuilder<RelatedTagBloc,
+                            AsyncLoadState<RelatedTag>>(
+                          builder: (context, state) {
+                            if (state.status == LoadStatus.success) {
+                              return BlocSelector<ThemeBloc, ThemeState,
+                                  ThemeMode>(
+                                selector: (state) => state.theme,
+                                builder: (context, theme) {
+                                  return _buildRelatedTags(
+                                    state.data!,
+                                    theme,
+                                  );
+                                },
+                              );
+                            } else if (state.status == LoadStatus.failure) {
+                              return const SizedBox.shrink();
+                            } else {
+                              return const TagChipsPlaceholder();
+                            }
+                          },
+                        ),
+                      ),
                       HomePostGrid(
                         controller: controller,
                         onTap: () => FocusScope.of(context).unfocus(),
@@ -314,6 +347,7 @@ class _SearchPageState extends State<SearchPage> {
                 text: 'We searched far and wide, but no results were found.');
           } else {
             return SearchOptions(
+              config: context.read<IConfig>(),
               onOptionTap: (value) {
                 context.read<TagSearchBloc>().add(TagSearchChanged(value));
                 queryEditingController.text = '$value:';
@@ -328,6 +362,13 @@ class _SearchPageState extends State<SearchPage> {
           }
         },
       ),
+    );
+  }
+
+  Widget _buildRelatedTags(RelatedTag relatedTag, ThemeMode theme) {
+    return RelatedTagHeader(
+      relatedTag: relatedTag,
+      theme: theme,
     );
   }
 

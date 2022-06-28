@@ -13,6 +13,13 @@ import 'package:boorusama/core/infrastructure/http_parser.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart'
     hide PoolCategory;
 
+bool _isTagType(String? type) => [
+      'tag-alias',
+      'tag-abbreviation',
+      'tag-other-name',
+      'tag-autocorrect',
+    ].contains(type);
+
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
     parse(value: value, converter: (data) => AutocompleteDto.fromJson(data));
 
@@ -21,13 +28,15 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
       try {
         if (e.type == 'tag') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
             postCount: e.postCount!,
           );
-        } else if (e.type == 'tag-alias') {
+        } else if (_isTagType(e.type)) {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
@@ -36,6 +45,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
           );
         } else if (e.type == 'pool') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             category: PoolCategory(category: stringToPoolCategory(e.category)),
@@ -43,6 +53,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
           );
         } else if (e.type == 'user') {
           return AutocompleteData(
+            type: e.type,
             label: e.label!,
             value: e.value!,
             level: stringToUserLevel(e.level!),
