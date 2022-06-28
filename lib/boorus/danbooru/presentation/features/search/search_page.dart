@@ -367,7 +367,6 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _buildRelatedTags(RelatedTag relatedTag, ThemeMode theme) {
     return RelatedTagHeader(
-      tags: [...relatedTag.tags]..shuffle(),
       relatedTag: relatedTag,
       theme: theme,
     );

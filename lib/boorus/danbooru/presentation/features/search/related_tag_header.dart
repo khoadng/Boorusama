@@ -15,17 +15,22 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/utils.dart';
 
-class RelatedTagHeader extends StatelessWidget {
+class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({
     Key? key,
-    required this.tags,
     required this.relatedTag,
     required this.theme,
   }) : super(key: key);
 
-  final List<RelatedTagItem> tags;
   final RelatedTag relatedTag;
   final ThemeMode theme;
+
+  @override
+  State<RelatedTagHeader> createState() => _RelatedTagHeaderState();
+}
+
+class _RelatedTagHeaderState extends State<RelatedTagHeader> {
+  late final tags = [...widget.relatedTag.tags]..shuffle();
 
   @override
   Widget build(BuildContext context) {
@@ -54,8 +59,8 @@ class RelatedTagHeader extends StatelessWidget {
                       BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                     builder: (context, state) {
                       return _RelatedTagActionSheet(
-                        relatedTag: relatedTag,
-                        theme: theme,
+                        relatedTag: widget.relatedTag,
+                        theme: widget.theme,
                         onOpenWiki: (tag) => launchWikiPage(
                           state.booru.url,
                           tag,
@@ -79,7 +84,7 @@ class RelatedTagHeader extends StatelessWidget {
               .take(10)
               .map(
                 (item) => _RelatedTagButton(
-                  backgroundColor: getTagColor(item.category, theme),
+                  backgroundColor: getTagColor(item.category, widget.theme),
                   onPressed: () => context
                       .read<TagSearchBloc>()
                       .add(TagSearchNewRawStringTagSelected(item.tag)),
