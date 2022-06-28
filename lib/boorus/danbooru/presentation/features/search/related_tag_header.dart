@@ -41,6 +41,28 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
+          ...tags
+              .take(10)
+              .map(
+                (item) => _RelatedTagButton(
+                  backgroundColor: getTagColor(item.category, widget.theme),
+                  onPressed: () => context
+                      .read<TagSearchBloc>()
+                      .add(TagSearchNewRawStringTagSelected(item.tag)),
+                  label: Text(
+                    item.tag.removeUnderscoreWithSpace(),
+                    overflow: TextOverflow.fade,
+                    maxLines: 1,
+                    softWrap: false,
+                  ),
+                ),
+              )
+              .toList(),
+          const VerticalDivider(
+            indent: 12,
+            endIndent: 12,
+            thickness: 2,
+          ),
           Padding(
             padding: const EdgeInsets.all(8),
             child: ElevatedButton(
@@ -72,31 +94,9 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                   ),
                 );
               },
-              child: const Text('Related'),
+              child: const Text('More'),
             ),
           ),
-          const VerticalDivider(
-            indent: 12,
-            endIndent: 12,
-            thickness: 2,
-          ),
-          ...tags
-              .take(10)
-              .map(
-                (item) => _RelatedTagButton(
-                  backgroundColor: getTagColor(item.category, widget.theme),
-                  onPressed: () => context
-                      .read<TagSearchBloc>()
-                      .add(TagSearchNewRawStringTagSelected(item.tag)),
-                  label: Text(
-                    item.tag.removeUnderscoreWithSpace(),
-                    overflow: TextOverflow.fade,
-                    maxLines: 1,
-                    softWrap: false,
-                  ),
-                ),
-              )
-              .toList(),
         ],
       ),
     );
@@ -135,18 +135,19 @@ class _RelatedTagActionSheet extends StatelessWidget {
             context: context,
             children: [
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
-                title: const Text('Open wiki'),
-                onTap: () {
-                  onOpenWiki(relatedTag.tags[index].tag);
-                  Navigator.of(context).pop();
-                },
-              ),
-              ListTile(
                 leading: const FaIcon(FontAwesomeIcons.plus),
                 title: const Text('Add to current search'),
                 onTap: () {
                   onAddToSearch(relatedTag.tags[index].tag);
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                leading: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
+                title: const Text('Open wiki'),
+                onTap: () {
+                  onOpenWiki(relatedTag.tags[index].tag);
                   Navigator.of(context).pop();
                 },
               ),
@@ -188,7 +189,7 @@ class _RelatedTagButton extends StatelessWidget {
         onPressed: onPressed,
         icon: ConstrainedBox(
           constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.4),
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.3),
           child: label,
         ),
         label: const Icon(Icons.add),
