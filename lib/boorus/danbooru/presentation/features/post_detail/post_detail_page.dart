@@ -183,9 +183,8 @@ class PostDetailPage extends HookWidget {
                               tags: posts[index].characterTags));
                       context.read<PoolFromPostIdBloc>().add(
                           PoolFromPostIdRequested(postId: posts[index].id));
-                      ReadContext(context)
-                          .read<IsPostFavoritedBloc>()
-                          .add(IsPostFavoritedRequested(postId: post.id));
+                      ReadContext(context).read<IsPostFavoritedBloc>().add(
+                          IsPostFavoritedRequested(postId: posts[index].id));
                     },
                     height: MediaQuery.of(context).size.height,
                     viewportFraction: 1,
