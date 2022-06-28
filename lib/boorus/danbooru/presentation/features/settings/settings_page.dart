@@ -86,12 +86,8 @@ class SettingsPage extends StatelessWidget {
                     oldWidget: this,
                   )),
                 ),
-                const Divider(height: 2),
-                SettingsSection(
-                    label:
-                        'Build Information ${getVersionText(RepositoryProvider.of<PackageInfoProvider>(context).getPackageInfo())}'),
                 ListTile(
-                  title: const Text('Acknowledgements'),
+                  title: const Text('Information'),
                   leading: const Icon(Icons.info),
                   onTap: () => showAboutDialog(
                     context: context,
@@ -127,10 +123,13 @@ class SettingsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(16),
       child: Text(
-        label,
-        style: Theme.of(context).textTheme.titleLarge,
+        label.toUpperCase(),
+        style: Theme.of(context)
+            .textTheme
+            .titleSmall!
+            .copyWith(color: Theme.of(context).hintColor),
       ),
     );
   }

@@ -73,24 +73,9 @@ class HomePage extends HookWidget {
                       child: AnimatedIndexedStack(
                         index: bottomTabIndex.value,
                         children: [
-                          BlocBuilder<ApiCubit, ApiState>(
-                            builder: (context, state) {
-                              final postBloc = PostBloc(
-                                postRepository: context.read<IPostRepository>(),
-                                blacklistedTagsRepository:
-                                    context.read<BlacklistedTagsRepository>(),
-                              )..add(const PostRefreshed());
-
-                              return MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(value: postBloc),
-                                ],
-                                child: LatestView(
-                                  onMenuTap: () =>
-                                      scaffoldKey.currentState!.openDrawer(),
-                                ),
-                              );
-                            },
+                          LatestView(
+                            onMenuTap: () =>
+                                scaffoldKey.currentState!.openDrawer(),
                           ),
                           const ExplorePage(),
                           MultiBlocProvider(

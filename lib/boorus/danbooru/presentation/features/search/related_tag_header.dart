@@ -189,7 +189,7 @@ class _RelatedTagButton extends StatelessWidget {
         onPressed: onPressed,
         icon: ConstrainedBox(
           constraints:
-              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.3),
+              BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.5),
           child: label,
         ),
         label: const Icon(Icons.add),
