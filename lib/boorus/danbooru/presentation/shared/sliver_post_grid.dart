@@ -21,8 +21,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
@@ -361,22 +361,15 @@ class PostPreviewSheet extends HookWidget {
               padding: const EdgeInsets.all(8),
               child: Column(
                 children: [
-                  BlocSelector<SettingsCubit, SettingsState, String?>(
-                    selector: (state) => state.settings.downloadPath,
-                    builder: (context, path) {
-                      return ListTile(
-                        leading: const Icon(Icons.file_download),
-                        title: const Text('Download'),
-                        onTap: () {
-                          RepositoryProvider.of<IDownloadService>(context)
-                              .download(
-                            post,
-                            path: path,
-                          );
-                          Navigator.of(context).pop();
-                        },
-                      );
-                    },
+                  DownloadProviderWidget(
+                    builder: (context, download) => ListTile(
+                      leading: const Icon(Icons.file_download),
+                      title: const Text('Download'),
+                      onTap: () {
+                        download(post);
+                        Navigator.of(context).pop();
+                      },
+                    ),
                   ),
                   if (post.isTranslated)
                     ListTile(

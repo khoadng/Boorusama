@@ -1,23 +1,19 @@
 // Dart imports:
-import 'dart:io' as io;
 import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/app_constants.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'package:boorusama/core/infrastructure/io_helper.dart';
 
 class DownloadService implements IDownloadService {
   DownloadService();
 
   final ReceivePort _port = ReceivePort();
-  bool _permissionReady = false;
-  String _localPath = '';
   String _savedDir = '';
 
   @override
@@ -25,26 +21,17 @@ class DownloadService implements IDownloadService {
     IDownloadable downloadable, {
     String? path,
   }) async {
-    //TODO: display a toast or snack and redirect to permission settings.
-    if (!_permissionReady) {
-      return;
-    }
     await FlutterDownloader.enqueue(
-      saveInPublicStorage: path == null,
+      saveInPublicStorage: true,
       url: downloadable.downloadUrl,
       fileName: downloadable.fileName,
-      savedDir: path ?? _savedDir,
+      savedDir: _savedDir,
     );
   }
 
   Future<void> _prepare() async {
-    //TODO: refactor to use configurable input
-    final savedDir = io.Directory(_localPath);
-    final bool hasExisted = savedDir.existsSync();
-    if (!hasExisted) {
-      await savedDir.create();
-    }
-    _savedDir = savedDir.path;
+    // This won't be used.
+    _savedDir = (await getTemporaryDirectory()).path;
   }
 
   void _bindBackgroundIsolate() {
@@ -65,24 +52,7 @@ class DownloadService implements IDownloadService {
   Future<void> init() async {
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
-
-    _permissionReady = false;
-    _localPath = await IOHelper.getLocalPath(AppConstants.appName);
-    _permissionReady = await IOHelper.checkPermission();
-    final savedDir = io.Directory(_localPath);
-    final bool hasExisted = savedDir.existsSync();
-    if (!hasExisted) {
-      try {
-        await savedDir.create();
-        _savedDir = savedDir.path;
-      } catch (e) {
-        _savedDir = await IOHelper.getLocalPathFallback();
-      }
-    }
-
     await _prepare();
-    // ignore: avoid_print
-    print('Download service initialized');
   }
 
   static void downloadCallback(
