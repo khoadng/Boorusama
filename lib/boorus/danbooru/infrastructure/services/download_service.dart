@@ -4,18 +4,16 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/domain/i_downloadable.dart';
-import 'package:boorusama/core/infrastructure/io_helper.dart';
-import 'package:path_provider/path_provider.dart';
 
 class DownloadService implements IDownloadService {
   DownloadService();
 
   final ReceivePort _port = ReceivePort();
-  bool _permissionReady = false;
   String _savedDir = '';
 
   @override
@@ -23,13 +21,6 @@ class DownloadService implements IDownloadService {
     IDownloadable downloadable, {
     String? path,
   }) async {
-    //TODO: display a toast or snack and redirect to permission settings.
-    _permissionReady = await IOHelper.checkPermission();
-
-    if (!_permissionReady) {
-      return;
-    }
-
     await FlutterDownloader.enqueue(
       saveInPublicStorage: true,
       url: downloadable.downloadUrl,
@@ -61,9 +52,6 @@ class DownloadService implements IDownloadService {
   Future<void> init() async {
     _bindBackgroundIsolate();
     FlutterDownloader.registerCallback(downloadCallback);
-
-    _permissionReady = false;
-
     await _prepare();
   }
 
