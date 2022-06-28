@@ -252,7 +252,7 @@ PostsOrder _artistCategoryToPostsOrder(ArtistCategory category) {
   return PostsOrder.newest;
 }
 
-class CategoryToggleSwitch extends StatelessWidget {
+class CategoryToggleSwitch extends StatefulWidget {
   const CategoryToggleSwitch({
     Key? key,
     required this.onToggle,
@@ -261,27 +261,43 @@ class CategoryToggleSwitch extends StatelessWidget {
   final void Function(ArtistCategory category) onToggle;
 
   @override
+  State<CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
+}
+
+class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
+  final ValueNotifier<int> selected = ValueNotifier(0);
+
+  @override
   Widget build(BuildContext context) {
     return Center(
-      child: ToggleSwitch(
-        customTextStyles: const [
-          TextStyle(
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-          TextStyle(fontWeight: FontWeight.w700),
-        ],
-        minWidth: 80,
-        minHeight: 30,
-        cornerRadius: 5,
-        labels: const ['New', 'Popular'],
-        activeBgColor: [Theme.of(context).colorScheme.primary],
-        inactiveBgColor: Theme.of(context).colorScheme.background,
-        borderWidth: 1,
-        borderColor: [Theme.of(context).colorScheme.onBackground],
-        onToggle: (index) => index == 0
-            ? onToggle(ArtistCategory.newest)
-            : onToggle(ArtistCategory.popular),
+      child: ValueListenableBuilder<int>(
+        valueListenable: selected,
+        builder: (context, value, _) => ToggleSwitch(
+          customTextStyles: const [
+            TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.white,
+            ),
+            TextStyle(fontWeight: FontWeight.w700),
+          ],
+          changeOnTap: false,
+          initialLabelIndex: value,
+          minWidth: 80,
+          minHeight: 30,
+          cornerRadius: 5,
+          labels: const ['New', 'Popular'],
+          activeBgColor: [Theme.of(context).colorScheme.primary],
+          inactiveBgColor: Theme.of(context).colorScheme.background,
+          borderWidth: 1,
+          borderColor: [Theme.of(context).hintColor],
+          onToggle: (index) {
+            index == 0
+                ? widget.onToggle(ArtistCategory.newest)
+                : widget.onToggle(ArtistCategory.popular);
+
+            selected.value = index ?? 0;
+          },
+        ),
       ),
     );
   }
