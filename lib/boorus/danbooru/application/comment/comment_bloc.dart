@@ -15,6 +15,7 @@ class CommentData extends Equatable {
     required this.authorLevel,
     required this.body,
     required this.createdAt,
+    required this.score,
     required this.isSelf,
   });
 
@@ -23,11 +24,12 @@ class CommentData extends Equatable {
   final UserLevel authorLevel;
   final String body;
   final DateTime createdAt;
+  final int score;
   final bool isSelf;
 
   @override
   List<Object?> get props =>
-      [id, authorName, authorLevel, body, createdAt, isSelf];
+      [id, authorName, authorLevel, body, createdAt, score, isSelf];
 }
 
 class CommentState extends Equatable {
@@ -119,6 +121,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
                           userMap[e.creatorId]?.level ?? UserLevel.member,
                       body: e.body,
                       createdAt: e.createdAt,
+                      score: e.score,
                       isSelf: e.creatorId == account.id,
                     ))
                 .toList();

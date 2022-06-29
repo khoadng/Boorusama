@@ -43,6 +43,40 @@ class CommentItem extends StatelessWidget {
           '[quote]',
           '[/quote]',
         ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8, bottom: 8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 24,
+                width: 30,
+                child: IconButton(
+                  iconSize: 16,
+                  splashRadius: 16,
+                  padding: EdgeInsets.zero,
+                  onPressed: () {},
+                  icon: const Icon(Icons.arrow_upward),
+                ),
+              ),
+              Text(
+                comment.score.toString(),
+                style: const TextStyle(fontSize: 14),
+              ),
+              SizedBox(
+                height: 24,
+                width: 30,
+                child: IconButton(
+                  iconSize: 16,
+                  splashRadius: 16,
+                  padding: EdgeInsets.zero,
+                  onPressed: () {},
+                  icon: const Icon(Icons.arrow_downward),
+                ),
+              ),
+            ],
+          ),
+        )
       ],
     );
   }
