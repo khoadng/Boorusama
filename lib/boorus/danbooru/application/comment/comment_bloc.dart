@@ -78,8 +78,8 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     required ICommentRepository commentRepository,
     required IUserRepository userRepository,
   }) : super(CommentState.initial()) {
-    on<CommentFetched>((event, emit) {
-      tryAsync<List<Comment>>(
+    on<CommentFetched>((event, emit) async {
+      await tryAsync<List<Comment>>(
           action: () => commentRepository.getCommentsFromPostId(event.postId),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
@@ -88,8 +88,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             final userList = comments.map((e) => e.creatorId).toSet().toList();
             final users = await userRepository
                 .getUsersByIdStringComma(userList.join(','));
-            final userMap = Map<int, User>.fromIterable(users);
-
+            final userMap = {
+              for (var i = 0; i < users.length; i += 1)
+                users[i].id.value: users[i]
+            };
             final commentData = comments
                 .map((e) => CommentData(
                       id: e.id,
