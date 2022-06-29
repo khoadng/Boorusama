@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
 
@@ -14,7 +14,7 @@ class CommentItem extends StatelessWidget {
     Key? key,
     required this.comment,
   }) : super(key: key);
-  final Comment comment;
+  final CommentData comment;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +24,9 @@ class CommentItem extends StatelessWidget {
         Row(
           children: [
             Text(
-              comment.author.name.value.replaceAll('_', ' '),
+              comment.authorName.replaceAll('_', ' '),
               style: TextStyle(
-                color: Color(comment.author.level.hexColor),
+                color: Color(comment.authorLevel.hexColor),
               ),
             ),
             const SizedBox(

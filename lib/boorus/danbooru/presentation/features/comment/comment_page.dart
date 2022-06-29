@@ -9,7 +9,6 @@ import 'package:lottie/lottie.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'widgets/comment_item.dart';
 
 class CommentPage extends StatefulWidget {
@@ -25,12 +24,7 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
-  List<Comment> _comments = <Comment>[];
-  List<Comment> _commentsWithDeleted = <Comment>[];
-  List<Comment> _commentsWithoutDeleted = <Comment>[];
-  final bool _showDeleted = false;
-
-  Widget _buildCommentSection(List<Comment> comments) {
+  Widget _buildCommentSection(List<CommentData> comments) {
     if (comments.isNotEmpty) {
       return Container(
         padding: const EdgeInsets.all(8),
@@ -103,7 +97,8 @@ class _CommentPageState extends State<CommentPage> {
   @override
   void initState() {
     super.initState();
-    ReadContext(context).read<CommentCubit>().getComment(widget.postId);
+    // ReadContext(context).read<CommentCubit>().getComment(widget.postId);
+    context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
   }
 
   @override
@@ -123,27 +118,10 @@ class _CommentPageState extends State<CommentPage> {
                 Expanded(
                   child: Padding(
                       padding: const EdgeInsets.only(bottom: 20),
-                      child: BlocBuilder<CommentCubit,
-                          AsyncLoadState<List<Comment>>>(
+                      child: BlocBuilder<CommentBloc, CommentState>(
                         builder: (context, state) {
                           if (state.status == LoadStatus.success) {
-                            _commentsWithDeleted = state.data!;
-                            _commentsWithoutDeleted = state.data!
-                                .where((comment) => comment.isDeleted == false)
-                                .toList();
-
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((timeStamp) {
-                              setState(() {
-                                if (_showDeleted) {
-                                  _comments = _commentsWithDeleted;
-                                } else {
-                                  _comments = _commentsWithoutDeleted;
-                                }
-                              });
-                            });
-
-                            return _buildCommentSection(_comments);
+                            return _buildCommentSection(state.comments);
                           } else if (state.status == LoadStatus.failure) {
                             return const Center(
                               child: Text('Something went wrong'),

@@ -9,6 +9,7 @@ abstract class ICommentRepository {
     int postId, {
     CancelToken? cancelToken,
   });
+
   Future<bool> postComment(int postId, String content);
   Future<bool> updateComment(int commentId, String content);
 }

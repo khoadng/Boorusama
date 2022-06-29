@@ -195,7 +195,7 @@ void main() async {
                       SearchKeywordCubit(popularSearchRepo)..getTags();
                   final profileCubit =
                       ProfileCubit(profileRepository: profileRepo);
-                  final commentCubit = CommentCubit(
+                  final commentBloc = CommentBloc(
                       commentRepository: commentRepo, userRepository: userRepo);
                   final artistCommentaryCubit = ArtistCommentaryCubit(
                       artistCommentaryRepository: artistCommentaryRepo);
@@ -259,7 +259,7 @@ void main() async {
                           BlocProvider.value(value: popularSearchCubit),
                           BlocProvider.value(value: favoritedCubit),
                           BlocProvider.value(value: profileCubit),
-                          BlocProvider.value(value: commentCubit),
+                          BlocProvider.value(value: commentBloc),
                           BlocProvider.value(value: artistCommentaryCubit),
                           BlocProvider.value(value: accountCubit),
                           BlocProvider.value(value: authenticationCubit),
