@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
@@ -359,16 +360,12 @@ class _ExploreListItemHeader extends StatelessWidget {
                   borderRadius: BorderRadius.circular(18),
                 ),
               ),
-              onPressed: () async {
-                final date = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2005),
-                  lastDate: DateTime.now().add(const Duration(days: 1)),
-                );
-
-                if (date != null) onDateChanged(date);
-              },
+              onPressed: () => DatePicker.showDatePicker(
+                context,
+                theme: const DatePickerTheme(),
+                onConfirm: onDateChanged,
+                currentTime: DateTime.now(),
+              ),
               child: Row(
                 children: <Widget>[
                   Text(DateFormat('MMM d, yyyy').format(date)),

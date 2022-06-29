@@ -189,7 +189,7 @@ packages:
       name: chewie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.3.4"
+    version: "1.3.3"
   clock:
     dependency: transitive
     description:
@@ -217,7 +217,7 @@ packages:
       name: connectivity_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.5"
+    version: "2.3.4"
   connectivity_plus_linux:
     dependency: transitive
     description:
@@ -231,7 +231,7 @@ packages:
       name: connectivity_plus_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.4"
+    version: "1.2.3"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
@@ -301,7 +301,7 @@ packages:
       name: dart_code_metrics
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.16.0"
+    version: "4.15.2"
   dart_style:
     dependency: transitive
     description:
@@ -468,6 +468,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
+  flutter_datetime_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_datetime_picker
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.5.1"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -481,7 +488,7 @@ packages:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.18.5+1"
+    version: "0.18.5"
   flutter_html:
     dependency: "direct main"
     description:
@@ -708,7 +715,7 @@ packages:
     source: hosted
     version: "5.2.0"
   mocktail:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: mocktail
       url: "https://pub.dartlang.org"
@@ -720,7 +727,7 @@ packages:
       name: modal_bottom_sheet
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.0.1"
   nested:
     dependency: transitive
     description:
@@ -832,7 +839,7 @@ packages:
       name: path_provider_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.16"
+    version: "2.0.15"
   path_provider_ios:
     dependency: transitive
     description:
@@ -1039,21 +1046,21 @@ packages:
       name: sentry
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.6.1"
+    version: "6.5.1"
   sentry_flutter:
     dependency: "direct main"
     description:
       name: sentry_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.6.1"
+    version: "6.5.1"
   share_plus:
     dependency: "direct main"
     description:
       name: share_plus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.10"
+    version: "4.0.8"
   share_plus_linux:
     dependency: transitive
     description:
@@ -1340,7 +1347,7 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.4"
+    version: "6.1.3"
   url_launcher_android:
     dependency: transitive
     description:
@@ -1515,7 +1522,7 @@ packages:
       name: webview_flutter_android
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.8.14"
+    version: "2.8.11"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
