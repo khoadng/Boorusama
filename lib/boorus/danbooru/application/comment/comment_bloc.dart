@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -14,6 +15,7 @@ class CommentData extends Equatable {
     required this.authorLevel,
     required this.body,
     required this.createdAt,
+    required this.isSelf,
   });
 
   final int id;
@@ -21,9 +23,11 @@ class CommentData extends Equatable {
   final UserLevel authorLevel;
   final String body;
   final DateTime createdAt;
+  final bool isSelf;
 
   @override
-  List<Object?> get props => [id, authorName, authorLevel, body, createdAt];
+  List<Object?> get props =>
+      [id, authorName, authorLevel, body, createdAt, isSelf];
 }
 
 class CommentState extends Equatable {
@@ -69,6 +73,19 @@ class CommentFetched extends CommentEvent {
   List<Object> get props => [postId];
 }
 
+class CommentSent extends CommentEvent {
+  const CommentSent({
+    required this.postId,
+    required this.content,
+  });
+
+  final int postId;
+  final String content;
+
+  @override
+  List<Object> get props => [postId, content];
+}
+
 abstract class CommentEvent extends Equatable {
   const CommentEvent();
 }
@@ -77,13 +94,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
     required ICommentRepository commentRepository,
     required IUserRepository userRepository,
+    required IAccountRepository accountRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
       await tryAsync<List<Comment>>(
           action: () => commentRepository.getCommentsFromPostId(event.postId),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (comments) async {
             final userList = comments.map((e) => e.creatorId).toSet().toList();
             final users = await userRepository
@@ -92,6 +110,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               for (var i = 0; i < users.length; i += 1)
                 users[i].id.value: users[i]
             };
+            final account = await accountRepository.get();
             final commentData = comments
                 .map((e) => CommentData(
                       id: e.id,
@@ -100,6 +119,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
                           userMap[e.creatorId]?.level ?? UserLevel.member,
                       body: e.body,
                       createdAt: e.createdAt,
+                      isSelf: e.creatorId == account.id,
                     ))
                 .toList();
 
@@ -109,6 +129,16 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               status: LoadStatus.success,
             ));
           });
+    });
+
+    on<CommentSent>((event, emit) async {
+      await tryAsync<bool>(
+        action: () =>
+            commentRepository.postComment(event.postId, event.content),
+        onSuccess: (success) async {
+          add(CommentFetched(postId: event.postId));
+        },
+      );
     });
   }
 }

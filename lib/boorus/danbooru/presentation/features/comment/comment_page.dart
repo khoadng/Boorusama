@@ -7,8 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lottie/lottie.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_create_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/modal_options.dart';
 import 'widgets/comment_item.dart';
 
 class CommentPage extends StatefulWidget {
@@ -32,6 +35,22 @@ class _CommentPageState extends State<CommentPage> {
           itemBuilder: (context, index) {
             final comment = comments[index];
             return ListTile(
+              onLongPress: () => showActionListModalBottomSheet(
+                context: context,
+                children: [
+                  if (comment.isSelf)
+                    const ListTile(
+                      leading: Icon(Icons.edit),
+                      title: Text('Edit'),
+                      // onTap: () => _handle,
+                    ),
+                  ListTile(
+                    leading: const Icon(Icons.reply),
+                    title: const Text('Reply'),
+                    onTap: () => _handleReplyTap(comment, widget.postId),
+                  ),
+                ],
+              ),
               title: CommentItem(
                 comment: comment,
               ),
@@ -47,7 +66,7 @@ class _CommentPageState extends State<CommentPage> {
     }
   }
 
-  // void _handleEditTap(BuildContext context, Comment comment, int postId) async {
+  // void _handleEditTap(BuildContext context, CommentData comment, int postId) async {
   //   Navigator.of(context).pop();
   //   await Navigator.of(context).push(
   //     PageRouteBuilder(
@@ -69,35 +88,23 @@ class _CommentPageState extends State<CommentPage> {
   //   );
   // }
 
-  // void _handleReplyTap(
-  //     BuildContext context, Comment comment, int postId) async {
-  //   final content =
-  //       "[quote]\n${comment.author.displayName} said:\n\n${comment.body}\n[/quote]\n\n";
+  void _handleReplyTap(CommentData comment, int postId) {
+    final content =
+        '[quote]\n${comment.authorName} said:\n\n${comment.body}\n[/quote]\n\n';
 
-  //   Navigator.of(context).pop();
-  //   await Navigator.of(context).push(
-  //     PageRouteBuilder(
-  //       pageBuilder: (context, animation, secondaryAnimation) =>
-  //           CommentCreatePage(
-  //         postId: widget.postId,
-  //         initialContent: content,
-  //       ),
-  //       transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-  //           SharedAxisTransition(
-  //         child: child,
-  //         animation: animation,
-  //         secondaryAnimation: secondaryAnimation,
-  //         transitionType: SharedAxisTransitionType.scaled,
-  //       ),
-  //       transitionDuration: const Duration(milliseconds: 500),
-  //     ),
-  //   );
-  // }
+    Navigator.of(context).pop();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (context) => CommentCreatePage(
+        postId: widget.postId,
+        initialContent: content,
+      ),
+      fullscreenDialog: true,
+    ));
+  }
 
   @override
   void initState() {
     super.initState();
-    // ReadContext(context).read<CommentCubit>().getComment(widget.postId);
     context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
   }
 
@@ -113,6 +120,22 @@ class _CommentPageState extends State<CommentPage> {
         ),
         body: SafeArea(
           child: Scaffold(
+            floatingActionButton:
+                BlocBuilder<AuthenticationCubit, AuthenticationState>(
+              builder: (context, state) {
+                if (state is Authenticated) {
+                  return FloatingActionButton(
+                    onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                            builder: (context) =>
+                                CommentCreatePage(postId: widget.postId))),
+                    child: const Icon(Icons.add),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
             body: Column(
               children: <Widget>[
                 Expanded(

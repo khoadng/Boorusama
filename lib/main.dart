@@ -196,7 +196,10 @@ void main() async {
                   final profileCubit =
                       ProfileCubit(profileRepository: profileRepo);
                   final commentBloc = CommentBloc(
-                      commentRepository: commentRepo, userRepository: userRepo);
+                    commentRepository: commentRepo,
+                    userRepository: userRepo,
+                    accountRepository: accountRepo,
+                  );
                   final artistCommentaryCubit = ArtistCommentaryCubit(
                       artistCommentaryRepository: artistCommentaryRepo);
                   final accountCubit =
