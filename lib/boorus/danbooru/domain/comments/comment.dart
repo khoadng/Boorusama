@@ -16,6 +16,7 @@ class Comment extends Equatable {
     required this.postId,
     required this.createdAt,
     required this.updatedAt,
+    required this.isDeleted,
   });
 
   final CommentId id;
@@ -25,6 +26,7 @@ class Comment extends Equatable {
   final CommentPostId postId;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final bool isDeleted;
 
   @override
   List<Object?> get props => [
@@ -35,5 +37,8 @@ class Comment extends Equatable {
         postId,
         createdAt,
         updatedAt,
+        isDeleted,
       ];
 }
+
+bool notDeleted(Comment comment) => !comment.isDeleted;

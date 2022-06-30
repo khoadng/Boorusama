@@ -56,5 +56,6 @@ Comment commentDtoToComment(CommentDto d) {
     postId: d.postId ?? 0,
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),
+    isDeleted: d.isDeleted ?? false,
   );
 }

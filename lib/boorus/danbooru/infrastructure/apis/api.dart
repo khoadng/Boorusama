@@ -50,6 +50,12 @@ abstract class Api {
     String content,
   );
 
+  Future<HttpResponse> deleteComment(
+    String login,
+    String apiKey,
+    int commentId,
+  );
+
   Future<HttpResponse> getNotes(
     int postId, {
     CancelToken? cancelToken,

@@ -75,6 +75,15 @@ abstract class DanbooruApi implements Api {
     @Field('comment[body]') String content,
   );
 
+  @DELETE('/comments/{commentId}.json')
+  @FormUrlEncoded()
+  @override
+  Future<HttpResponse> deleteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
+  );
+
   @GET('/notes.json')
   @override
   Future<HttpResponse> getNotes(

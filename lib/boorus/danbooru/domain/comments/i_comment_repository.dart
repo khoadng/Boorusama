@@ -12,4 +12,5 @@ abstract class ICommentRepository {
 
   Future<bool> postComment(int postId, String content);
   Future<bool> updateComment(int commentId, String content);
+  Future<bool> deleteComment(int commentId);
 }

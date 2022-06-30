@@ -64,4 +64,15 @@ class CommentRepository implements ICommentRepository {
               ))
           .then((_) => true)
           .catchError((Object obj) => false);
+
+  @override
+  Future<bool> deleteComment(int commentId) => _accountRepository
+      .get()
+      .then((account) => _api.deleteComment(
+            account.username,
+            account.apiKey,
+            commentId,
+          ))
+      .then((_) => true)
+      .catchError((Object obj) => false);
 }

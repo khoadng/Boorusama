@@ -126,6 +126,18 @@ class _CommentPageState extends State<CommentPage> {
               _handleReplyTap(comment, widget.postId);
             },
           ),
+          if (comment.isSelf)
+            ListTile(
+              leading: const Icon(Icons.reply),
+              title: const Text('Delete'),
+              onTap: () {
+                Navigator.of(context).pop();
+                context.read<CommentBloc>().add(CommentDeleted(
+                      commentId: comment.id,
+                      postId: widget.postId,
+                    ));
+              },
+            ),
         ],
       ),
       icon: const Icon(Icons.more_vert),

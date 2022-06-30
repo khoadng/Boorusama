@@ -21,7 +21,9 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               emit(state.copyWith(status: LoadStatus.failure)),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (comments) async {
-            final userList = comments.map((e) => e.creatorId).toSet().toList();
+            final commentList = comments.where(notDeleted);
+            final userList =
+                commentList.map((e) => e.creatorId).toSet().toList();
             final users = await userRepository
                 .getUsersByIdStringComma(userList.join(','));
             final userMap = {
@@ -29,7 +31,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
                 users[i].id.value: users[i]
             };
             final account = await accountRepository.get();
-            final commentData = comments
+            final commentData = commentList
                 .map((e) => commentDataFrom(
                       e,
                       userMap[e.creatorId],
@@ -59,6 +61,15 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       await tryAsync<bool>(
         action: () =>
             commentRepository.updateComment(event.commentId, event.content),
+        onSuccess: (success) async {
+          add(CommentFetched(postId: event.postId));
+        },
+      );
+    });
+
+    on<CommentDeleted>((event, emit) async {
+      await tryAsync<bool>(
+        action: () => commentRepository.deleteComment(event.commentId),
         onSuccess: (success) async {
           add(CommentFetched(postId: event.postId));
         },

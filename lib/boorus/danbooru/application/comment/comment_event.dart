@@ -46,3 +46,16 @@ class CommentUpdated extends CommentEvent {
   @override
   List<Object> get props => [commentId, postId, content];
 }
+
+class CommentDeleted extends CommentEvent {
+  const CommentDeleted({
+    required this.commentId,
+    required this.postId,
+  });
+
+  final CommentId commentId;
+  final int postId;
+
+  @override
+  List<Object> get props => [commentId, postId];
+}
