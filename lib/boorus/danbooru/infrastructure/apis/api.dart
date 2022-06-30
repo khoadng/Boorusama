@@ -63,6 +63,19 @@ abstract class Api {
     bool isDeleted,
   );
 
+  Future<HttpResponse> voteComment(
+    String login,
+    String apiKey,
+    int commentId,
+    int score,
+  );
+
+  Future<HttpResponse> removeVoteComment(
+    String login,
+    String apiKey,
+    int commentId,
+  );
+
   Future<HttpResponse> getNotes(
     int postId, {
     CancelToken? cancelToken,

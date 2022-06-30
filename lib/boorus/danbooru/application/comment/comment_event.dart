@@ -2,7 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 
 abstract class CommentEvent extends Equatable {
   const CommentEvent();
@@ -58,4 +59,41 @@ class CommentDeleted extends CommentEvent {
 
   @override
   List<Object> get props => [commentId, postId];
+}
+
+class CommentUpvoted extends CommentEvent {
+  const CommentUpvoted({
+    required this.commentId,
+  });
+
+  final CommentId commentId;
+
+  @override
+  List<Object> get props => [commentId];
+}
+
+class CommentDownvoted extends CommentEvent {
+  const CommentDownvoted({
+    required this.commentId,
+  });
+
+  final CommentId commentId;
+
+  @override
+  List<Object> get props => [commentId];
+}
+
+class CommentVoteRemoved extends CommentEvent {
+  const CommentVoteRemoved({
+    required this.commentId,
+    required this.commentVoteId,
+    required this.voteState,
+  });
+
+  final CommentId commentId;
+  final CommentVoteId commentVoteId;
+  final CommentVoteState voteState;
+
+  @override
+  List<Object> get props => [commentId, commentVoteId, voteState];
 }

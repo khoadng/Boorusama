@@ -87,6 +87,27 @@ class _CommentPageState extends State<CommentPage> {
                 final comment = comments[index];
                 return ListTile(
                   title: CommentItem(
+                    onVoteChanged: (event) {
+                      if (event == VoteEvent.upvoted) {
+                        context
+                            .read<CommentBloc>()
+                            .add(CommentUpvoted(commentId: comment.id));
+                      } else if (event == VoteEvent.downvote) {
+                        context
+                            .read<CommentBloc>()
+                            .add(CommentDownvoted(commentId: comment.id));
+                      } else if (event == VoteEvent.voteRemoved) {
+                        if (comment.hasVote) {
+                          context.read<CommentBloc>().add(CommentVoteRemoved(
+                                commentId: comment.id,
+                                commentVoteId: comment.voteId!,
+                                voteState: comment.voteState,
+                              ));
+                        }
+                      } else {
+                        //TODO: unknown vote event
+                      }
+                    },
                     comment: comment,
                     onReply: () => _handleReplyTap(comment, widget.postId),
                     moreBuilder: (context) => state is Authenticated

@@ -93,6 +93,23 @@ abstract class DanbooruApi implements Api {
     @Query('search[is_deleted]') bool isDeleted,
   );
 
+  @POST('/comments/{commentId}/votes.json')
+  @override
+  Future<HttpResponse> voteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
+    @Query('score') int score,
+  );
+
+  @DELETE('/comment_votes/{commentId}.json')
+  @override
+  Future<HttpResponse> removeVoteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
+  );
+
   @GET('/notes.json')
   @override
   Future<HttpResponse> getNotes(

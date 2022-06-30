@@ -16,10 +16,12 @@ class CommentItem extends StatelessWidget {
     Key? key,
     required this.comment,
     required this.onReply,
+    required this.onVoteChanged,
     this.moreBuilder,
   }) : super(key: key);
   final CommentData comment;
   final VoidCallback onReply;
+  final void Function(VoteEvent event) onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
   @override
@@ -44,7 +46,9 @@ class CommentItem extends StatelessWidget {
             ),
           ),
         _VoteSection(
-          comment: comment,
+          score: comment.score,
+          voteState: comment.voteState,
+          onVote: onVoteChanged,
           onReply: onReply,
           moreBuilder: moreBuilder,
         )
@@ -67,27 +71,21 @@ enum VoteEvent {
   voteRemoved,
 }
 
-class _VoteSection extends StatefulWidget {
+class _VoteSection extends StatelessWidget {
   const _VoteSection({
     Key? key,
-    required this.comment,
     required this.onReply,
     required this.moreBuilder,
     this.onVote,
+    required this.score,
+    required this.voteState,
   }) : super(key: key);
 
-  final CommentData comment;
   final VoidCallback onReply;
   final Widget Function(BuildContext context)? moreBuilder;
   final void Function(VoteEvent event)? onVote;
-
-  @override
-  State<_VoteSection> createState() => _VoteSectionState();
-}
-
-class _VoteSectionState extends State<_VoteSection> {
-  late CommentVoteState voteState = widget.comment.voteState;
-  late int score = widget.comment.score;
+  final CommentVoteState voteState;
+  final int score;
 
   @override
   Widget build(BuildContext context) {
@@ -98,28 +96,15 @@ class _VoteSectionState extends State<_VoteSection> {
         children: [
           _VoteButton(
             onTap: () {
-              setState(() {
-                VoteEvent event;
-                if (voteState == CommentVoteState.downvoted) {
-                  score += 2;
-                  event = VoteEvent.upvoted;
-                } else if (voteState == CommentVoteState.unvote) {
-                  score += 1;
-                  event = VoteEvent.upvoted;
-                } else {
-                  score -= 1;
-                  event = VoteEvent.voteRemoved;
-                }
-                widget.onVote?.call(event);
-
-                if (voteState == CommentVoteState.unvote) {
-                  voteState = CommentVoteState.upvoted;
-                } else if (voteState == CommentVoteState.upvoted) {
-                  voteState = CommentVoteState.unvote;
-                } else {
-                  voteState = CommentVoteState.upvoted;
-                }
-              });
+              VoteEvent event;
+              if (voteState == CommentVoteState.downvoted) {
+                event = VoteEvent.upvoted;
+              } else if (voteState == CommentVoteState.unvote) {
+                event = VoteEvent.upvoted;
+              } else {
+                event = VoteEvent.voteRemoved;
+              }
+              onVote?.call(event);
             },
             icon: FaIcon(
               FontAwesomeIcons.arrowUp,
@@ -134,29 +119,15 @@ class _VoteSectionState extends State<_VoteSection> {
           ),
           _VoteButton(
             onTap: () {
-              setState(() {
-                VoteEvent event;
-                if (voteState == CommentVoteState.upvoted) {
-                  score -= 2;
-
-                  event = VoteEvent.downvote;
-                } else if (voteState == CommentVoteState.unvote) {
-                  score -= 1;
-
-                  event = VoteEvent.downvote;
-                } else {
-                  score += 1;
-                  event = VoteEvent.voteRemoved;
-                }
-                widget.onVote?.call(event);
-                if (voteState == CommentVoteState.unvote) {
-                  voteState = CommentVoteState.downvoted;
-                } else if (voteState == CommentVoteState.downvoted) {
-                  voteState = CommentVoteState.unvote;
-                } else {
-                  voteState = CommentVoteState.downvoted;
-                }
-              });
+              VoteEvent event;
+              if (voteState == CommentVoteState.upvoted) {
+                event = VoteEvent.downvote;
+              } else if (voteState == CommentVoteState.unvote) {
+                event = VoteEvent.downvote;
+              } else {
+                event = VoteEvent.voteRemoved;
+              }
+              onVote?.call(event);
             },
             icon: FaIcon(
               FontAwesomeIcons.arrowDown,
@@ -166,10 +137,10 @@ class _VoteSectionState extends State<_VoteSection> {
             ),
           ),
           TextButton(
-            onPressed: widget.onReply,
+            onPressed: onReply,
             child: const Text('Reply'),
           ),
-          if (widget.moreBuilder != null) widget.moreBuilder!(context),
+          if (moreBuilder != null) moreBuilder!(context),
         ],
       ),
     );

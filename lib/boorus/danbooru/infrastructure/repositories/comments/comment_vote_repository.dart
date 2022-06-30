@@ -35,4 +35,46 @@ class CommentVoteApiRepository implements CommentVoteRepository {
         throw Exception(
             'Failed to get comment votes for ${commentIds.join(',')}');
       });
+
+  @override
+  Future<CommentVote> downvote(int commentId) => _accountRepository
+      .get()
+      .then((account) => _api.voteComment(
+            account.username,
+            account.apiKey,
+            commentId,
+            -1,
+          ))
+      .then(extractData)
+      .then(CommentVoteDto.fromJson)
+      .then(commentVoteDtoToCommentVote)
+      .catchError(
+          (Object error) => throw Exception('Failed to downvote $commentId'));
+
+  @override
+  Future<CommentVote> upvote(int commentId) => _accountRepository
+          .get()
+          .then((account) => _api.voteComment(
+                account.username,
+                account.apiKey,
+                commentId,
+                1,
+              ))
+          .then(extractData)
+          .then(CommentVoteDto.fromJson)
+          .then(commentVoteDtoToCommentVote)
+          .catchError((Object error) {
+        throw Exception('Failed to upvote $commentId');
+      });
+
+  @override
+  Future<bool> removeVote(int commentId) => _accountRepository
+      .get()
+      .then((account) => _api.removeVoteComment(
+            account.username,
+            account.apiKey,
+            commentId,
+          ))
+      .then((_) => true)
+      .catchError((Object error) => false);
 }

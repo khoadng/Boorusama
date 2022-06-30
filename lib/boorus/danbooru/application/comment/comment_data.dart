@@ -24,6 +24,7 @@ class CommentData extends Equatable {
     required this.isSelf,
     required this.recentlyUpdated,
     required this.voteState,
+    this.voteId,
   });
 
   final int id;
@@ -35,7 +36,28 @@ class CommentData extends Equatable {
   final int score;
   final bool isSelf;
   final bool recentlyUpdated;
+  final int? voteId;
   final CommentVoteState voteState;
+
+  bool get hasVote => voteState != CommentVoteState.unvote;
+
+  CommentData copyWith({
+    int? score,
+    CommentVoteState? voteState,
+    int? voteId,
+  }) =>
+      CommentData(
+          id: id,
+          authorName: authorName,
+          authorLevel: authorLevel,
+          body: body,
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          score: score ?? this.score,
+          isSelf: isSelf,
+          recentlyUpdated: recentlyUpdated,
+          voteState: voteState ?? this.voteState,
+          voteId: voteId);
 
   @override
   List<Object?> get props => [
@@ -49,6 +71,7 @@ class CommentData extends Equatable {
         isSelf,
         recentlyUpdated,
         voteState,
+        voteId,
       ];
 }
 
@@ -68,7 +91,8 @@ CommentData commentDataFrom(
         score: comment.score,
         isSelf: comment.creatorId == account.id,
         recentlyUpdated: comment.createdAt != comment.updatedAt,
-        voteState: _getVoteState(comment, votes));
+        voteState: _getVoteState(comment, votes),
+        voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id);
 
 CommentVoteState _getVoteState(Comment comment, List<CommentVote> votes) {
   final voteMap = {
