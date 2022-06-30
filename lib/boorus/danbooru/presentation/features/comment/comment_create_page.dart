@@ -40,47 +40,45 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
         child: Container(
           height: double.infinity,
           margin: const EdgeInsets.all(4),
-          child: Material(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(
-                            Icons.close,
-                          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: const Icon(
+                          Icons.close,
                         ),
-                        const Expanded(child: Center()),
-                        IconButton(
-                            onPressed: () {
-                              _handleSend(context, textEditingController.text);
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(Icons.send)),
-                      ],
-                    ),
+                      ),
+                      const Expanded(child: Center()),
+                      IconButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _handleSend(textEditingController.text);
+                          },
+                          icon: const Icon(Icons.send)),
+                    ],
                   ),
-                  const EditorSpacer(),
-                  const SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: TextField(
-                      controller: textEditingController,
-                      decoration: InputDecoration.collapsed(
-                          hintText: 'commentCreate.hint'.tr()),
-                      autofocus: true,
-                      keyboardType: TextInputType.multiline,
-                      maxLines: null,
-                    ),
+                ),
+                const EditorSpacer(),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: TextField(
+                    controller: textEditingController,
+                    decoration: InputDecoration.collapsed(
+                        hintText: 'commentCreate.hint'.tr()),
+                    autofocus: true,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -88,7 +86,7 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
     );
   }
 
-  void _handleSend(BuildContext context, String content) {
+  void _handleSend(String content) {
     FocusScope.of(context).unfocus();
     context
         .read<CommentBloc>()
