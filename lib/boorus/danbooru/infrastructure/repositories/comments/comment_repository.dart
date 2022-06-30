@@ -15,9 +15,10 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 
 class CommentRepository implements ICommentRepository {
   CommentRepository(
-    this._api,
-    this._accountRepository,
-  );
+    Api api,
+    IAccountRepository accountRepository,
+  )   : _api = api,
+        _accountRepository = accountRepository;
 
   final Api _api;
   final IAccountRepository _accountRepository;
@@ -40,32 +41,27 @@ class CommentRepository implements ICommentRepository {
 
   @override
   Future<bool> postComment(int postId, String content) => _accountRepository
-          .get()
-          .then((account) => _api.postComment(
-              account.username, account.apiKey, postId, content, true))
-          .then((value) {
-        return true;
-      }).catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-          default:
-        }
-        return false;
-      });
+      .get()
+      .then((account) => _api.postComment(
+            account.username,
+            account.apiKey,
+            postId,
+            content,
+            true,
+          ))
+      .then((_) => true)
+      .catchError((Object obj) => false);
 
   @override
   Future<bool> updateComment(int commentId, String content) =>
       _accountRepository
           .get()
           .then((account) => _api.updateComment(
-              account.username, account.apiKey, commentId, content))
-          .then((value) {
-        return true;
-      }).catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-          default:
-        }
-        return false;
-      });
+                account.username,
+                account.apiKey,
+                commentId,
+                content,
+              ))
+          .then((_) => true)
+          .catchError((Object obj) => false);
 }
