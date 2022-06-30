@@ -189,6 +189,9 @@ void main() async {
 
                   final relatedTagRepo = RelatedTagApiRepository(api);
 
+                  final commentVoteRepo =
+                      CommentVoteApiRepository(api, accountRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -196,6 +199,7 @@ void main() async {
                   final profileCubit =
                       ProfileCubit(profileRepository: profileRepo);
                   final commentBloc = CommentBloc(
+                    commentVoteRepository: commentVoteRepo,
                     commentRepository: commentRepo,
                     userRepository: userRepo,
                     accountRepository: accountRepo,

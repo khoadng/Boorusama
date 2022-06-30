@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
@@ -47,30 +48,26 @@ class CommentItem extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 24,
-                width: 30,
-                child: IconButton(
-                  iconSize: 16,
-                  splashRadius: 16,
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  icon: const Icon(Icons.arrow_upward),
+              _VoteButton(
+                onTap: () {},
+                icon: FaIcon(
+                  FontAwesomeIcons.arrowUp,
+                  color: comment.voteState == CommentVoteState.upvoted
+                      ? Colors.redAccent
+                      : Theme.of(context).iconTheme.color,
                 ),
               ),
               Text(
                 comment.score.toString(),
                 style: const TextStyle(fontSize: 14),
               ),
-              SizedBox(
-                height: 24,
-                width: 30,
-                child: IconButton(
-                  iconSize: 16,
-                  splashRadius: 16,
-                  padding: EdgeInsets.zero,
-                  onPressed: () {},
-                  icon: const Icon(Icons.arrow_downward),
+              _VoteButton(
+                onTap: () {},
+                icon: FaIcon(
+                  FontAwesomeIcons.arrowDown,
+                  color: comment.voteState == CommentVoteState.downvoted
+                      ? Colors.redAccent
+                      : Theme.of(context).iconTheme.color,
                 ),
               ),
               TextButton(
@@ -90,6 +87,32 @@ class CommentItem extends StatelessWidget {
       comment.body,
       '[quote]',
       '[/quote]',
+    );
+  }
+}
+
+class _VoteButton extends StatelessWidget {
+  const _VoteButton({
+    Key? key,
+    required this.onTap,
+    required this.icon,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+  final Widget icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 24,
+      width: 30,
+      child: IconButton(
+        iconSize: 16,
+        splashRadius: 16,
+        padding: EdgeInsets.zero,
+        onPressed: onTap,
+        icon: icon,
+      ),
     );
   }
 }

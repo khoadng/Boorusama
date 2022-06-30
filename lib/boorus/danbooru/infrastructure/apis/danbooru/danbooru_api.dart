@@ -84,6 +84,15 @@ abstract class DanbooruApi implements Api {
     @Path() int commentId,
   );
 
+  @GET('/comment_votes.json')
+  @override
+  Future<HttpResponse> getCommentVotes(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Query('search[comment_id]') String commentIdsComma,
+    @Query('search[is_deleted]') bool isDeleted,
+  );
+
   @GET('/notes.json')
   @override
   Future<HttpResponse> getNotes(

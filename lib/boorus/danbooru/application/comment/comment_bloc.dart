@@ -13,6 +13,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     required ICommentRepository commentRepository,
     required IUserRepository userRepository,
     required IAccountRepository accountRepository,
+    required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
       await tryAsync<List<Comment>>(
@@ -30,12 +31,16 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               for (var i = 0; i < users.length; i += 1)
                 users[i].id.value: users[i]
             };
+            final votes = await commentVoteRepository
+                .getCommentVotes(commentList.map((e) => e.id).toList());
+
             final account = await accountRepository.get();
             final commentData = commentList
                 .map((e) => commentDataFrom(
                       e,
                       userMap[e.creatorId],
                       account,
+                      votes,
                     ))
                 .toList();
 

@@ -56,6 +56,13 @@ abstract class Api {
     int commentId,
   );
 
+  Future<HttpResponse> getCommentVotes(
+    String login,
+    String apiKey,
+    String commentIdComma,
+    bool isDeleted,
+  );
+
   Future<HttpResponse> getNotes(
     int postId, {
     CancelToken? cancelToken,
