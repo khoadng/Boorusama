@@ -14,10 +14,10 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'bottom_bar_widget.dart';
-import 'latest/latest_posts_view.dart';
 import 'side_bar.dart';
 
 class HomePage extends HookWidget {

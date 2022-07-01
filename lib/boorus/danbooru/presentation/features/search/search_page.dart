@@ -19,10 +19,11 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/related_tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 import 'related_tag_header.dart';
 
 class SearchPage extends StatefulWidget {
@@ -366,9 +367,12 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildRelatedTags(RelatedTag relatedTag, ThemeMode theme) {
-    return RelatedTagHeader(
-      relatedTag: relatedTag,
-      theme: theme,
+    return ConditionalRenderWidget(
+      condition: relatedTag.tags.isNotEmpty,
+      child: RelatedTagHeader(
+        relatedTag: relatedTag,
+        theme: theme,
+      ),
     );
   }
 

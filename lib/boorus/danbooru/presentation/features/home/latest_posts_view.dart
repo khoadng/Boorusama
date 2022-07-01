@@ -14,9 +14,10 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/home/tag_list.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/latest/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 import 'package:boorusama/core/utils.dart';
 
 class LatestView extends StatefulWidget {
@@ -139,7 +140,10 @@ class _LatestViewState extends State<LatestView> {
   Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
     switch (state.status) {
       case LoadStatus.success:
-        return _buildTags(state.data!);
+        return ConditionalRenderWidget(
+          condition: state.data!.isNotEmpty,
+          child: _buildTags(state.data!),
+        );
       case LoadStatus.failure:
         return const SizedBox.shrink();
       default:
