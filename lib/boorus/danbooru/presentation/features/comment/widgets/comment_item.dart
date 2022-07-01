@@ -17,10 +17,12 @@ class CommentItem extends StatelessWidget {
     required this.comment,
     required this.onReply,
     required this.onVoteChanged,
+    required this.hasVoteSection,
     this.moreBuilder,
   }) : super(key: key);
   final CommentData comment;
   final VoidCallback onReply;
+  final bool hasVoteSection;
   final void Function(VoteEvent event) onVoteChanged;
   final Widget Function(BuildContext context)? moreBuilder;
 
@@ -45,13 +47,14 @@ class CommentItem extends StatelessWidget {
                   fontSize: 12),
             ),
           ),
-        _VoteSection(
-          score: comment.score,
-          voteState: comment.voteState,
-          onVote: onVoteChanged,
-          onReply: onReply,
-          moreBuilder: moreBuilder,
-        )
+        if (hasVoteSection)
+          _VoteSection(
+            score: comment.score,
+            voteState: comment.voteState,
+            onVote: onVoteChanged,
+            onReply: onReply,
+            moreBuilder: moreBuilder,
+          )
       ],
     );
   }

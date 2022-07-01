@@ -87,6 +87,7 @@ class _CommentPageState extends State<CommentPage> {
                 final comment = comments[index];
                 return ListTile(
                   title: CommentItem(
+                    hasVoteSection: state is Authenticated,
                     onVoteChanged: (event) {
                       if (event == VoteEvent.upvoted) {
                         context

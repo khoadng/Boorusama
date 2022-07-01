@@ -110,9 +110,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       await tryAsync<bool>(
         action: () => commentVoteRepository.removeVote(event.commentVoteId),
         onSuccess: (success) async {
-          final comments = <int, CommentData>{
-            for (var c in state.comments) c.id: c
-          };
+          final comments = {for (var c in state.comments) c.id: c};
           final old = comments[event.commentId]!;
           final $new = old.copyWith(
             score: event.voteState == CommentVoteState.downvoted
@@ -133,9 +131,10 @@ List<CommentData> _updateWith(
   CommentVote vote,
   CommentVoteState voteState,
 ) {
-  final cmts = <int, CommentData>{for (var c in comments) c.id: c};
-  final $new = cmts[vote.commentId]!.copyWith(
-    score: vote.score,
+  final cmts = {for (var c in comments) c.id: c};
+  final old = cmts[vote.commentId]!;
+  final $new = old.copyWith(
+    score: old.score + vote.score,
     voteState: voteState,
     voteId: vote.id,
   );
