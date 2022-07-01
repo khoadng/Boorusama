@@ -44,6 +44,7 @@ abstract class DanbooruApi implements Api {
   Future<HttpResponse> getComments(
     @Query('search[post_id]') int postId,
     @Query('limit') int limit, {
+    @Query('only') String? only,
     @CancelRequest() CancelToken? cancelToken,
   });
 
@@ -73,6 +74,41 @@ abstract class DanbooruApi implements Api {
     @Query('api_key') String apiKey,
     @Path() int commentId,
     @Field('comment[body]') String content,
+  );
+
+  @DELETE('/comments/{commentId}.json')
+  @FormUrlEncoded()
+  @override
+  Future<HttpResponse> deleteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
+  );
+
+  @GET('/comment_votes.json')
+  @override
+  Future<HttpResponse> getCommentVotes(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Query('search[comment_id]') String commentIdsComma,
+    @Query('search[is_deleted]') bool isDeleted,
+  );
+
+  @POST('/comments/{commentId}/votes.json')
+  @override
+  Future<HttpResponse> voteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
+    @Query('score') int score,
+  );
+
+  @DELETE('/comment_votes/{commentId}.json')
+  @override
+  Future<HttpResponse> removeVoteComment(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int commentId,
   );
 
   @GET('/notes.json')
