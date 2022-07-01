@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lottie/lottie.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
@@ -68,7 +67,9 @@ class _CommentPageState extends State<CommentPage> {
                 child: Text('Something went wrong'),
               );
             } else {
-              return Lottie.asset('assets/animations/comment_loading.json');
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
             }
           },
         ),
