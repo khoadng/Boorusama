@@ -44,6 +44,7 @@ abstract class DanbooruApi implements Api {
   Future<HttpResponse> getComments(
     @Query('search[post_id]') int postId,
     @Query('limit') int limit, {
+    @Query('only') String? only,
     @CancelRequest() CancelToken? cancelToken,
   });
 

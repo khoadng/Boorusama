@@ -32,6 +32,7 @@ abstract class Api {
   Future<HttpResponse> getComments(
     int postId,
     int limit, {
+    String? only,
     CancelToken? cancelToken,
   });
 

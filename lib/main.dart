@@ -201,7 +201,6 @@ void main() async {
                   final commentBloc = CommentBloc(
                     commentVoteRepository: commentVoteRepo,
                     commentRepository: commentRepo,
-                    userRepository: userRepo,
                     accountRepository: accountRepo,
                   );
                   final artistCommentaryCubit = ArtistCommentaryCubit(

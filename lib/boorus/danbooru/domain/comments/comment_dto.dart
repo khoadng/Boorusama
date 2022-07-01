@@ -1,5 +1,6 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class CommentDto {
   const CommentDto({
@@ -14,6 +15,7 @@ class CommentDto {
     this.doNotBumpPost,
     this.isDeleted,
     this.isSticky,
+    this.creator,
   });
 
   factory CommentDto.fromJson(Map<String, dynamic> json) => CommentDto(
@@ -32,6 +34,8 @@ class CommentDto {
         doNotBumpPost: json['do_not_bump_post'],
         isDeleted: json['is_deleted'],
         isSticky: json['is_sticky'],
+        creator:
+            json['creator'] == null ? null : UserDto.fromJson(json['creator']),
       );
 
   final int? id;
@@ -45,6 +49,7 @@ class CommentDto {
   final bool? doNotBumpPost;
   final bool? isDeleted;
   final bool? isSticky;
+  final UserDto? creator;
 }
 
 Comment commentDtoToComment(CommentDto d) {
@@ -57,5 +62,7 @@ Comment commentDtoToComment(CommentDto d) {
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),
     isDeleted: d.isDeleted ?? false,
+    creator:
+        d.creator == null ? User.placeholder() : userDtoToUser(d.creator!, []),
   );
 }

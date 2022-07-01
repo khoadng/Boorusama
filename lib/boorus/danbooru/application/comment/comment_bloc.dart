@@ -6,12 +6,10 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
     required ICommentRepository commentRepository,
-    required IUserRepository userRepository,
     required IAccountRepository accountRepository,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
@@ -23,11 +21,6 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (comments) async {
             final commentList = comments.where(notDeleted);
-            final userList =
-                commentList.map((e) => e.creatorId).toSet().toList();
-            final users = await userRepository
-                .getUsersByIdStringComma(userList.join(','));
-            final userMap = {for (final u in users) u.id.value: u};
             final votes = await commentVoteRepository
                 .getCommentVotes(commentList.map((e) => e.id).toList());
 
@@ -35,7 +28,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
             final commentData = commentList
                 .map((e) => commentDataFrom(
                       e,
-                      userMap[e.creatorId],
+                      e.creator,
                       account,
                       votes,
                     ))

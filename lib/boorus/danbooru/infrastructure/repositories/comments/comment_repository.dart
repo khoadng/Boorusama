@@ -32,6 +32,8 @@ class CommentRepository implements ICommentRepository {
           .getComments(
             postId,
             1000,
+            only:
+                'creator,id,post_id,body,score,is_deleted,created_at,updated_at,is_sticky,do_not_bump_post,updater_id',
             cancelToken: cancelToken,
           )
           .then(parseComment)
