@@ -31,6 +31,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -82,7 +83,8 @@ void main() async {
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
-  final downloader = DownloadService();
+  final fileNameGenerator = PostFileNameGenerator();
+  final downloader = DownloadService(fileNameGenerator: fileNameGenerator);
   final searchHistoryRepo =
       SearchHistoryRepository(settingRepository: settingRepository);
 

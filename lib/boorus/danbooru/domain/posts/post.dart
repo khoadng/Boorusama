@@ -1,12 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:path/path.dart' as path;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/domain/i_downloadable.dart';
 
-class Post extends Equatable implements IDownloadable {
+class Post extends Equatable {
   const Post({
     required this.id,
     required this.previewImageUrl,
@@ -176,11 +174,6 @@ class Post extends Equatable implements IDownloadable {
 
   bool get hasComment => lastCommentAt != null;
 
-  @override
-  String get fileName => '${name.full} - ${path.basename(downloadUrl)}'
-      .fixInvalidCharacterForPathName();
-
-  @override
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
   @override
@@ -189,9 +182,3 @@ class Post extends Equatable implements IDownloadable {
 
 bool isPostBanned(Post post) => post.id <= 0;
 bool isPostValid(Post post) => post.id > 0;
-
-extension InvalidFileCharsExtension on String {
-  String fixInvalidCharacterForPathName() {
-    return replaceAll(RegExp(r'[\\/*?:"<>|]'), '_');
-  }
-}

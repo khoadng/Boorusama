@@ -1,9 +1,6 @@
-// Project imports:
-import 'package:boorusama/core/domain/i_downloadable.dart';
-
-abstract class IDownloadService {
+abstract class IDownloadService<T> {
   void download(
-    IDownloadable downloadable, {
+    T item, {
     String? path,
   });
   Future<void> init();

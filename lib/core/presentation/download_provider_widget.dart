@@ -6,13 +6,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
-import 'package:boorusama/core/domain/i_downloadable.dart';
 
 void _download(
   BuildContext context,
-  IDownloadable downloadable,
+  Post downloadable,
   PermissionStatus permission,
 ) {
   if (permission == PermissionStatus.granted) {
@@ -25,7 +25,7 @@ void _download(
 }
 
 typedef DownloadDelegate = void Function(
-  IDownloadable downloadable,
+  Post downloadable,
 );
 
 class DownloadProviderWidget extends StatelessWidget {
