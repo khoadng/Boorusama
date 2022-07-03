@@ -4,55 +4,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru.dart';
+import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/danbooru/danbooru_api.dart';
 
-enum BooruType {
-  unknown,
-  danbooru,
-  safebooru,
-}
-
-class Booru extends Equatable {
-  const Booru({
-    required this.url,
-    required this.booruType,
-  });
-
-  final String url;
-  final BooruType booruType;
-
-  static Booru empty = const Booru(
-    url: '',
-    booruType: BooruType.unknown,
-  );
-
-  @override
-  List<Object?> get props => [url, booruType];
-}
-
-String getEndpoint(BooruType booru) {
-  if (booru == BooruType.danbooru) {
-    return 'https://danbooru.donmai.us/';
-  } else {
-    return 'https://safebooru.donmai.us/';
-  }
-}
-
-// ignore: avoid_positional_boolean_parameters
-Booru getBooru(bool isSafeMode) {
-  if (isSafeMode) {
-    return Booru(
-      url: getEndpoint(BooruType.safebooru),
-      booruType: BooruType.safebooru,
-    );
-  } else {
-    return Booru(
-      url: getEndpoint(BooruType.danbooru),
-      booruType: BooruType.danbooru,
-    );
-  }
-}
+Dio newDio(String url) => Dio(BaseOptions(baseUrl: url));
 
 class ApiEndpointState extends Equatable {
   const ApiEndpointState({
@@ -68,19 +25,21 @@ class ApiEndpointState extends Equatable {
 class ApiEndpointCubit extends Cubit<ApiEndpointState> {
   ApiEndpointCubit({
     required Booru initialValue,
+    required this.factory,
   }) : super(ApiEndpointState(booru: initialValue));
 
-  // ignore: avoid_positional_boolean_parameters
-  void changeApi(bool isSafeMode) {
-    if (isSafeMode) {
-      emit(ApiEndpointState(
-        booru: getBooru(isSafeMode),
-      ));
-    } else {
-      emit(ApiEndpointState(
-        booru: getBooru(isSafeMode),
-      ));
-    }
+  final BooruFactory factory;
+
+  void changeApi({
+    required bool isSafeMode,
+  }) {
+    final booru = factory.create(
+      isSafeMode: isSafeMode,
+    );
+
+    emit(ApiEndpointState(
+      booru: booru,
+    ));
   }
 }
 
@@ -92,6 +51,11 @@ class ApiState extends Equatable {
 
   final Api api;
 
+  ApiState copyWith({
+    Api? api,
+  }) =>
+      ApiState(api: api ?? this.api);
+
   @override
   List<Object?> get props => [api];
 }
@@ -99,14 +63,10 @@ class ApiState extends Equatable {
 class ApiCubit extends Cubit<ApiState> {
   ApiCubit({
     required String defaultUrl,
-  }) : super(ApiState.initial(Dio(BaseOptions(baseUrl: defaultUrl))));
+  }) : super(ApiState.initial(newDio(defaultUrl)));
 
   void changeApi(Booru booru) {
-    final dio = Dio(BaseOptions(baseUrl: booru.url));
-    if (booru.booruType == BooruType.danbooru) {
-      emit(ApiState(api: DanbooruApi(dio)));
-    } else {
-      emit(ApiState(api: DanbooruApi(dio)));
-    }
+    final dio = newDio(booru.url);
+    emit(state.copyWith(api: DanbooruApi(dio)));
   }
 }

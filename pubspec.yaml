@@ -96,3 +96,4 @@ flutter:
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json
+    - assets/boorus.json

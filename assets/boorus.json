@@ -1,0 +1,10 @@
+[
+    {
+        "name" : "danbooru",
+        "url" : "https://danbooru.donmai.us/"
+    },
+    {
+        "name" : "safebooru",
+        "url" : "https://safebooru.donmai.us/"
+    }
+]
