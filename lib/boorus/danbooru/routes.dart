@@ -41,7 +41,9 @@ import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/main.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -49,7 +51,11 @@ import 'presentation/features/post_detail/post_image_page.dart';
 import 'presentation/features/search/search_page.dart';
 
 final rootHandler = Handler(
-  handlerFunc: (context, parameters) => HomePage(),
+  handlerFunc: (context, parameters) => ConditionalParentWidget(
+    condition: canRate(),
+    conditionalBuilder: (child) => createAppRatingWidget(child: child),
+    child: HomePage(),
+  ),
 );
 
 final artistHandler = Handler(handlerFunc: (
