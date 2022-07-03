@@ -3,13 +3,13 @@ import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/domain/file_name_generator.dart';
 
 class DownloadService implements IDownloadService<Post> {
   DownloadService({

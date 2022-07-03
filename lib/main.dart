@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -46,6 +43,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_se
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
@@ -59,10 +57,13 @@ import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    if (Platform.isAndroid || Platform.isIOS) {
-      await FlutterDownloader.initialize(debug: false);
-    }
+
+  final fileNameGenerator = PostFileNameGenerator();
+  final downloader = DownloadService(fileNameGenerator: fileNameGenerator);
+
+  if (isAndroid() || isIOS()) {
+    await FlutterDownloader.initialize(debug: false);
+    await downloader.init();
   }
 
   await EasyLocalization.ensureInitialized();
@@ -83,16 +84,8 @@ void main() async {
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
-  final fileNameGenerator = PostFileNameGenerator();
-  final downloader = DownloadService(fileNameGenerator: fileNameGenerator);
   final searchHistoryRepo =
       SearchHistoryRepository(settingRepository: settingRepository);
-
-  if (!kIsWeb) {
-    if (Platform.isAndroid || Platform.isIOS) {
-      await downloader.init();
-    }
-  }
 
   final config = DanbooruConfig();
   final packageInfo = PackageInfoProvider(await getPackageInfo());
