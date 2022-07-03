@@ -1,9 +1,9 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/core/core.dart';
 
 class DeviceInfoService {
   const DeviceInfoService({
@@ -12,14 +12,20 @@ class DeviceInfoService {
 
   final DeviceInfoPlugin _plugin;
 
+  //TODO: support other platforms
   Future<DeviceInfo> getDeviceInfo() async {
-    if (Platform.isAndroid) {
+    if (isAndroid()) {
       return _plugin.androidInfo.then((value) => DeviceInfo(
             versionCode: value.version.sdkInt ?? 0,
             release: value.version.release ?? '',
           ));
+    } else if (isWeb()) {
+      return _plugin.webBrowserInfo.then((value) => DeviceInfo(
+            versionCode: -1,
+            release: value.browserName.name,
+          ));
     } else {
-      throw UnsupportedError('Unsupported platform');
+      return DeviceInfo.empty();
     }
   }
 }
@@ -29,6 +35,8 @@ class DeviceInfo extends Equatable {
     required this.versionCode,
     required this.release,
   });
+
+  factory DeviceInfo.empty() => const DeviceInfo(versionCode: -1, release: '');
 
   final int versionCode;
   final String release;

@@ -1,6 +1,5 @@
 // Dart imports:
 import 'dart:convert';
-import 'dart:io';
 import 'dart:ui';
 
 // Flutter imports:
@@ -74,7 +73,7 @@ class PostDetail extends HookWidget {
 
     useEffect(() {
       // Enable virtual display.
-      if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+      if (isAndroid()) WebView.platform = SurfaceAndroidWebView();
       return null;
     }, []);
 

@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -13,10 +10,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/io_helper.dart';
 
 bool _hasScopeStorage(BuildContext context) {
-  if (Platform.isAndroid) {
+  if (isAndroid()) {
     return context.read<DeviceInfo>().versionCode >= 30;
   }
 
