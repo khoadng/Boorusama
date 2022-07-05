@@ -27,6 +27,8 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
+  late final textEditingController = TextEditingController(text: '');
+
   @override
   void initState() {
     super.initState();
@@ -34,23 +36,14 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:
-          BlocBuilder<AuthenticationCubit, AuthenticationState>(
-        builder: (context, state) {
-          if (state is Authenticated) {
-            return FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      CommentCreatePage(postId: widget.postId))),
-              child: const Icon(Icons.add),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_down),
@@ -61,7 +54,70 @@ class _CommentPageState extends State<CommentPage> {
         child: BlocBuilder<CommentBloc, CommentState>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
-              return _buildCommentSection(state.comments);
+              return GestureDetector(
+                onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+                child: Column(
+                  children: [
+                    Expanded(child: _buildCommentSection(state.comments)),
+                    Container(
+                      decoration: const BoxDecoration(
+                        border: Border(top: BorderSide(color: Colors.grey)),
+                      ),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 12),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: textEditingController,
+                            decoration: InputDecoration(
+                              hintText: 'commentCreate.hint'.tr(),
+                              border: const UnderlineInputBorder(),
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                    FocusScope.of(context).hasPrimaryFocus
+                                        ? Icons.send
+                                        : Icons.fullscreen),
+                                onPressed: () {
+                                  if (!FocusScope.of(context).hasPrimaryFocus) {
+                                    final initialContent =
+                                        textEditingController.text;
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => CommentCreatePage(
+                                          postId: widget.postId,
+                                          initialContent: initialContent,
+                                        ),
+                                      ),
+                                    );
+                                    textEditingController.clear();
+                                  }
+                                },
+                              ),
+                            ),
+                            keyboardType: TextInputType.multiline,
+                            maxLines: null,
+                          ),
+                          if (!FocusScope.of(context).hasPrimaryFocus)
+                            Align(
+                              alignment: Alignment.topRight,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(50),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  // TODO: Send post comment
+                                },
+                                child: const Text('Send'),
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
             } else if (state.status == LoadStatus.failure) {
               return const Center(
                 child: Text('Something went wrong'),
@@ -80,7 +136,7 @@ class _CommentPageState extends State<CommentPage> {
   Widget _buildCommentSection(List<CommentData> comments) {
     if (comments.isNotEmpty) {
       return Container(
-        padding: const EdgeInsets.all(8),
+        // padding: const EdgeInsets.all(8),
         child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
           builder: (context, state) {
             return ListView.builder(
