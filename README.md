@@ -2,10 +2,10 @@
 
 [![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![Discord](https://img.shields.io/discord/817638254571946006)](https://discord.gg/tvyYVxjfBr) [![codecov](https://codecov.io/gh/khoadng/Boorusama/branch/dev/graph/badge.svg?token=Q1YK0TAUIK)](https://codecov.io/gh/khoadng/Boorusama) ![test](https://github.com/khoadng/Boorusama/actions/workflows/main.yml/badge.svg?branch=dev)
 
+Boorusama is a mobile client for [Danbooru](https://github.com/danbooru/danbooru) built with [Flutter](https://github.com/flutter/flutter) and [Dart](https://dart.dev/).
+
 ## Quick Start
 Make sure to install [Flutter SDK](https://docs.flutter.dev/get-started/install) and [Git](https://git-scm.com/downloads) first.
-
-
 
 ```bash
 > git clone https://github.com/khoadng/Boorusama.git
@@ -25,3 +25,6 @@ or
 ```bash
 > flutter build appbundle --release
 ```
+
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
