@@ -180,6 +180,7 @@ Post postDtoToPost(PostDto dto) {
         hasChildren: dto.hasChildren,
         hasParent: dto.parentId != null,
         parentId: dto.parentId,
+        hasLarge: dto.hasLarge ?? false,
       );
     }
 
@@ -211,6 +212,7 @@ Post postDtoToPost(PostDto dto) {
       hasChildren: dto.hasChildren,
       hasParent: dto.parentId != null,
       parentId: dto.parentId,
+      hasLarge: dto.hasLarge ?? false,
     );
   } catch (e) {
     return Post.empty();

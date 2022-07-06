@@ -33,6 +33,7 @@ class Post extends Equatable {
     required this.hasChildren,
     required this.hasParent,
     this.parentId,
+    required this.hasLarge,
   });
 
   factory Post.empty() => Post(
@@ -62,6 +63,7 @@ class Post extends Equatable {
         isBanned: false,
         hasChildren: false,
         hasParent: false,
+        hasLarge: false,
       );
 
   factory Post.banned({
@@ -87,6 +89,7 @@ class Post extends Equatable {
     required List<String> artistTags,
     required bool hasChildren,
     required bool hasParent,
+    required bool hasLarge,
     int? parentId,
   }) =>
       Post(
@@ -117,6 +120,7 @@ class Post extends Equatable {
         hasChildren: hasChildren,
         hasParent: hasParent,
         parentId: parentId,
+        hasLarge: hasLarge,
       );
   final int id;
   final String previewImageUrl;
@@ -145,6 +149,7 @@ class Post extends Equatable {
   final bool hasChildren;
   final bool hasParent;
   final int? parentId;
+  final bool hasLarge;
 
   double get aspectRatio => width / height;
 

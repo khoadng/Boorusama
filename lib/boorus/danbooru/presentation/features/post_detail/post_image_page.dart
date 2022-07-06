@@ -32,11 +32,17 @@ class _PostImagePageState extends State<PostImagePage>
   final _transformationController = TransformationController();
   TapDownDetails? _doubleTapDetails;
 
-  late final AnimationController _animationController = AnimationController(
-    vsync: this,
-    duration: const Duration(milliseconds: 300),
-  )..addListener(() => _transformationController.value = _animation.value);
+  late final AnimationController _animationController;
   late Animation<Matrix4> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() => _transformationController.value = _animation.value);
+  }
 
   @override
   void dispose() {
@@ -73,7 +79,7 @@ class _PostImagePageState extends State<PostImagePage>
                     ValueListenableBuilder<bool>(
                       valueListenable: fullsize,
                       builder: (context, useFullsize, child) =>
-                          _buildMoreButton(useFullsize),
+                          _buildMoreButton(useFullsize, widget.post.hasLarge),
                     ),
                     if (state.status == LoadStatus.success)
                       ...buildNotes(state.data!, widget.post)
@@ -150,7 +156,7 @@ class _PostImagePageState extends State<PostImagePage>
     );
   }
 
-  Widget _buildMoreButton(bool useFullsize) {
+  Widget _buildMoreButton(bool useFullsize, bool hasLarge) {
     return Align(
       alignment: const Alignment(0.9, -0.96),
       child: Padding(
@@ -179,22 +185,23 @@ class _PostImagePageState extends State<PostImagePage>
                   title: Text('Download'),
                 ),
               ),
-              if (useFullsize)
-                const PopupMenuItem<PostAction>(
-                  value: PostAction.viewNormalsize,
-                  child: ListTile(
-                    leading: Icon(Icons.fullscreen_exit),
-                    title: Text('View normal size image'),
+              if (hasLarge)
+                if (useFullsize)
+                  const PopupMenuItem<PostAction>(
+                    value: PostAction.viewNormalsize,
+                    child: ListTile(
+                      leading: Icon(Icons.fullscreen_exit),
+                      title: Text('View normal size image'),
+                    ),
+                  )
+                else
+                  const PopupMenuItem<PostAction>(
+                    value: PostAction.viewFullsize,
+                    child: ListTile(
+                      leading: Icon(Icons.fullscreen),
+                      title: Text('View full size image'),
+                    ),
                   ),
-                )
-              else
-                const PopupMenuItem<PostAction>(
-                  value: PostAction.viewFullsize,
-                  child: ListTile(
-                    leading: Icon(Icons.fullscreen),
-                    title: Text('View full size image'),
-                  ),
-                ),
             ],
           ),
         ),

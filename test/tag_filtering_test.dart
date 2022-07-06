@@ -34,6 +34,7 @@ Post createPost(int id, List<String> tags) => Post(
       isBanned: false,
       hasChildren: false,
       hasParent: false,
+      hasLarge: false,
     );
 
 void main() {
