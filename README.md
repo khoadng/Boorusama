@@ -1,103 +1,60 @@
-# Boorusama
+<p align="center">
+ <img align="center" width=100% alt="Boorusama Logo" src="https://user-images.githubusercontent.com/19619099/177544952-1d963e91-5c6d-40d2-b731-bf84b63aa246.png" />
+</p>
 
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE) [![codecov](https://codecov.io/gh/khoadng/Boorusama/branch/dev/graph/badge.svg?token=Q1YK0TAUIK)](https://codecov.io/gh/khoadng/Boorusama) ![test](https://github.com/khoadng/Boorusama/actions/workflows/main.yml/badge.svg?branch=dev)
 
-## Run the generator
 
-Use build_runner to generate boilerplate files
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](https://opensource.org/licenses/Apache-2.0) 
+[![Discord](https://img.shields.io/discord/817638254571946006?label=&logo=discord&logoColor=ffffff&color=5865F2)](https://discord.gg/tvyYVxjfBr) 
+[![codecov](https://codecov.io/gh/khoadng/Boorusama/branch/dev/graph/badge.svg?token=Q1YK0TAUIK)](https://codecov.io/gh/khoadng/Boorusama) 
+![test](https://github.com/khoadng/Boorusama/actions/workflows/main.yml/badge.svg?branch=dev)
+
+<p align="center">
+  <a href="https://play.google.com/store/apps/details?id=com.degenk.boorusama">
+    <img align="center"  width="140" alt="Boorusama Logo" src="http://i.imgur.com/mtGRPuM.png" />
+  </a>
+</p>
+
+
+## Introduction
+
+Boorusama is one of the most feature-rich unofficial clients for [Danbooru](https://github.com/danbooru/danbooru). Built with Flutter.
+
+## Features
+* Fully supported tag search with autocomplete and metatags highlighting
+* Quick and easy image saving
+* Explore the newest, curated and popular posts with ease
+* View, vote, and add comments
+* View translation notes
+* Search, filter, and view images pool
+* Easily blacklist any tags
+
+## Installation
+* Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
+* Clone or download the repo. Make sure you have [Git](https://git-scm.com/downloads) installed first.
+```bash
+> git clone https://github.com/khoadng/Boorusama.git
+> cd Boorusama
+```
+* Install dependencies and generate boilerplates code.
+```bash
+> flutter pub get
+> flutter pub run build_runner build --delete-conflicting-outputs
+```
+* Connect to an Android device/emulator and run the app.
+```bash
+> flutter run --release
+```
+or you could build an apk and install it manually.
 
 ```bash
-#!/bin/bash
-flutter pub run build_runner build --delete-conflicting-outputs
+> flutter build apk --release
 ```
 
-## Run upgrade command
+## Feedback
 
-```bash
-#!/bin/bash
-dart fix --apply
+Feel free to send me feedback on [Discord](https://discord.gg/tvyYVxjfBr) or [file an issue](https://github.com/khoadng/Boorusama/issues/new). Feature requests are always welcome.
 
-flutter pub upgrade
 
-flutter pub outdated
-```
-
-## Upgrading pre 1.12 Android projects
-
-> Read more [here](https://github.com/flutter/flutter/wiki/Upgrading-pre-1.12-Android-projects)
-
-## "flutter pub get" A required privilege is not held by the client
-
-> Read more [here](https://stackoverflow.com/questions/69427548/flutter-pub-get-a-required-privilege-is-not-held-by-the-client)
-
-## Open android emulator
-
-```bash
-#!/bin/bash
-# using flutter sdk
-# https://docs.flutter.dev/reference/flutter-cli#flutter-commands
-flutter emulators
-flutter emulators --launch @name-of-your-emulator
-# ex:
-flutter emulators --launch Pixel_5_API_31
-```
-
-```bash
-#!/bin/bash
-# using android sdk
-# https://developer.android.com/studio/run/emulator-commandline
-emulator -list-avds
-emulator -avd @name-of-your-emulator
-# ex:
-emulator -avd Pixel_5_API_31
-```
-
-## Stop android emulator
-
-```bash
-#!/bin/bash
-# List of devices attached
-adb devices
-# stop emulator
-adb kill-server
-# or
-adb -s @name-of-your-emulator emu kill
-# ex:
-adb -s emulator-5554 emu kill
-```
-
-## Run application for development
-
-```bash
-#!/bin/bash
-flutter run
-# with some option
-flutter run --enable-software-rendering --skia-deterministic-rendering --pub --build
-```
-
-## Android studio cannot resolve symbol 'GradleException'
-
-Read more [here](https://stackoverflow.com/questions/55575122/android-studio-cannot-resolve-symbol-gradleexception)
-
-## Build android
-
-```bash
-#!/bin/bash
-# release
-flutter build appbundle --release
-flutter build apk --split-per-abi --release
-flutter build assembleRelease
-# debug
-flutter build apk --split-per-abi --debug
-```
-
-## Fix app crashes on certain devices on Android 6.0
-
-> Read more [here](https://docs.flutter.dev/deployment/android#building-the-app-for-release)
-
-## Paste text on Android Emulator
-
-```bash
-#!/bin/bash
-adb shell input text 'my string here. With some characters escaped like \$ that'
-```
+## Contributing
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
