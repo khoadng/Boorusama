@@ -88,6 +88,14 @@ dev_dependencies:
   bloc_test: ^9.0.3
   mocktail: ^0.3.0
 
+flutter_icons:
+  remove_alpha_ios: true
+  adaptive_icon_foreground: "assets/icon/icon-512x512.png"
+  adaptive_icon_background: "#e7bf55"
+  android: true
+  ios: true
+  image_path: "assets/icon/icon-512x512.png"
+
 flutter:
   uses-material-design: true
   assets:
