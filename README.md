@@ -23,11 +23,11 @@ Boorusama is one of the most feature-rich unofficial clients for [Danbooru](http
 ## Features
 * Fully supported tag search with autocomplete and metatags highlighting
 * Quick and easy image saving
-* Explore newest, curated and popular posts with ease
-* View, vote and add comments
+* Explore the newest, curated and popular posts with ease
+* View, vote, and add comments
 * View translation notes
-* Search, filter and view images pool
-* Easily blacklist any tag
+* Search, filter, and view images pool
+* Easily blacklist any tags
 
 ## Installation
 * Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
