@@ -27,30 +27,27 @@ class CommentPage extends StatefulWidget {
 }
 
 class _CommentPageState extends State<CommentPage> {
+  late final textEditingController = TextEditingController(text: '');
+  late FocusNode _focus;
+  final _commentReply = ValueNotifier<CommentData?>(null);
+
   @override
   void initState() {
     super.initState();
     context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
+    _focus = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    textEditingController.dispose();
+    _focus.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton:
-          BlocBuilder<AuthenticationCubit, AuthenticationState>(
-        builder: (context, state) {
-          if (state is Authenticated) {
-            return FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) =>
-                      CommentCreatePage(postId: widget.postId))),
-              child: const Icon(Icons.add),
-            );
-          } else {
-            return const SizedBox.shrink();
-          }
-        },
-      ),
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.keyboard_arrow_down),
@@ -61,7 +58,24 @@ class _CommentPageState extends State<CommentPage> {
         child: BlocBuilder<CommentBloc, CommentState>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
-              return _buildCommentSection(state.comments);
+              return GestureDetector(
+                onTap: () {
+                  if (_commentReply.value != null) {
+                    _commentReply.value = null;
+                  }
+                  FocusManager.instance.primaryFocus?.unfocus();
+                },
+                child: Column(
+                  children: [
+                    Expanded(child: _buildCommentSection(state.comments)),
+                    ValueListenableBuilder(
+                      valueListenable: _commentReply,
+                      builder: (_, CommentData? value, __) =>
+                          _buildCommentTextField(value),
+                    ),
+                  ],
+                ),
+              );
             } else if (state.status == LoadStatus.failure) {
               return const Center(
                 child: Text('Something went wrong'),
@@ -167,6 +181,66 @@ class _CommentPageState extends State<CommentPage> {
     );
   }
 
+  Widget _buildCommentTextField(CommentData? comment) {
+    return Container(
+      decoration: const BoxDecoration(
+        border: Border(top: BorderSide(color: Colors.grey)),
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (comment != null)
+            Wrap(children: [
+              const Text('Replying to ',
+                  softWrap: true, style: TextStyle(color: Colors.grey)),
+              Text('@${comment.authorName}',
+                  softWrap: true, style: const TextStyle(color: Colors.blue)),
+            ]),
+          TextField(
+            focusNode: _focus,
+            controller: textEditingController,
+            decoration: InputDecoration(
+              hintText: 'commentCreate.hint'.tr(),
+              border: const UnderlineInputBorder(),
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.fullscreen),
+                onPressed: () {
+                  _handleFullscreenTap(textEditingController.text);
+                  textEditingController.clear();
+                },
+              ),
+            ),
+            keyboardType: TextInputType.multiline,
+            maxLines: null,
+          ),
+          if (_focus.hasPrimaryFocus)
+            Align(
+              alignment: Alignment.topRight,
+              child: ValueListenableBuilder<TextEditingValue>(
+                valueListenable: textEditingController,
+                builder: (context, value, child) {
+                  return ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                    ),
+                    onPressed: textEditingController.text.isEmpty
+                        ? null
+                        : () {
+                            _handleSendTap(textEditingController.text);
+                          },
+                    child: const Text('Send'),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
   void _handleEditTap(
     CommentData comment,
     int postId,
@@ -184,13 +258,45 @@ class _CommentPageState extends State<CommentPage> {
   }
 
   void _handleReplyTap(CommentData comment, int postId) {
-    final content =
-        '[quote]\n${comment.authorName} said:\n\n${comment.body}\n[/quote]\n\n';
+    // final content =
+    //     '[quote]\n${comment.authorName} said:\n\n${comment.body}\n[/quote]\n\n';
+
+    // Navigator.of(context).push(MaterialPageRoute(
+    //     builder: (context) => CommentCreatePage(
+    //           postId: widget.postId,
+    //           initialContent: content,
+    //         )));
+
+    _commentReply.value = comment;
+    Future.delayed(const Duration(milliseconds: 100), () {
+      _focus.requestFocus();
+    });
+  }
+
+  void _handleFullscreenTap(String content) {
+    String initialContent = content;
+    if (_commentReply.value != null) {
+      initialContent =
+          '[quote]\n${_commentReply.value!.authorName} said:\n\n${_commentReply.value!.body}\n[/quote]\n\n$content';
+    }
 
     Navigator.of(context).push(MaterialPageRoute(
         builder: (context) => CommentCreatePage(
               postId: widget.postId,
-              initialContent: content,
+              initialContent: initialContent,
             )));
+  }
+
+  void _handleSendTap(String content) {
+    String initialContent = content;
+    if (_commentReply.value != null) {
+      initialContent =
+          '[quote]\n${_commentReply.value!.authorName} said:\n\n${_commentReply.value!.body}\n[/quote]\n\n$content';
+    }
+
+    FocusScope.of(context).unfocus();
+    context
+        .read<CommentBloc>()
+        .add(CommentSent(content: initialContent, postId: widget.postId));
   }
 }

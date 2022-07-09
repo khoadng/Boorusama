@@ -186,7 +186,7 @@ class _CommentHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
+    return Wrap(
       children: [
         Text(
           comment.authorName.replaceAll('_', ' '),
