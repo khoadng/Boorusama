@@ -7,16 +7,15 @@ import 'package:rate_my_app/rate_my_app.dart';
 // Project imports:
 import 'package:boorusama/core/core.dart';
 
-const _message =
-    '''
+const _message = '''
 If you like the app, please take a little bit of your time to review it.
 It wouldn't take more than a few seconds and it really helps this project.
 ''';
 
 RateMyApp _createRateMyApp() => RateMyApp(
-      minDays: 7,
-      minLaunches: 100,
-      remindDays: 14,
+      minDays: 14,
+      minLaunches: 200,
+      remindDays: 30,
     );
 
 bool canRate() => isAndroid() || isIOS();
