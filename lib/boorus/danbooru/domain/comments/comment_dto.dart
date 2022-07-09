@@ -7,7 +7,6 @@ class CommentDto {
     this.id,
     this.createdAt,
     this.postId,
-    this.creatorId,
     this.body,
     this.score,
     this.updatedAt,
@@ -24,7 +23,6 @@ class CommentDto {
             ? null
             : DateTime.parse(json['created_at']),
         postId: json['post_id'],
-        creatorId: json['creator_id'],
         body: json['body'],
         score: json['score'],
         updatedAt: json['updated_at'] == null
@@ -41,7 +39,6 @@ class CommentDto {
   final int? id;
   final DateTime? createdAt;
   final int? postId;
-  final int? creatorId;
   final String? body;
   final int? score;
   final DateTime? updatedAt;
@@ -57,7 +54,6 @@ Comment commentDtoToComment(CommentDto d) {
     id: d.id ?? 0,
     score: d.score ?? 0,
     body: d.body ?? '',
-    creatorId: d.creatorId ?? 0,
     postId: d.postId ?? 0,
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),

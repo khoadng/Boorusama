@@ -15,7 +15,6 @@ class Comment extends Equatable {
     required this.id,
     required this.score,
     required this.body,
-    required this.creatorId,
     required this.postId,
     required this.createdAt,
     required this.updatedAt,
@@ -26,7 +25,6 @@ class Comment extends Equatable {
   final CommentId id;
   final CommentScore score;
   final CommentBody body;
-  final CommentCreatorId creatorId;
   final CommentPostId postId;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -38,7 +36,6 @@ class Comment extends Equatable {
         id,
         score,
         body,
-        creatorId,
         postId,
         createdAt,
         updatedAt,

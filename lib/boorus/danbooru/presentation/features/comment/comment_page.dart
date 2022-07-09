@@ -28,14 +28,28 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   late final textEditingController = TextEditingController(text: '');
-  late FocusNode _focus;
+  late final FocusNode _focus = FocusNode();
   final _commentReply = ValueNotifier<CommentData?>(null);
+  final isEditing = ValueNotifier(false);
 
   @override
   void initState() {
     super.initState();
     context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
-    _focus = FocusNode();
+
+    isEditing.addListener(() {
+      if (!isEditing.value) {
+        _commentReply.value = null;
+        textEditingController.clear();
+        FocusManager.instance.primaryFocus?.unfocus();
+      }
+    });
+
+    _focus.addListener(() {
+      if (_focus.hasPrimaryFocus) {
+        isEditing.value = true;
+      }
+    });
   }
 
   @override
@@ -47,94 +61,108 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.keyboard_arrow_down),
-          onPressed: () => Navigator.of(context).pop(),
+    return WillPopScope(
+      onWillPop: () {
+        if (isEditing.value) {
+          isEditing.value = false;
+          return Future.value(false);
+        } else {
+          return Future.value(true);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.keyboard_arrow_down),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
-      ),
-      body: SafeArea(
-        child: BlocBuilder<CommentBloc, CommentState>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              return GestureDetector(
-                onTap: () {
-                  if (_commentReply.value != null) {
-                    _commentReply.value = null;
-                  }
-                  FocusManager.instance.primaryFocus?.unfocus();
-                },
-                child: Column(
-                  children: [
-                    Expanded(child: _buildCommentSection(state.comments)),
-                    ValueListenableBuilder(
-                      valueListenable: _commentReply,
-                      builder: (_, CommentData? value, __) =>
-                          _buildCommentTextField(value),
-                    ),
-                  ],
-                ),
-              );
-            } else if (state.status == LoadStatus.failure) {
-              return const Center(
-                child: Text('Something went wrong'),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-          },
+        body: SafeArea(
+          child: BlocBuilder<CommentBloc, CommentState>(
+            builder: (context, state) {
+              if (state.status == LoadStatus.success) {
+                return GestureDetector(
+                  onTap: () => isEditing.value = false,
+                  child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+                    builder: (context, auth) {
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: _buildCommentSection(
+                              state.comments,
+                              auth,
+                            ),
+                          ),
+                          if (auth is Authenticated)
+                            ValueListenableBuilder(
+                              valueListenable: _commentReply,
+                              builder: (_, CommentData? value, __) =>
+                                  _buildCommentTextField(value),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
+                );
+              } else if (state.status == LoadStatus.failure) {
+                return const Center(
+                  child: Text('Something went wrong'),
+                );
+              } else {
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              }
+            },
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildCommentSection(List<CommentData> comments) {
+  Widget _buildCommentSection(
+    List<CommentData> comments,
+    AuthenticationState state,
+  ) {
     if (comments.isNotEmpty) {
       return Container(
-        padding: const EdgeInsets.all(8),
-        child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-          builder: (context, state) {
-            return ListView.builder(
-              itemBuilder: (context, index) {
-                final comment = comments[index];
-                return ListTile(
-                  title: CommentItem(
-                    hasVoteSection: state is Authenticated,
-                    onVoteChanged: (event) {
-                      if (event == VoteEvent.upvoted) {
-                        context
-                            .read<CommentBloc>()
-                            .add(CommentUpvoted(commentId: comment.id));
-                      } else if (event == VoteEvent.downvote) {
-                        context
-                            .read<CommentBloc>()
-                            .add(CommentDownvoted(commentId: comment.id));
-                      } else if (event == VoteEvent.voteRemoved) {
-                        if (comment.hasVote) {
-                          context.read<CommentBloc>().add(CommentVoteRemoved(
-                                commentId: comment.id,
-                                commentVoteId: comment.voteId!,
-                                voteState: comment.voteState,
-                              ));
-                        }
-                      } else {
-                        //TODO: unknown vote event
-                      }
-                    },
-                    comment: comment,
-                    onReply: () => _handleReplyTap(comment, widget.postId),
-                    moreBuilder: (context) => state is Authenticated
-                        ? _buildMoreButton(comment)
-                        : const SizedBox.shrink(),
-                  ),
-                );
-              },
-              itemCount: comments.length,
+        padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: ListView.builder(
+          itemBuilder: (context, index) {
+            final comment = comments[index];
+            return ListTile(
+              title: CommentItem(
+                hasVoteSection: state is Authenticated,
+                onVoteChanged: (event) {
+                  if (event == VoteEvent.upvoted) {
+                    context
+                        .read<CommentBloc>()
+                        .add(CommentUpvoted(commentId: comment.id));
+                  } else if (event == VoteEvent.downvote) {
+                    context
+                        .read<CommentBloc>()
+                        .add(CommentDownvoted(commentId: comment.id));
+                  } else if (event == VoteEvent.voteRemoved) {
+                    if (comment.hasVote) {
+                      context.read<CommentBloc>().add(CommentVoteRemoved(
+                            commentId: comment.id,
+                            commentVoteId: comment.voteId!,
+                            voteState: comment.voteState,
+                          ));
+                    }
+                  } else {
+                    //TODO: unknown vote event
+                  }
+                },
+                comment: comment,
+                onReply: () => _handleReplyTap(comment, widget.postId),
+                moreBuilder: (context) => state is Authenticated
+                    ? _buildMoreButton(comment)
+                    : const SizedBox.shrink(),
+              ),
             );
           },
+          itemCount: comments.length,
         ),
       );
     } else {
@@ -186,36 +214,55 @@ class _CommentPageState extends State<CommentPage> {
       decoration: const BoxDecoration(
         border: Border(top: BorderSide(color: Colors.grey)),
       ),
-      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 12,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (comment != null)
-            Wrap(children: [
-              const Text('Replying to ',
-                  softWrap: true, style: TextStyle(color: Colors.grey)),
-              Text('@${comment.authorName}',
-                  softWrap: true, style: const TextStyle(color: Colors.blue)),
-            ]),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Wrap(
+                children: [
+                  const Text(
+                    'Replying to ',
+                    softWrap: true,
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                  Text(
+                    '@${comment.authorName}',
+                    softWrap: true,
+                    style: const TextStyle(color: Colors.blue),
+                  ),
+                ],
+              ),
+            ),
           TextField(
             focusNode: _focus,
             controller: textEditingController,
             decoration: InputDecoration(
+              isDense: true,
+              contentPadding: const EdgeInsets.only(bottom: 4),
               hintText: 'commentCreate.hint'.tr(),
               border: const UnderlineInputBorder(),
-              suffixIcon: IconButton(
+              suffix: IconButton(
+                visualDensity: VisualDensity.compact,
                 icon: const Icon(Icons.fullscreen),
                 onPressed: () {
                   _handleFullscreenTap(textEditingController.text);
-                  textEditingController.clear();
+                  isEditing.value = false;
                 },
               ),
             ),
             keyboardType: TextInputType.multiline,
             maxLines: null,
           ),
-          if (_focus.hasPrimaryFocus)
-            Align(
+          ValueListenableBuilder<bool>(
+            valueListenable: isEditing,
+            builder: (context, value, child) =>
+                value ? child! : const SizedBox.shrink(),
+            child: Align(
               alignment: Alignment.topRight,
               child: ValueListenableBuilder<TextEditingValue>(
                 valueListenable: textEditingController,
@@ -226,16 +273,15 @@ class _CommentPageState extends State<CommentPage> {
                         borderRadius: BorderRadius.circular(50),
                       ),
                     ),
-                    onPressed: textEditingController.text.isEmpty
+                    onPressed: value.text.isEmpty
                         ? null
-                        : () {
-                            _handleSendTap(textEditingController.text);
-                          },
+                        : () => _handleSendTap(value.text),
                     child: const Text('Send'),
                   );
                 },
               ),
             ),
+          ),
         ],
       ),
     );
@@ -294,7 +340,7 @@ class _CommentPageState extends State<CommentPage> {
           '[quote]\n${_commentReply.value!.authorName} said:\n\n${_commentReply.value!.body}\n[/quote]\n\n$content';
     }
 
-    FocusScope.of(context).unfocus();
+    isEditing.value = false;
     context
         .read<CommentBloc>()
         .add(CommentSent(content: initialContent, postId: widget.postId));

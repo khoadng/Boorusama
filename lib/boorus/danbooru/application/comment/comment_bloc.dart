@@ -127,11 +127,20 @@ List<CommentData> _updateWith(
   final cmts = {for (var c in comments) c.id: c};
   final old = cmts[vote.commentId]!;
   final $new = old.copyWith(
-    score: old.score + vote.score,
+    score: _getScore(voteState, old.score, vote.score),
     voteState: voteState,
     voteId: vote.id,
   );
   cmts[vote.commentId] = $new;
 
   return cmts.values.toList();
+}
+
+int _getScore(CommentVoteState state, int initialScore, int vote) {
+  //TODO: need to check if already voted by self, if user vote up and vote down immediately. The score value will be incorrect
+  // GOOD: score = 1 -> vote down -> score = -1 (remove the upvote and then decrease the score)
+  // CURRENT: score = 1 -> vote down -> score = 0
+  if (state == CommentVoteState.downvoted) return initialScore + vote;
+  if (state == CommentVoteState.upvoted) return initialScore + vote;
+  return initialScore;
 }
