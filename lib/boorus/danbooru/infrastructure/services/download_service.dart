@@ -8,15 +8,40 @@ import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
+import 'package:boorusama/core/infrastructure/io_helper.dart';
+
+bool _shouldUsePublicStorage(DeviceInfo deviceInfo) {
+  if (isAndroid()) {
+    if (deviceInfo.versionCode < 29) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
+  if (isAndroid()) {
+    if (deviceInfo.versionCode < 29) {
+      return IOHelper.getDownloadPath();
+    }
+  }
+
+  return defaultPath;
+}
 
 class DownloadService implements IDownloadService<Post> {
   DownloadService({
     required FileNameGenerator fileNameGenerator,
+    required this.deviceInfo,
   }) : _fileNameGenerator = fileNameGenerator;
 
   final FileNameGenerator _fileNameGenerator;
+  final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   String _savedDir = '';
 
@@ -27,10 +52,10 @@ class DownloadService implements IDownloadService<Post> {
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
     await FlutterDownloader.enqueue(
-      saveInPublicStorage: true,
+      saveInPublicStorage: _shouldUsePublicStorage(deviceInfo),
       url: downloadable.downloadUrl,
       fileName: fileName,
-      savedDir: _savedDir,
+      savedDir: await _getSaveDir(deviceInfo, _savedDir),
     );
   }
 

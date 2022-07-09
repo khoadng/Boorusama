@@ -60,12 +60,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final fileNameGenerator = PostFileNameGenerator();
-  final downloader = DownloadService(fileNameGenerator: fileNameGenerator);
-
-  if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize(debug: false);
-    await downloader.init();
-  }
 
   await EasyLocalization.ensureInitialized();
 
@@ -96,6 +90,16 @@ void main() async {
       await TagInfoService.create().then((value) => value.getInfo());
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
+
+  final downloader = DownloadService(
+    fileNameGenerator: fileNameGenerator,
+    deviceInfo: deviceInfo,
+  );
+
+  if (isAndroid() || isIOS()) {
+    await FlutterDownloader.initialize(debug: false);
+    await downloader.init();
+  }
 
   final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
 
