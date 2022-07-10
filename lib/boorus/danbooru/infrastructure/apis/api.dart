@@ -32,6 +32,7 @@ abstract class Api {
   Future<HttpResponse> getComments(
     int postId,
     int limit, {
+    String? only,
     CancelToken? cancelToken,
   });
 
@@ -48,6 +49,32 @@ abstract class Api {
     String apiKey,
     int commentId,
     String content,
+  );
+
+  Future<HttpResponse> deleteComment(
+    String login,
+    String apiKey,
+    int commentId,
+  );
+
+  Future<HttpResponse> getCommentVotes(
+    String login,
+    String apiKey,
+    String commentIdComma,
+    bool isDeleted,
+  );
+
+  Future<HttpResponse> voteComment(
+    String login,
+    String apiKey,
+    int commentId,
+    int score,
+  );
+
+  Future<HttpResponse> removeVoteComment(
+    String login,
+    String apiKey,
+    int commentId,
   );
 
   Future<HttpResponse> getNotes(

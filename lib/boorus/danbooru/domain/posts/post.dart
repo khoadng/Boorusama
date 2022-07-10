@@ -1,12 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
-import 'package:path/path.dart' as path;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/domain/i_downloadable.dart';
 
-class Post extends Equatable implements IDownloadable {
+class Post extends Equatable {
   const Post({
     required this.id,
     required this.previewImageUrl,
@@ -35,6 +33,7 @@ class Post extends Equatable implements IDownloadable {
     required this.hasChildren,
     required this.hasParent,
     this.parentId,
+    required this.hasLarge,
   });
 
   factory Post.empty() => Post(
@@ -64,6 +63,7 @@ class Post extends Equatable implements IDownloadable {
         isBanned: false,
         hasChildren: false,
         hasParent: false,
+        hasLarge: false,
       );
 
   factory Post.banned({
@@ -71,7 +71,7 @@ class Post extends Equatable implements IDownloadable {
     required int uploaderId,
     required int score,
     required ImageSource source,
-    required DateTime? lastCommentBumpedAt,
+    required DateTime? lastCommentAt,
     required Rating rating,
     required double imageWidth,
     required double imageHeight,
@@ -89,6 +89,7 @@ class Post extends Equatable implements IDownloadable {
     required List<String> artistTags,
     required bool hasChildren,
     required bool hasParent,
+    required bool hasLarge,
     int? parentId,
   }) =>
       Post(
@@ -104,7 +105,7 @@ class Post extends Equatable implements IDownloadable {
         width: imageWidth,
         height: imageHeight,
         format: fileExt,
-        lastCommentAt: lastCommentBumpedAt,
+        lastCommentAt: lastCommentAt,
         source: source,
         createdAt: createdAt,
         score: score,
@@ -119,6 +120,7 @@ class Post extends Equatable implements IDownloadable {
         hasChildren: hasChildren,
         hasParent: hasParent,
         parentId: parentId,
+        hasLarge: hasLarge,
       );
   final int id;
   final String previewImageUrl;
@@ -147,6 +149,7 @@ class Post extends Equatable implements IDownloadable {
   final bool hasChildren;
   final bool hasParent;
   final int? parentId;
+  final bool hasLarge;
 
   double get aspectRatio => width / height;
 
@@ -176,11 +179,6 @@ class Post extends Equatable implements IDownloadable {
 
   bool get hasComment => lastCommentAt != null;
 
-  @override
-  String get fileName => '${name.full} - ${path.basename(downloadUrl)}'
-      .fixInvalidCharacterForPathName();
-
-  @override
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
   @override
@@ -189,9 +187,3 @@ class Post extends Equatable implements IDownloadable {
 
 bool isPostBanned(Post post) => post.id <= 0;
 bool isPostValid(Post post) => post.id > 0;
-
-extension InvalidFileCharsExtension on String {
-  String fixInvalidCharacterForPathName() {
-    return replaceAll(RegExp(r'[\\/*?:"<>|]'), '_');
-  }
-}

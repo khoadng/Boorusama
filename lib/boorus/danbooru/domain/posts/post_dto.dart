@@ -165,7 +165,7 @@ Post postDtoToPost(PostDto dto) {
         imageWidth: dto.imageWidth.toDouble(),
         imageHeight: dto.imageHeight.toDouble(),
         fileExt: dto.fileExt,
-        lastCommentBumpedAt: dto.lastCommentBumpedAt,
+        lastCommentAt: dto.lastCommentedAt,
         source: ImageSource(dto.source, dto.pixivId),
         createdAt: dto.createdAt,
         score: dto.score,
@@ -180,6 +180,7 @@ Post postDtoToPost(PostDto dto) {
         hasChildren: dto.hasChildren,
         hasParent: dto.parentId != null,
         parentId: dto.parentId,
+        hasLarge: dto.hasLarge ?? false,
       );
     }
 
@@ -196,7 +197,7 @@ Post postDtoToPost(PostDto dto) {
       width: dto.imageWidth.toDouble(),
       height: dto.imageHeight.toDouble(),
       format: dto.fileExt,
-      lastCommentAt: dto.lastCommentBumpedAt,
+      lastCommentAt: dto.lastCommentedAt,
       source: ImageSource(dto.source, dto.pixivId),
       createdAt: dto.createdAt,
       score: dto.score,
@@ -211,6 +212,7 @@ Post postDtoToPost(PostDto dto) {
       hasChildren: dto.hasChildren,
       hasParent: dto.parentId != null,
       parentId: dto.parentId,
+      hasLarge: dto.hasLarge ?? false,
     );
   } catch (e) {
     return Post.empty();

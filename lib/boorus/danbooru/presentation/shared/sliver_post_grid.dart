@@ -170,87 +170,83 @@ class SliverPostGridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = <Widget>[];
-
-    if (post.isAnimated) {
-      items.add(
-        const Icon(
-          Icons.play_circle_outline,
-          color: Colors.white70,
-        ),
-      );
-    }
-
-    if (post.isTranslated) {
-      items.add(
-        const Icon(
-          Icons.g_translate_outlined,
-          color: Colors.white70,
-        ),
-      );
-    }
-
-    if (post.hasComment) {
-      items.add(
-        const Icon(
-          Icons.comment,
-          color: Colors.white70,
-        ),
-      );
-    }
-
     return AutoScrollTag(
       index: index,
       controller: scrollController,
       key: ValueKey(index),
       child: Stack(
-        children: <Widget>[
-          GestureDetector(
-            onTap: () => onTap?.call(post, index),
-            onLongPress: () {
-              showBarModalBottomSheet(
-                duration: const Duration(milliseconds: 200),
-                expand: true,
-                context: context,
-                backgroundColor: Colors.transparent,
-                builder: (context) => PostPreviewSheet(
-                  post: post,
-                  scrollController: ModalScrollController.of(context),
-                  onImageTap: () => onTap?.call(post, index),
-                ),
-              );
-            },
-            child: PostImage(
-              imageUrl: getImageUrlForDisplay(
-                  post,
-                  getImageQuality(
-                    size: gridSize,
-                    presetImageQuality: imageQuality,
-                  )),
-              placeholderUrl: post.previewImageUrl,
-              borderRadius: borderRadius,
-            ),
-          ),
-          ClipRRect(
-            borderRadius: borderRadius ?? BorderRadius.circular(8),
-            child: ShadowGradientOverlay(
-              alignment: Alignment.topCenter,
-              colors: <Color>[
-                const Color(0x2F000000),
-                Colors.black12.withOpacity(0)
-              ],
-            ),
-          ),
-          Positioned(
-            top: 6,
-            left: 6,
-            child: IgnorePointer(
-              child: Column(
-                children: items,
-              ),
-            ),
-          ),
+        children: [
+          _buildImage(context),
+          _buildShadow(),
+          _buildOverlayIcon(),
         ],
+      ),
+    );
+  }
+
+  Widget _buildOverlayIcon() {
+    return Positioned(
+      top: 6,
+      left: 6,
+      child: IgnorePointer(
+        child: Column(
+          children: [
+            if (post.isAnimated)
+              const Icon(
+                Icons.play_circle_outline,
+                color: Colors.white70,
+              ),
+            if (post.isTranslated)
+              const Icon(
+                Icons.g_translate_outlined,
+                color: Colors.white70,
+              ),
+            if (post.hasComment)
+              const Icon(
+                Icons.comment,
+                color: Colors.white70,
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildShadow() {
+    return ClipRRect(
+      borderRadius: borderRadius ?? BorderRadius.circular(8),
+      child: ShadowGradientOverlay(
+        alignment: Alignment.topCenter,
+        colors: <Color>[const Color(0x2F000000), Colors.black12.withOpacity(0)],
+      ),
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap?.call(post, index),
+      onLongPress: () {
+        showBarModalBottomSheet(
+          duration: const Duration(milliseconds: 200),
+          expand: true,
+          context: context,
+          backgroundColor: Colors.transparent,
+          builder: (context) => PostPreviewSheet(
+            post: post,
+            scrollController: ModalScrollController.of(context),
+            onImageTap: () => onTap?.call(post, index),
+          ),
+        );
+      },
+      child: PostImage(
+        imageUrl: getImageUrlForDisplay(
+            post,
+            getImageQuality(
+              size: gridSize,
+              presetImageQuality: imageQuality,
+            )),
+        placeholderUrl: post.previewImageUrl,
+        borderRadius: borderRadius,
       ),
     );
   }

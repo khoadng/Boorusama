@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -11,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 
-class SearchOptions extends HookWidget {
+class SearchOptions extends StatefulWidget {
   const SearchOptions({
     Key? key,
     required this.config,
@@ -35,18 +34,38 @@ class SearchOptions extends HookWidget {
   final IConfig config;
 
   @override
-  Widget build(BuildContext context) {
-    final animationController =
-        useAnimationController(duration: kThemeAnimationDuration);
+  State<SearchOptions> createState() => _SearchOptionsState();
+}
 
-    useEffect(() {
+class _SearchOptionsState extends State<SearchOptions>
+    with TickerProviderStateMixin {
+  late final animationController = AnimationController(
+    vsync: this,
+    duration: kThemeAnimationDuration,
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(
         const Duration(milliseconds: 100),
-        animationController.forward,
+        () {
+          if (!mounted) return;
+          animationController.forward();
+        },
       );
-      return null;
-    }, [animationController]);
+    });
+  }
 
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return FadeTransition(
       opacity: animationController,
       child: SingleChildScrollView(
@@ -69,7 +88,7 @@ class SearchOptions extends HookWidget {
                     IconButton(
                       onPressed: () {
                         launchExternalUrl(
-                          Uri.parse(config.cheatSheetUrl),
+                          Uri.parse(widget.config.cheatSheetUrl),
                           mode: LaunchMode.platformDefault,
                         );
                       },
@@ -81,10 +100,10 @@ class SearchOptions extends HookWidget {
                   ],
                 ),
               ),
-              ...config.searchOptions
+              ...widget.config.searchOptions
                   .map((option) => ListTile(
                         visualDensity: VisualDensity.compact,
-                        onTap: () => onOptionTap?.call(option),
+                        onTap: () => widget.onOptionTap?.call(option),
                         title: RichText(
                           text: TextSpan(
                             children: <TextSpan>[
@@ -95,7 +114,8 @@ class SearchOptions extends HookWidget {
                                       .subtitle1!
                                       .copyWith(fontWeight: FontWeight.w600)),
                               TextSpan(
-                                  text: ' ${config.searchOptionHitns[option]}',
+                                  text:
+                                      ' ${widget.config.searchOptionHitns[option]}',
                                   style: Theme.of(context)
                                       .textTheme
                                       .caption!
@@ -108,7 +128,7 @@ class SearchOptions extends HookWidget {
                       ))
                   .toList(),
               SearchHistorySection(
-                onHistoryTap: (history) => onHistoryTap?.call(history),
+                onHistoryTap: (history) => widget.onHistoryTap?.call(history),
               ),
             ],
           ),

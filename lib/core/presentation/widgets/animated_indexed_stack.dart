@@ -49,6 +49,7 @@ class _AnimatedIndexedStackState extends State<AnimatedIndexedStack>
     if (widget.index != _index) {
       _controller.reverse().then((_) {
         setState(() => _index = widget.index);
+        if (!mounted) return;
         _controller.forward();
       });
     }
