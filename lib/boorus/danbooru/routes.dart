@@ -12,6 +12,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -22,7 +23,6 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/application/user/user.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -307,8 +307,8 @@ final blacklistedTagsHandler =
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: BlocProvider.of<UserBlacklistedTagsBloc>(context)
-            ..add(UserEventBlacklistedTagRequested(userId: userId))),
+          value: BlocProvider.of<BlacklistedTagsBloc>(context)
+            ..add(BlacklistedTagRequested(userId: userId))),
     ],
     child: BlacklistedTagsPage(
       userId: userId,

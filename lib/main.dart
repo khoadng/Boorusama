@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
@@ -49,7 +50,6 @@ import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
-import 'boorus/danbooru/application/user/user.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 
@@ -220,7 +220,7 @@ void main() async {
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
                   )..logIn();
-                  final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
+                  final blacklistedTagsBloc = BlacklistedTagsBloc(
                       userRepository: userRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
                   final poolOverviewBloc = PoolOverviewBloc()
@@ -275,7 +275,7 @@ void main() async {
                         BlocProvider.value(value: artistCommentaryCubit),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
-                        BlocProvider.value(value: userBlacklistedTagsBloc),
+                        BlocProvider.value(value: blacklistedTagsBloc),
                         BlocProvider(
                             create: (context) =>
                                 ThemeBloc(initialTheme: settings.themeMode)),
@@ -294,8 +294,8 @@ void main() async {
                               }
                             },
                           ),
-                          BlocListener<UserBlacklistedTagsBloc,
-                              UserBlacklistedTagsState>(
+                          BlocListener<BlacklistedTagsBloc,
+                              BlacklistedTagsState>(
                             listenWhen: (previous, current) =>
                                 current.blacklistedTags !=
                                 previous.blacklistedTags,
@@ -314,8 +314,8 @@ void main() async {
                             },
                           ),
                         ],
-                        child: BlocBuilder<UserBlacklistedTagsBloc,
-                            UserBlacklistedTagsState>(
+                        child: BlocBuilder<BlacklistedTagsBloc,
+                            BlacklistedTagsState>(
                           buildWhen: (previous, current) =>
                               previous.blacklistedTags !=
                               current.blacklistedTags,

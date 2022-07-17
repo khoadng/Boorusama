@@ -11,12 +11,12 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/main.dart';
 
 @immutable
-abstract class UserBlacklistedTagsEvent extends Equatable {
-  const UserBlacklistedTagsEvent();
+abstract class BlacklistedTagsEvent extends Equatable {
+  const BlacklistedTagsEvent();
 }
 
-class UserEventBlacklistedTagChanged extends UserBlacklistedTagsEvent {
-  const UserEventBlacklistedTagChanged({
+class BlacklistedTagChanged extends BlacklistedTagsEvent {
+  const BlacklistedTagChanged({
     required this.tags,
     required this.userId,
   });
@@ -27,8 +27,8 @@ class UserEventBlacklistedTagChanged extends UserBlacklistedTagsEvent {
   List<Object?> get props => [tags, userId];
 }
 
-class UserEventBlacklistedTagRequested extends UserBlacklistedTagsEvent {
-  const UserEventBlacklistedTagRequested({
+class BlacklistedTagRequested extends BlacklistedTagsEvent {
+  const BlacklistedTagRequested({
     required this.userId,
   });
   final int userId;
@@ -38,22 +38,22 @@ class UserEventBlacklistedTagRequested extends UserBlacklistedTagsEvent {
 }
 
 @immutable
-class UserBlacklistedTagsState extends Equatable {
-  const UserBlacklistedTagsState({
+class BlacklistedTagsState extends Equatable {
+  const BlacklistedTagsState({
     required this.blacklistedTags,
     required this.status,
   });
 
-  factory UserBlacklistedTagsState.initial() => const UserBlacklistedTagsState(
+  factory BlacklistedTagsState.initial() => const BlacklistedTagsState(
         blacklistedTags: [],
         status: LoadStatus.initial,
       );
 
-  UserBlacklistedTagsState copyWith({
+  BlacklistedTagsState copyWith({
     List<String>? blacklistedTags,
     LoadStatus? status,
   }) =>
-      UserBlacklistedTagsState(
+      BlacklistedTagsState(
         blacklistedTags: blacklistedTags ?? this.blacklistedTags,
         status: status ?? this.status,
       );
@@ -65,8 +65,8 @@ class UserBlacklistedTagsState extends Equatable {
   List<Object?> get props => [blacklistedTags, status];
 }
 
-class UserBlacklistedTagsError extends UserBlacklistedTagsState {
-  const UserBlacklistedTagsError({
+class BlacklistedTagsError extends BlacklistedTagsState {
+  const BlacklistedTagsError({
     required List<String> blacklistedTags,
     required LoadStatus status,
     required this.errorMessage,
@@ -78,25 +78,25 @@ class UserBlacklistedTagsError extends UserBlacklistedTagsState {
   final String errorMessage;
 
   @override
-  UserBlacklistedTagsError copyWith({
+  BlacklistedTagsError copyWith({
     List<String>? blacklistedTags,
     LoadStatus? status,
     String? errorMessage,
   }) =>
-      UserBlacklistedTagsError(
+      BlacklistedTagsError(
         blacklistedTags: blacklistedTags ?? this.blacklistedTags,
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
       );
 }
 
-class UserBlacklistedTagsBloc
-    extends Bloc<UserBlacklistedTagsEvent, UserBlacklistedTagsState> {
-  UserBlacklistedTagsBloc({
+class BlacklistedTagsBloc
+    extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
+  BlacklistedTagsBloc({
     required IUserRepository userRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
-  }) : super(UserBlacklistedTagsState.initial()) {
-    on<UserEventBlacklistedTagChanged>((event, emit) async {
+  }) : super(BlacklistedTagsState.initial()) {
+    on<BlacklistedTagChanged>((event, emit) async {
       await tryAsync(
         action: () => userRepository.setUserBlacklistedTags(
             event.userId,
@@ -104,7 +104,7 @@ class UserBlacklistedTagsBloc
               event.tags,
             )),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) => emit(UserBlacklistedTagsError(
+        onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
           blacklistedTags: state.blacklistedTags,
           status: LoadStatus.failure,
           errorMessage: state.blacklistedTags.length > event.tags.length
@@ -118,7 +118,7 @@ class UserBlacklistedTagsBloc
       );
     });
 
-    on<UserEventBlacklistedTagRequested>((event, emit) async {
+    on<BlacklistedTagRequested>((event, emit) async {
       await tryAsync<List<String>>(
         action: () => blacklistedTagsRepository.getBlacklistedTags(),
         onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),

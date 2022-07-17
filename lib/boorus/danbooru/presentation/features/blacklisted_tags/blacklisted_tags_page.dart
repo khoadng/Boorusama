@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/user/user.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -33,14 +33,13 @@ class BlacklistedTagsPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: BlocConsumer<UserBlacklistedTagsBloc, UserBlacklistedTagsState>(
-          listenWhen: (previous, current) =>
-              current is UserBlacklistedTagsError,
+        child: BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
+          listenWhen: (previous, current) => current is BlacklistedTagsError,
           listener: (context, state) {
             final snackbar = SnackBar(
               behavior: SnackBarBehavior.floating,
               elevation: 6,
-              content: Text((state as UserBlacklistedTagsError).errorMessage),
+              content: Text((state as BlacklistedTagsError).errorMessage),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackbar);
           },
@@ -66,7 +65,7 @@ class BlacklistedTagsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBlacklistedList(UserBlacklistedTagsState state) {
+  Widget _buildBlacklistedList(BlacklistedTagsState state) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -77,8 +76,8 @@ class BlacklistedTagsPage extends StatelessWidget {
             title: Text(tag),
             trailing: IconButton(
                 onPressed: () => context
-                    .read<UserBlacklistedTagsBloc>()
-                    .add(UserEventBlacklistedTagChanged(
+                    .read<BlacklistedTagsBloc>()
+                    .add(BlacklistedTagChanged(
                       tags: [...state.blacklistedTags..remove(tag)],
                       userId: userId,
                     )),
@@ -112,11 +111,11 @@ class BlacklistedTagsPage extends StatelessWidget {
   }
 
   Widget _buildAddTagButton() {
-    return BlocBuilder<UserBlacklistedTagsBloc, UserBlacklistedTagsState>(
+    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
       builder: (context, state) {
         return IconButton(
           onPressed: () {
-            final bloc = context.read<UserBlacklistedTagsBloc>();
+            final bloc = context.read<BlacklistedTagsBloc>();
 
             Navigator.of(context).push(ParallaxSlideInPageRoute(
               enterWidget: MultiBlocProvider(
@@ -128,8 +127,7 @@ class BlacklistedTagsPage extends StatelessWidget {
                               context.read<AutocompleteRepository>())),
                 ],
                 child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) =>
-                      bloc.add(UserEventBlacklistedTagChanged(
+                  onSelectedDone: (tagItems) => bloc.add(BlacklistedTagChanged(
                     tags: [
                       ...state.blacklistedTags,
                       tagItems.map((e) => e.toString()).join(' '),
