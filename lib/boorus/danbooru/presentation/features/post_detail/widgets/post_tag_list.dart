@@ -4,12 +4,15 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tag_provider_widget.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/modal_options.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/utils.dart';
@@ -37,35 +40,45 @@ class _PostTagListState extends State<PostTagList> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final widgets = <Widget>[];
-          for (final g in state.data!) {
-            widgets
-              ..add(_TagBlockTitle(
-                title: g.groupName,
-                isFirstBlock: g.groupName == state.data!.first.groupName,
-              ))
-              ..add(_buildTags(g.tags));
-          }
+    return BlacklistedTagProviderWidget(
+      builder: (context, action) =>
+          BlocBuilder<TagCubit, AsyncLoadState<List<TagGroupItem>>>(
+        builder: (context, state) {
+          if (state.status == LoadStatus.success) {
+            final widgets = <Widget>[];
+            for (final g in state.data!) {
+              widgets
+                ..add(_TagBlockTitle(
+                  title: g.groupName,
+                  isFirstBlock: g.groupName == state.data!.first.groupName,
+                ))
+                ..add(_buildTags(
+                  g.tags,
+                  onAddToBlacklisted: (tag) => action(tag),
+                ));
+            }
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...widgets,
-            ],
-          );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ...widgets,
+              ],
+            );
+          } else if (state.status == LoadStatus.failure) {
+            return const SizedBox.shrink();
+          } else {
+            return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
+      operation: BlacklistedOperation.add,
     );
   }
 
-  Widget _buildTags(List<Tag> tags) {
+  Widget _buildTags(
+    List<Tag> tags, {
+    required void Function(Tag tag) onAddToBlacklisted,
+  }) {
     return Tags(
       alignment: WrapAlignment.start,
       runSpacing: 0,
@@ -92,15 +105,24 @@ class _PostTagListState extends State<PostTagList> {
                     launchWikiPage(widget.apiEndpoint, tag.rawName);
                   },
                 ),
-                // ListTile(
-                //   leading: const FaIcon(
-                //     FontAwesomeIcons.ban,
-                //   ),
-                //   title: const Text('Add to blacklist'),
-                //   onTap: () {
-                //     Navigator.of(context).pop();
-                //   },
-                // ),
+                BlocBuilder<AuthenticationCubit, AuthenticationState>(
+                  builder: (context, state) {
+                    if (state is Authenticated) {
+                      return ListTile(
+                        leading: const FaIcon(
+                          FontAwesomeIcons.plus,
+                        ),
+                        title: const Text('Add to blacklist'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          onAddToBlacklisted(tag);
+                        },
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
               ],
             );
           },

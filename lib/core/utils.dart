@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 // Package imports:
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
@@ -41,4 +44,18 @@ String dateTimeToStringTimeAgo(DateTime time) {
   final ago = now.subtract(diff);
 
   return timeago.format(ago);
+}
+
+void showSimpleSnackBar({
+  required BuildContext context,
+  required Widget content,
+  Duration? duration,
+}) {
+  final snackbar = SnackBar(
+    behavior: SnackBarBehavior.floating,
+    duration: duration ?? const Duration(seconds: 6),
+    elevation: 6,
+    content: content,
+  );
+  ScaffoldMessenger.of(context).showSnackBar(snackbar);
 }

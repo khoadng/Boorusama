@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -94,28 +95,31 @@ class BlacklistedTagsBloc
   BlacklistedTagsBloc({
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
-    on<BlacklistedTagChanged>((event, emit) async {
-      await tryAsync(
-        action: () => blacklistedTagsRepository.setBlacklistedTags(
-          event.userId,
-          event.tags,
-        ),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-          blacklistedTags: state.blacklistedTags,
-          status: LoadStatus.failure,
-          errorMessage: state.blacklistedTags.length > event.tags.length
-              ? 'Fail to remove tag'
-              : 'Fail to add tag',
-        )),
-        onSuccess: (_) async {
-          emit(state.copyWith(
-            blacklistedTags: [...event.tags],
-            status: LoadStatus.success,
-          ));
-        },
-      );
-    });
+    on<BlacklistedTagChanged>(
+      (event, emit) async {
+        await tryAsync(
+          action: () => blacklistedTagsRepository.setBlacklistedTags(
+            event.userId,
+            event.tags,
+          ),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
+            blacklistedTags: state.blacklistedTags,
+            status: LoadStatus.failure,
+            errorMessage: state.blacklistedTags.length > event.tags.length
+                ? 'Fail to remove tag'
+                : 'Fail to add tag',
+          )),
+          onSuccess: (_) async {
+            emit(state.copyWith(
+              blacklistedTags: [...event.tags],
+              status: LoadStatus.success,
+            ));
+          },
+        );
+      },
+      transformer: droppable(),
+    );
 
     on<BlacklistedTagRequested>((event, emit) async {
       await tryAsync<List<String>>(
