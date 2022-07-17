@@ -8,9 +8,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/utils.dart';
 
 class LoginBox extends HookWidget {
