@@ -44,7 +44,6 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/main.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';

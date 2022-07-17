@@ -6,9 +6,8 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/main.dart';
 
 @immutable
 abstract class BlacklistedTagsEvent extends Equatable {
@@ -93,16 +92,14 @@ class BlacklistedTagsError extends BlacklistedTagsState {
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
-    required IUserRepository userRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagChanged>((event, emit) async {
       await tryAsync(
-        action: () => userRepository.setUserBlacklistedTags(
-            event.userId,
-            tagsToTagString(
-              event.tags,
-            )),
+        action: () => blacklistedTagsRepository.setBlacklistedTags(
+          event.userId,
+          event.tags,
+        ),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
           blacklistedTags: state.blacklistedTags,
@@ -111,10 +108,12 @@ class BlacklistedTagsBloc
               ? 'Fail to remove tag'
               : 'Fail to add tag',
         )),
-        onSuccess: (_) async => emit(state.copyWith(
-          blacklistedTags: event.tags,
-          status: LoadStatus.success,
-        )),
+        onSuccess: (_) async {
+          emit(state.copyWith(
+            blacklistedTags: [...event.tags],
+            status: LoadStatus.success,
+          ));
+        },
       );
     });
 

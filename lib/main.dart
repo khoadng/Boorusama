@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -221,7 +222,6 @@ void main() async {
                     profileRepository: profileRepo,
                   )..logIn();
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
-                      userRepository: userRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
@@ -294,16 +294,6 @@ void main() async {
                               }
                             },
                           ),
-                          BlocListener<BlacklistedTagsBloc,
-                              BlacklistedTagsState>(
-                            listenWhen: (previous, current) =>
-                                current.blacklistedTags !=
-                                previous.blacklistedTags,
-                            listener: (context, state) {
-                              blacklistedTagRepo
-                                  ._refresh(state.blacklistedTags);
-                            },
-                          ),
                           BlocListener<SettingsCubit, SettingsState>(
                             listenWhen: (previous, current) =>
                                 previous.settings.themeMode !=
@@ -317,8 +307,9 @@ void main() async {
                         child: BlocBuilder<BlacklistedTagsBloc,
                             BlacklistedTagsState>(
                           buildWhen: (previous, current) =>
+                              current.status == LoadStatus.success &&
                               previous.blacklistedTags !=
-                              current.blacklistedTags,
+                                  current.blacklistedTags,
                           builder: (context, state) {
                             final mostViewedCubit = MostViewedCubit(
                               postRepository: postRepo,
@@ -390,28 +381,3 @@ class AppInfoProvider {
 }
 
 Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
-
-class BlacklistedTagsRepository {
-  BlacklistedTagsRepository(this.userRepository, this.accountRepository);
-  final IUserRepository userRepository;
-  final IAccountRepository accountRepository;
-  List<String>? _tags;
-
-  Future<List<String>> getBlacklistedTags() async {
-    // ignore: prefer_conditional_assignment
-    if (_tags == null) {
-      final account = await accountRepository.get();
-      if (account == Account.empty) {
-        return [];
-      }
-      _tags ??= await userRepository
-          .getUserById(account.id)
-          .then((value) => value.blacklistedTags);
-    }
-    return _tags!;
-  }
-
-  Future<void> _refresh(List<String> tags) async {
-    _tags = tags;
-  }
-}
