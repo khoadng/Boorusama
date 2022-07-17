@@ -75,16 +75,68 @@ class BlacklistedTagsPage extends StatelessWidget {
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             title: Text(tag),
             trailing: IconButton(
-                onPressed: () => context
-                    .read<BlacklistedTagsBloc>()
-                    .add(BlacklistedTagChanged(
-                      tags: [...state.blacklistedTags..remove(tag)],
-                      userId: userId,
-                    )),
-                icon: const FaIcon(
-                  FontAwesomeIcons.xmark,
-                  size: 18,
-                )),
+              onPressed: () => showActionListModalBottomSheet(
+                context: context,
+                children: [
+                  ListTile(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context
+                          .read<BlacklistedTagsBloc>()
+                          .add(BlacklistedTagChanged(
+                            tags: [...state.blacklistedTags..remove(tag)],
+                            userId: userId,
+                          ));
+                    },
+                    title: const Text('Remove'),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.trash,
+                      size: 18,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      final bloc = context.read<BlacklistedTagsBloc>();
+
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        enterWidget: MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                                create: (context) => TagSearchBloc(
+                                    tagInfo: context.read<TagInfo>(),
+                                    autocompleteRepository: context
+                                        .read<AutocompleteRepository>())),
+                          ],
+                          child: BlacklistedTagsSearchPage(
+                            initialTags: tag.split(' '),
+                            onSelectedDone: (tagItems) {
+                              bloc.add(BlacklistedTagChanged(
+                                tags: [
+                                  ...state.blacklistedTags..remove(tag),
+                                  tagItems.map((e) => e.toString()).join(' '),
+                                ],
+                                userId: userId,
+                              ));
+                            },
+                          ),
+                        ),
+                        oldWidget: this,
+                      ));
+                    },
+                    title: const Text('Edit'),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.pen,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+              icon: const FaIcon(
+                FontAwesomeIcons.ellipsisVertical,
+                size: 18,
+              ),
+            ),
           );
         },
         childCount: state.blacklistedTags.length,
