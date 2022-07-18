@@ -222,6 +222,7 @@ void main() async {
                     profileRepository: profileRepo,
                   )..logIn();
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
+                      accountRepository: accountRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(

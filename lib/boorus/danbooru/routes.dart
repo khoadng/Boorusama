@@ -300,17 +300,12 @@ final favoritesHandler =
 
 final blacklistedTagsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  final args = context!.settings!.arguments as List;
-  final int userId = args[0];
-
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: BlocProvider.of<BlacklistedTagsBloc>(context)
-            ..add(BlacklistedTagRequested(userId: userId))),
+          value: BlocProvider.of<BlacklistedTagsBloc>(context!)
+            ..add(const BlacklistedTagRequested())),
     ],
-    child: BlacklistedTagsPage(
-      userId: userId,
-    ),
+    child: const BlacklistedTagsPage(),
   );
 });

@@ -9,32 +9,50 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
 @immutable
 abstract class BlacklistedTagsEvent extends Equatable {
   const BlacklistedTagsEvent();
 }
 
-class BlacklistedTagChanged extends BlacklistedTagsEvent {
-  const BlacklistedTagChanged({
-    required this.tags,
-    required this.userId,
+class BlacklistedTagAdded extends BlacklistedTagsEvent {
+  const BlacklistedTagAdded({
+    required this.tag,
   });
-  final List<String> tags;
-  final int userId;
+  final String tag;
 
   @override
-  List<Object?> get props => [tags, userId];
+  List<Object?> get props => [tag];
+}
+
+class BlacklistedTagRemoved extends BlacklistedTagsEvent {
+  const BlacklistedTagRemoved({
+    required this.tag,
+  });
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
+
+class BlacklistedTagReplaced extends BlacklistedTagsEvent {
+  const BlacklistedTagReplaced({
+    required this.newTag,
+    required this.oldTag,
+  });
+  final String newTag;
+  final String oldTag;
+
+  @override
+  List<Object?> get props => [newTag, oldTag];
 }
 
 class BlacklistedTagRequested extends BlacklistedTagsEvent {
-  const BlacklistedTagRequested({
-    required this.userId,
-  });
-  final int userId;
+  const BlacklistedTagRequested();
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [];
 }
 
 @immutable
@@ -90,37 +108,13 @@ class BlacklistedTagsError extends BlacklistedTagsState {
       );
 }
 
+//TODO: handle empty account, just in case
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
+    required IAccountRepository accountRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
-    on<BlacklistedTagChanged>(
-      (event, emit) async {
-        await tryAsync(
-          action: () => blacklistedTagsRepository.setBlacklistedTags(
-            event.userId,
-            event.tags,
-          ),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
-            blacklistedTags: state.blacklistedTags,
-            status: LoadStatus.failure,
-            errorMessage: state.blacklistedTags.length > event.tags.length
-                ? 'Fail to remove tag'
-                : 'Fail to add tag',
-          )),
-          onSuccess: (_) async {
-            emit(state.copyWith(
-              blacklistedTags: [...event.tags],
-              status: LoadStatus.success,
-            ));
-          },
-        );
-      },
-      transformer: droppable(),
-    );
-
     on<BlacklistedTagRequested>((event, emit) async {
       await tryAsync<List<String>>(
         action: () => blacklistedTagsRepository.getBlacklistedTags(),
@@ -133,6 +127,80 @@ class BlacklistedTagsBloc
         )),
       );
     });
+
+    on<BlacklistedTagAdded>((event, emit) async {
+      final account = await accountRepository.get();
+      final tags = [...state.blacklistedTags, event.tag];
+      await tryAsync<bool>(
+        action: () =>
+            blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+        onFailure: (stackTrace, error) {
+          emit(BlacklistedTagsError(
+            blacklistedTags: state.blacklistedTags,
+            status: LoadStatus.failure,
+            errorMessage: 'Fail to add tag',
+          ));
+        },
+        onSuccess: (_) async {
+          emit(state.copyWith(
+            blacklistedTags: tags,
+            status: LoadStatus.success,
+          ));
+        },
+      );
+    });
+
+    on<BlacklistedTagRemoved>(
+      (event, emit) async {
+        final account = await accountRepository.get();
+        final tags = [...state.blacklistedTags]..remove(event.tag);
+        await tryAsync<bool>(
+          action: () =>
+              blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
+            blacklistedTags: state.blacklistedTags,
+            status: LoadStatus.failure,
+            errorMessage: 'Fail to remove tag',
+          )),
+          onSuccess: (_) async {
+            emit(state.copyWith(
+              blacklistedTags: tags,
+              status: LoadStatus.success,
+            ));
+          },
+        );
+      },
+      transformer: droppable(),
+    );
+
+    on<BlacklistedTagReplaced>(
+      (event, emit) async {
+        final account = await accountRepository.get();
+        final tags = [
+          ...[...state.blacklistedTags]..remove(event.oldTag),
+          event.newTag
+        ];
+        await tryAsync<bool>(
+          action: () =>
+              blacklistedTagsRepository.setBlacklistedTags(account.id, tags),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) => emit(BlacklistedTagsError(
+            blacklistedTags: state.blacklistedTags,
+            status: LoadStatus.failure,
+            errorMessage: 'Fail to replace tag',
+          )),
+          onSuccess: (_) async {
+            emit(state.copyWith(
+              blacklistedTags: tags,
+              status: LoadStatus.success,
+            ));
+          },
+        );
+      },
+      transformer: droppable(),
+    );
   }
 }
 

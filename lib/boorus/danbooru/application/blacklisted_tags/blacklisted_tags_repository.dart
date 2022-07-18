@@ -18,9 +18,15 @@ class BlacklistedTagsRepository {
     if (account == Account.empty) return [];
     if (_cache != null) return _cache!;
     // ignore: join_return_with_assignment
-    _cache = await userRepository
+    final cache = await userRepository
         .getUserById(account.id)
         .then((value) => value.blacklistedTags);
+
+    if (cache.isEmpty) return [];
+
+    if (cache.length == 1 && cache[0] == '') return [];
+
+    _cache = cache;
 
     return _cache!;
   }

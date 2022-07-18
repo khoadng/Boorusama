@@ -18,10 +18,7 @@ import 'blacklisted_tags_search_page.dart';
 class BlacklistedTagsPage extends StatelessWidget {
   const BlacklistedTagsPage({
     Key? key,
-    required this.userId,
   }) : super(key: key);
-
-  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -83,10 +80,7 @@ class BlacklistedTagsPage extends StatelessWidget {
                       Navigator.of(context).pop();
                       context
                           .read<BlacklistedTagsBloc>()
-                          .add(BlacklistedTagChanged(
-                            tags: [...state.blacklistedTags..remove(tag)],
-                            userId: userId,
-                          ));
+                          .add(BlacklistedTagRemoved(tag: tag));
                     },
                     title: const Text('Remove'),
                     leading: const FaIcon(
@@ -111,12 +105,10 @@ class BlacklistedTagsPage extends StatelessWidget {
                           child: BlacklistedTagsSearchPage(
                             initialTags: tag.split(' '),
                             onSelectedDone: (tagItems) {
-                              bloc.add(BlacklistedTagChanged(
-                                tags: [
-                                  ...state.blacklistedTags..remove(tag),
-                                  tagItems.map((e) => e.toString()).join(' '),
-                                ],
-                                userId: userId,
+                              bloc.add(BlacklistedTagReplaced(
+                                oldTag: tag,
+                                newTag:
+                                    tagItems.map((e) => e.toString()).join(' '),
                               ));
                             },
                           ),
@@ -179,12 +171,8 @@ class BlacklistedTagsPage extends StatelessWidget {
                               context.read<AutocompleteRepository>())),
                 ],
                 child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) => bloc.add(BlacklistedTagChanged(
-                    tags: [
-                      ...state.blacklistedTags,
-                      tagItems.map((e) => e.toString()).join(' '),
-                    ],
-                    userId: userId,
+                  onSelectedDone: (tagItems) => bloc.add(BlacklistedTagAdded(
+                    tag: tagItems.map((e) => e.toString()).join(' '),
                   )),
                 ),
               ),
