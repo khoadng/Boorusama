@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/user/user.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -18,10 +18,7 @@ import 'blacklisted_tags_search_page.dart';
 class BlacklistedTagsPage extends StatelessWidget {
   const BlacklistedTagsPage({
     Key? key,
-    required this.userId,
   }) : super(key: key);
-
-  final int userId;
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +30,13 @@ class BlacklistedTagsPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: BlocConsumer<UserBlacklistedTagsBloc, UserBlacklistedTagsState>(
-          listenWhen: (previous, current) =>
-              current is UserBlacklistedTagsError,
+        child: BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
+          listenWhen: (previous, current) => current is BlacklistedTagsError,
           listener: (context, state) {
             final snackbar = SnackBar(
               behavior: SnackBarBehavior.floating,
               elevation: 6,
-              content: Text((state as UserBlacklistedTagsError).errorMessage),
+              content: Text((state as BlacklistedTagsError).errorMessage),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackbar);
           },
@@ -66,7 +62,7 @@ class BlacklistedTagsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildBlacklistedList(UserBlacklistedTagsState state) {
+  Widget _buildBlacklistedList(BlacklistedTagsState state) {
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
@@ -76,16 +72,63 @@ class BlacklistedTagsPage extends StatelessWidget {
             visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
             title: Text(tag),
             trailing: IconButton(
-                onPressed: () => context
-                    .read<UserBlacklistedTagsBloc>()
-                    .add(UserEventBlacklistedTagChanged(
-                      tags: [...state.blacklistedTags..remove(tag)],
-                      userId: userId,
-                    )),
-                icon: const FaIcon(
-                  FontAwesomeIcons.xmark,
-                  size: 18,
-                )),
+              onPressed: () => showActionListModalBottomSheet(
+                context: context,
+                children: [
+                  ListTile(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context
+                          .read<BlacklistedTagsBloc>()
+                          .add(BlacklistedTagRemoved(tag: tag));
+                    },
+                    title: const Text('Remove'),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.trash,
+                      size: 18,
+                    ),
+                  ),
+                  ListTile(
+                    onTap: () {
+                      final bloc = context.read<BlacklistedTagsBloc>();
+
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        enterWidget: MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                                create: (context) => TagSearchBloc(
+                                    tagInfo: context.read<TagInfo>(),
+                                    autocompleteRepository: context
+                                        .read<AutocompleteRepository>())),
+                          ],
+                          child: BlacklistedTagsSearchPage(
+                            initialTags: tag.split(' '),
+                            onSelectedDone: (tagItems) {
+                              bloc.add(BlacklistedTagReplaced(
+                                oldTag: tag,
+                                newTag:
+                                    tagItems.map((e) => e.toString()).join(' '),
+                              ));
+                            },
+                          ),
+                        ),
+                        oldWidget: this,
+                      ));
+                    },
+                    title: const Text('Edit'),
+                    leading: const FaIcon(
+                      FontAwesomeIcons.pen,
+                      size: 18,
+                    ),
+                  ),
+                ],
+              ),
+              icon: const FaIcon(
+                FontAwesomeIcons.ellipsisVertical,
+                size: 18,
+              ),
+            ),
           );
         },
         childCount: state.blacklistedTags.length,
@@ -112,11 +155,11 @@ class BlacklistedTagsPage extends StatelessWidget {
   }
 
   Widget _buildAddTagButton() {
-    return BlocBuilder<UserBlacklistedTagsBloc, UserBlacklistedTagsState>(
+    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
       builder: (context, state) {
         return IconButton(
           onPressed: () {
-            final bloc = context.read<UserBlacklistedTagsBloc>();
+            final bloc = context.read<BlacklistedTagsBloc>();
 
             Navigator.of(context).push(ParallaxSlideInPageRoute(
               enterWidget: MultiBlocProvider(
@@ -128,13 +171,8 @@ class BlacklistedTagsPage extends StatelessWidget {
                               context.read<AutocompleteRepository>())),
                 ],
                 child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) =>
-                      bloc.add(UserEventBlacklistedTagChanged(
-                    tags: [
-                      ...state.blacklistedTags,
-                      tagItems.map((e) => e.toString()).join(' '),
-                    ],
-                    userId: userId,
+                  onSelectedDone: (tagItems) => bloc.add(BlacklistedTagAdded(
+                    tag: tagItems.map((e) => e.toString()).join(' '),
                   )),
                 ),
               ),

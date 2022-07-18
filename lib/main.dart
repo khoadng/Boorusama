@@ -16,10 +16,11 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -40,16 +41,16 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
+import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
-import 'boorus/danbooru/application/user/user.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 
@@ -220,8 +221,8 @@ void main() async {
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
                   )..logIn();
-                  final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
-                      userRepository: userRepo,
+                  final blacklistedTagsBloc = BlacklistedTagsBloc(
+                      accountRepository: accountRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
@@ -275,7 +276,7 @@ void main() async {
                         BlocProvider.value(value: artistCommentaryCubit),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
-                        BlocProvider.value(value: userBlacklistedTagsBloc),
+                        BlocProvider.value(value: blacklistedTagsBloc),
                         BlocProvider(
                             create: (context) =>
                                 ThemeBloc(initialTheme: settings.themeMode)),
@@ -291,17 +292,8 @@ void main() async {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
+                                blacklistedTagRepo.clearCache();
                               }
-                            },
-                          ),
-                          BlocListener<UserBlacklistedTagsBloc,
-                              UserBlacklistedTagsState>(
-                            listenWhen: (previous, current) =>
-                                current.blacklistedTags !=
-                                previous.blacklistedTags,
-                            listener: (context, state) {
-                              blacklistedTagRepo
-                                  ._refresh(state.blacklistedTags);
                             },
                           ),
                           BlocListener<SettingsCubit, SettingsState>(
@@ -314,11 +306,12 @@ void main() async {
                             },
                           ),
                         ],
-                        child: BlocBuilder<UserBlacklistedTagsBloc,
-                            UserBlacklistedTagsState>(
+                        child: BlocBuilder<BlacklistedTagsBloc,
+                            BlacklistedTagsState>(
                           buildWhen: (previous, current) =>
+                              current.status == LoadStatus.success &&
                               previous.blacklistedTags !=
-                              current.blacklistedTags,
+                                  current.blacklistedTags,
                           builder: (context, state) {
                             final mostViewedCubit = MostViewedCubit(
                               postRepository: postRepo,
@@ -390,28 +383,3 @@ class AppInfoProvider {
 }
 
 Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
-
-class BlacklistedTagsRepository {
-  BlacklistedTagsRepository(this.userRepository, this.accountRepository);
-  final IUserRepository userRepository;
-  final IAccountRepository accountRepository;
-  List<String>? _tags;
-
-  Future<List<String>> getBlacklistedTags() async {
-    // ignore: prefer_conditional_assignment
-    if (_tags == null) {
-      final account = await accountRepository.get();
-      if (account == Account.empty) {
-        return [];
-      }
-      _tags ??= await userRepository
-          .getUserById(account.id)
-          .then((value) => value.blacklistedTags);
-    }
-    return _tags!;
-  }
-
-  Future<void> _refresh(List<String> tags) async {
-    _tags = tags;
-  }
-}

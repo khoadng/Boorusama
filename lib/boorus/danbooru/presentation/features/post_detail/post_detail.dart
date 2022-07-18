@@ -16,6 +16,7 @@ import 'package:path/path.dart' as p;
 import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
@@ -27,7 +28,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/hooks/hooks.dart';
-import 'package:boorusama/main.dart';
 import 'widgets/information_section.dart';
 import 'widgets/pool_tiles.dart';
 import 'widgets/post_action_toolbar.dart';

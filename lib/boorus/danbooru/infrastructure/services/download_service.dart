@@ -8,31 +8,19 @@ import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
+import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'package:boorusama/core/infrastructure/io_helper.dart';
 
-bool _shouldUsePublicStorage(DeviceInfo deviceInfo) {
-  if (isAndroid()) {
-    if (deviceInfo.versionCode < 29) {
-      return false;
-    }
-  }
+bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
+    hasScopedStorage(deviceInfo);
 
-  return true;
-}
-
-Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async {
-  if (isAndroid()) {
-    if (deviceInfo.versionCode < 29) {
-      return IOHelper.getDownloadPath();
-    }
-  }
-
-  return defaultPath;
-}
+Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
+    hasScopedStorage(deviceInfo)
+        ? defaultPath
+        : await IOHelper.getDownloadPath();
 
 class DownloadService implements IDownloadService<Post> {
   DownloadService({

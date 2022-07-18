@@ -75,9 +75,7 @@ class SideBarMenu extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   AppRouter.router.navigateTo(
-                                      context, '/users/blacklisted_tags',
-                                      routeSettings: RouteSettings(
-                                          arguments: [state.data!.id]));
+                                      context, '/users/blacklisted_tags');
                                 },
                               ),
                             ListTile(

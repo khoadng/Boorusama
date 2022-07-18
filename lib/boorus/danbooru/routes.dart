@@ -10,9 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -23,7 +23,6 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/application/user/user.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -41,10 +40,10 @@ import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/main.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
 import 'presentation/features/post_detail/post_image_page.dart';
@@ -301,17 +300,12 @@ final favoritesHandler =
 
 final blacklistedTagsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  final args = context!.settings!.arguments as List;
-  final int userId = args[0];
-
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: BlocProvider.of<UserBlacklistedTagsBloc>(context)
-            ..add(UserEventBlacklistedTagRequested(userId: userId))),
+          value: BlocProvider.of<BlacklistedTagsBloc>(context!)
+            ..add(const BlacklistedTagRequested())),
     ],
-    child: BlacklistedTagsPage(
-      userId: userId,
-    ),
+    child: const BlacklistedTagsPage(),
   );
 });
