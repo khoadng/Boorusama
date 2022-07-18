@@ -47,4 +47,6 @@ class BlacklistedTagsRepository {
       return false;
     }
   }
+
+  void clearCache() => _cache = null;
 }

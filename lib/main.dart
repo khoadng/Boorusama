@@ -292,6 +292,7 @@ void main() async {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
+                                blacklistedTagRepo.clearCache();
                               }
                             },
                           ),
