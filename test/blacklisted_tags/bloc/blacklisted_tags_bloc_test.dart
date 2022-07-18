@@ -6,7 +6,6 @@ import 'package:mocktail/mocktail.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-
 import '../../common.dart';
 
 class MockBlacklistedTagsRepository extends Mock

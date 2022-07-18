@@ -1,6 +1,9 @@
+// Package imports:
+import 'package:mocktail/mocktail.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:mocktail/mocktail.dart';
 
 class MockAccountRepo extends Mock implements IAccountRepository {}
 
