@@ -16,6 +16,8 @@ class AppRouter {
       ..define('/', handler: rootHandler)
       ..define('/artist',
           handler: artistHandler, transitionType: TransitionType.inFromRight)
+      ..define('/character',
+          handler: characterHandler, transitionType: TransitionType.inFromRight)
       ..define('/post/detail',
           handler: postDetailHandler,
           transitionType: TransitionType.inFromRight)

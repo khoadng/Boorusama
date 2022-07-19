@@ -142,7 +142,7 @@ class _LatestViewState extends State<LatestView> {
       case LoadStatus.success:
         return ConditionalRenderWidget(
           condition: state.data!.isNotEmpty,
-          child: _buildTags(state.data!),
+          childBuilder: (context) => _buildTags(state.data!),
         );
       case LoadStatus.failure:
         return const SizedBox.shrink();

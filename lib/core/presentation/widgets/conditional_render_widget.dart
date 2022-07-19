@@ -7,14 +7,14 @@ class ConditionalRenderWidget extends StatelessWidget {
   const ConditionalRenderWidget({
     Key? key,
     required this.condition,
-    required this.child,
+    required this.childBuilder,
   }) : super(key: key);
 
-  final Widget child;
+  final Widget Function(BuildContext context) childBuilder;
   final bool condition;
 
   @override
   Widget build(BuildContext context) {
-    return condition ? child : const SizedBox.shrink();
+    return condition ? childBuilder(context) : const SizedBox.shrink();
   }
 }

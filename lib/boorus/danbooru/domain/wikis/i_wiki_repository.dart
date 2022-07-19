@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wiki.dart';
 
 abstract class IWikiRepository {
-  Future<Wiki> getWikiFor(
+  Future<Wiki?> getWikiFor(
     String title, {
     CancelToken? cancelToken,
   });

@@ -24,6 +24,7 @@ import 'package:boorusama/boorus/danbooru/application/search_history/search_hist
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
@@ -31,11 +32,13 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
@@ -80,6 +83,32 @@ final artistHandler = Handler(handlerFunc: (
     ],
     child: ArtistPage(
       artistName: args[0],
+      backgroundImageUrl: args[1],
+    ),
+  );
+});
+
+final characterHandler = Handler(handlerFunc: (
+  context,
+  Map<String, List<String>> params,
+) {
+  final args = context!.settings!.arguments as List;
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PostBloc(
+                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                blacklistedTagsRepository:
+                    context.read<BlacklistedTagsRepository>(),
+              )..add(PostRefreshed(tag: args[0]))),
+      BlocProvider(
+          create: (context) =>
+              WikiBloc(wikiRepository: context.read<IWikiRepository>())
+                ..add(WikiFetched(tag: args[0])))
+    ],
+    child: CharacterPage(
+      characterName: args[0],
       backgroundImageUrl: args[1],
     ),
   );
