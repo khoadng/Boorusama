@@ -30,6 +30,7 @@ class Settings extends Equatable {
     required this.imageGridSpacing,
     required this.actionBarDisplayBehavior,
     required this.imageQuality,
+    required this.imageQualityInFullView,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -55,6 +56,9 @@ class Settings extends Equatable {
         imageQuality = json['imageQuality'] != null
             ? ImageQuality.values[json['imageQuality']]
             : ImageQuality.automatic,
+        imageQualityInFullView = json['imageQualityInFullView'] != null
+            ? ImageQuality.values[json['imageQualityInFullView']]
+            : ImageQuality.automatic,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -71,6 +75,7 @@ class Settings extends Equatable {
     imageGridSpacing: 4,
     actionBarDisplayBehavior: ActionBarDisplayBehavior.scrolling,
     imageQuality: ImageQuality.automatic,
+    imageQualityInFullView: ImageQuality.automatic,
   );
 
   final String blacklistedTags;
@@ -89,6 +94,8 @@ class Settings extends Equatable {
 
   final ImageQuality imageQuality;
 
+  final ImageQuality imageQualityInFullView;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -102,6 +109,7 @@ class Settings extends Equatable {
     double? imageGridSpacing,
     ActionBarDisplayBehavior? actionBarDisplayBehavior,
     ImageQuality? imageQuality,
+    ImageQuality? imageQualityInFullView,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -117,6 +125,8 @@ class Settings extends Equatable {
         actionBarDisplayBehavior:
             actionBarDisplayBehavior ?? this.actionBarDisplayBehavior,
         imageQuality: imageQuality ?? this.imageQuality,
+        imageQualityInFullView:
+            imageQualityInFullView ?? this.imageQualityInFullView,
       );
 
   Map<String, dynamic> toJson() => {
@@ -133,6 +143,7 @@ class Settings extends Equatable {
         'imageGridSpacing': imageGridSpacing,
         'actionBarDisplayBehavior': actionBarDisplayBehavior.index,
         'imageQuality': imageQuality.index,
+        'imageQualityInFullView': imageQualityInFullView.index,
       };
 
   @override
@@ -149,5 +160,6 @@ class Settings extends Equatable {
         imageGridSpacing,
         actionBarDisplayBehavior,
         imageQuality,
+        imageQualityInFullView,
       ];
 }
