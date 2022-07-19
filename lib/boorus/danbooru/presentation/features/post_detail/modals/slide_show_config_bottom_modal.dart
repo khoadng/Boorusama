@@ -2,25 +2,50 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/providers/slide_show_providers.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 
-class SlideShowConfigBottomModal extends HookWidget {
+class SlideShowConfigBottomModal extends StatefulWidget {
   const SlideShowConfigBottomModal({
     Key? key,
-    required this.config,
+    required this.initialConfig,
+    required this.onConfigChanged,
   }) : super(key: key);
-  final ValueNotifier<SlideShowConfiguration> config;
+
+  final void Function(SlideShowConfiguration config) onConfigChanged;
+  final SlideShowConfiguration initialConfig;
+
+  @override
+  State<SlideShowConfigBottomModal> createState() =>
+      _SlideShowConfigBottomModalState();
+}
+
+class _SlideShowConfigBottomModalState
+    extends State<SlideShowConfigBottomModal> {
+  final numberEditingController = TextEditingController();
+  late var config = ValueNotifier(widget.initialConfig);
+
+  @override
+  void initState() {
+    super.initState();
+    config.addListener(() {
+      widget.onConfigChanged(config.value);
+    });
+  }
+
+  @override
+  void dispose() {
+    numberEditingController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final viewInsets = MediaQuery.of(context).viewInsets.bottom;
     final safeAreaBottom = MediaQuery.of(context).padding.bottom;
-    final numberEditingController = useTextEditingController();
 
     return Modal(
       title: 'Slide Show',
@@ -38,16 +63,14 @@ class SlideShowConfigBottomModal extends HookWidget {
               children: [
                 const Flexible(flex: 3, child: Text('Interval (seconds)')),
                 Flexible(
+                  //TODO: keyboard input won't work.
                   child: NumberInputWithIncrementDecrement(
                     initialValue: config.value.interval,
+                    min: 1,
                     onDecrement: (value) =>
-                        config.value = config.value.copyWith(
-                      interval: value,
-                    ),
+                        config.value = config.value.copyWith(interval: value),
                     onIncrement: (value) =>
-                        config.value = config.value.copyWith(
-                      interval: value,
-                    ),
+                        config.value = config.value.copyWith(interval: value),
                     controller: numberEditingController,
                   ),
                 ),
@@ -58,10 +81,13 @@ class SlideShowConfigBottomModal extends HookWidget {
               children: [
                 const Flexible(flex: 3, child: Text('Skip animation')),
                 Flexible(
-                  child: Switch(
-                    value: config.value.skipAnimation,
-                    onChanged: (value) => config.value =
-                        config.value.copyWith(skipAnimation: value),
+                  child: ValueListenableBuilder<SlideShowConfiguration>(
+                    valueListenable: config,
+                    builder: (context, conf, _) => Switch(
+                      value: conf.skipAnimation,
+                      onChanged: (value) =>
+                          config.value = conf.copyWith(skipAnimation: value),
+                    ),
                   ),
                 ),
               ],
