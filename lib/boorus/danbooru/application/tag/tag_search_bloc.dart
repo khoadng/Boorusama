@@ -138,7 +138,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
-        final query = event.query.trim();
+        final query = event.query.trimLeft().replaceAll(' ', '_');
         if (query.isEmpty) {
           emit(state.copyWith(query: ''));
           return;
