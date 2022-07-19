@@ -15,6 +15,8 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/s
 import 'package:boorusama/core/core.dart';
 import 'settings_options.dart';
 import 'settings_tile.dart';
+import 'widgets/settings_header.dart';
+import 'widgets/settings_icon.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
@@ -81,9 +83,9 @@ class _AppearancePageState extends State<AppearancePage> {
           return SafeArea(
               child: ListView(
             children: [
-              _buildPreview(context, state),
+              const SettingsHeader(label: 'General'),
               SettingsTile(
-                leading: const FaIcon(FontAwesomeIcons.paintbrush),
+                leading: const SettingsIcon(FontAwesomeIcons.paintbrush),
                 title: const Text('Theme'),
                 selectedOption: state.settings.themeMode.name.sentenceCase,
                 onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
@@ -96,8 +98,11 @@ class _AppearancePageState extends State<AppearancePage> {
                       .update(state.settings.copyWith(themeMode: value)),
                 ),
               ),
+              const Divider(thickness: 1),
+              const SettingsHeader(label: 'Image grid'),
+              _buildPreview(context, state),
               SettingsTile(
-                leading: const FaIcon(FontAwesomeIcons.tableCells),
+                leading: const SettingsIcon(FontAwesomeIcons.tableCells),
                 title: const Text('Grid size'),
                 selectedOption: state.settings.gridSize.name.sentenceCase,
                 onTap: () => showRadioOptionsModalBottomSheet<GridSize>(
@@ -111,7 +116,7 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
               ),
               SettingsTile(
-                leading: const FaIcon(FontAwesomeIcons.images),
+                leading: const SettingsIcon(FontAwesomeIcons.images),
                 title: const Text('Image quality'),
                 selectedOption: state.settings.imageQuality.name.sentenceCase,
                 onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
@@ -143,9 +148,32 @@ class _AppearancePageState extends State<AppearancePage> {
                 child: Text('Corner radius'),
               ),
               _buildBorderRadiusSlider(state),
-              const Divider(thickness: 1.5),
+              const Divider(thickness: 1),
+              const SettingsHeader(label: 'Image viewer'),
+              ListTile(
+                leading: const SettingsIcon(FontAwesomeIcons.image),
+                title: const Text('Show full resolution as default'),
+                subtitle: state.settings.imageQualityInFullView ==
+                        ImageQuality.original
+                    ? const Text(
+                        'It will take a while to load depend on the size of image')
+                    : null,
+                trailing: Switch(
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: state.settings.imageQualityInFullView ==
+                        ImageQuality.original,
+                    onChanged: (value) {
+                      context.read<SettingsCubit>().update(state.settings
+                          .copyWith(
+                              imageQualityInFullView: value
+                                  ? ImageQuality.original
+                                  : ImageQuality.automatic));
+                    }),
+              ),
+              const Divider(thickness: 1),
+              const SettingsHeader(label: 'Image detail'),
               SettingsTile(
-                leading: const FaIcon(FontAwesomeIcons.xmarksLines),
+                leading: const SettingsIcon(FontAwesomeIcons.xmarksLines),
                 title: const Text('Action bar dislay'),
                 selectedOption:
                     state.settings.actionBarDisplayBehavior.name.sentenceCase,
@@ -213,7 +241,7 @@ class _AppearancePageState extends State<AppearancePage> {
           borderRadius: BorderRadius.circular(4),
           color: Theme.of(context).backgroundColor,
         ),
-        height: 200,
+        height: MediaQuery.of(context).size.height * 0.25,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: ValueListenableBuilder<double>(
@@ -233,7 +261,7 @@ class _AppearancePageState extends State<AppearancePage> {
                         borderRadius: BorderRadius.circular(value),
                       ),
                       child: const Center(
-                        child: FaIcon(FontAwesomeIcons.image),
+                        child: SettingsIcon(FontAwesomeIcons.image),
                       ),
                     ),
                   );

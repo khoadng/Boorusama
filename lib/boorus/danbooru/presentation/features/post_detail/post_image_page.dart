@@ -17,9 +17,11 @@ class PostImagePage extends StatefulWidget {
   const PostImagePage({
     Key? key,
     required this.post,
+    required this.useOriginalSize,
   }) : super(key: key);
 
   final Post post;
+  final bool useOriginalSize;
 
   @override
   State<PostImagePage> createState() => _PostImagePageState();
@@ -27,8 +29,8 @@ class PostImagePage extends StatefulWidget {
 
 class _PostImagePageState extends State<PostImagePage>
     with SingleTickerProviderStateMixin {
-  final hideOverlay = ValueNotifier(true);
-  final fullsize = ValueNotifier(false);
+  final hideOverlay = ValueNotifier(false);
+  late final fullsize = ValueNotifier(widget.useOriginalSize);
   final _transformationController = TransformationController();
   TapDownDetails? _doubleTapDetails;
 

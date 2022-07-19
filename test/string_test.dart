@@ -1,5 +1,8 @@
-import 'package:boorusama/common/string_utils.dart';
+// Package imports:
 import 'package:flutter_test/flutter_test.dart';
+
+// Project imports:
+import 'package:boorusama/common/string_utils.dart';
 
 void main() {
   test('get first character should return correct value', () {
