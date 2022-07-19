@@ -20,8 +20,9 @@ void main() {
 
     when(tagInfo.metatags).thenReturn([]);
     when(autocompleteRepository.getAutocomplete('a'))
-        .thenAnswer((_) => Future.value([autocompleteData()]));
-
+        .thenAnswer((_) => Future.value([autocompleteData('a')]));
+    when(autocompleteRepository.getAutocomplete('a_a_a'))
+        .thenAnswer((_) => Future.value([autocompleteData('a_a_a')]));
     TagSearchBloc bloc() => TagSearchBloc(
         autocompleteRepository: autocompleteRepository, tagInfo: tagInfo);
 
@@ -128,7 +129,37 @@ void main() {
         tagSearchStateEmpty().copyWith(
           query: 'a',
           suggestionTags: [
-            autocompleteData(),
+            autocompleteData('a'),
+          ],
+        )
+      ],
+    );
+
+    blocTest<TagSearchBloc, TagSearchState>(
+      'when a tag is added, replace all whitespace with underscore',
+      build: () => bloc(),
+      act: (bloc) => bloc.add(const TagSearchChanged('a a a')),
+      expect: () => [
+        tagSearchStateEmpty().copyWith(query: 'a_a_a'),
+        tagSearchStateEmpty().copyWith(
+          query: 'a_a_a',
+          suggestionTags: [
+            autocompleteData('a_a_a'),
+          ],
+        )
+      ],
+    );
+
+    blocTest<TagSearchBloc, TagSearchState>(
+      'when a tag is added, trim the leading whitespace',
+      build: () => bloc(),
+      act: (bloc) => bloc.add(const TagSearchChanged(' a')),
+      expect: () => [
+        tagSearchStateEmpty().copyWith(query: 'a'),
+        tagSearchStateEmpty().copyWith(
+          query: 'a',
+          suggestionTags: [
+            autocompleteData('a'),
           ],
         )
       ],
