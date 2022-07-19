@@ -759,9 +759,11 @@ packages:
   number_inc_dec:
     dependency: "direct main"
     description:
-      name: number_inc_dec
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: f66ee872727172ce2fe57f118d569339d54c384d
+      resolved-ref: f66ee872727172ce2fe57f118d569339d54c384d
+      url: "https://github.com/hilalbaig/number_inc_dec.git"
+    source: git
     version: "0.8.0"
   numerus:
     dependency: transitive

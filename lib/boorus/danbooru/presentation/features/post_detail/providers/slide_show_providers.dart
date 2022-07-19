@@ -3,12 +3,12 @@ class SlideShowConfiguration {
     required this.interval,
     required this.skipAnimation,
   });
-  final int interval;
+  final num interval;
   final bool skipAnimation;
 
   SlideShowConfiguration copyWith({
-    interval,
-    skipAnimation,
+    num? interval,
+    bool? skipAnimation,
   }) =>
       SlideShowConfiguration(
         interval: interval ?? this.interval,
