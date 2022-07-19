@@ -369,7 +369,7 @@ class _SearchPageState extends State<SearchPage> {
   Widget _buildRelatedTags(RelatedTag relatedTag, ThemeMode theme) {
     return ConditionalRenderWidget(
       condition: relatedTag.tags.isNotEmpty,
-      child: RelatedTagHeader(
+      childBuilder: (context) => RelatedTagHeader(
         relatedTag: relatedTag,
         theme: theme,
       ),

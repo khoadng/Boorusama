@@ -5,32 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_detail_page.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 
-class ArtistPage extends StatelessWidget {
-  const ArtistPage({
+class CharacterPage extends StatelessWidget {
+  const CharacterPage({
     Key? key,
-    required this.artistName,
+    required this.characterName,
     required this.backgroundImageUrl,
   }) : super(key: key);
 
-  final String artistName;
+  final String characterName;
   final String backgroundImageUrl;
 
   @override
   Widget build(BuildContext context) {
     return TagDetailPage(
-      tagName: artistName,
-      otherNamesBuilder: (context) =>
-          BlocBuilder<ArtistCubit, AsyncLoadState<Artist>>(
+      tagName: characterName,
+      otherNamesBuilder: (context) => BlocBuilder<WikiBloc, WikiState>(
         builder: (context, state) => ConditionalRenderWidget(
-          condition: state.status == LoadStatus.success,
+          condition: state.wiki != null,
           childBuilder: (context) =>
-              TagOtherNames(otherNames: state.data!.otherNames),
+              TagOtherNames(otherNames: state.wiki!.otherNames),
         ),
       ),
       backgroundImageUrl: backgroundImageUrl,

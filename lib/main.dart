@@ -38,9 +38,11 @@ import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.da
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
@@ -201,6 +203,8 @@ void main() async {
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
 
+                  final wikiRepo = WikiRepository(api);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -266,6 +270,8 @@ void main() async {
                           value: autocompleteRepo),
                       RepositoryProvider<RelatedTagRepository>.value(
                           value: relatedTagRepo),
+                      RepositoryProvider<IWikiRepository>.value(
+                          value: wikiRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [

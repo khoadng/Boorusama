@@ -281,7 +281,11 @@ class PostDetail extends HookWidget {
           final recommendedItems = state.data!;
           return Column(
             children: recommendedItems
-                .map((item) => _buildRecommendPostSection(context, item))
+                .map((item) => _buildRecommendPostSection(
+                      context,
+                      item,
+                      '/artist',
+                    ))
                 .toList(),
           );
         } else {
@@ -307,6 +311,7 @@ class PostDetail extends HookWidget {
   Widget _buildRecommendPostSection(
     BuildContext context,
     Recommended item,
+    String url,
   ) {
     return BlocBuilder<SettingsCubit, SettingsState>(
       builder: (context, state) {
@@ -315,7 +320,7 @@ class PostDetail extends HookWidget {
           header: ListTile(
             onTap: () => AppRouter.router.navigateTo(
               context,
-              '/artist',
+              url,
               routeSettings: RouteSettings(
                 arguments: [
                   item._title,
@@ -341,7 +346,11 @@ class PostDetail extends HookWidget {
           final recommendedItems = state.data!;
           return Column(
             children: recommendedItems
-                .map((item) => _buildRecommendPostSection(context, item))
+                .map((item) => _buildRecommendPostSection(
+                      context,
+                      item,
+                      '/character',
+                    ))
                 .toList(),
           );
         } else {
