@@ -14,11 +14,14 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/moda
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'post_image_page.dart';
 import 'providers/slide_show_providers.dart';
+
+double _getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
@@ -173,6 +176,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                 ],
               ),
               _buildBackButton(),
+              _buildHomeButton(),
               _buildSlideShowButton(),
             ],
           ),
@@ -183,7 +187,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildSlideShowButton() {
     return Align(
-      alignment: const Alignment(0.9, -0.96),
+      alignment: Alignment(0.9, _getTopActionIconAlignValue()),
       child: ButtonBar(
         children: [
           ValueListenableBuilder<bool>(
@@ -230,7 +234,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildBackButton() {
     return Align(
-      alignment: const Alignment(-0.9, -0.96),
+      alignment: Alignment(-0.95, _getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
@@ -245,6 +249,23 @@ class _PostDetailPageState extends State<PostDetailPage>
               },
             );
           },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHomeButton() {
+    return Align(
+      alignment: Alignment(-0.73, _getTopActionIconAlignValue()),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: IconButton(
+          icon: const Icon(Icons.home),
+          onPressed: () => AppRouter.router.navigateTo(
+            context,
+            '/',
+            clearStack: true,
+          ),
         ),
       ),
     );

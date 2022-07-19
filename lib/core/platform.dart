@@ -15,3 +15,5 @@ bool isNotWeb() => !kIsWeb;
 bool isDesktopPlatform() =>
     isNotWeb() && (isMacOS() || isWindows() || isLinux());
 bool isMobilePlatform() => isAndroid() || isIOS();
+
+bool hasStatusBar() => isMobilePlatform();
