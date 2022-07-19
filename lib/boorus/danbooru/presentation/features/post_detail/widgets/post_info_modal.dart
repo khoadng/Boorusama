@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 
@@ -54,7 +53,7 @@ class PostInfoModal extends HookWidget {
                 SliverToBoxAdapter(
                     child: Container(
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(6),
                       color: Theme.of(context).cardColor),
                   margin: const EdgeInsets.all(10),
                   child: Column(
@@ -84,15 +83,11 @@ class PostInfoModal extends HookWidget {
                 )),
                 SliverToBoxAdapter(
                     child: BlocProvider(
-                  create: (context) => TagCubit(
+                  create: (context) => TagBloc(
                       tagRepository:
-                          RepositoryProvider.of<ITagRepository>(context)),
-                  child: BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-                    builder: (context, state) => PostTagList(
-                      apiEndpoint: state.booru.url,
-                      tagsComma: post.tags.join(','),
-                    ),
-                  ),
+                          RepositoryProvider.of<ITagRepository>(context))
+                    ..add(TagFetched(tags: post.tags)),
+                  child: const PostTagList(),
                 )),
               ],
             ),
