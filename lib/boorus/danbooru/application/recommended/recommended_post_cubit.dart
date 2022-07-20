@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,10 +22,14 @@ abstract class RecommendedPostEvent extends Equatable {
 class RecommendedPostRequested extends RecommendedPostEvent {
   const RecommendedPostRequested({
     required this.tags,
+    required this.currentPostId,
   });
+
   final List<String> tags;
+  final int currentPostId;
+
   @override
-  List<Object?> get props => [tags];
+  List<Object?> get props => [tags, currentPostId];
 }
 
 class RecommendedPostBloc
@@ -34,21 +39,28 @@ class RecommendedPostBloc
   }) : super(const AsyncLoadState.initial()) {
     on<RecommendedPostRequested>(
       (event, emit) async {
-        await tryAsync<List<Recommended>>(
+        await tryAsync<List<Recommended?>>(
             action: () => Future.wait(
                     event.tags.where((tag) => tag.isNotEmpty).map((tag) async {
-                  final posts = await postRepository.getPosts(tag, 1,
-                      limit: 10, skipFavoriteCheck: true);
+                  final posts = await postRepository.getPosts(
+                    tag,
+                    1,
+                    limit: 10,
+                    skipFavoriteCheck: true,
+                  );
 
-                  final recommended =
-                      Recommended(title: tag, posts: posts.take(6).toList());
+                  posts.removeWhere(
+                      (element) => element.id == event.currentPostId);
 
-                  return recommended;
+                  if (posts.isEmpty) return null;
+
+                  return Recommended(title: tag, posts: posts.take(6).toList());
                 }).toList()),
             onFailure: (stackTrace, error) =>
                 emit(const AsyncLoadState.failure()),
             onLoading: () => emit(const AsyncLoadState.loading()),
-            onSuccess: (posts) async => emit(AsyncLoadState.success(posts)));
+            onSuccess: (posts) async =>
+                emit(AsyncLoadState.success(posts.whereNotNull().toList())));
       },
       transformer: debounceRestartable(const Duration(milliseconds: 150)),
     );

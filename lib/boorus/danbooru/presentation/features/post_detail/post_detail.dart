@@ -129,31 +129,34 @@ class _PostDetailState extends State<PostDetail> {
           AppRouter.router.navigateTo(context, '/posts/image',
               routeSettings: RouteSettings(arguments: [widget.post]));
         },
-        child: CachedNetworkImage(
-          imageUrl: widget.post.normalImageUrl,
-          imageBuilder: (context, imageProvider) {
-            DefaultCacheManager()
-                .getFileFromCache(widget.post.normalImageUrl)
-                .then((file) {
-              if (!mounted) return;
-              imagePath.value = file!.file.path;
-            });
-            return Image(image: imageProvider);
-          },
-          placeholderFadeInDuration: Duration.zero,
-          fadeOutDuration: Duration.zero,
-          progressIndicatorBuilder: (context, url, progress) => FittedBox(
-            fit: BoxFit.cover,
-            child: SizedBox(
-              height: widget.post.height,
-              width: widget.post.width,
-              child: Stack(
-                children: [
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: LinearProgressIndicator(value: progress.progress),
-                  ),
-                ],
+        child: Hero(
+          tag: '${widget.post.id}_hero',
+          child: CachedNetworkImage(
+            imageUrl: widget.post.normalImageUrl,
+            imageBuilder: (context, imageProvider) {
+              DefaultCacheManager()
+                  .getFileFromCache(widget.post.normalImageUrl)
+                  .then((file) {
+                if (!mounted) return;
+                imagePath.value = file!.file.path;
+              });
+              return Image(image: imageProvider);
+            },
+            placeholderFadeInDuration: Duration.zero,
+            fadeOutDuration: Duration.zero,
+            progressIndicatorBuilder: (context, url, progress) => FittedBox(
+              fit: BoxFit.cover,
+              child: SizedBox(
+                height: widget.post.height,
+                width: widget.post.width,
+                child: Stack(
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: LinearProgressIndicator(value: progress.progress),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -255,6 +258,9 @@ class _PostDetailState extends State<PostDetail> {
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
           final recommendedItems = state.data!;
+
+          if (recommendedItems.isEmpty) return const SizedBox.shrink();
+
           return Column(
             children: recommendedItems
                 .map((item) => _buildRecommendPostSection(
@@ -318,6 +324,9 @@ class _PostDetailState extends State<PostDetail> {
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
           final recommendedItems = state.data!;
+
+          if (recommendedItems.isEmpty) return const SizedBox.shrink();
+
           return Column(
             children: recommendedItems
                 .map((item) => _buildRecommendPostSection(

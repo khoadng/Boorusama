@@ -142,9 +142,11 @@ class _PostDetailPageState extends State<PostDetailPage>
 
                           context.read<RecommendedArtistPostCubit>().add(
                               RecommendedPostRequested(
+                                  currentPostId: widget.posts[index].id,
                                   tags: widget.posts[index].artistTags));
                           context.read<RecommendedCharacterPostCubit>().add(
                               RecommendedPostRequested(
+                                  currentPostId: widget.posts[index].id,
                                   tags: widget.posts[index].characterTags));
                           context.read<PoolFromPostIdBloc>().add(
                               PoolFromPostIdRequested(

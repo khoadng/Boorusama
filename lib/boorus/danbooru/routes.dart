@@ -142,7 +142,10 @@ final postDetailHandler = Handler(handlerFunc: (
                   cache: FifoCacher<String, List<Post>>(capacity: 100),
                   postRepository: context.read<IPostRepository>(),
                 ),
-              )..add(RecommendedPostRequested(tags: posts[index].artistTags))),
+              )..add(RecommendedPostRequested(
+                  currentPostId: posts[index].id,
+                  tags: posts[index].artistTags,
+                ))),
       BlocProvider(
           create: (context) => PoolFromPostIdBloc(
                   poolRepository: PoolFromPostCacher(
@@ -156,8 +159,10 @@ final postDetailHandler = Handler(handlerFunc: (
                   cache: FifoCacher<String, List<Post>>(capacity: 100),
                   postRepository: context.read<IPostRepository>(),
                 ),
-              )..add(
-                  RecommendedPostRequested(tags: posts[index].characterTags))),
+              )..add(RecommendedPostRequested(
+                  currentPostId: posts[index].id,
+                  tags: posts[index].characterTags,
+                ))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),

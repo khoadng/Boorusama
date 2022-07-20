@@ -99,6 +99,7 @@ class _PostImagePageState extends State<PostImagePage>
                       useFullsize
                           ? widget.post.fullImageUrl
                           : widget.post.normalImageUrl,
+                      widget.post.id,
                     );
                   },
                 ),
@@ -133,16 +134,19 @@ class _PostImagePageState extends State<PostImagePage>
     _animationController.forward(from: 0);
   }
 
-  Widget _buildImage(String imageUrl) {
-    return CachedNetworkImage(
-      fit: BoxFit.fitWidth,
-      imageUrl: imageUrl,
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator(
-          value: progress.progress,
+  Widget _buildImage(String imageUrl, int id) {
+    return Hero(
+      tag: '${id}_hero',
+      child: CachedNetworkImage(
+        fit: BoxFit.fitWidth,
+        imageUrl: imageUrl,
+        progressIndicatorBuilder: (context, url, progress) => Center(
+          child: CircularProgressIndicator(
+            value: progress.progress,
+          ),
         ),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
 

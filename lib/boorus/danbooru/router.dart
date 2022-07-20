@@ -25,7 +25,7 @@ class AppRouter {
           handler: postSearchHandler, transitionType: TransitionType.fadeIn)
       ..define('/posts/image',
           handler: postDetailImageHandler,
-          transitionType: TransitionType.inFromRight)
+          transitionType: TransitionType.fadeIn)
       ..define('/users/profile',
           handler: userHandler, transitionType: TransitionType.inFromRight)
       ..define('/login',
