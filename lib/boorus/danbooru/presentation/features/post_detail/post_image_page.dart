@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
@@ -147,7 +148,7 @@ class _PostImagePageState extends State<PostImagePage>
 
   Widget _buildBackButton() {
     return Align(
-      alignment: const Alignment(-0.9, -0.96),
+      alignment: Alignment(-0.9, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: IconButton(
@@ -160,7 +161,7 @@ class _PostImagePageState extends State<PostImagePage>
 
   Widget _buildMoreButton(bool useFullsize, bool hasLarge) {
     return Align(
-      alignment: const Alignment(0.9, -0.96),
+      alignment: Alignment(0.9, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: DownloadProviderWidget(

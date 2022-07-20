@@ -21,7 +21,7 @@ import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart
 import 'post_image_page.dart';
 import 'providers/slide_show_providers.dart';
 
-double _getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
+double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
@@ -187,7 +187,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildSlideShowButton() {
     return Align(
-      alignment: Alignment(0.9, _getTopActionIconAlignValue()),
+      alignment: Alignment(0.9, getTopActionIconAlignValue()),
       child: ButtonBar(
         children: [
           ValueListenableBuilder<bool>(
@@ -234,7 +234,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildBackButton() {
     return Align(
-      alignment: Alignment(-0.95, _getTopActionIconAlignValue()),
+      alignment: Alignment(-0.95, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
@@ -256,7 +256,7 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildHomeButton() {
     return Align(
-      alignment: Alignment(-0.73, _getTopActionIconAlignValue()),
+      alignment: Alignment(-0.73, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: IconButton(

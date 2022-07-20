@@ -8,7 +8,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
@@ -22,7 +21,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 
-class PostInfoModal extends HookWidget {
+class PostInfoModal extends StatelessWidget {
   const PostInfoModal({
     Key? key,
     required this.post,
@@ -103,7 +102,7 @@ enum ArtistCommentaryTranlationState {
   translated,
 }
 
-class ArtistSection extends HookWidget {
+class ArtistSection extends StatefulWidget {
   const ArtistSection({
     Key? key,
     required this.post,
@@ -111,15 +110,122 @@ class ArtistSection extends HookWidget {
 
   final Post post;
 
-  Widget _buildLoading(BuildContext context) {
+  @override
+  State<ArtistSection> createState() => _ArtistSectionState();
+}
+
+class _ArtistSectionState extends State<ArtistSection> {
+  final artistCommentaryDisplay =
+      ValueNotifier(ArtistCommentaryTranlationState.original);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<ArtistCommentaryCubit>().getArtistCommentary(widget.post.id);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final artistCommentary = state.data!;
+          return ValueListenableBuilder<ArtistCommentaryTranlationState>(
+            valueListenable: artistCommentaryDisplay,
+            builder: (context, display, _) => Wrap(
+              children: [
+                SourceLink(
+                  title: Text(widget.post.artistTags.join(' ')),
+                  uri: widget.post.source.uri,
+                  actionBuilder: () => artistCommentary.isTranslated
+                      ? PopupMenuButton<ArtistCommentaryTranlationState>(
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          onSelected: (value) =>
+                              artistCommentaryDisplay.value = value,
+                          itemBuilder: (_) => [
+                            PopupMenuItem<ArtistCommentaryTranlationState>(
+                              value: getTranslationNextState(display),
+                              child: ListTile(
+                                title: Text(getTranslationText(display)),
+                              ),
+                            ),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
+                ),
+                SelectableText(
+                  getDescriptionText(display, artistCommentary),
+                ),
+              ],
+            ),
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return const SizedBox.shrink();
+        } else {
+          return const ArtistCommentaryPlaceholder();
+        }
+      },
+    );
+  }
+}
+
+class SourceLink extends StatelessWidget {
+  const SourceLink({
+    Key? key,
+    required this.title,
+    required this.uri,
+    required this.actionBuilder,
+  }) : super(key: key);
+
+  final Widget title;
+  final Uri? uri;
+  final Widget Function() actionBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      visualDensity: VisualDensity.compact,
+      title: title,
+      subtitle: InkWell(
+        onLongPress: () =>
+            Clipboard.setData(ClipboardData(text: uri.toString()))
+                .then((_) => showSimpleSnackBar(
+                      context: context,
+                      content: const Text('Copied'),
+                    )),
+        onTap: () {
+          if (uri == null) return;
+          launchExternalUrl(uri!);
+        },
+        child: Text(
+          uri.toString(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: Theme.of(context).textTheme.caption,
+        ),
+      ),
+      leading: const CircleAvatar(),
+      trailing: actionBuilder(),
+    );
+  }
+}
+
+class ArtistCommentaryPlaceholder extends StatelessWidget {
+  const ArtistCommentaryPlaceholder({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ListTile(
           leading: const CircleAvatar(),
           title: Container(
-            margin:
-                EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.4),
+            margin: EdgeInsets.only(right: width * 0.4),
             height: 20,
             decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -130,98 +236,15 @@ class ArtistSection extends HookWidget {
           4,
           (index) => Container(
             margin: const EdgeInsets.only(bottom: 10),
-            width: MediaQuery.of(context).size.width * 0.1 +
-                Random().nextDouble() * MediaQuery.of(context).size.width * 0.9,
+            width: width * 0.1 + Random().nextDouble() * width * 0.9,
             height: 20,
             decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8)),
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
       ],
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final artistCommentaryDisplay =
-        useState(ArtistCommentaryTranlationState.original);
-
-    useEffect(() {
-      ReadContext(context)
-          .read<ArtistCommentaryCubit>()
-          .getArtistCommentary(post.id);
-      return null;
-    }, []);
-
-    return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final artistCommentary = state.data!;
-          return Wrap(
-            children: <Widget>[
-              ListTile(
-                visualDensity: VisualDensity.compact,
-                title: Text(post.artistTags.join(' ')),
-                subtitle: InkWell(
-                  onLongPress: () => Clipboard.setData(
-                          ClipboardData(text: post.source.uri.toString()))
-                      .then((results) {
-                    const snackbar = SnackBar(
-                      behavior: SnackBarBehavior.floating,
-                      elevation: 6,
-                      content: Text(
-                        'Copied',
-                      ),
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(snackbar);
-                  }),
-                  onTap: () {
-                    if (post.source.uri == null) return;
-                    launchExternalUrl(post.source.uri!);
-                  },
-                  child: Text(
-                    post.source.uri.toString(),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: Theme.of(context).textTheme.caption,
-                  ),
-                ),
-                leading: const CircleAvatar(),
-                trailing: artistCommentary.isTranslated
-                    ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                        icon: const Icon(Icons.keyboard_arrow_down),
-                        onSelected: (value) {
-                          artistCommentaryDisplay.value = value;
-                        },
-                        itemBuilder: (BuildContext context) =>
-                            <PopupMenuEntry<ArtistCommentaryTranlationState>>[
-                          PopupMenuItem<ArtistCommentaryTranlationState>(
-                            value: getTranslationNextState(
-                                artistCommentaryDisplay.value),
-                            child: ListTile(
-                              title: Text(getTranslationText(
-                                  artistCommentaryDisplay.value)),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox.shrink(),
-              ),
-              SelectableText(
-                getDescriptionText(
-                  artistCommentaryDisplay.value,
-                  artistCommentary,
-                ),
-              ),
-            ],
-          );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
-        } else {
-          return _buildLoading(context);
-        }
-      },
     );
   }
 }

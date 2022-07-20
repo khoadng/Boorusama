@@ -50,9 +50,10 @@ void showSimpleSnackBar({
   required BuildContext context,
   required Widget content,
   Duration? duration,
+  SnackBarBehavior? behavior,
 }) {
   final snackbar = SnackBar(
-    behavior: SnackBarBehavior.floating,
+    behavior: behavior ?? SnackBarBehavior.floating,
     duration: duration ?? const Duration(seconds: 6),
     elevation: 6,
     content: content,
