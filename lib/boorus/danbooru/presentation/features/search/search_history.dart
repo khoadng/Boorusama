@@ -3,14 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
-class SearchHistorySection extends HookWidget {
+class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
     Key? key,
     required this.onHistoryTap,
