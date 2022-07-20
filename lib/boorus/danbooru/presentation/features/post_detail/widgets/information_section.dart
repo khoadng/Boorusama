@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
@@ -11,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_info_modal.dart';
 
-class InformationSection extends HookWidget {
+class InformationSection extends StatelessWidget {
   const InformationSection({
     Key? key,
     required this.post,

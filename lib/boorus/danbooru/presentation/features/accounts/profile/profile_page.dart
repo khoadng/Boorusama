@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
@@ -16,18 +15,13 @@ import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
-class ProfilePage extends HookWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      ReadContext(context).read<ProfileCubit>().getProfile();
-      return null;
-    }, []);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('profile.profile'.tr()),

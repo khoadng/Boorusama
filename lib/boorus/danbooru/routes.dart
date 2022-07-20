@@ -58,7 +58,7 @@ final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
     conditionalBuilder: (child) => createAppRatingWidget(child: child),
-    child: HomePage(),
+    child: const HomePage(),
   ),
 );
 
@@ -262,8 +262,8 @@ final userHandler =
 
   return MultiBlocProvider(
     providers: [
-      BlocProvider.value(value: BlocProvider.of<ProfileCubit>(context!)),
-      BlocProvider.value(value: BlocProvider.of<FavoritesCubit>(context)),
+      BlocProvider.value(value: context!.read<ProfileCubit>()..getProfile()),
+      BlocProvider.value(value: context.read<FavoritesCubit>()),
     ],
     child: const ProfilePage(),
   );

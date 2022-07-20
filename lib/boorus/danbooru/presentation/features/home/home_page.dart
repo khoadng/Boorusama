@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
@@ -20,15 +19,21 @@ import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart'
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 
-class HomePage extends HookWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final bottomTabIndex = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
-    final bottomTabIndex = useState(0);
-
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -67,30 +72,33 @@ class HomePage extends HookWidget {
                       },
                     ),
                     Expanded(
-                      child: AnimatedIndexedStack(
-                        index: bottomTabIndex.value,
-                        children: [
-                          LatestView(
-                            onMenuTap: () =>
-                                scaffoldKey.currentState!.openDrawer(),
-                          ),
-                          const ExplorePage(),
-                          MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => PoolBloc(
-                                  poolRepository:
-                                      context.read<PoolRepository>(),
-                                  postRepository:
-                                      context.read<IPostRepository>(),
-                                )..add(const PoolRefreshed(
-                                    category: PoolCategory.series,
-                                    order: PoolOrder.latest)),
-                              ),
-                            ],
-                            child: const PoolPage(),
-                          ),
-                        ],
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: bottomTabIndex,
+                        builder: (context, index, _) => AnimatedIndexedStack(
+                          index: index,
+                          children: [
+                            LatestView(
+                              onMenuTap: () =>
+                                  scaffoldKey.currentState!.openDrawer(),
+                            ),
+                            const ExplorePage(),
+                            MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => PoolBloc(
+                                    poolRepository:
+                                        context.read<PoolRepository>(),
+                                    postRepository:
+                                        context.read<IPostRepository>(),
+                                  )..add(const PoolRefreshed(
+                                      category: PoolCategory.series,
+                                      order: PoolOrder.latest)),
+                                ),
+                              ],
+                              child: const PoolPage(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

@@ -9,7 +9,6 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
 
@@ -380,7 +379,7 @@ class _Divider extends StatelessWidget {
   }
 }
 
-class RecommendPostSection extends HookWidget {
+class RecommendPostSection extends StatelessWidget {
   const RecommendPostSection({
     Key? key,
     required this.posts,
@@ -413,7 +412,7 @@ class RecommendPostSection extends HookWidget {
   }
 }
 
-class RecommendPostSectionPlaceHolder extends HookWidget {
+class RecommendPostSectionPlaceHolder extends StatelessWidget {
   const RecommendPostSectionPlaceHolder({
     Key? key,
     required this.header,

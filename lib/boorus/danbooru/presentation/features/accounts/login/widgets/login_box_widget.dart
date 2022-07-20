@@ -191,7 +191,7 @@ class LoginBox extends HookWidget {
   }
 }
 
-class LoginField extends HookWidget {
+class LoginField extends StatelessWidget {
   const LoginField({
     Key? key,
     required this.validator,
@@ -202,7 +202,7 @@ class LoginField extends HookWidget {
     this.onChanged,
   }) : super(key: key);
 
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final String? Function(String?) validator;
   final Widget? suffixIcon;
   final String labelText;
@@ -211,13 +211,11 @@ class LoginField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController defaultController = useTextEditingController();
-
     return TextFormField(
       onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,
-      controller: controller ?? defaultController,
+      controller: controller,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,
