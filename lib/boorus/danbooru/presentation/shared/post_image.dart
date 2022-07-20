@@ -3,78 +3,47 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-class PostImage extends StatefulWidget {
+class PostImage extends StatelessWidget {
   const PostImage({
     Key? key,
     required this.imageUrl,
     this.placeholderUrl,
     this.borderRadius,
+    this.cacheManager,
+    this.memCacheHeight,
+    this.memCacheWidth,
   }) : super(key: key);
 
   final String imageUrl;
   final String? placeholderUrl;
-  final BorderRadiusGeometry? borderRadius;
-
-  @override
-  State<PostImage> createState() => _PostImageState();
-}
-
-class _PostImageState extends State<PostImage> {
-  late Image myImage;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(myImage.image, context);
-  }
-
-  @override
-  void initState() {
-    myImage = Image(
-      image: CachedNetworkImageProvider(widget.imageUrl),
-    );
-    myImage.image
-        .resolve(const ImageConfiguration())
-        .addListener(ImageStreamListener((_, __) {}));
-    super.initState();
-  }
+  final BorderRadius? borderRadius;
+  final CacheManager? cacheManager;
+  final int? memCacheWidth;
+  final int? memCacheHeight;
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl: widget.imageUrl,
+      cacheManager: cacheManager,
+      memCacheHeight: memCacheHeight,
+      memCacheWidth: memCacheWidth,
+      imageUrl: imageUrl,
       imageBuilder: (context, imageProvider) {
         return Container(
           decoration: BoxDecoration(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-            image: DecorationImage(image: myImage.image, fit: BoxFit.cover),
+            borderRadius: borderRadius ?? BorderRadius.circular(8),
+            image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
           ),
         );
       },
-      placeholder: (context, url) => widget.placeholderUrl != null
-          ? CachedNetworkImage(
-              imageUrl: widget.placeholderUrl!,
-              imageBuilder: (context, imageProvider) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
-                ),
-              ),
-              placeholder: (context, url) => Container(
-                decoration: BoxDecoration(
-                  borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                  color: Theme.of(context).cardColor,
-                ),
-              ),
-            )
-          : Container(
-              decoration: BoxDecoration(
-                borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                color: Theme.of(context).cardColor,
-              ),
-            ),
+      placeholder: (context, url) => Container(
+        decoration: BoxDecoration(
+          borderRadius: borderRadius ?? BorderRadius.circular(8),
+          color: Theme.of(context).cardColor,
+        ),
+      ),
       errorWidget: (context, url, error) =>
           const Center(child: Icon(Icons.error)),
       fadeInDuration: const Duration(microseconds: 10),

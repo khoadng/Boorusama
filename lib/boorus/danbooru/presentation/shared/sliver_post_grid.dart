@@ -1,5 +1,5 @@
 // Dart imports:
-import 'dart:async';
+import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -63,7 +62,7 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
       );
 }
 
-class SliverPostGrid extends HookWidget {
+class SliverPostGrid extends StatelessWidget {
   const SliverPostGrid({
     Key? key,
     required this.posts,
@@ -88,21 +87,8 @@ class SliverPostGrid extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Workaround to prevent memory leak, clear images every 10 seconds
-    final timer = useState(Timer.periodic(const Duration(seconds: 10), (_) {
-      PaintingBinding.instance.imageCache.clearLiveImages();
-    }));
-
-    useEffect(() {
-      return () => timer.value.cancel();
-    }, []);
-
     // Clear live image cache everytime this widget built
-    useEffect(() {
-      PaintingBinding.instance.imageCache.clearLiveImages();
-
-      return () {};
-    });
+    PaintingBinding.instance.imageCache.clearLiveImages();
 
     return BlocBuilder<SettingsCubit, SettingsState>(
       buildWhen: (previous, current) =>
@@ -239,6 +225,10 @@ class SliverPostGridItem extends StatelessWidget {
         );
       },
       child: PostImage(
+        memCacheWidth:
+            min(post.width, MediaQuery.of(context).size.width).toInt(),
+        memCacheHeight:
+            min(post.height, MediaQuery.of(context).size.height).toInt(),
         imageUrl: getImageUrlForDisplay(
             post,
             getImageQuality(
@@ -263,7 +253,7 @@ SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
   }
 }
 
-class PostPreviewSheet extends HookWidget {
+class PostPreviewSheet extends StatelessWidget {
   const PostPreviewSheet({
     Key? key,
     required this.post,
