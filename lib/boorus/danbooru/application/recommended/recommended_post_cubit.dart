@@ -3,16 +3,15 @@ import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
-import 'package:boorusama/core/infrastructure/caching/cacher.dart';
+import 'package:boorusama/core/core.dart';
 
 @immutable
 abstract class RecommendedPostEvent extends Equatable {
@@ -54,7 +53,11 @@ class RecommendedPostBloc
 
                   if (posts.isEmpty) return null;
 
-                  return Recommended(title: tag, posts: posts.take(6).toList());
+                  return Recommended(
+                      tag: tag,
+                      title:
+                          tag.split(' ').join(', ').removeUnderscoreWithSpace(),
+                      posts: posts.take(6).toList());
                 }).toList()),
             onFailure: (stackTrace, error) =>
                 emit(const AsyncLoadState.failure()),
@@ -75,54 +78,4 @@ class RecommendedArtistPostCubit extends RecommendedPostBloc {
 class RecommendedCharacterPostCubit extends RecommendedPostBloc {
   RecommendedCharacterPostCubit({required IPostRepository postRepository})
       : super(postRepository: postRepository);
-}
-
-class RecommendedPostCacher implements IPostRepository {
-  const RecommendedPostCacher({
-    required this.cache,
-    required this.postRepository,
-  });
-
-  final Cacher cache;
-  final IPostRepository postRepository;
-
-  @override
-  Future<List<Post>> getCuratedPosts(
-          DateTime date, int page, TimeScale scale) =>
-      postRepository.getCuratedPosts(date, page, scale);
-
-  @override
-  Future<List<Post>> getMostViewedPosts(DateTime date) =>
-      postRepository.getMostViewedPosts(date);
-
-  @override
-  Future<List<Post>> getPopularPosts(
-          DateTime date, int page, TimeScale scale) =>
-      postRepository.getPopularPosts(date, page, scale);
-
-  @override
-  Future<List<Post>> getPosts(String tags, int page,
-      {int limit = 50,
-      CancelToken? cancelToken,
-      bool skipFavoriteCheck = false}) async {
-    final key = '$tags$page$limit';
-    final posts = cache.get(key);
-
-    if (posts != null) return posts;
-
-    final fresh = await postRepository.getPosts(
-      tags,
-      page,
-      limit: limit,
-      cancelToken: cancelToken,
-      skipFavoriteCheck: skipFavoriteCheck,
-    );
-    cache.put(key, fresh);
-
-    return fresh;
-  }
-
-  @override
-  Future<List<Post>> getPostsFromIds(List<int> ids) =>
-      postRepository.getPostsFromIds(ids);
 }

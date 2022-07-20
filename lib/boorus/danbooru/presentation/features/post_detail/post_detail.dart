@@ -9,44 +9,18 @@ import 'package:flutter/services.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'widgets/embedded_webview_webm.dart';
-import 'widgets/information_section.dart';
-import 'widgets/pool_tiles.dart';
-import 'widgets/post_action_toolbar.dart';
-import 'widgets/post_video.dart';
-
-String _getPostParentChildTextDescription(Post post) {
-  if (post.hasParent) return 'This post belongs to a parent and has siblings';
-  return 'This post has children';
-}
-
-class Recommended {
-  Recommended({
-    required String title,
-    required List<Post> posts,
-  })  : _posts = posts,
-        _title = title;
-  final String _title;
-  final List<Post> _posts;
-
-  String get title => _title.split(' ').join(', ').removeUnderscoreWithSpace();
-  List<Post> get posts => _posts;
-}
+import 'models/parent_child_data.dart';
+import 'widgets/widgets.dart';
 
 class PostDetail extends StatefulWidget {
   const PostDetail({
@@ -198,54 +172,13 @@ class _PostDetailState extends State<PostDetail> {
               padding: const EdgeInsets.only(bottom: 10),
               child: _buildActionBar(),
             ),
-          if (widget.post.hasChildren || widget.post.hasParent) ...[
-            const _Divider(),
-            _buildParentChildTile(),
-            const _Divider(),
-          ],
-          if (!widget.post.hasChildren && !widget.post.hasParent)
+          if (widget.post.hasParentOrChildren)
+            ParentChildTile(data: getParentChildData(widget.post)),
+          if (!widget.post.hasBothParentAndChildren)
             const Divider(height: 8, thickness: 1),
           _buildRecommendedArtistList(),
           _buildRecommendedCharacterList(),
         ],
-      ),
-    );
-  }
-
-  Widget _buildParentChildTile() {
-    return ListTile(
-      dense: true,
-      tileColor: Theme.of(context).cardColor,
-      title: Text(_getPostParentChildTextDescription(widget.post)),
-      trailing: Padding(
-        padding: const EdgeInsets.all(4),
-        child: ElevatedButton(
-          onPressed: () => showBarModalBottomSheet(
-            context: context,
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => PostBloc(
-                    postRepository: context.read<IPostRepository>(),
-                    blacklistedTagsRepository:
-                        context.read<BlacklistedTagsRepository>(),
-                  )..add(PostRefreshed(
-                      tag: widget.post.hasParent
-                          ? 'parent:${widget.post.parentId}'
-                          : 'parent:${widget.post.id}')),
-                )
-              ],
-              child: ParentChildPostPage(
-                  parentPostId: widget.post.hasParent
-                      ? widget.post.parentId!
-                      : widget.post.id),
-            ),
-          ),
-          child: const Text(
-            'View',
-            style: TextStyle(color: Colors.white),
-          ),
-        ),
       ),
     );
   }
@@ -274,7 +207,7 @@ class _PostDetailState extends State<PostDetail> {
             children: [
               ...List.generate(
                 artists.length,
-                (index) => RecommendPostSectionPlaceHolder(
+                (index) => RecommendSectionPlaceHolder(
                   header: ListTile(
                     title: Text(artists[index].removeUnderscoreWithSpace()),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
@@ -302,7 +235,7 @@ class _PostDetailState extends State<PostDetail> {
               url,
               routeSettings: RouteSettings(
                 arguments: [
-                  item._title,
+                  item.tag,
                   widget.post.normalImageUrl,
                 ],
               ),
@@ -340,7 +273,7 @@ class _PostDetailState extends State<PostDetail> {
             children: [
               ...List.generate(
                 characters.length,
-                (index) => RecommendPostSectionPlaceHolder(
+                (index) => RecommendSectionPlaceHolder(
                   header: ListTile(
                     title: Text(characters[index].removeUnderscoreWithSpace()),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
@@ -361,80 +294,6 @@ class _PostDetailState extends State<PostDetail> {
         post: widget.post,
         imagePath: value,
       ),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).hintColor,
-      height: 1,
-    );
-  }
-}
-
-class RecommendPostSection extends StatelessWidget {
-  const RecommendPostSection({
-    Key? key,
-    required this.posts,
-    required this.header,
-    required this.imageQuality,
-  }) : super(key: key);
-
-  final List<Post> posts;
-  final Widget header;
-  final ImageQuality imageQuality;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        header,
-        Padding(
-          padding: const EdgeInsets.all(4),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height *
-                (posts.length <= 3 ? 0.15 : 0.3),
-            child: PreviewPostGrid(
-              posts: posts,
-              imageQuality: imageQuality,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class RecommendPostSectionPlaceHolder extends StatelessWidget {
-  const RecommendPostSectionPlaceHolder({
-    Key? key,
-    required this.header,
-  }) : super(key: key);
-
-  final Widget header;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        header,
-        Padding(
-          padding: const EdgeInsets.all(4),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: const PreviewPostGridPlaceHolder(
-              itemCount: 6,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

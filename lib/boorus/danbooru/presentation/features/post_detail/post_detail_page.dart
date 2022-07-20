@@ -19,7 +19,7 @@ import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'post_image_page.dart';
-import 'providers/slide_show_providers.dart';
+import 'models/slide_show_configuration.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 

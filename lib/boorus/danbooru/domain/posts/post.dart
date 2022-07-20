@@ -181,6 +181,9 @@ class Post extends Equatable {
 
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
+  bool get hasBothParentAndChildren => hasChildren && hasParent;
+  bool get hasParentOrChildren => hasChildren || hasParent;
+
   @override
   List<Object?> get props => [id];
 }

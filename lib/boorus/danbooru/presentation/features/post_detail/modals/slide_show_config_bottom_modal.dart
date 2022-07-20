@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/providers/slide_show_providers.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/models/slide_show_configuration.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 
 class SlideShowConfigBottomModal extends StatefulWidget {
