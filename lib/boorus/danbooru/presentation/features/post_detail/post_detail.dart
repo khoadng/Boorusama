@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:convert';
 import 'dart:ui';
 
 // Flutter imports:
@@ -13,7 +12,6 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:path/path.dart' as p;
-import 'package:webview_flutter/webview_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -27,7 +25,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/pare
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/hooks/hooks.dart';
+import 'widgets/embedded_webview_webm.dart';
 import 'widgets/information_section.dart';
 import 'widgets/pool_tiles.dart';
 import 'widgets/post_action_toolbar.dart';
@@ -51,7 +49,7 @@ class Recommended {
   List<Post> get posts => _posts;
 }
 
-class PostDetail extends HookWidget {
+class PostDetail extends StatefulWidget {
   const PostDetail({
     Key? key,
     required this.post,
@@ -64,59 +62,80 @@ class PostDetail extends HookWidget {
   final AnimationController animController;
 
   @override
-  Widget build(BuildContext context) {
-    final scrollController = useScrollController();
-    final scrollControllerWithAnim =
-        useScrollControllerForAnimation(animController, scrollController);
-    final isMounted = useIsMounted();
-    final imagePath = useState<String?>(null);
+  State<PostDetail> createState() => _PostDetailState();
+}
 
-    useEffect(() {
-      // Enable virtual display.
-      if (isAndroid()) WebView.platform = SurfaceAndroidWebView();
-      return null;
-    }, []);
+class _PostDetailState extends State<PostDetail> {
+  final scrollController = ScrollController();
+  final imagePath = ValueNotifier<String?>(null);
 
-    Widget postWidget;
-    if (post.isVideo) {
-      if (p.extension(post.normalImageUrl) == '.webm') {
-        final String videoHtml = '''
+  late final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
-                <source src=${post.normalImageUrl}#t=0.01 type="video/webm" />
+                <source src=${widget.post.normalImageUrl}#t=0.01 type="video/webm" />
               </video>
             </center>''';
-        postWidget = Container(
-          color: Colors.black,
-          height: MediaQuery.of(context).size.height,
-          child: WebView(
-            backgroundColor: Colors.black,
-            allowsInlineMediaPlayback: true,
-            initialUrl: 'about:blank',
-            onWebViewCreated: (controller) {
-              controller.loadUrl(Uri.dataFromString(videoHtml,
-                      mimeType: 'text/html',
-                      encoding: Encoding.getByName('utf-8'))
-                  .toString());
-            },
-          ),
-        );
-      } else {
-        postWidget = PostVideo(post: post);
-      }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final postWidget = _buildPostWidget();
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      child: BlocBuilder<SettingsCubit, SettingsState>(
+        buildWhen: (previous, current) =>
+            previous.settings.actionBarDisplayBehavior !=
+            current.settings.actionBarDisplayBehavior,
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: Colors.transparent,
+            body: widget.minimal
+                ? Center(child: postWidget)
+                : Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      CustomScrollView(
+                        controller: scrollController,
+                        slivers: [
+                          SliverToBoxAdapter(child: postWidget),
+                          const PoolTiles(),
+                          _buildPostInformation(state),
+                        ],
+                      ),
+                      if (state.settings.actionBarDisplayBehavior ==
+                          ActionBarDisplayBehavior.staticAtBottom)
+                        _buildBottomActionBar(),
+                    ],
+                  ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildPostWidget() {
+    if (widget.post.isVideo) {
+      return p.extension(widget.post.normalImageUrl) == '.webm'
+          ? EmbeddedWebViewWebm(videoHtml: videoHtml)
+          : PostVideo(post: widget.post);
     } else {
-      postWidget = GestureDetector(
+      return GestureDetector(
         onTap: () {
           AppRouter.router.navigateTo(context, '/posts/image',
-              routeSettings: RouteSettings(arguments: [post]));
+              routeSettings: RouteSettings(arguments: [widget.post]));
         },
         child: CachedNetworkImage(
-          imageUrl: post.normalImageUrl,
+          imageUrl: widget.post.normalImageUrl,
           imageBuilder: (context, imageProvider) {
             DefaultCacheManager()
-                .getFileFromCache(post.normalImageUrl)
+                .getFileFromCache(widget.post.normalImageUrl)
                 .then((file) {
-              if (!isMounted()) return;
+              if (!mounted) return;
               imagePath.value = file!.file.path;
             });
             return Image(image: imageProvider);
@@ -126,8 +145,8 @@ class PostDetail extends HookWidget {
           progressIndicatorBuilder: (context, url, progress) => FittedBox(
             fit: BoxFit.cover,
             child: SizedBox(
-              height: post.height,
-              width: post.width,
+              height: widget.post.height,
+              width: widget.post.width,
               child: Stack(
                 children: [
                   Align(
@@ -141,50 +160,9 @@ class PostDetail extends HookWidget {
         ),
       );
     }
-
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-      child: BlocBuilder<SettingsCubit, SettingsState>(
-        buildWhen: (previous, current) =>
-            previous.settings.actionBarDisplayBehavior !=
-            current.settings.actionBarDisplayBehavior,
-        builder: (context, state) {
-          return Scaffold(
-            backgroundColor: Colors.transparent,
-            body: minimal
-                ? Center(child: postWidget)
-                : Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      CustomScrollView(
-                        controller: scrollControllerWithAnim,
-                        slivers: [
-                          SliverToBoxAdapter(
-                            child: postWidget,
-                          ),
-                          const PoolTiles(),
-                          _buildPostInformation(
-                            state,
-                            imagePath,
-                            context,
-                          ),
-                        ],
-                      ),
-                      if (state.settings.actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.staticAtBottom)
-                        _buildBottomActionBar(context, imagePath),
-                    ],
-                  ),
-          );
-        },
-      ),
-    );
   }
 
-  Widget _buildBottomActionBar(
-    BuildContext context,
-    ValueNotifier<String?> imagePath,
-  ) {
+  Widget _buildBottomActionBar() {
     return Positioned(
       bottom: 6,
       child: ClipRRect(
@@ -197,7 +175,7 @@ class PostDetail extends HookWidget {
             type: MaterialType.card,
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.9,
-              child: _buildActionBar(imagePath),
+              child: _buildActionBar(),
             ),
           ),
         ),
@@ -205,29 +183,25 @@ class PostDetail extends HookWidget {
     );
   }
 
-  Widget _buildPostInformation(
-    SettingsState state,
-    ValueNotifier<String?> imagePath,
-    BuildContext context,
-  ) {
+  Widget _buildPostInformation(SettingsState state) {
     return SliverToBoxAdapter(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          InformationSection(post: post),
+          InformationSection(post: widget.post),
           if (state.settings.actionBarDisplayBehavior ==
               ActionBarDisplayBehavior.scrolling)
             Padding(
               padding: const EdgeInsets.only(bottom: 10),
-              child: _buildActionBar(imagePath),
+              child: _buildActionBar(),
             ),
-          if (post.hasChildren || post.hasParent) ...[
+          if (widget.post.hasChildren || widget.post.hasParent) ...[
             const _Divider(),
-            _buildParentChildTile(context),
+            _buildParentChildTile(),
             const _Divider(),
           ],
-          if (!post.hasChildren && !post.hasParent)
+          if (!widget.post.hasChildren && !widget.post.hasParent)
             const Divider(height: 8, thickness: 1),
           _buildRecommendedArtistList(),
           _buildRecommendedCharacterList(),
@@ -236,11 +210,11 @@ class PostDetail extends HookWidget {
     );
   }
 
-  Widget _buildParentChildTile(BuildContext context) {
+  Widget _buildParentChildTile() {
     return ListTile(
       dense: true,
       tileColor: Theme.of(context).cardColor,
-      title: Text(_getPostParentChildTextDescription(post)),
+      title: Text(_getPostParentChildTextDescription(widget.post)),
       trailing: Padding(
         padding: const EdgeInsets.all(4),
         child: ElevatedButton(
@@ -254,13 +228,15 @@ class PostDetail extends HookWidget {
                     blacklistedTagsRepository:
                         context.read<BlacklistedTagsRepository>(),
                   )..add(PostRefreshed(
-                      tag: post.hasParent
-                          ? 'parent:${post.parentId}'
-                          : 'parent:${post.id}')),
+                      tag: widget.post.hasParent
+                          ? 'parent:${widget.post.parentId}'
+                          : 'parent:${widget.post.id}')),
                 )
               ],
               child: ParentChildPostPage(
-                  parentPostId: post.hasParent ? post.parentId! : post.id),
+                  parentPostId: widget.post.hasParent
+                      ? widget.post.parentId!
+                      : widget.post.id),
             ),
           ),
           child: const Text(
@@ -273,7 +249,7 @@ class PostDetail extends HookWidget {
   }
 
   Widget _buildRecommendedArtistList() {
-    if (post.artistTags.isEmpty) return const SizedBox.shrink();
+    if (widget.post.artistTags.isEmpty) return const SizedBox.shrink();
     return BlocBuilder<RecommendedArtistPostCubit,
         AsyncLoadState<List<Recommended>>>(
       builder: (context, state) {
@@ -282,14 +258,13 @@ class PostDetail extends HookWidget {
           return Column(
             children: recommendedItems
                 .map((item) => _buildRecommendPostSection(
-                      context,
                       item,
                       '/artist',
                     ))
                 .toList(),
           );
         } else {
-          final artists = post.artistTags;
+          final artists = widget.post.artistTags;
           return Column(
             children: [
               ...List.generate(
@@ -309,7 +284,6 @@ class PostDetail extends HookWidget {
   }
 
   Widget _buildRecommendPostSection(
-    BuildContext context,
     Recommended item,
     String url,
   ) {
@@ -324,7 +298,7 @@ class PostDetail extends HookWidget {
               routeSettings: RouteSettings(
                 arguments: [
                   item._title,
-                  post.normalImageUrl,
+                  widget.post.normalImageUrl,
                 ],
               ),
             ),
@@ -338,7 +312,7 @@ class PostDetail extends HookWidget {
   }
 
   Widget _buildRecommendedCharacterList() {
-    if (post.characterTags.isEmpty) return const SizedBox.shrink();
+    if (widget.post.characterTags.isEmpty) return const SizedBox.shrink();
     return BlocBuilder<RecommendedCharacterPostCubit,
         AsyncLoadState<List<Recommended>>>(
       builder: (context, state) {
@@ -347,14 +321,13 @@ class PostDetail extends HookWidget {
           return Column(
             children: recommendedItems
                 .map((item) => _buildRecommendPostSection(
-                      context,
                       item,
                       '/character',
                     ))
                 .toList(),
           );
         } else {
-          final characters = post.characterTags;
+          final characters = widget.post.characterTags;
           return Column(
             children: [
               ...List.generate(
@@ -373,11 +346,11 @@ class PostDetail extends HookWidget {
     );
   }
 
-  Widget _buildActionBar(ValueNotifier<String?> imagePath) {
+  Widget _buildActionBar() {
     return ValueListenableBuilder<String?>(
       valueListenable: imagePath,
       builder: (context, value, child) => PostActionToolbar(
-        post: post,
+        post: widget.post,
         imagePath: value,
       ),
     );
