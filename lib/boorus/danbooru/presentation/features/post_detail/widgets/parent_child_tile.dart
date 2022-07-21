@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -29,7 +30,7 @@ class ParentChildTile extends StatelessWidget {
         ListTile(
           dense: true,
           tileColor: Theme.of(context).cardColor,
-          title: Text(data.description),
+          title: Text(data.description).tr(),
           trailing: Padding(
             padding: const EdgeInsets.all(4),
             child: ElevatedButton(
@@ -49,9 +50,9 @@ class ParentChildTile extends StatelessWidget {
                 ),
               ),
               child: const Text(
-                'View',
+                'post.detail.view',
                 style: TextStyle(color: Colors.white),
-              ),
+              ).tr(),
             ),
           ),
         ),

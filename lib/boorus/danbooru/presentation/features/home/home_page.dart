@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -62,9 +63,21 @@ class _HomePageState extends State<HomePage> {
                         if (state is NetworkConnectedState) {
                           return const SizedBox.shrink();
                         } else if (state is NetworkDisconnectedState) {
-                          return const Material(
+                          return Material(
                             color: Colors.black,
-                            child: Text('Network unavailable'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.wifi_off,
+                                  size: 16,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 6),
+                                  child: const Text('network.unavailable').tr(),
+                                ),
+                              ],
+                            ),
                           );
                         } else {
                           return const SizedBox.shrink();

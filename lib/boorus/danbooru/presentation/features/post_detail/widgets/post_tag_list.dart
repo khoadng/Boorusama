@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -90,7 +91,7 @@ class PostTagList extends StatelessWidget {
                   children: [
                     ListTile(
                       leading: const Icon(Icons.info),
-                      title: const Text('Open wiki'),
+                      title: const Text('post.detail.open_wiki').tr(),
                       onTap: () {
                         Navigator.of(context).pop();
                         launchWikiPage(state.booru.url, tag.rawName);
@@ -103,7 +104,8 @@ class PostTagList extends StatelessWidget {
                             leading: const FaIcon(
                               FontAwesomeIcons.plus,
                             ),
-                            title: const Text('Add to blacklist'),
+                            title:
+                                const Text('post.detail.add_to_blacklist').tr(),
                             onTap: () {
                               Navigator.of(context).pop();
                               onAddToBlacklisted(tag);

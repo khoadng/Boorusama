@@ -11,6 +11,7 @@ import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timeago/timeago.dart';
 
 // Project imports:
 import 'package:boorusama/app_info.dart';
@@ -59,6 +60,12 @@ import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
     hide PoolCategory;
 
+//TODO: should parse from translation files instead of hardcoding
+const supportedLocales = [
+  Locale('en', ''),
+  Locale('vi', ''),
+];
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -106,11 +113,14 @@ void main() async {
 
   final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
 
+  //TODO: shouldn't hardcode language.
+  setLocaleMessages('vi', ViMessages());
+
   void run() {
     runApp(
       EasyLocalization(
         useOnlyLangCode: true,
-        supportedLocales: const [Locale('en', ''), Locale('vi', '')],
+        supportedLocales: supportedLocales,
         path: 'assets/translations',
         fallbackLocale: const Locale('en', ''),
         child: MultiRepositoryProvider(

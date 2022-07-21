@@ -23,7 +23,7 @@ class SettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('settings._string'.tr()),
+        title: Text('settings.settings'.tr()),
       ),
       body: Padding(
         padding: const EdgeInsets.only(top: 8),
@@ -35,11 +35,11 @@ class SettingsPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SettingsSection(
-                  label: 'settings.appSettings._string'.tr(),
+                  label: 'settings.app_settings'.tr(),
                 ),
                 ListTile(
                   leading: const Icon(Icons.admin_panel_settings),
-                  title: Text('settings.appSettings.safeMode'.tr()),
+                  title: const Text('settings.safe_mode').tr(),
                   trailing: Switch(
                       activeColor: Theme.of(context).colorScheme.primary,
                       value: settings.safeMode,
@@ -51,7 +51,7 @@ class SettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                  title: Text('settings.appSettings.appearance._string'.tr()),
+                  title: const Text('settings.appearance').tr(),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
                     enterWidget: const AppearancePage(),
@@ -59,7 +59,7 @@ class SettingsPage extends StatelessWidget {
                   )),
                 ),
                 ListTile(
-                  title: Text('settings.appSettings.language._string'.tr()),
+                  title: const Text('settings.language.language').tr(),
                   leading: const Icon(Icons.translate),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
@@ -78,7 +78,7 @@ class SettingsPage extends StatelessWidget {
                 //   )),
                 // ),
                 ListTile(
-                  title: const Text('Privacy'),
+                  title: const Text('settings.privacy.privacy').tr(),
                   leading: const FaIcon(FontAwesomeIcons.shieldHalved),
                   onTap: () =>
                       Navigator.of(context).push(ParallaxSlideInPageRoute(
@@ -87,7 +87,7 @@ class SettingsPage extends StatelessWidget {
                   )),
                 ),
                 ListTile(
-                  title: const Text('Information'),
+                  title: const Text('settings.information').tr(),
                   leading: const Icon(Icons.info),
                   onTap: () => showAboutDialog(
                     context: context,

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -60,14 +61,16 @@ class DownloadProviderWidget extends StatelessWidget {
                   if (state.storagePermission ==
                           PermissionStatus.permanentlyDenied &&
                       !state.isNotificationRead) {
-                    final snackBar = SnackBar(
-                        action: SnackBarAction(
-                            label: 'Open settings',
-                            onPressed: () => openAppSettings()),
-                        content: const Text(
-                            'Storage permission is needed to store download files.'));
-
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    showSimpleSnackBar(
+                      context: context,
+                      action: SnackBarAction(
+                          label: 'download.open_app_settings'.tr(),
+                          onPressed: () => openAppSettings()),
+                      behavior: SnackBarBehavior.fixed,
+                      content:
+                          const Text('download.storage_permission_explanation')
+                              .tr(),
+                    );
                     context.read<DeviceStoragePermissionBloc>().add(
                         const DeviceStorageNotificationDisplayStatusChanged(
                             isDisplay: true));

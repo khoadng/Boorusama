@@ -1,16 +1,23 @@
 {
     "profile": {
         "profile" : "Profile",
-        "favorites" : "Favorites"
+        "favorites" : "Favorites",
+        "see_more" : "See more",
+        "user_id" : "User ID",
+        "level" : "Level",
+        "favorites_count" : "Favorites",
+        "comments_count" : "Comments"
     },
-
 
     "login" : {
         "form" : {
             "username" : "Name",
             "password" : "API Key",
             "login" : "Login",
-            "greeting" : "Hi there!"
+            "greeting" : "Hi there!",
+            "cancel" : "Cancel",
+            "open_web_browser" : "Open web browser",
+            "api_key_instruction" : "1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit"
         },
         "errors" : {
             "invalidUsernameOrPassword" : "Invalid username or API key",
@@ -19,59 +26,198 @@
         }
     },
 
-    "commentCreate" : {
-        "hint" : "Comment",
-        "loading" : "Please wait...",
-        "error": "Error"
+    "network" : {
+        "unavailable" : "Network unavailable"
     },
 
-    "commentListing": {
-        "commands" : {
-            "edit" : "Edit",
-            "reply" : "Reply",
-            "delete" : "Delete"
-        },
-        "tooltips": {
-            "toggleDeletedComments" : "Toggle deleted comments"
-        },
-        "notifications" : {
-            "noComments" : "There are no comments"
+    "tag" : {
+        "related" : {
+            "more" : "More",
+            "related" : "Related",
+            "add_to_current_search" : "Add to current search",
+            "open_wiki" : "Open wiki"
         }
     },
 
-    "postCategories" : {
+    "post" : {
+        "detail" : {
+            "view": "View",
+            "slide_show" : {
+                "interval" : "Interval (seconds)",
+                "skip_anim" : "Skip animation",
+                "ok" : "OK",
+                "cancel" : "Cancel"
+            },
+            "has_parent_notice" : "This post belongs to a parent and has siblings",
+            "has_children_notice" : "This post has children",
+            "size" : "Size",
+            "resolution" : "Resolution",
+            "rating" : "Rating",
+            "share" : {
+                "source" : "Share source link",
+                "booru" : "Share booru link",
+                "image" : "Share image"
+            },
+            "copied" : "Copied",
+            "show_original" : "Show original",
+            "show_translated" : "Show translated",
+            "login_required_notice" : "You have to log in to perform this action",
+            "open_wiki" : "Open wiki",
+            "add_to_blacklist" : "Add to blacklist"
+        },
+        "parent_child": {
+            "children_of": "Children of"
+        },
+        "quick_preview" : {
+            "view_notes" : "View translated notes"
+        },
+        "image_fullview" : {
+            "view_original" : "View original image",
+            "view_resized" : "View resized image"
+        }
+    },
+
+    "comment" : {
+        "create" : {
+            "hint" : "Comment",
+            "loading" : "Please wait...",
+            "error": "Error"
+        },
+        "list": {
+            "edit" : "Edit",
+            "reply" : "Reply",
+            "reply_to" : "Replying to",
+            "delete" : "Delete",
+            "noComments" : "There are no comments",
+            "last_updated" : "Last updated",
+            "send" : "Send"
+        }
+    },
+
+    "explore" : {
         "latest": "Latest",
         "popular": "Popular",
         "curated": "Curated",
-        "mostViewed": "Most viewed"
+        "most_viewed": "Most viewed",
+        "see_more" : "See more"
     },
 
     "search" : {
+        "errors" : {
+            "generic" : "Something went wrong",
+            "tag_limit" : "Maximum tag limit reached. Upgrade your account to search for more tags at once.",
+            "database_timeout" : "Your search took too long to execute and was cancelled.",
+            "unknown" : "Unknown exception has occured, please try again later"
+        },
         "hint": "Search...",
-        "noResult" : "No result",
-        "empty" : "Such empty"
+        "no_result" : "We searched far and wide, but no results were found.",
+        "empty" : "Such empty",
+        "search_options" : "Search options",
+        "history" : {
+            "history" : "History",
+            "clear": "Clear"
+        }
+    },
+
+    "pool" : {
+        "pool" : "Pool",
+        "pool_gallery" : "Pool Gallery",
+        "mature_banned_content" : "Mature/Banned content",
+        "order" : {
+            "recent" : "Recent",
+            "new" : "New",
+            "post_count": "Post count",
+            "name" : "Name"
+        },
+        "search" : {
+            "hint": "Search a pool"
+        },
+        "detail" : {
+            "last_updated" : "Last updated"
+        },
+        "item" : {
+            "one": "{} item",
+            "other": "{} items"
+        } 
     },
 
     "settings" : {
-        "_string" : "Settings",
-        "appSettings" : {
-            "_string" : "App Settings",
-            "appearance" : {
-                "_string" : "Appearance",
-                "theme" :{
-                    "_string": "Theme",
-                    "dark" : "Dark",
-                    "light" : "Light"
-                }
+        "settings" : "Settings",
+        "app_settings" :"App Settings",
+        "appearance" :  "Appearance",
+        "general" :  "General",
+        "information" : "Information",
+        "image_grid" : {
+            "image_grid" : "Image grid",
+            "grid_size" : {
+                "grid_size" : "Grid size",
+                "small" : "Small",
+                "medium" : "Medium",
+                "large" : "Large"
             },
-            "language" : {
-                "_string" : "Language",
-                "english" : "English",
-                "vietnamese" : "Vietnamese"
+            "image_quality" : {
+                "image_quality" : "Image quality",
+                "high_quality_notice" : "High quality image will take longer to load.",
+                "high" : "High",
+                "low" : "Low",
+                "original" : "Original",
+                "automatic" : "Automatic"
             },
-            "safeMode" : "Safe Mode",
-            "blacklistedTags" : "Blacklisted tags"
-        }
+            "spacing" : "Spacing",
+            "corner_radius" : "Corner radius"
+        },
+        "image_viewer" : {
+            "image_viewer" : "Image viewer",
+            "full_res_as_default" : "Show full resolution as default",
+            "full_res_notice" : "It will take a while to load depend on the size of image"
+        },
+        "image_detail" : {
+            "image_detail" : "Image detail",
+            "action_bar_display_behavior" : {
+                "action_bar_display_behavior" : "Action bar display behavior",
+                "scrolling" : "Scrolling",
+                "static_at_bottom" : "Static at bottom"
+            } 
+        },
+        "language" : {
+            "language" : "Language",
+            "english" : "English",
+            "vietnamese" : "Vietnamese"
+        },
+        "theme" : {
+            "theme" : "Theme",
+            "dark" : "Dark",
+            "light" : "Light",
+            "amoled_dark": "AMOLED Dark" 
+        },
+        "privacy" : {
+            "privacy" : "Privacy",
+            "send_error_data_notice" : "Send anonymous data for error logging"
+        },
+        "safe_mode" : "Safe Mode"
+    },
+
+    "blacklisted_tags" : {
+        "remove": "Remove",
+        "edit" : "Edit",
+        "blacklisted_tags" : "Blacklisted tags",
+        "load_error" : "Failed to load blacklisted tags",
+        "updated" : "Blacklisted tags updated",
+        "limitation_notice" : "Only support <b>NOT</b> operator and <b>OR</b> operator.\n\nBlacklisting using metatags won't work for current version."
+    },
+
+    "download" : {
+        "download" : "Download",
+        "open_app_settings" : "Open settings",
+        "storage_permission_explanation" : "Storage permission is needed to store download files."
+    },
+
+    "rating" : {
+        "rate_request": "Rate this app",
+        "rate" : "Rate",
+        "cancel" : "No thanks",
+        "later" : "Maybe later",
+        "rationale" : "If you like the app, please take a little bit of your time to review it.\nIt wouldn't take more than a few seconds and it really helps this project."
     },
 
     "sideMenu": {

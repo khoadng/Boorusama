@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -36,8 +37,8 @@ class PoolImage extends StatelessWidget {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Center(
-              child: Text('Mature/Banned content'),
+            child: Center(
+              child: const Text('pool.mature_banned_content').tr(),
             ),
           );
   }

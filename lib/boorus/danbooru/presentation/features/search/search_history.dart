@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -54,7 +55,7 @@ class SearchHistorySection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'History'.toUpperCase(),
+              'search.history.history'.tr().toUpperCase(),
               style: Theme.of(context).textTheme.subtitle2!.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
@@ -63,7 +64,7 @@ class SearchHistorySection extends StatelessWidget {
               onPressed: () => ReadContext(context)
                   .read<SearchHistoryCubit>()
                   .clearHistory(),
-              child: const Text('Clear'),
+              child: const Text('search.history.clear').tr(),
             ),
           ],
         ),

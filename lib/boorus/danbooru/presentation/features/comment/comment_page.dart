@@ -167,7 +167,7 @@ class _CommentPageState extends State<CommentPage> {
       );
     } else {
       return Center(
-        child: Text('commentListing.notifications.noComments'.tr()),
+        child: Text('comment.list.noComments'.tr()),
       );
     }
   }
@@ -180,12 +180,12 @@ class _CommentPageState extends State<CommentPage> {
           if (comment.isSelf)
             ListTile(
               leading: const Icon(Icons.edit),
-              title: const Text('Edit'),
+              title: const Text('comment.list.edit').tr(),
               onTap: () => _handleEditTap(comment, widget.postId),
             ),
           ListTile(
             leading: const Icon(Icons.reply),
-            title: const Text('Reply'),
+            title: const Text('comment.list.reply').tr(),
             onTap: () {
               Navigator.of(context).pop();
               _handleReplyTap(comment, widget.postId);
@@ -194,7 +194,7 @@ class _CommentPageState extends State<CommentPage> {
           if (comment.isSelf)
             ListTile(
               leading: const Icon(Icons.reply),
-              title: const Text('Delete'),
+              title: const Text('comment.list.delete').tr(),
               onTap: () {
                 Navigator.of(context).pop();
                 context.read<CommentBloc>().add(CommentDeleted(
@@ -225,10 +225,10 @@ class _CommentPageState extends State<CommentPage> {
               padding: const EdgeInsets.only(top: 8),
               child: Wrap(
                 children: [
-                  const Text(
-                    'Replying to ',
+                  Text(
+                    '${'comment.list.reply_to'.tr()} ',
                     softWrap: true,
-                    style: TextStyle(color: Colors.grey),
+                    style: const TextStyle(color: Colors.grey),
                   ),
                   Text(
                     '@${comment.authorName}',
@@ -244,7 +244,7 @@ class _CommentPageState extends State<CommentPage> {
             decoration: InputDecoration(
               isDense: true,
               contentPadding: const EdgeInsets.only(bottom: 4),
-              hintText: 'commentCreate.hint'.tr(),
+              hintText: 'comment.create.hint'.tr(),
               border: const UnderlineInputBorder(),
               suffix: IconButton(
                 visualDensity: VisualDensity.compact,
@@ -276,7 +276,7 @@ class _CommentPageState extends State<CommentPage> {
                     onPressed: value.text.isEmpty
                         ? null
                         : () => _handleSendTap(value.text),
-                    child: const Text('Send'),
+                    child: const Text('comment.list.send').tr(),
                   );
                 },
               ),

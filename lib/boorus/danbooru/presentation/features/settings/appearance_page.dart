@@ -5,7 +5,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
@@ -58,6 +57,50 @@ SliverGridDelegate _gridSizeToGridDelegate(
   return _normalGrid(spacing / 2);
 }
 
+String _themeModeToString(ThemeMode theme) {
+  switch (theme) {
+    case ThemeMode.dark:
+      return 'settings.theme.dark';
+    case ThemeMode.amoledDark:
+      return 'settings.theme.amoled_dark';
+    default:
+      return 'settings.theme.light';
+  }
+}
+
+String _imageQualityToString(ImageQuality quality) {
+  switch (quality) {
+    case ImageQuality.high:
+      return 'settings.image_grid.image_quality.high';
+    case ImageQuality.low:
+      return 'settings.image_grid.image_quality.low';
+    case ImageQuality.original:
+      return 'settings.image_grid.image_quality.original';
+    default:
+      return 'settings.image_grid.image_quality.automatic';
+  }
+}
+
+String _gridSizeToString(GridSize size) {
+  switch (size) {
+    case GridSize.large:
+      return 'settings.image_grid.grid_size.large';
+    case GridSize.small:
+      return 'settings.image_grid.grid_size.small';
+    default:
+      return 'settings.image_grid.grid_size.medium';
+  }
+}
+
+String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
+  switch (behavior) {
+    case ActionBarDisplayBehavior.staticAtBottom:
+      return 'settings.image_detail.action_bar_display_behavior.static_at_bottom';
+    default:
+      return 'settings.image_detail.action_bar_display_behavior.scrolling';
+  }
+}
+
 class _AppearancePageState extends State<AppearancePage> {
   late final ValueNotifier<double> _spacingSliderValue = ValueNotifier(0);
   late final ValueNotifier<double> _borderRadiusSliderValue = ValueNotifier(0);
@@ -76,119 +119,134 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('settings.appSettings.appearance._string'.tr()),
+        title: const Text('settings.appearance').tr(),
       ),
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return SafeArea(
-              child: ListView(
-            children: [
-              const SettingsHeader(label: 'General'),
-              SettingsTile(
-                leading: const SettingsIcon(FontAwesomeIcons.paintbrush),
-                title: const Text('Theme'),
-                selectedOption: state.settings.themeMode.name.sentenceCase,
-                onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
-                  context: context,
-                  items: [...ThemeMode.values]..remove(ThemeMode.system),
-                  titleBuilder: (item) => Text(item.name.sentenceCase),
-                  groupValue: state.settings.themeMode,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(themeMode: value)),
+            child: ListView(
+              children: [
+                SettingsHeader(label: 'settings.general'.tr()),
+                SettingsTile(
+                  leading: const SettingsIcon(FontAwesomeIcons.paintbrush),
+                  title: const Text('settings.theme.theme').tr(),
+                  selectedOption:
+                      _themeModeToString(state.settings.themeMode).tr(),
+                  onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
+                    context: context,
+                    items: [...ThemeMode.values]..remove(ThemeMode.system),
+                    titleBuilder: (item) => Text(_themeModeToString(item)).tr(),
+                    groupValue: state.settings.themeMode,
+                    onChanged: (value) => context
+                        .read<SettingsCubit>()
+                        .update(state.settings.copyWith(themeMode: value)),
+                  ),
                 ),
-              ),
-              const Divider(thickness: 1),
-              const SettingsHeader(label: 'Image grid'),
-              _buildPreview(context, state),
-              SettingsTile(
-                leading: const SettingsIcon(FontAwesomeIcons.tableCells),
-                title: const Text('Grid size'),
-                selectedOption: state.settings.gridSize.name.sentenceCase,
-                onTap: () => showRadioOptionsModalBottomSheet<GridSize>(
-                  context: context,
-                  items: GridSize.values,
-                  titleBuilder: (item) => Text(item.name.headerCase),
-                  groupValue: state.settings.gridSize,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(gridSize: value)),
+                const Divider(thickness: 1),
+                SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
+                _buildPreview(context, state),
+                SettingsTile(
+                  leading: const SettingsIcon(FontAwesomeIcons.tableCells),
+                  title: const Text('settings.image_grid.grid_size.grid_size')
+                      .tr(),
+                  selectedOption:
+                      _gridSizeToString(state.settings.gridSize).tr(),
+                  onTap: () => showRadioOptionsModalBottomSheet<GridSize>(
+                    context: context,
+                    items: GridSize.values,
+                    titleBuilder: (item) => Text(_gridSizeToString(item)).tr(),
+                    groupValue: state.settings.gridSize,
+                    onChanged: (value) => context
+                        .read<SettingsCubit>()
+                        .update(state.settings.copyWith(gridSize: value)),
+                  ),
                 ),
-              ),
-              SettingsTile(
-                leading: const SettingsIcon(FontAwesomeIcons.images),
-                title: const Text('Image quality'),
-                selectedOption: state.settings.imageQuality.name.sentenceCase,
-                onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
-                  context: context,
-                  items: [...ImageQuality.values]
-                    ..remove(ImageQuality.original),
-                  titleBuilder: (item) => Text(item.name.headerCase),
-                  subtitleBuilder: (item) => item == ImageQuality.high
-                      ? Text(
-                          'High quality image will take longer to load.',
-                          style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                          ),
-                        )
+                SettingsTile(
+                  leading: const SettingsIcon(FontAwesomeIcons.images),
+                  title: const Text(
+                          'settings.image_grid.image_quality.image_quality')
+                      .tr(),
+                  selectedOption:
+                      _imageQualityToString(state.settings.imageQuality).tr(),
+                  onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
+                    context: context,
+                    items: [...ImageQuality.values]
+                      ..remove(ImageQuality.original),
+                    titleBuilder: (item) =>
+                        Text(_imageQualityToString(item)).tr(),
+                    subtitleBuilder: (item) => item == ImageQuality.high
+                        ? Text(
+                            'settings.image_grid.image_quality.high_quality_notice',
+                            style: TextStyle(
+                              color: Theme.of(context).hintColor,
+                            ),
+                          ).tr()
+                        : null,
+                    groupValue: state.settings.imageQuality,
+                    onChanged: (value) => context
+                        .read<SettingsCubit>()
+                        .update(state.settings.copyWith(imageQuality: value)),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: const Text('settings.image_grid.spacing').tr(),
+                ),
+                _buildSpacingSlider(state),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: const Text('settings.image_grid.corner_radius').tr(),
+                ),
+                _buildBorderRadiusSlider(state),
+                const Divider(thickness: 1),
+                SettingsHeader(
+                    label: 'settings.image_viewer.image_viewer'.tr()),
+                ListTile(
+                  leading: const SettingsIcon(FontAwesomeIcons.image),
+                  title: const Text('settings.image_viewer.full_res_as_default')
+                      .tr(),
+                  subtitle: state.settings.imageQualityInFullView ==
+                          ImageQuality.original
+                      ? const Text('settings.image_viewer.full_res_notice').tr()
                       : null,
-                  groupValue: state.settings.imageQuality,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(imageQuality: value)),
+                  trailing: Switch(
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      value: state.settings.imageQualityInFullView ==
+                          ImageQuality.original,
+                      onChanged: (value) {
+                        context.read<SettingsCubit>().update(state.settings
+                            .copyWith(
+                                imageQualityInFullView: value
+                                    ? ImageQuality.original
+                                    : ImageQuality.automatic));
+                      }),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('Spacing'),
-              ),
-              _buildSpacingSlider(state),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Text('Corner radius'),
-              ),
-              _buildBorderRadiusSlider(state),
-              const Divider(thickness: 1),
-              const SettingsHeader(label: 'Image viewer'),
-              ListTile(
-                leading: const SettingsIcon(FontAwesomeIcons.image),
-                title: const Text('Show full resolution as default'),
-                subtitle: state.settings.imageQualityInFullView ==
-                        ImageQuality.original
-                    ? const Text(
-                        'It will take a while to load depend on the size of image')
-                    : null,
-                trailing: Switch(
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    value: state.settings.imageQualityInFullView ==
-                        ImageQuality.original,
-                    onChanged: (value) {
-                      context.read<SettingsCubit>().update(state.settings
-                          .copyWith(
-                              imageQualityInFullView: value
-                                  ? ImageQuality.original
-                                  : ImageQuality.automatic));
-                    }),
-              ),
-              const Divider(thickness: 1),
-              const SettingsHeader(label: 'Image detail'),
-              SettingsTile(
-                leading: const SettingsIcon(FontAwesomeIcons.xmarksLines),
-                title: const Text('Action bar dislay'),
-                selectedOption:
-                    state.settings.actionBarDisplayBehavior.name.sentenceCase,
-                onTap: () =>
-                    showRadioOptionsModalBottomSheet<ActionBarDisplayBehavior>(
-                  context: context,
-                  items: ActionBarDisplayBehavior.values,
-                  titleBuilder: (item) => Text(item.name.sentenceCase),
-                  groupValue: state.settings.actionBarDisplayBehavior,
-                  onChanged: (value) => context.read<SettingsCubit>().update(
-                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                const Divider(thickness: 1),
+                SettingsHeader(
+                    label: 'settings.image_detail.image_detail'.tr()),
+                SettingsTile(
+                  leading: const SettingsIcon(FontAwesomeIcons.xmarksLines),
+                  title: const Text(
+                          'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior')
+                      .tr(),
+                  selectedOption: _actionBarDisplayBehaviorToString(
+                          state.settings.actionBarDisplayBehavior)
+                      .tr(),
+                  onTap: () => showRadioOptionsModalBottomSheet<
+                      ActionBarDisplayBehavior>(
+                    context: context,
+                    items: ActionBarDisplayBehavior.values,
+                    titleBuilder: (item) =>
+                        Text(_actionBarDisplayBehaviorToString(item)).tr(),
+                    groupValue: state.settings.actionBarDisplayBehavior,
+                    onChanged: (value) => context.read<SettingsCubit>().update(
+                        state.settings
+                            .copyWith(actionBarDisplayBehavior: value)),
+                  ),
                 ),
-              ),
-            ],
-          ));
+              ],
+            ),
+          );
         },
       ),
     );

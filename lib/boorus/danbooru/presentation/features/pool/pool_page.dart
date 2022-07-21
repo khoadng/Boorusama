@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:recase/recase.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
@@ -145,7 +145,7 @@ class _PoolPageState extends State<PoolPage> {
 
   AppBar _buildAppBar() {
     return AppBar(
-      title: const Text('Pool Gallery'),
+      title: const Text('pool.pool_gallery').tr(),
       backgroundColor: Colors.transparent,
       elevation: 0,
       actions: [
@@ -229,7 +229,8 @@ class PoolOptionsHeader extends StatelessWidget {
                                   mainAxisSize: MainAxisSize.min,
                                   children: PoolOrder.values
                                       .map((e) => ListTile(
-                                            title: Text(e.name.sentenceCase),
+                                            title: Text(_poolOrderToString(e))
+                                                .tr(),
                                             onTap: () {
                                               AppRouter.router.pop(context);
                                               context
@@ -244,7 +245,7 @@ class PoolOptionsHeader extends StatelessWidget {
                         )),
                 child: Row(
                   children: <Widget>[
-                    Text(state.order.name.sentenceCase),
+                    Text(_poolOrderToString(state.order)).tr(),
                     const Icon(Icons.arrow_drop_down)
                   ],
                 ),
@@ -254,5 +255,18 @@ class PoolOptionsHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+String _poolOrderToString(PoolOrder order) {
+  switch (order) {
+    case PoolOrder.newest:
+      return 'pool.order.new';
+    case PoolOrder.postCount:
+      return 'pool.order.post_count';
+    case PoolOrder.name:
+      return 'pool.order.name';
+    default:
+      return 'pool.order.recent';
   }
 }

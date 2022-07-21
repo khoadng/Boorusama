@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:lottie/lottie.dart';
@@ -24,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/search/search_op
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
+import 'package:boorusama/core/utils.dart';
 import 'related_tag_header.dart';
 
 class SearchPage extends StatefulWidget {
@@ -159,21 +161,17 @@ class _SearchPageState extends State<SearchPage> {
                             context.read<SearchBloc>().add(const SearchError());
                           }),
                       BlocListener<PostBloc, PostState>(
-                          listenWhen: (previous, current) =>
-                              current.status == LoadStatus.failure &&
-                              searchState.displayState == DisplayState.result,
-                          listener: (context, state) {
-                            final snackbar = SnackBar(
-                              duration: const Duration(seconds: 6),
-                              behavior: SnackBarBehavior.floating,
-                              elevation: 6,
-                              content: Text(
-                                state.exceptionMessage!,
-                              ),
-                            );
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(snackbar);
-                          }),
+                        listenWhen: (previous, current) =>
+                            current.status == LoadStatus.failure &&
+                            searchState.displayState == DisplayState.result,
+                        listener: (context, state) => showSimpleSnackBar(
+                          context: context,
+                          duration: const Duration(seconds: 6),
+                          content: Text(
+                            state.exceptionMessage!,
+                          ).tr(),
+                        ),
+                      ),
                     ],
                     child: BlocBuilder<TagSearchBloc, TagSearchState>(
                       builder: (context, tagSearchState) {
@@ -338,14 +336,13 @@ class _SearchPageState extends State<SearchPage> {
               },
             );
           } else if (displayState == DisplayState.error) {
-            return const ErrorResult(text: 'Something went wrong');
+            return ErrorResult(text: 'search.errors.generic'.tr());
           } else if (displayState == DisplayState.loadingResult) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (displayState == DisplayState.noResult) {
-            return const EmptyResult(
-                text: 'We searched far and wide, but no results were found.');
+            return EmptyResult(text: 'search.no_result'.tr());
           } else {
             return SearchOptions(
               config: context.read<IConfig>(),
@@ -513,24 +510,23 @@ class EmptyResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Lottie.asset(
-              'assets/animations/search-file.json',
-              fit: BoxFit.scaleDown,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Lottie.asset(
+                'assets/animations/search-file.json',
+                fit: BoxFit.scaleDown,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Text(
+            Text(
               text,
               style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -547,24 +543,23 @@ class ErrorResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: Lottie.asset(
-              'assets/animations/server-error.json',
-              fit: BoxFit.scaleDown,
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: Lottie.asset(
+                'assets/animations/server-error.json',
+                fit: BoxFit.scaleDown,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40),
-            child: Text(
+            Text(
               text,
               style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

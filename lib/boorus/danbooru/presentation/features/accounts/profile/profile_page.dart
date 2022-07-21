@@ -51,25 +51,29 @@ class ProfilePage extends StatelessWidget {
                       child: Column(
                         children: [
                           ListTile(
-                            leading: const Text('User ID'),
+                            dense: true,
+                            leading: const Text('profile.user_id').tr(),
                             trailing: Text(
                               profile.id.toString(),
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Level'),
+                            dense: true,
+                            leading: const Text('profile.level').tr(),
                             trailing: Text(
                               profile.levelString,
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Favorites'),
+                            dense: true,
+                            leading: const Text('profile.favorites_count').tr(),
                             trailing: Text(
                               profile.favoriteCount.toString(),
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Comments'),
+                            dense: true,
+                            leading: const Text('profile.comments_count').tr(),
                             trailing: Text(
                               profile.commentCount.toString(),
                             ),
@@ -94,7 +98,7 @@ class ProfilePage extends StatelessWidget {
                               context, '/favorites',
                               routeSettings:
                                   RouteSettings(arguments: [profile.name])),
-                          child: const Text('See more'),
+                          child: const Text('profile.see_more').tr(),
                         ),
                       ),
                     ),

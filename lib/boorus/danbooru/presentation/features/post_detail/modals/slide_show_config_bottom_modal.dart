@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
@@ -59,9 +60,12 @@ class _SlideShowConfigBottomModalState
         child: Column(
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Flexible(flex: 3, child: Text('Interval (seconds)')),
+                Flexible(
+                  flex: 3,
+                  child: const Text('post.detail.slide_show.interval').tr(),
+                ),
                 Flexible(
                   //TODO: keyboard input won't work.
                   child: NumberInputWithIncrementDecrement(
@@ -77,9 +81,12 @@ class _SlideShowConfigBottomModalState
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Flexible(flex: 3, child: Text('Skip animation')),
+                Flexible(
+                  flex: 3,
+                  child: const Text('post.detail.slide_show.skip_anim').tr(),
+                ),
                 Flexible(
                   child: ValueListenableBuilder<SlideShowConfiguration>(
                     valueListenable: config,
@@ -97,11 +104,11 @@ class _SlideShowConfigBottomModalState
               children: [
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
+                  child: const Text('post.detail.slide_show.cancel').tr(),
                 ),
                 ElevatedButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('OK'),
+                  child: const Text('post.detail.slide_show.ok').tr(),
                 ),
               ],
             ),

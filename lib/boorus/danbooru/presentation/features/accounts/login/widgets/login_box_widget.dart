@@ -130,7 +130,7 @@ class LoginBox extends HookWidget {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel'),
+                            child: const Text('login.form.cancel').tr(),
                           ),
                           BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                             builder: (context, state) => TextButton(
@@ -138,12 +138,13 @@ class LoginBox extends HookWidget {
                                 Navigator.of(context).pop();
                                 launchExternalUrl(Uri.parse(state.booru.url));
                               },
-                              child: const Text('Open web browser'),
+                              child: const Text('login.form.open_web_browser')
+                                  .tr(),
                             ),
                           ),
                         ],
-                        content: const Text(
-                            '1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit'),
+                        content:
+                            const Text('login.form.api_key_instruction').tr(),
                       );
                     }),
                 icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),

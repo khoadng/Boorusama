@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -61,7 +64,7 @@ class PoolGridItem extends StatelessWidget {
               ),
               ListTile(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                  subtitle: Text('${pool.pool.postCount} items'),
+                  subtitle: const Text('pool.item').plural(pool.pool.postCount),
                   title: Text(
                     pool.pool.name.removeUnderscoreWithSpace(),
                     style: const TextStyle(fontWeight: FontWeight.w600),

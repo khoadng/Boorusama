@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -24,7 +26,7 @@ class BlacklistedTagsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Blacklisted tags'),
+        title: const Text('blacklisted_tags.blacklisted_tags').tr(),
         actions: [
           _buildAddTagButton(),
         ],
@@ -50,8 +52,8 @@ class BlacklistedTagsPage extends StatelessWidget {
                 ],
               );
             } else if (state.status == LoadStatus.failure) {
-              return const Center(
-                child: Text('Failed to load blacklisted tags'),
+              return Center(
+                child: const Text('blacklisted_tags.load_error').tr(),
               );
             } else {
               return const Center(child: CircularProgressIndicator());
@@ -82,7 +84,7 @@ class BlacklistedTagsPage extends StatelessWidget {
                           .read<BlacklistedTagsBloc>()
                           .add(BlacklistedTagRemoved(tag: tag));
                     },
-                    title: const Text('Remove'),
+                    title: const Text('blacklisted_tags.remove').tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.trash,
                       size: 18,
@@ -116,7 +118,7 @@ class BlacklistedTagsPage extends StatelessWidget {
                         oldWidget: this,
                       ));
                     },
-                    title: const Text('Edit'),
+                    title: const Text('blacklisted_tags.edit').tr(),
                     leading: const FaIcon(
                       FontAwesomeIcons.pen,
                       size: 18,
@@ -139,17 +141,7 @@ class BlacklistedTagsPage extends StatelessWidget {
   Widget _buildWarning() {
     return SliverToBoxAdapter(
       child: WarningContainer(contentBuilder: (context) {
-        return RichText(
-            text: const TextSpan(children: [
-          TextSpan(text: 'Only support '),
-          TextSpan(text: 'NOT ', style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(text: 'operator and '),
-          TextSpan(text: 'OR ', style: TextStyle(fontWeight: FontWeight.bold)),
-          TextSpan(text: 'operator.'),
-          TextSpan(
-              text:
-                  "\n\nBlacklisting using metatags won't work for current version."),
-        ]));
+        return Html(data: 'blacklisted_tags.limitation_notice'.tr());
       }),
     );
   }

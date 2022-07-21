@@ -14,7 +14,7 @@ final languages = {
 };
 
 String getLanguageText(String value) {
-  return 'settings.appSettings.language.${languages[value]}';
+  return 'settings.language.${languages[value]}';
 }
 
 class LanguagePage extends StatelessWidget {
@@ -28,7 +28,7 @@ class LanguagePage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Language'),
+            title: const Text('settings.language.language').tr(),
           ),
           body: SafeArea(
               child: Column(
