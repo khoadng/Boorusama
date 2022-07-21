@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
@@ -40,7 +41,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Pool'),
+        title: const Text('pool.pool').tr(),
       ),
       body: SafeArea(child: BlocBuilder<PoolDetailCubit, PoolDetailState>(
         builder: (context, state) {
@@ -58,7 +59,10 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       style: Theme.of(context).textTheme.headline6!,
                     ),
                     subtitle: Text(
-                        'Last updated: ${dateTimeToStringTimeAgo(widget.pool.updatedAt)}'),
+                        '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                      widget.pool.updatedAt,
+                      locale: Localizations.localeOf(context).languageCode,
+                    )}'),
                   ),
                 ),
                 SliverToBoxAdapter(

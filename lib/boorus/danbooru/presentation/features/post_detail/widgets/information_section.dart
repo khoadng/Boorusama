@@ -57,7 +57,10 @@ class InformationSection extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodyText2),
                   const SizedBox(height: 5),
                   Text(
-                    dateTimeToStringTimeAgo(post.createdAt),
+                    dateTimeToStringTimeAgo(
+                      post.createdAt,
+                      locale: Localizations.localeOf(context).languageCode,
+                    ),
                     style: Theme.of(context).textTheme.caption,
                   ),
                 ],

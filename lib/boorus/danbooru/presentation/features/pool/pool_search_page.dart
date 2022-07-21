@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -182,29 +182,34 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
               },
               icon: const FaIcon(FontAwesomeIcons.arrowLeft)),
           Expanded(
-              child: TextField(
-            controller: textEditingController,
-            autofocus: true,
-            onTap: () =>
-                context.read<PoolSearchBloc>().add(const PoolSearchResumed()),
-            onChanged: (value) {
-              context.read<PoolSearchBloc>().add(PoolSearched(value));
-            },
-            onSubmitted: (value) {
-              context.read<PoolSearchBloc>().add(PoolSearchItemSelect(value));
-              context.read<PoolBloc>().add(PoolRefreshed(name: value));
-            },
-            decoration: const InputDecoration(
-              floatingLabelBehavior: FloatingLabelBehavior.never,
-              border: InputBorder.none,
-              focusedBorder: InputBorder.none,
-              enabledBorder: InputBorder.none,
-              errorBorder: InputBorder.none,
-              disabledBorder: InputBorder.none,
-              contentPadding: EdgeInsets.only(bottom: 11, top: 11, right: 15),
-              hintText: 'Search a pool',
+            child: TextField(
+              controller: textEditingController,
+              autofocus: true,
+              onTap: () =>
+                  context.read<PoolSearchBloc>().add(const PoolSearchResumed()),
+              onChanged: (value) {
+                context.read<PoolSearchBloc>().add(PoolSearched(value));
+              },
+              onSubmitted: (value) {
+                context.read<PoolSearchBloc>().add(PoolSearchItemSelect(value));
+                context.read<PoolBloc>().add(PoolRefreshed(name: value));
+              },
+              decoration: InputDecoration(
+                floatingLabelBehavior: FloatingLabelBehavior.never,
+                border: InputBorder.none,
+                focusedBorder: InputBorder.none,
+                enabledBorder: InputBorder.none,
+                errorBorder: InputBorder.none,
+                disabledBorder: InputBorder.none,
+                contentPadding: const EdgeInsets.only(
+                  bottom: 11,
+                  top: 11,
+                  right: 15,
+                ),
+                hintText: 'pool.search.hint'.tr(),
+              ),
             ),
-          )),
+          ),
           BlocSelector<PoolSearchBloc, PoolSearchState, String>(
             selector: (state) => state.query,
             builder: (context, query) {

@@ -77,7 +77,7 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
                     child: TextField(
                       controller: textEditingController,
                       decoration: InputDecoration.collapsed(
-                          hintText: 'commentCreate.hint'.tr()),
+                          hintText: 'comment.create.hint'.tr()),
                       autofocus: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,

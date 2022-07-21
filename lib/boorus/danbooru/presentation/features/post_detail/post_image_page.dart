@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -185,28 +186,30 @@ class _PostImagePageState extends State<PostImagePage>
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<PostAction>(
+              PopupMenuItem<PostAction>(
                 value: PostAction.download,
                 child: ListTile(
-                  leading: Icon(Icons.download_rounded),
-                  title: Text('Download'),
+                  leading: const Icon(Icons.download_rounded),
+                  title: const Text('download.download').tr(),
                 ),
               ),
               if (hasLarge)
                 if (useFullsize)
-                  const PopupMenuItem<PostAction>(
+                  PopupMenuItem<PostAction>(
                     value: PostAction.viewNormalsize,
                     child: ListTile(
-                      leading: Icon(Icons.fullscreen_exit),
-                      title: Text('View normal size image'),
+                      leading: const Icon(Icons.fullscreen_exit),
+                      title:
+                          const Text('post.image_fullview.view_resized').tr(),
                     ),
                   )
                 else
-                  const PopupMenuItem<PostAction>(
+                  PopupMenuItem<PostAction>(
                     value: PostAction.viewFullsize,
                     child: ListTile(
-                      leading: Icon(Icons.fullscreen),
-                      title: Text('View full size image'),
+                      leading: const Icon(Icons.fullscreen),
+                      title:
+                          const Text('post.image_fullview.view_original').tr(),
                     ),
                   ),
             ],

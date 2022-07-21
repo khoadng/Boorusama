@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -48,7 +49,7 @@ class BlacklistedTagProviderWidget extends StatelessWidget {
         showSimpleSnackBar(
           context: context,
           duration: const Duration(seconds: 1),
-          content: const Text('Blacklisted tags updated'),
+          content: const Text('blacklisted_tags.updated').tr(),
         );
       },
       builder: (context, state) => builder(

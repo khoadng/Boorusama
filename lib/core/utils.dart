@@ -38,12 +38,15 @@ extension StringX on String {
   String removeUnderscoreWithSpace() => replaceAll('_', ' ');
 }
 
-String dateTimeToStringTimeAgo(DateTime time) {
+String dateTimeToStringTimeAgo(
+  DateTime time, {
+  String locale = 'en',
+}) {
   final now = DateTime.now();
   final diff = now.difference(time);
   final ago = now.subtract(diff);
 
-  return timeago.format(ago);
+  return timeago.format(ago, locale: locale);
 }
 
 void showSimpleSnackBar({
@@ -51,8 +54,10 @@ void showSimpleSnackBar({
   required Widget content,
   Duration? duration,
   SnackBarBehavior? behavior,
+  SnackBarAction? action,
 }) {
   final snackbar = SnackBar(
+    action: action,
     behavior: behavior ?? SnackBarBehavior.floating,
     duration: duration ?? const Duration(seconds: 6),
     elevation: 6,

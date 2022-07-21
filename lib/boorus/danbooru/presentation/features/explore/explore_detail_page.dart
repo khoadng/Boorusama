@@ -402,13 +402,8 @@ class _ExploreListItemHeader extends StatelessWidget {
                   onTimeScaleChanged(timeScale);
                 },
                 child: Row(
-                  children: <Widget>[
-                    Text(scale
-                        .toString()
-                        .split('.')
-                        .last
-                        .replaceAll('()', '')
-                        .toUpperCase()),
+                  children: [
+                    Text(_timeScaleToString(scale).tr().toUpperCase()),
                     const Icon(Icons.arrow_drop_down)
                   ],
                 ),
@@ -417,5 +412,16 @@ class _ExploreListItemHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+String _timeScaleToString(TimeScale scale) {
+  switch (scale) {
+    case TimeScale.month:
+      return 'dateRange.month';
+    case TimeScale.week:
+      return 'dateRange.week';
+    default:
+      return 'dateRange.day';
   }
 }

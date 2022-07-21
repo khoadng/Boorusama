@@ -71,7 +71,9 @@ class SideBarMenu extends StatelessWidget {
                             if (state.data! != Account.empty)
                               ListTile(
                                 leading: const FaIcon(FontAwesomeIcons.ban),
-                                title: const Text('Blacklisted tags'),
+                                title: const Text(
+                                        'blacklisted_tags.blacklisted_tags')
+                                    .tr(),
                                 onTap: () {
                                   Navigator.of(context).pop();
                                   AppRouter.router.navigateTo(

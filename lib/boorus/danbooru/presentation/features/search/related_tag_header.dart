@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -94,7 +95,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                   ),
                 );
               },
-              child: const Text('More'),
+              child: const Text('tag.related.more').tr(),
             ),
           ),
         ],
@@ -122,7 +123,7 @@ class _RelatedTagActionSheet extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: const Text('Related'),
+        title: const Text('tag.related.related').tr(),
       ),
       body: ListView.builder(
         itemBuilder: (context, index) => ListTile(
@@ -135,8 +136,11 @@ class _RelatedTagActionSheet extends StatelessWidget {
             context: context,
             children: [
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.plus),
-                title: const Text('Add to current search'),
+                leading: const FaIcon(
+                  FontAwesomeIcons.plus,
+                  size: 20,
+                ),
+                title: const Text('tag.related.add_to_current_search').tr(),
                 onTap: () {
                   onAddToSearch(relatedTag.tags[index].tag);
                   Navigator.of(context).pop();
@@ -144,8 +148,11 @@ class _RelatedTagActionSheet extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const FaIcon(FontAwesomeIcons.arrowUpRightFromSquare),
-                title: const Text('Open wiki'),
+                leading: const FaIcon(
+                  FontAwesomeIcons.arrowUpRightFromSquare,
+                  size: 20,
+                ),
+                title: const Text('tag.related.open_wiki').tr(),
                 onTap: () {
                   onOpenWiki(relatedTag.tags[index].tag);
                   Navigator.of(context).pop();

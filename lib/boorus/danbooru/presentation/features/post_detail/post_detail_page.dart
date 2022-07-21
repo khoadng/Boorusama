@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -18,8 +19,8 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
-import 'post_image_page.dart';
 import 'models/slide_show_configuration.dart';
+import 'post_image_page.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
@@ -217,12 +218,12 @@ class _PostDetailPageState extends State<PostDetailPage>
                     default:
                   }
                 },
-                itemBuilder: (BuildContext context) => [
-                  const PopupMenuItem<PostAction>(
+                itemBuilder: (context) => [
+                  PopupMenuItem<PostAction>(
                     value: PostAction.download,
                     child: ListTile(
-                      leading: Icon(Icons.download_rounded),
-                      title: Text('Download'),
+                      leading: const Icon(Icons.download_rounded),
+                      title: const Text('download.download').tr(),
                     ),
                   ),
                 ],

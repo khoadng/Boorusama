@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -20,13 +21,13 @@ class PrivacyPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Privacy'),
+            title: const Text('settings.privacy.privacy').tr(),
           ),
           body: SafeArea(
               child: Column(children: [
             ListTile(
               leading: const Icon(Icons.privacy_tip),
-              title: const Text('Send anonymous data for error logging'),
+              title: const Text('settings.privacy.send_error_data_notice').tr(),
               trailing: Switch(
                 activeColor: Theme.of(context).colorScheme.primary,
                 value: state.settings.dataCollectingStatus ==

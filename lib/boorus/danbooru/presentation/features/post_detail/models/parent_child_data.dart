@@ -15,12 +15,12 @@ class ParentChildData {
 
 ParentChildData getParentChildData(Post post) => post.hasParent
     ? ParentChildData(
-        description: 'This post belongs to a parent and has siblings',
+        description: 'post.detail.has_parent_notice',
         tagQueryForDataFetching: 'parent:${post.parentId}',
         parentId: post.parentId!,
       )
     : ParentChildData(
-        description: 'This post has children',
+        description: 'post.detail.has_children_notice',
         tagQueryForDataFetching: 'parent:${post.id}',
         parentId: post.id,
       );

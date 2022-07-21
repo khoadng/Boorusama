@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recase/recase.dart';
@@ -60,20 +61,20 @@ class PostInfoModal extends StatelessWidget {
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text('Size'),
+                        title: const Text('post.detail.size').tr(),
                         trailing: Text(filesize(post.fileSize, 1)),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text('Resolution'),
+                        title: const Text('post.detail.resolution').tr(),
                         trailing: Text(
                             '${post.width.toInt()}x${post.height.toInt()}'),
                       ),
                       ListTile(
                         dense: true,
                         visualDensity: VisualDensity.compact,
-                        title: const Text('Rating'),
+                        title: const Text('post.detail.rating').tr(),
                         trailing: Text(
                             post.rating.toString().split('.').last.pascalCase),
                       ),
@@ -147,7 +148,7 @@ class _ArtistSectionState extends State<ArtistSection> {
                             PopupMenuItem<ArtistCommentaryTranlationState>(
                               value: getTranslationNextState(display),
                               child: ListTile(
-                                title: Text(getTranslationText(display)),
+                                title: Text(getTranslationText(display)).tr(),
                               ),
                             ),
                           ],
@@ -191,8 +192,9 @@ class SourceLink extends StatelessWidget {
         onLongPress: () =>
             Clipboard.setData(ClipboardData(text: uri.toString()))
                 .then((_) => showSimpleSnackBar(
+                      duration: const Duration(seconds: 1),
                       context: context,
-                      content: const Text('Copied'),
+                      content: const Text('post.detail.copied').tr(),
                     )),
         onTap: () {
           if (uri == null) return;
@@ -260,9 +262,9 @@ ArtistCommentaryTranlationState getTranslationNextState(
 
 String getTranslationText(ArtistCommentaryTranlationState currentState) {
   if (currentState == ArtistCommentaryTranlationState.translated) {
-    return 'Show Original';
+    return 'post.detail.show_original';
   } else {
-    return 'Show Translated';
+    return 'post.detail.show_translated';
   }
 }
 

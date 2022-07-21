@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
-import 'package:boorusama/core/application/exception.dart';
 import 'common.dart';
 
 enum PostsOrder {
@@ -110,20 +109,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         await tryAsync<List<Post>>(
           action: () => postRepository.getPosts(query, state.page + 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) {
-            if (error is CannotSearchMoreThanTwoTags) {
-              emit(state.copyWith(
-                status: LoadStatus.failure,
-                exceptionMessage: error.message,
-              ));
-            } else {
-              emit(state.copyWith(
-                status: LoadStatus.failure,
-                exceptionMessage:
-                    'Unknown exception has occured, please try again later',
-              ));
-            }
-          },
+          onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
             final filteredPosts = filterBlacklisted(posts, blacklisted);
             // print(
@@ -158,20 +144,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         await tryAsync<List<Post>>(
           action: () => postRepository.getPosts(query, 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-          onFailure: (stackTrace, error) {
-            if (error is BooruException) {
-              emit(state.copyWith(
-                status: LoadStatus.failure,
-                exceptionMessage: error.message,
-              ));
-            } else {
-              emit(state.copyWith(
-                status: LoadStatus.failure,
-                exceptionMessage:
-                    'Unknown exception has occured, please try again later',
-              ));
-            }
-          },
+          onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async => emit(
             state.copyWith(
               status: LoadStatus.success,
@@ -185,6 +158,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       },
       transformer: restartable(),
     );
+  }
+
+  void _emitError(Object error, Emitter emit) {
+    if (error is CannotSearchMoreThanTwoTags) {
+      emit(state.copyWith(
+        status: LoadStatus.failure,
+        exceptionMessage: 'search.errors.tag_limit',
+      ));
+    } else if (error is DatabaseTimeOut) {
+      emit(state.copyWith(
+        status: LoadStatus.failure,
+        exceptionMessage: 'search.errors.database_timeout',
+      ));
+    } else {
+      emit(state.copyWith(
+        status: LoadStatus.failure,
+        exceptionMessage: 'search.errors.unknown',
+      ));
+    }
   }
 }
 

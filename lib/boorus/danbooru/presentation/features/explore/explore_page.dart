@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -36,7 +37,7 @@ class ExplorePage extends StatelessWidget {
     return CustomScrollView(slivers: [
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Popular',
+          title: 'explore.popular'.tr(),
           category: ExploreCategory.popular,
           builder: (_) => BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -45,7 +46,7 @@ class ExplorePage extends StatelessWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Curated',
+          title: 'explore.curated'.tr(),
           category: ExploreCategory.curated,
           builder: (_) => BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -54,7 +55,7 @@ class ExplorePage extends StatelessWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Most viewed',
+          title: 'explore.most_viewed'.tr(),
           category: ExploreCategory.mostViewed,
           builder: (_) =>
               BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
