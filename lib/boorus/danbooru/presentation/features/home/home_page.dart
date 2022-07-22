@@ -3,11 +3,9 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
@@ -16,7 +14,10 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositori
 import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
+import 'package:boorusama/core/application/networking/networking.dart';
+import 'package:boorusama/core/presentation/network_unavailable_indicator.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 
@@ -59,30 +60,12 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   children: [
                     BlocBuilder<NetworkBloc, NetworkState>(
-                      builder: (context, state) {
-                        if (state is NetworkConnectedState) {
-                          return const SizedBox.shrink();
-                        } else if (state is NetworkDisconnectedState) {
-                          return Material(
-                            color: Colors.black,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(
-                                  Icons.wifi_off,
-                                  size: 16,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 6),
-                                  child: const Text('network.unavailable').tr(),
-                                ),
-                              ],
-                            ),
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
+                      builder: (_, state) => ConditionalRenderWidget(
+                        condition: state is NetworkDisconnectedState ||
+                            state is NetworkInitialState,
+                        childBuilder: (_) =>
+                            const NetworkUnavailableIndicator(),
+                      ),
                     ),
                     Expanded(
                       child: ValueListenableBuilder<int>(
@@ -105,7 +88,8 @@ class _HomePageState extends State<HomePage> {
                                         context.read<IPostRepository>(),
                                   )..add(const PoolRefreshed(
                                       category: PoolCategory.series,
-                                      order: PoolOrder.latest)),
+                                      order: PoolOrder.latest,
+                                    )),
                                 ),
                               ],
                               child: const PoolPage(),

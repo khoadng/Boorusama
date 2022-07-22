@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -48,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/services/download_servi
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'package:boorusama/core/infrastructure/device_info_service.dart';
@@ -79,6 +80,16 @@ void main() async {
     Hive.init(dbDirectory.path);
   }
 
+  if (isDesktopPlatform()) {
+    doWhenWindowReady(() {
+      const initialSize = Size(400, 700);
+      appWindow.minSize = initialSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
+  }
+
   final settingRepository = SettingRepository(
     Hive.openBox('settings'),
     Settings.defaultSettings,
@@ -107,7 +118,7 @@ void main() async {
   );
 
   if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize(debug: false);
+    await FlutterDownloader.initialize();
     await downloader.init();
   }
 
@@ -132,7 +143,10 @@ void main() async {
           ],
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => NetworkBloc()),
+              BlocProvider(
+                create: (_) => NetworkBloc(),
+                lazy: false,
+              ),
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,
