@@ -17,6 +17,7 @@ class SearchBar extends StatefulWidget {
     this.queryEditingController,
     this.hintText,
     this.onSubmitted,
+    this.constraints,
   }) : super(key: key);
 
   final VoidCallback? onTap;
@@ -24,6 +25,7 @@ class SearchBar extends StatefulWidget {
   final Widget? trailing;
   final bool enabled;
   final bool autofocus;
+  final BoxConstraints? constraints;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextEditingController? queryEditingController;
@@ -54,53 +56,62 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 4,
-      color: Theme.of(context).cardColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-      child: Theme(
-          data: Theme.of(context).copyWith(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          child: GestureDetector(
-            onTap: () => widget.onTap?.call(),
-            child: Row(
-              children: [
-                const SizedBox(width: 10),
-                widget.leading ?? const SizedBox.shrink(),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: FocusScope(
-                    child: Focus(
-                      onFocusChange: (isFocus) =>
-                          widget.onFocusChanged?.call(isFocus),
-                      child: TextFormField(
-                        onFieldSubmitted: (value) =>
-                            widget.onSubmitted?.call(value),
-                        onChanged: (value) => widget.onChanged?.call(value),
-                        enabled: widget.enabled,
-                        decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(
-                                bottom: 11, top: 11, right: 15),
-                            hintText: widget.hintText ?? 'search.hint'.tr()),
-                        autofocus: widget.autofocus,
-                        controller: _textEditingController,
-                        style: Theme.of(context).inputDecorationTheme.hintStyle,
+    return Center(
+      child: ConstrainedBox(
+        constraints: widget.constraints ?? const BoxConstraints(maxWidth: 600),
+        child: Material(
+          elevation: 4,
+          color: Theme.of(context).cardColor,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          child: Theme(
+              data: Theme.of(context).copyWith(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: GestureDetector(
+                onTap: () => widget.onTap?.call(),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    widget.leading ?? const SizedBox.shrink(),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: FocusScope(
+                        child: Focus(
+                          onFocusChange: (isFocus) =>
+                              widget.onFocusChanged?.call(isFocus),
+                          child: TextFormField(
+                            onFieldSubmitted: (value) =>
+                                widget.onSubmitted?.call(value),
+                            onChanged: (value) => widget.onChanged?.call(value),
+                            enabled: widget.enabled,
+                            decoration: InputDecoration(
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.never,
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                contentPadding: const EdgeInsets.only(
+                                    bottom: 11, top: 11, right: 15),
+                                hintText:
+                                    widget.hintText ?? 'search.hint'.tr()),
+                            autofocus: widget.autofocus,
+                            controller: _textEditingController,
+                            style: Theme.of(context)
+                                .inputDecorationTheme
+                                .hintStyle,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    widget.trailing ?? const SizedBox.shrink(),
+                  ],
                 ),
-                widget.trailing ?? const SizedBox.shrink(),
-              ],
-            ),
-          )),
+              )),
+        ),
+      ),
     );
   }
 }
