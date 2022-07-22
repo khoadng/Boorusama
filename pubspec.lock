@@ -531,6 +531,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.0-alpha.5"
+  flutter_improved_scrolling:
+    dependency: "direct main"
+    description:
+      name: flutter_improved_scrolling
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:

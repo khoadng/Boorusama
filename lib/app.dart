@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -55,7 +56,7 @@ class _AppState extends State<App> {
                 ],
               ),
               child: ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
+                behavior: AppScrollBehavior(),
                 child: child!,
               ),
             ),
@@ -77,7 +78,7 @@ class _AppState extends State<App> {
   }
 }
 
-class NoGlowScrollBehavior extends ScrollBehavior {
+class AppScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(
     BuildContext context,
