@@ -24,7 +24,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -49,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/services/download_servi
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'package:boorusama/core/infrastructure/device_info_service.dart';
@@ -143,7 +143,10 @@ void main() async {
           ],
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => NetworkBloc()),
+              BlocProvider(
+                create: (_) => NetworkBloc(),
+                lazy: false,
+              ),
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,

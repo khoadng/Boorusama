@@ -33,7 +33,9 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
         .onConnectivityChanged
         .listen((result) => add(_connectivityResultToNetworkEvent(result)));
   }
+
   StreamSubscription? subscription;
+
   @override
   Future<void> close() {
     subscription?.cancel();
