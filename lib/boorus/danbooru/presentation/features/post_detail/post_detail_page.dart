@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
@@ -21,6 +23,7 @@ import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart'
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'models/slide_show_configuration.dart';
 import 'post_image_page.dart';
+import 'widgets/information_and_recommended.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
@@ -51,6 +54,10 @@ class _PostDetailPageState extends State<PostDetailPage>
   late final currentPostIndex =
       ValueNotifier(widget.posts.indexOf(widget.post));
   late final AnimationController hideFabAnimController;
+
+  final imagePath = ValueNotifier<String?>(null);
+
+  Post get currentPost => widget.posts[currentPostIndex.value];
 
   @override
   void initState() {
@@ -106,6 +113,8 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final screenSize = screenWidthToDisplaySize(size.width);
     return BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
       selector: (state) => state.currentIndex,
       builder: (context, index) => WillPopScope(
@@ -116,71 +125,98 @@ class _PostDetailPageState extends State<PostDetailPage>
           return true;
         },
         child: Scaffold(
-          body: Stack(
+          body: Row(
             children: [
-              ValueListenableBuilder<bool>(
-                valueListenable: autoPlay,
-                builder: (context, autoPlay, child) =>
-                    ValueListenableBuilder<SlideShowConfiguration>(
-                  valueListenable: slideShowConfig,
-                  builder: (context, config, child) {
-                    return CarouselSlider.builder(
-                      itemCount: widget.posts.length,
-                      itemBuilder: (context, index, realIndex) {
-                        WidgetsBinding.instance.addPostFrameCallback(
-                            (_) => currentPostIndex.value = index);
-                        return PostDetail(
-                          post: widget.posts[index],
-                          minimal: autoPlay,
-                          animController: hideFabAnimController,
-                        );
-                      },
-                      options: CarouselOptions(
-                        onPageChanged: (index, reason) {
-                          context
-                              .read<SliverPostGridBloc>()
-                              .add(SliverPostGridItemChanged(index: index));
+              Expanded(
+                child: Stack(
+                  children: [
+                    ValueListenableBuilder<bool>(
+                      valueListenable: autoPlay,
+                      builder: (context, autoPlay, child) =>
+                          ValueListenableBuilder<SlideShowConfiguration>(
+                        valueListenable: slideShowConfig,
+                        builder: (context, config, child) {
+                          return CarouselSlider.builder(
+                            itemCount: widget.posts.length,
+                            itemBuilder: (context, index, realIndex) {
+                              WidgetsBinding.instance.addPostFrameCallback(
+                                  (_) => currentPostIndex.value = index);
+                              return PostDetail(
+                                post: widget.posts[index],
+                                minimal: autoPlay,
+                                animController: hideFabAnimController,
+                                imagePath: imagePath,
+                              );
+                            },
+                            options: CarouselOptions(
+                              onPageChanged: (index, reason) {
+                                context.read<SliverPostGridBloc>().add(
+                                    SliverPostGridItemChanged(index: index));
 
-                          context.read<RecommendedArtistPostCubit>().add(
-                              RecommendedPostRequested(
-                                  currentPostId: widget.posts[index].id,
-                                  tags: widget.posts[index].artistTags));
-                          context.read<RecommendedCharacterPostCubit>().add(
-                              RecommendedPostRequested(
-                                  currentPostId: widget.posts[index].id,
-                                  tags: widget.posts[index].characterTags));
-                          context.read<PoolFromPostIdBloc>().add(
-                              PoolFromPostIdRequested(
-                                  postId: widget.posts[index].id));
-                          context.read<IsPostFavoritedBloc>().add(
-                              IsPostFavoritedRequested(
-                                  postId: widget.posts[index].id));
+                                context.read<RecommendedArtistPostCubit>().add(
+                                    RecommendedPostRequested(
+                                        currentPostId: widget.posts[index].id,
+                                        tags: widget.posts[index].artistTags));
+                                context
+                                    .read<RecommendedCharacterPostCubit>()
+                                    .add(RecommendedPostRequested(
+                                        currentPostId: widget.posts[index].id,
+                                        tags:
+                                            widget.posts[index].characterTags));
+                                context.read<PoolFromPostIdBloc>().add(
+                                    PoolFromPostIdRequested(
+                                        postId: widget.posts[index].id));
+                                context.read<IsPostFavoritedBloc>().add(
+                                    IsPostFavoritedRequested(
+                                        postId: widget.posts[index].id));
+                              },
+                              height: MediaQuery.of(context).size.height,
+                              viewportFraction: 1,
+                              enableInfiniteScroll: false,
+                              initialPage: widget.intitialIndex,
+                              autoPlay: autoPlay,
+                              autoPlayAnimationDuration: config.skipAnimation
+                                  ? const Duration(microseconds: 1)
+                                  : const Duration(milliseconds: 600),
+                              autoPlayInterval:
+                                  Duration(seconds: config.interval.toInt()),
+                            ),
+                          );
                         },
-                        height: MediaQuery.of(context).size.height,
-                        viewportFraction: 1,
-                        enableInfiniteScroll: false,
-                        initialPage: widget.intitialIndex,
-                        autoPlay: autoPlay,
-                        autoPlayAnimationDuration: config.skipAnimation
-                            ? const Duration(microseconds: 1)
-                            : const Duration(milliseconds: 600),
-                        autoPlayInterval:
-                            Duration(seconds: config.interval.toInt()),
                       ),
-                    );
-                  },
+                    ),
+                    ShadowGradientOverlay(
+                      alignment: Alignment.topCenter,
+                      colors: [
+                        const Color(0x5D000000),
+                        Colors.black12.withOpacity(0)
+                      ],
+                    ),
+                    _buildBackButton(),
+                    _buildHomeButton(),
+                    _buildSlideShowButton(),
+                  ],
                 ),
               ),
-              ShadowGradientOverlay(
-                alignment: Alignment.topCenter,
-                colors: [
-                  const Color(0x5D000000),
-                  Colors.black12.withOpacity(0)
-                ],
-              ),
-              _buildBackButton(),
-              _buildHomeButton(),
-              _buildSlideShowButton(),
+              if (screenSize != ScreenSize.small)
+                Container(
+                  color: Theme.of(context).backgroundColor,
+                  width: MediaQuery.of(context).size.width * 0.35,
+                  child: SafeArea(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverToBoxAdapter(
+                          child: InformationAndRecommended(
+                            post: currentPost,
+                            actionBarDisplayBehavior:
+                                ActionBarDisplayBehavior.scrolling,
+                            imagePath: imagePath,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                )
             ],
           ),
         ),

@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:ui';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,14 +9,13 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'models/parent_child_data.dart';
+import 'widgets/floating_glassy_card.dart';
+import 'widgets/information_and_recommended.dart';
 import 'widgets/widgets.dart';
 
 class PostDetail extends StatefulWidget {
@@ -28,18 +24,20 @@ class PostDetail extends StatefulWidget {
     required this.post,
     this.minimal = false,
     required this.animController,
+    required this.imagePath,
   }) : super(key: key);
 
   final Post post;
   final bool minimal;
   final AnimationController animController;
+  final ValueNotifier<String?> imagePath;
 
   @override
   State<PostDetail> createState() => _PostDetailState();
 }
 
 class _PostDetailState extends State<PostDetail> {
-  final imagePath = ValueNotifier<String?>(null);
+  late final imagePath = widget.imagePath;
 
   late final String videoHtml = '''
             <center>
@@ -51,6 +49,8 @@ class _PostDetailState extends State<PostDetail> {
   @override
   Widget build(BuildContext context) {
     final postWidget = _buildPostWidget();
+    final size = MediaQuery.of(context).size;
+    final screenSize = screenWidthToDisplaySize(size.width);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: BlocBuilder<SettingsCubit, SettingsState>(
@@ -59,11 +59,12 @@ class _PostDetailState extends State<PostDetail> {
             backgroundColor: Colors.transparent,
             body: widget.minimal
                 ? Center(child: postWidget)
-                : _SmallScreenLayoutDetail(
-                    post: widget.post,
-                    imagePath: imagePath,
-                    child: postWidget,
-                  ),
+                : screenSize == ScreenSize.small
+                    ? _SmallScreenLayoutDetail(
+                        post: widget.post,
+                        imagePath: imagePath,
+                        child: postWidget)
+                    : Center(child: postWidget),
           );
         },
       ),
@@ -121,9 +122,9 @@ class _PostDetailState extends State<PostDetail> {
 class _SmallScreenLayoutDetail extends StatefulWidget {
   const _SmallScreenLayoutDetail({
     Key? key,
-    required this.child,
     required this.post,
     required this.imagePath,
+    required this.child,
   }) : super(key: key);
 
   final Widget child;
@@ -160,24 +161,11 @@ class _SmallScreenLayoutDetailState extends State<_SmallScreenLayoutDetail> {
                 SliverToBoxAdapter(child: widget.child),
                 const PoolTiles(),
                 SliverToBoxAdapter(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InformationSection(post: widget.post),
-                      if (state.settings.actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.scrolling)
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10),
-                          child: _buildActionBar(),
-                        ),
-                      if (widget.post.hasParentOrChildren)
-                        ParentChildTile(data: getParentChildData(widget.post)),
-                      if (!widget.post.hasBothParentAndChildren)
-                        const Divider(height: 8, thickness: 1),
-                      _buildRecommendedArtistList(),
-                      _buildRecommendedCharacterList(),
-                    ],
+                  child: InformationAndRecommended(
+                    post: widget.post,
+                    actionBarDisplayBehavior:
+                        state.settings.actionBarDisplayBehavior,
+                    imagePath: widget.imagePath,
                   ),
                 ),
               ],
@@ -186,139 +174,16 @@ class _SmallScreenLayoutDetailState extends State<_SmallScreenLayoutDetail> {
                 ActionBarDisplayBehavior.staticAtBottom)
               Positioned(
                 bottom: 6,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: BackdropFilter(
-                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                    child: Material(
-                      elevation: 12,
-                      color: Theme.of(context).cardColor.withOpacity(0.7),
-                      type: MaterialType.card,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: _buildActionBar(),
-                      ),
-                    ),
+                child: FloatingGlassyCard(
+                  child: ActionBar(
+                    imagePath: widget.imagePath,
+                    post: widget.post,
                   ),
                 ),
               ),
           ],
         );
       },
-    );
-  }
-
-  Widget _buildRecommendedArtistList() {
-    if (widget.post.artistTags.isEmpty) return const SizedBox.shrink();
-    return BlocBuilder<RecommendedArtistPostCubit,
-        AsyncLoadState<List<Recommended>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final recommendedItems = state.data!;
-
-          if (recommendedItems.isEmpty) return const SizedBox.shrink();
-
-          return Column(
-            children: recommendedItems
-                .map((item) => _buildRecommendPostSection(
-                      item,
-                      '/artist',
-                    ))
-                .toList(),
-          );
-        } else {
-          final artists = widget.post.artistTags;
-          return Column(
-            children: [
-              ...List.generate(
-                artists.length,
-                (index) => RecommendSectionPlaceHolder(
-                  header: ListTile(
-                    title: Text(artists[index].removeUnderscoreWithSpace()),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                ),
-              )
-            ],
-          );
-        }
-      },
-    );
-  }
-
-  Widget _buildRecommendPostSection(
-    Recommended item,
-    String url,
-  ) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        return RecommendPostSection(
-          imageQuality: state.settings.imageQuality,
-          header: ListTile(
-            onTap: () => AppRouter.router.navigateTo(
-              context,
-              url,
-              routeSettings: RouteSettings(
-                arguments: [
-                  item.tag,
-                  widget.post.normalImageUrl,
-                ],
-              ),
-            ),
-            title: Text(item.title),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-          ),
-          posts: item.posts,
-        );
-      },
-    );
-  }
-
-  Widget _buildRecommendedCharacterList() {
-    if (widget.post.characterTags.isEmpty) return const SizedBox.shrink();
-    return BlocBuilder<RecommendedCharacterPostCubit,
-        AsyncLoadState<List<Recommended>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final recommendedItems = state.data!;
-
-          if (recommendedItems.isEmpty) return const SizedBox.shrink();
-
-          return Column(
-            children: recommendedItems
-                .map((item) => _buildRecommendPostSection(
-                      item,
-                      '/character',
-                    ))
-                .toList(),
-          );
-        } else {
-          final characters = widget.post.characterTags;
-          return Column(
-            children: [
-              ...List.generate(
-                characters.length,
-                (index) => RecommendSectionPlaceHolder(
-                  header: ListTile(
-                    title: Text(characters[index].removeUnderscoreWithSpace()),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                ),
-              )
-            ],
-          );
-        }
-      },
-    );
-  }
-
-  Widget _buildActionBar() {
-    return ValueListenableBuilder<String?>(
-      valueListenable: widget.imagePath,
-      builder: (context, value, child) => PostActionToolbar(
-        post: widget.post,
-        imagePath: value,
-      ),
     );
   }
 }

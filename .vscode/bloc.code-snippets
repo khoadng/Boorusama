@@ -83,5 +83,12 @@
 		],
 		"description": "create optional required arg"
 	},
-
+	"media query size" : {
+		"scope": "dart",
+		"prefix": "mqs",
+		"body": [
+			"MediaQuery.of(context).size"
+		],
+		"description": "create Media query size"
+	},
 }

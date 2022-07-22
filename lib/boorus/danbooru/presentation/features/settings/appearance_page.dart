@@ -95,6 +95,7 @@ class _AppearancePageState extends State<AppearancePage> {
         builder: (context, state) {
           return SafeArea(
             child: ListView(
+              primary: false,
               children: [
                 SettingsHeader(label: 'settings.general'.tr()),
                 SettingsTile(
@@ -276,6 +277,7 @@ class _AppearancePageState extends State<AppearancePage> {
           child: ValueListenableBuilder<double>(
             valueListenable: _spacingSliderValue,
             builder: (context, value, _) => GridView.builder(
+                primary: false,
                 itemCount: 100,
                 gridDelegate: gridSizeToGridDelegate(
                   size: state.settings.gridSize,

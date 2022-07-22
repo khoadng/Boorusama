@@ -25,13 +25,9 @@ class RecommendPostSection extends StatelessWidget {
         header,
         Padding(
           padding: const EdgeInsets.all(4),
-          child: SizedBox(
-            height: MediaQuery.of(context).size.height *
-                (posts.length <= 3 ? 0.15 : 0.3),
-            child: PreviewPostGrid(
-              posts: posts,
-              imageQuality: imageQuality,
-            ),
+          child: PreviewPostGrid(
+            posts: posts,
+            imageQuality: imageQuality,
           ),
         ),
       ],
