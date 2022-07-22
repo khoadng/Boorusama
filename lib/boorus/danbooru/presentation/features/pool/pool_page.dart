@@ -11,6 +11,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
@@ -88,7 +89,7 @@ class _PoolPageState extends State<PoolPage> {
             child: PoolOptionsHeader(),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             sliver: BlocBuilder<PoolBloc, PoolState>(
               buildWhen: (previous, current) =>
                   current.status != LoadStatus.loading,
@@ -105,7 +106,14 @@ class _PoolPageState extends State<PoolPage> {
                     return const SliverToBoxAdapter(
                         child: Center(child: Text('No data')));
                   }
-                  return SliverPoolGrid(pools: state.pools);
+                  return BlocBuilder<SettingsCubit, SettingsState>(
+                    builder: (context, settingsState) {
+                      return SliverPoolGrid(
+                        pools: state.pools,
+                        spacing: settingsState.settings.imageGridSpacing,
+                      );
+                    },
+                  );
                 } else if (state.status == LoadStatus.loading) {
                   return const SliverToBoxAdapter(
                     child: SizedBox.shrink(),
