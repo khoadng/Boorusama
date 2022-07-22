@@ -39,7 +39,6 @@ class PostDetail extends StatefulWidget {
 }
 
 class _PostDetailState extends State<PostDetail> {
-  final scrollController = ScrollController();
   final imagePath = ValueNotifier<String?>(null);
 
   late final String videoHtml = '''
@@ -50,40 +49,20 @@ class _PostDetailState extends State<PostDetail> {
             </center>''';
 
   @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final postWidget = _buildPostWidget();
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: BlocBuilder<SettingsCubit, SettingsState>(
-        buildWhen: (previous, current) =>
-            previous.settings.actionBarDisplayBehavior !=
-            current.settings.actionBarDisplayBehavior,
         builder: (context, state) {
           return Scaffold(
             backgroundColor: Colors.transparent,
             body: widget.minimal
                 ? Center(child: postWidget)
-                : Stack(
-                    alignment: Alignment.bottomCenter,
-                    children: [
-                      CustomScrollView(
-                        controller: scrollController,
-                        slivers: [
-                          SliverToBoxAdapter(child: postWidget),
-                          const PoolTiles(),
-                          _buildPostInformation(state),
-                        ],
-                      ),
-                      if (state.settings.actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.staticAtBottom)
-                        _buildBottomActionBar(),
-                    ],
+                : _SmallScreenLayoutDetail(
+                    post: widget.post,
+                    imagePath: imagePath,
+                    child: postWidget,
                   ),
           );
         },
@@ -137,49 +116,95 @@ class _PostDetailState extends State<PostDetail> {
       );
     }
   }
+}
 
-  Widget _buildBottomActionBar() {
-    return Positioned(
-      bottom: 6,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Material(
-            elevation: 12,
-            color: Theme.of(context).cardColor.withOpacity(0.7),
-            type: MaterialType.card,
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: _buildActionBar(),
-            ),
-          ),
-        ),
-      ),
-    );
+class _SmallScreenLayoutDetail extends StatefulWidget {
+  const _SmallScreenLayoutDetail({
+    Key? key,
+    required this.child,
+    required this.post,
+    required this.imagePath,
+  }) : super(key: key);
+
+  final Widget child;
+  final Post post;
+  final ValueNotifier<String?> imagePath;
+
+  @override
+  State<_SmallScreenLayoutDetail> createState() =>
+      _SmallScreenLayoutDetailState();
+}
+
+class _SmallScreenLayoutDetailState extends State<_SmallScreenLayoutDetail> {
+  final scrollController = ScrollController();
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
-  Widget _buildPostInformation(SettingsState state) {
-    return SliverToBoxAdapter(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          InformationSection(post: widget.post),
-          if (state.settings.actionBarDisplayBehavior ==
-              ActionBarDisplayBehavior.scrolling)
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: _buildActionBar(),
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      buildWhen: (previous, current) =>
+          previous.settings.actionBarDisplayBehavior !=
+          current.settings.actionBarDisplayBehavior,
+      builder: (context, state) {
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverToBoxAdapter(child: widget.child),
+                const PoolTiles(),
+                SliverToBoxAdapter(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InformationSection(post: widget.post),
+                      if (state.settings.actionBarDisplayBehavior ==
+                          ActionBarDisplayBehavior.scrolling)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: _buildActionBar(),
+                        ),
+                      if (widget.post.hasParentOrChildren)
+                        ParentChildTile(data: getParentChildData(widget.post)),
+                      if (!widget.post.hasBothParentAndChildren)
+                        const Divider(height: 8, thickness: 1),
+                      _buildRecommendedArtistList(),
+                      _buildRecommendedCharacterList(),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          if (widget.post.hasParentOrChildren)
-            ParentChildTile(data: getParentChildData(widget.post)),
-          if (!widget.post.hasBothParentAndChildren)
-            const Divider(height: 8, thickness: 1),
-          _buildRecommendedArtistList(),
-          _buildRecommendedCharacterList(),
-        ],
-      ),
+            if (state.settings.actionBarDisplayBehavior ==
+                ActionBarDisplayBehavior.staticAtBottom)
+              Positioned(
+                bottom: 6,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                    child: Material(
+                      elevation: 12,
+                      color: Theme.of(context).cardColor.withOpacity(0.7),
+                      type: MaterialType.card,
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: _buildActionBar(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -289,7 +314,7 @@ class _PostDetailState extends State<PostDetail> {
 
   Widget _buildActionBar() {
     return ValueListenableBuilder<String?>(
-      valueListenable: imagePath,
+      valueListenable: widget.imagePath,
       builder: (context, value, child) => PostActionToolbar(
         post: widget.post,
         imagePath: value,
