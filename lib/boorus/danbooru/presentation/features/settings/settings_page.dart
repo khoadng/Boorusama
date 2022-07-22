@@ -31,79 +31,81 @@ class SettingsPage extends StatelessWidget {
           builder: (context, state) {
             final settings = state.settings;
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SettingsSection(
-                  label: 'settings.app_settings'.tr(),
-                ),
-                ListTile(
-                  leading: const Icon(Icons.admin_panel_settings),
-                  title: const Text('settings.safe_mode').tr(),
-                  trailing: Switch(
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      value: settings.safeMode,
-                      onChanged: (value) {
-                        context
-                            .read<SettingsCubit>()
-                            .update(settings.copyWith(safeMode: value));
-                      }),
-                ),
-                ListTile(
-                  leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                  title: const Text('settings.appearance').tr(),
-                  onTap: () =>
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                    enterWidget: const AppearancePage(),
-                    oldWidget: this,
-                  )),
-                ),
-                ListTile(
-                  title: const Text('settings.language.language').tr(),
-                  leading: const Icon(Icons.translate),
-                  onTap: () =>
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                    enterWidget: const LanguagePage(),
-                    oldWidget: this,
-                  )),
-                ),
-                //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
-                // ListTile(
-                //   title: const Text('Download'),
-                //   leading: const FaIcon(FontAwesomeIcons.download),
-                //   onTap: () =>
-                //       Navigator.of(context).push(ParallaxSlideInPageRoute(
-                //     enterWidget: const DownloadPage(),
-                //     oldWidget: this,
-                //   )),
-                // ),
-                ListTile(
-                  title: const Text('settings.privacy.privacy').tr(),
-                  leading: const FaIcon(FontAwesomeIcons.shieldHalved),
-                  onTap: () =>
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                    enterWidget: const PrivacyPage(),
-                    oldWidget: this,
-                  )),
-                ),
-                ListTile(
-                  title: const Text('settings.information').tr(),
-                  leading: const Icon(Icons.info),
-                  onTap: () => showAboutDialog(
-                    context: context,
-                    applicationIcon: Image.asset(
-                      'assets/icon/icon-512x512.png',
-                      width: 64,
-                      height: 64,
-                    ),
-                    applicationVersion: getVersion(
-                        RepositoryProvider.of<PackageInfoProvider>(context)
-                            .getPackageInfo()),
-                    applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                    applicationName: AppConstants.appName,
+            return SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SettingsSection(
+                    label: 'settings.app_settings'.tr(),
                   ),
-                ),
-              ],
+                  ListTile(
+                    leading: const Icon(Icons.admin_panel_settings),
+                    title: const Text('settings.safe_mode').tr(),
+                    trailing: Switch(
+                        activeColor: Theme.of(context).colorScheme.primary,
+                        value: settings.safeMode,
+                        onChanged: (value) {
+                          context
+                              .read<SettingsCubit>()
+                              .update(settings.copyWith(safeMode: value));
+                        }),
+                  ),
+                  ListTile(
+                    leading: const FaIcon(FontAwesomeIcons.paintRoller),
+                    title: const Text('settings.appearance').tr(),
+                    onTap: () =>
+                        Navigator.of(context).push(ParallaxSlideInPageRoute(
+                      enterWidget: const AppearancePage(),
+                      oldWidget: this,
+                    )),
+                  ),
+                  ListTile(
+                    title: const Text('settings.language.language').tr(),
+                    leading: const Icon(Icons.translate),
+                    onTap: () =>
+                        Navigator.of(context).push(ParallaxSlideInPageRoute(
+                      enterWidget: const LanguagePage(),
+                      oldWidget: this,
+                    )),
+                  ),
+                  //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
+                  // ListTile(
+                  //   title: const Text('Download'),
+                  //   leading: const FaIcon(FontAwesomeIcons.download),
+                  //   onTap: () =>
+                  //       Navigator.of(context).push(ParallaxSlideInPageRoute(
+                  //     enterWidget: const DownloadPage(),
+                  //     oldWidget: this,
+                  //   )),
+                  // ),
+                  ListTile(
+                    title: const Text('settings.privacy.privacy').tr(),
+                    leading: const FaIcon(FontAwesomeIcons.shieldHalved),
+                    onTap: () =>
+                        Navigator.of(context).push(ParallaxSlideInPageRoute(
+                      enterWidget: const PrivacyPage(),
+                      oldWidget: this,
+                    )),
+                  ),
+                  ListTile(
+                    title: const Text('settings.information').tr(),
+                    leading: const Icon(Icons.info),
+                    onTap: () => showAboutDialog(
+                      context: context,
+                      applicationIcon: Image.asset(
+                        'assets/icon/icon-512x512.png',
+                        width: 64,
+                        height: 64,
+                      ),
+                      applicationVersion: getVersion(
+                          RepositoryProvider.of<PackageInfoProvider>(context)
+                              .getPackageInfo()),
+                      applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                      applicationName: AppConstants.appName,
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),

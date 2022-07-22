@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'settings_options.dart';
 import 'settings_tile.dart';
@@ -24,37 +25,6 @@ class AppearancePage extends StatefulWidget {
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();
-}
-
-SliverGridDelegate _normalGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 2,
-      childAspectRatio: 0.65,
-    );
-
-SliverGridDelegate _smallGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 3,
-    );
-
-SliverGridDelegate _largeGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 1,
-      childAspectRatio: 0.65,
-    );
-SliverGridDelegate _gridSizeToGridDelegate(
-  GridSize size, {
-  double spacing = 2,
-}) {
-  if (size == GridSize.large) return _largeGrid(spacing / 2);
-  if (size == GridSize.small) return _smallGrid(spacing / 2);
-  return _normalGrid(spacing / 2);
 }
 
 String _themeModeToString(ThemeMode theme) {
@@ -289,26 +259,28 @@ class _AppearancePageState extends State<AppearancePage> {
   }
 
   Widget _buildPreview(BuildContext context, SettingsState state) {
+    final size = MediaQuery.of(context).size;
     return Padding(
       padding: EdgeInsets.symmetric(
         vertical: 8,
-        horizontal: MediaQuery.of(context).size.width / 3,
+        horizontal: size.width / 3,
       ),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           color: Theme.of(context).backgroundColor,
         ),
-        height: MediaQuery.of(context).size.height * 0.25,
+        height: size.height * 0.25,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: ValueListenableBuilder<double>(
             valueListenable: _spacingSliderValue,
             builder: (context, value, _) => GridView.builder(
-                itemCount: 20,
-                gridDelegate: _gridSizeToGridDelegate(
-                  state.settings.gridSize,
+                itemCount: 100,
+                gridDelegate: gridSizeToGridDelegate(
+                  size: state.settings.gridSize,
                   spacing: value,
+                  screenWidth: size.width,
                 ),
                 itemBuilder: (context, index) {
                   return ValueListenableBuilder<double>(

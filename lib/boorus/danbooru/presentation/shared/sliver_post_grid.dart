@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 
@@ -40,28 +41,34 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
           crossAxisSpacing: crossAxisSpacing,
           mainAxisSpacing: mainAxisSpacing,
         );
-  factory SliverPostGridDelegate.normal(double spacing) =>
+  factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
-        childAspectRatio: 0.65,
-        crossAxisCount: 2,
+        childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
+        crossAxisCount: _displaySizeToGridCountWeight(size) * 2,
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
 
-  factory SliverPostGridDelegate.small(double spacing) =>
+  factory SliverPostGridDelegate.small(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: 1,
-        crossAxisCount: 3,
+        crossAxisCount: _displaySizeToGridCountWeight(size) * 3,
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
-  factory SliverPostGridDelegate.large(double spacing) =>
+  factory SliverPostGridDelegate.large(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: 0.65,
-        crossAxisCount: 1,
+        crossAxisCount: _displaySizeToGridCountWeight(size),
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
+}
+
+int _displaySizeToGridCountWeight(ScreenSize size) {
+  if (size == ScreenSize.small) return 1;
+  if (size == ScreenSize.medium) return 2;
+  return 3;
 }
 
 class SliverPostGrid extends HookWidget {
@@ -115,8 +122,9 @@ class SliverPostGrid extends HookWidget {
       builder: (context, state) {
         return SliverGrid(
           gridDelegate: gridSizeToGridDelegate(
-            gridSize,
-            state.settings.imageGridSpacing,
+            size: gridSize,
+            spacing: state.settings.imageGridSpacing,
+            screenWidth: MediaQuery.of(context).size.width,
           ),
           delegate: SliverChildBuilderDelegate(
             (context, index) {
@@ -253,14 +261,19 @@ class SliverPostGridItem extends StatelessWidget {
   }
 }
 
-SliverGridDelegate gridSizeToGridDelegate(GridSize size, double spacing) {
+SliverGridDelegate gridSizeToGridDelegate({
+  required GridSize size,
+  required double spacing,
+  required double screenWidth,
+}) {
+  final displaySize = screenWidthToDisplaySize(screenWidth);
   switch (size) {
     case GridSize.large:
-      return SliverPostGridDelegate.large(spacing);
+      return SliverPostGridDelegate.large(spacing, displaySize);
     case GridSize.small:
-      return SliverPostGridDelegate.small(spacing);
+      return SliverPostGridDelegate.small(spacing, displaySize);
     default:
-      return SliverPostGridDelegate.normal(spacing);
+      return SliverPostGridDelegate.normal(spacing, displaySize);
   }
 }
 
