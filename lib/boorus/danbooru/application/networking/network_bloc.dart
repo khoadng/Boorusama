@@ -25,26 +25,26 @@ class NetworkConnectedState extends NetworkState {}
 class NetworkDisconnectedState extends NetworkState {}
 
 class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
-
   NetworkBloc() : super(NetworkInitialState()) {
     on<ConnectedEvent>((event, emit) => emit(NetworkConnectedState()));
     on<DisconnectedEvent>((event, emit) => emit(NetworkDisconnectedState()));
 
     subscription = Connectivity()
         .onConnectivityChanged
-        .listen((ConnectivityResult result) {
-      if (result == ConnectivityResult.mobile ||
-          result == ConnectivityResult.wifi) {
-        add(ConnectedEvent());
-      } else {
-        add(DisconnectedEvent());
-      }
-    });
+        .listen((result) => add(_connectivityResultToNetworkEvent(result)));
   }
   StreamSubscription? subscription;
   @override
   Future<void> close() {
     subscription?.cancel();
     return super.close();
+  }
+}
+
+NetworkEvent _connectivityResultToNetworkEvent(ConnectivityResult result) {
+  if (result != ConnectivityResult.none) {
+    return ConnectedEvent();
+  } else {
+    return DisconnectedEvent();
   }
 }
