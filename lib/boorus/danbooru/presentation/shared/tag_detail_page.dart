@@ -34,12 +34,10 @@ class TagDetailPage extends StatefulWidget {
 }
 
 class _TagDetailPageState extends State<TagDetailPage> {
-  final RefreshController refreshController = RefreshController();
   final AutoScrollController scrollController = AutoScrollController();
 
   @override
   void dispose() {
-    refreshController.dispose();
     scrollController.dispose();
     super.dispose();
   }
@@ -55,115 +53,9 @@ class _TagDetailPageState extends State<TagDetailPage> {
         margin: const EdgeInsets.symmetric(horizontal: 6),
         maxHeight: height,
         minHeight: height * 0.55,
-        panelBuilder: (_) => Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.all(Radius.circular(24)),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
-            child: BlocBuilder<PostBloc, PostState>(
-              buildWhen: (previous, current) => !current.hasMore,
-              builder: (context, state) {
-                return InfiniteLoadList(
-                  scrollController: scrollController,
-                  refreshController: refreshController,
-                  enableLoadMore: state.hasMore,
-                  onLoadMore: () => context
-                      .read<PostBloc>()
-                      .add(PostFetched(tags: widget.tagName)),
-                  onRefresh: (controller) {
-                    context
-                        .read<PostBloc>()
-                        .add(PostRefreshed(tag: widget.tagName));
-                    Future.delayed(const Duration(milliseconds: 500),
-                        () => controller.refreshCompleted());
-                  },
-                  builder: (context, controller) => CustomScrollView(
-                    controller: controller,
-                    slivers: <Widget>[
-                      SliverPadding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        sliver: SliverToBoxAdapter(
-                          child: CategoryToggleSwitch(
-                            onToggle: (category) =>
-                                context.read<PostBloc>().add(
-                                      PostRefreshed(
-                                        tag: widget.tagName,
-                                        order: _tagFilterCategoryToPostsOrder(
-                                            category),
-                                      ),
-                                    ),
-                          ),
-                        ),
-                      ),
-                      SliverPadding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14),
-                        sliver: BlocBuilder<PostBloc, PostState>(
-                          buildWhen: (previous, current) =>
-                              current.status != LoadStatus.loading,
-                          builder: (context, state) {
-                            if (state.status == LoadStatus.initial) {
-                              return const SliverPostGridPlaceHolder();
-                            } else if (state.status == LoadStatus.success) {
-                              if (state.posts.isEmpty) {
-                                return const SliverToBoxAdapter(
-                                    child: Center(child: Text('No data')));
-                              }
-                              return SliverPostGrid(
-                                posts: state.posts,
-                                scrollController: controller,
-                                onTap: (post, index) =>
-                                    AppRouter.router.navigateTo(
-                                  context,
-                                  '/post/detail',
-                                  routeSettings: RouteSettings(
-                                    arguments: [
-                                      state.posts,
-                                      index,
-                                      controller,
-                                    ],
-                                  ),
-                                ),
-                              );
-                            } else if (state.status == LoadStatus.loading) {
-                              return const SliverToBoxAdapter(
-                                child: SizedBox.shrink(),
-                              );
-                            } else {
-                              return const SliverToBoxAdapter(
-                                child: Center(
-                                  child: Text('Something went wrong'),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      ),
-                      BlocBuilder<PostBloc, PostState>(
-                        builder: (context, state) {
-                          if (state.status == LoadStatus.loading) {
-                            return const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 20, top: 20),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const SliverToBoxAdapter(
-                              child: SizedBox.shrink(),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
+        panelBuilder: (_) => _Panel(
+          tagName: widget.tagName,
+          scrollController: scrollController,
         ),
         body: Stack(
           children: [
@@ -197,8 +89,162 @@ class _TagDetailPageState extends State<TagDetailPage> {
                   widget.otherNamesBuilder(context),
                 ],
               ),
-            )
+            ),
+            Align(
+              alignment: const Alignment(0.8, -0.9),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    width: 2,
+                    color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
+                  ),
+                ),
+                child: IconButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  icon: Icon(
+                    Icons.close,
+                    color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
+                  ),
+                ),
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _Panel extends StatefulWidget {
+  const _Panel({
+    Key? key,
+    required this.tagName,
+    required this.scrollController,
+  }) : super(key: key);
+
+  final String tagName;
+  final AutoScrollController scrollController;
+
+  @override
+  State<_Panel> createState() => _PanelState();
+}
+
+class _PanelState extends State<_Panel> {
+  final RefreshController refreshController = RefreshController();
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.all(Radius.circular(24)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+        child: BlocBuilder<PostBloc, PostState>(
+          buildWhen: (previous, current) => !current.hasMore,
+          builder: (context, state) {
+            return InfiniteLoadList(
+              scrollController: widget.scrollController,
+              refreshController: refreshController,
+              enableLoadMore: state.hasMore,
+              onLoadMore: () => context
+                  .read<PostBloc>()
+                  .add(PostFetched(tags: widget.tagName)),
+              onRefresh: (controller) {
+                context
+                    .read<PostBloc>()
+                    .add(PostRefreshed(tag: widget.tagName));
+                Future.delayed(const Duration(milliseconds: 500),
+                    () => controller.refreshCompleted());
+              },
+              builder: (context, controller) => CustomScrollView(
+                controller: controller,
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    sliver: SliverToBoxAdapter(
+                      child: CategoryToggleSwitch(
+                        onToggle: (category) => context.read<PostBloc>().add(
+                              PostRefreshed(
+                                tag: widget.tagName,
+                                order: _tagFilterCategoryToPostsOrder(category),
+                              ),
+                            ),
+                      ),
+                    ),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 14),
+                    sliver: BlocBuilder<PostBloc, PostState>(
+                      buildWhen: (previous, current) =>
+                          current.status != LoadStatus.loading,
+                      builder: (context, state) {
+                        if (state.status == LoadStatus.initial) {
+                          return const SliverPostGridPlaceHolder();
+                        } else if (state.status == LoadStatus.success) {
+                          if (state.posts.isEmpty) {
+                            return const SliverToBoxAdapter(
+                                child: Center(child: Text('No data')));
+                          }
+                          return SliverPostGrid(
+                            posts: state.posts,
+                            scrollController: controller,
+                            onTap: (post, index) => AppRouter.router.navigateTo(
+                              context,
+                              '/post/detail',
+                              routeSettings: RouteSettings(
+                                arguments: [
+                                  state.posts,
+                                  index,
+                                  controller,
+                                ],
+                              ),
+                            ),
+                          );
+                        } else if (state.status == LoadStatus.loading) {
+                          return const SliverToBoxAdapter(
+                            child: SizedBox.shrink(),
+                          );
+                        } else {
+                          return const SliverToBoxAdapter(
+                            child: Center(
+                              child: Text('Something went wrong'),
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                  BlocBuilder<PostBloc, PostState>(
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.loading) {
+                        return const SliverPadding(
+                          padding: EdgeInsets.only(bottom: 20, top: 20),
+                          sliver: SliverToBoxAdapter(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SliverToBoxAdapter(
+                          child: SizedBox.shrink(),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ),
     );
