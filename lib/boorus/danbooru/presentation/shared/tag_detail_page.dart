@@ -91,7 +91,7 @@ class _TagDetailPageState extends State<TagDetailPage> {
               ),
             ),
             Align(
-              alignment: const Alignment(0.8, -0.9),
+              alignment: const Alignment(0.8, -0.85),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),

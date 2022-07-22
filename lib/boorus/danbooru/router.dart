@@ -21,7 +21,7 @@ class AppRouter {
       ..define('/post/detail',
           handler: postDetailHandler, transitionType: TransitionType.material)
       ..define('/posts/search',
-          handler: postSearchHandler, transitionType: TransitionType.fadeIn)
+          handler: postSearchHandler, transitionType: TransitionType.material)
       ..define('/posts/image',
           handler: postDetailImageHandler,
           transitionType: TransitionType.fadeIn)

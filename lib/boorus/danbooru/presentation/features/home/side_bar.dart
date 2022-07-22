@@ -29,86 +29,89 @@ class SideBarMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      constraints: BoxConstraints.expand(width: width ?? 250),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.success) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (initialContentBuilder != null) ...[
-                          ...initialContentBuilder!(context)!,
-                          const _Divider(),
+    return SafeArea(
+      child: Container(
+        color: Theme.of(context).backgroundColor,
+        constraints: BoxConstraints.expand(width: width ?? 250),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (initialContentBuilder != null) ...[
+                            ...initialContentBuilder!(context)!,
+                            const _Divider(),
+                          ],
+                          if (state.data! == Account.empty)
+                            ListTile(
+                              leading: const Icon(Icons.login_outlined),
+                              title: Text('sideMenu.login'.tr()),
+                              onTap: () {
+                                if (popOnSelect) Navigator.of(context).pop();
+                                AppRouter.router.navigateTo(context, '/login');
+                              },
+                            )
+                          else
+                            ListTile(
+                              leading: const Icon(Icons.person_outline),
+                              title: Text('sideMenu.profile'.tr()),
+                              onTap: () {
+                                if (popOnSelect) Navigator.of(context).pop();
+                                AppRouter.router
+                                    .navigateTo(context, '/users/profile');
+                              },
+                            ),
+                          if (state.data! != Account.empty)
+                            ListTile(
+                              leading: const Icon(Icons.favorite_outline),
+                              title: Text('profile.favorites'.tr()),
+                              onTap: () {
+                                if (popOnSelect) Navigator.of(context).pop();
+                                AppRouter.router.navigateTo(
+                                    context, '/favorites',
+                                    routeSettings: RouteSettings(
+                                        arguments: [state.data!.username]));
+                              },
+                            ),
+                          if (state.data! != Account.empty)
+                            ListTile(
+                              leading: const Icon(Icons.hide_source),
+                              title: const Text(
+                                      'blacklisted_tags.blacklisted_tags')
+                                  .tr(),
+                              onTap: () {
+                                if (popOnSelect) Navigator.of(context).pop();
+                                AppRouter.router.navigateTo(
+                                    context, '/users/blacklisted_tags');
+                              },
+                            ),
+                          ListTile(
+                            leading: const Icon(Icons.settings_outlined),
+                            title: Text('sideMenu.settings'.tr()),
+                            onTap: () {
+                              if (popOnSelect) Navigator.of(context).pop();
+                              AppRouter.router.navigateTo(context, '/settings');
+                            },
+                          ),
                         ],
-                        if (state.data! == Account.empty)
-                          ListTile(
-                            leading: const Icon(Icons.login_outlined),
-                            title: Text('sideMenu.login'.tr()),
-                            onTap: () {
-                              if (popOnSelect) Navigator.of(context).pop();
-                              AppRouter.router.navigateTo(context, '/login');
-                            },
-                          )
-                        else
-                          ListTile(
-                            leading: const Icon(Icons.person_outline),
-                            title: Text('sideMenu.profile'.tr()),
-                            onTap: () {
-                              if (popOnSelect) Navigator.of(context).pop();
-                              AppRouter.router
-                                  .navigateTo(context, '/users/profile');
-                            },
-                          ),
-                        if (state.data! != Account.empty)
-                          ListTile(
-                            leading: const Icon(Icons.favorite_outline),
-                            title: Text('profile.favorites'.tr()),
-                            onTap: () {
-                              if (popOnSelect) Navigator.of(context).pop();
-                              AppRouter.router.navigateTo(context, '/favorites',
-                                  routeSettings: RouteSettings(
-                                      arguments: [state.data!.username]));
-                            },
-                          ),
-                        if (state.data! != Account.empty)
-                          ListTile(
-                            leading: const Icon(Icons.hide_source),
-                            title:
-                                const Text('blacklisted_tags.blacklisted_tags')
-                                    .tr(),
-                            onTap: () {
-                              if (popOnSelect) Navigator.of(context).pop();
-                              AppRouter.router.navigateTo(
-                                  context, '/users/blacklisted_tags');
-                            },
-                          ),
-                        ListTile(
-                          leading: const Icon(Icons.settings_outlined),
-                          title: Text('sideMenu.settings'.tr()),
-                          onTap: () {
-                            if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(context, '/settings');
-                          },
-                        ),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
               ),
             ),
-          ),
-          const _Divider(),
-          const _Footer(),
-        ],
+            const _Divider(),
+            const _Footer(),
+          ],
+        ),
       ),
     );
   }
