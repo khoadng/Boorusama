@@ -46,7 +46,7 @@ class _BottomBarState extends State<BottomBar> {
         BottomNavigationBarItem(
           label: 'Home',
           icon: FaIcon(
-            FontAwesomeIcons.house,
+            Icons.dashboard,
             size: 20,
           ),
         ),

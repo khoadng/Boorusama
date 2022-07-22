@@ -83,7 +83,8 @@ void main() async {
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
       const initialSize = Size(1000, 700);
-      appWindow.minSize = initialSize;
+      const minSize = Size(500, 350);
+      appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();

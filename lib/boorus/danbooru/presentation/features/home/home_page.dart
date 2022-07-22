@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:side_navigation/side_navigation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -15,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
+import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/presentation/network_unavailable_indicator.dart';
 import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
@@ -32,10 +35,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-  final bottomTabIndex = ValueNotifier(0);
+  final viewIndex = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final screenSize = screenWidthToDisplaySize(size.width);
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -57,53 +62,88 @@ class _HomePageState extends State<HomePage> {
               resizeToAvoidBottomInset: false,
               body: SafeArea(
                 bottom: false,
-                child: Column(
+                child: Row(
                   children: [
-                    BlocBuilder<NetworkBloc, NetworkState>(
-                      builder: (_, state) => ConditionalRenderWidget(
-                        condition: state is NetworkDisconnectedState ||
-                            state is NetworkInitialState,
-                        childBuilder: (_) =>
-                            const NetworkUnavailableIndicator(),
-                      ),
-                    ),
-                    Expanded(
-                      child: ValueListenableBuilder<int>(
-                        valueListenable: bottomTabIndex,
-                        builder: (context, index, _) => AnimatedIndexedStack(
-                          index: index,
-                          children: [
-                            LatestView(
-                              onMenuTap: () =>
-                                  scaffoldKey.currentState!.openDrawer(),
+                    if (screenSize != ScreenSize.small)
+                      ValueListenableBuilder<int>(
+                        valueListenable: viewIndex,
+                        builder: (context, index, _) => SideNavigationBar(
+                          selectedIndex: index,
+                          items: const [
+                            SideNavigationBarItem(
+                              icon: Icons.dashboard,
+                              label: 'Home',
                             ),
-                            const ExplorePage(),
-                            MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => PoolBloc(
-                                    poolRepository:
-                                        context.read<PoolRepository>(),
-                                    postRepository:
-                                        context.read<IPostRepository>(),
-                                  )..add(const PoolRefreshed(
-                                      category: PoolCategory.series,
-                                      order: PoolOrder.latest,
-                                    )),
-                                ),
-                              ],
-                              child: const PoolPage(),
+                            SideNavigationBarItem(
+                              icon: Icons.explore,
+                              label: 'Explore',
+                            ),
+                            SideNavigationBarItem(
+                              icon: FontAwesomeIcons.images,
+                              label: 'Pool',
                             ),
                           ],
+                          onTap: (index) => viewIndex.value = index,
+                          toggler: SideBarToggler(
+                              expandIcon: Icons.keyboard_arrow_left,
+                              shrinkIcon: Icons.keyboard_arrow_right,
+                              onToggle: () {}),
                         ),
+                      ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          BlocBuilder<NetworkBloc, NetworkState>(
+                            builder: (_, state) => ConditionalRenderWidget(
+                              condition: state is NetworkDisconnectedState ||
+                                  state is NetworkInitialState,
+                              childBuilder: (_) =>
+                                  const NetworkUnavailableIndicator(),
+                            ),
+                          ),
+                          Expanded(
+                            child: ValueListenableBuilder<int>(
+                              valueListenable: viewIndex,
+                              builder: (context, index, _) =>
+                                  AnimatedIndexedStack(
+                                index: index,
+                                children: [
+                                  LatestView(
+                                    onMenuTap: () =>
+                                        scaffoldKey.currentState!.openDrawer(),
+                                  ),
+                                  const ExplorePage(),
+                                  MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider(
+                                        create: (context) => PoolBloc(
+                                          poolRepository:
+                                              context.read<PoolRepository>(),
+                                          postRepository:
+                                              context.read<IPostRepository>(),
+                                        )..add(const PoolRefreshed(
+                                            category: PoolCategory.series,
+                                            order: PoolOrder.latest,
+                                          )),
+                                      ),
+                                    ],
+                                    child: const PoolPage(),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              bottomNavigationBar: BottomBar(
-                onTabChanged: (value) => bottomTabIndex.value = value,
-              ),
+              bottomNavigationBar: screenSize == ScreenSize.small
+                  ? BottomBar(
+                      onTabChanged: (value) => viewIndex.value = value,
+                    )
+                  : null,
             ),
           ),
         );
