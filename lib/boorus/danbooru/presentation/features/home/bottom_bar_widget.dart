@@ -1,13 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key, required this.onTabChanged}) : super(key: key);
+  const BottomBar({
+    Key? key,
+    required this.onTabChanged,
+    this.initialValue = 0,
+  }) : super(key: key);
 
   final ValueChanged<int> onTabChanged;
+  final int initialValue;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -26,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    currentIndex = 0;
+    currentIndex = widget.initialValue;
   }
 
   void changePage(int index) {
@@ -42,27 +44,25 @@ class _BottomBarState extends State<BottomBar> {
       showUnselectedLabels: false,
       showSelectedLabels: false,
       landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-      items: const [
+      items: [
+        //TODO: stop using index as a selected indicator
         BottomNavigationBarItem(
           label: 'Home',
-          icon: FaIcon(
-            Icons.dashboard,
-            size: 20,
-          ),
+          icon: currentIndex == 0
+              ? const Icon(Icons.dashboard)
+              : const Icon(Icons.dashboard_outlined),
         ),
         BottomNavigationBarItem(
           label: 'Explore',
-          icon: FaIcon(
-            Icons.explore,
-            size: 20,
-          ),
+          icon: currentIndex == 1
+              ? const Icon(Icons.explore)
+              : const Icon(Icons.explore_outlined),
         ),
         BottomNavigationBarItem(
           label: 'Pool',
-          icon: FaIcon(
-            FontAwesomeIcons.images,
-            size: 20,
-          ),
+          icon: currentIndex == 2
+              ? const Icon(Icons.photo_album)
+              : const Icon(Icons.photo_album_outlined),
         ),
       ],
       currentIndex: currentIndex,

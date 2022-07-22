@@ -42,7 +42,7 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
                 ),
               );
             },
-            childCount: 20,
+            childCount: 100,
           ),
         );
       },

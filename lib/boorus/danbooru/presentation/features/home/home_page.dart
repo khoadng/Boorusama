@@ -4,8 +4,6 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:side_navigation/side_navigation.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -58,7 +56,9 @@ class _HomePageState extends State<HomePage> {
             child: Scaffold(
               extendBody: true,
               key: scaffoldKey,
-              drawer: const SideBarMenu(),
+              drawer: screenSize == ScreenSize.small
+                  ? const SideBarMenu(popOnSelect: true)
+                  : null,
               resizeToAvoidBottomInset: false,
               body: SafeArea(
                 bottom: false,
@@ -67,27 +67,48 @@ class _HomePageState extends State<HomePage> {
                     if (screenSize != ScreenSize.small)
                       ValueListenableBuilder<int>(
                         valueListenable: viewIndex,
-                        builder: (context, index, _) => SideNavigationBar(
-                          selectedIndex: index,
-                          items: const [
-                            SideNavigationBarItem(
-                              icon: Icons.dashboard,
-                              label: 'Home',
-                            ),
-                            SideNavigationBarItem(
-                              icon: Icons.explore,
-                              label: 'Explore',
-                            ),
-                            SideNavigationBarItem(
-                              icon: FontAwesomeIcons.images,
-                              label: 'Pool',
-                            ),
-                          ],
-                          onTap: (index) => viewIndex.value = index,
-                          toggler: SideBarToggler(
-                              expandIcon: Icons.keyboard_arrow_left,
-                              shrinkIcon: Icons.keyboard_arrow_right,
-                              onToggle: () {}),
+                        builder: (context, index, _) => SideBarMenu(
+                          initialContentBuilder: (context) => screenSize !=
+                                  ScreenSize.small
+                              ?
+                              //TODO: create a widget to manage this, also stop using index as a selected indicator
+                              [
+                                  ListTile(
+                                    selected: index == 0,
+                                    selectedTileColor: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    leading: index == 0
+                                        ? const Icon(Icons.dashboard)
+                                        : const Icon(Icons.dashboard_outlined),
+                                    title: const Text('Home'),
+                                    onTap: () => viewIndex.value = 0,
+                                  ),
+                                  ListTile(
+                                    selected: index == 1,
+                                    selectedTileColor: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    leading: index == 1
+                                        ? const Icon(Icons.explore)
+                                        : const Icon(Icons.explore_outlined),
+                                    title: const Text('Explore'),
+                                    onTap: () => viewIndex.value = 1,
+                                  ),
+                                  ListTile(
+                                    selected: index == 2,
+                                    selectedTileColor: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    leading: index == 2
+                                        ? const Icon(Icons.photo_album)
+                                        : const Icon(
+                                            Icons.photo_album_outlined),
+                                    title: const Text('Pool'),
+                                    onTap: () => viewIndex.value = 2,
+                                  ),
+                                ]
+                              : null,
                         ),
                       ),
                     Expanded(
@@ -141,6 +162,7 @@ class _HomePageState extends State<HomePage> {
               ),
               bottomNavigationBar: screenSize == ScreenSize.small
                   ? BottomBar(
+                      initialValue: viewIndex.value,
                       onTabChanged: (value) => viewIndex.value = value,
                     )
                   : null,
