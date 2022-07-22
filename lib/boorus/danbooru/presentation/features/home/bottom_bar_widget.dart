@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class BottomBar extends StatefulWidget {
@@ -39,16 +38,32 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      animationDuration: const Duration(milliseconds: 300),
-      height: 60,
-      color: Theme.of(context).bottomNavigationBarTheme.backgroundColor!,
-      backgroundColor: Colors.transparent,
+    return BottomNavigationBar(
+      landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
       items: const [
-        FaIcon(FontAwesomeIcons.house),
-        FaIcon(Icons.explore),
-        FaIcon(FontAwesomeIcons.images),
+        BottomNavigationBarItem(
+          label: 'Home',
+          icon: FaIcon(
+            FontAwesomeIcons.house,
+            size: 20,
+          ),
+        ),
+        BottomNavigationBarItem(
+          label: 'Explore',
+          icon: FaIcon(
+            Icons.explore,
+            size: 20,
+          ),
+        ),
+        BottomNavigationBarItem(
+          label: 'Pool',
+          icon: FaIcon(
+            FontAwesomeIcons.images,
+            size: 20,
+          ),
+        ),
       ],
+      currentIndex: currentIndex,
       onTap: changePage,
     );
   }
