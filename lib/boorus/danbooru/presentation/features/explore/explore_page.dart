@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'explore_section.dart';
 
-class ExplorePage extends HookWidget {
+class ExplorePage extends StatelessWidget {
   const ExplorePage({Key? key}) : super(key: key);
 
   Widget mapStateToCarousel(
@@ -35,38 +35,9 @@ class ExplorePage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(slivers: [
-      //TODO: doesn't looks good without some images slapped on it
-      // popularSearch.maybeWhen(
-      //   data: (searches) => SliverPadding(
-      //     padding: const EdgeInsets.all(10.0),
-      //     sliver: SliverGrid.count(
-      //       mainAxisSpacing: 8,
-      //       crossAxisSpacing: 8,
-      //       childAspectRatio: 4.5,
-      //       crossAxisCount: 2,
-      //       children: searches
-      //           .take(10)
-      //           .map(
-      //             (search) => Container(
-      //                 decoration: BoxDecoration(
-      //                   color: Theme.of(context).accentColor,
-      //                   borderRadius: BorderRadius.circular(8.0),
-      //                 ),
-      //                 child: Center(child: const Text("#${search.keyword.removeUnderscoreWithSpace()}"))),
-      //           )
-      //           .toList(),
-      //     ),
-      //   ),
-      //   orElse: () => SliverToBoxAdapter(
-      //     child: Center(
-      //       child: CircularProgressIndicator(),
-      //     ),
-      //   ),
-      // ),
-
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Popular',
+          title: 'explore.popular'.tr(),
           category: ExploreCategory.popular,
           builder: (_) => BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -75,7 +46,7 @@ class ExplorePage extends HookWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Curated',
+          title: 'explore.curated'.tr(),
           category: ExploreCategory.curated,
           builder: (_) => BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
             builder: mapStateToCarousel,
@@ -84,7 +55,7 @@ class ExplorePage extends HookWidget {
       ),
       SliverToBoxAdapter(
         child: ExploreSection(
-          title: 'Most viewed',
+          title: 'explore.most_viewed'.tr(),
           category: ExploreCategory.mostViewed,
           builder: (_) =>
               BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(

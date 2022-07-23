@@ -14,9 +14,11 @@ class BlacklistedTagsSearchPage extends StatefulWidget {
   const BlacklistedTagsSearchPage({
     Key? key,
     required this.onSelectedDone,
+    this.initialTags,
   }) : super(key: key);
 
   final void Function(List<TagSearchItem> tags) onSelectedDone;
+  final List<String>? initialTags;
 
   @override
   State<BlacklistedTagsSearchPage> createState() =>
@@ -29,6 +31,15 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
   @override
   void initState() {
     super.initState();
+
+    if (widget.initialTags != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context
+            .read<TagSearchBloc>()
+            .add(TagSearchNewRawStringTagsSelected(widget.initialTags!));
+      });
+    }
+
     queryEditingController.addListener(() {
       queryEditingController.selection = TextSelection.fromPosition(
           TextPosition(offset: queryEditingController.text.length));

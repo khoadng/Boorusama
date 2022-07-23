@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -34,7 +35,8 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
           ),
         ],
         automaticallyImplyLeading: false,
-        title: Text('Children of ${widget.parentPostId}'),
+        title: Text(
+            '${'post.parent_child.children_of'.tr()} ${widget.parentPostId}'),
       ),
       body: SafeArea(
         child: BlocBuilder<PostBloc, PostState>(

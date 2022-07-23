@@ -85,6 +85,14 @@ class TagSearchNewRawStringTagSelected extends TagSearchEvent {
   List<Object?> get props => [tag];
 }
 
+class TagSearchNewRawStringTagsSelected extends TagSearchEvent {
+  const TagSearchNewRawStringTagsSelected(this.tags);
+  final List<String> tags;
+
+  @override
+  List<Object?> get props => [tags];
+}
+
 class TagSearchTagFromHistorySelected extends TagSearchEvent {
   const TagSearchTagFromHistorySelected(this.tags);
   final String tags;
@@ -130,7 +138,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
   }) : super(TagSearchState.initial()) {
     on<TagSearchChanged>(
       (event, emit) async {
-        final query = event.query.trim();
+        final query = event.query.trimLeft().replaceAll(' ', '_');
         if (query.isEmpty) {
           emit(state.copyWith(query: ''));
           return;
@@ -177,6 +185,20 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
             '${filterOperatorToString(state.operator)}${event.tag}',
             tagInfo,
           ),
+        ],
+        query: '',
+        suggestionTags: [],
+      ));
+    });
+
+    on<TagSearchNewRawStringTagsSelected>((event, emit) {
+      emit(state.copyWith(
+        selectedTags: [
+          ...state.selectedTags,
+          ...event.tags.map((tag) => TagSearchItem.fromString(
+                '${filterOperatorToString(state.operator)}$tag',
+                tagInfo,
+              )),
         ],
         query: '',
         suggestionTags: [],

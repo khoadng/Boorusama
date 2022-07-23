@@ -2,19 +2,21 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
+import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 
 class PostActionToolbar extends StatefulWidget {
@@ -105,15 +107,13 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
             onPressed: () async {
               final favBloc = context.read<IsPostFavoritedBloc>();
               if (authState is Unauthenticated) {
-                const snackbar = SnackBar(
-                  behavior: SnackBarBehavior.floating,
-                  duration: Duration(seconds: 1),
-                  elevation: 6,
-                  content: Text(
-                    'You have to log in to perform this action',
-                  ),
+                showSimpleSnackBar(
+                  context: context,
+                  content: const Text(
+                    'post.detail.login_required_notice',
+                  ).tr(),
+                  duration: const Duration(seconds: 1),
                 );
-                ScaffoldMessenger.of(context).showSnackBar(snackbar);
               }
 
               final result = state.data!
@@ -199,7 +199,7 @@ class ModalShare extends StatelessWidget {
         children: <Widget>[
           if (post.source.uri != null)
             ListTile(
-              title: const Text('Share source link'),
+              title: const Text('post.detail.share.source').tr(),
               leading: const FaIcon(FontAwesomeIcons.link),
               onTap: () {
                 Navigator.of(context).pop();
@@ -207,7 +207,7 @@ class ModalShare extends StatelessWidget {
               },
             ),
           ListTile(
-            title: const Text('Share booru link'),
+            title: const Text('post.detail.share.booru').tr(),
             leading: const FaIcon(FontAwesomeIcons.box),
             onTap: () {
               Navigator.of(context).pop();
@@ -216,7 +216,7 @@ class ModalShare extends StatelessWidget {
           ),
           if (imagePath != null)
             ListTile(
-              title: const Text('Share image'),
+              title: const Text('post.detail.share.image').tr(),
               leading: const FaIcon(FontAwesomeIcons.fileImage),
               onTap: () {
                 Navigator.of(context).pop();

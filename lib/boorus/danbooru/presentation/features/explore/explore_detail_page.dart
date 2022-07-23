@@ -11,6 +11,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
@@ -19,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dar
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/main.dart';
 
 class ExploreDetailPage extends StatefulWidget {
   const ExploreDetailPage({
@@ -402,13 +402,8 @@ class _ExploreListItemHeader extends StatelessWidget {
                   onTimeScaleChanged(timeScale);
                 },
                 child: Row(
-                  children: <Widget>[
-                    Text(scale
-                        .toString()
-                        .split('.')
-                        .last
-                        .replaceAll('()', '')
-                        .toUpperCase()),
+                  children: [
+                    Text(_timeScaleToString(scale).tr().toUpperCase()),
                     const Icon(Icons.arrow_drop_down)
                   ],
                 ),
@@ -417,5 +412,16 @@ class _ExploreListItemHeader extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+String _timeScaleToString(TimeScale scale) {
+  switch (scale) {
+    case TimeScale.month:
+      return 'dateRange.month';
+    case TimeScale.week:
+      return 'dateRange.week';
+    default:
+      return 'dateRange.day';
   }
 }

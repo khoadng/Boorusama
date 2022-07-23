@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -50,8 +51,10 @@ class ExploreSection extends StatelessWidget {
                       ),
                     ),
                   ),
-              child:
-                  Text('See more', style: Theme.of(context).textTheme.button)),
+              child: Text(
+                'explore.see_more',
+                style: Theme.of(context).textTheme.button,
+              ).tr()),
         ),
         builder(context),
       ],

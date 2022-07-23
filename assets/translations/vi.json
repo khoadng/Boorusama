@@ -1,16 +1,23 @@
 {
     "profile": {
         "profile" : "Hồ sơ",
-        "favorites" : "Yêu thích"
+        "favorites" : "Yêu thích",
+        "see_more" : "Xem thêm",
+        "user_id" : "ID người dùng",
+        "level" : "Cấp độ",
+        "favorites_count" : "Lượt yêu thích",
+        "comments_count" : "Tổng số bình luận"
     },
-
 
     "login" : {
         "form" : {
             "username" : "Tài khoản",
             "password" : "API Key",
             "login" : "Đăng nhập",
-            "greeting": "Hi!"
+            "greeting": "Hi!",
+            "cancel" : "Hủy",
+            "open_web_browser" : "Mở trình duyệt",
+            "api_key_instruction" : "1. Đăng nhập vào tài khoản.\n2. Vào profile\n3. Tìm và copy API key vào form"
         },
         "errors" : {
             "invalidUsernameOrPassword" : "Tài khoản hoặc API key không chính xác",
@@ -19,59 +26,197 @@
         }
     },
 
-    "commentCreate" : {
-        "hint" : "Bình luận",
-        "loading" : "Đợi tí...",
-        "error": "Lỗi"
+    "network" : {
+        "unavailable" : "Không có mạng"
     },
 
-    "commentListing": {
-        "commands" : {
-            "edit" : "Sửa",
-            "reply" : "Phản hồi",
-            "delete" : "Xóa"
-        },
-        "tooltips": {
-            "toggleDeletedComments" : "Bật tắt bình luận đã xóa"
-        },
-        "notifications" : {
-            "noComments" : "Không có bình luận"
+    "tag" : {
+        "related" : {
+            "more" : "Thêm",
+            "related" : "Liên quan",
+            "add_to_current_search" : "Thêm vào thanh tìm kiếm",
+            "open_wiki" : "Mở wiki"
         }
     },
 
-    "postCategories" : {
+    "post" : {
+        "detail" : {
+            "view": "Xem",
+            "slide_show" : {
+                "interval" : "Chu kỳ (giây)",
+                "skip_anim" : "Bỏ animation",
+                "ok" : "OK",
+                "cancel" : "Hủy"
+            },
+            "has_parent_notice" : "Ảnh này là một phần nhỏ trong bộ ảnh lớn hơn",
+            "has_children_notice" : "Có những ảnh khác nằm chung bộ với ảnh này",
+            "size" : "Kích thước",
+            "resolution" : "Độ phân giải",
+            "rating" : "Xếp loại",
+            "share" : {
+                "source" : "Chia sẻ link nguồn",
+                "booru" : "Chia sẻ link booru",
+                "image" : "Chia sẻ ảnh"
+            },
+            "copied" : "Đã sao chép",
+            "show_original" : "Xem bản gốc",
+            "show_translated" : "Xem bản dịch",
+            "login_required_notice" : "Bạn cần đăng nhập để thực hiện tác vụ này",
+            "open_wiki" : "Mở wiki",
+            "add_to_blacklist" : "Thêm vào bộ lọc"
+        },
+        "parent_child": {
+            "children_of": "Ảnh chung bộ với"
+        },
+        "quick_preview" : {
+            "view_notes" : "Xem ảnh đã được dịch"
+        },
+        "image_fullview" : {
+            "view_original" : "Xem ảnh gốc",
+            "view_resized" : "Xem ảnh thường"
+        }
+    },
+
+    "comment" : {
+        "create" : {
+            "hint" :"Bình luận",
+            "loading" : "Đợi tí...",
+            "error":"Lỗi"
+        },
+        "list": {
+            "edit" : "Sửa",
+            "reply" : "Trả lời",
+            "reply_to" : "Gửi tới",
+            "delete" : "Xóa",
+            "noComments" : "Không có bình luận",
+            "last_updated" : "Cập nhật lần cuối",
+            "send" : "Gửi"
+        }
+    },
+
+    "explore" : {
         "latest": "Mới",
         "popular": "Phổ biến",
         "curated": "Tuyển chọn",
-        "mostViewed": "Xem nhiều"
+        "most_viewed": "Xem nhiều",
+        "see_more" : "Xem thêm"
     },
 
     "search" : {
+        "errors" : {
+            "generic" : "Có lỗi xảy ra",
+            "tag_limit" : "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
+            "database_timeout" : "Search bị hủy do tốn quá nhiều thời gian.",
+            "unknown" : "Có lỗi ngoài dự kiến, vui lòng thử lại sau."
+        },
         "hint": "Tìm...",
-        "noResult" : "Không có kết quả",
-        "empty" : "Trống"
+        "no_result" : "Không tìm được kết quả phù hợp.",
+        "empty" : "Trống",
+        "search_options" : "Tùy chọn",
+        "history" : {
+            "history" : "Lịch sử",
+            "clear": "Xóa"
+        }
+    },
+
+    "pool" : {
+        "pool" : "Ảnh bộ",
+        "pool_gallery" : "Ảnh bộ",
+        "mature_banned_content" : "Nội dung người lớn",
+        "order" : {
+            "recent" : "Gần đây",
+            "new" : "Mới",
+            "post_count": "Số lượng",
+            "name" : "Tên"
+        },
+        "search" : {
+            "hint": "Tìm ảnh"
+        },
+        "detail" : {
+            "last_updated" : "Cập nhật"
+        },
+        "item" : {
+            "other": "{} ảnh"
+        }
     },
 
     "settings" : {
-        "_string" : "Cài đặt",
-        "appSettings" : {
-            "_string" : "Cài đặt ứng dụng",
-            "appearance" : {
-                "_string" : "Hiển thị",
-                "theme" :{
-                    "_string": "Nền",
-                    "dark" : "Tối",
-                    "light" : "Sáng"
-                }
+        "settings" : "Cài đặt",
+        "app_settings" : "Cài đặt ứng dụng",
+        "appearance" :  "Hiển thị",
+        "general" :  "Chung",
+        "information" : "Thông tin",
+        "image_grid" : {
+            "image_grid" : "Lưới ảnh",
+            "grid_size" : {
+                "grid_size" : "Cỡ ảnh",
+                "small" : "Nhỏ",
+                "medium" : "Vừa",
+                "large" : "Lớn"
             },
-            "language" : {
-                "_string" : "Ngôn ngữ",
-                "english" : "Tiếng Anh",
-                "vietnamese" : "Tiếng Việt"
+            "image_quality" : {
+                "image_quality" : "Chất lượng ảnh",
+                "high_quality_notice" : "Ảnh chất lượng cao sẽ tải lâu hơn.",
+                "high" : "Cao",
+                "low" : "Thấp",
+                "original" : "Gốc",
+                "automatic" : "Tự động"
             },
-            "safeMode" : "Safe Mode",
-            "blacklistedTags" : "Danh sách đen"
-        }
+            "spacing" : "Độ dãn cách",
+            "corner_radius" : "Bo góc"
+        },
+        "image_viewer" : {
+            "image_viewer" : "Trình xem ảnh",
+            "full_res_as_default" : "Luôn sử dụng ảnh gốc",
+            "full_res_notice" : "Thời gian tải có thể sẽ lâu hơn tùy vào kích thước của ảnh"
+        },
+        "image_detail" : {
+            "image_detail" : "Chi tiết ảnh",
+            "action_bar_display_behavior" : {
+                "action_bar_display_behavior" : "Cách hiển thị thanh công cụ",
+                "scrolling" : "Cuộn",
+                "static_at_bottom" : "Cố định bên dưới"
+            } 
+        },
+        "language" : {
+            "language" : "Ngôn ngữ",
+            "english" : "Tiếng Anh",
+            "vietnamese" : "Tiếng Việt"
+        },
+        "theme" : {
+            "theme" : "Nền",
+            "dark" : "Tối",
+            "light" : "Sáng",
+            "amoled_dark": "AMOLED" 
+        },
+        "privacy" : {
+            "privacy" : "Riêng tư",
+            "send_error_data_notice" : "Tự động gửi lỗi cho dev"
+        },
+        "safe_mode" : "18+ mode"
+    },
+
+    "blacklisted_tags" : {
+        "remove": "Xóa",
+        "edit" : "Sửa",
+        "blacklisted_tags" : "Lọc tag",
+        "load_error" : "Có lỗi xảy ra khi tải dữ liệu",
+        "updated" : "Tag đã được cập nhật",
+        "limitation_notice" : "Chỉ hỗ trợ toán tử <b>NOT</b> và toán tử <b>OR</b>. <br><br>Chưa hỗ trợ lọc bằng metatags cho phiên bản hiện tại."
+    },
+
+    "download" : {
+        "download" : "Tải ảnh",
+        "open_app_settings" : "Mở cài đặt",
+        "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh."
+    },
+
+    "rating" : {
+        "rate_request": "Đánh giá app",
+        "rate" : "Đánh giá",
+        "cancel" : "Hủy",
+        "later" : "Để sau",
+        "rationale" : "Nếu bạn cảm thấy app này có ích thì đánh giá hộ mình nhé."
     },
 
     "sideMenu": {

@@ -8,9 +8,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/profile/profile_repository.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/utils.dart';
 
 class LoginBox extends HookWidget {
@@ -130,7 +130,7 @@ class LoginBox extends HookWidget {
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Cancel'),
+                            child: const Text('login.form.cancel').tr(),
                           ),
                           BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                             builder: (context, state) => TextButton(
@@ -138,12 +138,13 @@ class LoginBox extends HookWidget {
                                 Navigator.of(context).pop();
                                 launchExternalUrl(Uri.parse(state.booru.url));
                               },
-                              child: const Text('Open web browser'),
+                              child: const Text('login.form.open_web_browser')
+                                  .tr(),
                             ),
                           ),
                         ],
-                        content: const Text(
-                            '1. Log in to your account.\n2. Navigate to your profile\n3. Find and copy your API key into the login form here\n4. ???\n5. Profit'),
+                        content:
+                            const Text('login.form.api_key_instruction').tr(),
                       );
                     }),
                 icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
@@ -191,7 +192,7 @@ class LoginBox extends HookWidget {
   }
 }
 
-class LoginField extends HookWidget {
+class LoginField extends StatelessWidget {
   const LoginField({
     Key? key,
     required this.validator,
@@ -202,7 +203,7 @@ class LoginField extends HookWidget {
     this.onChanged,
   }) : super(key: key);
 
-  final TextEditingController? controller;
+  final TextEditingController controller;
   final String? Function(String?) validator;
   final Widget? suffixIcon;
   final String labelText;
@@ -211,13 +212,11 @@ class LoginField extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController defaultController = useTextEditingController();
-
     return TextFormField(
       onChanged: onChanged,
       obscureText: obscureText,
       validator: validator,
-      controller: controller ?? defaultController,
+      controller: controller,
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,

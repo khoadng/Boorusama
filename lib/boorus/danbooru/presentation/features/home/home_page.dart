@@ -3,8 +3,8 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
@@ -20,15 +20,21 @@ import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart'
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 
-class HomePage extends HookWidget {
-  HomePage({Key? key}) : super(key: key);
+class HomePage extends StatefulWidget {
+  const HomePage({
+    Key? key,
+  }) : super(key: key);
 
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  final bottomTabIndex = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
-    final bottomTabIndex = useState(0);
-
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -57,9 +63,21 @@ class HomePage extends HookWidget {
                         if (state is NetworkConnectedState) {
                           return const SizedBox.shrink();
                         } else if (state is NetworkDisconnectedState) {
-                          return const Material(
+                          return Material(
                             color: Colors.black,
-                            child: Text('Network unavailable'),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(
+                                  Icons.wifi_off,
+                                  size: 16,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 6),
+                                  child: const Text('network.unavailable').tr(),
+                                ),
+                              ],
+                            ),
                           );
                         } else {
                           return const SizedBox.shrink();
@@ -67,30 +85,33 @@ class HomePage extends HookWidget {
                       },
                     ),
                     Expanded(
-                      child: AnimatedIndexedStack(
-                        index: bottomTabIndex.value,
-                        children: [
-                          LatestView(
-                            onMenuTap: () =>
-                                scaffoldKey.currentState!.openDrawer(),
-                          ),
-                          const ExplorePage(),
-                          MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => PoolBloc(
-                                  poolRepository:
-                                      context.read<PoolRepository>(),
-                                  postRepository:
-                                      context.read<IPostRepository>(),
-                                )..add(const PoolRefreshed(
-                                    category: PoolCategory.series,
-                                    order: PoolOrder.latest)),
-                              ),
-                            ],
-                            child: const PoolPage(),
-                          ),
-                        ],
+                      child: ValueListenableBuilder<int>(
+                        valueListenable: bottomTabIndex,
+                        builder: (context, index, _) => AnimatedIndexedStack(
+                          index: index,
+                          children: [
+                            LatestView(
+                              onMenuTap: () =>
+                                  scaffoldKey.currentState!.openDrawer(),
+                            ),
+                            const ExplorePage(),
+                            MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => PoolBloc(
+                                    poolRepository:
+                                        context.read<PoolRepository>(),
+                                    postRepository:
+                                        context.read<IPostRepository>(),
+                                  )..add(const PoolRefreshed(
+                                      category: PoolCategory.series,
+                                      order: PoolOrder.latest)),
+                                ),
+                              ],
+                              child: const PoolPage(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

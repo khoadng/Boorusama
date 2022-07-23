@@ -2,24 +2,17 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'package:boorusama/core/infrastructure/io_helper.dart';
-
-bool _hasScopeStorage(BuildContext context) {
-  if (isAndroid()) {
-    return context.read<DeviceInfo>().versionCode >= 30;
-  }
-
-  return false;
-}
 
 const String _basePath = '/storage/emulated/0/';
 const List<String> _allowedFolders = ['Download', 'Documents', 'Pictures'];
@@ -50,11 +43,11 @@ class DownloadPage extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            title: const Text('Download'),
+            title: const Text('download.download').tr(),
           ),
           body: SafeArea(
               child: Column(children: [
-            if (_hasScopeStorage(context))
+            if (hasScopedStorage(context.read<DeviceInfo>()))
               _DownloadPathWarning(
                 releaseName: context.read<DeviceInfo>().release,
                 allowedFolders: _allowedFolders,
@@ -82,7 +75,7 @@ class DownloadPage extends StatelessWidget {
                     ),
               title: const Text('Download path'),
             ),
-            if (_hasScopeStorage(context) &&
+            if (hasScopedStorage(context.read<DeviceInfo>()) &&
                 _isInvalidDownloadPath(state.settings.downloadPath))
               WarningContainer(
                   contentBuilder: (context) =>

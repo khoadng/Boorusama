@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
@@ -17,9 +19,11 @@ class PostImagePage extends StatefulWidget {
   const PostImagePage({
     Key? key,
     required this.post,
+    required this.useOriginalSize,
   }) : super(key: key);
 
   final Post post;
+  final bool useOriginalSize;
 
   @override
   State<PostImagePage> createState() => _PostImagePageState();
@@ -27,8 +31,8 @@ class PostImagePage extends StatefulWidget {
 
 class _PostImagePageState extends State<PostImagePage>
     with SingleTickerProviderStateMixin {
-  final hideOverlay = ValueNotifier(true);
-  final fullsize = ValueNotifier(false);
+  final hideOverlay = ValueNotifier(false);
+  late final fullsize = ValueNotifier(widget.useOriginalSize);
   final _transformationController = TransformationController();
   TapDownDetails? _doubleTapDetails;
 
@@ -96,6 +100,7 @@ class _PostImagePageState extends State<PostImagePage>
                       useFullsize
                           ? widget.post.fullImageUrl
                           : widget.post.normalImageUrl,
+                      widget.post.id,
                     );
                   },
                 ),
@@ -130,22 +135,25 @@ class _PostImagePageState extends State<PostImagePage>
     _animationController.forward(from: 0);
   }
 
-  Widget _buildImage(String imageUrl) {
-    return CachedNetworkImage(
-      fit: BoxFit.fitWidth,
-      imageUrl: imageUrl,
-      progressIndicatorBuilder: (context, url, progress) => Center(
-        child: CircularProgressIndicator(
-          value: progress.progress,
+  Widget _buildImage(String imageUrl, int id) {
+    return Hero(
+      tag: '${id}_hero',
+      child: CachedNetworkImage(
+        fit: BoxFit.fitWidth,
+        imageUrl: imageUrl,
+        progressIndicatorBuilder: (context, url, progress) => Center(
+          child: CircularProgressIndicator(
+            value: progress.progress,
+          ),
         ),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       ),
-      errorWidget: (context, url, error) => const Icon(Icons.error),
     );
   }
 
   Widget _buildBackButton() {
     return Align(
-      alignment: const Alignment(-0.9, -0.96),
+      alignment: Alignment(-0.9, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: IconButton(
@@ -158,7 +166,7 @@ class _PostImagePageState extends State<PostImagePage>
 
   Widget _buildMoreButton(bool useFullsize, bool hasLarge) {
     return Align(
-      alignment: const Alignment(0.9, -0.96),
+      alignment: Alignment(0.9, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: DownloadProviderWidget(
@@ -178,28 +186,30 @@ class _PostImagePageState extends State<PostImagePage>
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<PostAction>(
+              PopupMenuItem<PostAction>(
                 value: PostAction.download,
                 child: ListTile(
-                  leading: Icon(Icons.download_rounded),
-                  title: Text('Download'),
+                  leading: const Icon(Icons.download_rounded),
+                  title: const Text('download.download').tr(),
                 ),
               ),
               if (hasLarge)
                 if (useFullsize)
-                  const PopupMenuItem<PostAction>(
+                  PopupMenuItem<PostAction>(
                     value: PostAction.viewNormalsize,
                     child: ListTile(
-                      leading: Icon(Icons.fullscreen_exit),
-                      title: Text('View normal size image'),
+                      leading: const Icon(Icons.fullscreen_exit),
+                      title:
+                          const Text('post.image_fullview.view_resized').tr(),
                     ),
                   )
                 else
-                  const PopupMenuItem<PostAction>(
+                  PopupMenuItem<PostAction>(
                     value: PostAction.viewFullsize,
                     child: ListTile(
-                      leading: Icon(Icons.fullscreen),
-                      title: Text('View full size image'),
+                      leading: const Icon(Icons.fullscreen),
+                      title:
+                          const Text('post.image_fullview.view_original').tr(),
                     ),
                   ),
             ],

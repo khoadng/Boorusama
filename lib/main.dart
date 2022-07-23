@@ -11,15 +11,17 @@ import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:timeago/timeago.dart';
 
 // Project imports:
 import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
-import 'package:boorusama/boorus/danbooru/application/api/api.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -37,24 +39,32 @@ import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.da
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/device_info_service.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
+import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
-import 'boorus/danbooru/application/user/user.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
     hide PoolCategory;
+
+//TODO: should parse from translation files instead of hardcoding
+const supportedLocales = [
+  Locale('en', ''),
+  Locale('vi', ''),
+];
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,11 +113,14 @@ void main() async {
 
   final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
 
+  //TODO: shouldn't hardcode language.
+  setLocaleMessages('vi', ViMessages());
+
   void run() {
     runApp(
       EasyLocalization(
         useOnlyLangCode: true,
-        supportedLocales: const [Locale('en', ''), Locale('vi', '')],
+        supportedLocales: supportedLocales,
         path: 'assets/translations',
         fallbackLocale: const Locale('en', ''),
         child: MultiRepositoryProvider(
@@ -200,6 +213,8 @@ void main() async {
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
 
+                  final wikiRepo = WikiRepository(api);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -220,8 +235,8 @@ void main() async {
                     accountRepository: accountRepo,
                     profileRepository: profileRepo,
                   )..logIn();
-                  final userBlacklistedTagsBloc = UserBlacklistedTagsBloc(
-                      userRepository: userRepo,
+                  final blacklistedTagsBloc = BlacklistedTagsBloc(
+                      accountRepository: accountRepo,
                       blacklistedTagsRepository: blacklistedTagRepo);
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
@@ -265,6 +280,8 @@ void main() async {
                           value: autocompleteRepo),
                       RepositoryProvider<RelatedTagRepository>.value(
                           value: relatedTagRepo),
+                      RepositoryProvider<IWikiRepository>.value(
+                          value: wikiRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -275,7 +292,7 @@ void main() async {
                         BlocProvider.value(value: artistCommentaryCubit),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
-                        BlocProvider.value(value: userBlacklistedTagsBloc),
+                        BlocProvider.value(value: blacklistedTagsBloc),
                         BlocProvider(
                             create: (context) =>
                                 ThemeBloc(initialTheme: settings.themeMode)),
@@ -291,17 +308,8 @@ void main() async {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
+                                blacklistedTagRepo.clearCache();
                               }
-                            },
-                          ),
-                          BlocListener<UserBlacklistedTagsBloc,
-                              UserBlacklistedTagsState>(
-                            listenWhen: (previous, current) =>
-                                current.blacklistedTags !=
-                                previous.blacklistedTags,
-                            listener: (context, state) {
-                              blacklistedTagRepo
-                                  ._refresh(state.blacklistedTags);
                             },
                           ),
                           BlocListener<SettingsCubit, SettingsState>(
@@ -314,11 +322,12 @@ void main() async {
                             },
                           ),
                         ],
-                        child: BlocBuilder<UserBlacklistedTagsBloc,
-                            UserBlacklistedTagsState>(
+                        child: BlocBuilder<BlacklistedTagsBloc,
+                            BlacklistedTagsState>(
                           buildWhen: (previous, current) =>
+                              current.status == LoadStatus.success &&
                               previous.blacklistedTags !=
-                              current.blacklistedTags,
+                                  current.blacklistedTags,
                           builder: (context, state) {
                             final mostViewedCubit = MostViewedCubit(
                               postRepository: postRepo,
@@ -390,28 +399,3 @@ class AppInfoProvider {
 }
 
 Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
-
-class BlacklistedTagsRepository {
-  BlacklistedTagsRepository(this.userRepository, this.accountRepository);
-  final IUserRepository userRepository;
-  final IAccountRepository accountRepository;
-  List<String>? _tags;
-
-  Future<List<String>> getBlacklistedTags() async {
-    // ignore: prefer_conditional_assignment
-    if (_tags == null) {
-      final account = await accountRepository.get();
-      if (account == Account.empty) {
-        return [];
-      }
-      _tags ??= await userRepository
-          .getUserById(account.id)
-          .then((value) => value.blacklistedTags);
-    }
-    return _tags!;
-  }
-
-  Future<void> _refresh(List<String> tags) async {
-    _tags = tags;
-  }
-}

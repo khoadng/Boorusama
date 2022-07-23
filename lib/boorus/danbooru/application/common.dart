@@ -12,6 +12,8 @@ Future<void> tryAsync<T extends Object?>({
     final data = await action();
     await onSuccess(data);
   } catch (e, stacktrace) {
+    // ignore: avoid_print
+    print(e);
     onFailure?.call(stacktrace, e);
   }
 }

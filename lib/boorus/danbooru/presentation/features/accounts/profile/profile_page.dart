@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
@@ -16,18 +15,13 @@ import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
-class ProfilePage extends HookWidget {
+class ProfilePage extends StatelessWidget {
   const ProfilePage({
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    useEffect(() {
-      ReadContext(context).read<ProfileCubit>().getProfile();
-      return null;
-    }, []);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('profile.profile'.tr()),
@@ -57,25 +51,29 @@ class ProfilePage extends HookWidget {
                       child: Column(
                         children: [
                           ListTile(
-                            leading: const Text('User ID'),
+                            dense: true,
+                            leading: const Text('profile.user_id').tr(),
                             trailing: Text(
                               profile.id.toString(),
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Level'),
+                            dense: true,
+                            leading: const Text('profile.level').tr(),
                             trailing: Text(
                               profile.levelString,
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Favorites'),
+                            dense: true,
+                            leading: const Text('profile.favorites_count').tr(),
                             trailing: Text(
                               profile.favoriteCount.toString(),
                             ),
                           ),
                           ListTile(
-                            leading: const Text('Comments'),
+                            dense: true,
+                            leading: const Text('profile.comments_count').tr(),
                             trailing: Text(
                               profile.commentCount.toString(),
                             ),
@@ -100,7 +98,7 @@ class ProfilePage extends HookWidget {
                               context, '/favorites',
                               routeSettings:
                                   RouteSettings(arguments: [profile.name])),
-                          child: const Text('See more'),
+                          child: const Text('profile.see_more').tr(),
                         ),
                       ),
                     ),

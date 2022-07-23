@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
@@ -40,11 +40,15 @@ class CommentItem extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 8),
             child: Text(
-              'Last updated: ${dateTimeToStringTimeAgo(comment.updatedAt)}',
+              '${'comment.list.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                comment.updatedAt,
+                locale: Localizations.localeOf(context).languageCode,
+              )}',
               style: TextStyle(
-                  color: Theme.of(context).hintColor,
-                  fontStyle: FontStyle.italic,
-                  fontSize: 12),
+                color: Theme.of(context).hintColor,
+                fontStyle: FontStyle.italic,
+                fontSize: 12,
+              ),
             ),
           ),
         if (hasVoteSection)
@@ -141,7 +145,7 @@ class _VoteSection extends StatelessWidget {
           ),
           TextButton(
             onPressed: onReply,
-            child: const Text('Reply'),
+            child: const Text('comment.list.reply').tr(),
           ),
           if (moreBuilder != null) moreBuilder!(context),
         ],
