@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,8 +10,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';

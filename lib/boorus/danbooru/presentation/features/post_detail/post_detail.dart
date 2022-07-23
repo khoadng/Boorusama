@@ -40,7 +40,8 @@ class _PostDetailState extends State<PostDetail> {
   late final imagePath = widget.imagePath;
   final scrollController = ScrollController();
 
-  late final String videoHtml = '''
+  late final String videoHtml =
+      '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${widget.post.normalImageUrl}#t=0.01 type="video/webm" />
@@ -66,52 +67,91 @@ class _PostDetailState extends State<PostDetail> {
             backgroundColor: Colors.transparent,
             body: widget.minimal
                 ? Center(child: postWidget)
-                : BlocBuilder<SettingsCubit, SettingsState>(
-                    buildWhen: (previous, current) =>
-                        previous.settings.actionBarDisplayBehavior !=
-                        current.settings.actionBarDisplayBehavior,
-                    builder: (context, state) {
-                      return Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          CustomScrollView(
-                            controller: scrollController,
-                            slivers: [
-                              SliverToBoxAdapter(child: postWidget),
-                              if (screenSize == ScreenSize.small) ...[
-                                const PoolTiles(),
-                                SliverToBoxAdapter(
-                                  child: InformationAndRecommended(
-                                    post: widget.post,
-                                    actionBarDisplayBehavior:
-                                        state.settings.actionBarDisplayBehavior,
-                                    imagePath: widget.imagePath,
-                                  ),
-                                ),
-                              ]
-                            ],
-                          ),
-                          if (screenSize == ScreenSize.small &&
-                              state.settings.actionBarDisplayBehavior ==
-                                  ActionBarDisplayBehavior.staticAtBottom)
-                            Positioned(
-                              bottom: 6,
-                              child: FloatingGlassyCard(
-                                child: ActionBar(
-                                  imagePath: widget.imagePath,
-                                  post: widget.post,
-                                ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
+                : Stack(
+                    children: [
+                      BlocBuilder<SettingsCubit, SettingsState>(
+                        buildWhen: (previous, current) =>
+                            previous.settings.actionBarDisplayBehavior !=
+                            current.settings.actionBarDisplayBehavior,
+                        builder: (context, state) {
+                          return widget.post.isVideo
+                              ? Stack(
+                                  alignment: Alignment.bottomCenter,
+                                  children: [
+                                    CustomScrollView(
+                                      controller: scrollController,
+                                      slivers: [
+                                        SliverToBoxAdapter(child: postWidget),
+                                        if (screenSize == ScreenSize.small) ...[
+                                          const PoolTiles(),
+                                          SliverToBoxAdapter(
+                                            child: InformationAndRecommended(
+                                              post: widget.post,
+                                              actionBarDisplayBehavior: state
+                                                  .settings
+                                                  .actionBarDisplayBehavior,
+                                              imagePath: widget.imagePath,
+                                            ),
+                                          ),
+                                        ]
+                                      ],
+                                    ),
+                                    if (screenSize == ScreenSize.small &&
+                                        state.settings
+                                                .actionBarDisplayBehavior ==
+                                            ActionBarDisplayBehavior
+                                                .staticAtBottom)
+                                      Positioned(
+                                        bottom: 6,
+                                        child: FloatingGlassyCard(
+                                          child: ActionBar(
+                                            imagePath: widget.imagePath,
+                                            post: widget.post,
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                )
+                              : _buildImageLayout(
+                                  postWidget,
+                                  screenSize,
+                                  state.settings.actionBarDisplayBehavior,
+                                );
+                        },
+                      )
+                    ],
                   ),
           );
         },
       ),
     );
   }
+
+  Widget _buildImageLayout(
+    Widget postWidget,
+    ScreenSize screenSize,
+    ActionBarDisplayBehavior actionBarDisplayBehavior,
+  ) =>
+      screenSize == ScreenSize.small
+          ? CustomScrollView(
+              controller: scrollController,
+              slivers: [
+                SliverToBoxAdapter(child: postWidget),
+                if (screenSize == ScreenSize.small) ...[
+                  const PoolTiles(),
+                  SliverToBoxAdapter(
+                    child: InformationAndRecommended(
+                      post: widget.post,
+                      actionBarDisplayBehavior: actionBarDisplayBehavior,
+                      imagePath: widget.imagePath,
+                    ),
+                  ),
+                ]
+              ],
+            )
+          : Center(
+              child: postWidget,
+            );
 
   Widget _buildPostWidget() {
     if (widget.post.isVideo) {
