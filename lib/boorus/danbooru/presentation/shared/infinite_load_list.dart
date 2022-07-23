@@ -139,15 +139,15 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
                 ),
         ),
       ),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: widget.enableRefresh,
-        header: const MaterialClassicHeader(),
-        onRefresh: () => widget.onRefresh?.call(_refreshController),
-        child: ImprovedScrolling(
-          scrollController: _scrollController,
-          enableKeyboardScrolling: true,
-          enableMMBScrolling: true,
+      body: ImprovedScrolling(
+        scrollController: _scrollController,
+        enableKeyboardScrolling: true,
+        enableMMBScrolling: true,
+        child: SmartRefresher(
+          controller: _refreshController,
+          enablePullDown: widget.enableRefresh,
+          header: const MaterialClassicHeader(),
+          onRefresh: () => widget.onRefresh?.call(_refreshController),
           child: widget.builder(
             context,
             _scrollController,

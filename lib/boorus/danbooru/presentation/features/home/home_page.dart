@@ -75,9 +75,6 @@ class _HomePageState extends State<HomePage> {
                               [
                                   ListTile(
                                     selected: index == 0,
-                                    selectedTileColor: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
                                     leading: index == 0
                                         ? const Icon(Icons.dashboard)
                                         : const Icon(Icons.dashboard_outlined),
@@ -86,9 +83,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   ListTile(
                                     selected: index == 1,
-                                    selectedTileColor: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
                                     leading: index == 1
                                         ? const Icon(Icons.explore)
                                         : const Icon(Icons.explore_outlined),
@@ -97,9 +91,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   ListTile(
                                     selected: index == 2,
-                                    selectedTileColor: Theme.of(context)
-                                        .colorScheme
-                                        .onBackground,
                                     leading: index == 2
                                         ? const Icon(Icons.photo_album)
                                         : const Icon(
