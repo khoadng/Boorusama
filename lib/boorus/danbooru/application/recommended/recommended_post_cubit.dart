@@ -48,16 +48,17 @@ class RecommendedPostBloc
                     skipFavoriteCheck: true,
                   );
 
-                  posts.removeWhere(
-                      (element) => element.id == event.currentPostId);
+                  final filtered = [...posts]
+                    ..removeWhere((e) => e.id == event.currentPostId);
 
                   if (posts.isEmpty) return null;
 
                   return Recommended(
-                      tag: tag,
-                      title:
-                          tag.split(' ').join(', ').removeUnderscoreWithSpace(),
-                      posts: posts.take(6).toList());
+                    tag: tag,
+                    title:
+                        tag.split(' ').join(', ').removeUnderscoreWithSpace(),
+                    posts: filtered.take(6).toList(),
+                  );
                 }).toList()),
             onFailure: (stackTrace, error) =>
                 emit(const AsyncLoadState.failure()),
