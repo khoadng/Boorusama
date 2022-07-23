@@ -38,6 +38,7 @@ class PostDetail extends StatefulWidget {
 
 class _PostDetailState extends State<PostDetail> {
   late final imagePath = widget.imagePath;
+  final scrollController = ScrollController();
 
   late final String videoHtml = '''
             <center>
@@ -47,10 +48,16 @@ class _PostDetailState extends State<PostDetail> {
             </center>''';
 
   @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final postWidget = _buildPostWidget();
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
+    final postWidget = _buildPostWidget();
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: BlocBuilder<SettingsCubit, SettingsState>(
@@ -59,12 +66,47 @@ class _PostDetailState extends State<PostDetail> {
             backgroundColor: Colors.transparent,
             body: widget.minimal
                 ? Center(child: postWidget)
-                : screenSize == ScreenSize.small
-                    ? _SmallScreenLayoutDetail(
-                        post: widget.post,
-                        imagePath: imagePath,
-                        child: postWidget)
-                    : Center(child: postWidget),
+                : BlocBuilder<SettingsCubit, SettingsState>(
+                    buildWhen: (previous, current) =>
+                        previous.settings.actionBarDisplayBehavior !=
+                        current.settings.actionBarDisplayBehavior,
+                    builder: (context, state) {
+                      return Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          CustomScrollView(
+                            controller: scrollController,
+                            slivers: [
+                              SliverToBoxAdapter(child: postWidget),
+                              if (screenSize == ScreenSize.small) ...[
+                                const PoolTiles(),
+                                SliverToBoxAdapter(
+                                  child: InformationAndRecommended(
+                                    post: widget.post,
+                                    actionBarDisplayBehavior:
+                                        state.settings.actionBarDisplayBehavior,
+                                    imagePath: widget.imagePath,
+                                  ),
+                                ),
+                              ]
+                            ],
+                          ),
+                          if (screenSize == ScreenSize.small &&
+                              state.settings.actionBarDisplayBehavior ==
+                                  ActionBarDisplayBehavior.staticAtBottom)
+                            Positioned(
+                              bottom: 6,
+                              child: FloatingGlassyCard(
+                                child: ActionBar(
+                                  imagePath: widget.imagePath,
+                                  post: widget.post,
+                                ),
+                              ),
+                            ),
+                        ],
+                      );
+                    },
+                  ),
           );
         },
       ),
@@ -116,74 +158,5 @@ class _PostDetailState extends State<PostDetail> {
         ),
       );
     }
-  }
-}
-
-class _SmallScreenLayoutDetail extends StatefulWidget {
-  const _SmallScreenLayoutDetail({
-    Key? key,
-    required this.post,
-    required this.imagePath,
-    required this.child,
-  }) : super(key: key);
-
-  final Widget child;
-  final Post post;
-  final ValueNotifier<String?> imagePath;
-
-  @override
-  State<_SmallScreenLayoutDetail> createState() =>
-      _SmallScreenLayoutDetailState();
-}
-
-class _SmallScreenLayoutDetailState extends State<_SmallScreenLayoutDetail> {
-  final scrollController = ScrollController();
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.actionBarDisplayBehavior !=
-          current.settings.actionBarDisplayBehavior,
-      builder: (context, state) {
-        return Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverToBoxAdapter(child: widget.child),
-                const PoolTiles(),
-                SliverToBoxAdapter(
-                  child: InformationAndRecommended(
-                    post: widget.post,
-                    actionBarDisplayBehavior:
-                        state.settings.actionBarDisplayBehavior,
-                    imagePath: widget.imagePath,
-                  ),
-                ),
-              ],
-            ),
-            if (state.settings.actionBarDisplayBehavior ==
-                ActionBarDisplayBehavior.staticAtBottom)
-              Positioned(
-                bottom: 6,
-                child: FloatingGlassyCard(
-                  child: ActionBar(
-                    imagePath: widget.imagePath,
-                    post: widget.post,
-                  ),
-                ),
-              ),
-          ],
-        );
-      },
-    );
   }
 }
