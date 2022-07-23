@@ -27,32 +27,36 @@ class ParentChildTile extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const _Divider(),
-        ListTile(
-          dense: true,
-          tileColor: Theme.of(context).cardColor,
-          title: Text(data.description).tr(),
-          trailing: Padding(
-            padding: const EdgeInsets.all(4),
-            child: ElevatedButton(
-              onPressed: () => showBarModalBottomSheet(
-                context: context,
-                builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => PostBloc(
-                        postRepository: context.read<IPostRepository>(),
-                        blacklistedTagsRepository:
-                            context.read<BlacklistedTagsRepository>(),
-                      )..add(PostRefreshed(tag: data.tagQueryForDataFetching)),
-                    )
-                  ],
-                  child: ParentChildPostPage(parentPostId: data.parentId),
+        //WORKAROUND: for some reason, using tileColor in ListTile won't render properly.
+        Container(
+          color: Theme.of(context).cardColor,
+          child: ListTile(
+            dense: true,
+            title: Text(data.description).tr(),
+            trailing: Padding(
+              padding: const EdgeInsets.all(4),
+              child: ElevatedButton(
+                onPressed: () => showBarModalBottomSheet(
+                  context: context,
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => PostBloc(
+                          postRepository: context.read<IPostRepository>(),
+                          blacklistedTagsRepository:
+                              context.read<BlacklistedTagsRepository>(),
+                        )..add(
+                            PostRefreshed(tag: data.tagQueryForDataFetching)),
+                      )
+                    ],
+                    child: ParentChildPostPage(parentPostId: data.parentId),
+                  ),
                 ),
+                child: const Text(
+                  'post.detail.view',
+                  style: TextStyle(color: Colors.white),
+                ).tr(),
               ),
-              child: const Text(
-                'post.detail.view',
-                style: TextStyle(color: Colors.white),
-              ).tr(),
             ),
           ),
         ),
