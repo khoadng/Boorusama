@@ -84,7 +84,6 @@ class InformationAndRecommended extends StatelessWidget {
               ...List.generate(
                 artists.length,
                 (index) => RecommendSectionPlaceHolder(
-                  itemCount: screenSize == ScreenSize.large ? 9 : 6,
                   header: ListTile(
                     title: Text(artists[index].removeUnderscoreWithSpace()),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
@@ -124,7 +123,6 @@ class InformationAndRecommended extends StatelessWidget {
               ...List.generate(
                 characters.length,
                 (index) => RecommendSectionPlaceHolder(
-                  itemCount: screenSize == ScreenSize.large ? 9 : 6,
                   header: ListTile(
                     title: Text(characters[index].removeUnderscoreWithSpace()),
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),

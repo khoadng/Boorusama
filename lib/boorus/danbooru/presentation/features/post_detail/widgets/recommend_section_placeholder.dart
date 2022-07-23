@@ -8,11 +8,9 @@ class RecommendSectionPlaceHolder extends StatelessWidget {
   const RecommendSectionPlaceHolder({
     Key? key,
     required this.header,
-    required this.itemCount,
   }) : super(key: key);
 
   final Widget header;
-  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
