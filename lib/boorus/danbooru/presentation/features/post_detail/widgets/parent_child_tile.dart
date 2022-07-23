@@ -27,6 +27,7 @@ class ParentChildTile extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         const _Divider(),
+        //WORKAROUND: for some reason, using tileColor in ListTile won't render properly.
         Container(
           color: Theme.of(context).cardColor,
           child: ListTile(
