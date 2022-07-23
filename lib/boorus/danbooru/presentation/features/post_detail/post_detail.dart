@@ -40,8 +40,7 @@ class _PostDetailState extends State<PostDetail> {
   late final imagePath = widget.imagePath;
   final scrollController = ScrollController();
 
-  late final String videoHtml =
-      '''
+  late final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
                 <source src=${widget.post.normalImageUrl}#t=0.01 type="video/webm" />
@@ -134,21 +133,37 @@ class _PostDetailState extends State<PostDetail> {
     ActionBarDisplayBehavior actionBarDisplayBehavior,
   ) =>
       screenSize == ScreenSize.small
-          ? CustomScrollView(
-              controller: scrollController,
-              slivers: [
-                SliverToBoxAdapter(child: postWidget),
-                if (screenSize == ScreenSize.small) ...[
-                  const PoolTiles(),
-                  SliverToBoxAdapter(
-                    child: InformationAndRecommended(
-                      screenSize: screenSize,
-                      post: widget.post,
-                      actionBarDisplayBehavior: actionBarDisplayBehavior,
-                      imagePath: widget.imagePath,
+          ? Stack(
+              children: [
+                CustomScrollView(
+                  controller: scrollController,
+                  slivers: [
+                    SliverToBoxAdapter(child: postWidget),
+                    if (screenSize == ScreenSize.small) ...[
+                      const PoolTiles(),
+                      SliverToBoxAdapter(
+                        child: InformationAndRecommended(
+                          screenSize: screenSize,
+                          post: widget.post,
+                          actionBarDisplayBehavior: actionBarDisplayBehavior,
+                          imagePath: widget.imagePath,
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+                if (actionBarDisplayBehavior ==
+                    ActionBarDisplayBehavior.staticAtBottom)
+                  Positioned(
+                    bottom: 6,
+                    left: MediaQuery.of(context).size.width * 0.05,
+                    child: FloatingGlassyCard(
+                      child: ActionBar(
+                        imagePath: widget.imagePath,
+                        post: widget.post,
+                      ),
                     ),
                   ),
-                ]
               ],
             )
           : Center(
