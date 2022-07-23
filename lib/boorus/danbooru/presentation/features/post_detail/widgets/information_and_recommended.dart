@@ -25,11 +25,13 @@ class InformationAndRecommended extends StatelessWidget {
     required this.post,
     required this.actionBarDisplayBehavior,
     required this.imagePath,
+    required this.screenSize,
   }) : super(key: key);
 
   final Post post;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final ValueNotifier<String?> imagePath;
+  final ScreenSize screenSize;
 
   @override
   Widget build(BuildContext context) {
@@ -55,113 +57,115 @@ class InformationAndRecommended extends StatelessWidget {
       ],
     );
   }
-}
 
-Widget _buildRecommendedArtistList(Post post) {
-  if (post.artistTags.isEmpty) return const SizedBox.shrink();
-  return BlocBuilder<RecommendedArtistPostCubit,
-      AsyncLoadState<List<Recommended>>>(
-    builder: (context, state) {
-      if (state.status == LoadStatus.success) {
-        final recommendedItems = state.data!;
+  Widget _buildRecommendedArtistList(Post post) {
+    if (post.artistTags.isEmpty) return const SizedBox.shrink();
+    return BlocBuilder<RecommendedArtistPostCubit,
+        AsyncLoadState<List<Recommended>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final recommendedItems = state.data!;
 
-        if (recommendedItems.isEmpty) return const SizedBox.shrink();
+          if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
-        return Column(
-          children: recommendedItems
-              .map((item) => _buildRecommendPostSection(
-                    item,
-                    '/artist',
-                    post,
-                  ))
-              .toList(),
-        );
-      } else {
-        final artists = post.artistTags;
-        return Column(
-          children: [
-            ...List.generate(
-              artists.length,
-              (index) => RecommendSectionPlaceHolder(
-                header: ListTile(
-                  title: Text(artists[index].removeUnderscoreWithSpace()),
-                  trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+          return Column(
+            children: recommendedItems
+                .map((item) => _buildRecommendPostSection(
+                      item,
+                      '/artist',
+                      post,
+                    ))
+                .toList(),
+          );
+        } else {
+          final artists = post.artistTags;
+          return Column(
+            children: [
+              ...List.generate(
+                artists.length,
+                (index) => RecommendSectionPlaceHolder(
+                  itemCount: screenSize == ScreenSize.large ? 9 : 6,
+                  header: ListTile(
+                    title: Text(artists[index].removeUnderscoreWithSpace()),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
                 ),
-              ),
-            )
-          ],
-        );
-      }
-    },
-  );
-}
+              )
+            ],
+          );
+        }
+      },
+    );
+  }
 
-Widget _buildRecommendedCharacterList(Post post) {
-  if (post.characterTags.isEmpty) return const SizedBox.shrink();
-  return BlocBuilder<RecommendedCharacterPostCubit,
-      AsyncLoadState<List<Recommended>>>(
-    builder: (context, state) {
-      if (state.status == LoadStatus.success) {
-        final recommendedItems = state.data!;
+  Widget _buildRecommendedCharacterList(Post post) {
+    if (post.characterTags.isEmpty) return const SizedBox.shrink();
+    return BlocBuilder<RecommendedCharacterPostCubit,
+        AsyncLoadState<List<Recommended>>>(
+      builder: (context, state) {
+        if (state.status == LoadStatus.success) {
+          final recommendedItems = state.data!;
 
-        if (recommendedItems.isEmpty) return const SizedBox.shrink();
+          if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
-        return Column(
-          children: recommendedItems
-              .map((item) => _buildRecommendPostSection(
-                    item,
-                    '/character',
-                    post,
-                  ))
-              .toList(),
-        );
-      } else {
-        final characters = post.characterTags;
-        return Column(
-          children: [
-            ...List.generate(
-              characters.length,
-              (index) => RecommendSectionPlaceHolder(
-                header: ListTile(
-                  title: Text(characters[index].removeUnderscoreWithSpace()),
-                  trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+          return Column(
+            children: recommendedItems
+                .map((item) => _buildRecommendPostSection(
+                      item,
+                      '/character',
+                      post,
+                    ))
+                .toList(),
+          );
+        } else {
+          final characters = post.characterTags;
+          return Column(
+            children: [
+              ...List.generate(
+                characters.length,
+                (index) => RecommendSectionPlaceHolder(
+                  itemCount: screenSize == ScreenSize.large ? 9 : 6,
+                  header: ListTile(
+                    title: Text(characters[index].removeUnderscoreWithSpace()),
+                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                  ),
                 ),
-              ),
-            )
-          ],
-        );
-      }
-    },
-  );
-}
+              )
+            ],
+          );
+        }
+      },
+    );
+  }
 
-Widget _buildRecommendPostSection(
-  Recommended item,
-  String url,
-  Post post,
-) {
-  return BlocBuilder<SettingsCubit, SettingsState>(
-    builder: (context, state) {
-      return RecommendPostSection(
-        imageQuality: state.settings.imageQuality,
-        header: ListTile(
-          onTap: () => AppRouter.router.navigateTo(
-            context,
-            url,
-            routeSettings: RouteSettings(
-              arguments: [
-                item.tag,
-                post.normalImageUrl,
-              ],
+  Widget _buildRecommendPostSection(
+    Recommended item,
+    String url,
+    Post post,
+  ) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, state) {
+        return RecommendPostSection(
+          imageQuality: state.settings.imageQuality,
+          header: ListTile(
+            onTap: () => AppRouter.router.navigateTo(
+              context,
+              url,
+              routeSettings: RouteSettings(
+                arguments: [
+                  item.tag,
+                  post.normalImageUrl,
+                ],
+              ),
             ),
+            title: Text(item.title),
+            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
           ),
-          title: Text(item.title),
-          trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-        ),
-        posts: item.posts,
-      );
-    },
-  );
+          posts: item.posts,
+        );
+      },
+    );
+  }
 }
 
 class ActionBar extends StatelessWidget {

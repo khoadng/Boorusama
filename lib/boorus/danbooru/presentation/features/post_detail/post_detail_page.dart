@@ -154,11 +154,17 @@ class _PostDetailPageState extends State<PostDetailPage>
 
                                 context.read<RecommendedArtistPostCubit>().add(
                                     RecommendedPostRequested(
+                                        amount: screenSize == ScreenSize.large
+                                            ? 9
+                                            : 6,
                                         currentPostId: widget.posts[index].id,
                                         tags: widget.posts[index].artistTags));
                                 context
                                     .read<RecommendedCharacterPostCubit>()
                                     .add(RecommendedPostRequested(
+                                        amount: screenSize == ScreenSize.large
+                                            ? 9
+                                            : 6,
                                         currentPostId: widget.posts[index].id,
                                         tags:
                                             widget.posts[index].characterTags));
@@ -192,7 +198,6 @@ class _PostDetailPageState extends State<PostDetailPage>
                       ],
                     ),
                     _buildBackButton(),
-                    _buildHomeButton(),
                     _buildSlideShowButton(),
                   ],
                 ),
@@ -200,12 +205,14 @@ class _PostDetailPageState extends State<PostDetailPage>
               if (screenSize != ScreenSize.small)
                 Container(
                   color: Theme.of(context).backgroundColor,
-                  width: MediaQuery.of(context).size.width * 0.35,
+                  width: size.width *
+                      _screenSizeToInfoBoxScreenPercent(screenSize),
                   child: SafeArea(
                     child: CustomScrollView(
                       slivers: [
                         SliverToBoxAdapter(
                           child: InformationAndRecommended(
+                            screenSize: screenSize,
                             post: currentPost,
                             actionBarDisplayBehavior:
                                 ActionBarDisplayBehavior.scrolling,
@@ -221,6 +228,11 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
       ),
     );
+  }
+
+  double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
+    if (screenSize == ScreenSize.large) return 0.2;
+    return 0.35;
   }
 
   Widget _buildSlideShowButton() {
@@ -272,38 +284,32 @@ class _PostDetailPageState extends State<PostDetailPage>
 
   Widget _buildBackButton() {
     return Align(
-      alignment: Alignment(-0.95, getTopActionIconAlignValue()),
+      alignment: Alignment(-0.75, getTopActionIconAlignValue()),
       child: Padding(
         padding: const EdgeInsets.all(8),
         child: BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
           builder: (context, state) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
-              onPressed: () {
-                context
-                    .read<SliverPostGridBloc>()
-                    .add(SliverPostGridExited(lastIndex: state.currentIndex));
-                AppRouter.router.pop(context);
-              },
+            return Row(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.arrow_back_ios),
+                  onPressed: () {
+                    context.read<SliverPostGridBloc>().add(
+                        SliverPostGridExited(lastIndex: state.currentIndex));
+                    AppRouter.router.pop(context);
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.home),
+                  onPressed: () => AppRouter.router.navigateTo(
+                    context,
+                    '/',
+                    clearStack: true,
+                  ),
+                ),
+              ],
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildHomeButton() {
-    return Align(
-      alignment: Alignment(-0.73, getTopActionIconAlignValue()),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: IconButton(
-          icon: const Icon(Icons.home),
-          onPressed: () => AppRouter.router.navigateTo(
-            context,
-            '/',
-            clearStack: true,
-          ),
         ),
       ),
     );

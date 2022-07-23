@@ -22,13 +22,15 @@ class RecommendedPostRequested extends RecommendedPostEvent {
   const RecommendedPostRequested({
     required this.tags,
     required this.currentPostId,
+    required this.amount,
   });
 
   final List<String> tags;
   final int currentPostId;
+  final int amount;
 
   @override
-  List<Object?> get props => [tags, currentPostId];
+  List<Object?> get props => [tags, currentPostId, amount];
 }
 
 class RecommendedPostBloc
@@ -51,13 +53,13 @@ class RecommendedPostBloc
                   final filtered = [...posts]
                     ..removeWhere((e) => e.id == event.currentPostId);
 
-                  if (posts.isEmpty) return null;
+                  if (filtered.isEmpty) return null;
 
                   return Recommended(
                     tag: tag,
                     title:
                         tag.split(' ').join(', ').removeUnderscoreWithSpace(),
-                    posts: filtered.take(6).toList(),
+                    posts: filtered.take(event.amount).toList(),
                   );
                 }).toList()),
             onFailure: (stackTrace, error) =>

@@ -127,6 +127,9 @@ final postDetailHandler = Handler(handlerFunc: (
     controller = args[2];
   }
 
+  final size = MediaQuery.of(context).size;
+  final screenSize = screenWidthToDisplaySize(size.width);
+
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
@@ -143,6 +146,7 @@ final postDetailHandler = Handler(handlerFunc: (
                   postRepository: context.read<IPostRepository>(),
                 ),
               )..add(RecommendedPostRequested(
+                  amount: screenSize == ScreenSize.large ? 9 : 6,
                   currentPostId: posts[index].id,
                   tags: posts[index].artistTags,
                 ))),
@@ -160,6 +164,7 @@ final postDetailHandler = Handler(handlerFunc: (
                   postRepository: context.read<IPostRepository>(),
                 ),
               )..add(RecommendedPostRequested(
+                  amount: screenSize == ScreenSize.large ? 9 : 6,
                   currentPostId: posts[index].id,
                   tags: posts[index].characterTags,
                 ))),

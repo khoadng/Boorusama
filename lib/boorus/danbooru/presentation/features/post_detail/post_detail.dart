@@ -86,6 +86,7 @@ class _PostDetailState extends State<PostDetail> {
                                           const PoolTiles(),
                                           SliverToBoxAdapter(
                                             child: InformationAndRecommended(
+                                              screenSize: screenSize,
                                               post: widget.post,
                                               actionBarDisplayBehavior: state
                                                   .settings
@@ -141,6 +142,7 @@ class _PostDetailState extends State<PostDetail> {
                   const PoolTiles(),
                   SliverToBoxAdapter(
                     child: InformationAndRecommended(
+                      screenSize: screenSize,
                       post: widget.post,
                       actionBarDisplayBehavior: actionBarDisplayBehavior,
                       imagePath: widget.imagePath,

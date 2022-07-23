@@ -8,9 +8,11 @@ class RecommendSectionPlaceHolder extends StatelessWidget {
   const RecommendSectionPlaceHolder({
     Key? key,
     required this.header,
+    required this.itemCount,
   }) : super(key: key);
 
   final Widget header;
+  final int itemCount;
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +23,7 @@ class RecommendSectionPlaceHolder extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
-            child: const PreviewPostGridPlaceHolder(
-              itemCount: 6,
-            ),
+            child: const PreviewPostGridPlaceHolder(),
           ),
         ),
       ],
