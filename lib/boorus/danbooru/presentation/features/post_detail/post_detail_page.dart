@@ -231,7 +231,8 @@ class _PostDetailPageState extends State<PostDetailPage>
   }
 
   double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
-    if (screenSize == ScreenSize.large) return 0.2;
+    if (screenSize == ScreenSize.veryLarge) return 0.2;
+    if (screenSize == ScreenSize.large) return 0.3;
     return 0.35;
   }
 

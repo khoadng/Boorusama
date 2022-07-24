@@ -12,8 +12,15 @@ import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/main.dart';
+
+double _screenSizeToWidthWeight(ScreenSize size) {
+  if (size == ScreenSize.small) return 0.7;
+  if (size == ScreenSize.medium) return 0.31;
+  if (size == ScreenSize.large) return 0.2;
+  return 0.15;
+}
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
@@ -29,10 +36,14 @@ class SideBarMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final size = Screen.of(context).size;
     return SafeArea(
       child: Container(
         color: Theme.of(context).backgroundColor,
-        constraints: BoxConstraints.expand(width: width ?? 250),
+        constraints: BoxConstraints.expand(
+            width: width ??
+                MediaQuery.of(context).size.width *
+                    _screenSizeToWidthWeight(size)),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
