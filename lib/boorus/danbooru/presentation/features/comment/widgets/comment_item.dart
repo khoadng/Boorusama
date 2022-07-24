@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/widgets/dtext.dart';
 import 'package:boorusama/core/core.dart';
 
 class CommentItem extends StatelessWidget {

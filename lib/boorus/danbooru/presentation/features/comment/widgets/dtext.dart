@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/presentation/services/dtext/widgets/non_quote.dart';
-import 'package:boorusama/boorus/danbooru/presentation/services/dtext/widgets/quote.dart';
+import 'non_quote.dart';
+import 'quote.dart';
 
 // ignore: avoid_classes_with_only_static_members
 class Dtext {
