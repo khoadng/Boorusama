@@ -23,40 +23,38 @@ class PoolTiles extends StatelessWidget {
     return BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
-          return SliverToBoxAdapter(
-            child: Material(
-              color: Theme.of(context).cardColor,
-              child: Column(
-                children: [
-                  ...state.data!.mapIndexed(
-                    (index, e) => ListTile(
-                      dense: true,
-                      onTap: () => AppRouter.router.navigateTo(
-                        context,
-                        'pool/detail',
-                        routeSettings: RouteSettings(arguments: [e]),
-                      ),
-                      visualDensity:
-                          const VisualDensity(horizontal: -4, vertical: -4),
-                      title: Text(
-                        e.name.removeUnderscoreWithSpace(),
-                        overflow: TextOverflow.fade,
-                        maxLines: 1,
-                        softWrap: false,
-                        style: Theme.of(context).textTheme.subtitle2,
-                      ),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.angleRight,
-                        size: 12,
-                      ),
+          return Material(
+            color: Theme.of(context).cardColor,
+            child: Column(
+              children: [
+                ...state.data!.mapIndexed(
+                  (index, e) => ListTile(
+                    dense: true,
+                    onTap: () => AppRouter.router.navigateTo(
+                      context,
+                      'pool/detail',
+                      routeSettings: RouteSettings(arguments: [e]),
                     ),
-                  )
-                ],
-              ),
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
+                    title: Text(
+                      e.name.removeUnderscoreWithSpace(),
+                      overflow: TextOverflow.fade,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: Theme.of(context).textTheme.subtitle2,
+                    ),
+                    trailing: const FaIcon(
+                      FontAwesomeIcons.angleRight,
+                      size: 12,
+                    ),
+                  ),
+                )
+              ],
             ),
           );
         } else {
-          return const SliverToBoxAdapter(child: SizedBox.shrink());
+          return const SizedBox.shrink();
         }
       },
     );

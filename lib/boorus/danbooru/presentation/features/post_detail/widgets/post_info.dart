@@ -61,20 +61,6 @@ class _PostInfoState extends State<PostInfo> {
         ),
       ),
       child: Scaffold(
-        appBar: widget.isModal
-            ? null
-            : AppBar(
-                automaticallyImplyLeading: false,
-                elevation: 0,
-                toolbarHeight: kToolbarHeight * 0.7,
-                actions: [
-                  IconButton(
-                    splashRadius: 18,
-                    onPressed: () => Navigator.of(context).pop(),
-                    icon: const Icon(Icons.close),
-                  )
-                ],
-              ),
         backgroundColor: Theme.of(context).backgroundColor,
         body: Padding(
           padding: const EdgeInsets.all(12),

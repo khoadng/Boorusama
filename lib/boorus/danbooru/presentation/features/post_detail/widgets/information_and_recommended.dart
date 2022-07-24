@@ -26,12 +26,14 @@ class InformationAndRecommended extends StatelessWidget {
     required this.actionBarDisplayBehavior,
     required this.imagePath,
     required this.screenSize,
+    this.headerBuilder,
   }) : super(key: key);
 
   final Post post;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final ValueNotifier<String?> imagePath;
   final ScreenSize screenSize;
+  final List<Widget> Function(BuildContext context)? headerBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,7 @@ class InformationAndRecommended extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
+        if (headerBuilder != null) ...headerBuilder!(context),
         InformationSection(post: post),
         if (actionBarDisplayBehavior == ActionBarDisplayBehavior.scrolling)
           Padding(

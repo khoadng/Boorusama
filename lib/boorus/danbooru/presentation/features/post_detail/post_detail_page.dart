@@ -22,7 +22,7 @@ import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart'
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'models/slide_show_configuration.dart';
 import 'post_image_page.dart';
-import 'widgets/information_and_recommended.dart';
+import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
@@ -223,6 +223,9 @@ class _PostDetailPageState extends State<PostDetailPage>
                             actionBarDisplayBehavior:
                                 ActionBarDisplayBehavior.scrolling,
                             imagePath: imagePath,
+                            headerBuilder: (context) => [
+                              const PoolTiles(),
+                            ],
                           ),
                         )
                       ],

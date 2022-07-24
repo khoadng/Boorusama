@@ -82,7 +82,9 @@ class _PostDetailState extends State<PostDetail> {
                                       slivers: [
                                         SliverToBoxAdapter(child: postWidget),
                                         if (screenSize == ScreenSize.small) ...[
-                                          const PoolTiles(),
+                                          const SliverToBoxAdapter(
+                                            child: PoolTiles(),
+                                          ),
                                           SliverToBoxAdapter(
                                             child: InformationAndRecommended(
                                               screenSize: screenSize,
