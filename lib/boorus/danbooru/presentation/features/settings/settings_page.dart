@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/app_constants.dart';
@@ -13,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/appearance_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/settings/privacy_page.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/main.dart';
 
@@ -31,84 +33,145 @@ class SettingsPage extends StatelessWidget {
           builder: (context, state) {
             final settings = state.settings;
 
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SettingsSection(
-                    label: 'settings.app_settings'.tr(),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.admin_panel_settings),
-                    title: const Text('settings.safe_mode').tr(),
-                    trailing: Switch(
-                        activeColor: Theme.of(context).colorScheme.primary,
-                        value: settings.safeMode,
-                        onChanged: (value) {
-                          context
-                              .read<SettingsCubit>()
-                              .update(settings.copyWith(safeMode: value));
-                        }),
-                  ),
-                  ListTile(
-                    leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                    title: const Text('settings.appearance').tr(),
-                    onTap: () =>
-                        Navigator.of(context).push(ParallaxSlideInPageRoute(
-                      enterWidget: const AppearancePage(),
-                      oldWidget: this,
-                    )),
-                  ),
-                  ListTile(
-                    title: const Text('settings.language.language').tr(),
-                    leading: const Icon(Icons.translate),
-                    onTap: () =>
-                        Navigator.of(context).push(ParallaxSlideInPageRoute(
-                      enterWidget: const LanguagePage(),
-                      oldWidget: this,
-                    )),
-                  ),
-                  //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
-                  // ListTile(
-                  //   title: const Text('Download'),
-                  //   leading: const FaIcon(FontAwesomeIcons.download),
-                  //   onTap: () =>
-                  //       Navigator.of(context).push(ParallaxSlideInPageRoute(
-                  //     enterWidget: const DownloadPage(),
-                  //     oldWidget: this,
-                  //   )),
-                  // ),
-                  ListTile(
-                    title: const Text('settings.privacy.privacy').tr(),
-                    leading: const FaIcon(FontAwesomeIcons.shieldHalved),
-                    onTap: () =>
-                        Navigator.of(context).push(ParallaxSlideInPageRoute(
-                      enterWidget: const PrivacyPage(),
-                      oldWidget: this,
-                    )),
-                  ),
-                  ListTile(
-                    title: const Text('settings.information').tr(),
-                    leading: const Icon(Icons.info),
-                    onTap: () => showAboutDialog(
-                      context: context,
-                      applicationIcon: Image.asset(
-                        'assets/icon/icon-512x512.png',
-                        width: 64,
-                        height: 64,
-                      ),
-                      applicationVersion: getVersion(
-                          RepositoryProvider.of<PackageInfoProvider>(context)
-                              .getPackageInfo()),
-                      applicationLegalese: '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                      applicationName: AppConstants.appName,
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SettingsSection(
+                          label: 'settings.app_settings'.tr(),
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.admin_panel_settings),
+                          title: const Text('settings.safe_mode').tr(),
+                          trailing: Switch(
+                              activeColor:
+                                  Theme.of(context).colorScheme.primary,
+                              value: settings.safeMode,
+                              onChanged: (value) {
+                                context
+                                    .read<SettingsCubit>()
+                                    .update(settings.copyWith(safeMode: value));
+                              }),
+                        ),
+                        ListTile(
+                          leading: const FaIcon(FontAwesomeIcons.paintRoller),
+                          title: const Text('settings.appearance').tr(),
+                          onTap: () => Navigator.of(context)
+                              .push(ParallaxSlideInPageRoute(
+                            enterWidget: const AppearancePage(),
+                            oldWidget: this,
+                          )),
+                        ),
+                        ListTile(
+                          title: const Text('settings.language.language').tr(),
+                          leading: const Icon(Icons.translate),
+                          onTap: () => Navigator.of(context)
+                              .push(ParallaxSlideInPageRoute(
+                            enterWidget: const LanguagePage(),
+                            oldWidget: this,
+                          )),
+                        ),
+                        //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
+                        // ListTile(
+                        //   title: const Text('Download'),
+                        //   leading: const FaIcon(FontAwesomeIcons.download),
+                        //   onTap: () =>
+                        //       Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        //     enterWidget: const DownloadPage(),
+                        //     oldWidget: this,
+                        //   )),
+                        // ),
+                        ListTile(
+                          title: const Text('settings.privacy.privacy').tr(),
+                          leading: const FaIcon(FontAwesomeIcons.shieldHalved),
+                          onTap: () => Navigator.of(context)
+                              .push(ParallaxSlideInPageRoute(
+                            enterWidget: const PrivacyPage(),
+                            oldWidget: this,
+                          )),
+                        ),
+
+                        ListTile(
+                          title: const Text('settings.information').tr(),
+                          leading: const Icon(Icons.info),
+                          onTap: () => showAboutDialog(
+                            context: context,
+                            applicationIcon: Image.asset(
+                              'assets/icon/icon-512x512.png',
+                              width: 64,
+                              height: 64,
+                            ),
+                            applicationVersion: getVersion(
+                                RepositoryProvider.of<PackageInfoProvider>(
+                                        context)
+                                    .getPackageInfo()),
+                            applicationLegalese:
+                                '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                            applicationName: AppConstants.appName,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                const _Divider(),
+                const _Footer(),
+              ],
             );
           },
         ),
+      ),
+    );
+  }
+}
+
+class _Divider extends StatelessWidget {
+  const _Divider({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return const Divider(
+      height: 4,
+      indent: 8,
+      endIndent: 8,
+      thickness: 1,
+    );
+  }
+}
+
+class _Footer extends StatelessWidget {
+  const _Footer({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 50,
+      child: ButtonBar(
+        alignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            onPressed: () => launchExternalUrl(
+              Uri.parse(context.read<AppInfoProvider>().appInfo.githubUrl),
+              mode: LaunchMode.externalApplication,
+            ),
+            icon: const FaIcon(FontAwesomeIcons.githubSquare),
+          ),
+          IconButton(
+            onPressed: () => launchExternalUrl(
+              Uri.parse(context.read<AppInfoProvider>().appInfo.discordUrl),
+              mode: LaunchMode.externalApplication,
+            ),
+            icon: const FaIcon(FontAwesomeIcons.discord),
+          ),
+        ],
       ),
     );
   }
