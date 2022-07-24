@@ -24,9 +24,17 @@ import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_g
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
-import 'package:boorusama/core/utils.dart';
 import 'related_tag_header.dart';
+
+double? _screenSizeToWidthWeight(ScreenSize size) {
+  if (size == ScreenSize.small) return null;
+  if (size == ScreenSize.medium) return 0.35;
+  if (size == ScreenSize.large) return 0.3;
+  return 0.25;
+}
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -55,7 +63,6 @@ class _SearchPageState extends State<SearchPage> {
     },
     onMatch: (List<String> match) {},
   );
-  final refreshController = RefreshController();
 
   @override
   void initState() {
@@ -116,105 +123,144 @@ class _SearchPageState extends State<SearchPage> {
                   .add(RelatedTagRequested(query: tags));
             }),
       ],
-      child: ClipRRect(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(16),
-          topRight: Radius.circular(16),
+      child: ConditionalParentWidget(
+        condition: Screen.of(context).size != ScreenSize.small,
+        conditionalBuilder: (child) => Row(
+          children: [
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width *
+                      _screenSizeToWidthWeight(Screen.of(context).size)!),
+              child: child,
+            ),
+            const VerticalDivider(),
+            Expanded(
+              child: BlocBuilder<TagSearchBloc, TagSearchState>(
+                builder: (context, tagSearchState) {
+                  return Scaffold(
+                    body: Column(
+                      children: [
+                        _buildSearchBodyLargeRightColumn(tagSearchState),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+          ],
         ),
-        child: BlocBuilder<TagSearchBloc, TagSearchState>(
-          builder: (context, tagSearchState) =>
-              BlocBuilder<SearchBloc, SearchState>(
-            builder: (context, searchState) {
-              return Scaffold(
-                resizeToAvoidBottomInset: false,
-                floatingActionButton: _shouldShowSearchButton(
-                        searchState.displayState, tagSearchState)
-                    ? _buildSearchButton()
-                    : const SizedBox.shrink(),
-                appBar: AppBar(
-                  toolbarHeight: kToolbarHeight * 1.2,
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  title: _buildSearchBar(),
-                ),
-                body: SafeArea(
-                  child: MultiBlocListener(
-                    listeners: [
-                      BlocListener<PostBloc, PostState>(
-                          listenWhen: (previous, current) =>
-                              current.status == LoadStatus.success &&
-                              current.posts.isEmpty &&
-                              previous.posts.isEmpty &&
-                              searchState.displayState == DisplayState.result,
-                          listener: (context, state) {
-                            context
-                                .read<SearchBloc>()
-                                .add(const SearchNoData());
-                          }),
-                      BlocListener<PostBloc, PostState>(
+        child: ClipRRect(
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+          ),
+          child: BlocBuilder<TagSearchBloc, TagSearchState>(
+            builder: (context, tagSearchState) =>
+                BlocBuilder<SearchBloc, SearchState>(
+              builder: (context, searchState) {
+                return Scaffold(
+                  resizeToAvoidBottomInset: false,
+                  floatingActionButton: _shouldShowSearchButton(
+                    searchState.displayState,
+                    tagSearchState,
+                    Screen.of(context).size,
+                  )
+                      ? _buildSearchButton()
+                      : const SizedBox.shrink(),
+                  appBar: AppBar(
+                    toolbarHeight: kToolbarHeight * 1.2,
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    automaticallyImplyLeading: false,
+                    title: _buildSearchBar(),
+                  ),
+                  body: SafeArea(
+                    child: MultiBlocListener(
+                      listeners: [
+                        BlocListener<PostBloc, PostState>(
+                            listenWhen: (previous, current) =>
+                                current.status == LoadStatus.success &&
+                                current.posts.isEmpty &&
+                                previous.posts.isEmpty &&
+                                searchState.displayState == DisplayState.result,
+                            listener: (context, state) {
+                              context
+                                  .read<SearchBloc>()
+                                  .add(const SearchNoData());
+                            }),
+                        BlocListener<PostBloc, PostState>(
+                            listenWhen: (previous, current) =>
+                                current.status == LoadStatus.failure &&
+                                searchState.displayState == DisplayState.result,
+                            listener: (context, state) {
+                              context
+                                  .read<SearchBloc>()
+                                  .add(const SearchError());
+                            }),
+                        BlocListener<PostBloc, PostState>(
                           listenWhen: (previous, current) =>
                               current.status == LoadStatus.failure &&
                               searchState.displayState == DisplayState.result,
-                          listener: (context, state) {
-                            context.read<SearchBloc>().add(const SearchError());
-                          }),
-                      BlocListener<PostBloc, PostState>(
-                        listenWhen: (previous, current) =>
-                            current.status == LoadStatus.failure &&
-                            searchState.displayState == DisplayState.result,
-                        listener: (context, state) => showSimpleSnackBar(
-                          context: context,
-                          duration: const Duration(seconds: 6),
-                          content: Text(
-                            state.exceptionMessage!,
-                          ).tr(),
+                          listener: (context, state) => showSimpleSnackBar(
+                            context: context,
+                            duration: const Duration(seconds: 6),
+                            content: Text(
+                              state.exceptionMessage!,
+                            ).tr(),
+                          ),
                         ),
-                      ),
-                    ],
-                    child: BlocBuilder<TagSearchBloc, TagSearchState>(
-                      builder: (context, tagSearchState) {
-                        return Column(
-                          children: [
-                            if (tagSearchState.selectedTags.isNotEmpty) ...[
-                              Container(
-                                margin: const EdgeInsets.only(left: 8),
-                                height: 35,
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  scrollDirection: Axis.horizontal,
-                                  itemCount: tagSearchState.selectedTags.length,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
-                                      child: _buildSelectedTagChip(
-                                          tagSearchState.selectedTags[index]),
-                                    );
-                                  },
-                                ),
-                              ),
-                              const Divider(
-                                height: 15,
-                                thickness: 3,
-                                indent: 10,
-                                endIndent: 10,
-                              ),
+                      ],
+                      child: BlocBuilder<TagSearchBloc, TagSearchState>(
+                        builder: (context, tagSearchState) {
+                          return Column(
+                            children: [
+                              if (tagSearchState.selectedTags.isNotEmpty)
+                                ..._buildSelectedTags(tagSearchState),
+                              if (Screen.of(context).size ==
+                                  ScreenSize.small) ...[
+                                _buildSearchBody(tagSearchState)
+                              ] else
+                                _buildSearchBodyLargeLeftColumn(tagSearchState),
                             ],
-                            _buildSearchBody(tagSearchState),
-                          ],
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
         ),
       ),
     );
+  }
+
+  List<Widget> _buildSelectedTags(TagSearchState tagSearchState) {
+    return [
+      Container(
+        margin: const EdgeInsets.only(left: 8),
+        height: 35,
+        child: ListView.builder(
+          shrinkWrap: true,
+          scrollDirection: Axis.horizontal,
+          itemCount: tagSearchState.selectedTags.length,
+          itemBuilder: (context, index) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: _buildSelectedTagChip(tagSearchState.selectedTags[index]),
+            );
+          },
+        ),
+      ),
+      const Divider(
+        height: 15,
+        thickness: 3,
+        indent: 10,
+        endIndent: 10,
+      ),
+    ];
   }
 
   Widget _buildSearchBar() {
@@ -249,6 +295,56 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  Widget _buildSearchBodyLargeLeftColumn(TagSearchState tagSearchState) {
+    return Expanded(
+      child: BlocSelector<SearchBloc, SearchState, DisplayState>(
+        selector: (state) => state.displayState,
+        builder: (context, displayState) {
+          if (displayState == DisplayState.suggestion) {
+            return TagSuggestionItems(
+              tags: tagSearchState.suggestionTags,
+              onItemTap: (tag) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+              },
+            );
+          } else {
+            return SearchOptions(
+              config: context.read<IConfig>(),
+              onOptionTap: (value) {
+                context.read<TagSearchBloc>().add(TagSearchChanged(value));
+                queryEditingController.text = '$value:';
+              },
+              onHistoryTap: (value) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context
+                    .read<TagSearchBloc>()
+                    .add(TagSearchTagFromHistorySelected(value));
+              },
+            );
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildSearchBodyLargeRightColumn(TagSearchState tagSearchState) {
+    return Expanded(
+      child: BlocSelector<SearchBloc, SearchState, DisplayState>(
+        selector: (state) => state.displayState,
+        builder: (context, displayState) {
+          if (displayState == DisplayState.result) {
+            return ResultView(selectedTags: tagSearchState.selectedTags);
+          } else {
+            return const Center(
+              child: Text('Your result will appear here'),
+            );
+          }
+        },
+      ),
+    );
+  }
+
   Widget _buildSearchBody(TagSearchState tagSearchState) {
     return Expanded(
       child: BlocSelector<SearchBloc, SearchState, DisplayState>(
@@ -263,78 +359,7 @@ class _SearchPageState extends State<SearchPage> {
               },
             );
           } else if (displayState == DisplayState.result) {
-            return BlocBuilder<PostBloc, PostState>(
-              buildWhen: (previous, current) => !current.hasMore,
-              builder: (context, state) {
-                return InfiniteLoadList(
-                  refreshController: refreshController,
-                  enableLoadMore: state.hasMore,
-                  onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                        tags: tagSearchState.selectedTags
-                            .map((e) => e.toString())
-                            .join(' '),
-                      )),
-                  onRefresh: (controller) {
-                    context.read<PostBloc>().add(PostRefreshed(
-                        tag: tagSearchState.selectedTags
-                            .map((e) => e.toString())
-                            .join(' ')));
-                    Future.delayed(const Duration(milliseconds: 500),
-                        () => controller.refreshCompleted());
-                  },
-                  builder: (context, controller) => CustomScrollView(
-                    controller: controller,
-                    slivers: <Widget>[
-                      SliverToBoxAdapter(
-                        child: BlocBuilder<RelatedTagBloc,
-                            AsyncLoadState<RelatedTag>>(
-                          builder: (context, state) {
-                            if (state.status == LoadStatus.success) {
-                              return BlocSelector<ThemeBloc, ThemeState,
-                                  ThemeMode>(
-                                selector: (state) => state.theme,
-                                builder: (context, theme) {
-                                  return _buildRelatedTags(
-                                    state.data!,
-                                    theme,
-                                  );
-                                },
-                              );
-                            } else if (state.status == LoadStatus.failure) {
-                              return const SizedBox.shrink();
-                            } else {
-                              return const TagChipsPlaceholder();
-                            }
-                          },
-                        ),
-                      ),
-                      HomePostGrid(
-                        controller: controller,
-                        onTap: () => FocusScope.of(context).unfocus(),
-                      ),
-                      BlocBuilder<PostBloc, PostState>(
-                        builder: (context, state) {
-                          if (state.status == LoadStatus.loading) {
-                            return const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 20, top: 20),
-                              sliver: SliverToBoxAdapter(
-                                child: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                            );
-                          } else {
-                            return const SliverToBoxAdapter(
-                              child: SizedBox.shrink(),
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
+            return ResultView(selectedTags: tagSearchState.selectedTags);
           } else if (displayState == DisplayState.error) {
             return ErrorResult(text: 'search.errors.generic'.tr());
           } else if (displayState == DisplayState.loadingResult) {
@@ -359,16 +384,6 @@ class _SearchPageState extends State<SearchPage> {
             );
           }
         },
-      ),
-    );
-  }
-
-  Widget _buildRelatedTags(RelatedTag relatedTag, ThemeMode theme) {
-    return ConditionalRenderWidget(
-      condition: relatedTag.tags.isNotEmpty,
-      childBuilder: (context) => RelatedTagHeader(
-        relatedTag: relatedTag,
-        theme: theme,
       ),
     );
   }
@@ -487,7 +502,10 @@ class _SearchPageState extends State<SearchPage> {
 bool _shouldShowSearchButton(
   DisplayState displayState,
   TagSearchState tagSearchState,
+  ScreenSize size,
 ) {
+  // if (size != ScreenSize.small) return false;
+
   if (displayState == DisplayState.options) {
     if (tagSearchState.selectedTags.isEmpty) {
       return false;
@@ -560,6 +578,125 @@ class ErrorResult extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ResultView extends StatefulWidget {
+  const ResultView({
+    Key? key,
+    required this.selectedTags,
+  }) : super(key: key);
+
+  final List<TagSearchItem> selectedTags;
+
+  @override
+  State<ResultView> createState() => _ResultViewState();
+}
+
+class _ResultViewState extends State<ResultView> {
+  final refreshController = RefreshController();
+
+  @override
+  void dispose() {
+    refreshController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostBloc, PostState>(
+      buildWhen: (previous, current) => !current.hasMore,
+      builder: (context, state) {
+        return InfiniteLoadList(
+          refreshController: refreshController,
+          enableLoadMore: state.hasMore,
+          onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                tags: widget.selectedTags.map((e) => e.toString()).join(' '),
+              )),
+          onRefresh: (controller) {
+            context.read<PostBloc>().add(PostRefreshed(
+                tag: widget.selectedTags.map((e) => e.toString()).join(' ')));
+            Future.delayed(const Duration(milliseconds: 500),
+                () => controller.refreshCompleted());
+          },
+          builder: (context, controller) => CustomScrollView(
+            controller: controller,
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
+                        selector: (state) => state.theme,
+                        builder: (context, theme) {
+                          return _RelatedTag(
+                            relatedTag: state.data!,
+                            theme: theme,
+                          );
+                        },
+                      );
+                    } else if (state.status == LoadStatus.failure) {
+                      return const SizedBox.shrink();
+                    } else {
+                      return const TagChipsPlaceholder();
+                    }
+                  },
+                ),
+              ),
+              HomePostGrid(
+                controller: controller,
+                onTap: () => FocusScope.of(context).unfocus(),
+              ),
+              BlocBuilder<PostBloc, PostState>(
+                builder: (context, state) {
+                  if (state.status == LoadStatus.loading) {
+                    return const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const SliverToBoxAdapter(
+                      child: SizedBox.shrink(),
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _RelatedTag extends StatelessWidget {
+  const _RelatedTag({
+    Key? key,
+    required this.relatedTag,
+    required this.theme,
+  }) : super(key: key);
+
+  final RelatedTag relatedTag;
+  final ThemeMode theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConditionalRenderWidget(
+      condition: relatedTag.tags.isNotEmpty,
+      childBuilder: (context) => RelatedTagHeader(
+        relatedTag: relatedTag,
+        theme: theme,
       ),
     );
   }
