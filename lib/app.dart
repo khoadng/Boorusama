@@ -89,17 +89,17 @@ class AppScrollBehavior extends ScrollBehavior {
 }
 
 final buttonColors = WindowButtonColors(
-  iconNormal: const Color.fromARGB(255, 114, 137, 217),
-  mouseOver: const Color(0xFFF6A00C),
-  mouseDown: const Color(0xFF805306),
-  iconMouseOver: const Color(0xFF805306),
-  iconMouseDown: const Color(0xFFFFD500),
+  iconNormal: Colors.white54,
+  mouseOver: Colors.white12,
+  mouseDown: Colors.white30,
+  iconMouseOver: Colors.white70,
+  iconMouseDown: Colors.white,
 );
 
 final closeButtonColors = WindowButtonColors(
   mouseOver: const Color(0xFFD32F2F),
   mouseDown: const Color(0xFFB71C1C),
-  iconNormal: const Color.fromARGB(255, 114, 137, 217),
+  iconNormal: Colors.white54,
   iconMouseOver: Colors.white,
 );
 
