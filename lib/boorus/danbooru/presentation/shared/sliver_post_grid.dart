@@ -225,7 +225,10 @@ class SliverPostGridItem extends StatelessWidget {
       borderRadius: borderRadius ?? BorderRadius.circular(8),
       child: ShadowGradientOverlay(
         alignment: Alignment.topCenter,
-        colors: <Color>[const Color(0x2F000000), Colors.black12.withOpacity(0)],
+        colors: <Color>[
+          const Color.fromARGB(16, 0, 0, 0),
+          Colors.black12.withOpacity(0),
+        ],
       ),
     );
   }

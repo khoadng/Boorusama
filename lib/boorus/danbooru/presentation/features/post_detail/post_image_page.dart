@@ -76,7 +76,7 @@ class _PostImagePageState extends State<PostImagePage>
                     ShadowGradientOverlay(
                         alignment: Alignment.topCenter,
                         colors: <Color>[
-                          const Color(0x8A000000),
+                          const Color.fromARGB(16, 0, 0, 0),
                           Colors.black12.withOpacity(0)
                         ]),
                     _buildBackButton(),

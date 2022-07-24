@@ -199,7 +199,7 @@ class _PostDetailPageState extends State<PostDetailPage>
                     ShadowGradientOverlay(
                       alignment: Alignment.topCenter,
                       colors: [
-                        const Color(0x5D000000),
+                        const Color.fromARGB(16, 0, 0, 0),
                         Colors.black12.withOpacity(0)
                       ],
                     ),

@@ -53,8 +53,7 @@ class InformationAndRecommended extends StatelessWidget {
           ),
         if (post.hasParentOrChildren)
           ParentChildTile(data: getParentChildData(post)),
-        if (!post.hasBothParentAndChildren)
-          const Divider(height: 8, thickness: 1),
+        if (!post.hasParentOrChildren) const Divider(height: 8, thickness: 1),
         _buildRecommendedArtistList(post),
         _buildRecommendedCharacterList(post),
       ],
