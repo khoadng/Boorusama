@@ -66,9 +66,10 @@ class _PostInfoState extends State<PostInfo> {
             : AppBar(
                 automaticallyImplyLeading: false,
                 elevation: 0,
-                toolbarHeight: kToolbarHeight * 0.6,
+                toolbarHeight: kToolbarHeight * 0.7,
                 actions: [
                   IconButton(
+                    splashRadius: 18,
                     onPressed: () => Navigator.of(context).pop(),
                     icon: const Icon(Icons.close),
                   )
@@ -170,6 +171,7 @@ class _ArtistSectionState extends State<ArtistSection> {
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
           final artistCommentary = state.data!;
+
           return ValueListenableBuilder<ArtistCommentaryTranlationState>(
             valueListenable: artistCommentaryDisplay,
             builder: (context, display, _) => Wrap(
@@ -193,9 +195,10 @@ class _ArtistSectionState extends State<ArtistSection> {
                         )
                       : const SizedBox.shrink(),
                 ),
-                SelectableText(
-                  getDescriptionText(display, artistCommentary),
-                ),
+                if (artistCommentary.hasCommentary)
+                  SelectableText(
+                    getDescriptionText(display, artistCommentary),
+                  ),
               ],
             ),
           );
