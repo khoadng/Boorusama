@@ -26,6 +26,12 @@ import 'widgets/information_and_recommended.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
+double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
+  if (screenSize == ScreenSize.veryLarge) return 0.2;
+  if (screenSize == ScreenSize.large) return 0.3;
+  return 0.35;
+}
+
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
     Key? key,
@@ -228,12 +234,6 @@ class _PostDetailPageState extends State<PostDetailPage>
         ),
       ),
     );
-  }
-
-  double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
-    if (screenSize == ScreenSize.veryLarge) return 0.2;
-    if (screenSize == ScreenSize.large) return 0.3;
-    return 0.35;
   }
 
   Widget _buildSlideShowButton() {

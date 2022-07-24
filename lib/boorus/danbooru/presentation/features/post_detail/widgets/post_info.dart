@@ -19,78 +19,116 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 
-class PostInfoModal extends StatelessWidget {
-  const PostInfoModal({
+class PostInfo extends StatefulWidget {
+  const PostInfo({
     Key? key,
     required this.post,
-    required this.scrollController,
+    this.scrollController,
+    this.isModal = true,
   }) : super(key: key);
 
   final Post post;
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
+  final bool isModal;
+
+  @override
+  State<PostInfo> createState() => _PostInfoState();
+}
+
+class _PostInfoState extends State<PostInfo> {
+  late final scrollController = widget.scrollController ?? ScrollController();
+
+  @override
+  void dispose() {
+    if (widget.scrollController == null) {
+      scrollController.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.75,
-      child: Modal(
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
-            body: CustomScrollView(
-              controller: scrollController,
-              shrinkWrap: true,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: ArtistSection(
-                    post: post,
-                  ),
+    return ConditionalParentWidget(
+      condition: widget.isModal,
+      conditionalBuilder: (child) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        child: Modal(
+          child: child,
+        ),
+      ),
+      child: Scaffold(
+        appBar: widget.isModal
+            ? null
+            : AppBar(
+                automaticallyImplyLeading: false,
+                elevation: 0,
+                toolbarHeight: kToolbarHeight * 0.6,
+                actions: [
+                  IconButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    icon: const Icon(Icons.close),
+                  )
+                ],
+              ),
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: Padding(
+          padding: const EdgeInsets.all(12),
+          child: CustomScrollView(
+            controller: widget.scrollController,
+            shrinkWrap: true,
+            slivers: [
+              SliverToBoxAdapter(
+                child: ArtistSection(
+                  post: widget.post,
                 ),
-                SliverToBoxAdapter(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: Theme.of(context).cardColor),
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.size').tr(),
-                        trailing: Text(filesize(post.fileSize, 1)),
-                      ),
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.resolution').tr(),
-                        trailing: Text(
-                            '${post.width.toInt()}x${post.height.toInt()}'),
-                      ),
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.rating').tr(),
-                        trailing: Text(
-                            post.rating.toString().split('.').last.pascalCase),
-                      ),
-                    ],
-                  ),
-                )),
-                SliverToBoxAdapter(
-                    child: BlocProvider(
-                  create: (context) => TagBloc(
-                      tagRepository:
-                          RepositoryProvider.of<ITagRepository>(context))
-                    ..add(TagFetched(tags: post.tags)),
-                  child: const PostTagList(),
-                )),
-              ],
-            ),
+              ),
+              SliverToBoxAdapter(
+                  child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Theme.of(context).cardColor),
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.size').tr(),
+                      trailing: Text(filesize(widget.post.fileSize, 1)),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.resolution').tr(),
+                      trailing: Text(
+                          '${widget.post.width.toInt()}x${widget.post.height.toInt()}'),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.rating').tr(),
+                      trailing: Text(widget.post.rating
+                          .toString()
+                          .split('.')
+                          .last
+                          .pascalCase),
+                    ),
+                  ],
+                ),
+              )),
+              SliverToBoxAdapter(
+                  child: BlocProvider(
+                create: (context) => TagBloc(
+                    tagRepository:
+                        RepositoryProvider.of<ITagRepository>(context))
+                  ..add(TagFetched(tags: widget.post.tags)),
+                child: const PostTagList(),
+              )),
+            ],
           ),
         ),
       ),
