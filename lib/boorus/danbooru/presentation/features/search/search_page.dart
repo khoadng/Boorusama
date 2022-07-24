@@ -5,8 +5,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lottie/lottie.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -16,18 +14,16 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/related_tag.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
-import 'related_tag_header.dart';
+import 'empty_view.dart';
+import 'error_view.dart';
+import 'result_view.dart';
 
 double? _screenSizeToWidthWeight(ScreenSize size) {
   if (size == ScreenSize.small) return null;
@@ -165,7 +161,7 @@ class _SearchPageState extends State<SearchPage> {
                     tagSearchState,
                     Screen.of(context).size,
                   )
-                      ? _buildSearchButton()
+                      ? const _SearchButton()
                       : const SizedBox.shrink(),
                   appBar: AppBar(
                     toolbarHeight: kToolbarHeight * 1.2,
@@ -361,13 +357,13 @@ class _SearchPageState extends State<SearchPage> {
           } else if (displayState == DisplayState.result) {
             return ResultView(selectedTags: tagSearchState.selectedTags);
           } else if (displayState == DisplayState.error) {
-            return ErrorResult(text: 'search.errors.generic'.tr());
+            return ErrorView(text: 'search.errors.generic'.tr());
           } else if (displayState == DisplayState.loadingResult) {
             return const Center(
               child: CircularProgressIndicator(),
             );
           } else if (displayState == DisplayState.noResult) {
-            return EmptyResult(text: 'search.no_result'.tr());
+            return EmptyView(text: 'search.no_result'.tr());
           } else {
             return SearchOptions(
               config: context.read<IConfig>(),
@@ -385,38 +381,6 @@ class _SearchPageState extends State<SearchPage> {
           }
         },
       ),
-    );
-  }
-
-  Widget _buildSearchButton() {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, ss) {
-        return BlocListener<SearchHistoryCubit,
-            AsyncLoadState<List<SearchHistory>>>(
-          listenWhen: (previous, current) =>
-              current.status == LoadStatus.success,
-          listener: (context, state) {
-            context
-                .read<SettingsCubit>()
-                .update(ss.settings.copyWith(searchHistories: state.data!));
-          },
-          child: BlocBuilder<TagSearchBloc, TagSearchState>(
-            builder: (context, state) {
-              return FloatingActionButton(
-                onPressed: () {
-                  final tags =
-                      state.selectedTags.map((e) => e.toString()).join(' ');
-                  context.read<SearchBloc>().add(const SearchRequested());
-                  context.read<PostBloc>().add(PostRefreshed(tag: tags));
-                  context.read<SearchHistoryCubit>().addHistory(tags);
-                },
-                heroTag: null,
-                child: const Icon(Icons.search),
-              );
-            },
-          ),
-        );
-      },
     );
   }
 
@@ -499,6 +463,45 @@ class _SearchPageState extends State<SearchPage> {
   bool _enableAutofocusOnSearchbar() => widget.initialQuery.isEmpty;
 }
 
+class _SearchButton extends StatelessWidget {
+  const _SearchButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SettingsCubit, SettingsState>(
+      builder: (context, ss) {
+        return BlocListener<SearchHistoryCubit,
+            AsyncLoadState<List<SearchHistory>>>(
+          listenWhen: (previous, current) =>
+              current.status == LoadStatus.success,
+          listener: (context, state) {
+            context
+                .read<SettingsCubit>()
+                .update(ss.settings.copyWith(searchHistories: state.data!));
+          },
+          child: BlocBuilder<TagSearchBloc, TagSearchState>(
+            builder: (context, state) {
+              return FloatingActionButton(
+                onPressed: () {
+                  final tags =
+                      state.selectedTags.map((e) => e.toString()).join(' ');
+                  context.read<SearchBloc>().add(const SearchRequested());
+                  context.read<PostBloc>().add(PostRefreshed(tag: tags));
+                  context.read<SearchHistoryCubit>().addHistory(tags);
+                },
+                heroTag: null,
+                child: const Icon(Icons.search),
+              );
+            },
+          ),
+        );
+      },
+    );
+  }
+}
+
 bool _shouldShowSearchButton(
   DisplayState displayState,
   TagSearchState tagSearchState,
@@ -515,189 +518,4 @@ bool _shouldShowSearchButton(
   }
   if (displayState == DisplayState.suggestion) return false;
   return false;
-}
-
-class EmptyResult extends StatelessWidget {
-  const EmptyResult({
-    Key? key,
-    required this.text,
-  }) : super(key: key);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Lottie.asset(
-                'assets/animations/search-file.json',
-                fit: BoxFit.scaleDown,
-              ),
-            ),
-            Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ErrorResult extends StatelessWidget {
-  const ErrorResult({
-    Key? key,
-    required this.text,
-  }) : super(key: key);
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Lottie.asset(
-                'assets/animations/server-error.json',
-                fit: BoxFit.scaleDown,
-              ),
-            ),
-            Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class ResultView extends StatefulWidget {
-  const ResultView({
-    Key? key,
-    required this.selectedTags,
-  }) : super(key: key);
-
-  final List<TagSearchItem> selectedTags;
-
-  @override
-  State<ResultView> createState() => _ResultViewState();
-}
-
-class _ResultViewState extends State<ResultView> {
-  final refreshController = RefreshController();
-
-  @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) => !current.hasMore,
-      builder: (context, state) {
-        return InfiniteLoadList(
-          refreshController: refreshController,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                tags: widget.selectedTags.map((e) => e.toString()).join(' '),
-              )),
-          onRefresh: (controller) {
-            context.read<PostBloc>().add(PostRefreshed(
-                tag: widget.selectedTags.map((e) => e.toString()).join(' ')));
-            Future.delayed(const Duration(milliseconds: 500),
-                () => controller.refreshCompleted());
-          },
-          builder: (context, controller) => CustomScrollView(
-            controller: controller,
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).viewPadding.top,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
-                  builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
-                        selector: (state) => state.theme,
-                        builder: (context, theme) {
-                          return _RelatedTag(
-                            relatedTag: state.data!,
-                            theme: theme,
-                          );
-                        },
-                      );
-                    } else if (state.status == LoadStatus.failure) {
-                      return const SizedBox.shrink();
-                    } else {
-                      return const TagChipsPlaceholder();
-                    }
-                  },
-                ),
-              ),
-              HomePostGrid(
-                controller: controller,
-                onTap: () => FocusScope.of(context).unfocus(),
-              ),
-              BlocBuilder<PostBloc, PostState>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.loading) {
-                    return const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SliverToBoxAdapter(
-                      child: SizedBox.shrink(),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _RelatedTag extends StatelessWidget {
-  const _RelatedTag({
-    Key? key,
-    required this.relatedTag,
-    required this.theme,
-  }) : super(key: key);
-
-  final RelatedTag relatedTag;
-  final ThemeMode theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return ConditionalRenderWidget(
-      condition: relatedTag.tags.isNotEmpty,
-      childBuilder: (context) => RelatedTagHeader(
-        relatedTag: relatedTag,
-        theme: theme,
-      ),
-    );
-  }
 }
