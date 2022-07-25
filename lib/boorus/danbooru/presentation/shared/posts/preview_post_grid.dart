@@ -38,29 +38,33 @@ class PreviewPostGrid extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3,
-          crossAxisSpacing: 3,
-          mainAxisSpacing: 3,
-        ),
-        shrinkWrap: true,
-        physics: physics ?? const NeverScrollableScrollPhysics(),
-        itemCount: posts.length,
-        itemBuilder: (context, index) => ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: GestureDetector(
-            onTap: () => handleTap(posts[index], index),
-            child: CachedNetworkImage(
-              fit: BoxFit.cover,
-              imageUrl: _getImageUrl(
-                posts[index],
-                imageQuality,
-              ),
-              placeholder: (context, url) => Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(4),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 3,
+            mainAxisSpacing: 3,
+          ),
+          shrinkWrap: true,
+          physics: physics ?? const NeverScrollableScrollPhysics(),
+          itemCount: posts.length,
+          itemBuilder: (context, index) => ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: GestureDetector(
+              onTap: () => handleTap(posts[index], index),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: _getImageUrl(
+                  posts[index],
+                  imageQuality,
+                ),
+                placeholder: (context, url) => Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ),
