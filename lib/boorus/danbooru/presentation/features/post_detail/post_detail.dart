@@ -4,12 +4,16 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/core/core.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
+import 'models/parent_child_data.dart';
 import 'widgets/post_media_item.dart';
 import 'widgets/widgets.dart';
 
@@ -41,8 +45,6 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final screenSize = screenWidthToDisplaySize(size.width);
     final postWidget = PostMediaItem(
       post: widget.post,
       onCached: (path) => imagePath.value = path,
@@ -66,12 +68,49 @@ class _PostDetailState extends State<PostDetail> {
                           SliverToBoxAdapter(child: postWidget),
                           const SliverToBoxAdapter(child: PoolTiles()),
                           SliverToBoxAdapter(
-                            child: InformationAndRecommended(
-                              screenSize: screenSize,
-                              post: widget.post,
-                              actionBarDisplayBehavior:
-                                  state.settings.actionBarDisplayBehavior,
-                              imagePath: widget.imagePath,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                InformationSection(post: widget.post),
+                                if (state.settings.actionBarDisplayBehavior ==
+                                    ActionBarDisplayBehavior.scrolling)
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: ActionBar(
+                                      imagePath: imagePath,
+                                      post: widget.post,
+                                    ),
+                                  ),
+                                if (widget.post.hasParentOrChildren)
+                                  ParentChildTile(
+                                    data: getParentChildData(widget.post),
+                                    onTap: (data) => showBarModalBottomSheet(
+                                      context: context,
+                                      builder: (context) => MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider(
+                                            create: (context) => PostBloc(
+                                              postRepository: context
+                                                  .read<IPostRepository>(),
+                                              blacklistedTagsRepository:
+                                                  context.read<
+                                                      BlacklistedTagsRepository>(),
+                                            )..add(PostRefreshed(
+                                                tag: data
+                                                    .tagQueryForDataFetching)),
+                                          )
+                                        ],
+                                        child: ParentChildPostPage(
+                                            parentPostId: data.parentId),
+                                      ),
+                                    ),
+                                  ),
+                                if (!widget.post.hasParentOrChildren)
+                                  const Divider(height: 8, thickness: 1),
+                                RecommendArtistList(post: widget.post),
+                                RecommendCharacterList(post: widget.post),
+                              ],
                             ),
                           ),
                         ],

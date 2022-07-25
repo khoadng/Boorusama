@@ -1,26 +1,36 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_media_item.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recase/recase.dart';
+import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'models/parent_child_data.dart';
 import 'models/slide_show_configuration.dart';
+import 'parent_child_post_page.dart';
 import 'post_detail.dart';
 import 'post_image_page.dart';
 import 'widgets/widgets.dart';
@@ -30,7 +40,7 @@ double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
   if (screenSize == ScreenSize.veryLarge) return 0.2;
   if (screenSize == ScreenSize.large) return 0.3;
-  return 0.35;
+  return 0.38;
 }
 
 class PostDetailPage extends StatefulWidget {
@@ -143,6 +153,8 @@ class _LargeLayout extends StatelessWidget {
   final int initialIndex;
   final List<Post> posts;
 
+  Post get post => posts[currentPostIndex.value];
+
   @override
   Widget build(BuildContext context) {
     final size = Screen.of(context).size;
@@ -159,11 +171,47 @@ class _LargeLayout extends StatelessWidget {
                     currentPostIndex: currentPostIndex,
                     imagePath: imagePath,
                     posts: posts,
-                    builder: (post, minimal) => Center(
-                      child: PostMediaItem(
-                        post: post,
-                        onCached: (path) => imagePath.value = path,
-                      ),
+                    builder: (post, minimal) => Stack(
+                      children: [
+                        Positioned.fill(
+                          child: PostMediaItem(
+                            post: post,
+                            onCached: (path) => imagePath.value = path,
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: ButtonBar(
+                            children: [
+                              InfoChip(
+                                leftLabel:
+                                    const Text('post.detail.resolution').tr(),
+                                rightLabel: Text(
+                                    '${post.width.toInt()}x${post.height.toInt()}'),
+                                leftColor: Theme.of(context).cardColor,
+                                rightColor: Theme.of(context).backgroundColor,
+                              ),
+                              InfoChip(
+                                leftLabel: const Text('post.detail.size').tr(),
+                                rightLabel: Text(filesize(post.fileSize, 1)),
+                                leftColor: Theme.of(context).cardColor,
+                                rightColor: Theme.of(context).backgroundColor,
+                              ),
+                              InfoChip(
+                                leftLabel:
+                                    const Text('post.detail.rating').tr(),
+                                rightLabel: Text(post.rating
+                                    .toString()
+                                    .split('.')
+                                    .last
+                                    .pascalCase),
+                                leftColor: Theme.of(context).cardColor,
+                                rightColor: Theme.of(context).backgroundColor,
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
                     ),
                   ),
                   ShadowGradientOverlay(
@@ -200,23 +248,193 @@ class _LargeLayout extends StatelessWidget {
             color: Theme.of(context).backgroundColor,
             width: MediaQuery.of(context).size.width *
                 _screenSizeToInfoBoxScreenPercent(size),
-            child: SafeArea(
-              child: CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: InformationAndRecommended(
-                      screenSize: size,
-                      post: posts[currentPostIndex.value],
-                      actionBarDisplayBehavior:
-                          ActionBarDisplayBehavior.scrolling,
-                      imagePath: imagePath,
-                      headerBuilder: (context) => [
-                        const PoolTiles(),
-                      ],
+            child: _LargeLayoutContent(
+              post: post,
+              imagePath: imagePath,
+              size: size,
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _LargeLayoutContent extends StatelessWidget {
+  const _LargeLayoutContent({
+    Key? key,
+    required this.post,
+    required this.imagePath,
+    required this.size,
+  }) : super(key: key);
+
+  final Post post;
+  final ValueNotifier<String?> imagePath;
+  final ScreenSize size;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: ArtistSection(
+                    post: post,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: ActionBar(
+                    imagePath: imagePath,
+                    post: post,
+                  ),
+                ),
+                if (post.hasParentOrChildren)
+                  ParentChildTile(
+                    data: getParentChildData(post),
+                    onTap: (data) => SideSheet.right(
+                      context: context,
+                      body: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => PostBloc(
+                              postRepository: context.read<IPostRepository>(),
+                              blacklistedTagsRepository:
+                                  context.read<BlacklistedTagsRepository>(),
+                            )..add(PostRefreshed(
+                                tag: data.tagQueryForDataFetching)),
+                          )
+                        ],
+                        child: ParentChildPostPage(parentPostId: data.parentId),
+                      ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                if (!post.hasParentOrChildren)
+                  const Divider(
+                    height: 8,
+                    thickness: 1,
+                    indent: 8,
+                    endIndent: 8,
+                  ),
+                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              top: 16,
+                            ),
+                            child: Text(
+                              '${state.data!.length} Pools',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).hintColor,
+                              ),
+                            ),
+                          ),
+                          ...state.data!
+                              .map((e) => Column(
+                                    children: [
+                                      ListTile(
+                                        title: Text(
+                                          e.name.removeUnderscoreWithSpace(),
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        subtitle: Text('${e.postCount} posts'),
+                                        trailing: const Icon(Icons.arrow_right),
+                                        onTap: () =>
+                                            AppRouter.router.navigateTo(
+                                          context,
+                                          'pool/detail',
+                                          routeSettings:
+                                              RouteSettings(arguments: [e]),
+                                        ),
+                                      ),
+                                      const Divider(
+                                        height: 1,
+                                        endIndent: 18,
+                                        indent: 18,
+                                      ),
+                                    ],
+                                  ))
+                              .toList(),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
+                RecommendArtistList(
+                  post: post,
+                  header: (item) => ListTile(
+                    onTap: () => AppRouter.router.navigateTo(
+                      context,
+                      '/artist',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          item.tag,
+                          post.normalImageUrl,
+                        ],
+                      ),
+                    ),
+                    title: RichText(
+                      text: TextSpan(
+                        text: '',
+                        children: [
+                          TextSpan(
+                              text: 'More from ',
+                              style: TextStyle(
+                                  color: Theme.of(context).hintColor)),
+                          TextSpan(
+                              text: item.tag,
+                              style: const TextStyle(fontSize: 16)),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                RecommendCharacterList(post: post),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 16,
+                    top: 16,
+                  ),
+                  child: Text(
+                    '${post.tags.length} Tags',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ),
+                BlocProvider(
+                  create: (context) => TagBloc(
+                      tagRepository:
+                          RepositoryProvider.of<ITagRepository>(context))
+                    ..add(TagFetched(tags: post.tags)),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: PostTagList(
+                      maxTagWidth: MediaQuery.of(context).size.width *
+                          _screenSizeToInfoBoxScreenPercent(size) *
+                          0.5,
+                    ),
+                  ),
+                )
+              ],
             ),
           )
         ],
@@ -385,7 +603,7 @@ class _CarouselSlider extends StatelessWidget {
                         amount:
                             Screen.of(context).size == ScreenSize.large ? 9 : 6,
                         currentPostId: posts[index].id,
-                        tags: posts[index].characterTags,
+                        tags: posts[index].characterTags.take(3).toList(),
                       ));
                   context
                       .read<PoolFromPostIdBloc>()
@@ -510,5 +728,55 @@ class _SlideShowButtonState extends State<_SlideShowButton>
         ..stop()
         ..reset();
     }
+  }
+}
+
+class InfoChip extends StatelessWidget {
+  const InfoChip({
+    Key? key,
+    required this.leftLabel,
+    required this.rightLabel,
+    required this.leftColor,
+    required this.rightColor,
+  }) : super(key: key);
+
+  final Color leftColor;
+  final Color rightColor;
+  final Widget leftLabel;
+  final Widget rightLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: leftColor,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).hintColor),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
+          ),
+          label: leftLabel,
+        ),
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: rightColor,
+          shape: RoundedRectangleBorder(
+            side: BorderSide(color: Theme.of(context).hintColor),
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+          ),
+          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+          label: rightLabel,
+        )
+      ],
+    );
   }
 }

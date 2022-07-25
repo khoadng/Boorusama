@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
@@ -163,6 +164,9 @@ class _ArtistSectionState extends State<ArtistSection> {
             builder: (context, display, _) => Wrap(
               children: [
                 SourceLink(
+                  name: widget.post.artistTags.isEmpty
+                      ? ''
+                      : widget.post.artistTags.first,
                   title: Text(widget.post.artistTags.join(' ')),
                   uri: widget.post.source.uri,
                   actionBuilder: () => artistCommentary.isTranslated
@@ -182,8 +186,11 @@ class _ArtistSectionState extends State<ArtistSection> {
                       : const SizedBox.shrink(),
                 ),
                 if (artistCommentary.hasCommentary)
-                  SelectableText(
-                    getDescriptionText(display, artistCommentary),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: SelectableText(
+                      getDescriptionText(display, artistCommentary),
+                    ),
                   ),
               ],
             ),
@@ -204,11 +211,13 @@ class SourceLink extends StatelessWidget {
     required this.title,
     required this.uri,
     required this.actionBuilder,
+    required this.name,
   }) : super(key: key);
 
   final Widget title;
   final Uri? uri;
   final Widget Function() actionBuilder;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -234,7 +243,11 @@ class SourceLink extends StatelessWidget {
           style: Theme.of(context).textTheme.caption,
         ),
       ),
-      leading: const CircleAvatar(),
+      leading: CircleAvatar(
+        child: Center(
+          child: Text(name.getFirstCharacter().toUpperCase()),
+        ),
+      ),
       trailing: actionBuilder(),
     );
   }

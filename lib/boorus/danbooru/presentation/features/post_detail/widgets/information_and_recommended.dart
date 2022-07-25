@@ -7,60 +7,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
-import '../models/parent_child_data.dart';
-import 'information_section.dart';
-import 'parent_child_tile.dart';
 import 'post_action_toolbar.dart';
 import 'recommend_section.dart';
-import 'recommend_section_placeholder.dart';
 
-class InformationAndRecommended extends StatelessWidget {
-  const InformationAndRecommended({
+class RecommendArtistList extends StatelessWidget {
+  const RecommendArtistList({
     Key? key,
     required this.post,
-    required this.actionBarDisplayBehavior,
-    required this.imagePath,
-    required this.screenSize,
-    this.headerBuilder,
+    this.header,
   }) : super(key: key);
 
   final Post post;
-  final ActionBarDisplayBehavior actionBarDisplayBehavior;
-  final ValueNotifier<String?> imagePath;
-  final ScreenSize screenSize;
-  final List<Widget> Function(BuildContext context)? headerBuilder;
+  final Widget Function(Recommended item)? header;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (headerBuilder != null) ...headerBuilder!(context),
-        InformationSection(post: post),
-        if (actionBarDisplayBehavior == ActionBarDisplayBehavior.scrolling)
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: ActionBar(
-              imagePath: imagePath,
-              post: post,
-            ),
-          ),
-        if (post.hasParentOrChildren)
-          ParentChildTile(data: getParentChildData(post)),
-        if (!post.hasParentOrChildren) const Divider(height: 8, thickness: 1),
-        _buildRecommendedArtistList(post),
-        _buildRecommendedCharacterList(post),
-      ],
-    );
-  }
-
-  Widget _buildRecommendedArtistList(Post post) {
     if (post.artistTags.isEmpty) return const SizedBox.shrink();
     return BlocBuilder<RecommendedArtistPostCubit,
         AsyncLoadState<List<Recommended>>>(
@@ -72,34 +35,45 @@ class InformationAndRecommended extends StatelessWidget {
 
           return Column(
             children: recommendedItems
-                .map((item) => _buildRecommendPostSection(
-                      item,
-                      '/artist',
-                      post,
+                .map((item) => RecommendPostSection(
+                      header: header?.call(item) ??
+                          ListTile(
+                            onTap: () => AppRouter.router.navigateTo(
+                              context,
+                              '/artist',
+                              routeSettings: RouteSettings(
+                                arguments: [
+                                  item.tag,
+                                  post.normalImageUrl,
+                                ],
+                              ),
+                            ),
+                            title: Text(item.title),
+                            trailing:
+                                const Icon(Icons.keyboard_arrow_right_rounded),
+                          ),
+                      posts: item.posts,
                     ))
                 .toList(),
           );
         } else {
-          final artists = post.artistTags;
-          return Column(
-            children: [
-              ...List.generate(
-                artists.length,
-                (index) => RecommendSectionPlaceHolder(
-                  header: ListTile(
-                    title: Text(artists[index].removeUnderscoreWithSpace()),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                ),
-              )
-            ],
-          );
+          return const SizedBox.shrink();
         }
       },
     );
   }
+}
 
-  Widget _buildRecommendedCharacterList(Post post) {
+class RecommendCharacterList extends StatelessWidget {
+  const RecommendCharacterList({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
     if (post.characterTags.isEmpty) return const SizedBox.shrink();
     return BlocBuilder<RecommendedCharacterPostCubit,
         AsyncLoadState<List<Recommended>>>(
@@ -111,58 +85,29 @@ class InformationAndRecommended extends StatelessWidget {
 
           return Column(
             children: recommendedItems
-                .map((item) => _buildRecommendPostSection(
-                      item,
-                      '/character',
-                      post,
+                .map((item) => RecommendPostSection(
+                      header: ListTile(
+                        onTap: () => AppRouter.router.navigateTo(
+                          context,
+                          '/character',
+                          routeSettings: RouteSettings(
+                            arguments: [
+                              item.tag,
+                              post.normalImageUrl,
+                            ],
+                          ),
+                        ),
+                        title: Text(item.title),
+                        trailing:
+                            const Icon(Icons.keyboard_arrow_right_rounded),
+                      ),
+                      posts: item.posts,
                     ))
                 .toList(),
           );
         } else {
-          final characters = post.characterTags;
-          return Column(
-            children: [
-              ...List.generate(
-                characters.length,
-                (index) => RecommendSectionPlaceHolder(
-                  header: ListTile(
-                    title: Text(characters[index].removeUnderscoreWithSpace()),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                ),
-              )
-            ],
-          );
+          return const SizedBox.shrink();
         }
-      },
-    );
-  }
-
-  Widget _buildRecommendPostSection(
-    Recommended item,
-    String url,
-    Post post,
-  ) {
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      builder: (context, state) {
-        return RecommendPostSection(
-          imageQuality: state.settings.imageQuality,
-          header: ListTile(
-            onTap: () => AppRouter.router.navigateTo(
-              context,
-              url,
-              routeSettings: RouteSettings(
-                arguments: [
-                  item.tag,
-                  post.normalImageUrl,
-                ],
-              ),
-            ),
-            title: Text(item.title),
-            trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-          ),
-          posts: item.posts,
-        );
       },
     );
   }

@@ -4,18 +4,17 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
-import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
 import 'post_info.dart';
 
-double _screenSizeToInfoModalPercent(ScreenSize size) {
-  if (size == ScreenSize.veryLarge) return 0.3;
-  if (size == ScreenSize.large) return 0.4;
-  return 0.45;
-}
+// double _screenSizeToInfoModalPercent(ScreenSize size) {
+//   if (size == ScreenSize.veryLarge) return 0.3;
+//   if (size == ScreenSize.large) return 0.4;
+//   return 0.45;
+// }
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
@@ -28,23 +27,12 @@ class InformationSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Screen.of(context).size != ScreenSize.small
-          ? SideSheet.right(
-              width: _screenSizeToInfoModalPercent(Screen.of(context).size) *
-                  MediaQuery.of(context).size.width,
-              body: PostInfo(
-                isModal: false,
-                post: post,
-              ),
-              context: context,
-            )
-          : showMaterialModalBottomSheet(
-              backgroundColor: Colors.transparent,
-              context: context,
-              builder: (context) => PostInfo(
-                  post: post,
-                  scrollController: ModalScrollController.of(context)!),
-            ),
+      onTap: () => showMaterialModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        context: context,
+        builder: (context) => PostInfo(
+            post: post, scrollController: ModalScrollController.of(context)!),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(

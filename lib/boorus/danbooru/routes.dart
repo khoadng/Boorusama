@@ -166,7 +166,7 @@ final postDetailHandler = Handler(handlerFunc: (
               )..add(RecommendedPostRequested(
                   amount: screenSize == ScreenSize.large ? 9 : 6,
                   currentPostId: posts[index].id,
-                  tags: posts[index].characterTags,
+                  tags: posts[index].characterTags.take(3).toList(),
                 ))),
       BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
       BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),

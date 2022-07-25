@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:path/path.dart' as p;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class PostMediaItem extends StatefulWidget {

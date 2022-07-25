@@ -3,23 +3,19 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import '../models/parent_child_data.dart';
-import '../parent_child_post_page.dart';
 
 class ParentChildTile extends StatelessWidget {
   const ParentChildTile({
     Key? key,
     required this.data,
+    required this.onTap,
   }) : super(key: key);
 
   final ParentChildData data;
+  final void Function(ParentChildData data) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +32,7 @@ class ParentChildTile extends StatelessWidget {
             trailing: Padding(
               padding: const EdgeInsets.all(4),
               child: ElevatedButton(
-                onPressed: () => showBarModalBottomSheet(
-                  context: context,
-                  builder: (context) => MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => PostBloc(
-                          postRepository: context.read<IPostRepository>(),
-                          blacklistedTagsRepository:
-                              context.read<BlacklistedTagsRepository>(),
-                        )..add(
-                            PostRefreshed(tag: data.tagQueryForDataFetching)),
-                      )
-                    ],
-                    child: ParentChildPostPage(parentPostId: data.parentId),
-                  ),
-                ),
+                onPressed: () => onTap(data),
                 child: const Text(
                   'post.detail.view',
                   style: TextStyle(color: Colors.white),

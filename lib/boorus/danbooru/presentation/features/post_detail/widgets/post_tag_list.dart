@@ -20,9 +20,9 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 
 class PostTagList extends StatelessWidget {
-  const PostTagList({
-    Key? key,
-  }) : super(key: key);
+  const PostTagList({Key? key, this.maxTagWidth}) : super(key: key);
+
+  final double? maxTagWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class PostTagList extends StatelessWidget {
       builder: (context, state) {
         return Tags(
           alignment: WrapAlignment.start,
-          runSpacing: 0,
+          runSpacing: 4,
           itemCount: tags.length,
           itemBuilder: (index) {
             final tag = tags[index];
@@ -136,7 +136,7 @@ class PostTagList extends StatelessWidget {
                                   bottomLeft: Radius.circular(8))),
                           label: ConstrainedBox(
                             constraints: BoxConstraints(
-                                maxWidth:
+                                maxWidth: maxTagWidth ??
                                     MediaQuery.of(context).size.width * 0.70),
                             child: Text(
                               tag.displayName,
