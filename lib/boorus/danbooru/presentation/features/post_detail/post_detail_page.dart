@@ -128,11 +128,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     Align(
                       alignment: Alignment(0.9, getTopActionIconAlignValue()),
-                      child: _SlideShowButton(
-                        autoPlay: autoPlay,
-                        showSlideShowConfig: showSlideShowConfig,
-                        currentPostIndex: currentPostIndex,
-                        posts: widget.posts,
+                      child: ButtonBar(
+                        children: [
+                          _SlideShowButton(
+                            autoPlay: autoPlay,
+                            showSlideShowConfig: showSlideShowConfig,
+                          ),
+                          _MoreActionButton(
+                            currentPostIndex: currentPostIndex,
+                            posts: widget.posts,
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -164,6 +170,45 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 )
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MoreActionButton extends StatelessWidget {
+  const _MoreActionButton({
+    Key? key,
+    required this.currentPostIndex,
+    required this.posts,
+  }) : super(key: key);
+
+  final ValueNotifier<int> currentPostIndex;
+  final List<Post> posts;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<int>(
+      valueListenable: currentPostIndex,
+      builder: (context, index, child) => DownloadProviderWidget(
+        builder: (context, download) => PopupMenuButton<PostAction>(
+          onSelected: (value) async {
+            switch (value) {
+              case PostAction.download:
+                download(posts[index]);
+                break;
+              default:
+            }
+          },
+          itemBuilder: (context) => [
+            PopupMenuItem<PostAction>(
+              value: PostAction.download,
+              child: ListTile(
+                leading: const Icon(Icons.download_rounded),
+                title: const Text('download.download').tr(),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -294,14 +339,10 @@ class _SlideShowButton extends StatefulWidget {
     Key? key,
     required this.autoPlay,
     required this.showSlideShowConfig,
-    required this.currentPostIndex,
-    required this.posts,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
   final ValueNotifier<bool> showSlideShowConfig;
-  final ValueNotifier<int> currentPostIndex;
-  final List<Post> posts;
 
   @override
   State<_SlideShowButton> createState() => _SlideShowButtonState();
@@ -332,46 +373,18 @@ class _SlideShowButtonState extends State<_SlideShowButton>
 
   @override
   Widget build(BuildContext context) {
-    return ButtonBar(
-      children: [
-        ValueListenableBuilder<bool>(
-          valueListenable: widget.autoPlay,
-          builder: (context, value, _) => value
-              ? AnimatedSpinningIcon(
-                  icon: const Icon(Icons.sync),
-                  animation: rotateAnimation,
-                  onPressed: () => widget.autoPlay.value = false,
-                )
-              : IconButton(
-                  icon: const Icon(Icons.slideshow),
-                  onPressed: () => widget.showSlideShowConfig.value = true,
-                ),
-        ),
-        ValueListenableBuilder<int>(
-          valueListenable: widget.currentPostIndex,
-          builder: (context, index, child) => DownloadProviderWidget(
-            builder: (context, download) => PopupMenuButton<PostAction>(
-              onSelected: (value) async {
-                switch (value) {
-                  case PostAction.download:
-                    download(widget.posts[index]);
-                    break;
-                  default:
-                }
-              },
-              itemBuilder: (context) => [
-                PopupMenuItem<PostAction>(
-                  value: PostAction.download,
-                  child: ListTile(
-                    leading: const Icon(Icons.download_rounded),
-                    title: const Text('download.download').tr(),
-                  ),
-                ),
-              ],
+    return ValueListenableBuilder<bool>(
+      valueListenable: widget.autoPlay,
+      builder: (context, value, _) => value
+          ? AnimatedSpinningIcon(
+              icon: const Icon(Icons.sync),
+              animation: rotateAnimation,
+              onPressed: () => widget.autoPlay.value = false,
+            )
+          : IconButton(
+              icon: const Icon(Icons.slideshow),
+              onPressed: () => widget.showSlideShowConfig.value = true,
             ),
-          ),
-        ),
-      ],
     );
   }
 
