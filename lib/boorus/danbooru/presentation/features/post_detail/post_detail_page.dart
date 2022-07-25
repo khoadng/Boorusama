@@ -58,8 +58,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
   final imagePath = ValueNotifier<String?>(null);
 
-  Post get currentPost => widget.posts[currentPostIndex.value];
-
   @override
   void initState() {
     super.initState();
@@ -101,76 +99,161 @@ class _PostDetailPageState extends State<PostDetailPage> {
               .add(SliverPostGridExited(lastIndex: index));
           return true;
         },
-        child: Scaffold(
-          body: Row(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    _CarouselSlider(
-                      autoPlay: autoPlay,
-                      slideShowConfig: slideShowConfig,
-                      currentPostIndex: currentPostIndex,
-                      imagePath: imagePath,
-                      initialIndex: widget.intitialIndex,
-                      posts: widget.posts,
-                    ),
-                    ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: [
-                        const Color.fromARGB(16, 0, 0, 0),
-                        Colors.black12.withOpacity(0)
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment(-0.75, getTopActionIconAlignValue()),
-                      child: const _BackButton(),
-                    ),
-                    Align(
-                      alignment: Alignment(0.9, getTopActionIconAlignValue()),
-                      child: ButtonBar(
-                        children: [
-                          _SlideShowButton(
-                            autoPlay: autoPlay,
-                            showSlideShowConfig: showSlideShowConfig,
-                          ),
-                          _MoreActionButton(
-                            currentPostIndex: currentPostIndex,
-                            posts: widget.posts,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+        child: screenSize == ScreenSize.small
+            ? _SmallLayout(
+                autoPlay: autoPlay,
+                slideShowConfig: slideShowConfig,
+                currentPostIndex: currentPostIndex,
+                imagePath: imagePath,
+                showSlideShowConfig: showSlideShowConfig,
+                initialIndex: widget.intitialIndex,
+                posts: widget.posts,
+              )
+            : _LargeLayout(
+                autoPlay: autoPlay,
+                slideShowConfig: slideShowConfig,
+                currentPostIndex: currentPostIndex,
+                imagePath: imagePath,
+                showSlideShowConfig: showSlideShowConfig,
+                initialIndex: widget.intitialIndex,
+                posts: widget.posts,
               ),
-              if (screenSize != ScreenSize.small)
-                Container(
-                  color: Theme.of(context).backgroundColor,
-                  width: size.width *
-                      _screenSizeToInfoBoxScreenPercent(screenSize),
-                  child: SafeArea(
-                    child: CustomScrollView(
-                      slivers: [
-                        SliverToBoxAdapter(
-                          child: InformationAndRecommended(
-                            screenSize: screenSize,
-                            post: currentPost,
-                            actionBarDisplayBehavior:
-                                ActionBarDisplayBehavior.scrolling,
-                            imagePath: imagePath,
-                            headerBuilder: (context) => [
-                              const PoolTiles(),
-                            ],
-                          ),
-                        )
+      ),
+    );
+  }
+}
+
+class _LargeLayout extends StatelessWidget {
+  const _LargeLayout({
+    Key? key,
+    required this.autoPlay,
+    required this.slideShowConfig,
+    required this.currentPostIndex,
+    required this.imagePath,
+    required this.showSlideShowConfig,
+    required this.initialIndex,
+    required this.posts,
+  }) : super(key: key);
+
+  final ValueNotifier<bool> autoPlay;
+  final ValueNotifier<SlideShowConfiguration> slideShowConfig;
+  final ValueNotifier<int> currentPostIndex;
+  final ValueNotifier<String?> imagePath;
+  final ValueNotifier<bool> showSlideShowConfig;
+  final int initialIndex;
+  final List<Post> posts;
+
+  @override
+  Widget build(BuildContext context) {
+    final size = Screen.of(context).size;
+    return Scaffold(
+      body: Row(
+        children: [
+          Expanded(
+            child: _SmallLayout(
+              autoPlay: autoPlay,
+              slideShowConfig: slideShowConfig,
+              currentPostIndex: currentPostIndex,
+              imagePath: imagePath,
+              showSlideShowConfig: showSlideShowConfig,
+              initialIndex: initialIndex,
+              posts: posts,
+            ),
+          ),
+          Container(
+            color: Theme.of(context).backgroundColor,
+            width: MediaQuery.of(context).size.width *
+                _screenSizeToInfoBoxScreenPercent(size),
+            child: SafeArea(
+              child: CustomScrollView(
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: InformationAndRecommended(
+                      screenSize: size,
+                      post: posts[currentPostIndex.value],
+                      actionBarDisplayBehavior:
+                          ActionBarDisplayBehavior.scrolling,
+                      imagePath: imagePath,
+                      headerBuilder: (context) => [
+                        const PoolTiles(),
                       ],
                     ),
-                  ),
-                )
+                  )
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _SmallLayout extends StatelessWidget {
+  const _SmallLayout({
+    Key? key,
+    required this.autoPlay,
+    required this.slideShowConfig,
+    required this.currentPostIndex,
+    required this.imagePath,
+    required this.showSlideShowConfig,
+    required this.initialIndex,
+    required this.posts,
+  }) : super(key: key);
+
+  final ValueNotifier<bool> autoPlay;
+  final ValueNotifier<SlideShowConfiguration> slideShowConfig;
+  final ValueNotifier<int> currentPostIndex;
+  final ValueNotifier<String?> imagePath;
+  final ValueNotifier<bool> showSlideShowConfig;
+  final int initialIndex;
+  final List<Post> posts;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          _CarouselSlider(
+            autoPlay: autoPlay,
+            slideShowConfig: slideShowConfig,
+            currentPostIndex: currentPostIndex,
+            imagePath: imagePath,
+            initialIndex: initialIndex,
+            posts: posts,
+            builder: (post, minimal) => PostDetail(
+              post: post,
+              minimal: minimal,
+              imagePath: imagePath,
+            ),
+          ),
+          ShadowGradientOverlay(
+            alignment: Alignment.topCenter,
+            colors: [
+              const Color.fromARGB(16, 0, 0, 0),
+              Colors.black12.withOpacity(0)
             ],
           ),
-        ),
+          Align(
+            alignment: Alignment(-0.75, getTopActionIconAlignValue()),
+            child: const _BackButton(),
+          ),
+          Align(
+            alignment: Alignment(0.9, getTopActionIconAlignValue()),
+            child: ButtonBar(
+              children: [
+                _SlideShowButton(
+                  autoPlay: autoPlay,
+                  showSlideShowConfig: showSlideShowConfig,
+                ),
+                _MoreActionButton(
+                  currentPostIndex: currentPostIndex,
+                  posts: posts,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -224,6 +307,7 @@ class _CarouselSlider extends StatelessWidget {
     required this.imagePath,
     required this.posts,
     required this.initialIndex,
+    required this.builder,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
@@ -232,6 +316,7 @@ class _CarouselSlider extends StatelessWidget {
   final ValueNotifier<String?> imagePath;
   final List<Post> posts;
   final int initialIndex;
+  final Widget Function(Post post, bool minimal) builder;
 
   @override
   Widget build(BuildContext context) {
@@ -246,11 +331,8 @@ class _CarouselSlider extends StatelessWidget {
             itemBuilder: (context, index, realIndex) {
               WidgetsBinding.instance
                   .addPostFrameCallback((_) => currentPostIndex.value = index);
-              return PostDetail(
-                post: posts[index],
-                minimal: autoPlay,
-                imagePath: imagePath,
-              );
+
+              return builder(posts[index], autoPlay);
             },
             options: CarouselOptions(
               onPageChanged: (index, reason) {
