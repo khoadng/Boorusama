@@ -19,10 +19,7 @@ import 'related_tag_header.dart';
 class ResultView extends StatefulWidget {
   const ResultView({
     Key? key,
-    required this.selectedTags,
   }) : super(key: key);
-
-  final List<TagSearchItem> selectedTags;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -39,76 +36,80 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) => !current.hasMore,
-      builder: (context, state) {
-        return InfiniteLoadList(
-          refreshController: refreshController,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                tags: widget.selectedTags.map((e) => e.toString()).join(' '),
-              )),
-          onRefresh: (controller) {
-            context.read<PostBloc>().add(PostRefreshed(
-                tag: widget.selectedTags.map((e) => e.toString()).join(' ')));
-            Future.delayed(const Duration(milliseconds: 500),
-                () => controller.refreshCompleted());
-          },
-          builder: (context, controller) => CustomScrollView(
-            controller: controller,
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).viewPadding.top,
+    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+      selector: (state) => state.selectedTags,
+      builder: (context, tags) => BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => !current.hasMore,
+        builder: (context, state) {
+          return InfiniteLoadList(
+            refreshController: refreshController,
+            enableLoadMore: state.hasMore,
+            onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                  tags: tags.map((e) => e.toString()).join(' '),
+                )),
+            onRefresh: (controller) {
+              context.read<PostBloc>().add(
+                  PostRefreshed(tag: tags.map((e) => e.toString()).join(' ')));
+              Future.delayed(const Duration(milliseconds: 500),
+                  () => controller.refreshCompleted());
+            },
+            builder: (context, controller) => CustomScrollView(
+              controller: controller,
+              slivers: [
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).viewPadding.top,
+                  ),
                 ),
-              ),
-              SliverToBoxAdapter(
-                child: BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
+                SliverToBoxAdapter(
+                  child:
+                      BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.success) {
+                        return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
+                          selector: (state) => state.theme,
+                          builder: (context, theme) {
+                            return _RelatedTag(
+                              relatedTag: state.data!,
+                              theme: theme,
+                            );
+                          },
+                        );
+                      } else if (state.status == LoadStatus.failure) {
+                        return const SizedBox.shrink();
+                      } else {
+                        return const TagChipsPlaceholder();
+                      }
+                    },
+                  ),
+                ),
+                HomePostGrid(
+                  controller: controller,
+                  onTap: () => FocusScope.of(context).unfocus(),
+                ),
+                BlocBuilder<PostBloc, PostState>(
                   builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
-                        selector: (state) => state.theme,
-                        builder: (context, theme) {
-                          return _RelatedTag(
-                            relatedTag: state.data!,
-                            theme: theme,
-                          );
-                        },
+                    if (state.status == LoadStatus.loading) {
+                      return const SliverPadding(
+                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        sliver: SliverToBoxAdapter(
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
                       );
-                    } else if (state.status == LoadStatus.failure) {
-                      return const SizedBox.shrink();
                     } else {
-                      return const TagChipsPlaceholder();
+                      return const SliverToBoxAdapter(
+                        child: SizedBox.shrink(),
+                      );
                     }
                   },
                 ),
-              ),
-              HomePostGrid(
-                controller: controller,
-                onTap: () => FocusScope.of(context).unfocus(),
-              ),
-              BlocBuilder<PostBloc, PostState>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.loading) {
-                    return const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SliverToBoxAdapter(
-                      child: SizedBox.shrink(),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
-        );
-      },
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
