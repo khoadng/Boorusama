@@ -21,13 +21,11 @@ class PostDetail extends StatefulWidget {
     Key? key,
     required this.post,
     this.minimal = false,
-    required this.animController,
     required this.imagePath,
   }) : super(key: key);
 
   final Post post;
   final bool minimal;
-  final AnimationController animController;
   final ValueNotifier<String?> imagePath;
 
   @override

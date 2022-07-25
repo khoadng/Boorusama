@@ -48,17 +48,13 @@ class PostDetailPage extends StatefulWidget {
   State<PostDetailPage> createState() => _PostDetailPageState();
 }
 
-class _PostDetailPageState extends State<PostDetailPage>
-    with TickerProviderStateMixin {
-  late final AnimationController spinningIconpanelAnimationController;
-  late final Animation<double> rotateAnimation;
+class _PostDetailPageState extends State<PostDetailPage> {
   final showSlideShowConfig = ValueNotifier(false);
   final autoPlay = ValueNotifier(false);
   final slideShowConfig =
       ValueNotifier(SlideShowConfiguration(interval: 4, skipAnimation: false));
   late final currentPostIndex =
       ValueNotifier(widget.posts.indexOf(widget.post));
-  late final AnimationController hideFabAnimController;
 
   final imagePath = ValueNotifier<String?>(null);
 
@@ -67,13 +63,6 @@ class _PostDetailPageState extends State<PostDetailPage>
   @override
   void initState() {
     super.initState();
-    spinningIconpanelAnimationController = AnimationController(
-        vsync: this, duration: const Duration(seconds: 200));
-    rotateAnimation = Tween<double>(begin: 0, end: 360)
-        .animate(spinningIconpanelAnimationController);
-
-    hideFabAnimController =
-        AnimationController(vsync: this, duration: kThemeAnimationDuration);
 
     showSlideShowConfig.addListener(() {
       if (showSlideShowConfig.value) {
@@ -97,23 +86,6 @@ class _PostDetailPageState extends State<PostDetailPage>
         });
       }
     });
-
-    autoPlay.addListener(() {
-      if (autoPlay.value) {
-        spinningIconpanelAnimationController.repeat();
-      } else {
-        spinningIconpanelAnimationController
-          ..stop()
-          ..reset();
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    hideFabAnimController.dispose();
-    spinningIconpanelAnimationController.dispose();
-    super.dispose();
   }
 
   @override
@@ -149,7 +121,6 @@ class _PostDetailPageState extends State<PostDetailPage>
                               return PostDetail(
                                 post: widget.posts[index],
                                 minimal: autoPlay,
-                                animController: hideFabAnimController,
                                 imagePath: imagePath,
                               );
                             },
@@ -211,7 +182,6 @@ class _PostDetailPageState extends State<PostDetailPage>
                       alignment: Alignment(0.9, getTopActionIconAlignValue()),
                       child: _SlideShowButton(
                         autoPlay: autoPlay,
-                        rotateAnimation: rotateAnimation,
                         showSlideShowConfig: showSlideShowConfig,
                         currentPostIndex: currentPostIndex,
                         posts: widget.posts,
@@ -288,47 +258,72 @@ class _BackButton extends StatelessWidget {
   }
 }
 
-class _SlideShowButton extends StatelessWidget {
+class _SlideShowButton extends StatefulWidget {
   const _SlideShowButton({
     Key? key,
     required this.autoPlay,
-    required this.rotateAnimation,
     required this.showSlideShowConfig,
     required this.currentPostIndex,
     required this.posts,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
-  final Animation<double> rotateAnimation;
   final ValueNotifier<bool> showSlideShowConfig;
   final ValueNotifier<int> currentPostIndex;
   final List<Post> posts;
+
+  @override
+  State<_SlideShowButton> createState() => _SlideShowButtonState();
+}
+
+class _SlideShowButtonState extends State<_SlideShowButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController spinningIconpanelAnimationController;
+  late final Animation<double> rotateAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    spinningIconpanelAnimationController = AnimationController(
+        vsync: this, duration: const Duration(seconds: 200));
+    rotateAnimation = Tween<double>(begin: 0, end: 360)
+        .animate(spinningIconpanelAnimationController);
+
+    widget.autoPlay.addListener(_onAutoPlay);
+  }
+
+  @override
+  void dispose() {
+    widget.autoPlay.removeListener(_onAutoPlay);
+    spinningIconpanelAnimationController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return ButtonBar(
       children: [
         ValueListenableBuilder<bool>(
-          valueListenable: autoPlay,
+          valueListenable: widget.autoPlay,
           builder: (context, value, _) => value
               ? AnimatedSpinningIcon(
                   icon: const Icon(Icons.sync),
                   animation: rotateAnimation,
-                  onPressed: () => autoPlay.value = false,
+                  onPressed: () => widget.autoPlay.value = false,
                 )
               : IconButton(
                   icon: const Icon(Icons.slideshow),
-                  onPressed: () => showSlideShowConfig.value = true,
+                  onPressed: () => widget.showSlideShowConfig.value = true,
                 ),
         ),
         ValueListenableBuilder<int>(
-          valueListenable: currentPostIndex,
+          valueListenable: widget.currentPostIndex,
           builder: (context, index, child) => DownloadProviderWidget(
             builder: (context, download) => PopupMenuButton<PostAction>(
               onSelected: (value) async {
                 switch (value) {
                   case PostAction.download:
-                    download(posts[index]);
+                    download(widget.posts[index]);
                     break;
                   default:
                 }
@@ -347,5 +342,15 @@ class _SlideShowButton extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _onAutoPlay() {
+    if (widget.autoPlay.value) {
+      spinningIconpanelAnimationController.repeat();
+    } else {
+      spinningIconpanelAnimationController
+        ..stop()
+        ..reset();
+    }
   }
 }
