@@ -107,65 +107,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
               Expanded(
                 child: Stack(
                   children: [
-                    ValueListenableBuilder<bool>(
-                      valueListenable: autoPlay,
-                      builder: (context, autoPlay, child) =>
-                          ValueListenableBuilder<SlideShowConfiguration>(
-                        valueListenable: slideShowConfig,
-                        builder: (context, config, child) {
-                          return CarouselSlider.builder(
-                            itemCount: widget.posts.length,
-                            itemBuilder: (context, index, realIndex) {
-                              WidgetsBinding.instance.addPostFrameCallback(
-                                  (_) => currentPostIndex.value = index);
-                              return PostDetail(
-                                post: widget.posts[index],
-                                minimal: autoPlay,
-                                imagePath: imagePath,
-                              );
-                            },
-                            options: CarouselOptions(
-                              onPageChanged: (index, reason) {
-                                context.read<SliverPostGridBloc>().add(
-                                    SliverPostGridItemChanged(index: index));
-
-                                context.read<RecommendedArtistPostCubit>().add(
-                                    RecommendedPostRequested(
-                                        amount: screenSize == ScreenSize.large
-                                            ? 9
-                                            : 6,
-                                        currentPostId: widget.posts[index].id,
-                                        tags: widget.posts[index].artistTags));
-                                context
-                                    .read<RecommendedCharacterPostCubit>()
-                                    .add(RecommendedPostRequested(
-                                        amount: screenSize == ScreenSize.large
-                                            ? 9
-                                            : 6,
-                                        currentPostId: widget.posts[index].id,
-                                        tags:
-                                            widget.posts[index].characterTags));
-                                context.read<PoolFromPostIdBloc>().add(
-                                    PoolFromPostIdRequested(
-                                        postId: widget.posts[index].id));
-                                context.read<IsPostFavoritedBloc>().add(
-                                    IsPostFavoritedRequested(
-                                        postId: widget.posts[index].id));
-                              },
-                              height: MediaQuery.of(context).size.height,
-                              viewportFraction: 1,
-                              enableInfiniteScroll: false,
-                              initialPage: widget.intitialIndex,
-                              autoPlay: autoPlay,
-                              autoPlayAnimationDuration: config.skipAnimation
-                                  ? const Duration(microseconds: 1)
-                                  : const Duration(milliseconds: 600),
-                              autoPlayInterval:
-                                  Duration(seconds: config.interval.toInt()),
-                            ),
-                          );
-                        },
-                      ),
+                    _CarouselSlider(
+                      autoPlay: autoPlay,
+                      slideShowConfig: slideShowConfig,
+                      currentPostIndex: currentPostIndex,
+                      imagePath: imagePath,
+                      initialIndex: widget.intitialIndex,
+                      posts: widget.posts,
                     ),
                     ShadowGradientOverlay(
                       alignment: Alignment.topCenter,
@@ -217,6 +165,89 @@ class _PostDetailPageState extends State<PostDetailPage> {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _CarouselSlider extends StatelessWidget {
+  const _CarouselSlider({
+    Key? key,
+    required this.autoPlay,
+    required this.slideShowConfig,
+    required this.currentPostIndex,
+    required this.imagePath,
+    required this.posts,
+    required this.initialIndex,
+  }) : super(key: key);
+
+  final ValueNotifier<bool> autoPlay;
+  final ValueNotifier<SlideShowConfiguration> slideShowConfig;
+  final ValueNotifier<int> currentPostIndex;
+  final ValueNotifier<String?> imagePath;
+  final List<Post> posts;
+  final int initialIndex;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: autoPlay,
+      builder: (context, autoPlay, child) =>
+          ValueListenableBuilder<SlideShowConfiguration>(
+        valueListenable: slideShowConfig,
+        builder: (context, config, child) {
+          return CarouselSlider.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index, realIndex) {
+              WidgetsBinding.instance
+                  .addPostFrameCallback((_) => currentPostIndex.value = index);
+              return PostDetail(
+                post: posts[index],
+                minimal: autoPlay,
+                imagePath: imagePath,
+              );
+            },
+            options: CarouselOptions(
+              onPageChanged: (index, reason) {
+                context
+                    .read<SliverPostGridBloc>()
+                    .add(SliverPostGridItemChanged(index: index));
+
+                context
+                    .read<RecommendedArtistPostCubit>()
+                    .add(RecommendedPostRequested(
+                      amount:
+                          Screen.of(context).size == ScreenSize.large ? 9 : 6,
+                      currentPostId: posts[index].id,
+                      tags: posts[index].artistTags,
+                    ));
+                context
+                    .read<RecommendedCharacterPostCubit>()
+                    .add(RecommendedPostRequested(
+                      amount:
+                          Screen.of(context).size == ScreenSize.large ? 9 : 6,
+                      currentPostId: posts[index].id,
+                      tags: posts[index].characterTags,
+                    ));
+                context
+                    .read<PoolFromPostIdBloc>()
+                    .add(PoolFromPostIdRequested(postId: posts[index].id));
+                context
+                    .read<IsPostFavoritedBloc>()
+                    .add(IsPostFavoritedRequested(postId: posts[index].id));
+              },
+              height: MediaQuery.of(context).size.height,
+              viewportFraction: 1,
+              enableInfiniteScroll: false,
+              initialPage: initialIndex,
+              autoPlay: autoPlay,
+              autoPlayAnimationDuration: config.skipAnimation
+                  ? const Duration(microseconds: 1)
+                  : const Duration(milliseconds: 600),
+              autoPlayInterval: Duration(seconds: config.interval.toInt()),
+            ),
+          );
+        },
       ),
     );
   }
