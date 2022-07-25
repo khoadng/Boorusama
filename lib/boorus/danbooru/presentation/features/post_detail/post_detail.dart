@@ -13,8 +13,8 @@ import 'package:boorusama/core/core.dart';
 import 'widgets/post_media_item.dart';
 import 'widgets/widgets.dart';
 
-class PostDetailSmall extends StatefulWidget {
-  const PostDetailSmall({
+class PostDetail extends StatefulWidget {
+  const PostDetail({
     Key? key,
     required this.post,
     this.minimal = false,
@@ -26,10 +26,10 @@ class PostDetailSmall extends StatefulWidget {
   final ValueNotifier<String?> imagePath;
 
   @override
-  State<PostDetailSmall> createState() => _PostDetailSmallState();
+  State<PostDetail> createState() => _PostDetailState();
 }
 
-class _PostDetailSmallState extends State<PostDetailSmall> {
+class _PostDetailState extends State<PostDetail> {
   late final imagePath = widget.imagePath;
   final scrollController = ScrollController();
 

@@ -21,7 +21,7 @@ import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'models/slide_show_configuration.dart';
-import 'post_detail_small.dart';
+import 'post_detail.dart';
 import 'post_image_page.dart';
 import 'widgets/widgets.dart';
 
@@ -254,7 +254,7 @@ class _SmallLayout extends StatelessWidget {
             currentPostIndex: currentPostIndex,
             imagePath: imagePath,
             posts: posts,
-            builder: (post, minimal) => PostDetailSmall(
+            builder: (post, minimal) => PostDetail(
               post: post,
               minimal: minimal,
               imagePath: imagePath,
