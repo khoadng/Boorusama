@@ -203,8 +203,20 @@ class _PostDetailPageState extends State<PostDetailPage>
                         Colors.black12.withOpacity(0)
                       ],
                     ),
-                    _buildBackButton(),
-                    _buildSlideShowButton(),
+                    Align(
+                      alignment: Alignment(-0.75, getTopActionIconAlignValue()),
+                      child: const _BackButton(),
+                    ),
+                    Align(
+                      alignment: Alignment(0.9, getTopActionIconAlignValue()),
+                      child: _SlideShowButton(
+                        autoPlay: autoPlay,
+                        rotateAnimation: rotateAnimation,
+                        showSlideShowConfig: showSlideShowConfig,
+                        currentPostIndex: currentPostIndex,
+                        posts: widget.posts,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -238,84 +250,102 @@ class _PostDetailPageState extends State<PostDetailPage>
       ),
     );
   }
+}
 
-  Widget _buildSlideShowButton() {
-    return Align(
-      alignment: Alignment(0.9, getTopActionIconAlignValue()),
-      child: ButtonBar(
+class _BackButton extends StatelessWidget {
+  const _BackButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
         children: [
-          ValueListenableBuilder<bool>(
-            valueListenable: autoPlay,
-            builder: (context, value, _) => value
-                ? AnimatedSpinningIcon(
-                    icon: const Icon(Icons.sync),
-                    animation: rotateAnimation,
-                    onPressed: () => autoPlay.value = false,
-                  )
-                : IconButton(
-                    icon: const Icon(Icons.slideshow),
-                    onPressed: () => showSlideShowConfig.value = true,
-                  ),
+          BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
+            builder: (context, state) => IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                context
+                    .read<SliverPostGridBloc>()
+                    .add(SliverPostGridExited(lastIndex: state.currentIndex));
+                AppRouter.router.pop(context);
+              },
+            ),
           ),
-          ValueListenableBuilder<int>(
-            valueListenable: currentPostIndex,
-            builder: (context, index, child) => DownloadProviderWidget(
-              builder: (context, download) => PopupMenuButton<PostAction>(
-                onSelected: (value) async {
-                  switch (value) {
-                    case PostAction.download:
-                      download(widget.posts[index]);
-                      break;
-                    default:
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem<PostAction>(
-                    value: PostAction.download,
-                    child: ListTile(
-                      leading: const Icon(Icons.download_rounded),
-                      title: const Text('download.download').tr(),
-                    ),
-                  ),
-                ],
-              ),
+          IconButton(
+            icon: const Icon(Icons.home),
+            onPressed: () => AppRouter.router.navigateTo(
+              context,
+              '/',
+              clearStack: true,
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  Widget _buildBackButton() {
-    return Align(
-      alignment: Alignment(-0.75, getTopActionIconAlignValue()),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
-          builder: (context, state) {
-            return Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios),
-                  onPressed: () {
-                    context.read<SliverPostGridBloc>().add(
-                        SliverPostGridExited(lastIndex: state.currentIndex));
-                    AppRouter.router.pop(context);
-                  },
+class _SlideShowButton extends StatelessWidget {
+  const _SlideShowButton({
+    Key? key,
+    required this.autoPlay,
+    required this.rotateAnimation,
+    required this.showSlideShowConfig,
+    required this.currentPostIndex,
+    required this.posts,
+  }) : super(key: key);
+
+  final ValueNotifier<bool> autoPlay;
+  final Animation<double> rotateAnimation;
+  final ValueNotifier<bool> showSlideShowConfig;
+  final ValueNotifier<int> currentPostIndex;
+  final List<Post> posts;
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonBar(
+      children: [
+        ValueListenableBuilder<bool>(
+          valueListenable: autoPlay,
+          builder: (context, value, _) => value
+              ? AnimatedSpinningIcon(
+                  icon: const Icon(Icons.sync),
+                  animation: rotateAnimation,
+                  onPressed: () => autoPlay.value = false,
+                )
+              : IconButton(
+                  icon: const Icon(Icons.slideshow),
+                  onPressed: () => showSlideShowConfig.value = true,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.home),
-                  onPressed: () => AppRouter.router.navigateTo(
-                    context,
-                    '/',
-                    clearStack: true,
+        ),
+        ValueListenableBuilder<int>(
+          valueListenable: currentPostIndex,
+          builder: (context, index, child) => DownloadProviderWidget(
+            builder: (context, download) => PopupMenuButton<PostAction>(
+              onSelected: (value) async {
+                switch (value) {
+                  case PostAction.download:
+                    download(posts[index]);
+                    break;
+                  default:
+                }
+              },
+              itemBuilder: (context) => [
+                PopupMenuItem<PostAction>(
+                  value: PostAction.download,
+                  child: ListTile(
+                    leading: const Icon(Icons.download_rounded),
+                    title: const Text('download.download').tr(),
                   ),
                 ),
               ],
-            );
-          },
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 }
