@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/selected_tag_chips.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/selected_tag_chip.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
