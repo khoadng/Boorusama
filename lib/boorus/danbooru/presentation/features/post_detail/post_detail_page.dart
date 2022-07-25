@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/recommended/recommended.da
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
@@ -21,6 +20,7 @@ import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'models/slide_show_configuration.dart';
+import 'post_detail_small.dart';
 import 'post_image_page.dart';
 import 'widgets/widgets.dart';
 
@@ -106,7 +106,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 currentPostIndex: currentPostIndex,
                 imagePath: imagePath,
                 showSlideShowConfig: showSlideShowConfig,
-                initialIndex: widget.intitialIndex,
                 posts: widget.posts,
               )
             : _LargeLayout(
@@ -156,7 +155,6 @@ class _LargeLayout extends StatelessWidget {
               currentPostIndex: currentPostIndex,
               imagePath: imagePath,
               showSlideShowConfig: showSlideShowConfig,
-              initialIndex: initialIndex,
               posts: posts,
             ),
           ),
@@ -197,7 +195,6 @@ class _SmallLayout extends StatelessWidget {
     required this.currentPostIndex,
     required this.imagePath,
     required this.showSlideShowConfig,
-    required this.initialIndex,
     required this.posts,
   }) : super(key: key);
 
@@ -206,7 +203,6 @@ class _SmallLayout extends StatelessWidget {
   final ValueNotifier<int> currentPostIndex;
   final ValueNotifier<String?> imagePath;
   final ValueNotifier<bool> showSlideShowConfig;
-  final int initialIndex;
   final List<Post> posts;
 
   @override
@@ -219,9 +215,8 @@ class _SmallLayout extends StatelessWidget {
             slideShowConfig: slideShowConfig,
             currentPostIndex: currentPostIndex,
             imagePath: imagePath,
-            initialIndex: initialIndex,
             posts: posts,
-            builder: (post, minimal) => PostDetail(
+            builder: (post, minimal) => PostDetailSmall(
               post: post,
               minimal: minimal,
               imagePath: imagePath,
@@ -306,7 +301,6 @@ class _CarouselSlider extends StatelessWidget {
     required this.currentPostIndex,
     required this.imagePath,
     required this.posts,
-    required this.initialIndex,
     required this.builder,
   }) : super(key: key);
 
@@ -315,7 +309,6 @@ class _CarouselSlider extends StatelessWidget {
   final ValueNotifier<int> currentPostIndex;
   final ValueNotifier<String?> imagePath;
   final List<Post> posts;
-  final int initialIndex;
   final Widget Function(Post post, bool minimal) builder;
 
   @override
@@ -326,52 +319,53 @@ class _CarouselSlider extends StatelessWidget {
           ValueListenableBuilder<SlideShowConfiguration>(
         valueListenable: slideShowConfig,
         builder: (context, config, child) {
-          return CarouselSlider.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index, realIndex) {
-              WidgetsBinding.instance
-                  .addPostFrameCallback((_) => currentPostIndex.value = index);
+          return ValueListenableBuilder<int>(
+            valueListenable: currentPostIndex,
+            builder: (context, index, _) => CarouselSlider.builder(
+              itemCount: posts.length,
+              itemBuilder: (context, index, realIndex) =>
+                  builder(posts[index], autoPlay),
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  currentPostIndex.value = index;
 
-              return builder(posts[index], autoPlay);
-            },
-            options: CarouselOptions(
-              onPageChanged: (index, reason) {
-                context
-                    .read<SliverPostGridBloc>()
-                    .add(SliverPostGridItemChanged(index: index));
+                  context
+                      .read<SliverPostGridBloc>()
+                      .add(SliverPostGridItemChanged(index: index));
 
-                context
-                    .read<RecommendedArtistPostCubit>()
-                    .add(RecommendedPostRequested(
-                      amount:
-                          Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                      currentPostId: posts[index].id,
-                      tags: posts[index].artistTags,
-                    ));
-                context
-                    .read<RecommendedCharacterPostCubit>()
-                    .add(RecommendedPostRequested(
-                      amount:
-                          Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                      currentPostId: posts[index].id,
-                      tags: posts[index].characterTags,
-                    ));
-                context
-                    .read<PoolFromPostIdBloc>()
-                    .add(PoolFromPostIdRequested(postId: posts[index].id));
-                context
-                    .read<IsPostFavoritedBloc>()
-                    .add(IsPostFavoritedRequested(postId: posts[index].id));
-              },
-              height: MediaQuery.of(context).size.height,
-              viewportFraction: 1,
-              enableInfiniteScroll: false,
-              initialPage: initialIndex,
-              autoPlay: autoPlay,
-              autoPlayAnimationDuration: config.skipAnimation
-                  ? const Duration(microseconds: 1)
-                  : const Duration(milliseconds: 600),
-              autoPlayInterval: Duration(seconds: config.interval.toInt()),
+                  context
+                      .read<RecommendedArtistPostCubit>()
+                      .add(RecommendedPostRequested(
+                        amount:
+                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
+                        currentPostId: posts[index].id,
+                        tags: posts[index].artistTags,
+                      ));
+                  context
+                      .read<RecommendedCharacterPostCubit>()
+                      .add(RecommendedPostRequested(
+                        amount:
+                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
+                        currentPostId: posts[index].id,
+                        tags: posts[index].characterTags,
+                      ));
+                  context
+                      .read<PoolFromPostIdBloc>()
+                      .add(PoolFromPostIdRequested(postId: posts[index].id));
+                  context
+                      .read<IsPostFavoritedBloc>()
+                      .add(IsPostFavoritedRequested(postId: posts[index].id));
+                },
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: index,
+                autoPlay: autoPlay,
+                autoPlayAnimationDuration: config.skipAnimation
+                    ? const Duration(microseconds: 1)
+                    : const Duration(milliseconds: 600),
+                autoPlayInterval: Duration(seconds: config.interval.toInt()),
+              ),
             ),
           );
         },
