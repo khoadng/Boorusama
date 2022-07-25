@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_media_item.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -149,13 +150,50 @@ class _LargeLayout extends StatelessWidget {
       body: Row(
         children: [
           Expanded(
-            child: _SmallLayout(
-              autoPlay: autoPlay,
-              slideShowConfig: slideShowConfig,
-              currentPostIndex: currentPostIndex,
-              imagePath: imagePath,
-              showSlideShowConfig: showSlideShowConfig,
-              posts: posts,
+            child: Scaffold(
+              body: Stack(
+                children: [
+                  _CarouselSlider(
+                    autoPlay: autoPlay,
+                    slideShowConfig: slideShowConfig,
+                    currentPostIndex: currentPostIndex,
+                    imagePath: imagePath,
+                    posts: posts,
+                    builder: (post, minimal) => Center(
+                      child: PostMediaItem(
+                        post: post,
+                        onCached: (path) => imagePath.value = path,
+                      ),
+                    ),
+                  ),
+                  ShadowGradientOverlay(
+                    alignment: Alignment.topCenter,
+                    colors: [
+                      const Color.fromARGB(16, 0, 0, 0),
+                      Colors.black12.withOpacity(0)
+                    ],
+                  ),
+                  Align(
+                    alignment: Alignment(-0.75, getTopActionIconAlignValue()),
+                    child: const _BackButton(),
+                  ),
+                  Align(
+                    alignment: Alignment(0.9, getTopActionIconAlignValue()),
+                    child: ButtonBar(
+                      children: [
+                        _SlideShowButton(
+                          autoPlay: autoPlay,
+                          showSlideShowConfig: showSlideShowConfig,
+                        ),
+                        _MoreActionButton(
+                          currentPostIndex: currentPostIndex,
+                          posts: posts,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           Container(
