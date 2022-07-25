@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 
 // Project imports:
@@ -17,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/search/selected_tag_chips.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
@@ -167,7 +167,10 @@ class _SearchPageState extends State<SearchPage> {
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
                   automaticallyImplyLeading: false,
-                  title: _buildSearchBar(),
+                  title: _SearchBar(
+                    autoFocus: widget.initialQuery.isEmpty,
+                    queryEditingController: queryEditingController,
+                  ),
                 ),
                 body: SafeArea(
                   child: MultiBlocListener(
@@ -230,20 +233,8 @@ class _SearchPageState extends State<SearchPage> {
 
   List<Widget> _buildSelectedTags(TagSearchState tagSearchState) {
     return [
-      Container(
-        margin: const EdgeInsets.only(left: 8),
-        height: 35,
-        child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: tagSearchState.selectedTags.length,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: _buildSelectedTagChip(tagSearchState.selectedTags[index]),
-            );
-          },
-        ),
+      _SelectedTagChips(
+        selectedTags: tagSearchState.selectedTags,
       ),
       const Divider(
         height: 15,
@@ -252,38 +243,6 @@ class _SearchPageState extends State<SearchPage> {
         endIndent: 10,
       ),
     ];
-  }
-
-  Widget _buildSearchBar() {
-    return BlocBuilder<TagSearchBloc, TagSearchState>(
-      builder: (context, state) => SearchBar(
-        autofocus: _enableAutofocusOnSearchbar(),
-        queryEditingController: queryEditingController,
-        leading: BlocBuilder<SearchBloc, SearchState>(
-          builder: (context, state) {
-            return IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => state.displayState != DisplayState.options
-                  ? context
-                      .read<SearchBloc>()
-                      .add(const SearchGoBackToSearchOptionsRequested())
-                  : AppRouter.router.pop(context),
-            );
-          },
-        ),
-        trailing: state.query.isNotEmpty
-            ? IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () =>
-                    context.read<TagSearchBloc>().add(const TagSearchCleared()),
-              )
-            : null,
-        onChanged: (value) =>
-            context.read<TagSearchBloc>().add(TagSearchChanged(value)),
-        onSubmitted: (value) =>
-            context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
-      ),
-    );
   }
 
   Widget _buildSearchBodyLargeLeftColumn(TagSearchState tagSearchState) {
@@ -378,84 +337,80 @@ class _SearchPageState extends State<SearchPage> {
       ),
     );
   }
+}
 
-  Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
-    final hasOperator = tagSearchItem.operator != FilterOperator.none;
-    final hasMeta = tagSearchItem.metatag != null;
-    final hasAny = hasMeta || hasOperator;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (hasOperator)
-          Chip(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            backgroundColor: Colors.purple,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomLeft: Radius.circular(8))),
-            label: Text(
-              filterOperatorToStringCharacter(tagSearchItem.operator),
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ),
-        if (hasMeta)
-          Chip(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            backgroundColor: Theme.of(context).colorScheme.secondary,
-            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
-            shape: _getOutlineBorderForMetaChip(hasOperator),
-            label: Text(
-              tagSearchItem.metatag!,
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ),
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Colors.grey[800],
-          shape: hasAny
-              ? const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8)))
-              : null,
-          deleteIcon: const Icon(
-            FontAwesomeIcons.xmark,
-            color: Colors.red,
-            size: 15,
-          ),
-          onDeleted: () => context
-              .read<TagSearchBloc>()
-              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
-            child: Text(
-              tagSearchItem.tag,
-              overflow: TextOverflow.fade,
-              style: const TextStyle(color: Colors.white70),
-            ),
-          ),
-        )
-      ],
+class _SearchBar extends StatelessWidget {
+  const _SearchBar({
+    Key? key,
+    required this.autoFocus,
+    required this.queryEditingController,
+  }) : super(key: key);
+
+  final bool autoFocus;
+  final RichTextController queryEditingController;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, state) => SearchBar(
+        autofocus: autoFocus,
+        queryEditingController: queryEditingController,
+        leading: BlocBuilder<SearchBloc, SearchState>(
+          builder: (context, state) {
+            return IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => state.displayState != DisplayState.options
+                  ? context
+                      .read<SearchBloc>()
+                      .add(const SearchGoBackToSearchOptionsRequested())
+                  : AppRouter.router.pop(context),
+            );
+          },
+        ),
+        trailing: state.query.isNotEmpty
+            ? IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () =>
+                    context.read<TagSearchBloc>().add(const TagSearchCleared()),
+              )
+            : null,
+        onChanged: (value) =>
+            context.read<TagSearchBloc>().add(TagSearchChanged(value)),
+        onSubmitted: (value) =>
+            context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
+      ),
     );
   }
+}
 
-  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
-    if (!hasOperator) {
-      return const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(8),
-        bottomLeft: Radius.circular(8),
-      ));
-    } else {
-      return const RoundedRectangleBorder();
-    }
+class _SelectedTagChips extends StatelessWidget {
+  const _SelectedTagChips({
+    Key? key,
+    required this.selectedTags,
+  }) : super(key: key);
+
+  final List<TagSearchItem> selectedTags;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(left: 8),
+      height: 35,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: selectedTags.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: SelectedTagChip(
+              tagSearchItem: selectedTags[index],
+            ),
+          );
+        },
+      ),
+    );
   }
-
-  bool _enableAutofocusOnSearchbar() => widget.initialQuery.isEmpty;
 }
 
 class _SearchButton extends StatelessWidget {
