@@ -187,7 +187,9 @@ class _ArtistSectionState extends State<ArtistSection> {
                 ),
                 if (artistCommentary.hasCommentary)
                   Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
                     child: SelectableText(
                       getDescriptionText(display, artistCommentary),
                     ),
@@ -199,7 +201,9 @@ class _ArtistSectionState extends State<ArtistSection> {
           return const SizedBox.shrink();
         } else {
           return const Padding(
-            padding: EdgeInsets.all(8),
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+            ),
             child: ArtistCommentaryPlaceholder(),
           );
         }

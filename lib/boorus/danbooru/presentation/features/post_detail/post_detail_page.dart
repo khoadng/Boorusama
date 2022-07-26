@@ -262,11 +262,8 @@ class _LargeLayoutContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: ArtistSection(
-                    post: post,
-                  ),
+                ArtistSection(
+                  post: post,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
@@ -303,6 +300,13 @@ class _LargeLayoutContent extends StatelessWidget {
                     runSpacing: 5,
                     children: [
                       InfoChip(
+                        leftLabel: const Text('post.detail.rating').tr(),
+                        rightLabel: Text(
+                            post.rating.toString().split('.').last.pascalCase),
+                        leftColor: Theme.of(context).cardColor,
+                        rightColor: Theme.of(context).backgroundColor,
+                      ),
+                      InfoChip(
                         leftLabel: const Text('post.detail.resolution').tr(),
                         rightLabel: Text(
                             '${post.width.toInt()}x${post.height.toInt()}'),
@@ -312,13 +316,6 @@ class _LargeLayoutContent extends StatelessWidget {
                       InfoChip(
                         leftLabel: const Text('post.detail.size').tr(),
                         rightLabel: Text(filesize(post.fileSize, 1)),
-                        leftColor: Theme.of(context).cardColor,
-                        rightColor: Theme.of(context).backgroundColor,
-                      ),
-                      InfoChip(
-                        leftLabel: const Text('post.detail.rating').tr(),
-                        rightLabel: Text(
-                            post.rating.toString().split('.').last.pascalCase),
                         leftColor: Theme.of(context).cardColor,
                         rightColor: Theme.of(context).backgroundColor,
                       ),
@@ -383,6 +380,8 @@ class _LargeLayoutContent extends StatelessWidget {
                   post: post,
                   useSeperator: true,
                   header: (item) => ListTile(
+                    visualDensity: VisualDensity.compact,
+                    dense: true,
                     onTap: () => AppRouter.router.navigateTo(
                       context,
                       '/artist',
@@ -412,20 +411,6 @@ class _LargeLayoutContent extends StatelessWidget {
                 RecommendCharacterList(
                   post: post,
                   useSeperator: true,
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 16,
-                    top: 16,
-                  ),
-                  child: Text(
-                    '${post.tags.length} Tags',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w400,
-                      color: Theme.of(context).hintColor,
-                    ),
-                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
