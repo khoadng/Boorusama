@@ -24,13 +24,15 @@ class CommentSent extends CommentEvent {
   const CommentSent({
     required this.postId,
     required this.content,
+    this.replyTo,
   });
 
   final int postId;
   final String content;
+  final CommentData? replyTo;
 
   @override
-  List<Object> get props => [postId, content];
+  List<Object?> get props => [postId, content, replyTo];
 }
 
 class CommentUpdated extends CommentEvent {
