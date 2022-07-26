@@ -17,10 +17,12 @@ class RecommendArtistList extends StatelessWidget {
     Key? key,
     required this.post,
     this.header,
+    this.useSeperator = false,
   }) : super(key: key);
 
   final Post post;
   final Widget Function(Recommended item)? header;
+  final bool useSeperator;
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +35,8 @@ class RecommendArtistList extends StatelessWidget {
 
           if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
-          return Column(
-            children: recommendedItems
+          return Column(children: [
+            ...recommendedItems
                 .map((item) => RecommendPostSection(
                       header: header?.call(item) ??
                           ListTile(
@@ -55,7 +57,8 @@ class RecommendArtistList extends StatelessWidget {
                       posts: item.posts,
                     ))
                 .toList(),
-          );
+            if (useSeperator) const Divider(),
+          ]);
         } else {
           return const SizedBox.shrink();
         }
@@ -68,9 +71,12 @@ class RecommendCharacterList extends StatelessWidget {
   const RecommendCharacterList({
     Key? key,
     required this.post,
+    this.useSeperator = false,
   }) : super(key: key);
 
   final Post post;
+
+  final bool useSeperator;
 
   @override
   Widget build(BuildContext context) {
@@ -84,26 +90,29 @@ class RecommendCharacterList extends StatelessWidget {
           if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
           return Column(
-            children: recommendedItems
-                .map((item) => RecommendPostSection(
-                      header: ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                          context,
-                          '/character',
-                          routeSettings: RouteSettings(
-                            arguments: [
-                              item.tag,
-                              post.normalImageUrl,
-                            ],
+            children: [
+              ...recommendedItems
+                  .map((item) => RecommendPostSection(
+                        header: ListTile(
+                          onTap: () => AppRouter.router.navigateTo(
+                            context,
+                            '/character',
+                            routeSettings: RouteSettings(
+                              arguments: [
+                                item.tag,
+                                post.normalImageUrl,
+                              ],
+                            ),
                           ),
+                          title: Text(item.title),
+                          trailing:
+                              const Icon(Icons.keyboard_arrow_right_rounded),
                         ),
-                        title: Text(item.title),
-                        trailing:
-                            const Icon(Icons.keyboard_arrow_right_rounded),
-                      ),
-                      posts: item.posts,
-                    ))
-                .toList(),
+                        posts: item.posts,
+                      ))
+                  .toList(),
+              if (useSeperator) const Divider(),
+            ],
           );
         } else {
           return const SizedBox.shrink();

@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/modal_options.dart
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
+import 'package:boorusama/core/core.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({Key? key, this.maxTagWidth}) : super(key: key);
@@ -73,7 +74,7 @@ class PostTagList extends StatelessWidget {
       builder: (context, state) {
         return Tags(
           alignment: WrapAlignment.start,
-          runSpacing: 4,
+          runSpacing: isMobilePlatform() ? 0 : 4,
           itemCount: tags.length,
           itemBuilder: (index) {
             final tag = tags[index];

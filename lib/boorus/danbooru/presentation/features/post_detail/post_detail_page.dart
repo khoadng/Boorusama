@@ -10,6 +10,7 @@ import 'package:recase/recase.dart';
 import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
@@ -119,14 +120,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 showSlideShowConfig: showSlideShowConfig,
                 posts: widget.posts,
               )
-            : _LargeLayout(
-                autoPlay: autoPlay,
-                slideShowConfig: slideShowConfig,
-                currentPostIndex: currentPostIndex,
-                imagePath: imagePath,
-                showSlideShowConfig: showSlideShowConfig,
-                initialIndex: widget.intitialIndex,
-                posts: widget.posts,
+            : BlocProvider(
+                create: (context) => TagBloc(
+                    tagRepository:
+                        RepositoryProvider.of<ITagRepository>(context))
+                  ..add(TagFetched(tags: widget.post.tags)),
+                child: _LargeLayout(
+                  autoPlay: autoPlay,
+                  slideShowConfig: slideShowConfig,
+                  currentPostIndex: currentPostIndex,
+                  imagePath: imagePath,
+                  showSlideShowConfig: showSlideShowConfig,
+                  initialIndex: widget.intitialIndex,
+                  posts: widget.posts,
+                ),
               ),
       ),
     );
@@ -171,6 +178,12 @@ class _LargeLayout extends StatelessWidget {
                     currentPostIndex: currentPostIndex,
                     imagePath: imagePath,
                     posts: posts,
+                    onPageChanged: (index) {
+                      context.read<TagBloc>().add(TagFetched(tags: post.tags));
+                      context
+                          .read<ArtistCommentaryCubit>()
+                          .getArtistCommentary(post.id);
+                    },
                     builder: (post, minimal) => Stack(
                       children: [
                         Positioned.fill(
@@ -179,38 +192,6 @@ class _LargeLayout extends StatelessWidget {
                             onCached: (path) => imagePath.value = path,
                           ),
                         ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: ButtonBar(
-                            children: [
-                              InfoChip(
-                                leftLabel:
-                                    const Text('post.detail.resolution').tr(),
-                                rightLabel: Text(
-                                    '${post.width.toInt()}x${post.height.toInt()}'),
-                                leftColor: Theme.of(context).cardColor,
-                                rightColor: Theme.of(context).backgroundColor,
-                              ),
-                              InfoChip(
-                                leftLabel: const Text('post.detail.size').tr(),
-                                rightLabel: Text(filesize(post.fileSize, 1)),
-                                leftColor: Theme.of(context).cardColor,
-                                rightColor: Theme.of(context).backgroundColor,
-                              ),
-                              InfoChip(
-                                leftLabel:
-                                    const Text('post.detail.rating').tr(),
-                                rightLabel: Text(post.rating
-                                    .toString()
-                                    .split('.')
-                                    .last
-                                    .pascalCase),
-                                leftColor: Theme.of(context).cardColor,
-                                rightColor: Theme.of(context).backgroundColor,
-                              ),
-                            ],
-                          ),
-                        )
                       ],
                     ),
                   ),
@@ -288,7 +269,7 @@ class _LargeLayoutContent extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.only(bottom: 8),
                   child: ActionBar(
                     imagePath: imagePath,
                     post: post,
@@ -314,37 +295,63 @@ class _LargeLayoutContent extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (!post.hasParentOrChildren)
-                  const Divider(
-                    height: 8,
-                    thickness: 1,
-                    indent: 8,
-                    endIndent: 8,
+                if (!post.hasParentOrChildren) const Divider(),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Wrap(
+                    spacing: 5,
+                    runSpacing: 5,
+                    children: [
+                      InfoChip(
+                        leftLabel: const Text('post.detail.resolution').tr(),
+                        rightLabel: Text(
+                            '${post.width.toInt()}x${post.height.toInt()}'),
+                        leftColor: Theme.of(context).cardColor,
+                        rightColor: Theme.of(context).backgroundColor,
+                      ),
+                      InfoChip(
+                        leftLabel: const Text('post.detail.size').tr(),
+                        rightLabel: Text(filesize(post.fileSize, 1)),
+                        leftColor: Theme.of(context).cardColor,
+                        rightColor: Theme.of(context).backgroundColor,
+                      ),
+                      InfoChip(
+                        leftLabel: const Text('post.detail.rating').tr(),
+                        rightLabel: Text(
+                            post.rating.toString().split('.').last.pascalCase),
+                        leftColor: Theme.of(context).cardColor,
+                        rightColor: Theme.of(context).backgroundColor,
+                      ),
+                    ],
                   ),
+                ),
                 BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                   builder: (context, state) {
                     if (state.status == LoadStatus.success) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              top: 16,
-                            ),
-                            child: Text(
-                              '${state.data!.length} Pools',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).hintColor,
+                          if (state.data!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                top: 16,
+                              ),
+                              child: Text(
+                                '${state.data!.length} Pools',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).hintColor,
+                                ),
                               ),
                             ),
-                          ),
                           ...state.data!
                               .map((e) => Column(
                                     children: [
                                       ListTile(
+                                        dense: true,
+                                        visualDensity: VisualDensity.compact,
                                         title: Text(
                                           e.name.removeUnderscoreWithSpace(),
                                           maxLines: 2,
@@ -361,14 +368,10 @@ class _LargeLayoutContent extends StatelessWidget {
                                               RouteSettings(arguments: [e]),
                                         ),
                                       ),
-                                      const Divider(
-                                        height: 1,
-                                        endIndent: 18,
-                                        indent: 18,
-                                      ),
                                     ],
                                   ))
                               .toList(),
+                          const Divider(),
                         ],
                       );
                     } else {
@@ -378,6 +381,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
                 RecommendArtistList(
                   post: post,
+                  useSeperator: true,
                   header: (item) => ListTile(
                     onTap: () => AppRouter.router.navigateTo(
                       context,
@@ -405,7 +409,10 @@ class _LargeLayoutContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                RecommendCharacterList(post: post),
+                RecommendCharacterList(
+                  post: post,
+                  useSeperator: true,
+                ),
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 16,
@@ -420,18 +427,12 @@ class _LargeLayoutContent extends StatelessWidget {
                     ),
                   ),
                 ),
-                BlocProvider(
-                  create: (context) => TagBloc(
-                      tagRepository:
-                          RepositoryProvider.of<ITagRepository>(context))
-                    ..add(TagFetched(tags: post.tags)),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: PostTagList(
-                      maxTagWidth: MediaQuery.of(context).size.width *
-                          _screenSizeToInfoBoxScreenPercent(size) *
-                          0.5,
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: PostTagList(
+                    maxTagWidth: MediaQuery.of(context).size.width *
+                        _screenSizeToInfoBoxScreenPercent(size) *
+                        0.5,
                   ),
                 )
               ],
@@ -558,6 +559,7 @@ class _CarouselSlider extends StatelessWidget {
     required this.imagePath,
     required this.posts,
     required this.builder,
+    this.onPageChanged,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
@@ -566,6 +568,7 @@ class _CarouselSlider extends StatelessWidget {
   final ValueNotifier<String?> imagePath;
   final List<Post> posts;
   final Widget Function(Post post, bool minimal) builder;
+  final void Function(int index)? onPageChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -611,6 +614,8 @@ class _CarouselSlider extends StatelessWidget {
                   context
                       .read<IsPostFavoritedBloc>()
                       .add(IsPostFavoritedRequested(postId: posts[index].id));
+
+                  onPageChanged?.call(index);
                 },
                 height: MediaQuery.of(context).size.height,
                 viewportFraction: 1,

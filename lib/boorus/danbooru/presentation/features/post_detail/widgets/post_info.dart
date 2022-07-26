@@ -198,7 +198,10 @@ class _ArtistSectionState extends State<ArtistSection> {
         } else if (state.status == LoadStatus.failure) {
           return const SizedBox.shrink();
         } else {
-          return const ArtistCommentaryPlaceholder();
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: ArtistCommentaryPlaceholder(),
+          );
         }
       },
     );
