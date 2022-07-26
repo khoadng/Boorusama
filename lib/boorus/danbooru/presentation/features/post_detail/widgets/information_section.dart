@@ -22,10 +22,12 @@ class InformationSection extends StatelessWidget {
     Key? key,
     required this.post,
     this.tappable = true,
+    this.padding,
   }) : super(key: key);
 
   final Post post;
   final bool tappable;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,8 @@ class InformationSection extends StatelessWidget {
         child: child,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding:
+            padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

@@ -17,8 +17,8 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
-import 'package:boorusama/core/utils.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({
@@ -68,7 +68,7 @@ class _LatestViewState extends State<LatestView> {
       buildWhen: (previous, current) => !current.hasMore,
       builder: (context, state) {
         return InfiniteLoadList(
-          extendBody: true,
+          extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context
               .read<PostBloc>()

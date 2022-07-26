@@ -255,29 +255,35 @@ class _LargeLayoutContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: CustomScrollView(
-        slivers: [
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InformationSection(
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: MediaQuery.of(context).viewPadding.top,
+              ),
+              InformationSection(
+                post: post,
+                tappable: false,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: ActionBar(
+                  imagePath: imagePath,
                   post: post,
-                  tappable: false,
                 ),
+              ),
+              const Divider(),
+              ArtistSection(
+                post: post,
+              ),
+              if (post.hasParentOrChildren)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: ActionBar(
-                    imagePath: imagePath,
-                    post: post,
-                  ),
-                ),
-                ArtistSection(
-                  post: post,
-                ),
-                if (post.hasParentOrChildren)
-                  ParentChildTile(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ParentChildTile(
                     data: getParentChildData(post),
                     onTap: (data) => SideSheet.right(
                       context: context,
@@ -296,139 +302,138 @@ class _LargeLayoutContent extends StatelessWidget {
                       ),
                     ),
                   ),
-                if (!post.hasParentOrChildren) const Divider(),
-                Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Wrap(
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      InfoChip(
-                        leftLabel: const Text('post.detail.rating').tr(),
-                        rightLabel: Text(
-                            post.rating.toString().split('.').last.pascalCase),
-                        leftColor: Theme.of(context).cardColor,
-                        rightColor: Theme.of(context).backgroundColor,
-                      ),
-                      InfoChip(
-                        leftLabel: const Text('post.detail.resolution').tr(),
-                        rightLabel: Text(
-                            '${post.width.toInt()}x${post.height.toInt()}'),
-                        leftColor: Theme.of(context).cardColor,
-                        rightColor: Theme.of(context).backgroundColor,
-                      ),
-                      InfoChip(
-                        leftLabel: const Text('post.detail.size').tr(),
-                        rightLabel: Text(filesize(post.fileSize, 1)),
-                        leftColor: Theme.of(context).cardColor,
-                        rightColor: Theme.of(context).backgroundColor,
-                      ),
-                    ],
-                  ),
                 ),
-                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (state.data!.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 16,
-                                top: 16,
-                              ),
-                              child: Text(
-                                '${state.data!.length} Pools',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(context).hintColor,
-                                ),
+              if (!post.hasParentOrChildren) const Divider(),
+              Padding(
+                padding: const EdgeInsets.all(12),
+                child: Wrap(
+                  spacing: 5,
+                  runSpacing: 5,
+                  children: [
+                    InfoChip(
+                      leftLabel: const Text('post.detail.rating').tr(),
+                      rightLabel: Text(
+                          post.rating.toString().split('.').last.pascalCase),
+                      leftColor: Theme.of(context).cardColor,
+                      rightColor: Theme.of(context).backgroundColor,
+                    ),
+                    InfoChip(
+                      leftLabel: const Text('post.detail.resolution').tr(),
+                      rightLabel:
+                          Text('${post.width.toInt()}x${post.height.toInt()}'),
+                      leftColor: Theme.of(context).cardColor,
+                      rightColor: Theme.of(context).backgroundColor,
+                    ),
+                    InfoChip(
+                      leftLabel: const Text('post.detail.size').tr(),
+                      rightLabel: Text(filesize(post.fileSize, 1)),
+                      leftColor: Theme.of(context).cardColor,
+                      rightColor: Theme.of(context).backgroundColor,
+                    ),
+                  ],
+                ),
+              ),
+              BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                builder: (context, state) {
+                  if (state.status == LoadStatus.success) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (state.data!.isNotEmpty)
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 16,
+                              top: 16,
+                            ),
+                            child: Text(
+                              '${state.data!.length} Pools',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).hintColor,
                               ),
                             ),
-                          ...state.data!
-                              .map((e) => Column(
-                                    children: [
-                                      ListTile(
-                                        dense: true,
-                                        visualDensity: VisualDensity.compact,
-                                        title: Text(
-                                          e.name.removeUnderscoreWithSpace(),
-                                          maxLines: 2,
-                                          softWrap: false,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        subtitle: Text('${e.postCount} posts'),
-                                        trailing: const Icon(Icons.arrow_right),
-                                        onTap: () =>
-                                            AppRouter.router.navigateTo(
-                                          context,
-                                          'pool/detail',
-                                          routeSettings:
-                                              RouteSettings(arguments: [e]),
-                                        ),
+                          ),
+                        ...state.data!
+                            .map((e) => Column(
+                                  children: [
+                                    ListTile(
+                                      dense: true,
+                                      visualDensity: VisualDensity.compact,
+                                      title: Text(
+                                        e.name.removeUnderscoreWithSpace(),
+                                        maxLines: 2,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
                                       ),
-                                    ],
-                                  ))
-                              .toList(),
-                          const Divider(),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
-                  },
-                ),
-                RecommendArtistList(
-                  post: post,
-                  useSeperator: true,
-                  header: (item) => ListTile(
-                    visualDensity: VisualDensity.compact,
-                    dense: true,
-                    onTap: () => AppRouter.router.navigateTo(
-                      context,
-                      '/artist',
-                      routeSettings: RouteSettings(
-                        arguments: [
-                          item.tag,
-                          post.normalImageUrl,
-                        ],
-                      ),
+                                      subtitle: Text('${e.postCount} posts'),
+                                      trailing: const Icon(Icons.arrow_right),
+                                      onTap: () => AppRouter.router.navigateTo(
+                                        context,
+                                        'pool/detail',
+                                        routeSettings:
+                                            RouteSettings(arguments: [e]),
+                                      ),
+                                    ),
+                                  ],
+                                ))
+                            .toList(),
+                        const Divider(),
+                      ],
+                    );
+                  } else {
+                    return const SizedBox.shrink();
+                  }
+                },
+              ),
+              RecommendArtistList(
+                post: post,
+                useSeperator: true,
+                header: (item) => ListTile(
+                  visualDensity: VisualDensity.compact,
+                  dense: true,
+                  onTap: () => AppRouter.router.navigateTo(
+                    context,
+                    '/artist',
+                    routeSettings: RouteSettings(
+                      arguments: [
+                        item.tag,
+                        post.normalImageUrl,
+                      ],
                     ),
-                    title: RichText(
-                      text: TextSpan(
-                        text: '',
-                        children: [
-                          TextSpan(
-                              text: 'More from ',
-                              style: TextStyle(
-                                  color: Theme.of(context).hintColor)),
-                          TextSpan(
-                              text: item.tag,
-                              style: const TextStyle(fontSize: 16)),
-                        ],
-                      ),
+                  ),
+                  title: RichText(
+                    text: TextSpan(
+                      text: '',
+                      children: [
+                        TextSpan(
+                            text: 'More from ',
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor)),
+                        TextSpan(
+                            text: item.tag,
+                            style: const TextStyle(fontSize: 16)),
+                      ],
                     ),
                   ),
                 ),
-                RecommendCharacterList(
-                  post: post,
-                  useSeperator: true,
+              ),
+              RecommendCharacterList(
+                post: post,
+                useSeperator: true,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: PostTagList(
+                  maxTagWidth: MediaQuery.of(context).size.width *
+                      _screenSizeToInfoBoxScreenPercent(size) *
+                      0.5,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: PostTagList(
-                    maxTagWidth: MediaQuery.of(context).size.width *
-                        _screenSizeToInfoBoxScreenPercent(size) *
-                        0.5,
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }

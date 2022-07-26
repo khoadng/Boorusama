@@ -160,11 +160,11 @@ class _SearchPageState extends State<SearchPage> {
       ],
       child: Screen.of(context).size != ScreenSize.small
           ? _LargeLayout(
-              autoFocus: widget.initialQuery.isEmpty,
+              autoFocus: false,
               queryEditingController: queryEditingController,
             )
           : _SmallLayout(
-              autoFocus: widget.initialQuery.isEmpty,
+              autoFocus: false,
               queryEditingController: queryEditingController,
             ),
     );

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -14,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/utils.dart';
 
 class RelatedTagHeader extends StatefulWidget {
@@ -76,24 +78,28 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
               ),
               onPressed: () {
                 final bloc = context.read<TagSearchBloc>();
-                showBarModalBottomSheet(
-                  context: context,
-                  builder: (context) =>
-                      BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-                    builder: (context, state) {
-                      return _RelatedTagActionSheet(
-                        relatedTag: widget.relatedTag,
-                        theme: widget.theme,
-                        onOpenWiki: (tag) => launchWikiPage(
-                          state.booru.url,
-                          tag,
-                        ),
-                        onAddToSearch: (tag) =>
-                            bloc.add(TagSearchNewRawStringTagSelected(tag)),
-                      );
-                    },
-                  ),
+                final page = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                  builder: (context, state) {
+                    return _RelatedTagActionSheet(
+                      relatedTag: widget.relatedTag,
+                      theme: widget.theme,
+                      onOpenWiki: (tag) => launchWikiPage(
+                        state.booru.url,
+                        tag,
+                      ),
+                      onAddToSearch: (tag) =>
+                          bloc.add(TagSearchNewRawStringTagSelected(tag)),
+                    );
+                  },
                 );
+                if (Screen.of(context).size == ScreenSize.small) {
+                  showBarModalBottomSheet(
+                    context: context,
+                    builder: (context) => page,
+                  );
+                } else {
+                  SideSheet.right(body: page, context: context);
+                }
               },
               child: const Text('tag.related.more').tr(),
             ),
