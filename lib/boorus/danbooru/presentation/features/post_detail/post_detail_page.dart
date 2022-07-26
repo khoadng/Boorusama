@@ -262,8 +262,9 @@ class _LargeLayoutContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                ArtistSection(
+                InformationSection(
                   post: post,
+                  tappable: false,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 8),
@@ -271,6 +272,9 @@ class _LargeLayoutContent extends StatelessWidget {
                     imagePath: imagePath,
                     post: post,
                   ),
+                ),
+                ArtistSection(
+                  post: post,
                 ),
                 if (post.hasParentOrChildren)
                   ParentChildTile(

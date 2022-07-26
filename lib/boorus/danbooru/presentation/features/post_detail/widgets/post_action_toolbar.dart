@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
@@ -86,13 +87,19 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
 
   Widget _buildCommentButton() {
     return IconButton(
-      onPressed: () => showBarModalBottomSheet(
-        expand: false,
-        context: context,
-        builder: (context) => CommentPage(
-          postId: widget.post.id,
-        ),
-      ),
+      onPressed: () => Screen.of(context).size == ScreenSize.small
+          ? showBarModalBottomSheet(
+              expand: false,
+              context: context,
+              builder: (context) => CommentPage(
+                postId: widget.post.id,
+              ),
+            )
+          : SideSheet.right(
+              body: CommentPage(
+                postId: widget.post.id,
+              ),
+              context: context),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
       ),

@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,6 +11,8 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
