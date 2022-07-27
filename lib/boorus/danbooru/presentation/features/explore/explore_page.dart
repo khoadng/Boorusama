@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/core.dart';
 import 'explore_carousel.dart';
 import 'explore_section.dart';
 

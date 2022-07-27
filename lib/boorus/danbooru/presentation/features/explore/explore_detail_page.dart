@@ -4,21 +4,19 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_most_viewed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
+import 'datetime_selector.dart';
+import 'explore_post_grid.dart';
 
 class ExploreDetail extends StatefulWidget {
   const ExploreDetail({
@@ -78,8 +76,8 @@ class _ExploreDetailState extends State<ExploreDetail> {
   }
 }
 
-class ExploreDetailPage2 extends StatelessWidget {
-  const ExploreDetailPage2({
+class ExploreDetailPage extends StatelessWidget {
+  const ExploreDetailPage({
     Key? key,
     required this.title,
     required this.category,
@@ -108,7 +106,7 @@ class ExploreDetailPage2 extends StatelessWidget {
                     ),
                   ),
                 child: BlocBuilder<PostPopularBloc, PostPopularState>(
-                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                  builder: (context, ppstate) => ExplorePostGrid(
                     header: DateAndTimeScaleHeader(
                       onDateChanged: (date) => context
                           .read<ExploreDetailBloc>()
@@ -148,7 +146,7 @@ class ExploreDetailPage2 extends StatelessWidget {
                     ),
                   ),
                 child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
-                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                  builder: (context, ppstate) => ExplorePostGrid(
                     header: DateAndTimeScaleHeader(
                       onDateChanged: (date) => context
                           .read<ExploreDetailBloc>()
@@ -187,7 +185,7 @@ class ExploreDetailPage2 extends StatelessWidget {
                     ),
                   ),
                 child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
-                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                  builder: (context, ppstate) => ExplorePostGrid(
                     header: DateTimeSelector(
                       onDateChanged: (date) => context
                           .read<ExploreDetailBloc>()
@@ -216,126 +214,6 @@ class ExploreDetailPage2 extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-class InfiniteLoadListForExplorePost extends StatelessWidget {
-  const InfiniteLoadListForExplorePost({
-    Key? key,
-    required this.date,
-    required this.scale,
-    required this.status,
-    required this.posts,
-    required this.onLoadMore,
-    required this.onRefresh,
-    required this.controller,
-    required this.scrollController,
-    required this.hasMore,
-    required this.header,
-  }) : super(key: key);
-
-  final DateTime date;
-  final TimeScale scale;
-  final LoadStatus status;
-  final List<Post> posts;
-  final void Function(DateTime date, TimeScale scale) onLoadMore;
-  final void Function(DateTime date, TimeScale scale) onRefresh;
-  final RefreshController controller;
-  final AutoScrollController scrollController;
-  final bool hasMore;
-  final Widget header;
-
-  @override
-  Widget build(BuildContext context) {
-    return InfiniteLoadList(
-      enableLoadMore: hasMore,
-      scrollController: scrollController,
-      refreshController: controller,
-      onLoadMore: () => onLoadMore(date, scale),
-      onRefresh: (controller) {
-        onRefresh(date, scale);
-        Future.delayed(const Duration(milliseconds: 500),
-            () => controller.refreshCompleted());
-      },
-      builder: (context, controller) => CustomScrollView(
-        controller: controller,
-        slivers: [
-          SliverToBoxAdapter(
-            child: header,
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            sliver: mapLoadStatusToWidget(context, status, controller),
-          ),
-          if (status == LoadStatus.loading)
-            const SliverPadding(
-              padding: EdgeInsets.only(bottom: 20, top: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            )
-        ],
-      ),
-    );
-  }
-
-  Widget mapLoadStatusToWidget(
-    BuildContext context,
-    LoadStatus status,
-    AutoScrollController controller,
-  ) {
-    if (status == LoadStatus.initial) {
-      return const SliverPostGridPlaceHolder();
-    } else if (status == LoadStatus.success) {
-      if (posts.isEmpty) {
-        return const SliverToBoxAdapter(
-          child: Center(child: Text('No data')),
-        );
-      }
-      return SliverPostGrid(
-        posts: posts,
-        scrollController: controller,
-        onTap: (post, index) => AppRouter.router.navigateTo(
-          context,
-          '/post/detail',
-          routeSettings: RouteSettings(
-            arguments: [
-              posts,
-              index,
-              controller,
-            ],
-          ),
-        ),
-      );
-    } else if (status == LoadStatus.loading) {
-      if (posts.isEmpty) {
-        return const SliverPostGridPlaceHolder();
-      } else {
-        return SliverPostGrid(
-          posts: posts,
-          scrollController: controller,
-          onTap: (post, index) => AppRouter.router.navigateTo(
-            context,
-            '/post/detail',
-            routeSettings: RouteSettings(
-              arguments: [
-                posts,
-                index,
-                controller,
-              ],
-            ),
-          ),
-        );
-      }
-    } else {
-      return const SliverToBoxAdapter(
-        child: Center(
-          child: Text('Something went wrong'),
-        ),
-      );
-    }
   }
 }
 
@@ -415,64 +293,6 @@ class DateAndTimeScaleHeader extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class DateTimeSelector extends StatelessWidget {
-  const DateTimeSelector({
-    Key? key,
-    required this.onDateChanged,
-    required this.date,
-    required this.scale,
-  }) : super(key: key);
-
-  final void Function(DateTime date) onDateChanged;
-  final DateTime date;
-  final TimeScale scale;
-
-  @override
-  Widget build(BuildContext context) {
-    return ButtonBar(
-      alignment: MainAxisAlignment.center,
-      children: [
-        IconButton(
-          icon: const Icon(Icons.keyboard_arrow_left),
-          onPressed: () =>
-              onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            backgroundColor: Theme.of(context).cardColor,
-            primary: Theme.of(context).textTheme.headline6!.color,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
-            ),
-          ),
-          onPressed: () async {
-            final picked = await showDatePicker(
-              context: context,
-              initialDate: date,
-              firstDate: DateTime(2005),
-              lastDate: DateTime.now().add(const Duration(days: 1)),
-            );
-            if (picked != null) {
-              onDateChanged(picked);
-            }
-          },
-          child: Row(
-            children: <Widget>[
-              Text(DateFormat('MMM d, yyyy').format(date)),
-              const Icon(Icons.arrow_drop_down)
-            ],
-          ),
-        ),
-        IconButton(
-          icon: const Icon(Icons.keyboard_arrow_right),
-          onPressed: () =>
-              onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
-        ),
-      ],
     );
   }
 }

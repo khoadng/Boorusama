@@ -38,7 +38,7 @@ class ExploreSection extends StatelessWidget {
                     MaterialPageRoute(
                       builder: (context) => BlocProvider(
                         create: (context) => ExploreDetailBloc(),
-                        child: ExploreDetailPage2(
+                        child: ExploreDetailPage(
                           title: Text(
                             title,
                             style: Theme.of(context)
