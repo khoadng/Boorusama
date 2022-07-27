@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -32,45 +33,50 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      primary: false,
-      slivers: [
-        SliverToBoxAdapter(
-          child: ExploreSection(
-            title: 'explore.popular'.tr(),
-            category: ExploreCategory.popular,
-            builder: (_) =>
-                BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
-              builder: mapStateToCarousel,
+    return Padding(
+      padding: Screen.of(context).size == ScreenSize.small
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 8),
+      child: CustomScrollView(
+        primary: false,
+        slivers: [
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.popular'.tr(),
+              category: ExploreCategory.popular,
+              builder: (_) =>
+                  BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: ExploreSection(
-            title: 'explore.curated'.tr(),
-            category: ExploreCategory.curated,
-            builder: (_) =>
-                BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
-              builder: mapStateToCarousel,
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.curated'.tr(),
+              category: ExploreCategory.curated,
+              builder: (_) =>
+                  BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
             ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: ExploreSection(
-            title: 'explore.most_viewed'.tr(),
-            category: ExploreCategory.mostViewed,
-            builder: (_) =>
-                BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
-              builder: mapStateToCarousel,
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.most_viewed'.tr(),
+              category: ExploreCategory.mostViewed,
+              builder: (_) =>
+                  BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
             ),
           ),
-        ),
-        const SliverToBoxAdapter(
-          child: SizedBox(
-            height: kBottomNavigationBarHeight + 10,
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kBottomNavigationBarHeight + 10,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

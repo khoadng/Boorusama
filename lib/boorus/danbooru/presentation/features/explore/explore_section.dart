@@ -35,19 +35,20 @@ class ExploreSection extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
-              onPressed: () => showBarModalBottomSheet(
-                    context: context,
-                    builder: (context) => BlocProvider(
-                      create: (context) => ExploreDetailBloc(),
-                      child: ExploreDetailPage(
-                        title: Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.w700),
+              onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => ExploreDetailBloc(),
+                        child: ExploreDetailPage2(
+                          title: Text(
+                            title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          category: category,
                         ),
-                        category: category,
                       ),
                     ),
                   ),

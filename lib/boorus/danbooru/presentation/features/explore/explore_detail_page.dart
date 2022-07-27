@@ -21,21 +21,27 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
-class ExploreDetailPage extends StatefulWidget {
-  const ExploreDetailPage({
+class ExploreDetail extends StatefulWidget {
+  const ExploreDetail({
     Key? key,
-    this.title,
-    required this.category,
+    required this.title,
+    required this.header,
+    required this.builder,
   }) : super(key: key);
 
-  final Widget? title;
-  final ExploreCategory category;
+  final Widget title;
+  final Widget header;
+  final Widget Function(
+    BuildContext context,
+    RefreshController refreshController,
+    AutoScrollController scrollController,
+  ) builder;
 
   @override
-  State<ExploreDetailPage> createState() => _ExploreDetailPageState();
+  State<ExploreDetail> createState() => _ExploreDetailState();
 }
 
-class _ExploreDetailPageState extends State<ExploreDetailPage> {
+class _ExploreDetailState extends State<ExploreDetail> {
   final RefreshController _refreshController = RefreshController();
   final AutoScrollController _scrollController = AutoScrollController();
 
@@ -50,13 +56,6 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ],
-        automaticallyImplyLeading: false,
         title: widget.title,
       ),
       body: BlocConsumer<ExploreDetailBloc, ExploreDetailState>(
@@ -67,20 +66,13 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
         builder: (context, state) {
           return Column(
             children: [
-              _ExploreListItemHeader(
-                scale: state.scale,
-                date: state.date,
-                selectedCategory: widget.category,
-                onDateChanged: (date) => context
-                    .read<ExploreDetailBloc>()
-                    .add(ExploreDetailDateChanged(date)),
-                onTimeScaleChanged: (scale) => context
-                    .read<ExploreDetailBloc>()
-                    .add(ExploreDetailTimeScaleChanged(scale)),
-              ),
+              widget.header,
               Expanded(
-                child: mapCategoryToPostList(
-                    widget.category, state, _refreshController),
+                child: widget.builder(
+                  context,
+                  _refreshController,
+                  _scrollController,
+                ),
               ),
             ],
           );
@@ -88,99 +80,137 @@ class _ExploreDetailPageState extends State<ExploreDetailPage> {
       ),
     );
   }
+}
 
-  Widget mapCategoryToPostList(
-    ExploreCategory category,
-    ExploreDetailState state,
-    RefreshController refreshController,
-  ) {
-    if (category == ExploreCategory.popular) {
-      return BlocProvider(
-        create: (context) => PostPopularBloc(
-          postRepository: context.read<IPostRepository>(),
-          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        )..add(
-            PostPopularRefreshed(
-              date: state.date,
-              scale: state.scale,
-            ),
-          ),
-        child: BlocBuilder<PostPopularBloc, PostPopularState>(
-          builder: (context, ppstate) => InfiniteLoadListForExplorePost(
-            hasMore: ppstate.hasMore,
-            scrollController: _scrollController,
-            controller: refreshController,
-            date: state.date,
-            scale: state.scale,
-            status: ppstate.status,
-            posts: ppstate.posts,
-            onLoadMore: (date, scale) => context
-                .read<PostPopularBloc>()
-                .add(PostPopularFetched(date: date, scale: scale)),
-            onRefresh: (date, scale) => context
-                .read<PostPopularBloc>()
-                .add(PostPopularRefreshed(date: date, scale: scale)),
-          ),
-        ),
-      );
-    } else if (category == ExploreCategory.curated) {
-      return BlocProvider(
-        create: (context) => PostCuratedBloc(
-          postRepository: context.read<IPostRepository>(),
-          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        )..add(
-            PostCuratedRefreshed(
-              date: state.date,
-              scale: state.scale,
-            ),
-          ),
-        child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
-          builder: (context, ppstate) => InfiniteLoadListForExplorePost(
-            hasMore: ppstate.hasMore,
-            scrollController: _scrollController,
-            controller: refreshController,
-            date: state.date,
-            scale: state.scale,
-            status: ppstate.status,
-            posts: ppstate.posts,
-            onLoadMore: (date, scale) => context
-                .read<PostCuratedBloc>()
-                .add(PostCuratedFetched(date: date, scale: scale)),
-            onRefresh: (date, scale) => context
-                .read<PostCuratedBloc>()
-                .add(PostCuratedRefreshed(date: date, scale: scale)),
-          ),
-        ),
-      );
-    } else {
-      return BlocProvider(
-        create: (context) => PostMostViewedBloc(
-          postRepository: context.read<IPostRepository>(),
-          blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        )..add(
-            PostMostViewedRefreshed(
-              date: state.date,
-            ),
-          ),
-        child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
-          builder: (context, ppstate) => InfiniteLoadListForExplorePost(
-            hasMore: ppstate.hasMore,
-            scrollController: _scrollController,
-            controller: refreshController,
-            date: state.date,
-            scale: state.scale,
-            status: ppstate.status,
-            posts: ppstate.posts,
-            onLoadMore: (date, scale) => context
-                .read<PostMostViewedBloc>()
-                .add(PostMostViewedFetched(date: date)),
-            onRefresh: (date, scale) => context
-                .read<PostMostViewedBloc>()
-                .add(PostMostViewedRefreshed(date: date)),
-          ),
-        ),
-      );
-    }
+class ExploreDetailPage2 extends StatelessWidget {
+  const ExploreDetailPage2({
+    Key? key,
+    required this.title,
+    required this.category,
+  }) : super(key: key);
+
+  final Widget title;
+  final ExploreCategory category;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ExploreDetailBloc, ExploreDetailState>(
+      builder: (context, state) {
+        return ExploreDetail(
+          title: title,
+          header: category != ExploreCategory.mostViewed
+              ? DateAndTimeScaleHeader(
+                  onDateChanged: (date) => context
+                      .read<ExploreDetailBloc>()
+                      .add(ExploreDetailDateChanged(date)),
+                  onTimeScaleChanged: (scale) => context
+                      .read<ExploreDetailBloc>()
+                      .add(ExploreDetailTimeScaleChanged(scale)),
+                  date: state.date,
+                  scale: state.scale,
+                )
+              : DateTimeSelector(
+                  onDateChanged: (date) => context
+                      .read<ExploreDetailBloc>()
+                      .add(ExploreDetailDateChanged(date)),
+                  date: state.date,
+                  scale: state.scale,
+                ),
+          builder: (context, refreshController, scrollController) {
+            if (category == ExploreCategory.popular) {
+              return BlocProvider(
+                create: (context) => PostPopularBloc(
+                  postRepository: context.read<IPostRepository>(),
+                  blacklistedTagsRepository:
+                      context.read<BlacklistedTagsRepository>(),
+                )..add(
+                    PostPopularRefreshed(
+                      date: state.date,
+                      scale: state.scale,
+                    ),
+                  ),
+                child: BlocBuilder<PostPopularBloc, PostPopularState>(
+                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    hasMore: ppstate.hasMore,
+                    scrollController: scrollController,
+                    controller: refreshController,
+                    date: state.date,
+                    scale: state.scale,
+                    status: ppstate.status,
+                    posts: ppstate.posts,
+                    onLoadMore: (date, scale) => context
+                        .read<PostPopularBloc>()
+                        .add(PostPopularFetched(date: date, scale: scale)),
+                    onRefresh: (date, scale) => context
+                        .read<PostPopularBloc>()
+                        .add(PostPopularRefreshed(date: date, scale: scale)),
+                  ),
+                ),
+              );
+            } else if (category == ExploreCategory.curated) {
+              return BlocProvider(
+                create: (context) => PostCuratedBloc(
+                  postRepository: context.read<IPostRepository>(),
+                  blacklistedTagsRepository:
+                      context.read<BlacklistedTagsRepository>(),
+                )..add(
+                    PostCuratedRefreshed(
+                      date: state.date,
+                      scale: state.scale,
+                    ),
+                  ),
+                child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
+                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    hasMore: ppstate.hasMore,
+                    scrollController: scrollController,
+                    controller: refreshController,
+                    date: state.date,
+                    scale: state.scale,
+                    status: ppstate.status,
+                    posts: ppstate.posts,
+                    onLoadMore: (date, scale) => context
+                        .read<PostCuratedBloc>()
+                        .add(PostCuratedFetched(date: date, scale: scale)),
+                    onRefresh: (date, scale) => context
+                        .read<PostCuratedBloc>()
+                        .add(PostCuratedRefreshed(date: date, scale: scale)),
+                  ),
+                ),
+              );
+            } else {
+              return BlocProvider(
+                create: (context) => PostMostViewedBloc(
+                  postRepository: context.read<IPostRepository>(),
+                  blacklistedTagsRepository:
+                      context.read<BlacklistedTagsRepository>(),
+                )..add(
+                    PostMostViewedRefreshed(
+                      date: state.date,
+                    ),
+                  ),
+                child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
+                  builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    hasMore: ppstate.hasMore,
+                    scrollController: scrollController,
+                    controller: refreshController,
+                    date: state.date,
+                    scale: state.scale,
+                    status: ppstate.status,
+                    posts: ppstate.posts,
+                    onLoadMore: (date, scale) => context
+                        .read<PostMostViewedBloc>()
+                        .add(PostMostViewedFetched(date: date)),
+                    onRefresh: (date, scale) => context
+                        .read<PostMostViewedBloc>()
+                        .add(PostMostViewedRefreshed(date: date)),
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 }
 
@@ -299,46 +329,19 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
   }
 }
 
-class _ExploreListItemHeader extends StatelessWidget {
-  const _ExploreListItemHeader({
+class DateAndTimeScaleHeader extends StatelessWidget {
+  const DateAndTimeScaleHeader({
     Key? key,
-    required this.selectedCategory,
     required this.onDateChanged,
     required this.onTimeScaleChanged,
     required this.date,
     required this.scale,
   }) : super(key: key);
 
-  final ExploreCategory selectedCategory;
   final void Function(DateTime date) onDateChanged;
   final void Function(TimeScale scale) onTimeScaleChanged;
   final DateTime date;
   final TimeScale scale;
-
-  Widget _buildModalTimeScalePicker(BuildContext context) {
-    return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text('dateRange.day'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.day),
-            ),
-            ListTile(
-              title: Text('dateRange.week'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.week),
-            ),
-            ListTile(
-              title: Text('dateRange.month'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.month),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -383,32 +386,107 @@ class _ExploreListItemHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            if (selectedCategory == ExploreCategory.mostViewed)
-              const Center()
-            else
-              TextButton(
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).cardColor,
-                  primary: Theme.of(context).textTheme.headline6!.color,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
-                  ),
+            TextButton(
+              style: TextButton.styleFrom(
+                backgroundColor: Theme.of(context).cardColor,
+                primary: Theme.of(context).textTheme.headline6!.color,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18),
                 ),
-                onPressed: () async {
-                  final timeScale = await showMaterialModalBottomSheet(
-                          context: context,
-                          builder: _buildModalTimeScalePicker) ??
-                      scale;
-                  onTimeScaleChanged(timeScale);
-                },
-                child: Row(
-                  children: [
-                    Text(_timeScaleToString(scale).tr().toUpperCase()),
-                    const Icon(Icons.arrow_drop_down)
-                  ],
-                ),
-              )
+              ),
+              onPressed: () async {
+                final timeScale = await showMaterialModalBottomSheet(
+                        context: context,
+                        builder: _buildModalTimeScalePicker) ??
+                    scale;
+                onTimeScaleChanged(timeScale);
+              },
+              child: Row(
+                children: [
+                  Text(_timeScaleToString(scale).tr().toUpperCase()),
+                  const Icon(Icons.arrow_drop_down)
+                ],
+              ),
+            )
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildModalTimeScalePicker(BuildContext context) {
+    return Material(
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            ListTile(
+              title: Text('dateRange.day'.tr()),
+              onTap: () => Navigator.of(context).pop(TimeScale.day),
+            ),
+            ListTile(
+              title: Text('dateRange.week'.tr()),
+              onTap: () => Navigator.of(context).pop(TimeScale.week),
+            ),
+            ListTile(
+              title: Text('dateRange.month'.tr()),
+              onTap: () => Navigator.of(context).pop(TimeScale.month),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class DateTimeSelector extends StatelessWidget {
+  const DateTimeSelector({
+    Key? key,
+    required this.onDateChanged,
+    required this.date,
+    required this.scale,
+  }) : super(key: key);
+
+  final void Function(DateTime date) onDateChanged;
+  final DateTime date;
+  final TimeScale scale;
+
+  @override
+  Widget build(BuildContext context) {
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        IconButton(
+          icon: const Icon(Icons.keyboard_arrow_left),
+          onPressed: () =>
+              onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
+        ),
+        TextButton(
+          style: TextButton.styleFrom(
+            backgroundColor: Theme.of(context).cardColor,
+            primary: Theme.of(context).textTheme.headline6!.color,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18),
+            ),
+          ),
+          onPressed: () => DatePicker.showDatePicker(
+            context,
+            theme: const DatePickerTheme(),
+            onConfirm: onDateChanged,
+            currentTime: DateTime.now(),
+          ),
+          child: Row(
+            children: <Widget>[
+              Text(DateFormat('MMM d, yyyy').format(date)),
+              const Icon(Icons.arrow_drop_down)
+            ],
+          ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.keyboard_arrow_right),
+          onPressed: () =>
+              onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
         ),
       ],
     );
