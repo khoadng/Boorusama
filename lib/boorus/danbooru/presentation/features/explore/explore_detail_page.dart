@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
@@ -358,41 +357,10 @@ class DateAndTimeScaleHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              icon: const Icon(Icons.keyboard_arrow_left),
-              onPressed: () =>
-                  onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).cardColor,
-                primary: Theme.of(context).textTheme.headline6!.color,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              onPressed: () => DatePicker.showDatePicker(
-                context,
-                theme: const DatePickerTheme(),
-                onConfirm: onDateChanged,
-                currentTime: DateTime.now(),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Text(DateFormat('MMM d, yyyy').format(date)),
-                  const Icon(Icons.arrow_drop_down)
-                ],
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.keyboard_arrow_right),
-              onPressed: () =>
-                  onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
-            ),
-          ],
+        DateTimeSelector(
+          onDateChanged: onDateChanged,
+          date: date,
+          scale: scale,
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -467,7 +435,7 @@ class DateTimeSelector extends StatelessWidget {
   Widget build(BuildContext context) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
-      children: <Widget>[
+      children: [
         IconButton(
           icon: const Icon(Icons.keyboard_arrow_left),
           onPressed: () =>
@@ -481,12 +449,17 @@ class DateTimeSelector extends StatelessWidget {
               borderRadius: BorderRadius.circular(18),
             ),
           ),
-          onPressed: () => DatePicker.showDatePicker(
-            context,
-            theme: const DatePickerTheme(),
-            onConfirm: onDateChanged,
-            currentTime: DateTime.now(),
-          ),
+          onPressed: () async {
+            final picked = await showDatePicker(
+              context: context,
+              initialDate: date,
+              firstDate: DateTime(2005),
+              lastDate: DateTime.now().add(const Duration(days: 1)),
+            );
+            if (picked != null) {
+              onDateChanged(picked);
+            }
+          },
           child: Row(
             children: <Widget>[
               Text(DateFormat('MMM d, yyyy').format(date)),

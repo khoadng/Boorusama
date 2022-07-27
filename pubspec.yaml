@@ -22,7 +22,6 @@ dependencies:
   fluro: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_cache_manager: ^3.3.0
-  flutter_datetime_picker: ^1.5.1
   flutter_downloader: ^1.8.0+1
   flutter_hooks: ^0.18.4
   flutter_html: ^3.0.0-alpha.5
