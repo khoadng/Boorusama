@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/core/core.dart';
 
 class TagDetailPage extends StatefulWidget {
   const TagDetailPage({
@@ -46,70 +46,132 @@ class _TagDetailPageState extends State<TagDetailPage> {
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height - 24;
 
-    return Scaffold(
-      body: SlidingUpPanel(
-        scrollController: scrollController,
-        color: Colors.transparent,
-        margin: const EdgeInsets.symmetric(horizontal: 6),
-        maxHeight: height,
-        minHeight: height * 0.55,
-        panelBuilder: (_) => _Panel(
-          tagName: widget.tagName,
+    if (Screen.of(context).size == ScreenSize.small) {
+      return Scaffold(
+        body: SlidingUpPanel(
           scrollController: scrollController,
-        ),
-        body: Stack(
-          children: [
-            Positioned.fill(
-              child: CachedNetworkImage(
-                imageUrl: widget.backgroundImageUrl,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.black, Colors.black.withOpacity(0.6)],
-                  end: Alignment.topCenter,
-                  begin: Alignment.bottomCenter,
+          color: Colors.transparent,
+          margin: const EdgeInsets.symmetric(horizontal: 6),
+          maxHeight: height,
+          minHeight: height * 0.55,
+          panelBuilder: (_) => _Panel(
+            tagName: widget.tagName,
+            scrollController: scrollController,
+          ),
+          body: Stack(
+            children: [
+              Positioned.fill(
+                child: CachedNetworkImage(
+                  imageUrl: widget.backgroundImageUrl,
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
-            Align(
-              alignment: const Alignment(0, -0.6),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    widget.tagName.removeUnderscoreWithSpace(),
-                    style: Theme.of(context).textTheme.headline6!.copyWith(
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                        ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.black, Colors.black.withOpacity(0.6)],
+                    end: Alignment.topCenter,
+                    begin: Alignment.bottomCenter,
                   ),
-                  widget.otherNamesBuilder(context),
+                ),
+              ),
+              Align(
+                alignment: const Alignment(0, -0.6),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      widget.tagName.removeUnderscoreWithSpace(),
+                      style: Theme.of(context).textTheme.headline6!.copyWith(
+                            fontWeight: FontWeight.w900,
+                            color: Colors.white,
+                          ),
+                    ),
+                    widget.otherNamesBuilder(context),
+                  ],
+                ),
+              ),
+              const Align(
+                alignment: Alignment(0.8, -0.85),
+                child: _CloseButton(),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return Scaffold(
+        body: Row(
+          children: [
+            SizedBox(
+              width: MediaQuery.of(context).size.width * 0.3,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: const Alignment(-0.9, -0.9),
+                    child: IconButton(
+                      onPressed: Navigator.of(context).pop,
+                      icon: const Icon(Icons.close),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const SizedBox(height: 70),
+                        Text(
+                          widget.tagName.removeUnderscoreWithSpace(),
+                          style:
+                              Theme.of(context).textTheme.headline6!.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.white,
+                                  ),
+                        ),
+                        Expanded(child: widget.otherNamesBuilder(context)),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
-            Align(
-              alignment: const Alignment(0.8, -0.85),
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  border: Border.all(
-                    width: 2,
-                    color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
-                  ),
-                ),
-                child: IconButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  icon: Icon(
-                    Icons.close,
-                    color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
-                  ),
-                ),
+            const VerticalDivider(
+              width: 3,
+              thickness: 2,
+            ),
+            Expanded(
+              child: _Panel(
+                tagName: widget.tagName,
+                scrollController: scrollController,
               ),
             ),
           ],
+        ),
+      );
+    }
+  }
+}
+
+class _CloseButton extends StatelessWidget {
+  const _CloseButton({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(30),
+        border: Border.all(
+          width: 2,
+          color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
+        ),
+      ),
+      child: IconButton(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: Icon(
+          Icons.close,
+          color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
         ),
       ),
     );
@@ -322,30 +384,63 @@ class TagOtherNames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tags(
-      heightHorizontalScroll: 40,
-      spacing: 2,
-      horizontalScroll: true,
-      alignment: WrapAlignment.start,
-      runAlignment: WrapAlignment.start,
-      itemCount: otherNames.length,
-      itemBuilder: (index) {
-        return Chip(
-          shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
-          padding: const EdgeInsets.all(4),
-          labelPadding: const EdgeInsets.all(1),
-          visualDensity: VisualDensity.compact,
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
-            child: Text(
-              otherNames[index].removeUnderscoreWithSpace(),
-              overflow: TextOverflow.fade,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+    if (Screen.of(context).size == ScreenSize.small) {
+      return Tags(
+        heightHorizontalScroll: 40,
+        spacing: 2,
+        horizontalScroll: true,
+        alignment: WrapAlignment.start,
+        runAlignment: WrapAlignment.start,
+        itemCount: otherNames.length,
+        itemBuilder: (index) {
+          return Chip(
+            shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
+            padding: const EdgeInsets.all(4),
+            labelPadding: const EdgeInsets.all(1),
+            visualDensity: VisualDensity.compact,
+            label: ConstrainedBox(
+              constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width * 0.85),
+              child: Text(
+                otherNames[index].removeUnderscoreWithSpace(),
+                overflow: TextOverflow.fade,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
             ),
+          );
+        },
+      );
+    } else {
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 2),
+          child: Wrap(
+            spacing: 5,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: otherNames
+                .map(
+                  (e) => Chip(
+                    shape: const StadiumBorder(
+                        side: BorderSide(color: Colors.grey)),
+                    padding: const EdgeInsets.all(4),
+                    labelPadding: const EdgeInsets.all(1),
+                    visualDensity: VisualDensity.compact,
+                    label: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width * 0.85),
+                      child: Text(
+                        e.removeUnderscoreWithSpace(),
+                        overflow: TextOverflow.fade,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                )
+                .toList(),
           ),
-        );
-      },
-    );
+        ),
+      );
+    }
   }
 }
