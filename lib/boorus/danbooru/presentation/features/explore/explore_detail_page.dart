@@ -25,12 +25,10 @@ class ExploreDetail extends StatefulWidget {
   const ExploreDetail({
     Key? key,
     required this.title,
-    required this.header,
     required this.builder,
   }) : super(key: key);
 
   final Widget title;
-  final Widget header;
   final Widget Function(
     BuildContext context,
     RefreshController refreshController,
@@ -66,7 +64,6 @@ class _ExploreDetailState extends State<ExploreDetail> {
         builder: (context, state) {
           return Column(
             children: [
-              widget.header,
               Expanded(
                 child: widget.builder(
                   context,
@@ -98,24 +95,6 @@ class ExploreDetailPage2 extends StatelessWidget {
       builder: (context, state) {
         return ExploreDetail(
           title: title,
-          header: category != ExploreCategory.mostViewed
-              ? DateAndTimeScaleHeader(
-                  onDateChanged: (date) => context
-                      .read<ExploreDetailBloc>()
-                      .add(ExploreDetailDateChanged(date)),
-                  onTimeScaleChanged: (scale) => context
-                      .read<ExploreDetailBloc>()
-                      .add(ExploreDetailTimeScaleChanged(scale)),
-                  date: state.date,
-                  scale: state.scale,
-                )
-              : DateTimeSelector(
-                  onDateChanged: (date) => context
-                      .read<ExploreDetailBloc>()
-                      .add(ExploreDetailDateChanged(date)),
-                  date: state.date,
-                  scale: state.scale,
-                ),
           builder: (context, refreshController, scrollController) {
             if (category == ExploreCategory.popular) {
               return BlocProvider(
@@ -131,6 +110,16 @@ class ExploreDetailPage2 extends StatelessWidget {
                   ),
                 child: BlocBuilder<PostPopularBloc, PostPopularState>(
                   builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    header: DateAndTimeScaleHeader(
+                      onDateChanged: (date) => context
+                          .read<ExploreDetailBloc>()
+                          .add(ExploreDetailDateChanged(date)),
+                      onTimeScaleChanged: (scale) => context
+                          .read<ExploreDetailBloc>()
+                          .add(ExploreDetailTimeScaleChanged(scale)),
+                      date: state.date,
+                      scale: state.scale,
+                    ),
                     hasMore: ppstate.hasMore,
                     scrollController: scrollController,
                     controller: refreshController,
@@ -161,6 +150,16 @@ class ExploreDetailPage2 extends StatelessWidget {
                   ),
                 child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
                   builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    header: DateAndTimeScaleHeader(
+                      onDateChanged: (date) => context
+                          .read<ExploreDetailBloc>()
+                          .add(ExploreDetailDateChanged(date)),
+                      onTimeScaleChanged: (scale) => context
+                          .read<ExploreDetailBloc>()
+                          .add(ExploreDetailTimeScaleChanged(scale)),
+                      date: state.date,
+                      scale: state.scale,
+                    ),
                     hasMore: ppstate.hasMore,
                     scrollController: scrollController,
                     controller: refreshController,
@@ -190,6 +189,13 @@ class ExploreDetailPage2 extends StatelessWidget {
                   ),
                 child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
                   builder: (context, ppstate) => InfiniteLoadListForExplorePost(
+                    header: DateTimeSelector(
+                      onDateChanged: (date) => context
+                          .read<ExploreDetailBloc>()
+                          .add(ExploreDetailDateChanged(date)),
+                      date: state.date,
+                      scale: state.scale,
+                    ),
                     hasMore: ppstate.hasMore,
                     scrollController: scrollController,
                     controller: refreshController,
@@ -226,6 +232,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
     required this.controller,
     required this.scrollController,
     required this.hasMore,
+    required this.header,
   }) : super(key: key);
 
   final DateTime date;
@@ -237,6 +244,7 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
   final RefreshController controller;
   final AutoScrollController scrollController;
   final bool hasMore;
+  final Widget header;
 
   @override
   Widget build(BuildContext context) {
@@ -252,7 +260,10 @@ class InfiniteLoadListForExplorePost extends StatelessWidget {
       },
       builder: (context, controller) => CustomScrollView(
         controller: controller,
-        slivers: <Widget>[
+        slivers: [
+          SliverToBoxAdapter(
+            child: header,
+          ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             sliver: mapLoadStatusToWidget(context, status, controller),
