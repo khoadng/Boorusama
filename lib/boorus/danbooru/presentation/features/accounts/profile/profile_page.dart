@@ -10,9 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -81,54 +79,6 @@ class ProfilePage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SliverToBoxAdapter(
-                      child: Divider(
-                        endIndent: 10,
-                        indent: 10,
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: ListTile(
-                        leading: Text(
-                          'profile.favorites'.tr(),
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        trailing: TextButton(
-                          onPressed: () => AppRouter.router.navigateTo(
-                              context, '/favorites',
-                              routeSettings:
-                                  RouteSettings(arguments: [profile.name])),
-                          child: const Text('profile.see_more').tr(),
-                        ),
-                      ),
-                    ),
-                    BlocBuilder<FavoritesCubit, AsyncLoadState<List<Post>>>(
-                      builder: (context, state) {
-                        if (state.status == LoadStatus.success) {
-                          return SliverToBoxAdapter(
-                            child: SizedBox(
-                              height: MediaQuery.of(context).size.height * 0.2,
-                              child: Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: PreviewPostList(
-                                  posts: state.data!,
-                                  physics:
-                                      const AlwaysScrollableScrollPhysics(),
-                                ),
-                              ),
-                            ),
-                          );
-                        } else if (state.status == LoadStatus.failure) {
-                          return const SizedBox.shrink();
-                        } else {
-                          return const SliverToBoxAdapter(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          );
-                        }
-                      },
-                    )
                   ],
                 );
               } else if (state.status == LoadStatus.failure) {
