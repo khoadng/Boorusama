@@ -150,6 +150,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
         title: Text('settings.settings'.tr()),
       ),
@@ -159,106 +160,113 @@ class _LargeLayoutState extends State<_LargeLayout> {
 
         return ValueListenableBuilder<int>(
           valueListenable: currentTab,
-          builder: (context, index, _) => Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SingleChildScrollView(
-                child: SizedBox(
-                  width: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SettingsSection(
-                        label: 'settings.app_settings'.tr(),
-                      ),
-                      ListTile(
-                        tileColor: index == 0 ? Colors.grey[800] : null,
-                        title: const Text('settings.safe_mode').tr(),
-                        onTap: () => currentTab.value = 0,
-                      ),
-                      ListTile(
-                        tileColor: index == 1 ? Colors.grey[800] : null,
-                        title: const Text('settings.appearance').tr(),
-                        onTap: () => currentTab.value = 1,
-                      ),
-                      ListTile(
-                        tileColor: index == 2 ? Colors.grey[800] : null,
-                        title: const Text('settings.language.language').tr(),
-                        onTap: () => currentTab.value = 2,
-                      ),
-                      ListTile(
-                        tileColor: index == 3 ? Colors.grey[800] : null,
-                        title: const Text('settings.privacy.privacy').tr(),
-                        onTap: () => currentTab.value = 3,
-                      ),
-                      const Divider(
-                        thickness: 0.8,
-                        endIndent: 10,
-                        indent: 10,
-                      ),
-                      ListTile(
-                        title: const Text('settings.information').tr(),
-                        onTap: () => showAboutDialog(
-                          context: context,
-                          applicationIcon: Image.asset(
-                            'assets/icon/icon-512x512.png',
-                            width: 64,
-                            height: 64,
+          builder: (context, index, _) => SizedBox(
+            width: 600,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SingleChildScrollView(
+                  child: SizedBox(
+                    width: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SettingsSection(
+                          label: 'settings.app_settings'.tr(),
+                        ),
+                        ListTile(
+                          textColor: index == 0 ? Colors.white : null,
+                          tileColor: index == 0 ? Colors.grey[800] : null,
+                          title: const Text('settings.safe_mode').tr(),
+                          onTap: () => currentTab.value = 0,
+                        ),
+                        ListTile(
+                          textColor: index == 1 ? Colors.white : null,
+                          tileColor: index == 1 ? Colors.grey[800] : null,
+                          title: const Text('settings.appearance').tr(),
+                          onTap: () => currentTab.value = 1,
+                        ),
+                        ListTile(
+                          textColor: index == 2 ? Colors.white : null,
+                          tileColor: index == 2 ? Colors.grey[800] : null,
+                          title: const Text('settings.language.language').tr(),
+                          onTap: () => currentTab.value = 2,
+                        ),
+                        ListTile(
+                          textColor: index == 3 ? Colors.white : null,
+                          tileColor: index == 3 ? Colors.grey[800] : null,
+                          title: const Text('settings.privacy.privacy').tr(),
+                          onTap: () => currentTab.value = 3,
+                        ),
+                        const Divider(
+                          thickness: 0.8,
+                          endIndent: 10,
+                          indent: 10,
+                        ),
+                        ListTile(
+                          title: const Text('settings.information').tr(),
+                          onTap: () => showAboutDialog(
+                            context: context,
+                            applicationIcon: Image.asset(
+                              'assets/icon/icon-512x512.png',
+                              width: 64,
+                              height: 64,
+                            ),
+                            applicationVersion: getVersion(
+                                RepositoryProvider.of<PackageInfoProvider>(
+                                        context)
+                                    .getPackageInfo()),
+                            applicationLegalese:
+                                '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                            applicationName: AppConstants.appName,
                           ),
-                          applicationVersion: getVersion(
-                              RepositoryProvider.of<PackageInfoProvider>(
-                                      context)
-                                  .getPackageInfo()),
-                          applicationLegalese:
-                              '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                          applicationName: AppConstants.appName,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: _Footer(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const VerticalDivider(width: 1),
+                Expanded(
+                  child: IndexedStack(
+                    index: index,
+                    children: [
+                      Scaffold(
+                        body: Column(
+                          children: [
+                            ListTile(
+                              title: const Text('Enable'),
+                              trailing: Switch(
+                                  activeColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  value: settings.safeMode,
+                                  onChanged: (value) => context
+                                      .read<SettingsCubit>()
+                                      .update(
+                                          settings.copyWith(safeMode: value))),
+                            ),
+                          ],
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(left: 8),
-                        child: _Footer(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                        ),
+                      const AppearancePage(
+                        hasAppBar: false,
+                      ),
+                      const LanguagePage(
+                        hasAppBar: false,
+                      ),
+                      const PrivacyPage(
+                        hasAppBar: false,
                       ),
                     ],
                   ),
                 ),
-              ),
-              const VerticalDivider(width: 1),
-              Expanded(
-                child: IndexedStack(
-                  index: index,
-                  children: [
-                    Scaffold(
-                      body: Column(
-                        children: [
-                          ListTile(
-                            title: const Text('Enable'),
-                            trailing: Switch(
-                                activeColor:
-                                    Theme.of(context).colorScheme.primary,
-                                value: settings.safeMode,
-                                onChanged: (value) => context
-                                    .read<SettingsCubit>()
-                                    .update(
-                                        settings.copyWith(safeMode: value))),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const AppearancePage(
-                      hasAppBar: false,
-                    ),
-                    const LanguagePage(
-                      hasAppBar: false,
-                    ),
-                    const PrivacyPage(
-                      hasAppBar: false,
-                    ),
-                  ],
-                ),
-              )
-            ],
+              ],
+            ),
           ),
         );
       }),
@@ -285,17 +293,15 @@ class _Divider extends StatelessWidget {
 class _Footer extends StatelessWidget {
   const _Footer({
     Key? key,
-    this.height,
     this.mainAxisAlignment,
   }) : super(key: key);
 
-  final double? height;
   final MainAxisAlignment? mainAxisAlignment;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 50,
+      height: 50,
       child: Row(
         mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
         children: [

@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
-import 'settings_options.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_icon.dart';
@@ -103,66 +102,49 @@ class _AppearancePageState extends State<AppearancePage> {
               primary: false,
               children: [
                 SettingsHeader(label: 'settings.general'.tr()),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.paintbrush),
+                SettingsTile<ThemeMode>(
                   title: const Text('settings.theme.theme').tr(),
-                  selectedOption:
-                      _themeModeToString(state.settings.themeMode).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
-                    context: context,
-                    items: [...ThemeMode.values]..remove(ThemeMode.system),
-                    titleBuilder: (item) => Text(_themeModeToString(item)).tr(),
-                    groupValue: state.settings.themeMode,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(themeMode: value)),
-                  ),
+                  selectedOption: state.settings.themeMode,
+                  items: [...ThemeMode.values]..remove(ThemeMode.system),
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(themeMode: value)),
+                  optionBuilder: (value) =>
+                      Text(_themeModeToString(value).tr()),
                 ),
                 const Divider(thickness: 1),
                 SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-                _buildPreview(context, state),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.tableCells),
+                // _buildPreview(context, state),
+                SettingsTile<GridSize>(
                   title: const Text('settings.image_grid.grid_size.grid_size')
                       .tr(),
-                  selectedOption:
-                      _gridSizeToString(state.settings.gridSize).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<GridSize>(
-                    context: context,
-                    items: GridSize.values,
-                    titleBuilder: (item) => Text(_gridSizeToString(item)).tr(),
-                    groupValue: state.settings.gridSize,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(gridSize: value)),
-                  ),
+                  selectedOption: state.settings.gridSize,
+                  items: GridSize.values,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(gridSize: value)),
+                  optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
                 ),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.images),
+                SettingsTile<ImageQuality>(
                   title: const Text(
                           'settings.image_grid.image_quality.image_quality')
                       .tr(),
-                  selectedOption:
-                      _imageQualityToString(state.settings.imageQuality).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
-                    context: context,
-                    items: [...ImageQuality.values]
-                      ..remove(ImageQuality.original),
-                    titleBuilder: (item) =>
-                        Text(_imageQualityToString(item)).tr(),
-                    subtitleBuilder: (item) => item == ImageQuality.high
-                        ? Text(
-                            'settings.image_grid.image_quality.high_quality_notice',
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ).tr()
-                        : null,
-                    groupValue: state.settings.imageQuality,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(imageQuality: value)),
-                  ),
+                  subtitle: state.settings.imageQuality == ImageQuality.high
+                      ? Text(
+                          'settings.image_grid.image_quality.high_quality_notice',
+                          style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ).tr()
+                      : null,
+                  selectedOption: state.settings.imageQuality,
+                  items: [...ImageQuality.values]
+                    ..remove(ImageQuality.original),
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(imageQuality: value)),
+                  optionBuilder: (value) =>
+                      Text(_imageQualityToString(value)).tr(),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -200,26 +182,17 @@ class _AppearancePageState extends State<AppearancePage> {
                 const Divider(thickness: 1),
                 SettingsHeader(
                     label: 'settings.image_detail.image_detail'.tr()),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.xmarksLines),
+                SettingsTile<ActionBarDisplayBehavior>(
                   title: const Text(
                           'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior')
                       .tr(),
-                  selectedOption: _actionBarDisplayBehaviorToString(
-                          state.settings.actionBarDisplayBehavior)
-                      .tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<
-                      ActionBarDisplayBehavior>(
-                    context: context,
-                    items: ActionBarDisplayBehavior.values,
-                    titleBuilder: (item) =>
-                        Text(_actionBarDisplayBehaviorToString(item)).tr(),
-                    groupValue: state.settings.actionBarDisplayBehavior,
-                    onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(actionBarDisplayBehavior: value)),
-                  ),
-                ),
+                  selectedOption: state.settings.actionBarDisplayBehavior,
+                  onChanged: (value) => context.read<SettingsCubit>().update(
+                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                  items: ActionBarDisplayBehavior.values,
+                  optionBuilder: (value) =>
+                      Text(_actionBarDisplayBehaviorToString(value)).tr(),
+                )
               ],
             ),
           );
@@ -267,9 +240,8 @@ class _AppearancePageState extends State<AppearancePage> {
   Widget _buildPreview(BuildContext context, SettingsState state) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         vertical: 8,
-        horizontal: size.width / 3,
       ),
       child: Container(
         decoration: BoxDecoration(
