@@ -18,7 +18,12 @@ String getLanguageText(String value) {
 }
 
 class LanguagePage extends StatelessWidget {
-  const LanguagePage({Key? key}) : super(key: key);
+  const LanguagePage({
+    Key? key,
+    this.hasAppBar = true,
+  }) : super(key: key);
+
+  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +32,11 @@ class LanguagePage extends StatelessWidget {
           previous.settings.language != current.settings.language,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('settings.language.language').tr(),
-          ),
+          appBar: hasAppBar
+              ? AppBar(
+                  title: const Text('settings.language.language').tr(),
+                )
+              : null,
           body: SafeArea(
               child: Column(
                   children: languages.keys

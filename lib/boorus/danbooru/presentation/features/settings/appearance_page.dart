@@ -21,7 +21,10 @@ import 'widgets/settings_icon.dart';
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
     Key? key,
+    this.hasAppBar = true,
   }) : super(key: key);
+
+  final bool hasAppBar;
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();
@@ -88,9 +91,11 @@ class _AppearancePageState extends State<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('settings.appearance').tr(),
-      ),
+      appBar: widget.hasAppBar
+          ? AppBar(
+              title: const Text('settings.appearance').tr(),
+            )
+          : null,
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return SafeArea(

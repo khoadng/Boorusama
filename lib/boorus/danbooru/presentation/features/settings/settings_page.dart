@@ -23,108 +23,245 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('settings.settings'.tr()),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 8),
-        child: BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, state) {
-            final settings = state.settings;
+    if (Screen.of(context).size == ScreenSize.small) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text('settings.settings'.tr()),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: BlocBuilder<SettingsCubit, SettingsState>(
+            builder: (context, state) {
+              final settings = state.settings;
 
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SettingsSection(
-                          label: 'settings.app_settings'.tr(),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.admin_panel_settings),
-                          title: const Text('settings.safe_mode').tr(),
-                          trailing: Switch(
-                              activeColor:
-                                  Theme.of(context).colorScheme.primary,
-                              value: settings.safeMode,
-                              onChanged: (value) {
-                                context
-                                    .read<SettingsCubit>()
-                                    .update(settings.copyWith(safeMode: value));
-                              }),
-                        ),
-                        ListTile(
-                          leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                          title: const Text('settings.appearance').tr(),
-                          onTap: () => Navigator.of(context)
-                              .push(ParallaxSlideInPageRoute(
-                            enterWidget: const AppearancePage(),
-                            oldWidget: this,
-                          )),
-                        ),
-                        ListTile(
-                          title: const Text('settings.language.language').tr(),
-                          leading: const Icon(Icons.translate),
-                          onTap: () => Navigator.of(context)
-                              .push(ParallaxSlideInPageRoute(
-                            enterWidget: const LanguagePage(),
-                            oldWidget: this,
-                          )),
-                        ),
-                        //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
-                        // ListTile(
-                        //   title: const Text('Download'),
-                        //   leading: const FaIcon(FontAwesomeIcons.download),
-                        //   onTap: () =>
-                        //       Navigator.of(context).push(ParallaxSlideInPageRoute(
-                        //     enterWidget: const DownloadPage(),
-                        //     oldWidget: this,
-                        //   )),
-                        // ),
-                        ListTile(
-                          title: const Text('settings.privacy.privacy').tr(),
-                          leading: const FaIcon(FontAwesomeIcons.shieldHalved),
-                          onTap: () => Navigator.of(context)
-                              .push(ParallaxSlideInPageRoute(
-                            enterWidget: const PrivacyPage(),
-                            oldWidget: this,
-                          )),
-                        ),
-
-                        ListTile(
-                          title: const Text('settings.information').tr(),
-                          leading: const Icon(Icons.info),
-                          onTap: () => showAboutDialog(
-                            context: context,
-                            applicationIcon: Image.asset(
-                              'assets/icon/icon-512x512.png',
-                              width: 64,
-                              height: 64,
-                            ),
-                            applicationVersion: getVersion(
-                                RepositoryProvider.of<PackageInfoProvider>(
-                                        context)
-                                    .getPackageInfo()),
-                            applicationLegalese:
-                                '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                            applicationName: AppConstants.appName,
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SettingsSection(
+                            label: 'settings.app_settings'.tr(),
                           ),
-                        ),
-                      ],
+                          ListTile(
+                            leading: const Icon(Icons.admin_panel_settings),
+                            title: const Text('settings.safe_mode').tr(),
+                            trailing: Switch(
+                                activeColor:
+                                    Theme.of(context).colorScheme.primary,
+                                value: settings.safeMode,
+                                onChanged: (value) {
+                                  context.read<SettingsCubit>().update(
+                                      settings.copyWith(safeMode: value));
+                                }),
+                          ),
+                          ListTile(
+                            leading: const FaIcon(FontAwesomeIcons.paintRoller),
+                            title: const Text('settings.appearance').tr(),
+                            onTap: () => Navigator.of(context)
+                                .push(ParallaxSlideInPageRoute(
+                              enterWidget: const AppearancePage(),
+                              oldWidget: this,
+                            )),
+                          ),
+                          ListTile(
+                            title:
+                                const Text('settings.language.language').tr(),
+                            leading: const Icon(Icons.translate),
+                            onTap: () => Navigator.of(context)
+                                .push(ParallaxSlideInPageRoute(
+                              enterWidget: const LanguagePage(),
+                              oldWidget: this,
+                            )),
+                          ),
+                          //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
+                          // ListTile(
+                          //   title: const Text('Download'),
+                          //   leading: const FaIcon(FontAwesomeIcons.download),
+                          //   onTap: () =>
+                          //       Navigator.of(context).push(ParallaxSlideInPageRoute(
+                          //     enterWidget: const DownloadPage(),
+                          //     oldWidget: this,
+                          //   )),
+                          // ),
+                          ListTile(
+                            title: const Text('settings.privacy.privacy').tr(),
+                            leading:
+                                const FaIcon(FontAwesomeIcons.shieldHalved),
+                            onTap: () => Navigator.of(context)
+                                .push(ParallaxSlideInPageRoute(
+                              enterWidget: const PrivacyPage(),
+                              oldWidget: this,
+                            )),
+                          ),
+
+                          ListTile(
+                            title: const Text('settings.information').tr(),
+                            leading: const Icon(Icons.info),
+                            onTap: () => showAboutDialog(
+                              context: context,
+                              applicationIcon: Image.asset(
+                                'assets/icon/icon-512x512.png',
+                                width: 64,
+                                height: 64,
+                              ),
+                              applicationVersion: getVersion(
+                                  RepositoryProvider.of<PackageInfoProvider>(
+                                          context)
+                                      .getPackageInfo()),
+                              applicationLegalese:
+                                  '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                              applicationName: AppConstants.appName,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                const _Divider(),
-                const _Footer(),
-              ],
-            );
-          },
+                  const _Divider(),
+                  const _Footer(),
+                ],
+              );
+            },
+          ),
         ),
+      );
+    } else {
+      return const _LargeLayout();
+    }
+  }
+}
+
+class _LargeLayout extends StatefulWidget {
+  const _LargeLayout({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_LargeLayout> createState() => _LargeLayoutState();
+}
+
+//TODO: refactor this when having more settings, this is a terrible design.
+class _LargeLayoutState extends State<_LargeLayout> {
+  final currentTab = ValueNotifier(0);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        title: Text('settings.settings'.tr()),
       ),
+      body:
+          BlocBuilder<SettingsCubit, SettingsState>(builder: (context, state) {
+        final settings = state.settings;
+
+        return ValueListenableBuilder<int>(
+          valueListenable: currentTab,
+          builder: (context, index, _) => Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SingleChildScrollView(
+                child: SizedBox(
+                  width: 200,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SettingsSection(
+                        label: 'settings.app_settings'.tr(),
+                      ),
+                      ListTile(
+                        tileColor: index == 0 ? Colors.grey[800] : null,
+                        title: const Text('settings.safe_mode').tr(),
+                        onTap: () => currentTab.value = 0,
+                      ),
+                      ListTile(
+                        tileColor: index == 1 ? Colors.grey[800] : null,
+                        title: const Text('settings.appearance').tr(),
+                        onTap: () => currentTab.value = 1,
+                      ),
+                      ListTile(
+                        tileColor: index == 2 ? Colors.grey[800] : null,
+                        title: const Text('settings.language.language').tr(),
+                        onTap: () => currentTab.value = 2,
+                      ),
+                      ListTile(
+                        tileColor: index == 3 ? Colors.grey[800] : null,
+                        title: const Text('settings.privacy.privacy').tr(),
+                        onTap: () => currentTab.value = 3,
+                      ),
+                      const Divider(
+                        thickness: 0.8,
+                        endIndent: 10,
+                        indent: 10,
+                      ),
+                      ListTile(
+                        title: const Text('settings.information').tr(),
+                        onTap: () => showAboutDialog(
+                          context: context,
+                          applicationIcon: Image.asset(
+                            'assets/icon/icon-512x512.png',
+                            width: 64,
+                            height: 64,
+                          ),
+                          applicationVersion: getVersion(
+                              RepositoryProvider.of<PackageInfoProvider>(
+                                      context)
+                                  .getPackageInfo()),
+                          applicationLegalese:
+                              '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                          applicationName: AppConstants.appName,
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 8),
+                        child: _Footer(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const VerticalDivider(width: 1),
+              Expanded(
+                child: IndexedStack(
+                  index: index,
+                  children: [
+                    Scaffold(
+                      body: Column(
+                        children: [
+                          ListTile(
+                            title: const Text('Enable'),
+                            trailing: Switch(
+                                activeColor:
+                                    Theme.of(context).colorScheme.primary,
+                                value: settings.safeMode,
+                                onChanged: (value) => context
+                                    .read<SettingsCubit>()
+                                    .update(
+                                        settings.copyWith(safeMode: value))),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const AppearancePage(
+                      hasAppBar: false,
+                    ),
+                    const LanguagePage(
+                      hasAppBar: false,
+                    ),
+                    const PrivacyPage(
+                      hasAppBar: false,
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        );
+      }),
     );
   }
 }
@@ -148,14 +285,19 @@ class _Divider extends StatelessWidget {
 class _Footer extends StatelessWidget {
   const _Footer({
     Key? key,
+    this.height,
+    this.mainAxisAlignment,
   }) : super(key: key);
+
+  final double? height;
+  final MainAxisAlignment? mainAxisAlignment;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 50,
-      child: ButtonBar(
-        alignment: MainAxisAlignment.center,
+      height: height ?? 50,
+      child: Row(
+        mainAxisAlignment: mainAxisAlignment ?? MainAxisAlignment.center,
         children: [
           IconButton(
             onPressed: () => launchExternalUrl(
