@@ -23,10 +23,10 @@ import 'package:boorusama/core/presentation/widgets/conditional_render_widget.da
 class LatestView extends StatefulWidget {
   const LatestView({
     Key? key,
-    required this.onMenuTap,
+    this.onMenuTap,
   }) : super(key: key);
 
-  final VoidCallback onMenuTap;
+  final VoidCallback? onMenuTap;
 
   @override
   State<LatestView> createState() => _LatestViewState();
@@ -116,10 +116,12 @@ class _LatestViewState extends State<LatestView> {
       toolbarHeight: kToolbarHeight * 1.2,
       title: SearchBar(
         enabled: false,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => widget.onMenuTap(),
-        ),
+        leading: widget.onMenuTap != null
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => widget.onMenuTap!(),
+              )
+            : null,
         onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
             routeSettings: const RouteSettings(arguments: [''])),
       ),

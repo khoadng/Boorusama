@@ -14,7 +14,7 @@ import 'package:boorusama/core/core.dart';
 
 double _screenSizeToWidthWeight(ScreenSize size) {
   if (size == ScreenSize.small) return 0.7;
-  if (size == ScreenSize.medium) return 0.31;
+  if (size == ScreenSize.medium) return 0.3;
   if (size == ScreenSize.large) return 0.2;
   return 0.15;
 }
@@ -34,20 +34,24 @@ class SideBarMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = Screen.of(context).size;
-    return SafeArea(
-      child: Container(
-        color: Theme.of(context).backgroundColor,
-        constraints: BoxConstraints.expand(
-            width: width ??
-                MediaQuery.of(context).size.width *
-                    _screenSizeToWidthWeight(size)),
-        child: SingleChildScrollView(
-          child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
-            builder: (context, state) {
-              if (state.status == LoadStatus.success) {
-                return Column(
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      constraints: BoxConstraints.expand(
+          width: width ??
+              MediaQuery.of(context).size.width *
+                  _screenSizeToWidthWeight(size)),
+      child: SingleChildScrollView(
+        child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              return Padding(
+                padding: const EdgeInsets.only(left: 6),
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    SizedBox(
+                      height: MediaQuery.of(context).viewPadding.top,
+                    ),
                     if (initialContentBuilder != null) ...[
                       ...initialContentBuilder!(context)!,
                       const Divider(),
@@ -102,12 +106,12 @@ class SideBarMenu extends StatelessWidget {
                       },
                     ),
                   ],
-                );
-              } else {
-                return const SizedBox.shrink();
-              }
-            },
-          ),
+                ),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
         ),
       ),
     );

@@ -41,6 +41,11 @@ class ExplorePage extends StatelessWidget {
         primary: false,
         slivers: [
           SliverToBoxAdapter(
+            child: SizedBox(
+              height: MediaQuery.of(context).viewPadding.top,
+            ),
+          ),
+          SliverToBoxAdapter(
             child: ExploreSection(
               title: 'explore.popular'.tr(),
               category: ExploreCategory.popular,
