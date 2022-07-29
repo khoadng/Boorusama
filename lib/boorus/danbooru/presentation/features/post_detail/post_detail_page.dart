@@ -181,8 +181,8 @@ class _LargeLayout extends StatelessWidget {
                     onPageChanged: (index) {
                       context.read<TagBloc>().add(TagFetched(tags: post.tags));
                       context
-                          .read<ArtistCommentaryCubit>()
-                          .getArtistCommentary(post.id);
+                          .read<ArtistCommentaryBloc>()
+                          .add(ArtistCommentaryFetched(postId: post.id));
                     },
                     builder: (post, minimal) => Stack(
                       children: [

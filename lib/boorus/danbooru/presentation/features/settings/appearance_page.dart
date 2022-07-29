@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
@@ -234,50 +233,6 @@ class _AppearancePageState extends State<AppearancePage> {
           onChanged: (value) => _spacingSliderValue.value = value,
         );
       },
-    );
-  }
-
-  Widget _buildPreview(BuildContext context, SettingsState state) {
-    final size = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        vertical: 8,
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).backgroundColor,
-        ),
-        height: size.height * 0.25,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ValueListenableBuilder<double>(
-            valueListenable: _spacingSliderValue,
-            builder: (context, value, _) => GridView.builder(
-                primary: false,
-                itemCount: 100,
-                gridDelegate: gridSizeToGridDelegate(
-                  size: state.settings.gridSize,
-                  spacing: value,
-                  screenWidth: size.width,
-                ),
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder<double>(
-                    valueListenable: _borderRadiusSliderValue,
-                    builder: (context, value, _) => Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(value),
-                      ),
-                      child: const Center(
-                        child: SettingsIcon(FontAwesomeIcons.image),
-                      ),
-                    ),
-                  );
-                }),
-          ),
-        ),
-      ),
     );
   }
 }

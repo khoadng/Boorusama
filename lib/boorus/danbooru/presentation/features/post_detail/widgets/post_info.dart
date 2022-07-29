@@ -148,16 +148,18 @@ class _ArtistSectionState extends State<ArtistSection> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ArtistCommentaryCubit>().getArtistCommentary(widget.post.id);
+      context
+          .read<ArtistCommentaryBloc>()
+          .add(ArtistCommentaryFetched(postId: widget.post.id));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(
+    return BlocBuilder<ArtistCommentaryBloc, ArtistCommentaryState>(
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
-          final artistCommentary = state.data!;
+          final artistCommentary = state.commentary;
 
           return ValueListenableBuilder<ArtistCommentaryTranlationState>(
             valueListenable: artistCommentaryDisplay,
@@ -197,15 +199,8 @@ class _ArtistSectionState extends State<ArtistSection> {
               ],
             ),
           );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
         } else {
-          return const Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: 8,
-            ),
-            child: ArtistCommentaryPlaceholder(),
-          );
+          return const SizedBox.shrink();
         }
       },
     );
