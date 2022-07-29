@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,18 +58,22 @@ class ArtistCommentaryBloc
   ArtistCommentaryBloc({
     required IArtistCommentaryRepository artistCommentaryRepository,
   }) : super(ArtistCommentaryState.initial()) {
-    on<ArtistCommentaryFetched>((event, emit) async {
-      await tryAsync<ArtistCommentaryDto>(
-          action: () => artistCommentaryRepository.getCommentary(event.postId),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) =>
-              emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (dto) async {
-            emit(state.copyWith(
-              commentary: dto.toEntity(),
-              status: LoadStatus.success,
-            ));
-          });
-    });
+    on<ArtistCommentaryFetched>(
+      (event, emit) async {
+        await tryAsync<ArtistCommentaryDto>(
+            action: () =>
+                artistCommentaryRepository.getCommentary(event.postId),
+            onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+            onFailure: (stackTrace, error) =>
+                emit(state.copyWith(status: LoadStatus.failure)),
+            onSuccess: (dto) async {
+              emit(state.copyWith(
+                commentary: dto.toEntity(),
+                status: LoadStatus.success,
+              ));
+            });
+      },
+      transformer: restartable(),
+    );
   }
 }

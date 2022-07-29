@@ -19,6 +19,7 @@ import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
@@ -241,8 +242,11 @@ void main() async {
                     commentRepository: commentRepo,
                     accountRepository: accountRepo,
                   );
-                  final artistCommentaryCubit = ArtistCommentaryBloc(
-                      artistCommentaryRepository: artistCommentaryRepo);
+                  final artistCommentaryBloc = ArtistCommentaryBloc(
+                      artistCommentaryRepository: ArtistCommentaryCacher(
+                    cache: LruCacher(capacity: 200),
+                    repo: artistCommentaryRepo,
+                  ));
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
                         ..getCurrentAccount();
@@ -304,7 +308,7 @@ void main() async {
                         BlocProvider.value(value: favoritedCubit),
                         BlocProvider.value(value: profileCubit),
                         BlocProvider.value(value: commentBloc),
-                        BlocProvider.value(value: artistCommentaryCubit),
+                        BlocProvider.value(value: artistCommentaryBloc),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
                         BlocProvider.value(value: blacklistedTagsBloc),
