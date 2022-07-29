@@ -210,8 +210,10 @@ void main() async {
 
                   final favoriteRepo = FavoritePostRepository(api, accountRepo);
 
-                  final artistCommentaryRepo =
-                      ArtistCommentaryRepository(api, accountRepo);
+                  final artistCommentaryRepo = ArtistCommentaryCacher(
+                    cache: LruCacher(capacity: 200),
+                    repo: ArtistCommentaryRepository(api, accountRepo),
+                  );
 
                   final poolRepo = PoolRepository(api, accountRepo);
 
@@ -245,10 +247,7 @@ void main() async {
                     accountRepository: accountRepo,
                   );
                   final artistCommentaryBloc = ArtistCommentaryBloc(
-                      artistCommentaryRepository: ArtistCommentaryCacher(
-                    cache: LruCacher(capacity: 200),
-                    repo: artistCommentaryRepo,
-                  ));
+                      artistCommentaryRepository: artistCommentaryRepo);
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
                         ..getCurrentAccount();
@@ -272,7 +271,7 @@ void main() async {
 
                   final tagBloc = TagBloc(
                     tagRepository: TagCacher(
-                      cache: LruCacher(capacity: 500),
+                      cache: LruCacher(capacity: 1000),
                       repo: tagRepo,
                     ),
                   );
@@ -310,6 +309,8 @@ void main() async {
                           value: relatedTagRepo),
                       RepositoryProvider<IWikiRepository>.value(
                           value: wikiRepo),
+                      RepositoryProvider<IArtistCommentaryRepository>.value(
+                          value: artistCommentaryRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [

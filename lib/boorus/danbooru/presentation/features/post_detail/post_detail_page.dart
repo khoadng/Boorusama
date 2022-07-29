@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
@@ -120,8 +121,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 showSlideShowConfig: showSlideShowConfig,
                 posts: widget.posts,
               )
-            : BlocProvider.value(
-                value: context.read<TagBloc>(),
+            : MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: context.read<TagBloc>()),
+                  BlocProvider(
+                    create: (_) => ArtistCommentaryBloc(
+                      artistCommentaryRepository:
+                          context.read<IArtistCommentaryRepository>(),
+                    ),
+                  ),
+                ],
                 child: _LargeLayout(
                   autoPlay: autoPlay,
                   slideShowConfig: slideShowConfig,

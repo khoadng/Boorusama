@@ -196,6 +196,18 @@ class _ArtistSectionState extends State<ArtistSection> {
               ],
             ),
           );
+        } else if (state.status == LoadStatus.initial ||
+            state.status == LoadStatus.loading) {
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+              ),
+            ),
+          );
         } else {
           return const SizedBox.shrink();
         }
