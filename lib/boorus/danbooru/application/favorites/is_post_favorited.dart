@@ -33,9 +33,14 @@ class IsPostFavoritedBloc
   }) : super(const AsyncLoadState.initial()) {
     on<IsPostFavoritedRequested>(
       (event, emit) async {
+        final account = await accountRepository.get();
+        if (account == Account.empty) {
+          emit(const AsyncLoadState.success(false));
+          return;
+        }
+
         await tryAsync<bool>(
           action: () async {
-            final account = await accountRepository.get();
             final isFaved = favoritePostRepository.checkIfFavoritedByUser(
                 account.id, event.postId);
 
