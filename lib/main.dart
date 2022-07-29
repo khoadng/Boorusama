@@ -29,6 +29,8 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
@@ -268,6 +270,13 @@ void main() async {
                     blacklistedTagsRepository: blacklistedTagRepo,
                   )..add(const PostRefreshed());
 
+                  final tagBloc = TagBloc(
+                    tagRepository: TagCacher(
+                      cache: LruCacher(capacity: 500),
+                      repo: tagRepo,
+                    ),
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -317,6 +326,7 @@ void main() async {
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: postBloc),
+                        BlocProvider.value(value: tagBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

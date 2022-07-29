@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
@@ -109,10 +108,8 @@ class _PostInfoState extends State<PostInfo> {
                 ),
               )),
               SliverToBoxAdapter(
-                  child: BlocProvider(
-                create: (context) => TagBloc(
-                    tagRepository:
-                        RepositoryProvider.of<ITagRepository>(context))
+                  child: BlocProvider.value(
+                value: context.read<TagBloc>()
                   ..add(TagFetched(tags: widget.post.tags)),
                 child: const PostTagList(),
               )),

@@ -20,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/application/recommended/recommended.da
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -96,6 +95,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
         });
       }
     });
+    context.read<TagBloc>().add(TagFetched(tags: widget.post.tags));
   }
 
   @override
@@ -120,11 +120,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 showSlideShowConfig: showSlideShowConfig,
                 posts: widget.posts,
               )
-            : BlocProvider(
-                create: (context) => TagBloc(
-                    tagRepository:
-                        RepositoryProvider.of<ITagRepository>(context))
-                  ..add(TagFetched(tags: widget.post.tags)),
+            : BlocProvider.value(
+                value: context.read<TagBloc>(),
                 child: _LargeLayout(
                   autoPlay: autoPlay,
                   slideShowConfig: slideShowConfig,
