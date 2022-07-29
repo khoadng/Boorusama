@@ -26,20 +26,22 @@ class _LoginPageState extends State<LoginPage> {
       ),
       resizeToAvoidBottomInset: false,
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            Text(
-              'login.form.greeting'.tr(),
-              style: TextStyle(
-                fontWeight: FontWeight.w800,
-                color: Colors.white70,
-                fontSize: FontSize.xLarge.size,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Text(
+                'login.form.greeting'.tr(),
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: Colors.white70,
+                  fontSize: FontSize.xLarge.size,
+                ),
               ),
-            ),
-            const Center(
-              child: LoginBox(),
-            )
-          ],
+              const Center(
+                child: LoginBox(),
+              )
+            ],
+          ),
         ),
       ),
     );
