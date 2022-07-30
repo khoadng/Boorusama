@@ -120,6 +120,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 imagePath: imagePath,
                 showSlideShowConfig: showSlideShowConfig,
                 posts: widget.posts,
+                childBuilder: (context, post) => PostMediaItem(
+                  post: post,
+                  onCached: (path) => imagePath.value = path,
+                ),
               )
             : MultiBlocProvider(
                 providers: [
@@ -139,6 +143,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   showSlideShowConfig: showSlideShowConfig,
                   initialIndex: widget.intitialIndex,
                   posts: widget.posts,
+                  childBuilder: (context, post) => PostMediaItem(
+                    post: post,
+                    onCached: (path) => imagePath.value = path,
+                  ),
                 ),
               ),
       ),
@@ -156,6 +164,7 @@ class _LargeLayout extends StatelessWidget {
     required this.showSlideShowConfig,
     required this.initialIndex,
     required this.posts,
+    required this.childBuilder,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
@@ -165,6 +174,7 @@ class _LargeLayout extends StatelessWidget {
   final ValueNotifier<bool> showSlideShowConfig;
   final int initialIndex;
   final List<Post> posts;
+  final Widget Function(BuildContext context, Post post) childBuilder;
 
   Post get post => posts[currentPostIndex.value];
 
@@ -182,7 +192,6 @@ class _LargeLayout extends StatelessWidget {
                     autoPlay: autoPlay,
                     slideShowConfig: slideShowConfig,
                     currentPostIndex: currentPostIndex,
-                    imagePath: imagePath,
                     posts: posts,
                     onPageChanged: (index) {
                       context.read<TagBloc>().add(TagFetched(tags: post.tags));
@@ -192,12 +201,7 @@ class _LargeLayout extends StatelessWidget {
                     },
                     builder: (post, minimal) => Stack(
                       children: [
-                        Positioned.fill(
-                          child: PostMediaItem(
-                            post: post,
-                            onCached: (path) => imagePath.value = path,
-                          ),
-                        ),
+                        childBuilder(context, post),
                       ],
                     ),
                   ),
@@ -453,6 +457,7 @@ class _SmallLayout extends StatelessWidget {
     required this.imagePath,
     required this.showSlideShowConfig,
     required this.posts,
+    required this.childBuilder,
   }) : super(key: key);
 
   final ValueNotifier<bool> autoPlay;
@@ -461,6 +466,7 @@ class _SmallLayout extends StatelessWidget {
   final ValueNotifier<String?> imagePath;
   final ValueNotifier<bool> showSlideShowConfig;
   final List<Post> posts;
+  final Widget Function(BuildContext context, Post post) childBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -471,12 +477,12 @@ class _SmallLayout extends StatelessWidget {
             autoPlay: autoPlay,
             slideShowConfig: slideShowConfig,
             currentPostIndex: currentPostIndex,
-            imagePath: imagePath,
             posts: posts,
             builder: (post, minimal) => PostDetail(
               post: post,
               minimal: minimal,
               imagePath: imagePath,
+              childBuilder: childBuilder,
             ),
           ),
           ShadowGradientOverlay(
@@ -556,7 +562,6 @@ class _CarouselSlider extends StatelessWidget {
     required this.autoPlay,
     required this.slideShowConfig,
     required this.currentPostIndex,
-    required this.imagePath,
     required this.posts,
     required this.builder,
     this.onPageChanged,
@@ -565,7 +570,6 @@ class _CarouselSlider extends StatelessWidget {
   final ValueNotifier<bool> autoPlay;
   final ValueNotifier<SlideShowConfiguration> slideShowConfig;
   final ValueNotifier<int> currentPostIndex;
-  final ValueNotifier<String?> imagePath;
   final List<Post> posts;
   final Widget Function(Post post, bool minimal) builder;
   final void Function(int index)? onPageChanged;

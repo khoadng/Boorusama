@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/parent_child_post_page.dart';
 import 'models/parent_child_data.dart';
-import 'widgets/post_media_item.dart';
 import 'widgets/widgets.dart';
 
 class PostDetail extends StatefulWidget {
@@ -23,11 +22,16 @@ class PostDetail extends StatefulWidget {
     required this.post,
     this.minimal = false,
     required this.imagePath,
+    required this.childBuilder,
   }) : super(key: key);
 
   final Post post;
   final bool minimal;
   final ValueNotifier<String?> imagePath;
+  final Widget Function(
+    BuildContext context,
+    Post post,
+  ) childBuilder;
 
   @override
   State<PostDetail> createState() => _PostDetailState();
@@ -45,16 +49,12 @@ class _PostDetailState extends State<PostDetail> {
 
   @override
   Widget build(BuildContext context) {
-    final postWidget = PostMediaItem(
-      post: widget.post,
-      onCached: (path) => imagePath.value = path,
-    );
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: widget.minimal
-            ? Center(child: postWidget)
+            ? Center(child: widget.childBuilder(context, widget.post))
             : BlocBuilder<SettingsCubit, SettingsState>(
                 buildWhen: (previous, current) =>
                     previous.settings.actionBarDisplayBehavior !=
@@ -65,7 +65,12 @@ class _PostDetailState extends State<PostDetail> {
                       CustomScrollView(
                         controller: scrollController,
                         slivers: [
-                          SliverToBoxAdapter(child: postWidget),
+                          SliverToBoxAdapter(
+                            child: widget.childBuilder(
+                              context,
+                              widget.post,
+                            ),
+                          ),
                           const SliverToBoxAdapter(child: PoolTiles()),
                           SliverToBoxAdapter(
                             child: Column(
