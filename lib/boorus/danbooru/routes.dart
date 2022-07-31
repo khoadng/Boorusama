@@ -282,29 +282,22 @@ final poolDetailHandler =
   final args = context!.settings!.arguments as List;
   final pool = args[0] as Pool;
 
-  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-    builder: (context, state) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) => PoolDetailCubit(
-                  ids: Queue.from(pool.postIds.reversed),
-                  postRepository:
-                      RepositoryProvider.of<IPostRepository>(context))
-                ..load()),
-          BlocProvider(
-              create: (context) =>
-                  PoolDescriptionCubit(endpoint: state.booru.url)),
-          BlocProvider(
-              create: (context) => NoteBloc(
-                  noteRepository:
-                      RepositoryProvider.of<INoteRepository>(context))),
-        ],
-        child: PoolDetailPage(
-          pool: pool,
-        ),
-      );
-    },
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PoolDetailCubit(
+              ids: Queue.from(pool.postIds.reversed),
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..load()),
+      BlocProvider.value(
+          value: context.read<PoolDescriptionCubit>()..getDescription(pool.id)),
+      BlocProvider(
+          create: (context) => NoteBloc(
+              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
+    ],
+    child: PoolDetailPage(
+      pool: pool,
+    ),
   );
 });
 

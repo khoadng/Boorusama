@@ -2,7 +2,6 @@
 import 'package:flutter/cupertino.dart';
 
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html/parser.dart' show parse;
@@ -10,6 +9,7 @@ import 'package:html/parser.dart' show parse;
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool.dart';
 
 @immutable
 class PoolDescriptionState extends Equatable {
@@ -28,14 +28,15 @@ class PoolDescriptionState extends Equatable {
 class PoolDescriptionCubit extends Cubit<AsyncLoadState<PoolDescriptionState>> {
   PoolDescriptionCubit({
     required this.endpoint,
+    required this.poolDescriptionRepository,
   }) : super(const AsyncLoadState.initial());
 
+  final PoolDescriptionRepository poolDescriptionRepository;
   final String endpoint;
 
   void getDescription(PoolId id) {
     tryAsync<String>(
-        action: () =>
-            Dio().get('${endpoint}pools/$id').then((value) => value.data),
+        action: () => poolDescriptionRepository.getDescription(id),
         onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
         onLoading: () => emit(const AsyncLoadState.loading()),
         onSuccess: (html) async {

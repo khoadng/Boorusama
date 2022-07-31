@@ -29,6 +29,7 @@ import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
@@ -242,6 +243,11 @@ void main() async {
 
                   final wikiRepo = WikiRepository(api);
 
+                  final poolDescriptionRepo = PoolDescriptionRepository(
+                    dio: state.dio,
+                    endpoint: state.dio.options.baseUrl,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -322,6 +328,14 @@ void main() async {
                     repo: noteRepo,
                   ));
 
+                  final poolDescriptionCubit = PoolDescriptionCubit(
+                    endpoint: state.dio.options.baseUrl,
+                    poolDescriptionRepository: PoolDescriptionCacher(
+                      cache: LruCacher(capacity: 100),
+                      repo: poolDescriptionRepo,
+                    ),
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -380,6 +394,7 @@ void main() async {
                         BlocProvider.value(value: artistCubit),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: poolDescriptionCubit),
                       ],
                       child: MultiBlocListener(
                         listeners: [
