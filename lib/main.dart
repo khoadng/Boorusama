@@ -19,6 +19,7 @@ import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -33,6 +34,8 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
@@ -278,6 +281,39 @@ void main() async {
                     ),
                   );
 
+                  final recommendArtistCubit = RecommendedArtistPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final recommendedCharaCubit = RecommendedCharacterPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: FifoCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final poolFromIdBloc = PoolFromPostIdBloc(
+                    poolRepository: PoolFromPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      poolRepository: poolRepo,
+                    ),
+                  );
+
+                  final artistCubit = ArtistCubit(
+                    artistRepository: ArtistCacher(
+                      repo: artistRepo,
+                      cache: LruCacher(capacity: 100),
+                    ),
+                  );
+
+                  final wikiBloc = WikiBloc(
+                    wikiRepository: WikiCacher(
+                        cache: LruCacher(capacity: 200), repo: wikiRepo),
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -330,32 +366,11 @@ void main() async {
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: postBloc),
                         BlocProvider.value(value: tagBloc),
-                        BlocProvider(
-                          create: (context) => RecommendedArtistPostCubit(
-                            postRepository: RecommendedPostCacher(
-                              cache:
-                                  LruCacher<String, List<Post>>(capacity: 500),
-                              postRepository: context.read<IPostRepository>(),
-                            ),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (context) => PoolFromPostIdBloc(
-                            poolRepository: PoolFromPostCacher(
-                              cache: LruCacher<int, List<Pool>>(capacity: 500),
-                              poolRepository: context.read<PoolRepository>(),
-                            ),
-                          ),
-                        ),
-                        BlocProvider(
-                          create: (context) => RecommendedCharacterPostCubit(
-                            postRepository: RecommendedPostCacher(
-                              cache:
-                                  FifoCacher<String, List<Post>>(capacity: 500),
-                              postRepository: context.read<IPostRepository>(),
-                            ),
-                          ),
-                        ),
+                        BlocProvider.value(value: recommendArtistCubit),
+                        BlocProvider.value(value: recommendedCharaCubit),
+                        BlocProvider.value(value: poolFromIdBloc),
+                        BlocProvider.value(value: artistCubit),
+                        BlocProvider.value(value: wikiBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
