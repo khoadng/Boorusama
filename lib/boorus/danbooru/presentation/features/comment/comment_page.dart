@@ -18,9 +18,11 @@ class CommentPage extends StatefulWidget {
   const CommentPage({
     Key? key,
     required this.postId,
+    this.useAppBar = true,
   }) : super(key: key);
 
   final int postId;
+  final bool useAppBar;
 
   @override
   State<CommentPage> createState() => _CommentPageState();
@@ -71,50 +73,50 @@ class _CommentPageState extends State<CommentPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.keyboard_arrow_down),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
-        body: SafeArea(
-          child: BlocBuilder<CommentBloc, CommentState>(
-            builder: (context, state) {
-              if (state.status == LoadStatus.success) {
-                return GestureDetector(
-                  onTap: () => isEditing.value = false,
-                  child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-                    builder: (context, auth) {
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: _buildCommentSection(
-                              state.comments,
-                              auth,
-                            ),
+        appBar: widget.useAppBar
+            ? AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              )
+            : null,
+        body: BlocBuilder<CommentBloc, CommentState>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              return GestureDetector(
+                onTap: () => isEditing.value = false,
+                child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+                  builder: (context, auth) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: _buildCommentSection(
+                            state.comments,
+                            auth,
                           ),
-                          if (auth is Authenticated)
-                            ValueListenableBuilder(
-                              valueListenable: _commentReply,
-                              builder: (_, CommentData? value, __) =>
-                                  _buildCommentTextField(value),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                );
-              } else if (state.status == LoadStatus.failure) {
-                return const Center(
-                  child: Text('Something went wrong'),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              }
-            },
-          ),
+                        ),
+                        if (auth is Authenticated)
+                          ValueListenableBuilder(
+                            valueListenable: _commentReply,
+                            builder: (_, CommentData? value, __) =>
+                                _buildCommentTextField(value),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            } else if (state.status == LoadStatus.failure) {
+              return const Center(
+                child: Text('Something went wrong'),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+          },
         ),
       ),
     );

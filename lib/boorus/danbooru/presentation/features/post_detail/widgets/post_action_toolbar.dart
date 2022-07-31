@@ -105,8 +105,27 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
               ),
             )
           : SideSheet.right(
-              body: CommentPage(
-                postId: widget.post.id,
+              width: 350,
+              body: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: IconButton(
+                        onPressed: Navigator.of(context).pop,
+                        icon: const Icon(Icons.close),
+                      ),
+                    ),
+                    Expanded(
+                      child: CommentPage(
+                        useAppBar: false,
+                        postId: widget.post.id,
+                      ),
+                    ),
+                  ],
+                ),
               ),
               context: context),
       icon: const FaIcon(
