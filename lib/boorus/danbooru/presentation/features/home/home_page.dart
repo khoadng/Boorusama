@@ -83,63 +83,38 @@ class _HomePageState extends State<HomePage> {
                                             icon: const Icon(Icons.menu),
                                           ),
                                         ),
-                                        Container(
-                                          color: index == 0
-                                              ? Colors.grey[800]
-                                              : Colors.transparent,
-                                          child: ListTile(
-                                            // selected: index == 0,
-                                            textColor: index == 0
-                                                ? Colors.white
-                                                : null,
-                                            leading: index == 0
-                                                ? const Icon(Icons.dashboard)
-                                                : const Icon(
-                                                    Icons.dashboard_outlined),
-                                            title: const Text('Home'),
-                                            onTap: () => viewIndex.value = 0,
-                                            // tileColor: index == 0
-                                            //     ? Colors.grey[600]
-                                            //     : Colors.transparent,
-                                          ),
+                                        _NavigationTile(
+                                          value: 0,
+                                          index: index,
+                                          selectedIcon:
+                                              const Icon(Icons.dashboard),
+                                          icon: const Icon(
+                                              Icons.dashboard_outlined),
+                                          title: const Text('Home'),
+                                          onTap: (value) =>
+                                              viewIndex.value = value,
                                         ),
-                                        Container(
-                                          color: index == 1
-                                              ? Colors.grey[800]
-                                              : Colors.transparent,
-                                          child: ListTile(
-                                            textColor: index == 1
-                                                ? Colors.white
-                                                : null,
-                                            leading: index == 1
-                                                ? const Icon(Icons.explore)
-                                                : const Icon(
-                                                    Icons.explore_outlined),
-                                            title: const Text('Explore'),
-                                            onTap: () => viewIndex.value = 1,
-                                            tileColor: index == 1
-                                                ? Colors.grey[600]
-                                                : Colors.transparent,
-                                          ),
+                                        _NavigationTile(
+                                          value: 1,
+                                          index: index,
+                                          selectedIcon:
+                                              const Icon(Icons.explore),
+                                          icon: const Icon(
+                                              Icons.photo_album_outlined),
+                                          title: const Text('Pool'),
+                                          onTap: (value) =>
+                                              viewIndex.value = value,
                                         ),
-                                        Container(
-                                          color: index == 2
-                                              ? Colors.grey[800]
-                                              : Colors.transparent,
-                                          child: ListTile(
-                                            textColor: index == 2
-                                                ? Colors.white
-                                                : null,
-                                            leading: index == 2
-                                                ? const Icon(Icons.photo_album)
-                                                : const Icon(
-                                                    Icons.photo_album_outlined),
-                                            title: const Text('Pool'),
-                                            onTap: () => viewIndex.value = 2,
-                                            tileColor: index == 2
-                                                ? Colors.grey[600]
-                                                : Colors.transparent,
-                                          ),
+                                        _NavigationTile(
+                                          value: 2,
+                                          index: index,
+                                          selectedIcon:
+                                              const Icon(Icons.photo_album),
+                                          icon: const Icon(
+                                              Icons.explore_outlined),
+                                          title: const Text('Explore'),
+                                          onTap: (value) =>
+                                              viewIndex.value = value,
                                         ),
                                       ]
                                     : null,
@@ -265,5 +240,39 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+  }
+}
+
+class _NavigationTile extends StatelessWidget {
+  const _NavigationTile({
+    Key? key,
+    required this.value,
+    required this.index,
+    required this.selectedIcon,
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  }) : super(key: key);
+
+  final int index;
+  final int value;
+  final Widget selectedIcon;
+  final Widget icon;
+  final Widget title;
+  final void Function(int value) onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: index == value ? Colors.grey[800] : Colors.transparent,
+      child: InkWell(
+        child: ListTile(
+          textColor: index == value ? Colors.white : null,
+          leading: index == value ? selectedIcon : icon,
+          title: title,
+          onTap: () => onTap(value),
+        ),
+      ),
+    );
   }
 }
