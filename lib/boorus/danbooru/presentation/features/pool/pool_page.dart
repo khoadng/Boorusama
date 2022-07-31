@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositori
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatefulWidget {
@@ -226,31 +227,18 @@ class PoolOptionsHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                   ),
                 ),
-                onPressed: () => showMaterialModalBottomSheet(
-                    context: context,
-                    builder: (context) => BlocProvider.value(
-                          value: BlocProvider.of<PoolOverviewBloc>(context),
-                          child: Material(
-                            child: SafeArea(
-                              top: false,
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: PoolOrder.values
-                                      .map((e) => ListTile(
-                                            title: Text(_poolOrderToString(e))
-                                                .tr(),
-                                            onTap: () {
-                                              AppRouter.router.pop(context);
-                                              context
-                                                  .read<PoolOverviewBloc>()
-                                                  .add(PoolOverviewChanged(
-                                                      order: e));
-                                            },
-                                          ))
-                                      .toList()),
-                            ),
-                          ),
-                        )),
+                onPressed: () {
+                  Screen.of(context).size == ScreenSize.small
+                      ? showMaterialModalBottomSheet(
+                          context: context,
+                          builder: (context) => const _OrderMenu())
+                      : showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                                contentPadding: EdgeInsets.zero,
+                                content: _OrderMenu(),
+                              ));
+                },
                 child: Row(
                   children: <Widget>[
                     Text(_poolOrderToString(state.order)).tr(),
@@ -261,6 +249,37 @@ class PoolOptionsHeader extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OrderMenu extends StatelessWidget {
+  const _OrderMenu({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: BlocProvider.of<PoolOverviewBloc>(context),
+      child: Material(
+        child: SafeArea(
+          top: false,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: PoolOrder.values
+                  .map((e) => ListTile(
+                        title: Text(_poolOrderToString(e)).tr(),
+                        onTap: () {
+                          AppRouter.router.pop(context);
+                          context
+                              .read<PoolOverviewBloc>()
+                              .add(PoolOverviewChanged(order: e));
+                        },
+                      ))
+                  .toList()),
+        ),
       ),
     );
   }

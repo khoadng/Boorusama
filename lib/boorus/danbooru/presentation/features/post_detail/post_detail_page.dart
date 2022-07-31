@@ -77,20 +77,34 @@ class _PostDetailPageState extends State<PostDetailPage> {
     showSlideShowConfig.addListener(() {
       if (showSlideShowConfig.value) {
         WidgetsBinding.instance.addPostFrameCallback((_) async {
-          final confirm = await showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (context) => Wrap(
-                  children: [
-                    SlideShowConfigBottomModal(
-                      initialConfig: slideShowConfig.value,
-                      onConfigChanged: (config) =>
-                          slideShowConfig.value = config,
-                    )
-                  ],
-                ),
-              ) ??
-              false;
+          final modal = Wrap(
+            children: [
+              SlideShowConfigContainer(
+                initialConfig: slideShowConfig.value,
+                onConfigChanged: (config) => slideShowConfig.value = config,
+              )
+            ],
+          );
+          final confirm = Screen.of(context).size == ScreenSize.small
+              ? (await showModalBottomSheet(
+                    backgroundColor: Colors.transparent,
+                    context: context,
+                    builder: (context) => modal,
+                  ) ??
+                  false)
+              : (await showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      content: SlideShowConfigContainer(
+                        isModal: false,
+                        initialConfig: slideShowConfig.value,
+                        onConfigChanged: (config) =>
+                            slideShowConfig.value = config,
+                      ),
+                      contentPadding: EdgeInsets.zero,
+                    ),
+                  ) ??
+                  false);
           showSlideShowConfig.value = false;
           autoPlay.value = confirm;
         });
