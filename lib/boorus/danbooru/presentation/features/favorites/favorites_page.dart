@@ -2,13 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 
 enum _Action {
@@ -27,6 +27,7 @@ class FavoritesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text('profile.favorites').tr(),
         actions: [
           BlocBuilder<PostBloc, PostState>(
             buildWhen: (previous, current) =>
@@ -43,8 +44,7 @@ class FavoritesPage extends StatelessWidget {
                       default:
                     }
                   },
-                  itemBuilder: (BuildContext context) =>
-                      <PopupMenuEntry<_Action>>[
+                  itemBuilder: (context) => [
                     PopupMenuItem<_Action>(
                       value: _Action.downloadAll,
                       child: ListTile(
@@ -77,58 +77,8 @@ class FavoritesPage extends StatelessWidget {
               },
               builder: (context, controller) => CustomScrollView(
                 controller: controller,
-                slivers: <Widget>[
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    sliver: BlocBuilder<PostBloc, PostState>(
-                      buildWhen: (previous, current) =>
-                          current.status != LoadStatus.loading,
-                      builder: (context, state) {
-                        if (state.status == LoadStatus.initial) {
-                          return const SliverPostGridPlaceHolder();
-                        } else if (state.status == LoadStatus.success) {
-                          if (state.posts.isEmpty) {
-                            return const SliverToBoxAdapter(
-                                child: Center(child: Text('No data')));
-                          }
-                          return SliverPostGrid(
-                            posts: state.posts,
-                            scrollController: controller,
-                            onTap: (post, index) => AppRouter.router.navigateTo(
-                              context,
-                              '/post/detail',
-                              routeSettings: RouteSettings(
-                                arguments: [
-                                  state.posts,
-                                  index,
-                                  controller,
-                                ],
-                              ),
-                            ),
-                          );
-                        } else if (state.status == LoadStatus.loading) {
-                          return const SliverToBoxAdapter(
-                            child: SizedBox.shrink(),
-                          );
-                        } else {
-                          return const SliverToBoxAdapter(
-                            child: Center(
-                              child: Text('Something went wrong'),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
-                  if (state.status == LoadStatus.loading && state.hasMore)
-                    const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    ),
+                slivers: [
+                  HomePostGrid(controller: controller),
                 ],
               ),
             );
