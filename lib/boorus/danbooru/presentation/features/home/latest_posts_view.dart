@@ -81,9 +81,12 @@ class _LatestViewState extends State<LatestView> {
           scrollController: _autoScrollController,
           builder: (context, controller) => CustomScrollView(
             controller: controller,
-            slivers: <Widget>[
+            slivers: [
               _buildAppBar(context),
-              _buildMostSearchTagList(),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 2),
+                sliver: _buildMostSearchTagList(),
+              ),
               HomePostGrid(controller: controller),
               BlocBuilder<PostBloc, PostState>(
                 builder: (context, state) {
@@ -113,17 +116,33 @@ class _LatestViewState extends State<LatestView> {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      toolbarHeight: kToolbarHeight * 1.2,
-      title: SearchBar(
-        enabled: false,
-        leading: widget.onMenuTap != null
-            ? IconButton(
-                icon: const Icon(Icons.menu),
-                onPressed: () => widget.onMenuTap!(),
-              )
-            : null,
-        onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
-            routeSettings: const RouteSettings(arguments: [''])),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: SearchBar(
+              enabled: false,
+              leading: widget.onMenuTap != null
+                  ? IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => widget.onMenuTap!(),
+                    )
+                  : null,
+              onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
+                  routeSettings: const RouteSettings(arguments: [''])),
+            ),
+          ),
+          if (isDesktopPlatform())
+            MaterialButton(
+              color: Theme.of(context).cardColor,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(20),
+              onPressed: () =>
+                  context.read<PostBloc>().add(const PostRefreshed()),
+              child: const Icon(Icons.refresh),
+            ),
+        ],
       ),
       floating: true,
       snap: true,
@@ -178,6 +197,10 @@ class _LatestViewState extends State<LatestView> {
                 padding: const EdgeInsets.all(4),
                 labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
+                side: BorderSide(
+                  width: 0.5,
+                  color: Theme.of(context).hintColor,
+                ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.85),

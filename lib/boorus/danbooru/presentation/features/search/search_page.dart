@@ -26,13 +26,6 @@ import 'error_view.dart';
 import 'result_view.dart';
 import 'search_button.dart';
 
-double? _screenSizeToWidthWeight(ScreenSize size) {
-  if (size == ScreenSize.small) return null;
-  if (size == ScreenSize.medium) return 0.35;
-  if (size == ScreenSize.large) return 0.3;
-  return 0.25;
-}
-
 class SearchPage extends StatefulWidget {
   const SearchPage({
     Key? key,
@@ -160,11 +153,11 @@ class _SearchPageState extends State<SearchPage> {
       ],
       child: Screen.of(context).size != ScreenSize.small
           ? _LargeLayout(
-              autoFocus: false,
+              autoFocus: true,
               queryEditingController: queryEditingController,
             )
           : _SmallLayout(
-              autoFocus: false,
+              autoFocus: true,
               queryEditingController: queryEditingController,
             ),
     );
@@ -188,9 +181,7 @@ class _LargeLayout extends StatelessWidget {
       body: Row(
         children: [
           ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width *
-                    _screenSizeToWidthWeight(Screen.of(context).size)!),
+            constraints: const BoxConstraints(maxWidth: 250),
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: _AppBar(
@@ -390,9 +381,7 @@ class _Divider extends StatelessWidget {
       builder: (context, tags) => tags.isNotEmpty
           ? const Divider(
               height: 15,
-              thickness: 3,
-              indent: 10,
-              endIndent: 10,
+              thickness: 1,
             )
           : const SizedBox.shrink(),
     );

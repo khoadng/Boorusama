@@ -22,11 +22,11 @@ class AppTheme {
     chipTheme: const ChipThemeData().copyWith(
       backgroundColor: const Color.fromARGB(255, 230, 230, 230),
       disabledColor: const Color.fromARGB(255, 115, 127, 141),
-      selectedColor: const Color.fromARGB(255, 114, 137, 218),
+      selectedColor: const Color.fromARGB(255, 0, 0, 0),
       labelStyle:
-          const TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          const TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
       secondaryLabelStyle:
-          const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
     ),
     floatingActionButtonTheme:
         const FloatingActionButtonThemeData(foregroundColor: Colors.white),

@@ -111,10 +111,12 @@ class BlacklistedTagsPage extends StatelessWidget {
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
               title: Text(tag),
               trailing: PopupMenuButton(
+                constraints: const BoxConstraints(minWidth: 150),
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(4)),
                 itemBuilder: (context) => [
                   PopupMenuItem(
+                    padding: EdgeInsets.zero,
                     child: ListTile(
                       onTap: () {
                         Navigator.of(context).pop();
@@ -122,14 +124,15 @@ class BlacklistedTagsPage extends StatelessWidget {
                             .read<BlacklistedTagsBloc>()
                             .add(BlacklistedTagRemoved(tag: tag));
                       },
-                      leading: const Text('blacklisted_tags.remove').tr(),
+                      title: const Text('blacklisted_tags.remove').tr(),
                       trailing: const FaIcon(
                         FontAwesomeIcons.trash,
-                        size: 12,
+                        size: 16,
                       ),
                     ),
                   ),
                   PopupMenuItem(
+                    padding: EdgeInsets.zero,
                     child: ListTile(
                       onTap: () {
                         final bloc = context.read<BlacklistedTagsBloc>();
@@ -158,10 +161,10 @@ class BlacklistedTagsPage extends StatelessWidget {
                           oldWidget: this,
                         ));
                       },
-                      leading: const Text('blacklisted_tags.edit').tr(),
+                      title: const Text('blacklisted_tags.edit').tr(),
                       trailing: const FaIcon(
                         FontAwesomeIcons.pen,
-                        size: 12,
+                        size: 16,
                       ),
                     ),
                   ),

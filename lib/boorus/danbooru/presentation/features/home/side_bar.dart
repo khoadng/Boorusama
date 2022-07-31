@@ -10,14 +10,6 @@ import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
-
-double _screenSizeToWidthWeight(ScreenSize size) {
-  if (size == ScreenSize.small) return 0.7;
-  if (size == ScreenSize.medium) return 0.3;
-  if (size == ScreenSize.large) return 0.2;
-  return 0.15;
-}
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
@@ -25,27 +17,25 @@ class SideBarMenu extends StatelessWidget {
     this.width,
     this.popOnSelect = false,
     this.initialContentBuilder,
+    this.padding,
   }) : super(key: key);
 
   final double? width;
+  final EdgeInsets? padding;
   final bool popOnSelect;
   final List<Widget>? Function(BuildContext context)? initialContentBuilder;
 
   @override
   Widget build(BuildContext context) {
-    final size = Screen.of(context).size;
     return Container(
       color: Theme.of(context).backgroundColor,
-      constraints: BoxConstraints.expand(
-          width: width ??
-              MediaQuery.of(context).size.width *
-                  _screenSizeToWidthWeight(size)),
+      constraints: BoxConstraints.expand(width: width ?? 210),
       child: SingleChildScrollView(
         child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
               return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 6),
+                padding: padding ?? const EdgeInsets.symmetric(horizontal: 10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

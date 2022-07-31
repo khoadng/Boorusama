@@ -33,9 +33,6 @@ class TagSuggestionItems extends StatelessWidget {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return ListView.builder(
-            // shrinkWrap: true,
-            // itemCount: _tags.length > 6 ? 6 : _tags.length,
-            // physics: const NeverScrollableScrollPhysics(),
             itemCount: _tags.length,
             itemBuilder: (context, index) {
               final tag = _tags[index];

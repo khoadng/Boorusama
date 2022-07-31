@@ -53,7 +53,11 @@ class _HomePageState extends State<HomePage> {
             extendBody: true,
             key: scaffoldKey,
             drawer: screenSize == ScreenSize.small
-                ? const SideBarMenu(popOnSelect: true)
+                ? const SideBarMenu(
+                    width: 300,
+                    popOnSelect: true,
+                    padding: EdgeInsets.zero,
+                  )
                 : null,
             resizeToAvoidBottomInset: false,
             body: Row(
