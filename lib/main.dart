@@ -26,6 +26,8 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -211,7 +213,7 @@ void main() async {
                   final userRepo = UserRepository(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
-                  final nopeRepo = NoteRepository(api);
+                  final noteRepo = NoteRepository(api);
 
                   final favoriteRepo = FavoritePostRepository(api, accountRepo);
 
@@ -314,6 +316,12 @@ void main() async {
                         cache: LruCacher(capacity: 200), repo: wikiRepo),
                   );
 
+                  final noteBloc = NoteBloc(
+                      noteRepository: NoteCacher(
+                    cache: LruCacher(capacity: 100),
+                    repo: noteRepo,
+                  ));
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -328,7 +336,7 @@ void main() async {
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
-                          value: nopeRepo),
+                          value: noteRepo),
                       RepositoryProvider<IPostRepository>.value(
                           value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
@@ -371,6 +379,7 @@ void main() async {
                         BlocProvider.value(value: poolFromIdBloc),
                         BlocProvider.value(value: artistCubit),
                         BlocProvider.value(value: wikiBloc),
+                        BlocProvider.value(value: noteBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

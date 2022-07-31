@@ -232,10 +232,10 @@ final postDetailImageHandler = Handler(handlerFunc: (
 
   return MultiBlocProvider(
     providers: [
-      BlocProvider(
-          create: (_) => NoteBloc(
-              noteRepository: RepositoryProvider.of<INoteRepository>(context))
-            ..add(NoteRequested(postId: args[0].id)))
+      BlocProvider.value(
+          value: context.read<NoteBloc>()
+            ..add(const NoteReset())
+            ..add(NoteRequested(postId: args[0].id))),
     ],
     child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
       selector: (state) => state.settings.imageQualityInFullView,
