@@ -13,8 +13,8 @@ import 'package:toggle_switch/toggle_switch.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 
 class TagDetailPage extends StatefulWidget {
@@ -209,7 +209,10 @@ class _PanelState extends State<_Panel> {
         borderRadius: const BorderRadius.all(Radius.circular(24)),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(left: 16, right: 16, top: 16),
+        padding: const EdgeInsets.only(
+          left: 8,
+          right: 8,
+        ),
         child: BlocBuilder<PostBloc, PostState>(
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
@@ -230,6 +233,11 @@ class _PanelState extends State<_Panel> {
               builder: (context, controller) => CustomScrollView(
                 controller: controller,
                 slivers: [
+                  SliverToBoxAdapter(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).viewPadding.top,
+                    ),
+                  ),
                   SliverPadding(
                     padding: const EdgeInsets.only(bottom: 10),
                     sliver: SliverToBoxAdapter(
@@ -243,48 +251,7 @@ class _PanelState extends State<_Panel> {
                       ),
                     ),
                   ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 14),
-                    sliver: BlocBuilder<PostBloc, PostState>(
-                      buildWhen: (previous, current) =>
-                          current.status != LoadStatus.loading,
-                      builder: (context, state) {
-                        if (state.status == LoadStatus.initial) {
-                          return const SliverPostGridPlaceHolder();
-                        } else if (state.status == LoadStatus.success) {
-                          if (state.posts.isEmpty) {
-                            return const SliverToBoxAdapter(
-                                child: Center(child: Text('No data')));
-                          }
-                          return SliverPostGrid(
-                            posts: state.posts,
-                            scrollController: controller,
-                            onTap: (post, index) => AppRouter.router.navigateTo(
-                              context,
-                              '/post/detail',
-                              routeSettings: RouteSettings(
-                                arguments: [
-                                  state.posts,
-                                  index,
-                                  controller,
-                                ],
-                              ),
-                            ),
-                          );
-                        } else if (state.status == LoadStatus.loading) {
-                          return const SliverToBoxAdapter(
-                            child: SizedBox.shrink(),
-                          );
-                        } else {
-                          return const SliverToBoxAdapter(
-                            child: Center(
-                              child: Text('Something went wrong'),
-                            ),
-                          );
-                        }
-                      },
-                    ),
-                  ),
+                  HomePostGrid(controller: controller),
                   BlocBuilder<PostBloc, PostState>(
                     builder: (context, state) {
                       if (state.status == LoadStatus.loading) {

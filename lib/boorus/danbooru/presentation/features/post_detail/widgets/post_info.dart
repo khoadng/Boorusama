@@ -232,34 +232,56 @@ class SourceLink extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      visualDensity: VisualDensity.compact,
-      title: title,
-      subtitle: InkWell(
-        onLongPress: () =>
-            Clipboard.setData(ClipboardData(text: uri.toString()))
-                .then((_) => showSimpleSnackBar(
-                      duration: const Duration(seconds: 1),
-                      context: context,
-                      content: const Text('post.detail.copied').tr(),
-                    )),
-        onTap: () {
-          if (uri == null) return;
-          launchExternalUrl(uri!);
-        },
-        child: Text(
-          uri.toString(),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.caption,
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8,
+        top: 8,
+        bottom: 8,
+      ),
+      child: SizedBox(
+        height: 50,
+        child: Row(
+          children: [
+            CircleAvatar(
+              child: Center(
+                child: Text(name.getFirstCharacter().toUpperCase()),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Flexible(child: title),
+                  Flexible(
+                    child: InkWell(
+                      onLongPress: () =>
+                          Clipboard.setData(ClipboardData(text: uri.toString()))
+                              .then((_) => showSimpleSnackBar(
+                                    duration: const Duration(seconds: 1),
+                                    context: context,
+                                    content:
+                                        const Text('post.detail.copied').tr(),
+                                  )),
+                      onTap: () {
+                        if (uri == null) return;
+                        launchExternalUrl(uri!);
+                      },
+                      child: Text(
+                        uri.toString(),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: Theme.of(context).textTheme.caption,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
         ),
       ),
-      leading: CircleAvatar(
-        child: Center(
-          child: Text(name.getFirstCharacter().toUpperCase()),
-        ),
-      ),
-      trailing: actionBuilder(),
     );
   }
 }

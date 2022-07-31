@@ -38,8 +38,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    final screenSize = screenWidthToDisplaySize(size.width);
+    final screenSize = Screen.of(context).size;
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -75,10 +74,14 @@ class _HomePageState extends State<HomePage> {
                                     ?
                                     //TODO: create a widget to manage this, also stop using index as a selected indicator
                                     [
-                                        IconButton(
-                                          onPressed: () =>
-                                              _onMenuTap(screenSize),
-                                          icon: const Icon(Icons.menu),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 6),
+                                          child: IconButton(
+                                            onPressed: () =>
+                                                _onMenuTap(screenSize),
+                                            icon: const Icon(Icons.menu),
+                                          ),
                                         ),
                                         Container(
                                           color: index == 0

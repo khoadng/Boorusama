@@ -82,6 +82,6 @@ class ExploreCarousel extends StatelessWidget {
 
 double _screenSizeToViewPortFraction(ScreenSize size) {
   if (size == ScreenSize.large) return 0.2;
-  if (size == ScreenSize.medium) return 0.35;
+  if (size == ScreenSize.medium) return 0.3;
   return 0.4;
 }

@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
@@ -79,6 +80,24 @@ class FavoritesPage extends StatelessWidget {
                 controller: controller,
                 slivers: [
                   HomePostGrid(controller: controller),
+                  BlocBuilder<PostBloc, PostState>(
+                    builder: (context, state) {
+                      if (state.status == LoadStatus.loading) {
+                        return const SliverPadding(
+                          padding: EdgeInsets.only(bottom: 20, top: 20),
+                          sliver: SliverToBoxAdapter(
+                            child: Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SliverToBoxAdapter(
+                          child: SizedBox.shrink(),
+                        );
+                      }
+                    },
+                  ),
                 ],
               ),
             );
