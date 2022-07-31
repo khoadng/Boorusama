@@ -82,6 +82,9 @@ class _HomePageState extends State<HomePage> {
                                               : Colors.transparent,
                                           child: ListTile(
                                             // selected: index == 0,
+                                            textColor: index == 0
+                                                ? Colors.white
+                                                : null,
                                             leading: index == 0
                                                 ? const Icon(Icons.dashboard)
                                                 : const Icon(
@@ -98,7 +101,9 @@ class _HomePageState extends State<HomePage> {
                                               ? Colors.grey[800]
                                               : Colors.transparent,
                                           child: ListTile(
-                                            // selected: index == 1,
+                                            textColor: index == 1
+                                                ? Colors.white
+                                                : null,
                                             leading: index == 1
                                                 ? const Icon(Icons.explore)
                                                 : const Icon(
@@ -115,7 +120,9 @@ class _HomePageState extends State<HomePage> {
                                               ? Colors.grey[800]
                                               : Colors.transparent,
                                           child: ListTile(
-                                            // selected: index == 2,
+                                            textColor: index == 2
+                                                ? Colors.white
+                                                : null,
                                             leading: index == 2
                                                 ? const Icon(Icons.photo_album)
                                                 : const Icon(

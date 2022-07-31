@@ -45,7 +45,7 @@ class SideBarMenu extends StatelessWidget {
           builder: (context, state) {
             if (state.status == LoadStatus.success) {
               return Padding(
-                padding: const EdgeInsets.only(left: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
