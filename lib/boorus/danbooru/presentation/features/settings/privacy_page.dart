@@ -33,7 +33,6 @@ class PrivacyPage extends StatelessWidget {
           body: SafeArea(
               child: Column(children: [
             ListTile(
-              leading: const Icon(Icons.privacy_tip),
               title: const Text('settings.privacy.send_error_data_notice').tr(),
               trailing: Switch(
                 activeColor: Theme.of(context).colorScheme.primary,

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
@@ -112,6 +113,7 @@ class _AppearancePageState extends State<AppearancePage> {
                       Text(_themeModeToString(value).tr()),
                 ),
                 const Divider(thickness: 1),
+                _buildPreview(context, state),
                 SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
                 // _buildPreview(context, state),
                 SettingsTile<GridSize>(
@@ -159,7 +161,6 @@ class _AppearancePageState extends State<AppearancePage> {
                 SettingsHeader(
                     label: 'settings.image_viewer.image_viewer'.tr()),
                 ListTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.image),
                   title: const Text('settings.image_viewer.full_res_as_default')
                       .tr(),
                   subtitle: state.settings.imageQualityInFullView ==
@@ -235,4 +236,87 @@ class _AppearancePageState extends State<AppearancePage> {
       },
     );
   }
+
+  SliverGridDelegate _gridSizeToGridDelegate(
+    ScreenSize screenSize,
+    GridSize size, {
+    double spacing = 2,
+  }) {
+    if (size == GridSize.large) return _largeGrid(spacing / 2, screenSize);
+    if (size == GridSize.small) return _smallGrid(spacing / 2, screenSize);
+    return _normalGrid(spacing / 2, screenSize);
+  }
+
+  Widget _buildPreview(BuildContext context, SettingsState state) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 100),
+      child: Container(
+        width: 150,
+        height: 200,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Theme.of(context).backgroundColor,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: ValueListenableBuilder<double>(
+            valueListenable: _spacingSliderValue,
+            builder: (context, value, _) => GridView.builder(
+                itemCount: 100,
+                gridDelegate: _gridSizeToGridDelegate(
+                  Screen.of(context).size,
+                  state.settings.gridSize,
+                  spacing: value,
+                ),
+                itemBuilder: (context, index) {
+                  return ValueListenableBuilder<double>(
+                    valueListenable: _borderRadiusSliderValue,
+                    builder: (context, value, _) => Container(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(value),
+                      ),
+                      child: const Center(
+                        child: SettingsIcon(FontAwesomeIcons.image),
+                      ),
+                    ),
+                  );
+                }),
+          ),
+        ),
+      ),
+    );
+  }
 }
+
+SliverGridDelegate _normalGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size) * 2,
+      childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
+    );
+
+SliverGridDelegate _smallGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size) * 3,
+    );
+
+SliverGridDelegate _largeGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size),
+      childAspectRatio: 0.65,
+    );

@@ -38,7 +38,7 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
-        crossAxisCount: _displaySizeToGridCountWeight(size) * 2,
+        crossAxisCount: displaySizeToGridCountWeight(size) * 2,
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
@@ -46,20 +46,20 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   factory SliverPostGridDelegate.small(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: 1,
-        crossAxisCount: _displaySizeToGridCountWeight(size) * 3,
+        crossAxisCount: displaySizeToGridCountWeight(size) * 3,
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
   factory SliverPostGridDelegate.large(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: 0.65,
-        crossAxisCount: _displaySizeToGridCountWeight(size),
+        crossAxisCount: displaySizeToGridCountWeight(size),
         mainAxisSpacing: spacing,
         crossAxisSpacing: spacing,
       );
 }
 
-int _displaySizeToGridCountWeight(ScreenSize size) {
+int displaySizeToGridCountWeight(ScreenSize size) {
   if (size == ScreenSize.small) return 1;
   if (size == ScreenSize.medium) return 2;
   return 3;

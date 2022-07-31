@@ -161,7 +161,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
         return ValueListenableBuilder<int>(
           valueListenable: currentTab,
           builder: (context, index, _) => SizedBox(
-            width: 600,
+            width: 800,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
