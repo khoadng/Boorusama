@@ -5,20 +5,18 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tag_provider_widget.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/modal_options.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/widgets/context_menu.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({Key? key, this.maxTagWidth}) : super(key: key);
@@ -80,92 +78,75 @@ class PostTagList extends StatelessWidget {
             final tag = tags[index];
             final tagKey = GlobalKey();
 
-            return GestureDetector(
-              onTap: () => AppRouter.router.navigateTo(
-                context,
-                '/posts/search',
-                routeSettings: RouteSettings(arguments: [tag.rawName]),
-              ),
-              onLongPress: () {
-                showActionListModalBottomSheet(
-                  context: context,
-                  children: [
-                    ListTile(
-                      leading: const Icon(Icons.info),
-                      title: const Text('post.detail.open_wiki').tr(),
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        launchWikiPage(state.booru.url, tag.rawName);
-                      },
-                    ),
-                    BlocBuilder<AuthenticationCubit, AuthenticationState>(
-                      builder: (context, state) {
-                        if (state is Authenticated) {
-                          return ListTile(
-                            leading: const FaIcon(
-                              FontAwesomeIcons.plus,
-                            ),
-                            title:
-                                const Text('post.detail.add_to_blacklist').tr(),
-                            onTap: () {
-                              Navigator.of(context).pop();
-                              onAddToBlacklisted(tag);
-                            },
-                          );
-                        } else {
-                          return const SizedBox.shrink();
-                        }
-                      },
-                    ),
-                  ],
-                );
+            return ContextMenu<String>(
+              items: [
+                PopupMenuItem(
+                    value: 'blacklist',
+                    child: const Text('post.detail.add_to_blacklist').tr()),
+                PopupMenuItem(
+                    value: 'wiki',
+                    child: const Text('post.detail.open_wiki').tr()),
+              ],
+              onSelected: (value) {
+                if (value == 'blacklist') {
+                  onAddToBlacklisted(tag);
+                } else if (value == 'wiki') {
+                  launchWikiPage(state.booru.url, tag.rawName);
+                }
               },
-              child: BlocBuilder<ThemeBloc, ThemeState>(
-                builder: (context, state) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    key: tagKey,
-                    children: [
-                      Chip(
+              child: GestureDetector(
+                onTap: () => AppRouter.router.navigateTo(
+                  context,
+                  '/posts/search',
+                  routeSettings: RouteSettings(arguments: [tag.rawName]),
+                ),
+                child: BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      key: tagKey,
+                      children: [
+                        Chip(
+                            visualDensity: const VisualDensity(
+                                horizontal: -4, vertical: -4),
+                            backgroundColor:
+                                getTagColor(tag.category, state.theme),
+                            shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(8),
+                                    bottomLeft: Radius.circular(8))),
+                            label: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  maxWidth: maxTagWidth ??
+                                      MediaQuery.of(context).size.width * 0.70),
+                              child: Text(
+                                tag.displayName,
+                                overflow: TextOverflow.fade,
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: state.theme == ThemeMode.light
+                                        ? Colors.white
+                                        : Colors.white),
+                              ),
+                            )),
+                        Chip(
                           visualDensity:
                               const VisualDensity(horizontal: -4, vertical: -4),
-                          backgroundColor:
-                              getTagColor(tag.category, state.theme),
+                          backgroundColor: Colors.grey[800],
                           shape: const RoundedRectangleBorder(
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(8),
-                                  bottomLeft: Radius.circular(8))),
-                          label: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxWidth: maxTagWidth ??
-                                    MediaQuery.of(context).size.width * 0.70),
-                            child: Text(
-                              tag.displayName,
-                              overflow: TextOverflow.fade,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: state.theme == ThemeMode.light
-                                      ? Colors.white
-                                      : Colors.white),
-                            ),
-                          )),
-                      Chip(
-                        visualDensity:
-                            const VisualDensity(horizontal: -4, vertical: -4),
-                        backgroundColor: Colors.grey[800],
-                        shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(8),
-                                bottomRight: Radius.circular(8))),
-                        label: Text(
-                          tag.postCount.toString(),
-                          style: const TextStyle(
-                              color: Colors.white60, fontSize: 12),
-                        ),
-                      )
-                    ],
-                  );
-                },
+                                  topRight: Radius.circular(8),
+                                  bottomRight: Radius.circular(8))),
+                          label: Text(
+                            tag.postCount.toString(),
+                            style: const TextStyle(
+                                color: Colors.white60, fontSize: 12),
+                          ),
+                        )
+                      ],
+                    );
+                  },
+                ),
               ),
             );
           },

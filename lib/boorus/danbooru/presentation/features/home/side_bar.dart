@@ -31,7 +31,7 @@ class SideBarMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Theme.of(context).backgroundColor,
-      constraints: BoxConstraints.expand(width: width ?? 210),
+      constraints: BoxConstraints.expand(width: width ?? 220),
       child: SingleChildScrollView(
         child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
           builder: (context, state) {
