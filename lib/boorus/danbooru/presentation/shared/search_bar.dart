@@ -13,11 +13,11 @@ class SearchBar extends StatefulWidget {
     this.onChanged,
     this.enabled = true,
     this.autofocus = false,
-    this.onFocusChanged,
     this.queryEditingController,
     this.hintText,
     this.onSubmitted,
     this.constraints,
+    this.focus,
   }) : super(key: key);
 
   final VoidCallback? onTap;
@@ -29,8 +29,8 @@ class SearchBar extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final TextEditingController? queryEditingController;
-  final ValueChanged<bool>? onFocusChanged;
   final String? hintText;
+  final FocusNode? focus;
 
   @override
   State<SearchBar> createState() => _SearchBarState();
@@ -76,34 +76,25 @@ class _SearchBarState extends State<SearchBar> {
                     widget.leading ?? const SizedBox.shrink(),
                     const SizedBox(width: 10),
                     Expanded(
-                      child: FocusScope(
-                        child: Focus(
-                          onFocusChange: (isFocus) =>
-                              widget.onFocusChanged?.call(isFocus),
-                          child: TextFormField(
-                            onFieldSubmitted: (value) =>
-                                widget.onSubmitted?.call(value),
-                            onChanged: (value) => widget.onChanged?.call(value),
-                            enabled: widget.enabled,
-                            decoration: InputDecoration(
-                                floatingLabelBehavior:
-                                    FloatingLabelBehavior.never,
-                                border: InputBorder.none,
-                                focusedBorder: InputBorder.none,
-                                enabledBorder: InputBorder.none,
-                                errorBorder: InputBorder.none,
-                                disabledBorder: InputBorder.none,
-                                contentPadding: const EdgeInsets.only(
-                                    bottom: 11, top: 11, right: 15),
-                                hintText:
-                                    widget.hintText ?? 'search.hint'.tr()),
-                            autofocus: widget.autofocus,
-                            controller: _textEditingController,
-                            style: Theme.of(context)
-                                .inputDecorationTheme
-                                .hintStyle,
-                          ),
-                        ),
+                      child: TextFormField(
+                        focusNode: widget.focus,
+                        onFieldSubmitted: (value) =>
+                            widget.onSubmitted?.call(value),
+                        onChanged: (value) => widget.onChanged?.call(value),
+                        enabled: widget.enabled,
+                        decoration: InputDecoration(
+                            floatingLabelBehavior: FloatingLabelBehavior.never,
+                            border: InputBorder.none,
+                            focusedBorder: InputBorder.none,
+                            enabledBorder: InputBorder.none,
+                            errorBorder: InputBorder.none,
+                            disabledBorder: InputBorder.none,
+                            contentPadding: const EdgeInsets.only(
+                                bottom: 11, top: 11, right: 15),
+                            hintText: widget.hintText ?? 'search.hint'.tr()),
+                        autofocus: widget.autofocus,
+                        controller: _textEditingController,
+                        style: Theme.of(context).inputDecorationTheme.hintStyle,
                       ),
                     ),
                     widget.trailing ?? const SizedBox.shrink(),

@@ -54,6 +54,7 @@ class _SearchPageState extends State<SearchPage> {
     onMatch: (List<String> match) {},
   );
   final compositeSubscription = CompositeSubscription();
+  final FocusNode focus = FocusNode();
 
   @override
   void initState() {
@@ -65,7 +66,10 @@ class _SearchPageState extends State<SearchPage> {
             .add(TagSearchNewRawStringTagSelected(widget.initialQuery));
         context.read<SearchBloc>().add(const SearchRequested());
         context.read<PostBloc>().add(PostRefreshed(tag: widget.initialQuery));
-        FocusScope.of(context).unfocus();
+      });
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), () {
+        focus.requestFocus();
       });
     }
 
@@ -111,6 +115,7 @@ class _SearchPageState extends State<SearchPage> {
   void dispose() {
     compositeSubscription.dispose();
     queryEditingController.dispose();
+    focus.dispose();
     super.dispose();
   }
 
@@ -153,11 +158,11 @@ class _SearchPageState extends State<SearchPage> {
       ],
       child: Screen.of(context).size != ScreenSize.small
           ? _LargeLayout(
-              autoFocus: true,
+              focus: focus,
               queryEditingController: queryEditingController,
             )
           : _SmallLayout(
-              autoFocus: true,
+              focus: focus,
               queryEditingController: queryEditingController,
             ),
     );
@@ -167,11 +172,11 @@ class _SearchPageState extends State<SearchPage> {
 class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     Key? key,
-    required this.autoFocus,
+    required this.focus,
     required this.queryEditingController,
   }) : super(key: key);
 
-  final bool autoFocus;
+  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
@@ -185,7 +190,7 @@ class _LargeLayout extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: _AppBar(
-                autoFocus: autoFocus,
+                focus: focus,
                 queryEditingController: queryEditingController,
               ),
               body: Column(
@@ -255,11 +260,11 @@ class _LargeLayout extends StatelessWidget {
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     Key? key,
-    required this.autoFocus,
+    required this.focus,
     required this.queryEditingController,
   }) : super(key: key);
 
-  final bool autoFocus;
+  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
@@ -270,7 +275,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       title: _SearchBar(
-        autoFocus: autoFocus,
+        focus: focus,
         queryEditingController: queryEditingController,
       ),
     );
@@ -283,11 +288,11 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
 class _SmallLayout extends StatelessWidget {
   const _SmallLayout({
     Key? key,
-    required this.autoFocus,
+    required this.focus,
     required this.queryEditingController,
   }) : super(key: key);
 
-  final bool autoFocus;
+  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
@@ -296,7 +301,7 @@ class _SmallLayout extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       floatingActionButton: const SearchButton(),
       appBar: _AppBar(
-        autoFocus: autoFocus,
+        focus: focus,
         queryEditingController: queryEditingController,
       ),
       body: SafeArea(
@@ -391,17 +396,17 @@ class _Divider extends StatelessWidget {
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
     Key? key,
-    required this.autoFocus,
+    required this.focus,
     required this.queryEditingController,
   }) : super(key: key);
 
-  final bool autoFocus;
+  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
-      autofocus: autoFocus,
+      focus: focus,
       queryEditingController: queryEditingController,
       leading: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
