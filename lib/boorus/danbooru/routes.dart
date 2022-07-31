@@ -47,7 +47,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -122,14 +121,12 @@ final postDetailHandler = Handler(handlerFunc: (
   final posts = args[0];
   final index = args[1];
 
+  final screenSize = Screen.of(context).size;
+
   AutoScrollController? controller;
   if (args.length == 3) {
     controller = args[2];
   }
-
-  final size = MediaQuery.of(context).size;
-  final screenSize = screenWidthToDisplaySize(size.width);
-
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
@@ -139,38 +136,35 @@ final postDetailHandler = Handler(handlerFunc: (
           favoritePostRepository: context.read<IFavoritePostRepository>(),
         )..add(IsPostFavoritedRequested(postId: posts[index].id)),
       ),
-      BlocProvider(
-          create: (context) => RecommendedArtistPostCubit(
-                postRepository: RecommendedPostCacher(
-                  cache: FifoCacher<String, List<Post>>(capacity: 100),
-                  postRepository: context.read<IPostRepository>(),
-                ),
-              )..add(RecommendedPostRequested(
-                  amount: screenSize == ScreenSize.large ? 9 : 6,
-                  currentPostId: posts[index].id,
-                  tags: posts[index].artistTags,
-                ))),
-      BlocProvider(
-          create: (context) => PoolFromPostIdBloc(
-                  poolRepository: PoolFromPostCacher(
-                cache: FifoCacher<int, List<Pool>>(capacity: 100),
-                poolRepository: context.read<PoolRepository>(),
-              ))
-                ..add(PoolFromPostIdRequested(postId: posts[index].id))),
-      BlocProvider(
-          create: (context) => RecommendedCharacterPostCubit(
-                postRepository: RecommendedPostCacher(
-                  cache: FifoCacher<String, List<Post>>(capacity: 100),
-                  postRepository: context.read<IPostRepository>(),
-                ),
-              )..add(RecommendedPostRequested(
-                  amount: screenSize == ScreenSize.large ? 9 : 6,
-                  currentPostId: posts[index].id,
-                  tags: posts[index].characterTags.take(3).toList(),
-                ))),
-      BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
-      BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
-      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
+      BlocProvider.value(
+        value: context.read<RecommendedArtistPostCubit>()
+          ..add(
+            RecommendedPostRequested(
+              amount: screenSize == ScreenSize.large ? 9 : 6,
+              currentPostId: posts[index].id,
+              tags: posts[index].artistTags,
+            ),
+          ),
+      ),
+      BlocProvider.value(
+        value: context.read<RecommendedCharacterPostCubit>()
+          ..add(
+            RecommendedPostRequested(
+              amount: screenSize == ScreenSize.large ? 9 : 6,
+              currentPostId: posts[index].id,
+              tags: posts[index].characterTags.take(3).toList(),
+            ),
+          ),
+      ),
+      BlocProvider.value(
+        value: context.read<PoolFromPostIdBloc>()
+          ..add(
+            PoolFromPostIdRequested(postId: posts[index].id),
+          ),
+      ),
+      BlocProvider.value(value: context.read<AuthenticationCubit>()),
+      BlocProvider.value(value: context.read<ApiEndpointCubit>()),
+      BlocProvider.value(value: context.read<ThemeBloc>()),
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),

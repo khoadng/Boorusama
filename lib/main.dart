@@ -28,6 +28,7 @@ import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
@@ -53,6 +54,7 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
@@ -328,6 +330,32 @@ void main() async {
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: postBloc),
                         BlocProvider.value(value: tagBloc),
+                        BlocProvider(
+                          create: (context) => RecommendedArtistPostCubit(
+                            postRepository: RecommendedPostCacher(
+                              cache:
+                                  LruCacher<String, List<Post>>(capacity: 500),
+                              postRepository: context.read<IPostRepository>(),
+                            ),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => PoolFromPostIdBloc(
+                            poolRepository: PoolFromPostCacher(
+                              cache: LruCacher<int, List<Pool>>(capacity: 500),
+                              poolRepository: context.read<PoolRepository>(),
+                            ),
+                          ),
+                        ),
+                        BlocProvider(
+                          create: (context) => RecommendedCharacterPostCubit(
+                            postRepository: RecommendedPostCacher(
+                              cache:
+                                  FifoCacher<String, List<Post>>(capacity: 500),
+                              postRepository: context.read<IPostRepository>(),
+                            ),
+                          ),
+                        ),
                       ],
                       child: MultiBlocListener(
                         listeners: [
