@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -19,7 +20,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -177,52 +177,22 @@ class SliverPostGridItem extends StatelessWidget {
       index: index,
       controller: scrollController,
       key: ValueKey(index),
-      child: Stack(
-        children: [
-          _buildImage(context),
-          _buildShadow(),
-          _buildOverlayIcon(),
-        ],
-      ),
+      child: _buildImage(context),
     );
   }
 
   Widget _buildOverlayIcon() {
-    return Positioned(
-      top: 6,
-      left: 6,
-      child: IgnorePointer(
-        child: Column(
-          children: [
-            if (post.isAnimated)
-              const Icon(
-                Icons.play_circle_outline,
-                color: Colors.white70,
-              ),
-            if (post.isTranslated)
-              const Icon(
-                Icons.g_translate_outlined,
-                color: Colors.white70,
-              ),
-            if (post.hasComment)
-              const Icon(
-                Icons.comment,
-                color: Colors.white70,
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildShadow() {
-    return ClipRRect(
-      borderRadius: borderRadius ?? BorderRadius.circular(8),
-      child: ShadowGradientOverlay(
-        alignment: Alignment.topCenter,
-        colors: <Color>[
-          const Color.fromARGB(16, 0, 0, 0),
-          Colors.black12.withOpacity(0),
+    return IgnorePointer(
+      child: Wrap(
+        children: [
+          if (post.isAnimated)
+            const _OverlayIcon(icon: Icons.play_circle_outline, size: 20),
+          if (post.isTranslated)
+            const _OverlayIcon(icon: Icons.g_translate_outlined, size: 20),
+          if (post.hasComment)
+            const _OverlayIcon(icon: Icons.comment, size: 20),
+          if (post.hasParentOrChildren)
+            const _OverlayIcon(icon: FontAwesomeIcons.images, size: 16),
         ],
       ),
     );
@@ -268,16 +238,46 @@ class SliverPostGridItem extends StatelessWidget {
       ],
       child: GestureDetector(
         onTap: () => onTap?.call(post, index),
-        child: PostImage(
-          imageUrl: getImageUrlForDisplay(
-              post,
-              getImageQuality(
-                size: gridSize,
-                presetImageQuality: imageQuality,
-              )),
-          placeholderUrl: post.previewImageUrl,
-          borderRadius: borderRadius,
+        child: Stack(
+          children: [
+            PostImage(
+              imageUrl: getImageUrlForDisplay(
+                  post,
+                  getImageQuality(
+                    size: gridSize,
+                    presetImageQuality: imageQuality,
+                  )),
+              placeholderUrl: post.previewImageUrl,
+              borderRadius: borderRadius,
+            ),
+            _buildOverlayIcon()
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _OverlayIcon extends StatelessWidget {
+  const _OverlayIcon({
+    Key? key,
+    required this.icon,
+    this.size,
+  }) : super(key: key);
+
+  final IconData icon;
+  final double? size;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Colors.black.withOpacity(0.7),
+      width: 25,
+      height: 25,
+      child: Icon(
+        icon,
+        color: Colors.white70,
+        size: size,
       ),
     );
   }
