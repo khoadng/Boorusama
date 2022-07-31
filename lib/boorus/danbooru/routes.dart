@@ -175,7 +175,6 @@ final postDetailHandler = Handler(handlerFunc: (
             );
           },
           child: PostDetailPage(
-            post: posts[index],
             intitialIndex: index,
             posts: posts,
           ),

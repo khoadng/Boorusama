@@ -13,14 +13,15 @@ class ArtistCommentaryState extends Equatable {
     required this.status,
   });
 
-  factory ArtistCommentaryState.initial() => ArtistCommentaryState(
-      status: LoadStatus.initial,
-      commentary: ArtistCommentary(
-        originalTitle: '',
-        originalDescription: '',
-        translatedTitle: '',
-        translatedDescription: '',
-      ));
+  factory ArtistCommentaryState.initial() => const ArtistCommentaryState(
+        status: LoadStatus.initial,
+        commentary: ArtistCommentary(
+          originalTitle: '',
+          originalDescription: '',
+          translatedTitle: '',
+          translatedDescription: '',
+        ),
+      );
 
   final ArtistCommentary commentary;
   final LoadStatus status;
@@ -35,7 +36,7 @@ class ArtistCommentaryState extends Equatable {
       );
 
   @override
-  List<Object?> get props => [commentary];
+  List<Object?> get props => [commentary, status];
 }
 
 abstract class ArtistCommentaryEvent extends Equatable {

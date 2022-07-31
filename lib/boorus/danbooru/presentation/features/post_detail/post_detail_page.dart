@@ -21,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
@@ -50,13 +49,11 @@ double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
     Key? key,
-    required this.post,
     required this.posts,
     required this.intitialIndex,
   }) : super(key: key);
 
   final int intitialIndex;
-  final Post post;
   final List<Post> posts;
 
   @override
@@ -69,7 +66,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final slideShowConfig =
       ValueNotifier(SlideShowConfiguration(interval: 4, skipAnimation: false));
   late final currentPostIndex =
-      ValueNotifier(widget.posts.indexOf(widget.post));
+      ValueNotifier(widget.posts.indexOf(widget.posts[widget.intitialIndex]));
 
   final imagePath = ValueNotifier<String?>(null);
 
@@ -99,7 +96,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
         });
       }
     });
-    context.read<TagBloc>().add(TagFetched(tags: widget.post.tags));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Screen.of(context).size != ScreenSize.small) {
+        context
+            .read<TagBloc>()
+            .add(TagFetched(tags: widget.posts[widget.intitialIndex].tags));
+        context.read<ArtistCommentaryBloc>().add(ArtistCommentaryFetched(
+            postId: widget.posts[widget.intitialIndex].id));
+      }
+    });
   }
 
   Post get post => widget.posts[currentPostIndex.value];
@@ -157,12 +162,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 MultiBlocProvider(
                   providers: [
                     BlocProvider.value(value: context.read<TagBloc>()),
-                    BlocProvider(
-                      create: (_) => ArtistCommentaryBloc(
-                        artistCommentaryRepository:
-                            context.read<IArtistCommentaryRepository>(),
-                      ),
-                    ),
+                    BlocProvider.value(
+                        value: context.read<ArtistCommentaryBloc>()),
                   ],
                   child: Container(
                     color: Theme.of(context).backgroundColor,
@@ -234,7 +235,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        InformationSection(post: widget.post),
+                                        InformationSection(post: post),
                                         if (state.settings
                                                 .actionBarDisplayBehavior ==
                                             ActionBarDisplayBehavior.scrolling)
@@ -243,13 +244,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                 bottom: 10),
                                             child: ActionBar(
                                               imagePath: imagePath,
-                                              post: widget.post,
+                                              post: post,
                                             ),
                                           ),
-                                        if (widget.post.hasParentOrChildren)
+                                        if (post.hasParentOrChildren)
                                           ParentChildTile(
-                                            data:
-                                                getParentChildData(widget.post),
+                                            data: getParentChildData(post),
                                             onTap: (data) =>
                                                 showBarModalBottomSheet(
                                               context: context,
@@ -276,12 +276,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                               ),
                                             ),
                                           ),
-                                        if (!widget.post.hasParentOrChildren)
+                                        if (!post.hasParentOrChildren)
                                           const Divider(
                                               height: 8, thickness: 1),
-                                        RecommendArtistList(post: widget.post),
-                                        RecommendCharacterList(
-                                            post: widget.post),
+                                        RecommendArtistList(post: post),
+                                        RecommendCharacterList(post: post),
                                       ],
                                     ),
                                   ),
@@ -296,7 +295,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               child: FloatingGlassyCard(
                                 child: ActionBar(
                                   imagePath: imagePath,
-                                  post: widget.post,
+                                  post: post,
                                 ),
                               ),
                             ),
