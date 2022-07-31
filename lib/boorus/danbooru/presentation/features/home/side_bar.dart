@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
+import 'package:fluro/fluro.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -52,7 +54,14 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('sideMenu.login'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(context, '/login');
+                          AppRouter.router.navigateTo(
+                            context,
+                            '/login',
+                            transition:
+                                Screen.of(context).size == ScreenSize.small
+                                    ? TransitionType.inFromRight
+                                    : null,
+                          );
                         },
                       )
                     else
@@ -61,8 +70,14 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('sideMenu.profile'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router
-                              .navigateTo(context, '/users/profile');
+                          AppRouter.router.navigateTo(
+                            context,
+                            '/users/profile',
+                            transition:
+                                Screen.of(context).size == ScreenSize.small
+                                    ? TransitionType.inFromRight
+                                    : null,
+                          );
                         },
                       ),
                     if (state.data! != Account.empty)
@@ -71,9 +86,16 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('profile.favorites'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(context, '/favorites',
-                              routeSettings: RouteSettings(
-                                  arguments: [state.data!.username]));
+                          AppRouter.router.navigateTo(
+                            context,
+                            '/favorites',
+                            routeSettings: RouteSettings(
+                                arguments: [state.data!.username]),
+                            transition:
+                                Screen.of(context).size == ScreenSize.small
+                                    ? TransitionType.inFromRight
+                                    : null,
+                          );
                         },
                       ),
                     if (state.data! != Account.empty)
@@ -83,8 +105,14 @@ class SideBarMenu extends StatelessWidget {
                             .tr(),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router
-                              .navigateTo(context, '/users/blacklisted_tags');
+                          AppRouter.router.navigateTo(
+                            context,
+                            '/users/blacklisted_tags',
+                            transition:
+                                Screen.of(context).size == ScreenSize.small
+                                    ? TransitionType.inFromRight
+                                    : null,
+                          );
                         },
                       ),
                     ListTile(
@@ -92,7 +120,14 @@ class SideBarMenu extends StatelessWidget {
                       title: Text('sideMenu.settings'.tr()),
                       onTap: () {
                         if (popOnSelect) Navigator.of(context).pop();
-                        AppRouter.router.navigateTo(context, '/settings');
+                        AppRouter.router.navigateTo(
+                          context,
+                          '/settings',
+                          transition:
+                              Screen.of(context).size == ScreenSize.small
+                                  ? TransitionType.inFromRight
+                                  : null,
+                        );
                       },
                     ),
                   ],
