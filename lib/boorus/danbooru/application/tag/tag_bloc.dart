@@ -51,6 +51,13 @@ class TagFetched extends TagEvent {
   List<Object?> get props => [tags];
 }
 
+class TagReset extends TagEvent {
+  const TagReset();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TagBloc extends Bloc<TagEvent, TagState> {
   TagBloc({
     required ITagRepository tagRepository,
@@ -86,6 +93,10 @@ class TagBloc extends Bloc<TagEvent, TagState> {
       },
       transformer: restartable(),
     );
+
+    on<TagReset>((event, emit) {
+      emit(TagState.initial());
+    });
   }
 }
 

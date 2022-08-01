@@ -49,13 +49,8 @@ class PostTagList extends StatelessWidget {
                 ...widgets,
               ],
             );
-          } else if (state.status == LoadStatus.failure) {
-            return const SizedBox.shrink();
           } else {
-            return const Padding(
-              padding: EdgeInsets.all(16),
-              child: Center(child: CircularProgressIndicator()),
-            );
+            return const SizedBox.shrink();
           }
         },
       ),
