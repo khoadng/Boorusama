@@ -361,34 +361,6 @@ class _LargeLayoutContent extends StatelessWidget {
                   post: post,
                 ),
               ),
-              const Divider(),
-              ArtistSection(
-                post: post,
-              ),
-              if (post.hasParentOrChildren)
-                Padding(
-                  padding: const EdgeInsets.only(top: 8),
-                  child: ParentChildTile(
-                    data: getParentChildData(post),
-                    onTap: (data) => SideSheet.right(
-                      context: context,
-                      body: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc(
-                              postRepository: context.read<IPostRepository>(),
-                              blacklistedTagsRepository:
-                                  context.read<BlacklistedTagsRepository>(),
-                            )..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching)),
-                          )
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
-                      ),
-                    ),
-                  ),
-                ),
-              if (!post.hasParentOrChildren) const Divider(),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Wrap(
@@ -418,6 +390,33 @@ class _LargeLayoutContent extends StatelessWidget {
                   ],
                 ),
               ),
+              ArtistSection(
+                post: post,
+              ),
+              if (!post.hasParentOrChildren) const Divider(),
+              if (post.hasParentOrChildren)
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: ParentChildTile(
+                    data: getParentChildData(post),
+                    onTap: (data) => SideSheet.right(
+                      context: context,
+                      body: MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => PostBloc(
+                              postRepository: context.read<IPostRepository>(),
+                              blacklistedTagsRepository:
+                                  context.read<BlacklistedTagsRepository>(),
+                            )..add(PostRefreshed(
+                                tag: data.tagQueryForDataFetching)),
+                          )
+                        ],
+                        child: ParentChildPostPage(parentPostId: data.parentId),
+                      ),
+                    ),
+                  ),
+                ),
               BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                 builder: (context, state) {
                   if (state.status == LoadStatus.success) {
@@ -463,7 +462,6 @@ class _LargeLayoutContent extends StatelessWidget {
                                   ],
                                 ))
                             .toList(),
-                        const Divider(),
                       ],
                     );
                   } else {

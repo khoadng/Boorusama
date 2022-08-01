@@ -152,6 +152,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
       appBar: AppBar(
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
+        elevation: 0,
         title: Text('settings.settings'.tr()),
       ),
       body:
