@@ -361,6 +361,7 @@ class _LargeLayoutContent extends StatelessWidget {
                   post: post,
                 ),
               ),
+              const Divider(),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Wrap(
