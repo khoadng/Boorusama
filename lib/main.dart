@@ -310,7 +310,7 @@ void main() async {
                     ),
                   );
 
-                  final artistCubit = ArtistCubit(
+                  final artistBloc = ArtistBloc(
                     artistRepository: ArtistCacher(
                       repo: artistRepo,
                       cache: LruCacher(capacity: 100),
@@ -391,7 +391,7 @@ void main() async {
                         BlocProvider.value(value: recommendArtistCubit),
                         BlocProvider.value(value: recommendedCharaCubit),
                         BlocProvider.value(value: poolFromIdBloc),
-                        BlocProvider.value(value: artistCubit),
+                        BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
                         BlocProvider.value(value: poolDescriptionCubit),

@@ -74,7 +74,7 @@ final artistHandler = Handler(handlerFunc: (
                     context.read<BlacklistedTagsRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
       BlocProvider.value(
-          value: context.read<ArtistCubit>()..getArtist(args[0])),
+          value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
     child: ArtistPage(
       artistName: args[0],

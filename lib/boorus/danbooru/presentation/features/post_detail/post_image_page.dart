@@ -172,6 +172,7 @@ class _PostImagePageState extends State<PostImagePage>
         padding: const EdgeInsets.all(8),
         child: DownloadProviderWidget(
           builder: (context, download) => PopupMenuButton<PostAction>(
+            padding: EdgeInsets.zero,
             onSelected: (value) async {
               switch (value) {
                 case PostAction.download:

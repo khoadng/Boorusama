@@ -113,9 +113,8 @@ class _AppearancePageState extends State<AppearancePage> {
                       Text(_themeModeToString(value).tr()),
                 ),
                 const Divider(thickness: 1),
-                _buildPreview(context, state),
                 SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-                // _buildPreview(context, state),
+                _buildPreview(context, state),
                 SettingsTile<GridSize>(
                   title: const Text('settings.image_grid.grid_size.grid_size')
                       .tr(),
