@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'comment_item.dart';
 
 class CommentList extends StatelessWidget {
@@ -34,70 +33,91 @@ class CommentList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (comments.isNotEmpty) {
-      return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: ListView.builder(
-          itemBuilder: (context, index) {
-            final comment = comments[index];
-            return ListTile(
-              title: CommentItem(
-                hasVoteSection: authenticated,
-                onVoteChanged: (event) {
-                  if (event == VoteEvent.upvoted) {
-                    onUpvote(comment);
-                  } else if (event == VoteEvent.downvote) {
-                    onDownvote(comment);
-                  } else if (event == VoteEvent.voteRemoved) {
-                    if (comment.hasVote) {
-                      onClearVote(comment);
-                    }
-                  } else {
-                    //TODO: unknown vote event
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          final comment = comments[index];
+          return ListTile(
+            title: CommentItem(
+              hasVoteSection: authenticated,
+              onVoteChanged: (event) {
+                if (event == VoteEvent.upvoted) {
+                  onUpvote(comment);
+                } else if (event == VoteEvent.downvote) {
+                  onDownvote(comment);
+                } else if (event == VoteEvent.voteRemoved) {
+                  if (comment.hasVote) {
+                    onClearVote(comment);
                   }
-                },
-                comment: comment,
-                onReply: () => onReply(comment),
-                moreBuilder: (context) => authenticated
-                    ? IconButton(
-                        onPressed: () => showActionListModalBottomSheet(
-                          context: context,
-                          children: [
-                            if (comment.isSelf)
-                              ListTile(
-                                leading: const Icon(Icons.edit),
-                                title: const Text('comment.list.edit').tr(),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  onEdit(comment);
-                                },
+                } else {
+                  //TODO: unknown vote event
+                }
+              },
+              comment: comment,
+              onReply: () => onReply(comment),
+              moreBuilder: (context) => authenticated
+                  ? PopupMenuButton(
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(minWidth: 150),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4)),
+                      onSelected: (value) {
+                        if (value == 'edit') {
+                          onEdit(comment);
+                        } else if (value == 'reply') {
+                          onReply(comment);
+                        } else if (value == 'delete') {
+                          onDelete(comment);
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        if (comment.isSelf)
+                          PopupMenuItem(
+                            value: 'edit',
+                            padding: EdgeInsets.zero,
+                            child: ListTile(
+                              visualDensity: const VisualDensity(
+                                horizontal: -4,
+                                vertical: -4,
                               ),
-                            ListTile(
-                              leading: const Icon(Icons.reply),
-                              title: const Text('comment.list.reply').tr(),
-                              onTap: () {
-                                Navigator.of(context).pop();
-                                onReply(comment);
-                              },
+                              dense: true,
+                              leading: const Icon(Icons.edit),
+                              title: const Text('comment.list.edit').tr(),
                             ),
-                            if (comment.isSelf)
-                              ListTile(
-                                leading: const Icon(Icons.close),
-                                title: const Text('comment.list.delete').tr(),
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                  onDelete(comment);
-                                },
-                              ),
-                          ],
+                          ),
+                        PopupMenuItem(
+                          value: 'reply',
+                          padding: EdgeInsets.zero,
+                          child: ListTile(
+                            visualDensity: const VisualDensity(
+                              horizontal: -4,
+                              vertical: -4,
+                            ),
+                            dense: true,
+                            leading: const Icon(Icons.reply),
+                            title: const Text('comment.list.reply').tr(),
+                          ),
                         ),
-                        icon: const Icon(Icons.more_vert),
-                      )
-                    : const SizedBox.shrink(),
-              ),
-            );
-          },
-          itemCount: comments.length,
-        ),
+                        if (comment.isSelf)
+                          PopupMenuItem(
+                            value: 'delete',
+                            padding: EdgeInsets.zero,
+                            child: ListTile(
+                              visualDensity: const VisualDensity(
+                                horizontal: -4,
+                                vertical: -4,
+                              ),
+                              dense: true,
+                              leading: const Icon(Icons.close),
+                              title: const Text('comment.list.delete').tr(),
+                            ),
+                          ),
+                      ],
+                    )
+                  : const SizedBox.shrink(),
+            ),
+          );
+        },
+        itemCount: comments.length,
       );
     } else {
       return Center(

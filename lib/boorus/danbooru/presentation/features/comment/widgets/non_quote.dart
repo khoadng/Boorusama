@@ -10,6 +10,9 @@ class NonQuote extends StatelessWidget {
     return Text(
       text,
       textAlign: TextAlign.start,
+      style: const TextStyle(
+        fontSize: 14,
+      ),
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
 
 class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({
@@ -99,7 +99,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                     builder: (context) => page,
                   );
                 } else {
-                  SideSheet.right(
+                  showSideSheetFromRight(
                     width: 220,
                     body: page,
                     context: context,

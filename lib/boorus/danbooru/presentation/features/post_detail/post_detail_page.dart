@@ -9,7 +9,6 @@ import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
-import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
@@ -32,6 +31,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'models/slide_show_configuration.dart';
 import 'parent_child_post_page.dart';
@@ -400,7 +400,7 @@ class _LargeLayoutContent extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8),
                   child: ParentChildTile(
                     data: getParentChildData(post),
-                    onTap: (data) => SideSheet.right(
+                    onTap: (data) => showSideSheetFromRight(
                       context: context,
                       body: MultiBlocProvider(
                         providers: [

@@ -32,10 +32,7 @@ class CommentItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _CommentHeader(comment: comment),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: _buidCommentBody(),
-        ),
+        _buidCommentBody(),
         if (comment.recentlyUpdated)
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -191,19 +188,23 @@ class _CommentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
       children: [
         Text(
           comment.authorName.replaceAll('_', ' '),
           style: TextStyle(
             color: Color(comment.authorLevel.hexColor),
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(
-          width: 10,
+          width: 6,
         ),
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(comment.createdAt.toLocal()),
-          style: const TextStyle(color: Colors.grey, fontSize: 12),
+          style: const TextStyle(color: Colors.grey, fontSize: 11),
         ),
       ],
     );

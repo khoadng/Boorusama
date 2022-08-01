@@ -9,14 +9,19 @@ class Quote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: const Color(0xff393a4d),
+          color: Theme.of(context).cardColor,
           border: Border.all(
-            color: const Color(0xff7b7c8e),
-            width: 3,
+            color: Theme.of(context).hintColor,
+            width: 2,
           )),
       padding: const EdgeInsets.symmetric(horizontal: 10),
       margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Text(text),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontSize: 14,
+        ),
+      ),
     );
   }
 }

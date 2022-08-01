@@ -58,8 +58,9 @@ class _CommentBoxState extends State<CommentBox> {
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Colors.grey)),
         ),
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
+        padding: const EdgeInsets.only(
+          left: 12,
+          right: 12,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -70,7 +71,6 @@ class _CommentBoxState extends State<CommentBox> {
               controller: textEditingController,
               decoration: InputDecoration(
                 isDense: true,
-                contentPadding: const EdgeInsets.only(bottom: 4),
                 hintText: 'comment.create.hint'.tr(),
                 border: const UnderlineInputBorder(),
                 suffix: IconButton(
@@ -105,23 +105,26 @@ class _CommentBoxState extends State<CommentBox> {
                 child: ValueListenableBuilder<TextEditingValue>(
                   valueListenable: textEditingController,
                   builder: (context, value, child) {
-                    return ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
                         ),
+                        onPressed: value.text.isEmpty
+                            ? null
+                            : () {
+                                widget.isEditing.value = false;
+                                context.read<CommentBloc>().add(CommentSent(
+                                      content: value.text,
+                                      replyTo: comment,
+                                      postId: widget.postId,
+                                    ));
+                              },
+                        child: const Text('comment.list.send').tr(),
                       ),
-                      onPressed: value.text.isEmpty
-                          ? null
-                          : () {
-                              widget.isEditing.value = false;
-                              context.read<CommentBloc>().add(CommentSent(
-                                    content: value.text,
-                                    replyTo: comment,
-                                    postId: widget.postId,
-                                  ));
-                            },
-                      child: const Text('comment.list.send').tr(),
                     );
                   },
                 ),
