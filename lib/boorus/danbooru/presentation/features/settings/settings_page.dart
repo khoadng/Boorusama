@@ -19,7 +19,9 @@ import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route
 import 'package:boorusama/main.dart';
 
 class SettingsPage extends StatelessWidget {
-  const SettingsPage({Key? key}) : super(key: key);
+  const SettingsPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +153,6 @@ class _LargeLayoutState extends State<_LargeLayout> {
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text('settings.settings'.tr()),
       ),
