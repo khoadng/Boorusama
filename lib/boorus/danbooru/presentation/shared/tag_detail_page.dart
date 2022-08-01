@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
@@ -44,40 +42,15 @@ class _TagDetailPageState extends State<TagDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height - 24;
-
     if (Screen.of(context).size == ScreenSize.small) {
       return Scaffold(
-        body: SlidingUpPanel(
-          scrollController: scrollController,
-          color: Colors.transparent,
-          margin: const EdgeInsets.symmetric(horizontal: 6),
-          maxHeight: height,
-          minHeight: height * 0.55,
-          panelBuilder: (_) => _Panel(
-            tagName: widget.tagName,
-            scrollController: scrollController,
-          ),
-          body: Stack(
-            children: [
-              Positioned.fill(
-                child: CachedNetworkImage(
-                  imageUrl: widget.backgroundImageUrl,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.black, Colors.black.withOpacity(0.6)],
-                    end: Alignment.topCenter,
-                    begin: Alignment.bottomCenter,
-                  ),
-                ),
-              ),
-              Align(
-                alignment: const Alignment(0, -0.6),
-                child: Column(
+        body: Stack(
+          children: [
+            _Panel(
+              tagName: widget.tagName,
+              scrollController: scrollController,
+              header: [
+                Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
@@ -90,13 +63,12 @@ class _TagDetailPageState extends State<TagDetailPage> {
                     widget.otherNamesBuilder(context),
                   ],
                 ),
-              ),
-              const Align(
-                alignment: Alignment(0.8, -0.85),
-                child: _CloseButton(),
-              ),
-            ],
-          ),
+                const SizedBox(
+                  height: 50,
+                ),
+              ],
+            ),
+          ],
         ),
       );
     } else {
@@ -141,6 +113,7 @@ class _TagDetailPageState extends State<TagDetailPage> {
             ),
             Expanded(
               child: _Panel(
+                useSliverAppBar: false,
                 tagName: widget.tagName,
                 scrollController: scrollController,
               ),
@@ -152,41 +125,19 @@ class _TagDetailPageState extends State<TagDetailPage> {
   }
 }
 
-class _CloseButton extends StatelessWidget {
-  const _CloseButton({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(
-          width: 2,
-          color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
-        ),
-      ),
-      child: IconButton(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: Icon(
-          Icons.close,
-          color: Theme.of(context).iconTheme.color!.withOpacity(0.7),
-        ),
-      ),
-    );
-  }
-}
-
 class _Panel extends StatefulWidget {
   const _Panel({
     Key? key,
     required this.tagName,
     required this.scrollController,
+    this.header,
+    this.useSliverAppBar = true,
   }) : super(key: key);
 
   final String tagName;
   final AutoScrollController scrollController;
+  final List<Widget>? header;
+  final bool useSliverAppBar;
 
   @override
   State<_Panel> createState() => _PanelState();
@@ -233,11 +184,23 @@ class _PanelState extends State<_Panel> {
               builder: (context, controller) => CustomScrollView(
                 controller: controller,
                 slivers: [
+                  if (widget.useSliverAppBar)
+                    const SliverAppBar(
+                      elevation: 0,
+                      backgroundColor: Colors.transparent,
+                      toolbarHeight: kToolbarHeight * 0.8,
+                    ),
                   SliverToBoxAdapter(
                     child: SizedBox(
                       height: MediaQuery.of(context).viewPadding.top,
                     ),
                   ),
+                  if (widget.header != null)
+                    SliverToBoxAdapter(
+                      child: Column(
+                        children: widget.header!,
+                      ),
+                    ),
                   SliverPadding(
                     padding: const EdgeInsets.only(bottom: 10),
                     sliver: SliverToBoxAdapter(
