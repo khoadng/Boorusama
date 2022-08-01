@@ -11,12 +11,14 @@ import 'package:toggle_switch/toggle_switch.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatefulWidget {
@@ -88,7 +90,7 @@ class _PoolPageState extends State<PoolPage> {
             child: PoolOptionsHeader(),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
             sliver: BlocBuilder<PoolBloc, PoolState>(
               buildWhen: (previous, current) =>
                   current.status != LoadStatus.loading,
@@ -105,7 +107,14 @@ class _PoolPageState extends State<PoolPage> {
                     return const SliverToBoxAdapter(
                         child: Center(child: Text('No data')));
                   }
-                  return SliverPoolGrid(pools: state.pools);
+                  return BlocBuilder<SettingsCubit, SettingsState>(
+                    builder: (context, settingsState) {
+                      return SliverPoolGrid(
+                        pools: state.pools,
+                        spacing: settingsState.settings.imageGridSpacing,
+                      );
+                    },
+                  );
                 } else if (state.status == LoadStatus.loading) {
                   return const SliverToBoxAdapter(
                     child: SizedBox.shrink(),
@@ -218,31 +227,18 @@ class PoolOptionsHeader extends StatelessWidget {
                     borderRadius: BorderRadius.circular(18),
                   ),
                 ),
-                onPressed: () => showMaterialModalBottomSheet(
-                    context: context,
-                    builder: (context) => BlocProvider.value(
-                          value: BlocProvider.of<PoolOverviewBloc>(context),
-                          child: Material(
-                            child: SafeArea(
-                              top: false,
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: PoolOrder.values
-                                      .map((e) => ListTile(
-                                            title: Text(_poolOrderToString(e))
-                                                .tr(),
-                                            onTap: () {
-                                              AppRouter.router.pop(context);
-                                              context
-                                                  .read<PoolOverviewBloc>()
-                                                  .add(PoolOverviewChanged(
-                                                      order: e));
-                                            },
-                                          ))
-                                      .toList()),
-                            ),
-                          ),
-                        )),
+                onPressed: () {
+                  Screen.of(context).size == ScreenSize.small
+                      ? showMaterialModalBottomSheet(
+                          context: context,
+                          builder: (context) => const _OrderMenu())
+                      : showDialog(
+                          context: context,
+                          builder: (context) => const AlertDialog(
+                                contentPadding: EdgeInsets.zero,
+                                content: _OrderMenu(),
+                              ));
+                },
                 child: Row(
                   children: <Widget>[
                     Text(_poolOrderToString(state.order)).tr(),
@@ -253,6 +249,37 @@ class PoolOptionsHeader extends StatelessWidget {
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _OrderMenu extends StatelessWidget {
+  const _OrderMenu({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider.value(
+      value: BlocProvider.of<PoolOverviewBloc>(context),
+      child: Material(
+        child: SafeArea(
+          top: false,
+          child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: PoolOrder.values
+                  .map((e) => ListTile(
+                        title: Text(_poolOrderToString(e)).tr(),
+                        onTap: () {
+                          AppRouter.router.pop(context);
+                          context
+                              .read<PoolOverviewBloc>()
+                              .add(PoolOverviewChanged(order: e));
+                        },
+                      ))
+                  .toList()),
+        ),
       ),
     );
   }

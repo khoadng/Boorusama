@@ -7,28 +7,44 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/utils.dart';
-import 'post_info_modal.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
+import 'post_info.dart';
+
+// double _screenSizeToInfoModalPercent(ScreenSize size) {
+//   if (size == ScreenSize.veryLarge) return 0.3;
+//   if (size == ScreenSize.large) return 0.4;
+//   return 0.45;
+// }
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
     Key? key,
     required this.post,
+    this.tappable = true,
+    this.padding,
   }) : super(key: key);
 
   final Post post;
+  final bool tappable;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => showMaterialModalBottomSheet(
-        backgroundColor: Colors.transparent,
-        context: context,
-        builder: (context) => PostInfoModal(
-            post: post, scrollController: ModalScrollController.of(context)!),
+    return ConditionalParentWidget(
+      condition: tappable,
+      conditionalBuilder: (child) => InkWell(
+        onTap: () => showMaterialModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (context) => PostInfo(
+              post: post, scrollController: ModalScrollController.of(context)!),
+        ),
+        child: child,
       ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        padding:
+            padding ?? const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -66,7 +82,7 @@ class InformationSection extends StatelessWidget {
                 ],
               ),
             ),
-            const Flexible(child: Icon(Icons.keyboard_arrow_down)),
+            if (tappable) const Flexible(child: Icon(Icons.keyboard_arrow_down))
           ],
         ),
       ),

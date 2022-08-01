@@ -26,6 +26,12 @@ class NoteBloc extends Bloc<NoteEvent, AsyncLoadState<List<Note>>> {
       },
       transformer: debounce(const Duration(milliseconds: 200)),
     );
+
+    on<NoteReset>(
+      (event, emit) async {
+        emit(const AsyncLoadState.initial());
+      },
+    );
   }
 }
 
@@ -42,4 +48,11 @@ class NoteRequested extends NoteEvent {
 
   @override
   List<Object?> get props => [postId];
+}
+
+class NoteReset extends NoteEvent {
+  const NoteReset();
+
+  @override
+  List<Object?> get props => [];
 }

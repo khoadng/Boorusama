@@ -8,24 +8,26 @@ import 'package:number_inc_dec/number_inc_dec.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/models/slide_show_configuration.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 
-class SlideShowConfigBottomModal extends StatefulWidget {
-  const SlideShowConfigBottomModal({
+class SlideShowConfigContainer extends StatefulWidget {
+  const SlideShowConfigContainer({
     Key? key,
     required this.initialConfig,
     required this.onConfigChanged,
+    this.isModal = true,
   }) : super(key: key);
 
   final void Function(SlideShowConfiguration config) onConfigChanged;
   final SlideShowConfiguration initialConfig;
+  final bool isModal;
 
   @override
-  State<SlideShowConfigBottomModal> createState() =>
-      _SlideShowConfigBottomModalState();
+  State<SlideShowConfigContainer> createState() =>
+      _SlideShowConfigContainerState();
 }
 
-class _SlideShowConfigBottomModalState
-    extends State<SlideShowConfigBottomModal> {
+class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
   final numberEditingController = TextEditingController();
   late var config = ValueNotifier(widget.initialConfig);
 
@@ -48,8 +50,12 @@ class _SlideShowConfigBottomModalState
     final viewInsets = MediaQuery.of(context).viewInsets.bottom;
     final safeAreaBottom = MediaQuery.of(context).padding.bottom;
 
-    return Modal(
-      title: 'Slide Show',
+    return ConditionalParentWidget(
+      condition: widget.isModal,
+      conditionalBuilder: (child) => Modal(
+        title: 'Slide Show',
+        child: child,
+      ),
       child: Padding(
         padding: EdgeInsets.only(
           left: 26,
@@ -58,6 +64,7 @@ class _SlideShowConfigBottomModalState
           bottom: 14 + viewInsets + safeAreaBottom,
         ),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

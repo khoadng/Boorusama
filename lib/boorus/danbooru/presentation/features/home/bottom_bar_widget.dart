@@ -1,14 +1,15 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 class BottomBar extends StatefulWidget {
-  const BottomBar({Key? key, required this.onTabChanged}) : super(key: key);
+  const BottomBar({
+    Key? key,
+    required this.onTabChanged,
+    this.initialValue = 0,
+  }) : super(key: key);
 
   final ValueChanged<int> onTabChanged;
+  final int initialValue;
 
   @override
   State<BottomBar> createState() => _BottomBarState();
@@ -27,7 +28,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   void initState() {
     super.initState();
-    currentIndex = 0;
+    currentIndex = widget.initialValue;
   }
 
   void changePage(int index) {
@@ -39,16 +40,32 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return CurvedNavigationBar(
-      animationDuration: const Duration(milliseconds: 300),
-      height: 60,
-      color: Theme.of(context).bottomNavigationBarTheme.backgroundColor!,
-      backgroundColor: Colors.transparent,
-      items: const [
-        FaIcon(FontAwesomeIcons.house),
-        FaIcon(Icons.explore),
-        FaIcon(FontAwesomeIcons.images),
+    return BottomNavigationBar(
+      showUnselectedLabels: false,
+      showSelectedLabels: false,
+      landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+      items: [
+        //TODO: stop using index as a selected indicator
+        BottomNavigationBarItem(
+          label: 'Home',
+          icon: currentIndex == 0
+              ? const Icon(Icons.dashboard)
+              : const Icon(Icons.dashboard_outlined),
+        ),
+        BottomNavigationBarItem(
+          label: 'Explore',
+          icon: currentIndex == 1
+              ? const Icon(Icons.explore)
+              : const Icon(Icons.explore_outlined),
+        ),
+        BottomNavigationBarItem(
+          label: 'Pool',
+          icon: currentIndex == 2
+              ? const Icon(Icons.photo_album)
+              : const Icon(Icons.photo_album_outlined),
+        ),
       ],
+      currentIndex: currentIndex,
       onTap: changePage,
     );
   }

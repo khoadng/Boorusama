@@ -323,13 +323,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  curved_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: curved_navigation_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.3"
   dart_code_metrics:
     dependency: "direct dev"
     description:
@@ -503,13 +496,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.0"
-  flutter_datetime_picker:
-    dependency: "direct main"
-    description:
-      name: flutter_datetime_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.5.1"
   flutter_downloader:
     dependency: "direct main"
     description:
@@ -1231,20 +1217,18 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.2"
+  side_sheet:
+    dependency: "direct main"
+    description:
+      name: side_sheet
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   sky_engine:
     dependency: transitive
     description: flutter
     source: sdk
     version: "0.0.99"
-  sliding_up_panel:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: custom-scroll-controller
-      resolved-ref: "310514aad96a40c1fbf6be78d4b40358acf79bdf"
-      url: "https://github.com/khoadng/sliding_up_panel.git"
-    source: git
-    version: "2.0.0+1"
   source_gen:
     dependency: transitive
     description:

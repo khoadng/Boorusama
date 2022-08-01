@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:

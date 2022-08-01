@@ -10,7 +10,12 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 
 class PrivacyPage extends StatelessWidget {
-  const PrivacyPage({Key? key}) : super(key: key);
+  const PrivacyPage({
+    Key? key,
+    this.hasAppBar = true,
+  }) : super(key: key);
+
+  final bool hasAppBar;
 
   @override
   Widget build(BuildContext context) {
@@ -20,13 +25,14 @@ class PrivacyPage extends StatelessWidget {
           current.settings.dataCollectingStatus,
       builder: (context, state) {
         return Scaffold(
-          appBar: AppBar(
-            title: const Text('settings.privacy.privacy').tr(),
-          ),
+          appBar: hasAppBar
+              ? AppBar(
+                  title: const Text('settings.privacy.privacy').tr(),
+                )
+              : null,
           body: SafeArea(
               child: Column(children: [
             ListTile(
-              leading: const Icon(Icons.privacy_tip),
               title: const Text('settings.privacy.send_error_data_notice').tr(),
               trailing: Switch(
                 activeColor: Theme.of(context).colorScheme.primary,

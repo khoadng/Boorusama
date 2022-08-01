@@ -10,11 +10,13 @@ class PostImage extends StatefulWidget {
     required this.imageUrl,
     this.placeholderUrl,
     this.borderRadius,
+    this.fit,
   }) : super(key: key);
 
   final String imageUrl;
   final String? placeholderUrl;
   final BorderRadiusGeometry? borderRadius;
+  final BoxFit? fit;
 
   @override
   State<PostImage> createState() => _PostImageState();
@@ -48,7 +50,10 @@ class _PostImageState extends State<PostImage> {
         return Container(
           decoration: BoxDecoration(
             borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-            image: DecorationImage(image: myImage.image, fit: BoxFit.cover),
+            image: DecorationImage(
+              image: myImage.image,
+              fit: widget.fit ?? BoxFit.cover,
+            ),
           ),
         );
       },
@@ -58,8 +63,10 @@ class _PostImageState extends State<PostImage> {
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                   borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
-                  image:
-                      DecorationImage(image: imageProvider, fit: BoxFit.cover),
+                  image: DecorationImage(
+                    image: imageProvider,
+                    fit: widget.fit ?? BoxFit.cover,
+                  ),
                 ),
               ),
               placeholder: (context, url) => Container(

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:side_sheet/side_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
@@ -60,24 +61,33 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
   }
 
   Widget _buildShareButton() {
+    final modal = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+      builder: (context, state) {
+        return ModalShare(
+          endpoint: state.booru.url,
+          onTap: Share.share,
+          onTapFile: (filePath) => Share.shareFiles([filePath]),
+          post: widget.post,
+          imagePath: widget.imagePath,
+        );
+      },
+    );
     return IconButton(
-      onPressed: () => showMaterialModalBottomSheet(
-        expand: false,
-        context: context,
-        barrierColor: Colors.black45,
-        backgroundColor: Colors.transparent,
-        builder: (context) => BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-          builder: (context, state) {
-            return ModalShare(
-              endpoint: state.booru.url,
-              onTap: Share.share,
-              onTapFile: (filePath) => Share.shareFiles([filePath]),
-              post: widget.post,
-              imagePath: widget.imagePath,
-            );
-          },
-        ),
-      ),
+      onPressed: () => Screen.of(context).size == ScreenSize.small
+          ? showMaterialModalBottomSheet(
+              expand: false,
+              context: context,
+              barrierColor: Colors.black45,
+              backgroundColor: Colors.transparent,
+              builder: (context) => modal,
+            )
+          : showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                contentPadding: EdgeInsets.zero,
+                content: modal,
+              ),
+            ),
       icon: const FaIcon(
         FontAwesomeIcons.shareFromSquare,
       ),
@@ -86,13 +96,38 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
 
   Widget _buildCommentButton() {
     return IconButton(
-      onPressed: () => showBarModalBottomSheet(
-        expand: false,
-        context: context,
-        builder: (context) => CommentPage(
-          postId: widget.post.id,
-        ),
-      ),
+      onPressed: () => Screen.of(context).size == ScreenSize.small
+          ? showBarModalBottomSheet(
+              expand: false,
+              context: context,
+              builder: (context) => CommentPage(
+                postId: widget.post.id,
+              ),
+            )
+          : SideSheet.right(
+              width: 350,
+              body: Container(
+                color: Theme.of(context).scaffoldBackgroundColor,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: IconButton(
+                        onPressed: Navigator.of(context).pop,
+                        icon: const Icon(Icons.close),
+                      ),
+                    ),
+                    Expanded(
+                      child: CommentPage(
+                        useAppBar: false,
+                        postId: widget.post.id,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              context: context),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
       ),

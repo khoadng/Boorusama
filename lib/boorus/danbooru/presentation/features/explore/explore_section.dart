@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
@@ -35,19 +34,20 @@ class ExploreSection extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
-              onPressed: () => showBarModalBottomSheet(
-                    context: context,
-                    builder: (context) => BlocProvider(
-                      create: (context) => ExploreDetailBloc(),
-                      child: ExploreDetailPage(
-                        title: Text(
-                          title,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headline6!
-                              .copyWith(fontWeight: FontWeight.w700),
+              onPressed: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BlocProvider(
+                        create: (context) => ExploreDetailBloc(),
+                        child: ExploreDetailPage(
+                          title: Text(
+                            title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .headline6!
+                                .copyWith(fontWeight: FontWeight.w700),
+                          ),
+                          category: category,
                         ),
-                        category: category,
                       ),
                     ),
                   ),

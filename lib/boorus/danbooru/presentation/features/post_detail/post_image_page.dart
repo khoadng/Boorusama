@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
@@ -58,52 +59,52 @@ class _PostImagePageState extends State<PostImagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GestureDetector(
-        onDoubleTapDown: (details) => _doubleTapDetails = details,
-        onDoubleTap: _handleDoubleTap,
-        onTap: () => hideOverlay.value = !hideOverlay.value,
-        child: InteractiveViewer(
-          minScale: 0.6,
-          maxScale: 5,
-          transformationController: _transformationController,
-          child: BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
-            builder: (context, state) => ValueListenableBuilder<bool>(
-              valueListenable: hideOverlay,
-              builder: (context, hide, child) => Stack(
-                children: [
-                  child!,
-                  if (!hide) ...[
-                    ShadowGradientOverlay(
-                        alignment: Alignment.topCenter,
-                        colors: <Color>[
-                          const Color(0x8A000000),
-                          Colors.black12.withOpacity(0)
-                        ]),
-                    _buildBackButton(),
-                    ValueListenableBuilder<bool>(
-                      valueListenable: fullsize,
-                      builder: (context, useFullsize, child) =>
-                          _buildMoreButton(useFullsize, widget.post.hasLarge),
-                    ),
-                    if (state.status == LoadStatus.success)
-                      ...buildNotes(state.data!, widget.post)
-                    else
-                      const SizedBox.shrink()
-                  ],
-                ],
-              ),
-              child: Align(
-                child: ValueListenableBuilder<bool>(
-                  valueListenable: fullsize,
-                  builder: (context, useFullsize, _) {
-                    return _buildImage(
-                      useFullsize
-                          ? widget.post.fullImageUrl
-                          : widget.post.normalImageUrl,
-                      widget.post.id,
-                    );
-                  },
+      body: InteractiveViewer(
+        minScale: 0.6,
+        maxScale: 5,
+        transformationController: _transformationController,
+        child: BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
+          builder: (context, state) => ValueListenableBuilder<bool>(
+            valueListenable: hideOverlay,
+            builder: (context, hide, child) => Stack(
+              children: [
+                GestureDetector(
+                  onDoubleTapDown: (details) => _doubleTapDetails = details,
+                  onDoubleTap: _handleDoubleTap,
+                  onTap: () => hideOverlay.value = !hideOverlay.value,
+                  child: child!,
                 ),
+                if (!hide) ...[
+                  ShadowGradientOverlay(
+                      alignment: Alignment.topCenter,
+                      colors: <Color>[
+                        const Color.fromARGB(16, 0, 0, 0),
+                        Colors.black12.withOpacity(0)
+                      ]),
+                  _buildBackButton(),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: fullsize,
+                    builder: (context, useFullsize, child) =>
+                        _buildMoreButton(useFullsize, widget.post.hasLarge),
+                  ),
+                  if (state.status == LoadStatus.success)
+                    ...buildNotes(state.data!, widget.post)
+                  else
+                    const SizedBox.shrink()
+                ],
+              ],
+            ),
+            child: Align(
+              child: ValueListenableBuilder<bool>(
+                valueListenable: fullsize,
+                builder: (context, useFullsize, _) {
+                  return _buildImage(
+                    useFullsize
+                        ? widget.post.fullImageUrl
+                        : widget.post.normalImageUrl,
+                    widget.post.id,
+                  );
+                },
               ),
             ),
           ),
@@ -158,7 +159,7 @@ class _PostImagePageState extends State<PostImagePage>
         padding: const EdgeInsets.all(8),
         child: IconButton(
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () => AppRouter.router.pop(context),
         ),
       ),
     );

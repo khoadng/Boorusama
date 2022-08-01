@@ -1,9 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 
 // Package imports:
+import 'package:flutter_improved_scrolling/flutter_improved_scrolling.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -139,15 +139,15 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
                 ),
         ),
       ),
-      body: SmartRefresher(
-        controller: _refreshController,
-        enablePullDown: widget.enableRefresh,
-        header: const MaterialClassicHeader(),
-        onRefresh: () => widget.onRefresh?.call(_refreshController),
-        child: ImprovedScrolling(
-          scrollController: _scrollController,
-          enableKeyboardScrolling: true,
-          enableMMBScrolling: true,
+      body: ImprovedScrolling(
+        scrollController: _scrollController,
+        enableKeyboardScrolling: true,
+        enableMMBScrolling: true,
+        child: SmartRefresher(
+          controller: _refreshController,
+          enablePullDown: widget.enableRefresh,
+          header: const MaterialClassicHeader(),
+          onRefresh: () => widget.onRefresh?.call(_refreshController),
           child: widget.builder(
             context,
             _scrollController,

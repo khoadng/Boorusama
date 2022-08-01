@@ -15,9 +15,11 @@ class CommentPage extends StatefulWidget {
   const CommentPage({
     Key? key,
     required this.postId,
+    this.useAppBar = true,
   }) : super(key: key);
 
   final int postId;
+  final bool useAppBar;
 
   @override
   State<CommentPage> createState() => _CommentPageState();
@@ -64,12 +66,14 @@ class _CommentPageState extends State<CommentPage> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.keyboard_arrow_down),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-        ),
+        appBar: widget.useAppBar
+            ? AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              )
+            : null,
         body: SafeArea(
           child: BlocBuilder<CommentBloc, CommentState>(
             builder: (context, state) {

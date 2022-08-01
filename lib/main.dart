@@ -19,16 +19,26 @@ import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cacher.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
@@ -50,6 +60,7 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
@@ -82,8 +93,9 @@ void main() async {
 
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
-      const initialSize = Size(400, 700);
-      appWindow.minSize = initialSize;
+      const initialSize = Size(1024, 600);
+      const minSize = Size(350, 350);
+      appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.show();
@@ -202,12 +214,14 @@ void main() async {
                   final userRepo = UserRepository(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
-                  final nopeRepo = NoteRepository(api);
+                  final noteRepo = NoteRepository(api);
 
                   final favoriteRepo = FavoritePostRepository(api, accountRepo);
 
-                  final artistCommentaryRepo =
-                      ArtistCommentaryRepository(api, accountRepo);
+                  final artistCommentaryRepo = ArtistCommentaryCacher(
+                    cache: LruCacher(capacity: 200),
+                    repo: ArtistCommentaryRepository(api, accountRepo),
+                  );
 
                   final poolRepo = PoolRepository(api, accountRepo);
 
@@ -229,6 +243,11 @@ void main() async {
 
                   final wikiRepo = WikiRepository(api);
 
+                  final poolDescriptionRepo = PoolDescriptionRepository(
+                    dio: state.dio,
+                    endpoint: state.dio.options.baseUrl,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -240,7 +259,7 @@ void main() async {
                     commentRepository: commentRepo,
                     accountRepository: accountRepo,
                   );
-                  final artistCommentaryCubit = ArtistCommentaryCubit(
+                  final artistCommentaryBloc = ArtistCommentaryBloc(
                       artistCommentaryRepository: artistCommentaryRepo);
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
@@ -263,6 +282,60 @@ void main() async {
                     blacklistedTagsRepository: blacklistedTagRepo,
                   )..add(const PostRefreshed());
 
+                  final tagBloc = TagBloc(
+                    tagRepository: TagCacher(
+                      cache: LruCacher(capacity: 1000),
+                      repo: tagRepo,
+                    ),
+                  );
+
+                  final recommendArtistCubit = RecommendedArtistPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final recommendedCharaCubit = RecommendedCharacterPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: FifoCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final poolFromIdBloc = PoolFromPostIdBloc(
+                    poolRepository: PoolFromPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      poolRepository: poolRepo,
+                    ),
+                  );
+
+                  final artistCubit = ArtistCubit(
+                    artistRepository: ArtistCacher(
+                      repo: artistRepo,
+                      cache: LruCacher(capacity: 100),
+                    ),
+                  );
+
+                  final wikiBloc = WikiBloc(
+                    wikiRepository: WikiCacher(
+                        cache: LruCacher(capacity: 200), repo: wikiRepo),
+                  );
+
+                  final noteBloc = NoteBloc(
+                      noteRepository: NoteCacher(
+                    cache: LruCacher(capacity: 100),
+                    repo: noteRepo,
+                  ));
+
+                  final poolDescriptionCubit = PoolDescriptionCubit(
+                    endpoint: state.dio.options.baseUrl,
+                    poolDescriptionRepository: PoolDescriptionCacher(
+                      cache: LruCacher(capacity: 100),
+                      repo: poolDescriptionRepo,
+                    ),
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -277,7 +350,7 @@ void main() async {
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
-                          value: nopeRepo),
+                          value: noteRepo),
                       RepositoryProvider<IPostRepository>.value(
                           value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
@@ -296,6 +369,8 @@ void main() async {
                           value: relatedTagRepo),
                       RepositoryProvider<IWikiRepository>.value(
                           value: wikiRepo),
+                      RepositoryProvider<IArtistCommentaryRepository>.value(
+                          value: artistCommentaryRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -303,7 +378,7 @@ void main() async {
                         BlocProvider.value(value: favoritedCubit),
                         BlocProvider.value(value: profileCubit),
                         BlocProvider.value(value: commentBloc),
-                        BlocProvider.value(value: artistCommentaryCubit),
+                        BlocProvider.value(value: artistCommentaryBloc),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
                         BlocProvider.value(value: blacklistedTagsBloc),
@@ -312,6 +387,14 @@ void main() async {
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: postBloc),
+                        BlocProvider.value(value: tagBloc),
+                        BlocProvider.value(value: recommendArtistCubit),
+                        BlocProvider.value(value: recommendedCharaCubit),
+                        BlocProvider.value(value: poolFromIdBloc),
+                        BlocProvider.value(value: artistCubit),
+                        BlocProvider.value(value: wikiBloc),
+                        BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: poolDescriptionCubit),
                       ],
                       child: MultiBlocListener(
                         listeners: [
