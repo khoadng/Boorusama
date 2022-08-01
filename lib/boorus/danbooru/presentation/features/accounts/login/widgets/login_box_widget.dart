@@ -62,117 +62,122 @@ class LoginBox extends HookWidget {
           ScaffoldMessenger.of(context).showSnackBar(snackbar);
         }
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Form(
-            autovalidateMode: AutovalidateMode.disabled,
-            key: formKey.value,
-            child: Container(
-              margin: const EdgeInsets.only(
-                top: 40,
-                left: 30,
-                right: 30,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  LoginField(
-                    labelText: 'login.form.username'.tr(),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'login.errors.missingUsername'.tr();
-                      }
+      child: SizedBox(
+        width: 400,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Form(
+              autovalidateMode: AutovalidateMode.disabled,
+              key: formKey.value,
+              child: Container(
+                margin: const EdgeInsets.only(
+                  top: 40,
+                  left: 30,
+                  right: 30,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LoginField(
+                      labelText: 'login.form.username'.tr(),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'login.errors.missingUsername'.tr();
+                        }
 
-                      if (!isValidUsernameAndPassword.value) {
-                        return 'login.errors.invalidUsernameOrPassword'.tr();
-                      }
-                      return null;
-                    },
-                    onChanged: (text) => onTextChanged(),
-                    controller: usernameTextController,
-                    suffixIcon: usernameHasText.value
-                        ? ScaleTransition(
-                            scale: CurvedAnimation(
-                              parent: animationController,
-                              curve: const Interval(0, 1),
-                            ),
-                            child: IconButton(
-                                splashColor: Colors.transparent,
-                                icon: const FaIcon(
-                                    FontAwesomeIcons.solidCircleXmark),
-                                onPressed: usernameTextController.clear),
-                          )
-                        : null,
-                  ),
-                  const SizedBox(height: 20),
-                  LoginField(
-                    labelText: 'login.form.password'.tr(),
-                    obscureText: !showPassword.value,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'login.errors.missingPassword'.tr();
-                      }
-                      if (!isValidUsernameAndPassword.value) {
-                        return 'login.errors.invalidUsernameOrPassword'.tr();
-                      }
-                      return null;
-                    },
-                    onChanged: (text) => onTextChanged(),
-                    controller: passwordTextController,
-                    suffixIcon: IconButton(
-                        splashColor: Colors.transparent,
-                        icon: showPassword.value
-                            ? const FaIcon(FontAwesomeIcons.solidEyeSlash)
-                            : const FaIcon(FontAwesomeIcons.solidEye),
-                        onPressed: () =>
-                            showPassword.value = !showPassword.value),
-                  ),
-                ],
+                        if (!isValidUsernameAndPassword.value) {
+                          return 'login.errors.invalidUsernameOrPassword'.tr();
+                        }
+                        return null;
+                      },
+                      onChanged: (text) => onTextChanged(),
+                      controller: usernameTextController,
+                      suffixIcon: usernameHasText.value
+                          ? ScaleTransition(
+                              scale: CurvedAnimation(
+                                parent: animationController,
+                                curve: const Interval(0, 1),
+                              ),
+                              child: IconButton(
+                                  splashColor: Colors.transparent,
+                                  icon: const FaIcon(
+                                      FontAwesomeIcons.solidCircleXmark),
+                                  onPressed: usernameTextController.clear),
+                            )
+                          : null,
+                    ),
+                    const SizedBox(height: 20),
+                    LoginField(
+                      labelText: 'login.form.password'.tr(),
+                      obscureText: !showPassword.value,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'login.errors.missingPassword'.tr();
+                        }
+                        if (!isValidUsernameAndPassword.value) {
+                          return 'login.errors.invalidUsernameOrPassword'.tr();
+                        }
+                        return null;
+                      },
+                      onChanged: (text) => onTextChanged(),
+                      controller: passwordTextController,
+                      suffixIcon: IconButton(
+                          splashColor: Colors.transparent,
+                          icon: showPassword.value
+                              ? const FaIcon(FontAwesomeIcons.solidEyeSlash)
+                              : const FaIcon(FontAwesomeIcons.solidEye),
+                          onPressed: () =>
+                              showPassword.value = !showPassword.value),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          TextButton.icon(
-            onPressed: () => showDialog(
-                context: context,
-                builder: (context) {
-                  return AlertDialog(
-                    title: const Text('API key?'),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('login.form.cancel').tr(),
-                      ),
-                      BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-                        builder: (context, state) => TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            launchExternalUrl(Uri.parse(state.booru.url));
-                          },
-                          child: const Text('login.form.open_web_browser').tr(),
+            TextButton.icon(
+              onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) {
+                    return AlertDialog(
+                      title: const Text('API key?'),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('login.form.cancel').tr(),
                         ),
-                      ),
-                    ],
-                    content: const Text('login.form.api_key_instruction').tr(),
-                  );
-                }),
-            icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
-            label: const Text('API key?'),
-          ),
-          const SizedBox(height: 20),
-          BlocBuilder<AuthenticationCubit, AuthenticationState>(
-            builder: (context, state) => state is AuthenticationInProgress
-                ? const CircularProgressIndicator()
-                : _buildLoginButton(
-                    context,
-                    formKey,
-                    usernameTextController,
-                    passwordTextController,
-                    isValidUsernameAndPassword,
-                  ),
-          )
-        ],
+                        BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                          builder: (context, state) => TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              launchExternalUrl(Uri.parse(state.booru.url));
+                            },
+                            child:
+                                const Text('login.form.open_web_browser').tr(),
+                          ),
+                        ),
+                      ],
+                      content:
+                          const Text('login.form.api_key_instruction').tr(),
+                    );
+                  }),
+              icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
+              label: const Text('API key?'),
+            ),
+            const SizedBox(height: 20),
+            BlocBuilder<AuthenticationCubit, AuthenticationState>(
+              builder: (context, state) => state is AuthenticationInProgress
+                  ? const CircularProgressIndicator()
+                  : _buildLoginButton(
+                      context,
+                      formKey,
+                      usernameTextController,
+                      passwordTextController,
+                      isValidUsernameAndPassword,
+                    ),
+            )
+          ],
+        ),
       ),
     );
   }
