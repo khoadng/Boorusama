@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -234,6 +233,7 @@ class DateAndTimeScaleHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         DateTimeSelector(
           onDateChanged: onDateChanged,
@@ -243,54 +243,66 @@ class DateAndTimeScaleHeader extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            TextButton(
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).cardColor,
-                primary: Theme.of(context).textTheme.headline6!.color,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
-                ),
-              ),
-              onPressed: () async {
-                final timeScale = await showMaterialModalBottomSheet(
-                        context: context,
-                        builder: _buildModalTimeScalePicker) ??
-                    scale;
-                onTimeScaleChanged(timeScale);
-              },
-              child: Row(
-                children: [
-                  Text(_timeScaleToString(scale).tr().toUpperCase()),
-                  const Icon(Icons.arrow_drop_down)
-                ],
-              ),
-            )
+            _TimeScaleSelectButton(
+              scale: scale,
+              onTimeScaleChanged: onTimeScaleChanged,
+            ),
           ],
         ),
+        const SizedBox(height: 10),
       ],
     );
   }
+}
 
-  Widget _buildModalTimeScalePicker(BuildContext context) {
+class _TimeScaleSelectButton extends StatelessWidget {
+  const _TimeScaleSelectButton({
+    Key? key,
+    required this.scale,
+    required this.onTimeScaleChanged,
+  }) : super(key: key);
+
+  final TimeScale scale;
+  final void Function(TimeScale scale) onTimeScaleChanged;
+
+  @override
+  Widget build(BuildContext context) {
     return Material(
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            ListTile(
-              title: Text('dateRange.day'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.day),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 4,
+        ),
+        child: DropdownButtonHideUnderline(
+          child: DropdownButton<TimeScale>(
+            alignment: AlignmentDirectional.center,
+            isDense: true,
+            value: scale,
+            focusColor: Colors.transparent,
+            icon: const Padding(
+              padding: EdgeInsets.only(left: 5, top: 2),
+              child: Icon(Icons.arrow_drop_down),
             ),
-            ListTile(
-              title: Text('dateRange.week'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.week),
-            ),
-            ListTile(
-              title: Text('dateRange.month'.tr()),
-              onTap: () => Navigator.of(context).pop(TimeScale.month),
-            ),
-          ],
+            onChanged: (newValue) {
+              if (newValue != null) onTimeScaleChanged(newValue);
+            },
+            items: TimeScale.values.map<DropdownMenuItem<TimeScale>>((value) {
+              return DropdownMenuItem<TimeScale>(
+                value: value,
+                child: Text(
+                  _timeScaleToString(value).tr().toUpperCase(),
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.headline6!.color,
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
