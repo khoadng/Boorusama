@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history_suggestions.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
@@ -362,11 +363,23 @@ class _TagSuggestionItems extends StatelessWidget {
     return BlocSelector<TagSearchBloc, TagSearchState, List<AutocompleteData>>(
       selector: (state) => state.suggestionTags,
       builder: (context, tags) {
-        return TagSuggestionItems(
-          tags: tags,
-          onItemTap: (tag) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+        return BlocBuilder<SearchHistorySuggestionsBloc,
+            SearchHistorySuggestionsState>(
+          builder: (context, state) {
+            return SliverTagSuggestionItemsWithHistory(
+              tags: tags,
+              histories: state.histories,
+              onHistoryTap: (history) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context
+                    .read<TagSearchBloc>()
+                    .add(TagSearchNewRawStringTagSelected(history.query));
+              },
+              onItemTap: (tag) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+              },
+            );
           },
         );
       },
@@ -429,8 +442,12 @@ class _SearchBar extends StatelessWidget {
               )
             : const SizedBox.shrink(),
       ),
-      onChanged: (value) =>
-          context.read<TagSearchBloc>().add(TagSearchChanged(value)),
+      onChanged: (value) {
+        context.read<TagSearchBloc>().add(TagSearchChanged(value));
+        context
+            .read<SearchHistorySuggestionsBloc>()
+            .add(SearchHistorySuggestionsFetched(character: value));
+      },
       onSubmitted: (value) =>
           context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
     );

@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -48,6 +49,62 @@ class TagSuggestionItems extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
+  const SliverTagSuggestionItemsWithHistory({
+    Key? key,
+    required this.tags,
+    required this.histories,
+    required this.onItemTap,
+    required this.onHistoryTap,
+  }) : super(key: key);
+
+  final List<AutocompleteData> tags;
+  final List<SearchHistory> histories;
+  final void Function(AutocompleteData tag) onItemTap;
+  final void Function(SearchHistory history) onHistoryTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              ...histories.map(
+                (history) => ListTile(
+                  visualDensity: VisualDensity.compact,
+                  trailing: const Icon(
+                    Icons.history,
+                    color: Colors.grey,
+                  ),
+                  title: Text(history.query.replaceAll('_', ' ')),
+                  onTap: () => onHistoryTap(history),
+                ),
+              ),
+              if (histories.isNotEmpty) const Divider(),
+              ...tags
+                  .map(
+                    (tag) => ListTile(
+                      onTap: () => onItemTap(tag),
+                      trailing: tag.hasCount
+                          ? Text(NumberFormat.compact().format(tag.postCount),
+                              style: const TextStyle(color: Colors.grey))
+                          : null,
+                      title: BlocBuilder<ThemeBloc, ThemeState>(
+                        builder: (context, state) =>
+                            _getTitle(tag, state.theme),
+                      ),
+                    ),
+                  )
+                  .toList()
+            ],
+          ),
+        )
+      ],
     );
   }
 }
