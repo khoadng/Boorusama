@@ -1,0 +1,35 @@
+// Package imports:
+import 'package:hive/hive.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+
+part 'search_history_hive_object.g.dart';
+
+@HiveType(typeId: 1)
+class SearchHistoryHiveObject {
+  SearchHistoryHiveObject({
+    required this.query,
+    required this.createdAt,
+  });
+
+  @HiveField(0)
+  String query;
+
+  @HiveField(1)
+  DateTime createdAt;
+}
+
+SearchHistory hiveObjectToSearchHistory(SearchHistoryHiveObject obj) {
+  return SearchHistory(
+    query: obj.query,
+    createdAt: obj.createdAt,
+  );
+}
+
+SearchHistoryHiveObject searchHistoryToHiveObject(SearchHistory history) {
+  return SearchHistoryHiveObject(
+    query: history.query,
+    createdAt: history.createdAt,
+  );
+}

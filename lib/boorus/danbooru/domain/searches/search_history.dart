@@ -8,6 +8,11 @@ class SearchHistory {
         createdAt: DateTime.parse(json['created_at']),
       );
 
+  factory SearchHistory.now(String query) => SearchHistory(
+        query: query,
+        createdAt: DateTime.now(),
+      );
+
   final String query;
   final DateTime createdAt;
 
