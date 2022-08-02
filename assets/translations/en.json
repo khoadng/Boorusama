@@ -78,6 +78,7 @@
     },
 
     "comment" : {
+        "comments" : "Comments",
         "create" : {
             "hint" : "Comment",
             "loading" : "Please wait...",

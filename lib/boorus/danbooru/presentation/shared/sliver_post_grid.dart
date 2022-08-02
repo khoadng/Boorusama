@@ -184,6 +184,7 @@ class SliverPostGridItem extends StatelessWidget {
   Widget _buildOverlayIcon() {
     return IgnorePointer(
       child: Wrap(
+        spacing: 1,
         children: [
           if (post.isAnimated)
             const _OverlayIcon(icon: Icons.play_circle_outline, size: 20),
@@ -250,7 +251,10 @@ class SliverPostGridItem extends StatelessWidget {
               placeholderUrl: post.previewImageUrl,
               borderRadius: borderRadius,
             ),
-            _buildOverlayIcon()
+            Padding(
+              padding: const EdgeInsets.only(top: 1, left: 1),
+              child: _buildOverlayIcon(),
+            )
           ],
         ),
       ),
@@ -271,9 +275,12 @@ class _OverlayIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withOpacity(0.7),
       width: 25,
       height: 25,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(4),
+      ),
       child: Icon(
         icon,
         color: Colors.white70,

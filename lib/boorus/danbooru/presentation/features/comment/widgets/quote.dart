@@ -12,10 +12,12 @@ class Quote extends StatelessWidget {
           color: Theme.of(context).cardColor,
           border: Border.all(
             color: Theme.of(context).hintColor,
-            width: 2,
           )),
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      margin: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 6),
+      margin: const EdgeInsets.only(
+        top: 3,
+        bottom: 6,
+      ),
       child: Text(
         text,
         style: const TextStyle(

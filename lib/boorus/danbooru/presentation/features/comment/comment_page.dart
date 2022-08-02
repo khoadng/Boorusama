@@ -74,82 +74,79 @@ class _CommentPageState extends State<CommentPage> {
                 ),
               )
             : null,
-        body: SafeArea(
-          child: BlocBuilder<CommentBloc, CommentState>(
-            builder: (context, state) {
-              if (state.status == LoadStatus.success) {
-                return GestureDetector(
-                  onTap: () => isEditing.value = false,
-                  child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-                    builder: (context, auth) {
-                      return Column(
-                        children: [
-                          Expanded(
-                            child: CommentList(
-                              comments: state.comments,
-                              authenticated: auth is Authenticated,
-                              onEdit: (comment) {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => CommentUpdatePage(
-                                      postId: widget.postId,
-                                      commentId: comment.id,
-                                      initialContent: comment.body,
-                                    ),
-                                  ),
-                                );
-                              },
-                              onReply: (comment) {
-                                _commentReply.value = comment;
-                                Future.delayed(
-                                    const Duration(milliseconds: 100), () {
-                                  _focus.requestFocus();
-                                });
-                              },
-                              onDelete: (comment) => context
-                                  .read<CommentBloc>()
-                                  .add(CommentDeleted(
-                                    commentId: comment.id,
+        body: BlocBuilder<CommentBloc, CommentState>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              return GestureDetector(
+                onTap: () => isEditing.value = false,
+                child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+                  builder: (context, auth) {
+                    return Column(
+                      children: [
+                        Expanded(
+                          child: CommentList(
+                            comments: state.comments,
+                            authenticated: auth is Authenticated,
+                            onEdit: (comment) {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => CommentUpdatePage(
                                     postId: widget.postId,
-                                  )),
-                              onUpvote: (comment) => context
-                                  .read<CommentBloc>()
-                                  .add(CommentUpvoted(commentId: comment.id)),
-                              onDownvote: (comment) => context
-                                  .read<CommentBloc>()
-                                  .add(CommentDownvoted(commentId: comment.id)),
-                              onClearVote: (comment) => context
-                                  .read<CommentBloc>()
-                                  .add(CommentVoteRemoved(
                                     commentId: comment.id,
-                                    commentVoteId: comment.voteId!,
-                                    voteState: comment.voteState,
-                                  )),
-                            ),
+                                    initialContent: comment.body,
+                                  ),
+                                ),
+                              );
+                            },
+                            onReply: (comment) {
+                              _commentReply.value = comment;
+                              Future.delayed(
+                                const Duration(milliseconds: 100),
+                                _focus.requestFocus,
+                              );
+                            },
+                            onDelete: (comment) =>
+                                context.read<CommentBloc>().add(CommentDeleted(
+                                      commentId: comment.id,
+                                      postId: widget.postId,
+                                    )),
+                            onUpvote: (comment) => context
+                                .read<CommentBloc>()
+                                .add(CommentUpvoted(commentId: comment.id)),
+                            onDownvote: (comment) => context
+                                .read<CommentBloc>()
+                                .add(CommentDownvoted(commentId: comment.id)),
+                            onClearVote: (comment) => context
+                                .read<CommentBloc>()
+                                .add(CommentVoteRemoved(
+                                  commentId: comment.id,
+                                  commentVoteId: comment.voteId!,
+                                  voteState: comment.voteState,
+                                )),
                           ),
-                          if (auth is Authenticated)
-                            CommentBox(
-                              focus: _focus,
-                              commentReply: _commentReply,
-                              postId: widget.postId,
-                              isEditing: isEditing,
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-                );
-              } else if (state.status == LoadStatus.failure) {
-                return const Center(
-                  child: Text('Something went wrong'),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              }
-            },
-          ),
+                        ),
+                        if (auth is Authenticated)
+                          CommentBox(
+                            focus: _focus,
+                            commentReply: _commentReply,
+                            postId: widget.postId,
+                            isEditing: isEditing,
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              );
+            } else if (state.status == LoadStatus.failure) {
+              return const Center(
+                child: Text('Something went wrong'),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
+          },
         ),
       ),
     );

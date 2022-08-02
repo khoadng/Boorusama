@@ -361,12 +361,11 @@ class _LargeLayoutContent extends StatelessWidget {
                   post: post,
                 ),
               ),
-              const Divider(),
+              const Divider(height: 0),
               Padding(
                 padding: const EdgeInsets.all(12),
                 child: Wrap(
                   spacing: 5,
-                  runSpacing: 5,
                   children: [
                     InfoChip(
                       leftLabel: const Text('post.detail.rating').tr(),
@@ -376,15 +375,15 @@ class _LargeLayoutContent extends StatelessWidget {
                       rightColor: Theme.of(context).backgroundColor,
                     ),
                     InfoChip(
-                      leftLabel: const Text('post.detail.resolution').tr(),
-                      rightLabel:
-                          Text('${post.width.toInt()}x${post.height.toInt()}'),
+                      leftLabel: const Text('post.detail.size').tr(),
+                      rightLabel: Text(filesize(post.fileSize, 1)),
                       leftColor: Theme.of(context).cardColor,
                       rightColor: Theme.of(context).backgroundColor,
                     ),
                     InfoChip(
-                      leftLabel: const Text('post.detail.size').tr(),
-                      rightLabel: Text(filesize(post.fileSize, 1)),
+                      leftLabel: const Text('post.detail.resolution').tr(),
+                      rightLabel:
+                          Text('${post.width.toInt()}x${post.height.toInt()}'),
                       leftColor: Theme.of(context).cardColor,
                       rightColor: Theme.of(context).backgroundColor,
                     ),

@@ -34,6 +34,7 @@ class CommentList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (comments.isNotEmpty) {
       return ListView.builder(
+        padding: EdgeInsets.zero,
         itemBuilder: (context, index) {
           final comment = comments[index];
           return ListTile(

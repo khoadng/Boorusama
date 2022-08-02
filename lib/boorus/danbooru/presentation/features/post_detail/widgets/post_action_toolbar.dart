@@ -105,32 +105,50 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
               ),
             )
           : showSideSheetFromRight(
-              width: 350,
-              body: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16),
-                    child: MaterialButton(
-                      color: Theme.of(context).cardColor,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12),
-                      onPressed: Navigator.of(context).pop,
-                      child: const Icon(
-                        Icons.close,
-                        size: 16,
+              width: MediaQuery.of(context).size.width * 0.41,
+              body: Container(
+                  color: Colors.transparent,
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).viewPadding.top),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: kToolbarHeight * 0.8,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).backgroundColor,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(6),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            const SizedBox(width: 8),
+                            Text(
+                              'comment.comments',
+                              style: Theme.of(context).textTheme.headline6,
+                            ).tr(),
+                            const Spacer(),
+                            Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(20),
+                                onTap: Navigator.of(context).pop,
+                                child: const Icon(Icons.close),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: CommentPage(
-                      useAppBar: false,
-                      postId: widget.post.id,
-                    ),
-                  ),
-                ],
-              ),
+                      Expanded(
+                        child: CommentPage(
+                          useAppBar: false,
+                          postId: widget.post.id,
+                        ),
+                      )
+                    ],
+                  )),
               context: context,
             ),
       icon: const FaIcon(

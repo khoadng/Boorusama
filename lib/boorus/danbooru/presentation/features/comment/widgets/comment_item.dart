@@ -32,6 +32,7 @@ class CommentItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _CommentHeader(comment: comment),
+        const SizedBox(height: 4),
         _buidCommentBody(),
         if (comment.recentlyUpdated)
           Padding(
@@ -48,6 +49,7 @@ class CommentItem extends StatelessWidget {
               ),
             ),
           ),
+        if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           _VoteSection(
             score: comment.score,
@@ -195,7 +197,7 @@ class _CommentHeader extends StatelessWidget {
           comment.authorName.replaceAll('_', ' '),
           style: TextStyle(
             color: Color(comment.authorLevel.hexColor),
-            fontSize: 14,
+            fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -204,7 +206,7 @@ class _CommentHeader extends StatelessWidget {
         ),
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(comment.createdAt.toLocal()),
-          style: const TextStyle(color: Colors.grey, fontSize: 11),
+          style: const TextStyle(color: Colors.grey, fontSize: 12),
         ),
       ],
     );

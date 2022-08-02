@@ -78,6 +78,7 @@
     },
 
     "comment" : {
+        "comments" : "Bình luận",
         "create" : {
             "hint" :"Bình luận",
             "loading" : "Đợi tí...",
