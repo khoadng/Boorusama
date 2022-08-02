@@ -328,7 +328,7 @@ void main() async {
                     repo: noteRepo,
                   ));
 
-                  final poolDescriptionCubit = PoolDescriptionCubit(
+                  final poolDescriptionBloc = PoolDescriptionBloc(
                     endpoint: state.dio.options.baseUrl,
                     poolDescriptionRepository: PoolDescriptionCacher(
                       cache: LruCacher(capacity: 100),
@@ -394,7 +394,7 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
-                        BlocProvider.value(value: poolDescriptionCubit),
+                        BlocProvider.value(value: poolDescriptionBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

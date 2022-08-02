@@ -289,7 +289,8 @@ final poolDetailHandler =
               postRepository: RepositoryProvider.of<IPostRepository>(context))
             ..load()),
       BlocProvider.value(
-          value: context.read<PoolDescriptionCubit>()..getDescription(pool.id)),
+          value: context.read<PoolDescriptionBloc>()
+            ..add(PoolDescriptionFetched(poolId: pool.id))),
       BlocProvider(
           create: (context) => NoteBloc(
               noteRepository: RepositoryProvider.of<INoteRepository>(context))),
