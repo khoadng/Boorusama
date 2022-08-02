@@ -31,7 +31,7 @@ class FifoCacher<K, V> implements Cacher<K, V> {
   }
 
   @override
-  void put(K key, V item) {
+  Future<void> put(K key, V item) async {
     if (_atMax) {
       _remove();
     }

@@ -1,4 +1,8 @@
+// Dart imports:
+import 'dart:convert';
+
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -9,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart' as t;
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
+import 'autocomplete_http_cache.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart'
     hide PoolCategory;
@@ -74,20 +79,60 @@ class AutocompleteRepository {
   const AutocompleteRepository({
     required Api api,
     required IAccountRepository accountRepository,
+    required AutocompleteHttpCacher cache,
   })  : _accountRepository = accountRepository,
-        _api = api;
+        _api = api,
+        _cache = cache;
 
   final Api _api;
   final IAccountRepository _accountRepository;
+  final AutocompleteHttpCacher _cache;
 
-  Future<List<AutocompleteData>>
-      getAutocomplete(String query) =>
-          _accountRepository
-              .get()
-              .then((account) => _api.autocomplete(
-                  account.username, account.apiKey, query, 'tag_query', 10))
-              .then(parseAutocomplete)
-              .then(mapDtoToAutocomplete)
-              .catchError((Object e) =>
-                  throw Exception('Failed to get autocomplete for $query'));
+  Future<List<AutocompleteData>> getAutocomplete(String query) =>
+      _accountRepository
+          .get()
+          .then((account) async {
+            if (_cache.exist(query)) {
+              final cache = cacheObjectFromJson(_cache.get(query)!);
+              if (cache.isFresh(DateTime.now())) {
+                final data = jsonDecode(cache.value);
+                return [
+                  HttpResponse(
+                    data,
+                    Response(
+                      data: data,
+                      requestOptions: RequestOptions(path: ''),
+                    ),
+                  ),
+                  false,
+                ];
+              }
+            }
+
+            return [
+              await _api.autocomplete(
+                account.username,
+                account.apiKey,
+                query,
+                'tag_query',
+                10,
+              ),
+              true,
+            ];
+          })
+          .then((dynamic value) async {
+            final data = value[0] as HttpResponse<dynamic>;
+            final fresh = value[1] as bool;
+            // only update cache if it is fresh data
+            if (fresh) {
+              return updateCache(_cache, query, data);
+            } else {
+              return data;
+            }
+          })
+          .then(parseAutocomplete)
+          .then(mapDtoToAutocomplete)
+          .catchError((Object e) {
+            throw Exception('Failed to get autocomplete for $query');
+          });
 }

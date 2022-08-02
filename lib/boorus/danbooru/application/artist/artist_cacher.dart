@@ -27,7 +27,7 @@ class ArtistCacher implements IArtistRepository {
       name,
       cancelToken: cancelToken,
     );
-    cache.put(name, fresh);
+    await cache.put(name, fresh);
 
     return fresh;
   }

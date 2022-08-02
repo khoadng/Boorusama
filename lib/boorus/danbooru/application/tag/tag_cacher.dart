@@ -34,7 +34,7 @@ class TagCacher implements ITagRepository {
     }
 
     for (final tag in freshTags) {
-      cache.put(tag.rawName, tag);
+      await cache.put(tag.rawName, tag);
     }
 
     return [...cachedTags, ...freshTags];

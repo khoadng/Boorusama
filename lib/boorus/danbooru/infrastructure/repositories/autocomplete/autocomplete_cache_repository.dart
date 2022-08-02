@@ -18,7 +18,7 @@ class AutocompleteCacheRepository implements AutocompleteRepository {
     if (_cacher.exist(query)) return _cacher.get(query);
 
     final fresh = await _autocompleteRepository.getAutocomplete(query);
-    _cacher.put(query, fresh);
+    await _cacher.put(query, fresh);
 
     return fresh;
   }

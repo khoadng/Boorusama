@@ -27,7 +27,7 @@ class NoteCacher implements INoteRepository {
       postId,
       cancelToken: cancelToken,
     );
-    cache.put(postId, fresh);
+    await cache.put(postId, fresh);
 
     return fresh;
   }
