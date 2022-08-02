@@ -28,7 +28,7 @@ class ArtistCommentaryCacher implements IArtistCommentaryRepository {
       postId,
       cancelToken: cancelToken,
     );
-    cache.put(key, fresh);
+    await cache.put(key, fresh);
 
     return fresh;
   }

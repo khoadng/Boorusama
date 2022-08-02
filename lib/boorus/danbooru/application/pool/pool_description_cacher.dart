@@ -18,7 +18,7 @@ class PoolDescriptionCacher implements PoolDescriptionRepository {
     if (item != null) return item;
 
     final fresh = await repo.getDescription(poolId);
-    cache.put(poolId, fresh);
+    await cache.put(poolId, fresh);
 
     return fresh;
   }

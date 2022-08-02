@@ -27,7 +27,7 @@ class WikiCacher implements IWikiRepository {
       title,
       cancelToken: cancelToken,
     );
-    cache.put(title, fresh);
+    await cache.put(title, fresh);
 
     return fresh;
   }

@@ -53,6 +53,7 @@ import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
@@ -114,6 +115,9 @@ void main() async {
 
   final searchHistoryRepo =
       SearchHistoryRepository(settingRepository: settingRepository);
+
+  final autocompleteBox = await Hive.openBox<String>('autocomplete');
+  final autocompleteHttpCacher = AutocompleteHttpCacher(box: autocompleteBox);
 
   final config = DanbooruConfig();
   final booruFactory = BooruFactory.from(await loadBooruList());
@@ -230,10 +234,13 @@ void main() async {
 
                   final autocompleteRepo = AutocompleteCacheRepository(
                     cacher: LruCacher<String, List<AutocompleteData>>(
-                      capacity: 100,
+                      capacity: 10,
                     ),
                     repo: AutocompleteRepository(
-                        api: api, accountRepository: accountRepo),
+                      api: api,
+                      accountRepository: accountRepo,
+                      cache: autocompleteHttpCacher,
+                    ),
                   );
 
                   final relatedTagRepo = RelatedTagApiRepository(api);
