@@ -292,4 +292,21 @@ abstract class DanbooruApi implements Api {
     @Query('search[query]') String query, {
     @CancelRequest() CancelToken? cancelToken,
   });
+
+  @POST('/posts/{postId}/votes.json')
+  @override
+  Future<HttpResponse> votePost(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int postId,
+    @Query('score') int score,
+  );
+
+  @DELETE('/posts/{postId}/votes.json')
+  @override
+  Future<HttpResponse> removeVotePost(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int postId,
+  );
 }

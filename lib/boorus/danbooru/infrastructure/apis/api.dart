@@ -219,4 +219,17 @@ abstract class Api {
     String query, {
     CancelToken? cancelToken,
   });
+
+  Future<HttpResponse> votePost(
+    String login,
+    String apiKey,
+    int postId,
+    int score,
+  );
+
+  Future<HttpResponse> removeVotePost(
+    String login,
+    String apiKey,
+    int postId,
+  );
 }
