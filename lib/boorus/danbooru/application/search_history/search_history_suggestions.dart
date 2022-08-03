@@ -64,15 +64,22 @@ class SearchHistorySuggestionsBloc
       await tryAsync<List<SearchHistory>>(
         action: () => searchHistoryRepository.getHistories(),
         onSuccess: (data) async {
-          final histories = data
+          final filtered = data
               .where((e) => e.query.contains(event.text))
+              .take(2)
+              .toList()
+            ..sort((a, b) => b.searchCount.compareTo(a.searchCount));
+
+          final histories = filtered
               .map((e) => HistorySuggestion(
                     tag: e.query,
                     term: event.text,
                   ))
-              .take(2)
               .toList();
-          emit(state.copyWith(histories: histories));
+
+          emit(state.copyWith(
+            histories: histories,
+          ));
         },
       );
     });

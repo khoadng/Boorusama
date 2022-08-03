@@ -23,9 +23,17 @@ class SearchHistoryRepository implements ISearchHistoryRepository {
         return getHistories();
       }
 
-      final history = SearchHistory.now(query);
-      final historyObj = searchHistoryToHiveObject(history);
-      await db.put(query, historyObj);
+      if (db.containsKey(query)) {
+        final history = hiveObjectToSearchHistory(db.get(query)!);
+        final historyObj = searchHistoryToHiveObject(history.copyWith(
+          searchCount: history.searchCount + 1,
+        ));
+        await db.put(query, historyObj);
+      } else {
+        final history = SearchHistory.now(query);
+        final historyObj = searchHistoryToHiveObject(history);
+        await db.put(query, historyObj);
+      }
 
       return getHistories();
     } catch (e) {

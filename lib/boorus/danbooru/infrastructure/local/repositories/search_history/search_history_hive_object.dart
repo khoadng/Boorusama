@@ -11,6 +11,7 @@ class SearchHistoryHiveObject {
   SearchHistoryHiveObject({
     required this.query,
     required this.createdAt,
+    required this.searchCount,
   });
 
   @HiveField(0)
@@ -18,12 +19,16 @@ class SearchHistoryHiveObject {
 
   @HiveField(1)
   DateTime createdAt;
+
+  @HiveField(2)
+  int searchCount;
 }
 
 SearchHistory hiveObjectToSearchHistory(SearchHistoryHiveObject obj) {
   return SearchHistory(
     query: obj.query,
     createdAt: obj.createdAt,
+    searchCount: obj.searchCount,
   );
 }
 
@@ -31,5 +36,6 @@ SearchHistoryHiveObject searchHistoryToHiveObject(SearchHistory history) {
   return SearchHistoryHiveObject(
     query: history.query,
     createdAt: history.createdAt,
+    searchCount: history.searchCount,
   );
 }
