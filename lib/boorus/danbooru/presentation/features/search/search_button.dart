@@ -5,13 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({
@@ -23,29 +21,19 @@ class SearchButton extends StatelessWidget {
     return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) => BlocBuilder<SearchBloc, SearchState>(
-        builder: (context, searchState) => _shouldShowSearchButton(
-          searchState.displayState,
-          tags,
-        )
-            ? BlocBuilder<SettingsCubit, SettingsState>(
-                builder: (context, ss) => BlocListener<SearchHistoryCubit,
-                    AsyncLoadState<List<SearchHistory>>>(
-                  listenWhen: (previous, current) =>
-                      current.status == LoadStatus.success,
-                  listener: (context, state) => context
-                      .read<SettingsCubit>()
-                      .update(
-                          ss.settings.copyWith(searchHistories: state.data!)),
-                  child: BlocBuilder<TagSearchBloc, TagSearchState>(
-                    builder: (context, state) => FloatingActionButton(
-                      onPressed: () => _onPress(context, state.selectedTags),
-                      heroTag: null,
-                      child: const Icon(Icons.search),
-                    ),
-                  ),
-                ),
-              )
-            : const SizedBox.shrink(),
+        builder: (context, state) => ConditionalRenderWidget(
+          condition: _shouldShowSearchButton(
+            state.displayState,
+            tags,
+          ),
+          childBuilder: (context) => BlocBuilder<TagSearchBloc, TagSearchState>(
+            builder: (context, state) => FloatingActionButton(
+              onPressed: () => _onPress(context, state.selectedTags),
+              heroTag: null,
+              child: const Icon(Icons.search),
+            ),
+          ),
+        ),
       ),
     );
   }

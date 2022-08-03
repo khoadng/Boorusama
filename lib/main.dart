@@ -52,7 +52,6 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
@@ -68,6 +67,7 @@ import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
+import 'boorus/danbooru/infrastructure/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
@@ -86,10 +86,12 @@ void main() async {
 
   await EasyLocalization.ensureInitialized();
 
-  if (!kIsWeb) {
+  if (!isWeb()) {
     final dbDirectory = await getApplicationDocumentsDirectory();
 
-    Hive.init(dbDirectory.path);
+    Hive
+      ..init(dbDirectory.path)
+      ..registerAdapter(SearchHistoryHiveObjectAdapter());
   }
 
   if (isDesktopPlatform()) {
@@ -113,8 +115,11 @@ void main() async {
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
-  final searchHistoryRepo =
-      SearchHistoryRepository(settingRepository: settingRepository);
+  final searchHistoryBox =
+      await Hive.openBox<SearchHistoryHiveObject>('search_history');
+  final searchHistoryRepo = SearchHistoryRepository(
+    db: searchHistoryBox,
+  );
 
   final autocompleteBox = await Hive.openBox<String>('autocomplete');
   final autocompleteHttpCacher = AutocompleteHttpCacher(box: autocompleteBox);

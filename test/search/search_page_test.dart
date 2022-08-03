@@ -47,6 +47,10 @@ class MockThemeBloc extends MockBloc<ThemeEvent, ThemeState>
 class MockSettingsCubit extends MockCubit<SettingsState>
     implements SettingsCubit {}
 
+class MockSearchHistorySuggestionsBloc extends MockBloc<
+    SearchHistorySuggestionsEvent,
+    SearchHistorySuggestionsState> implements SearchHistorySuggestionsBloc {}
+
 class MockAutocompleteRepository extends Mock
     implements AutocompleteRepository {}
 
@@ -64,6 +68,7 @@ Widget _buildSearchPage({
   final mockRelatedTagBloc = MockRelatedTagBloc();
   final mockThemeBloc = MockThemeBloc();
   final mockSettingsCubit = MockSettingsCubit();
+  final mockSearchHistorySuggestionsBloc = MockSearchHistorySuggestionsBloc();
 
   when(() => mockSearchHistoryCubit.state)
       .thenAnswer((_) => const AsyncLoadState<List<SearchHistory>>.initial());
@@ -76,6 +81,9 @@ Widget _buildSearchPage({
   when(() => mockSettingsCubit.state)
       .thenAnswer((_) => SettingsState.defaultSettings());
 
+  when(() => mockSearchHistorySuggestionsBloc.state)
+      .thenAnswer((_) => SearchHistorySuggestionsState.initial());
+
   return MaterialApp(
     home: MultiBlocProvider(
       providers: [
@@ -86,6 +94,8 @@ Widget _buildSearchPage({
         BlocProvider<RelatedTagBloc>.value(value: mockRelatedTagBloc),
         BlocProvider<ThemeBloc>.value(value: mockThemeBloc),
         BlocProvider<SettingsCubit>.value(value: mockSettingsCubit),
+        BlocProvider<SearchHistorySuggestionsBloc>.value(
+            value: mockSearchHistorySuggestionsBloc),
       ],
       child: MultiRepositoryProvider(
         providers: [RepositoryProvider<IConfig>.value(value: DanbooruConfig())],

@@ -209,6 +209,10 @@ final postSearchHandler = Handler(handlerFunc: (
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               )),
       BlocProvider(
+          create: (context) => SearchHistorySuggestionsBloc(
+              searchHistoryRepository:
+                  context.read<ISearchHistoryRepository>())),
+      BlocProvider(
           create: (context) => SearchBloc(
               initial: const SearchState(displayState: DisplayState.options))),
       BlocProvider(

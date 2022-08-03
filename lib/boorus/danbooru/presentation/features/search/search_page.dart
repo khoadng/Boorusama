@@ -362,11 +362,23 @@ class _TagSuggestionItems extends StatelessWidget {
     return BlocSelector<TagSearchBloc, TagSearchState, List<AutocompleteData>>(
       selector: (state) => state.suggestionTags,
       builder: (context, tags) {
-        return TagSuggestionItems(
-          tags: tags,
-          onItemTap: (tag) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+        return BlocBuilder<SearchHistorySuggestionsBloc,
+            SearchHistorySuggestionsState>(
+          builder: (context, state) {
+            return SliverTagSuggestionItemsWithHistory(
+              tags: tags,
+              histories: state.histories,
+              onHistoryTap: (history) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context
+                    .read<TagSearchBloc>()
+                    .add(TagSearchNewRawStringTagSelected(history.tag));
+              },
+              onItemTap: (tag) {
+                FocusManager.instance.primaryFocus?.unfocus();
+                context.read<TagSearchBloc>().add(TagSearchNewTagSelected(tag));
+              },
+            );
           },
         );
       },
@@ -429,8 +441,12 @@ class _SearchBar extends StatelessWidget {
               )
             : const SizedBox.shrink(),
       ),
-      onChanged: (value) =>
-          context.read<TagSearchBloc>().add(TagSearchChanged(value)),
+      onChanged: (value) {
+        context.read<TagSearchBloc>().add(TagSearchChanged(value));
+        context
+            .read<SearchHistorySuggestionsBloc>()
+            .add(SearchHistorySuggestionsFetched(text: value));
+      },
       onSubmitted: (value) =>
           context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
     );
