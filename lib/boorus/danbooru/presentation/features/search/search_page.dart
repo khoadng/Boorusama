@@ -373,7 +373,7 @@ class _TagSuggestionItems extends StatelessWidget {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
                     .read<TagSearchBloc>()
-                    .add(TagSearchNewRawStringTagSelected(history.query));
+                    .add(TagSearchNewRawStringTagSelected(history.tag));
               },
               onItemTap: (tag) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -446,7 +446,7 @@ class _SearchBar extends StatelessWidget {
         context.read<TagSearchBloc>().add(TagSearchChanged(value));
         context
             .read<SearchHistorySuggestionsBloc>()
-            .add(SearchHistorySuggestionsFetched(character: value));
+            .add(SearchHistorySuggestionsFetched(text: value));
       },
       onSubmitted: (value) =>
           context.read<TagSearchBloc>().add(const TagSearchSubmitted()),

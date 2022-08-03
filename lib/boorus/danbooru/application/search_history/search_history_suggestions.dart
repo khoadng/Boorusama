@@ -6,6 +6,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
+class HistorySuggestion extends Equatable {
+  const HistorySuggestion({
+    required this.term,
+    required this.tag,
+  });
+
+  final String term;
+  final String tag;
+
+  @override
+  List<Object?> get props => [term, tag];
+}
+
 class SearchHistorySuggestionsState extends Equatable {
   const SearchHistorySuggestionsState({
     required this.histories,
@@ -14,10 +27,10 @@ class SearchHistorySuggestionsState extends Equatable {
   factory SearchHistorySuggestionsState.initial() =>
       const SearchHistorySuggestionsState(histories: []);
 
-  final List<SearchHistory> histories;
+  final List<HistorySuggestion> histories;
 
   SearchHistorySuggestionsState copyWith({
-    List<SearchHistory>? histories,
+    List<HistorySuggestion>? histories,
   }) =>
       SearchHistorySuggestionsState(
         histories: histories ?? this.histories,
@@ -33,13 +46,13 @@ abstract class SearchHistorySuggestionsEvent extends Equatable {
 
 class SearchHistorySuggestionsFetched extends SearchHistorySuggestionsEvent {
   const SearchHistorySuggestionsFetched({
-    required this.character,
+    required this.text,
   });
 
-  final String character;
+  final String text;
 
   @override
-  List<Object?> get props => [character];
+  List<Object?> get props => [text];
 }
 
 class SearchHistorySuggestionsBloc
@@ -52,7 +65,11 @@ class SearchHistorySuggestionsBloc
         action: () => searchHistoryRepository.getHistories(),
         onSuccess: (data) async {
           final histories = data
-              .where((e) => e.query.contains(event.character))
+              .where((e) => e.query.contains(event.text))
+              .map((e) => HistorySuggestion(
+                    tag: e.query,
+                    term: event.text,
+                  ))
               .take(2)
               .toList();
           emit(state.copyWith(histories: histories));
