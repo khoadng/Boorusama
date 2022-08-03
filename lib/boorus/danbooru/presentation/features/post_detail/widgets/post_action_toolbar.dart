@@ -18,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
+import 'package:boorusama/core/presentation/widgets/icon_text_button.dart';
 import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
 
 class PostActionToolbar extends StatefulWidget {
@@ -43,6 +44,17 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildFavoriteButton(authState),
+          IconTextButton(
+            icon: const Icon(Icons.arrow_upward),
+            label: Text(NumberFormat.compact().format(widget.post.upScore)),
+            onPressed: () => print('up'),
+          ),
+          IconTextButton(
+            icon: const Icon(Icons.arrow_downward),
+            label:
+                Text(NumberFormat.compact().format(-1 * widget.post.downScore)),
+            onPressed: () => print('down'),
+          ),
           _buildCommentButton(),
           _buildDownloadButton(),
           _buildShareButton(),
