@@ -112,11 +112,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Screen.of(context).size != ScreenSize.small) {
-        context.read<TagBloc>()
-          ..add(const TagReset())
-          ..add(TagFetched(tags: widget.posts[widget.intitialIndex].tags));
+        context
+            .read<TagBloc>()
+            .add(TagFetched(tags: widget.posts[widget.intitialIndex].tags));
         context.read<ArtistCommentaryBloc>().add(ArtistCommentaryFetched(
-            postId: widget.posts[widget.intitialIndex].id));
+              postId: widget.posts[widget.intitialIndex].id,
+            ));
       }
     });
   }
@@ -201,9 +202,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     return _CarouselSlider(
       onPageChanged: (index) {
         if (screenSize != ScreenSize.small) {
-          context.read<TagBloc>()
-            ..add(const TagReset())
-            ..add(TagFetched(tags: post.tags));
+          context.read<TagBloc>().add(TagFetched(tags: post.tags));
           context
               .read<ArtistCommentaryBloc>()
               .add(ArtistCommentaryFetched(postId: post.id));
