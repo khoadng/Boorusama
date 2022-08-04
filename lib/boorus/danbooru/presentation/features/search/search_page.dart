@@ -372,7 +372,7 @@ class _TagSuggestionItems extends StatelessWidget {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
                     .read<TagSearchBloc>()
-                    .add(TagSearchNewRawStringTagSelected(history.tag));
+                    .add(TagSearchTagFromHistorySelected(history.tag));
               },
               onItemTap: (tag) {
                 FocusManager.instance.primaryFocus?.unfocus();
