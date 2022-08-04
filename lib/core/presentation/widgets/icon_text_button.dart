@@ -13,7 +13,7 @@ class IconTextButton extends StatelessWidget {
   final double? width;
   final Widget icon;
   final Widget label;
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
 
   @override
   Widget build(BuildContext context) {

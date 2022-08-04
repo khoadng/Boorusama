@@ -12,6 +12,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_page.dart';
@@ -44,16 +45,44 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildFavoriteButton(authState),
-          IconTextButton(
-            icon: const Icon(Icons.arrow_upward),
-            label: Text(NumberFormat.compact().format(widget.post.upScore)),
-            onPressed: () => print('up'),
+          BlocBuilder<PostVoteBloc, PostVoteState>(
+            builder: (context, state) {
+              return IconTextButton(
+                icon: Icon(
+                  Icons.arrow_upward,
+                  color: state.state == VoteState.upvoted
+                      ? Colors.redAccent
+                      : null,
+                ),
+                label: Text(NumberFormat.compact().format(state.upScore)),
+                onPressed: state.status == LoadStatus.success
+                    ? () {
+                        context
+                            .read<PostVoteBloc>()
+                            .add(PostVoteUpvoted(postId: widget.post.id));
+                      }
+                    : null,
+              );
+            },
           ),
-          IconTextButton(
-            icon: const Icon(Icons.arrow_downward),
-            label:
-                Text(NumberFormat.compact().format(-1 * widget.post.downScore)),
-            onPressed: () => print('down'),
+          BlocBuilder<PostVoteBloc, PostVoteState>(
+            builder: (context, state) {
+              return IconTextButton(
+                icon: Icon(
+                  Icons.arrow_downward,
+                  color: state.state == VoteState.downvoted
+                      ? Colors.redAccent
+                      : null,
+                ),
+                label:
+                    Text(NumberFormat.compact().format(-1 * state.downScore)),
+                onPressed: state.status == LoadStatus.success
+                    ? () => context
+                        .read<PostVoteBloc>()
+                        .add(PostVoteDownvoted(postId: widget.post.id))
+                    : null,
+              );
+            },
           ),
           _buildCommentButton(),
           _buildDownloadButton(),

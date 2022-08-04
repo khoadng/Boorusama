@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -136,9 +137,17 @@ class ActionBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<String?>(
       valueListenable: imagePath,
-      builder: (context, value, child) => PostActionToolbar(
-        post: post,
-        imagePath: value,
+      builder: (context, value, child) => BlocProvider(
+        create: (context) => PostVoteBloc(
+          postVoteRepository: context.read<PostVoteRepository>(),
+          score: post.score,
+          upScore: post.upScore,
+          downScore: post.downScore,
+        ),
+        child: PostActionToolbar(
+          post: post,
+          imagePath: value,
+        ),
       ),
     );
   }
