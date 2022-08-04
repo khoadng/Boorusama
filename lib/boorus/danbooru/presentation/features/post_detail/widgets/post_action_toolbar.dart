@@ -22,94 +22,104 @@ import 'package:boorusama/core/presentation/download_provider_widget.dart';
 import 'package:boorusama/core/presentation/widgets/icon_text_button.dart';
 import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
 
-class PostActionToolbar extends StatefulWidget {
+class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     Key? key,
     required this.post,
     required this.imagePath,
+    required this.detail,
   }) : super(key: key);
 
   final Post post;
   final String? imagePath;
+  final PostDetail detail;
 
-  @override
-  State<PostActionToolbar> createState() => _PostActionToolbarState();
-}
-
-class _PostActionToolbarState extends State<PostActionToolbar> {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) => ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildFavoriteButton(authState),
-          BlocBuilder<PostVoteBloc, PostVoteState>(
-            builder: (context, state) {
-              return IconTextButton(
-                icon: Icon(
-                  Icons.arrow_upward,
-                  color: state.state == VoteState.upvoted
-                      ? Colors.redAccent
-                      : null,
-                ),
-                label: Text(NumberFormat.compact().format(state.upScore)),
-                onPressed: state.status == LoadStatus.success
-                    ? () {
-                        context
-                            .read<PostVoteBloc>()
-                            .add(PostVoteUpvoted(postId: widget.post.id));
-                      }
-                    : null,
-              );
-            },
-          ),
-          BlocBuilder<PostVoteBloc, PostVoteState>(
-            builder: (context, state) {
-              return IconTextButton(
-                icon: Icon(
-                  Icons.arrow_downward,
-                  color: state.state == VoteState.downvoted
-                      ? Colors.redAccent
-                      : null,
-                ),
-                label:
-                    Text(NumberFormat.compact().format(-1 * state.downScore)),
-                onPressed: state.status == LoadStatus.success
-                    ? () => context
-                        .read<PostVoteBloc>()
-                        .add(PostVoteDownvoted(postId: widget.post.id))
-                    : null,
-              );
-            },
-          ),
-          _buildCommentButton(),
-          _buildDownloadButton(),
-          _buildShareButton(),
-        ],
+    return BlocProvider(
+      key: ValueKey(detail.voteState),
+      create: (context) => PostVoteBloc(
+        postVoteRepository: context.read<PostVoteRepository>(),
+        score: post.score,
+        upScore: post.upScore,
+        downScore: post.downScore,
+        voteState: detail.voteState,
       ),
+      child: Builder(builder: (context) {
+        return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+          builder: (context, authState) => ButtonBar(
+            buttonPadding: EdgeInsets.zero,
+            alignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              _buildFavoriteButton(authState),
+              BlocBuilder<PostVoteBloc, PostVoteState>(
+                builder: (context, state) {
+                  return IconTextButton(
+                    icon: Icon(
+                      Icons.arrow_upward,
+                      color: state.state == VoteState.upvoted
+                          ? Colors.redAccent
+                          : null,
+                    ),
+                    label: Text(NumberFormat.compact().format(state.upScore)),
+                    onPressed: state.status == LoadStatus.success
+                        ? () {
+                            context.read<PostVoteBloc>().add(PostVoteUpvoted(
+                                  postId: post.id,
+                                ));
+                          }
+                        : null,
+                  );
+                },
+              ),
+              BlocBuilder<PostVoteBloc, PostVoteState>(
+                builder: (context, state) {
+                  return IconTextButton(
+                    icon: Icon(
+                      Icons.arrow_downward,
+                      color: state.state == VoteState.downvoted
+                          ? Colors.redAccent
+                          : null,
+                    ),
+                    label: Text(
+                        NumberFormat.compact().format(-1 * state.downScore)),
+                    onPressed: state.status == LoadStatus.success
+                        ? () =>
+                            context.read<PostVoteBloc>().add(PostVoteDownvoted(
+                                  postId: post.id,
+                                ))
+                        : null,
+                  );
+                },
+              ),
+              _buildCommentButton(context),
+              _buildDownloadButton(),
+              _buildShareButton(context),
+            ],
+          ),
+        );
+      }),
     );
   }
 
   Widget _buildDownloadButton() {
     return DownloadProviderWidget(
       builder: (context, download) => IconButton(
-        onPressed: () => download(widget.post),
+        onPressed: () => download(post),
         icon: const FaIcon(FontAwesomeIcons.download),
       ),
     );
   }
 
-  Widget _buildShareButton() {
+  Widget _buildShareButton(BuildContext context) {
     final modal = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
       builder: (context, state) {
         return ModalShare(
           endpoint: state.booru.url,
           onTap: Share.share,
           onTapFile: (filePath) => Share.shareFiles([filePath]),
-          post: widget.post,
-          imagePath: widget.imagePath,
+          post: post,
+          imagePath: imagePath,
         );
       },
     );
@@ -135,14 +145,14 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
     );
   }
 
-  Widget _buildCommentButton() {
+  Widget _buildCommentButton(BuildContext context) {
     return IconButton(
       onPressed: () => Screen.of(context).size == ScreenSize.small
           ? showBarModalBottomSheet(
               expand: false,
               context: context,
               builder: (context) => CommentPage(
-                postId: widget.post.id,
+                postId: post.id,
               ),
             )
           : showSideSheetFromRight(
@@ -185,7 +195,7 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
                       Expanded(
                         child: CommentPage(
                           useAppBar: false,
-                          postId: widget.post.id,
+                          postId: post.id,
                         ),
                       )
                     ],
@@ -217,13 +227,13 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
 
               final result = state.data!
                   ? RepositoryProvider.of<IFavoritePostRepository>(context)
-                      .removeFromFavorites(widget.post.id)
+                      .removeFromFavorites(post.id)
                   : RepositoryProvider.of<IFavoritePostRepository>(context)
-                      .addToFavorites(widget.post.id);
+                      .addToFavorites(post.id);
 
               await result;
 
-              favBloc.add(IsPostFavoritedRequested(postId: widget.post.id));
+              favBloc.add(IsPostFavoritedRequested(postId: post.id));
             },
             icon: state.data!
                 ? const FaIcon(
@@ -234,7 +244,7 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
                     FontAwesomeIcons.heart,
                   ),
             label: Text(
-              widget.post.favCount.toString(),
+              post.favCount.toString(),
               style: state.data! ? const TextStyle(color: Colors.red) : null,
             ),
           );
@@ -248,7 +258,7 @@ class _PostActionToolbarState extends State<PostActionToolbar> {
                 FontAwesomeIcons.spinner,
               ),
               label: Text(
-                widget.post.favCount.toString(),
+                post.favCount.toString(),
                 style: const TextStyle(color: Colors.white),
               ),
             ),

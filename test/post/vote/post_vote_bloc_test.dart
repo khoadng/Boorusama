@@ -1,10 +1,13 @@
+// Package imports:
 import 'package:bloc_test/bloc_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:test/test.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:test/test.dart';
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
@@ -33,6 +36,7 @@ void main() {
         score: 0,
         upScore: 2,
         downScore: -2,
+        voteState: VoteState.none,
       ),
       act: (bloc) => bloc.add(const PostVoteUpvoted(postId: 1)),
       expect: () => [
@@ -66,6 +70,7 @@ void main() {
         score: 0,
         upScore: 2,
         downScore: -2,
+        voteState: VoteState.none,
       ),
       act: (bloc) => bloc.add(const PostVoteDownvoted(postId: 1)),
       expect: () => [

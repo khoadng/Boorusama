@@ -36,3 +36,17 @@ class PostVote extends Equatable {
         isDeleted,
       ];
 }
+
+enum VoteState {
+  none,
+  upvoted,
+  downvoted,
+}
+
+extension PostVoteX on PostVote {
+  VoteState get voteState {
+    if (score == -1) return VoteState.downvoted;
+    if (score == 1) return VoteState.upvoted;
+    return VoteState.none;
+  }
+}

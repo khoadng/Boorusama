@@ -309,4 +309,14 @@ abstract class DanbooruApi implements Api {
     @Query('api_key') String apiKey,
     @Path() int postId,
   );
+
+  @GET('/post_votes.json')
+  @override
+  Future<HttpResponse> getPostVotes(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Query('search[post_id]') String postIdsComma,
+    @Query('search[user_id]') String userId,
+    @Query('search[is_deleted]') bool isDeleted,
+  );
 }

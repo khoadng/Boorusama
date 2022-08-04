@@ -112,8 +112,8 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final posts = args[0];
-  final index = args[1];
+  final posts = args[0] as List<Post>;
+  final index = args[1] as int;
 
   final screenSize = Screen.of(context).size;
 
@@ -123,6 +123,15 @@ final postDetailHandler = Handler(handlerFunc: (
   }
   return MultiBlocProvider(
     providers: [
+      BlocProvider(
+        create: (context) => PostDetailBloc(
+          postVoteRepository: context.read<PostVoteRepository>(),
+        )..add(
+            PostDetailFetched(
+              postIds: posts.map((e) => e.id).toList(),
+            ),
+          ),
+      ),
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider(
         create: (context) => IsPostFavoritedBloc(

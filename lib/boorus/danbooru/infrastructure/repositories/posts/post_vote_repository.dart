@@ -1,3 +1,6 @@
+// Package imports:
+import 'package:retrofit/dio.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
@@ -5,6 +8,11 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
 import 'package:boorusama/core/infrastructure/http_parser.dart';
+
+List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
+      value: value,
+      converter: (item) => PostVoteDto.fromJson(item),
+    ).map(postVoteDtoToPostVote).toList();
 
 class PostVoteApiRepository implements PostVoteRepository {
   const PostVoteApiRepository({
@@ -15,6 +23,18 @@ class PostVoteApiRepository implements PostVoteRepository {
 
   final IAccountRepository _accountRepository;
   final Api _api;
+
+  @override
+  Future<List<PostVote>> getPostVotes(List<int> postIds) => _accountRepository
+      .get()
+      .then((account) => _api.getPostVotes(
+            account.username,
+            account.apiKey,
+            postIds.join(','),
+            account.id.toString(),
+            false,
+          ))
+      .then(parsePostVote);
 
   Future<PostVote> _vote(int postId, int score) => _accountRepository
       .get()

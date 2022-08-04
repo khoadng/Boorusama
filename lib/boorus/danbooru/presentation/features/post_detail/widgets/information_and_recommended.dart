@@ -135,20 +135,17 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String?>(
-      valueListenable: imagePath,
-      builder: (context, value, child) => BlocProvider(
-        create: (context) => PostVoteBloc(
-          postVoteRepository: context.read<PostVoteRepository>(),
-          score: post.score,
-          upScore: post.upScore,
-          downScore: post.downScore,
-        ),
-        child: PostActionToolbar(
-          post: post,
-          imagePath: value,
-        ),
-      ),
+    return BlocBuilder<PostDetailBloc, PostDetailState>(
+      builder: (context, state) {
+        return ValueListenableBuilder<String?>(
+          valueListenable: imagePath,
+          builder: (context, value, child) => PostActionToolbar(
+            post: post,
+            imagePath: value,
+            detail: state.details[post.id] ?? PostDetail.empty(post.id),
+          ),
+        );
+      },
     );
   }
 }

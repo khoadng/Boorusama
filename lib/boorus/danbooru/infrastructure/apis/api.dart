@@ -232,4 +232,12 @@ abstract class Api {
     String apiKey,
     int postId,
   );
+
+  Future<HttpResponse> getPostVotes(
+    String login,
+    String apiKey,
+    String postIdComma,
+    String userId,
+    bool isDeleted,
+  );
 }

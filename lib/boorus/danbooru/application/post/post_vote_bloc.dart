@@ -6,12 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-enum VoteState {
-  none,
-  upvoted,
-  downvoted,
-}
-
 class PostVoteState extends Equatable {
   const PostVoteState({
     required this.status,
@@ -25,13 +19,14 @@ class PostVoteState extends Equatable {
     int score,
     int upScore,
     int downScore,
+    VoteState voteState,
   ) =>
       PostVoteState(
         status: LoadStatus.success,
         score: score,
         upScore: upScore,
         downScore: downScore,
-        state: VoteState.none,
+        state: voteState,
       );
 
   final LoadStatus status;
@@ -91,7 +86,8 @@ class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
     required int score,
     required int upScore,
     required int downScore,
-  }) : super(PostVoteState.initial(score, upScore, downScore)) {
+    required VoteState voteState,
+  }) : super(PostVoteState.initial(score, upScore, downScore, voteState)) {
     on<PostVoteUpvoted>((event, emit) async {
       await tryAsync<PostVote>(
         action: () => postVoteRepository.upvote(event.postId),
