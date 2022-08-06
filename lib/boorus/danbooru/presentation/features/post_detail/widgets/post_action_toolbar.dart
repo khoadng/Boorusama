@@ -19,7 +19,6 @@ import 'package:boorusama/boorus/danbooru/presentation/features/comment/comment_
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/download_provider_widget.dart';
-import 'package:boorusama/core/presentation/widgets/icon_text_button.dart';
 import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
 
 class PostActionToolbar extends StatelessWidget {
@@ -40,49 +39,44 @@ class PostActionToolbar extends StatelessWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildFavoriteButton(authState),
-          BlocBuilder<PostVoteBloc, PostVoteState>(
-            builder: (context, state) {
-              return IconTextButton(
-                icon: Icon(
-                  Icons.arrow_upward,
-                  color: state.state == VoteState.upvoted
-                      ? Colors.redAccent
-                      : null,
-                ),
-                label: Text(NumberFormat.compact().format(state.upScore)),
-                onPressed: state.status == LoadStatus.success
-                    ? () {
-                        context.read<PostVoteBloc>().add(PostVoteUpvoted(
-                              postId: post.id,
-                            ));
-                      }
-                    : null,
-              );
-            },
-          ),
-          BlocBuilder<PostVoteBloc, PostVoteState>(
-            builder: (context, state) {
-              return IconTextButton(
-                icon: Icon(
-                  Icons.arrow_downward,
-                  color: state.state == VoteState.downvoted
-                      ? Colors.redAccent
-                      : null,
-                ),
-                label:
-                    Text(NumberFormat.compact().format(-1 * state.downScore)),
-                onPressed: state.status == LoadStatus.success
-                    ? () => context.read<PostVoteBloc>().add(PostVoteDownvoted(
-                          postId: post.id,
-                        ))
-                    : null,
-              );
-            },
-          ),
+          _buildUpvoteButton(),
+          _buildDownvoteButton(),
           _buildCommentButton(context),
           _buildDownloadButton(),
           _buildShareButton(context),
         ],
+      ),
+    );
+  }
+
+  Widget _buildUpvoteButton() {
+    return BlocBuilder<PostVoteBloc, PostVoteState>(
+      builder: (context, state) => IconButton(
+        icon: Icon(
+          Icons.arrow_upward,
+          color: state.state == VoteState.upvoted ? Colors.redAccent : null,
+        ),
+        onPressed: state.status == LoadStatus.success
+            ? () => context
+                .read<PostVoteBloc>()
+                .add(PostVoteUpvoted(postId: post.id))
+            : null,
+      ),
+    );
+  }
+
+  Widget _buildDownvoteButton() {
+    return BlocBuilder<PostVoteBloc, PostVoteState>(
+      builder: (context, state) => IconButton(
+        icon: Icon(
+          Icons.arrow_downward,
+          color: state.state == VoteState.downvoted ? Colors.redAccent : null,
+        ),
+        onPressed: state.status == LoadStatus.success
+            ? () => context
+                .read<PostVoteBloc>()
+                .add(PostVoteDownvoted(postId: post.id))
+            : null,
       ),
     );
   }
