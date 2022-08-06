@@ -21,14 +21,14 @@ class SearchHistoryHiveObject {
   DateTime createdAt;
 
   @HiveField(2)
-  int searchCount;
+  int? searchCount;
 }
 
 SearchHistory hiveObjectToSearchHistory(SearchHistoryHiveObject obj) {
   return SearchHistory(
     query: obj.query,
     createdAt: obj.createdAt,
-    searchCount: obj.searchCount,
+    searchCount: obj.searchCount ?? 0,
   );
 }
 
