@@ -56,11 +56,15 @@ class PostActionToolbar extends StatelessWidget {
           Icons.arrow_upward,
           color: state.state == VoteState.upvoted ? Colors.redAccent : null,
         ),
-        onPressed: state.status == LoadStatus.success
-            ? () => context
+        onPressed: () {
+          _onPressedWithLoadingToast(
+            context: context,
+            status: state.status,
+            success: () => context
                 .read<PostVoteBloc>()
-                .add(PostVoteUpvoted(postId: post.id))
-            : null,
+                .add(PostVoteUpvoted(postId: post.id)),
+          );
+        },
       ),
     );
   }
@@ -72,11 +76,15 @@ class PostActionToolbar extends StatelessWidget {
           Icons.arrow_downward,
           color: state.state == VoteState.downvoted ? Colors.redAccent : null,
         ),
-        onPressed: state.status == LoadStatus.success
-            ? () => context
+        onPressed: () {
+          _onPressedWithLoadingToast(
+            context: context,
+            status: state.status,
+            success: () => context
                 .read<PostVoteBloc>()
-                .add(PostVoteDownvoted(postId: post.id))
-            : null,
+                .add(PostVoteDownvoted(postId: post.id)),
+          );
+        },
       ),
     );
   }
@@ -189,10 +197,12 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildFavoriteButton(AuthenticationState authState) {
     return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          return TextButton.icon(
-            onPressed: () async {
+      builder: (context, state) => TextButton.icon(
+        onPressed: () async {
+          _onPressedWithLoadingToast(
+            context: context,
+            status: state.status,
+            success: () async {
               final favBloc = context.read<IsPostFavoritedBloc>();
               if (authState is Unauthenticated) {
                 showSimpleSnackBar(
@@ -214,39 +224,54 @@ class PostActionToolbar extends StatelessWidget {
 
               favBloc.add(IsPostFavoritedRequested(postId: post.id));
             },
-            icon: state.data!
-                ? const FaIcon(
-                    FontAwesomeIcons.solidHeart,
-                    color: Colors.red,
-                  )
-                : const FaIcon(
-                    FontAwesomeIcons.heart,
-                  ),
-            label: Text(
-              post.favCount.toString(),
-              style: state.data! ? const TextStyle(color: Colors.red) : null,
-            ),
           );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
-        } else {
-          return Center(
-            child: TextButton.icon(
-              onPressed: null,
-              icon: const FaIcon(
-                FontAwesomeIcons.spinner,
+        },
+        icon: state.status == LoadStatus.success && state.data!
+            ? const FaIcon(
+                FontAwesomeIcons.solidHeart,
+                color: Colors.red,
+              )
+            : const FaIcon(
+                FontAwesomeIcons.heart,
               ),
-              label: Text(
-                post.favCount.toString(),
-                style: const TextStyle(color: Colors.white),
-              ),
-            ),
-          );
-        }
-      },
+        label: Text(
+          post.favCount.toString(),
+          style: state.status == LoadStatus.success && state.data!
+              ? const TextStyle(color: Colors.red)
+              : null,
+        ),
+      ),
     );
   }
 }
+
+void _onPressed({
+  required BuildContext context,
+  required LoadStatus status,
+  required void Function() success,
+  required void Function() loading,
+}) {
+  if (status == LoadStatus.success) {
+    success();
+  } else if (status == LoadStatus.initial || status == LoadStatus.loading) {
+    loading();
+  }
+}
+
+void _onPressedWithLoadingToast({
+  required BuildContext context,
+  required LoadStatus status,
+  required void Function() success,
+}) =>
+    _onPressed(
+      context: context,
+      status: status,
+      success: success,
+      loading: () => showSimpleSnackBar(
+        context: context,
+        content: const Text('Please wait...'),
+      ),
+    );
 
 enum ShareMode {
   source,
