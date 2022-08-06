@@ -72,7 +72,7 @@ class ExploreCarousel extends StatelessWidget {
         },
         options: CarouselOptions(
           aspectRatio: 1.5,
-          viewportFraction: _screenSizeToViewPortFraction(screenSize),
+          viewportFraction: screenSizeToViewPortFraction(screenSize),
           enlargeCenterPage: true,
         ),
       ),
@@ -80,7 +80,7 @@ class ExploreCarousel extends StatelessWidget {
   }
 }
 
-double _screenSizeToViewPortFraction(ScreenSize size) {
+double screenSizeToViewPortFraction(ScreenSize size) {
   if (size == ScreenSize.large) return 0.2;
   if (size == ScreenSize.medium) return 0.3;
   return 0.4;
