@@ -107,18 +107,25 @@ class PostVoteInit extends PostVoteEvent {
 class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
   PostVoteBloc({
     required PostVoteRepository postVoteRepository,
-  }) : super(PostVoteState.initial(0, 0, 0, VoteState.none)) {
+  }) : super(PostVoteState.initial(0, 0, 0, VoteState.unvote)) {
     on<PostVoteUpvoted>((event, emit) async {
+      if (state.state == VoteState.upvoted) return;
+
       await tryAsync<PostVote>(
         action: () => postVoteRepository.upvote(event.postId),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (error, stackTrace) =>
             emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (data) async {
+          final up = state.upScore + 1;
+          final down = state.state == VoteState.downvoted
+              ? state.downScore + 1
+              : state.downScore;
           emit(state.copyWith(
             status: LoadStatus.success,
-            score: state.score + 1,
-            upScore: state.upScore + 1,
+            score: up + down,
+            upScore: up,
+            downScore: down,
             state: VoteState.upvoted,
           ));
         },
@@ -126,16 +133,22 @@ class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
     });
 
     on<PostVoteDownvoted>((event, emit) async {
+      if (state.state == VoteState.downvoted) return;
       await tryAsync<PostVote>(
         action: () => postVoteRepository.downvote(event.postId),
         onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
         onFailure: (error, stackTrace) =>
             emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (data) async {
+          final down = state.downScore - 1;
+          final up = state.state == VoteState.upvoted
+              ? state.upScore - 1
+              : state.upScore;
           emit(state.copyWith(
             status: LoadStatus.success,
-            score: state.score - 1,
-            downScore: state.downScore - 1,
+            score: up + down,
+            upScore: up,
+            downScore: down,
             state: VoteState.downvoted,
           ));
         },
@@ -147,7 +160,7 @@ class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
         event.score,
         event.upScore,
         event.downScore,
-        VoteState.none,
+        VoteState.unvote,
       ));
 
       await tryAsync<List<PostVote>>(
@@ -158,7 +171,7 @@ class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
         onSuccess: (data) async {
           emit(state.copyWith(
             status: LoadStatus.success,
-            state: data.isEmpty ? VoteState.none : data.first.voteState,
+            state: data.isEmpty ? VoteState.unvote : data.first.voteState,
           ));
         },
       );

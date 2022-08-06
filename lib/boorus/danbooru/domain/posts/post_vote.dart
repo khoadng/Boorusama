@@ -38,7 +38,7 @@ class PostVote extends Equatable {
 }
 
 enum VoteState {
-  none,
+  unvote,
   upvoted,
   downvoted,
 }
@@ -47,6 +47,6 @@ extension PostVoteX on PostVote {
   VoteState get voteState {
     if (score == -1) return VoteState.downvoted;
     if (score == 1) return VoteState.upvoted;
-    return VoteState.none;
+    return VoteState.unvote;
   }
 }
