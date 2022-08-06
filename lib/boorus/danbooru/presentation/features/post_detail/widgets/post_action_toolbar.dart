@@ -39,8 +39,8 @@ class PostActionToolbar extends StatelessWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildFavoriteButton(authState),
-          _buildUpvoteButton(),
-          _buildDownvoteButton(),
+          if (authState is Authenticated) _buildUpvoteButton(),
+          if (authState is Authenticated) _buildDownvoteButton(),
           _buildCommentButton(context),
           _buildDownloadButton(),
           _buildShareButton(context),
