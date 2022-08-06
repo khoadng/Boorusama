@@ -124,13 +124,9 @@ final postDetailHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostDetailBloc(
+        create: (context) => PostVoteBloc(
           postVoteRepository: context.read<PostVoteRepository>(),
-        )..add(
-            PostDetailFetched(
-              postIds: posts.map((e) => e.id).toList(),
-            ),
-          ),
+        )..add(PostVoteInit.fromPost(posts[index])),
       ),
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider(

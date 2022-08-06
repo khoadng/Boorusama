@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -135,17 +134,12 @@ class ActionBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostDetailBloc, PostDetailState>(
-      builder: (context, state) {
-        return ValueListenableBuilder<String?>(
-          valueListenable: imagePath,
-          builder: (context, value, child) => PostActionToolbar(
-            post: post,
-            imagePath: value,
-            detail: state.details[post.id] ?? PostDetail.empty(post.id),
-          ),
-        );
-      },
+    return ValueListenableBuilder<String?>(
+      valueListenable: imagePath,
+      builder: (context, value, child) => PostActionToolbar(
+        post: post,
+        imagePath: value,
+      ),
     );
   }
 }

@@ -623,6 +623,10 @@ class _CarouselSlider extends StatelessWidget {
                       .read<IsPostFavoritedBloc>()
                       .add(IsPostFavoritedRequested(postId: posts[index].id));
 
+                  context
+                      .read<PostVoteBloc>()
+                      .add(PostVoteInit.fromPost(posts[index]));
+
                   onPageChanged?.call(index);
                 },
                 height: MediaQuery.of(context).size.height,

@@ -30,13 +30,19 @@ void main() {
       setUp: () {
         when(() => postVoteRepo.upvote(any()))
             .thenAnswer((_) async => postVote(1));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((_) async => []);
       },
-      build: () => PostVoteBloc(
-        postVoteRepository: postVoteRepo,
+      tearDown: () => reset(postVoteRepo),
+      seed: () => const PostVoteState(
+        status: LoadStatus.success,
         score: 0,
         upScore: 2,
         downScore: -2,
-        voteState: VoteState.none,
+        state: VoteState.none,
+      ),
+      build: () => PostVoteBloc(
+        postVoteRepository: postVoteRepo,
       ),
       act: (bloc) => bloc.add(const PostVoteUpvoted(postId: 1)),
       expect: () => [
@@ -64,13 +70,19 @@ void main() {
       setUp: () {
         when(() => postVoteRepo.downvote(any()))
             .thenAnswer((_) async => postVote(1));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((_) async => []);
       },
-      build: () => PostVoteBloc(
-        postVoteRepository: postVoteRepo,
+      tearDown: () => reset(postVoteRepo),
+      seed: () => const PostVoteState(
+        status: LoadStatus.success,
         score: 0,
         upScore: 2,
         downScore: -2,
-        voteState: VoteState.none,
+        state: VoteState.none,
+      ),
+      build: () => PostVoteBloc(
+        postVoteRepository: postVoteRepo,
       ),
       act: (bloc) => bloc.add(const PostVoteDownvoted(postId: 1)),
       expect: () => [

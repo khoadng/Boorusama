@@ -27,78 +27,63 @@ class PostActionToolbar extends StatelessWidget {
     Key? key,
     required this.post,
     required this.imagePath,
-    required this.detail,
   }) : super(key: key);
 
   final Post post;
   final String? imagePath;
-  final PostDetail detail;
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      key: ValueKey(detail.voteState),
-      create: (context) => PostVoteBloc(
-        postVoteRepository: context.read<PostVoteRepository>(),
-        score: post.score,
-        upScore: post.upScore,
-        downScore: post.downScore,
-        voteState: detail.voteState,
-      ),
-      child: Builder(builder: (context) {
-        return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-          builder: (context, authState) => ButtonBar(
-            buttonPadding: EdgeInsets.zero,
-            alignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              _buildFavoriteButton(authState),
-              BlocBuilder<PostVoteBloc, PostVoteState>(
-                builder: (context, state) {
-                  return IconTextButton(
-                    icon: Icon(
-                      Icons.arrow_upward,
-                      color: state.state == VoteState.upvoted
-                          ? Colors.redAccent
-                          : null,
-                    ),
-                    label: Text(NumberFormat.compact().format(state.upScore)),
-                    onPressed: state.status == LoadStatus.success
-                        ? () {
-                            context.read<PostVoteBloc>().add(PostVoteUpvoted(
-                                  postId: post.id,
-                                ));
-                          }
-                        : null,
-                  );
-                },
-              ),
-              BlocBuilder<PostVoteBloc, PostVoteState>(
-                builder: (context, state) {
-                  return IconTextButton(
-                    icon: Icon(
-                      Icons.arrow_downward,
-                      color: state.state == VoteState.downvoted
-                          ? Colors.redAccent
-                          : null,
-                    ),
-                    label: Text(
-                        NumberFormat.compact().format(-1 * state.downScore)),
-                    onPressed: state.status == LoadStatus.success
-                        ? () =>
-                            context.read<PostVoteBloc>().add(PostVoteDownvoted(
-                                  postId: post.id,
-                                ))
-                        : null,
-                  );
-                },
-              ),
-              _buildCommentButton(context),
-              _buildDownloadButton(),
-              _buildShareButton(context),
-            ],
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) => ButtonBar(
+        buttonPadding: EdgeInsets.zero,
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(authState),
+          BlocBuilder<PostVoteBloc, PostVoteState>(
+            builder: (context, state) {
+              return IconTextButton(
+                icon: Icon(
+                  Icons.arrow_upward,
+                  color: state.state == VoteState.upvoted
+                      ? Colors.redAccent
+                      : null,
+                ),
+                label: Text(NumberFormat.compact().format(state.upScore)),
+                onPressed: state.status == LoadStatus.success
+                    ? () {
+                        context.read<PostVoteBloc>().add(PostVoteUpvoted(
+                              postId: post.id,
+                            ));
+                      }
+                    : null,
+              );
+            },
           ),
-        );
-      }),
+          BlocBuilder<PostVoteBloc, PostVoteState>(
+            builder: (context, state) {
+              return IconTextButton(
+                icon: Icon(
+                  Icons.arrow_downward,
+                  color: state.state == VoteState.downvoted
+                      ? Colors.redAccent
+                      : null,
+                ),
+                label:
+                    Text(NumberFormat.compact().format(-1 * state.downScore)),
+                onPressed: state.status == LoadStatus.success
+                    ? () => context.read<PostVoteBloc>().add(PostVoteDownvoted(
+                          postId: post.id,
+                        ))
+                    : null,
+              );
+            },
+          ),
+          _buildCommentButton(context),
+          _buildDownloadButton(),
+          _buildShareButton(context),
+        ],
+      ),
     );
   }
 

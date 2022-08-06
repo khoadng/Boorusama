@@ -22,7 +22,7 @@ class PostVoteState extends Equatable {
     VoteState voteState,
   ) =>
       PostVoteState(
-        status: LoadStatus.success,
+        status: LoadStatus.initial,
         score: score,
         upScore: upScore,
         downScore: downScore,
@@ -80,14 +80,34 @@ class PostVoteDownvoted extends PostVoteEvent {
   List<Object?> get props => [postId];
 }
 
+class PostVoteInit extends PostVoteEvent {
+  const PostVoteInit({
+    required this.score,
+    required this.upScore,
+    required this.downScore,
+    required this.postId,
+  });
+
+  factory PostVoteInit.fromPost(Post post) => PostVoteInit(
+        postId: post.id,
+        score: post.score,
+        upScore: post.upScore,
+        downScore: post.downScore,
+      );
+
+  final int postId;
+  final int score;
+  final int upScore;
+  final int downScore;
+
+  @override
+  List<Object?> get props => [postId, score, upScore, downScore];
+}
+
 class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
   PostVoteBloc({
     required PostVoteRepository postVoteRepository,
-    required int score,
-    required int upScore,
-    required int downScore,
-    required VoteState voteState,
-  }) : super(PostVoteState.initial(score, upScore, downScore, voteState)) {
+  }) : super(PostVoteState.initial(0, 0, 0, VoteState.none)) {
     on<PostVoteUpvoted>((event, emit) async {
       await tryAsync<PostVote>(
         action: () => postVoteRepository.upvote(event.postId),
@@ -117,6 +137,28 @@ class PostVoteBloc extends Bloc<PostVoteEvent, PostVoteState> {
             score: state.score - 1,
             downScore: state.downScore - 1,
             state: VoteState.downvoted,
+          ));
+        },
+      );
+    });
+
+    on<PostVoteInit>((event, emit) async {
+      emit(PostVoteState.initial(
+        event.score,
+        event.upScore,
+        event.downScore,
+        VoteState.none,
+      ));
+
+      await tryAsync<List<PostVote>>(
+        action: () => postVoteRepository.getPostVotes([event.postId]),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+        onFailure: (error, stackTrace) =>
+            emit(state.copyWith(status: LoadStatus.failure)),
+        onSuccess: (data) async {
+          emit(state.copyWith(
+            status: LoadStatus.success,
+            state: data.isEmpty ? VoteState.none : data.first.voteState,
           ));
         },
       );
