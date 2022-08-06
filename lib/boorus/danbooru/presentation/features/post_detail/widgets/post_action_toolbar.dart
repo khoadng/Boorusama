@@ -85,10 +85,7 @@ class PostActionToolbar extends StatelessWidget {
     return DownloadProviderWidget(
       builder: (context, download) => IconButton(
         onPressed: () => download(post),
-        icon: const FaIcon(
-          FontAwesomeIcons.download,
-          size: 20,
-        ),
+        icon: const FaIcon(FontAwesomeIcons.download),
       ),
     );
   }
@@ -123,7 +120,6 @@ class PostActionToolbar extends StatelessWidget {
             ),
       icon: const FaIcon(
         FontAwesomeIcons.shareFromSquare,
-        size: 20,
       ),
     );
   }
@@ -187,7 +183,6 @@ class PostActionToolbar extends StatelessWidget {
             ),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
-        size: 20,
       ),
     );
   }
@@ -223,11 +218,9 @@ class PostActionToolbar extends StatelessWidget {
                 ? const FaIcon(
                     FontAwesomeIcons.solidHeart,
                     color: Colors.red,
-                    size: 20,
                   )
                 : const FaIcon(
                     FontAwesomeIcons.heart,
-                    size: 20,
                   ),
             label: Text(
               post.favCount.toString(),
