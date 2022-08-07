@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/tag_detail_page.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
 
@@ -25,12 +24,11 @@ class ArtistPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return TagDetailPage(
       tagName: artistName,
-      otherNamesBuilder: (context) =>
-          BlocBuilder<ArtistCubit, AsyncLoadState<Artist>>(
+      otherNamesBuilder: (context) => BlocBuilder<ArtistBloc, ArtistState>(
         builder: (context, state) => ConditionalRenderWidget(
           condition: state.status == LoadStatus.success,
           childBuilder: (context) =>
-              TagOtherNames(otherNames: state.data!.otherNames),
+              TagOtherNames(otherNames: state.artist.otherNames),
         ),
       ),
       backgroundImageUrl: backgroundImageUrl,

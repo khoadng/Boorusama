@@ -32,12 +32,6 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
   final RefreshController refreshController = RefreshController();
 
   @override
-  void initState() {
-    super.initState();
-    context.read<PoolDescriptionCubit>().getDescription(widget.pool.id);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -66,15 +60,14 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                   ),
                 ),
                 SliverToBoxAdapter(
-                  child: BlocBuilder<PoolDescriptionCubit,
-                      AsyncLoadState<PoolDescriptionState>>(
+                  child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
                     builder: (context, state) {
                       if (state.status == LoadStatus.success) {
                         return Html(
                           onLinkTap: (url, context, attributes, element) =>
                               _onHtmlLinkTapped(attributes, url,
-                                  state.data!.descriptionEndpointRefUrl),
-                          data: state.data!.description,
+                                  state.descriptionEndpointRefUrl),
+                          data: state.description,
                         );
                       } else {
                         return const SizedBox.shrink();

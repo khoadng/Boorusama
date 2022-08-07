@@ -26,13 +26,11 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
@@ -47,7 +45,6 @@ import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'presentation/features/accounts/profile/profile_page.dart';
 import 'presentation/features/home/home_page.dart';
@@ -76,10 +73,8 @@ final artistHandler = Handler(handlerFunc: (
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
-      BlocProvider(
-          create: (context) =>
-              ArtistCubit(artistRepository: context.read<IArtistRepository>())
-                ..getArtist(args[0]))
+      BlocProvider.value(
+          value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
     child: ArtistPage(
       artistName: args[0],
@@ -102,10 +97,8 @@ final characterHandler = Handler(handlerFunc: (
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
-      BlocProvider(
-          create: (context) =>
-              WikiBloc(wikiRepository: context.read<IWikiRepository>())
-                ..add(WikiFetched(tag: args[0])))
+      BlocProvider.value(
+          value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
     ],
     child: CharacterPage(
       characterName: args[0],
@@ -122,11 +115,12 @@ final postDetailHandler = Handler(handlerFunc: (
   final posts = args[0];
   final index = args[1];
 
+  final screenSize = Screen.of(context).size;
+
   AutoScrollController? controller;
   if (args.length == 3) {
     controller = args[2];
   }
-
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
@@ -136,36 +130,35 @@ final postDetailHandler = Handler(handlerFunc: (
           favoritePostRepository: context.read<IFavoritePostRepository>(),
         )..add(IsPostFavoritedRequested(postId: posts[index].id)),
       ),
-      BlocProvider(
-          create: (context) => RecommendedArtistPostCubit(
-                postRepository: RecommendedPostCacher(
-                  cache: FifoCacher<String, List<Post>>(capacity: 100),
-                  postRepository: context.read<IPostRepository>(),
-                ),
-              )..add(RecommendedPostRequested(
-                  currentPostId: posts[index].id,
-                  tags: posts[index].artistTags,
-                ))),
-      BlocProvider(
-          create: (context) => PoolFromPostIdBloc(
-                  poolRepository: PoolFromPostCacher(
-                cache: FifoCacher<int, List<Pool>>(capacity: 100),
-                poolRepository: context.read<PoolRepository>(),
-              ))
-                ..add(PoolFromPostIdRequested(postId: posts[index].id))),
-      BlocProvider(
-          create: (context) => RecommendedCharacterPostCubit(
-                postRepository: RecommendedPostCacher(
-                  cache: FifoCacher<String, List<Post>>(capacity: 100),
-                  postRepository: context.read<IPostRepository>(),
-                ),
-              )..add(RecommendedPostRequested(
-                  currentPostId: posts[index].id,
-                  tags: posts[index].characterTags,
-                ))),
-      BlocProvider.value(value: BlocProvider.of<AuthenticationCubit>(context)),
-      BlocProvider.value(value: BlocProvider.of<ApiEndpointCubit>(context)),
-      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
+      BlocProvider.value(
+        value: context.read<RecommendedArtistPostCubit>()
+          ..add(
+            RecommendedPostRequested(
+              amount: screenSize == ScreenSize.large ? 9 : 6,
+              currentPostId: posts[index].id,
+              tags: posts[index].artistTags,
+            ),
+          ),
+      ),
+      BlocProvider.value(
+        value: context.read<RecommendedCharacterPostCubit>()
+          ..add(
+            RecommendedPostRequested(
+              amount: screenSize == ScreenSize.large ? 9 : 6,
+              currentPostId: posts[index].id,
+              tags: posts[index].characterTags.take(3).toList(),
+            ),
+          ),
+      ),
+      BlocProvider.value(
+        value: context.read<PoolFromPostIdBloc>()
+          ..add(
+            PoolFromPostIdRequested(postId: posts[index].id),
+          ),
+      ),
+      BlocProvider.value(value: context.read<AuthenticationCubit>()),
+      BlocProvider.value(value: context.read<ApiEndpointCubit>()),
+      BlocProvider.value(value: context.read<ThemeBloc>()),
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),
@@ -182,7 +175,6 @@ final postDetailHandler = Handler(handlerFunc: (
             );
           },
           child: PostDetailPage(
-            post: posts[index],
             intitialIndex: index,
             posts: posts,
           ),
@@ -217,6 +209,10 @@ final postSearchHandler = Handler(handlerFunc: (
                 autocompleteRepository: context.read<AutocompleteRepository>(),
               )),
       BlocProvider(
+          create: (context) => SearchHistorySuggestionsBloc(
+              searchHistoryRepository:
+                  context.read<ISearchHistoryRepository>())),
+      BlocProvider(
           create: (context) => SearchBloc(
               initial: const SearchState(displayState: DisplayState.options))),
       BlocProvider(
@@ -239,10 +235,10 @@ final postDetailImageHandler = Handler(handlerFunc: (
 
   return MultiBlocProvider(
     providers: [
-      BlocProvider(
-          create: (_) => NoteBloc(
-              noteRepository: RepositoryProvider.of<INoteRepository>(context))
-            ..add(NoteRequested(postId: args[0].id)))
+      BlocProvider.value(
+          value: context.read<NoteBloc>()
+            ..add(const NoteReset())
+            ..add(NoteRequested(postId: args[0].id))),
     ],
     child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
       selector: (state) => state.settings.imageQualityInFullView,
@@ -289,29 +285,23 @@ final poolDetailHandler =
   final args = context!.settings!.arguments as List;
   final pool = args[0] as Pool;
 
-  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-    builder: (context, state) {
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) => PoolDetailCubit(
-                  ids: Queue.from(pool.postIds.reversed),
-                  postRepository:
-                      RepositoryProvider.of<IPostRepository>(context))
-                ..load()),
-          BlocProvider(
-              create: (context) =>
-                  PoolDescriptionCubit(endpoint: state.booru.url)),
-          BlocProvider(
-              create: (context) => NoteBloc(
-                  noteRepository:
-                      RepositoryProvider.of<INoteRepository>(context))),
-        ],
-        child: PoolDetailPage(
-          pool: pool,
-        ),
-      );
-    },
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+          create: (context) => PoolDetailCubit(
+              ids: Queue.from(pool.postIds.reversed),
+              postRepository: RepositoryProvider.of<IPostRepository>(context))
+            ..load()),
+      BlocProvider.value(
+          value: context.read<PoolDescriptionBloc>()
+            ..add(PoolDescriptionFetched(poolId: pool.id))),
+      BlocProvider(
+          create: (context) => NoteBloc(
+              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
+    ],
+    child: PoolDetailPage(
+      pool: pool,
+    ),
   );
 });
 

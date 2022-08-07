@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,17 +19,26 @@ import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_cacher.dart';
+import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/networking/networking.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
@@ -42,19 +52,22 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/local/repositories/search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
 import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
 import 'package:boorusama/core/infrastructure/device_info_service.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
+import 'boorus/danbooru/infrastructure/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
@@ -73,10 +86,23 @@ void main() async {
 
   await EasyLocalization.ensureInitialized();
 
-  if (!kIsWeb) {
+  if (!isWeb()) {
     final dbDirectory = await getApplicationDocumentsDirectory();
 
-    Hive.init(dbDirectory.path);
+    Hive
+      ..init(dbDirectory.path)
+      ..registerAdapter(SearchHistoryHiveObjectAdapter());
+  }
+
+  if (isDesktopPlatform()) {
+    doWhenWindowReady(() {
+      const initialSize = Size(1024, 600);
+      const minSize = Size(350, 350);
+      appWindow.minSize = minSize;
+      appWindow.size = initialSize;
+      appWindow.alignment = Alignment.center;
+      appWindow.show();
+    });
   }
 
   final settingRepository = SettingRepository(
@@ -89,8 +115,14 @@ void main() async {
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
-  final searchHistoryRepo =
-      SearchHistoryRepository(settingRepository: settingRepository);
+  final searchHistoryBox =
+      await Hive.openBox<SearchHistoryHiveObject>('search_history');
+  final searchHistoryRepo = SearchHistoryRepository(
+    db: searchHistoryBox,
+  );
+
+  final autocompleteBox = await Hive.openBox<String>('autocomplete');
+  final autocompleteHttpCacher = AutocompleteHttpCacher(box: autocompleteBox);
 
   final config = DanbooruConfig();
   final booruFactory = BooruFactory.from(await loadBooruList());
@@ -107,7 +139,7 @@ void main() async {
   );
 
   if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize(debug: false);
+    await FlutterDownloader.initialize();
     await downloader.init();
   }
 
@@ -132,7 +164,10 @@ void main() async {
           ],
           child: MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => NetworkBloc()),
+              BlocProvider(
+                create: (_) => NetworkBloc(),
+                lazy: false,
+              ),
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,
@@ -188,12 +223,14 @@ void main() async {
                   final userRepo = UserRepository(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
-                  final nopeRepo = NoteRepository(api);
+                  final noteRepo = NoteRepository(api);
 
                   final favoriteRepo = FavoritePostRepository(api, accountRepo);
 
-                  final artistCommentaryRepo =
-                      ArtistCommentaryRepository(api, accountRepo);
+                  final artistCommentaryRepo = ArtistCommentaryCacher(
+                    cache: LruCacher(capacity: 200),
+                    repo: ArtistCommentaryRepository(api, accountRepo),
+                  );
 
                   final poolRepo = PoolRepository(api, accountRepo);
 
@@ -202,10 +239,13 @@ void main() async {
 
                   final autocompleteRepo = AutocompleteCacheRepository(
                     cacher: LruCacher<String, List<AutocompleteData>>(
-                      capacity: 100,
+                      capacity: 10,
                     ),
                     repo: AutocompleteRepository(
-                        api: api, accountRepository: accountRepo),
+                      api: api,
+                      accountRepository: accountRepo,
+                      cache: autocompleteHttpCacher,
+                    ),
                   );
 
                   final relatedTagRepo = RelatedTagApiRepository(api);
@@ -214,6 +254,11 @@ void main() async {
                       CommentVoteApiRepository(api, accountRepo);
 
                   final wikiRepo = WikiRepository(api);
+
+                  final poolDescriptionRepo = PoolDescriptionRepository(
+                    dio: state.dio,
+                    endpoint: state.dio.options.baseUrl,
+                  );
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
@@ -226,7 +271,7 @@ void main() async {
                     commentRepository: commentRepo,
                     accountRepository: accountRepo,
                   );
-                  final artistCommentaryCubit = ArtistCommentaryCubit(
+                  final artistCommentaryBloc = ArtistCommentaryBloc(
                       artistCommentaryRepository: artistCommentaryRepo);
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
@@ -249,6 +294,60 @@ void main() async {
                     blacklistedTagsRepository: blacklistedTagRepo,
                   )..add(const PostRefreshed());
 
+                  final tagBloc = TagBloc(
+                    tagRepository: TagCacher(
+                      cache: LruCacher(capacity: 1000),
+                      repo: tagRepo,
+                    ),
+                  );
+
+                  final recommendArtistCubit = RecommendedArtistPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final recommendedCharaCubit = RecommendedCharacterPostCubit(
+                    postRepository: RecommendedPostCacher(
+                      cache: FifoCacher(capacity: 500),
+                      postRepository: postRepo,
+                    ),
+                  );
+
+                  final poolFromIdBloc = PoolFromPostIdBloc(
+                    poolRepository: PoolFromPostCacher(
+                      cache: LruCacher(capacity: 500),
+                      poolRepository: poolRepo,
+                    ),
+                  );
+
+                  final artistBloc = ArtistBloc(
+                    artistRepository: ArtistCacher(
+                      repo: artistRepo,
+                      cache: LruCacher(capacity: 100),
+                    ),
+                  );
+
+                  final wikiBloc = WikiBloc(
+                    wikiRepository: WikiCacher(
+                        cache: LruCacher(capacity: 200), repo: wikiRepo),
+                  );
+
+                  final noteBloc = NoteBloc(
+                      noteRepository: NoteCacher(
+                    cache: LruCacher(capacity: 100),
+                    repo: noteRepo,
+                  ));
+
+                  final poolDescriptionBloc = PoolDescriptionBloc(
+                    endpoint: state.dio.options.baseUrl,
+                    poolDescriptionRepository: PoolDescriptionCacher(
+                      cache: LruCacher(capacity: 100),
+                      repo: poolDescriptionRepo,
+                    ),
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -263,7 +362,7 @@ void main() async {
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
-                          value: nopeRepo),
+                          value: noteRepo),
                       RepositoryProvider<IPostRepository>.value(
                           value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
@@ -282,6 +381,8 @@ void main() async {
                           value: relatedTagRepo),
                       RepositoryProvider<IWikiRepository>.value(
                           value: wikiRepo),
+                      RepositoryProvider<IArtistCommentaryRepository>.value(
+                          value: artistCommentaryRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -289,7 +390,7 @@ void main() async {
                         BlocProvider.value(value: favoritedCubit),
                         BlocProvider.value(value: profileCubit),
                         BlocProvider.value(value: commentBloc),
-                        BlocProvider.value(value: artistCommentaryCubit),
+                        BlocProvider.value(value: artistCommentaryBloc),
                         BlocProvider.value(value: accountCubit),
                         BlocProvider.value(value: authenticationCubit),
                         BlocProvider.value(value: blacklistedTagsBloc),
@@ -298,6 +399,14 @@ void main() async {
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: postBloc),
+                        BlocProvider.value(value: tagBloc),
+                        BlocProvider.value(value: recommendArtistCubit),
+                        BlocProvider.value(value: recommendedCharaCubit),
+                        BlocProvider.value(value: poolFromIdBloc),
+                        BlocProvider.value(value: artistBloc),
+                        BlocProvider.value(value: wikiBloc),
+                        BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: poolDescriptionBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

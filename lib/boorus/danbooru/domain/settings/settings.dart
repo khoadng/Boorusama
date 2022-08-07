@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/core/core.dart';
 
 enum DataCollectingStatus {
@@ -22,7 +21,6 @@ class Settings extends Equatable {
     required this.blacklistedTags,
     required this.themeMode,
     required this.language,
-    required this.searchHistories,
     required this.gridSize,
     required this.dataCollectingStatus,
     required this.downloadPath,
@@ -47,9 +45,6 @@ class Settings extends Equatable {
             ? GridSize.values[json['gridSize']]
             : GridSize.normal,
         downloadPath = json['downloadPath'],
-        searchHistories = List<SearchHistory>.from(json['searchHistories']
-            ?.map((e) => SearchHistory.fromJson(e))
-            ?.toList()),
         actionBarDisplayBehavior = json['actionBarDisplayBehavior'] != null
             ? ActionBarDisplayBehavior.values[json['actionBarDisplayBehavior']]
             : ActionBarDisplayBehavior.scrolling,
@@ -67,7 +62,6 @@ class Settings extends Equatable {
     blacklistedTags: '',
     themeMode: ThemeMode.dark,
     language: 'en',
-    searchHistories: [],
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
     downloadPath: null,
@@ -82,7 +76,6 @@ class Settings extends Equatable {
   final String language;
   final bool safeMode;
   final ThemeMode themeMode;
-  final List<SearchHistory> searchHistories;
   final GridSize gridSize;
   final DataCollectingStatus dataCollectingStatus;
   final String? downloadPath;
@@ -101,7 +94,6 @@ class Settings extends Equatable {
     String? language,
     bool? safeMode,
     ThemeMode? themeMode,
-    List<SearchHistory>? searchHistories,
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,
@@ -116,7 +108,6 @@ class Settings extends Equatable {
         blacklistedTags: blacklistedTags ?? this.blacklistedTags,
         themeMode: themeMode ?? this.themeMode,
         language: language ?? this.language,
-        searchHistories: searchHistories ?? this.searchHistories,
         gridSize: gridSize ?? this.gridSize,
         dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
         downloadPath: downloadPath ?? this.downloadPath,
@@ -135,8 +126,6 @@ class Settings extends Equatable {
         'themeMode': themeMode.index,
         'dataCollectingStatus': dataCollectingStatus.index,
         'language': language,
-        'searchHistories':
-            searchHistories.map((item) => item.toJson()).toList(),
         'gridSize': gridSize.index,
         'downloadPath': downloadPath,
         'imageBorderRadius': imageBorderRadius,
@@ -152,7 +141,6 @@ class Settings extends Equatable {
         blacklistedTags,
         themeMode,
         language,
-        searchHistories,
         gridSize,
         dataCollectingStatus,
         downloadPath,

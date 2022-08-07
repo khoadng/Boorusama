@@ -3,10 +3,12 @@ import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history_suggestions.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
@@ -33,9 +35,6 @@ class TagSuggestionItems extends StatelessWidget {
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return ListView.builder(
-            // shrinkWrap: true,
-            // itemCount: _tags.length > 6 ? 6 : _tags.length,
-            // physics: const NeverScrollableScrollPhysics(),
             itemCount: _tags.length,
             itemBuilder: (context, index) {
               final tag = _tags[index];
@@ -51,6 +50,79 @@ class TagSuggestionItems extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
+  const SliverTagSuggestionItemsWithHistory({
+    Key? key,
+    required this.tags,
+    required this.histories,
+    required this.onItemTap,
+    required this.onHistoryTap,
+  }) : super(key: key);
+
+  final List<AutocompleteData> tags;
+  final List<HistorySuggestion> histories;
+  final void Function(AutocompleteData tag) onItemTap;
+  final void Function(HistorySuggestion history) onHistoryTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: Column(
+            children: [
+              ...histories.map(
+                (history) => ListTile(
+                  visualDensity: VisualDensity.compact,
+                  trailing: const Icon(
+                    Icons.history,
+                    color: Colors.grey,
+                  ),
+                  title: Html(
+                    style: {
+                      'p': Style(
+                        fontSize: const FontSize(16),
+                      ),
+                      'body': Style(
+                        padding: EdgeInsets.zero,
+                        margin: EdgeInsets.zero,
+                      ),
+                      'b': Style(
+                        color: Colors.redAccent,
+                      ),
+                    },
+                    data: '<p>${history.tag.replaceAll(
+                          history.term,
+                          '<b>${history.term}</b>',
+                        ).replaceAll('_', ' ')}</p>',
+                  ),
+                  onTap: () => onHistoryTap(history),
+                ),
+              ),
+              if (histories.isNotEmpty) const Divider(),
+              ...tags
+                  .map(
+                    (tag) => ListTile(
+                      onTap: () => onItemTap(tag),
+                      trailing: tag.hasCount
+                          ? Text(NumberFormat.compact().format(tag.postCount),
+                              style: const TextStyle(color: Colors.grey))
+                          : null,
+                      title: BlocBuilder<ThemeBloc, ThemeState>(
+                        builder: (context, state) =>
+                            _getTitle(tag, state.theme),
+                      ),
+                    ),
+                  )
+                  .toList()
+            ],
+          ),
+        )
+      ],
     );
   }
 }

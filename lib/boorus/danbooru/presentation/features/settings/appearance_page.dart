@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
-import 'settings_options.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
 import 'widgets/settings_icon.dart';
@@ -20,41 +20,13 @@ import 'widgets/settings_icon.dart';
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
     Key? key,
+    this.hasAppBar = true,
   }) : super(key: key);
+
+  final bool hasAppBar;
 
   @override
   State<AppearancePage> createState() => _AppearancePageState();
-}
-
-SliverGridDelegate _normalGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 2,
-      childAspectRatio: 0.65,
-    );
-
-SliverGridDelegate _smallGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 3,
-    );
-
-SliverGridDelegate _largeGrid(double spacing) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: 1,
-      childAspectRatio: 0.65,
-    );
-SliverGridDelegate _gridSizeToGridDelegate(
-  GridSize size, {
-  double spacing = 2,
-}) {
-  if (size == GridSize.large) return _largeGrid(spacing / 2);
-  if (size == GridSize.small) return _smallGrid(spacing / 2);
-  return _normalGrid(spacing / 2);
 }
 
 String _themeModeToString(ThemeMode theme) {
@@ -118,75 +90,61 @@ class _AppearancePageState extends State<AppearancePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('settings.appearance').tr(),
-      ),
+      appBar: widget.hasAppBar
+          ? AppBar(
+              title: const Text('settings.appearance').tr(),
+            )
+          : null,
       body: BlocBuilder<SettingsCubit, SettingsState>(
         builder: (context, state) {
           return SafeArea(
             child: ListView(
+              primary: false,
               children: [
                 SettingsHeader(label: 'settings.general'.tr()),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.paintbrush),
+                SettingsTile<ThemeMode>(
                   title: const Text('settings.theme.theme').tr(),
-                  selectedOption:
-                      _themeModeToString(state.settings.themeMode).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<ThemeMode>(
-                    context: context,
-                    items: [...ThemeMode.values]..remove(ThemeMode.system),
-                    titleBuilder: (item) => Text(_themeModeToString(item)).tr(),
-                    groupValue: state.settings.themeMode,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(themeMode: value)),
-                  ),
+                  selectedOption: state.settings.themeMode,
+                  items: [...ThemeMode.values]..remove(ThemeMode.system),
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(themeMode: value)),
+                  optionBuilder: (value) =>
+                      Text(_themeModeToString(value).tr()),
                 ),
                 const Divider(thickness: 1),
                 SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
                 _buildPreview(context, state),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.tableCells),
+                SettingsTile<GridSize>(
                   title: const Text('settings.image_grid.grid_size.grid_size')
                       .tr(),
-                  selectedOption:
-                      _gridSizeToString(state.settings.gridSize).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<GridSize>(
-                    context: context,
-                    items: GridSize.values,
-                    titleBuilder: (item) => Text(_gridSizeToString(item)).tr(),
-                    groupValue: state.settings.gridSize,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(gridSize: value)),
-                  ),
+                  selectedOption: state.settings.gridSize,
+                  items: GridSize.values,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(gridSize: value)),
+                  optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
                 ),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.images),
+                SettingsTile<ImageQuality>(
                   title: const Text(
                           'settings.image_grid.image_quality.image_quality')
                       .tr(),
-                  selectedOption:
-                      _imageQualityToString(state.settings.imageQuality).tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<ImageQuality>(
-                    context: context,
-                    items: [...ImageQuality.values]
-                      ..remove(ImageQuality.original),
-                    titleBuilder: (item) =>
-                        Text(_imageQualityToString(item)).tr(),
-                    subtitleBuilder: (item) => item == ImageQuality.high
-                        ? Text(
-                            'settings.image_grid.image_quality.high_quality_notice',
-                            style: TextStyle(
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ).tr()
-                        : null,
-                    groupValue: state.settings.imageQuality,
-                    onChanged: (value) => context
-                        .read<SettingsCubit>()
-                        .update(state.settings.copyWith(imageQuality: value)),
-                  ),
+                  subtitle: state.settings.imageQuality == ImageQuality.high
+                      ? Text(
+                          'settings.image_grid.image_quality.high_quality_notice',
+                          style: TextStyle(
+                            color: Theme.of(context).hintColor,
+                          ),
+                        ).tr()
+                      : null,
+                  selectedOption: state.settings.imageQuality,
+                  items: [...ImageQuality.values]
+                    ..remove(ImageQuality.original),
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(imageQuality: value)),
+                  optionBuilder: (value) =>
+                      Text(_imageQualityToString(value)).tr(),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -202,7 +160,6 @@ class _AppearancePageState extends State<AppearancePage> {
                 SettingsHeader(
                     label: 'settings.image_viewer.image_viewer'.tr()),
                 ListTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.image),
                   title: const Text('settings.image_viewer.full_res_as_default')
                       .tr(),
                   subtitle: state.settings.imageQualityInFullView ==
@@ -224,26 +181,17 @@ class _AppearancePageState extends State<AppearancePage> {
                 const Divider(thickness: 1),
                 SettingsHeader(
                     label: 'settings.image_detail.image_detail'.tr()),
-                SettingsTile(
-                  leading: const SettingsIcon(FontAwesomeIcons.xmarksLines),
+                SettingsTile<ActionBarDisplayBehavior>(
                   title: const Text(
                           'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior')
                       .tr(),
-                  selectedOption: _actionBarDisplayBehaviorToString(
-                          state.settings.actionBarDisplayBehavior)
-                      .tr(),
-                  onTap: () => showRadioOptionsModalBottomSheet<
-                      ActionBarDisplayBehavior>(
-                    context: context,
-                    items: ActionBarDisplayBehavior.values,
-                    titleBuilder: (item) =>
-                        Text(_actionBarDisplayBehaviorToString(item)).tr(),
-                    groupValue: state.settings.actionBarDisplayBehavior,
-                    onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(actionBarDisplayBehavior: value)),
-                  ),
-                ),
+                  selectedOption: state.settings.actionBarDisplayBehavior,
+                  onChanged: (value) => context.read<SettingsCubit>().update(
+                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                  items: ActionBarDisplayBehavior.values,
+                  optionBuilder: (value) =>
+                      Text(_actionBarDisplayBehaviorToString(value)).tr(),
+                )
               ],
             ),
           );
@@ -288,25 +236,34 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 
+  SliverGridDelegate _gridSizeToGridDelegate(
+    ScreenSize screenSize,
+    GridSize size, {
+    double spacing = 2,
+  }) {
+    if (size == GridSize.large) return _largeGrid(spacing / 2, screenSize);
+    if (size == GridSize.small) return _smallGrid(spacing / 2, screenSize);
+    return _normalGrid(spacing / 2, screenSize);
+  }
+
   Widget _buildPreview(BuildContext context, SettingsState state) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: MediaQuery.of(context).size.width / 3,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 100),
       child: Container(
+        width: 150,
+        height: 200,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           color: Theme.of(context).backgroundColor,
         ),
-        height: MediaQuery.of(context).size.height * 0.25,
         child: Padding(
           padding: const EdgeInsets.all(8),
           child: ValueListenableBuilder<double>(
             valueListenable: _spacingSliderValue,
             builder: (context, value, _) => GridView.builder(
-                itemCount: 20,
+                itemCount: 100,
                 gridDelegate: _gridSizeToGridDelegate(
+                  Screen.of(context).size,
                   state.settings.gridSize,
                   spacing: value,
                 ),
@@ -330,3 +287,35 @@ class _AppearancePageState extends State<AppearancePage> {
     );
   }
 }
+
+SliverGridDelegate _normalGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size) * 2,
+      childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
+    );
+
+SliverGridDelegate _smallGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size) * 3,
+    );
+
+SliverGridDelegate _largeGrid(
+  double spacing,
+  ScreenSize size,
+) =>
+    SliverGridDelegateWithFixedCrossAxisCount(
+      mainAxisSpacing: spacing,
+      crossAxisSpacing: spacing,
+      crossAxisCount: displaySizeToGridCountWeight(size),
+      childAspectRatio: 0.65,
+    );

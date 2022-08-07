@@ -17,16 +17,16 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
-import 'package:boorusama/core/utils.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({
     Key? key,
-    required this.onMenuTap,
+    this.onMenuTap,
   }) : super(key: key);
 
-  final VoidCallback onMenuTap;
+  final VoidCallback? onMenuTap;
 
   @override
   State<LatestView> createState() => _LatestViewState();
@@ -68,7 +68,7 @@ class _LatestViewState extends State<LatestView> {
       buildWhen: (previous, current) => !current.hasMore,
       builder: (context, state) {
         return InfiniteLoadList(
-          extendBody: true,
+          extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context
               .read<PostBloc>()
@@ -81,9 +81,12 @@ class _LatestViewState extends State<LatestView> {
           scrollController: _autoScrollController,
           builder: (context, controller) => CustomScrollView(
             controller: controller,
-            slivers: <Widget>[
+            slivers: [
               _buildAppBar(context),
-              _buildMostSearchTagList(),
+              SliverPadding(
+                padding: const EdgeInsets.only(bottom: 2),
+                sliver: _buildMostSearchTagList(),
+              ),
               HomePostGrid(controller: controller),
               BlocBuilder<PostBloc, PostState>(
                 builder: (context, state) {
@@ -113,15 +116,33 @@ class _LatestViewState extends State<LatestView> {
   Widget _buildAppBar(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      toolbarHeight: kToolbarHeight * 1.2,
-      title: SearchBar(
-        enabled: false,
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () => widget.onMenuTap(),
-        ),
-        onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
-            routeSettings: const RouteSettings(arguments: [''])),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Expanded(
+            child: SearchBar(
+              enabled: false,
+              leading: widget.onMenuTap != null
+                  ? IconButton(
+                      icon: const Icon(Icons.menu),
+                      onPressed: () => widget.onMenuTap!(),
+                    )
+                  : null,
+              onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
+                  routeSettings: const RouteSettings(arguments: [''])),
+            ),
+          ),
+          if (isDesktopPlatform())
+            MaterialButton(
+              color: Theme.of(context).cardColor,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(20),
+              onPressed: () =>
+                  context.read<PostBloc>().add(const PostRefreshed()),
+              child: const Icon(Icons.refresh),
+            ),
+        ],
       ),
       floating: true,
       snap: true,
@@ -176,6 +197,10 @@ class _LatestViewState extends State<LatestView> {
                 padding: const EdgeInsets.all(4),
                 labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
+                side: BorderSide(
+                  width: 0.5,
+                  color: Theme.of(context).hintColor,
+                ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
                       maxWidth: MediaQuery.of(context).size.width * 0.85),

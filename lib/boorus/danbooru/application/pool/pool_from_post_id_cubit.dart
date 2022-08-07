@@ -63,7 +63,7 @@ class PoolFromPostCacher implements PoolRepository {
     if (pools != null) return pools;
 
     final freshPools = await poolRepository.getPoolsByPostId(postId);
-    cache.put(postId, freshPools);
+    await cache.put(postId, freshPools);
 
     return freshPools;
   }

@@ -46,15 +46,24 @@ class ApiEndpointCubit extends Cubit<ApiEndpointState> {
 class ApiState extends Equatable {
   const ApiState({
     required this.api,
+    required this.dio,
   });
-  factory ApiState.initial(Dio dio) => ApiState(api: DanbooruApi(dio));
+  factory ApiState.initial(Dio dio) => ApiState(
+        api: DanbooruApi(dio),
+        dio: dio,
+      );
 
   final Api api;
+  final Dio dio;
 
   ApiState copyWith({
     Api? api,
+    Dio? dio,
   }) =>
-      ApiState(api: api ?? this.api);
+      ApiState(
+        api: api ?? this.api,
+        dio: dio ?? this.dio,
+      );
 
   @override
   List<Object?> get props => [api];
@@ -67,6 +76,9 @@ class ApiCubit extends Cubit<ApiState> {
 
   void changeApi(Booru booru) {
     final dio = newDio(booru.url);
-    emit(state.copyWith(api: DanbooruApi(dio)));
+    emit(state.copyWith(
+      api: DanbooruApi(dio),
+      dio: dio,
+    ));
   }
 }

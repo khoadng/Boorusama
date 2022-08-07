@@ -1,0 +1,95 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+
+class SelectedTagChip extends StatelessWidget {
+  const SelectedTagChip({
+    Key? key,
+    required this.tagSearchItem,
+  }) : super(key: key);
+
+  final TagSearchItem tagSearchItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final hasOperator = tagSearchItem.operator != FilterOperator.none;
+    final hasMeta = tagSearchItem.metatag != null;
+    final hasAny = hasMeta || hasOperator;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        if (hasOperator)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Colors.purple,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(8),
+                    bottomLeft: Radius.circular(8))),
+            label: Text(
+              filterOperatorToStringCharacter(tagSearchItem.operator),
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        if (hasMeta)
+          Chip(
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            backgroundColor: Theme.of(context).colorScheme.secondary,
+            labelPadding: const EdgeInsets.symmetric(horizontal: 1),
+            shape: _getOutlineBorderForMetaChip(hasOperator),
+            label: Text(
+              tagSearchItem.metatag!,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        Chip(
+          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+          backgroundColor: Colors.grey[800],
+          shape: hasAny
+              ? const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8)))
+              : null,
+          deleteIcon: const Icon(
+            FontAwesomeIcons.xmark,
+            color: Colors.red,
+            size: 15,
+          ),
+          onDeleted: () => context
+              .read<TagSearchBloc>()
+              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
+          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+          label: ConstrainedBox(
+            constraints: BoxConstraints(
+                maxWidth: MediaQuery.of(context).size.width * 0.85),
+            child: Text(
+              tagSearchItem.tag,
+              overflow: TextOverflow.fade,
+              style: const TextStyle(color: Colors.white70),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
+    if (!hasOperator) {
+      return const RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(8),
+        bottomLeft: Radius.circular(8),
+      ));
+    } else {
+      return const RoundedRectangleBorder();
+    }
+  }
+}

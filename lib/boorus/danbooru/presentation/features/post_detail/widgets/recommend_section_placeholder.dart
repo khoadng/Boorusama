@@ -21,9 +21,7 @@ class RecommendSectionPlaceHolder extends StatelessWidget {
           padding: const EdgeInsets.all(4),
           child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.3,
-            child: const PreviewPostGridPlaceHolder(
-              itemCount: 6,
-            ),
+            child: const PreviewPostGridPlaceHolder(),
           ),
         ),
       ],

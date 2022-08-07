@@ -66,7 +66,6 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
             if (state.selectedTags.isNotEmpty) {
               widget.onSelectedDone(state.selectedTags);
             }
-            Navigator.of(context).pop();
           },
         ),
       ],

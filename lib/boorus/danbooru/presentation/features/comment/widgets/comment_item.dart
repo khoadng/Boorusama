@@ -8,7 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/boorus/danbooru/presentation/services/dtext/dtext.dart';
+import 'package:boorusama/boorus/danbooru/presentation/features/comment/widgets/dtext.dart';
 import 'package:boorusama/core/core.dart';
 
 class CommentItem extends StatelessWidget {
@@ -32,10 +32,8 @@ class CommentItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _CommentHeader(comment: comment),
-        Padding(
-          padding: const EdgeInsets.only(top: 4),
-          child: _buidCommentBody(),
-        ),
+        const SizedBox(height: 4),
+        _buidCommentBody(),
         if (comment.recentlyUpdated)
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -51,6 +49,7 @@ class CommentItem extends StatelessWidget {
               ),
             ),
           ),
+        if (!hasVoteSection) const SizedBox(height: 8),
         if (hasVoteSection)
           _VoteSection(
             score: comment.score,
@@ -191,15 +190,19 @@ class _CommentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
+      alignment: WrapAlignment.center,
+      runAlignment: WrapAlignment.center,
       children: [
         Text(
           comment.authorName.replaceAll('_', ' '),
           style: TextStyle(
             color: Color(comment.authorLevel.hexColor),
+            fontSize: 15,
+            fontWeight: FontWeight.w500,
           ),
         ),
         const SizedBox(
-          width: 10,
+          width: 6,
         ),
         Text(
           DateFormat('MMM d, yyyy hh:mm a').format(comment.createdAt.toLocal()),

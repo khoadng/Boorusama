@@ -17,80 +17,103 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/common/string_utils.dart';
+import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 
-class PostInfoModal extends StatelessWidget {
-  const PostInfoModal({
+class PostInfo extends StatefulWidget {
+  const PostInfo({
     Key? key,
     required this.post,
-    required this.scrollController,
+    this.scrollController,
+    this.isModal = true,
   }) : super(key: key);
 
   final Post post;
-  final ScrollController scrollController;
+  final ScrollController? scrollController;
+  final bool isModal;
+
+  @override
+  State<PostInfo> createState() => _PostInfoState();
+}
+
+class _PostInfoState extends State<PostInfo> {
+  late final scrollController = widget.scrollController ?? ScrollController();
+
+  @override
+  void dispose() {
+    if (widget.scrollController == null) {
+      scrollController.dispose();
+    }
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.75,
-      child: Modal(
-        child: Container(
-          margin: const EdgeInsets.all(8),
-          child: Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
-            body: CustomScrollView(
-              controller: scrollController,
-              shrinkWrap: true,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: ArtistSection(
-                    post: post,
-                  ),
+    return ConditionalParentWidget(
+      condition: widget.isModal,
+      conditionalBuilder: (child) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.75,
+        child: Modal(
+          child: child,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: Padding(
+          padding: const EdgeInsets.all(12),
+          child: CustomScrollView(
+            controller: widget.scrollController,
+            shrinkWrap: true,
+            slivers: [
+              SliverToBoxAdapter(
+                child: ArtistSection(
+                  post: widget.post,
                 ),
-                SliverToBoxAdapter(
-                    child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(6),
-                      color: Theme.of(context).cardColor),
-                  margin: const EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.size').tr(),
-                        trailing: Text(filesize(post.fileSize, 1)),
-                      ),
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.resolution').tr(),
-                        trailing: Text(
-                            '${post.width.toInt()}x${post.height.toInt()}'),
-                      ),
-                      ListTile(
-                        dense: true,
-                        visualDensity: VisualDensity.compact,
-                        title: const Text('post.detail.rating').tr(),
-                        trailing: Text(
-                            post.rating.toString().split('.').last.pascalCase),
-                      ),
-                    ],
-                  ),
-                )),
-                SliverToBoxAdapter(
-                    child: BlocProvider(
-                  create: (context) => TagBloc(
-                      tagRepository:
-                          RepositoryProvider.of<ITagRepository>(context))
-                    ..add(TagFetched(tags: post.tags)),
-                  child: const PostTagList(),
-                )),
-              ],
-            ),
+              ),
+              SliverToBoxAdapter(
+                  child: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6),
+                    color: Theme.of(context).cardColor),
+                margin: const EdgeInsets.all(10),
+                child: Column(
+                  children: [
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.size').tr(),
+                      trailing: Text(filesize(widget.post.fileSize, 1)),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.resolution').tr(),
+                      trailing: Text(
+                          '${widget.post.width.toInt()}x${widget.post.height.toInt()}'),
+                    ),
+                    ListTile(
+                      dense: true,
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('post.detail.rating').tr(),
+                      trailing: Text(widget.post.rating
+                          .toString()
+                          .split('.')
+                          .last
+                          .pascalCase),
+                    ),
+                  ],
+                ),
+              )),
+              SliverToBoxAdapter(
+                  child: BlocProvider.value(
+                value: context.read<TagBloc>()
+                  ..add(TagFetched(tags: widget.post.tags)),
+                child: const PostTagList(),
+              )),
+            ],
           ),
         ),
       ),
@@ -122,49 +145,70 @@ class _ArtistSectionState extends State<ArtistSection> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ArtistCommentaryCubit>().getArtistCommentary(widget.post.id);
+      context
+          .read<ArtistCommentaryBloc>()
+          .add(ArtistCommentaryFetched(postId: widget.post.id));
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistCommentaryCubit, AsyncLoadState<ArtistCommentary>>(
+    return BlocBuilder<ArtistCommentaryBloc, ArtistCommentaryState>(
       builder: (context, state) {
         if (state.status == LoadStatus.success) {
-          final artistCommentary = state.data!;
+          final artistCommentary = state.commentary;
+
           return ValueListenableBuilder<ArtistCommentaryTranlationState>(
             valueListenable: artistCommentaryDisplay,
             builder: (context, display, _) => Wrap(
               children: [
                 SourceLink(
+                  name: widget.post.artistTags.isEmpty
+                      ? ''
+                      : widget.post.artistTags.first,
                   title: Text(widget.post.artistTags.join(' ')),
                   uri: widget.post.source.uri,
                   actionBuilder: () => artistCommentary.isTranslated
                       ? PopupMenuButton<ArtistCommentaryTranlationState>(
+                          padding: EdgeInsets.zero,
                           icon: const Icon(Icons.keyboard_arrow_down),
                           onSelected: (value) =>
                               artistCommentaryDisplay.value = value,
                           itemBuilder: (_) => [
                             PopupMenuItem<ArtistCommentaryTranlationState>(
                               value: getTranslationNextState(display),
-                              child: ListTile(
-                                title: Text(getTranslationText(display)).tr(),
-                              ),
+                              child: Text(getTranslationText(display)).tr(),
                             ),
                           ],
                         )
                       : const SizedBox.shrink(),
                 ),
-                SelectableText(
-                  getDescriptionText(display, artistCommentary),
-                ),
+                if (artistCommentary.hasCommentary)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                    ),
+                    child: SelectableText(
+                      getDescriptionText(display, artistCommentary),
+                    ),
+                  ),
               ],
             ),
           );
-        } else if (state.status == LoadStatus.failure) {
-          return const SizedBox.shrink();
+        } else if (state.status == LoadStatus.initial ||
+            state.status == LoadStatus.loading) {
+          return const Padding(
+            padding: EdgeInsets.all(8),
+            child: Center(
+              child: SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+              ),
+            ),
+          );
         } else {
-          return const ArtistCommentaryPlaceholder();
+          return const SizedBox.shrink();
         }
       },
     );
@@ -177,11 +221,13 @@ class SourceLink extends StatelessWidget {
     required this.title,
     required this.uri,
     required this.actionBuilder,
+    required this.name,
   }) : super(key: key);
 
   final Widget title;
   final Uri? uri;
   final Widget Function() actionBuilder;
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -207,7 +253,11 @@ class SourceLink extends StatelessWidget {
           style: Theme.of(context).textTheme.caption,
         ),
       ),
-      leading: const CircleAvatar(),
+      leading: CircleAvatar(
+        child: Center(
+          child: Text(name.getFirstCharacter().toUpperCase()),
+        ),
+      ),
       trailing: actionBuilder(),
     );
   }

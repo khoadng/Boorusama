@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none" 
-version: 2.2.0+21
+version: 2.3.0+23
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -15,7 +15,6 @@ dependencies:
   carousel_slider: ^4.1.1
   chewie: ^1.3.3
   connectivity_plus: ^2.3.3
-  curved_navigation_bar: ^1.0.3
   dio: ^4.0.6
   easy_localization: ^3.0.1
   equatable: ^2.0.3
@@ -23,7 +22,6 @@ dependencies:
   fluro: ^2.0.3
   flutter_bloc: ^8.0.1
   flutter_cache_manager: ^3.3.0
-  flutter_datetime_picker: ^1.5.1
   flutter_downloader: ^1.8.0+1
   flutter_hooks: ^0.18.4
   flutter_html: ^3.0.0-alpha.5
@@ -55,10 +53,6 @@ dependencies:
   scroll_to_index: ^3.0.1
   sentry_flutter: ^6.5.1
   share_plus: ^4.0.7
-  sliding_up_panel:
-    git:
-      url: https://github.com/khoadng/sliding_up_panel.git
-      ref: custom-scroll-controller
   timeago: ^3.2.2
   tuple: ^2.0.0
   url_launcher: ^6.1.3
@@ -74,6 +68,8 @@ dependencies:
       url: https://github.com/khoadng/rich_text_controller.git
       ref: flutter-3.0
   rate_my_app: ^1.1.3
+  bitsdojo_window: ^0.1.2
+  flutter_improved_scrolling: ^0.0.3
 
 dev_dependencies:
   flutter_localizations:
@@ -89,6 +85,7 @@ dev_dependencies:
   test: ^1.21.1
   bloc_test: ^9.0.3
   mocktail: ^0.3.0
+  hive_generator: ^1.1.3
 
 flutter_icons:
   remove_alpha_ios: true

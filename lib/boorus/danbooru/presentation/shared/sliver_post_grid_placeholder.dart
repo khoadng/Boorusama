@@ -28,8 +28,9 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
       builder: (context, state) {
         return SliverGrid(
           gridDelegate: gridSizeToGridDelegate(
-            gridSize,
-            state.settings.imageGridSpacing,
+            size: gridSize,
+            spacing: state.settings.imageGridSpacing,
+            screenWidth: MediaQuery.of(context).size.width,
           ),
           delegate: SliverChildBuilderDelegate(
             (context, _) {
@@ -41,7 +42,7 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
                 ),
               );
             },
-            childCount: 20,
+            childCount: 100,
           ),
         );
       },

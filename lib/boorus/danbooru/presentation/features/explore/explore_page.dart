@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,8 +10,8 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/core.dart';
+import 'explore_carousel.dart';
 import 'explore_section.dart';
 
 class ExplorePage extends StatelessWidget {
@@ -22,7 +21,7 @@ class ExplorePage extends StatelessWidget {
       BuildContext context, AsyncLoadState<List<Post>> state) {
     if (state.status == LoadStatus.success) {
       if (state.data!.isEmpty) return const CarouselPlaceholder();
-      return _ExploreCarousel(posts: state.data!);
+      return ExploreCarousel(posts: state.data!);
     } else if (state.status == LoadStatus.failure) {
       return const Center(
         child: Text('Something went wrong'),
@@ -34,102 +33,54 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(slivers: [
-      SliverToBoxAdapter(
-        child: ExploreSection(
-          title: 'explore.popular'.tr(),
-          category: ExploreCategory.popular,
-          builder: (_) => BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
-            builder: mapStateToCarousel,
-          ),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: ExploreSection(
-          title: 'explore.curated'.tr(),
-          category: ExploreCategory.curated,
-          builder: (_) => BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
-            builder: mapStateToCarousel,
-          ),
-        ),
-      ),
-      SliverToBoxAdapter(
-        child: ExploreSection(
-          title: 'explore.most_viewed'.tr(),
-          category: ExploreCategory.mostViewed,
-          builder: (_) =>
-              BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
-            builder: mapStateToCarousel,
-          ),
-        ),
-      ),
-      const SliverToBoxAdapter(
-        child: SizedBox(
-          height: kBottomNavigationBarHeight + 10,
-        ),
-      ),
-    ]);
-  }
-}
-
-class _ExploreCarousel extends StatelessWidget {
-  const _ExploreCarousel({
-    Key? key,
-    required this.posts,
-  }) : super(key: key);
-
-  final List<Post> posts;
-
-  @override
-  Widget build(BuildContext context) {
-    return CarouselSlider.builder(
-      itemCount: posts.length,
-      itemBuilder: (context, index, realIndex) {
-        final post = posts[index];
-        return GestureDetector(
-          onTap: () => AppRouter.router.navigateTo(
-            context,
-            '/post/detail',
-            routeSettings: RouteSettings(
-              arguments: [
-                posts,
-                index,
-              ],
+    return Padding(
+      padding: Screen.of(context).size == ScreenSize.small
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 8),
+      child: CustomScrollView(
+        primary: false,
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: MediaQuery.of(context).viewPadding.top,
             ),
           ),
-          child: Stack(
-            children: [
-              PostImage(
-                imageUrl: post.isAnimated
-                    ? post.previewImageUrl
-                    : post.normalImageUrl,
-                placeholderUrl: post.previewImageUrl,
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.popular'.tr(),
+              category: ExploreCategory.popular,
+              builder: (_) =>
+                  BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
               ),
-              ShadowGradientOverlay(
-                alignment: Alignment.bottomCenter,
-                colors: <Color>[
-                  const Color(0xC2000000),
-                  Colors.black12.withOpacity(0)
-                ],
-              ),
-              Align(
-                alignment: const Alignment(-0.9, 1),
-                child: Text(
-                  '${index + 1}',
-                  style: Theme.of(context)
-                      .textTheme
-                      .headline2!
-                      .copyWith(color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
-        );
-      },
-      options: CarouselOptions(
-        aspectRatio: 1.5,
-        viewportFraction: 0.5,
-        enlargeCenterPage: true,
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.curated'.tr(),
+              category: ExploreCategory.curated,
+              builder: (_) =>
+                  BlocBuilder<CuratedCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.most_viewed'.tr(),
+              category: ExploreCategory.mostViewed,
+              builder: (_) =>
+                  BlocBuilder<MostViewedCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(
+              height: kBottomNavigationBarHeight + 10,
+            ),
+          ),
+        ],
       ),
     );
   }

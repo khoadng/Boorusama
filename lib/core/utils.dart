@@ -56,11 +56,13 @@ void showSimpleSnackBar({
   SnackBarBehavior? behavior,
   SnackBarAction? action,
 }) {
+  final width = MediaQuery.of(context).size.width;
   final snackbar = SnackBar(
     action: action,
     behavior: behavior ?? SnackBarBehavior.floating,
     duration: duration ?? const Duration(seconds: 6),
     elevation: 6,
+    width: width > 400 ? 400 : width,
     content: content,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);

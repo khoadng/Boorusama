@@ -43,9 +43,14 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     });
 
     on<CommentSent>((event, emit) async {
+      var content = event.content;
+      if (event.replyTo != null) {
+        content =
+            '[quote]\n${event.replyTo!.authorName} said:\n\n${event.replyTo!.body}\n[/quote]\n\n$content';
+      }
+
       await tryAsync<bool>(
-        action: () =>
-            commentRepository.postComment(event.postId, event.content),
+        action: () => commentRepository.postComment(event.postId, content),
         onSuccess: (success) async {
           add(CommentFetched(postId: event.postId));
         },

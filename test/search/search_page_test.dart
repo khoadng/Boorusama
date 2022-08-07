@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
+import '../test_helpers.dart';
 import 'common.dart';
 
 class MockPostBloc extends MockBloc<PostEvent, PostState> implements PostBloc {}
@@ -46,6 +47,10 @@ class MockThemeBloc extends MockBloc<ThemeEvent, ThemeState>
 class MockSettingsCubit extends MockCubit<SettingsState>
     implements SettingsCubit {}
 
+class MockSearchHistorySuggestionsBloc extends MockBloc<
+    SearchHistorySuggestionsEvent,
+    SearchHistorySuggestionsState> implements SearchHistorySuggestionsBloc {}
+
 class MockAutocompleteRepository extends Mock
     implements AutocompleteRepository {}
 
@@ -63,6 +68,7 @@ Widget _buildSearchPage({
   final mockRelatedTagBloc = MockRelatedTagBloc();
   final mockThemeBloc = MockThemeBloc();
   final mockSettingsCubit = MockSettingsCubit();
+  final mockSearchHistorySuggestionsBloc = MockSearchHistorySuggestionsBloc();
 
   when(() => mockSearchHistoryCubit.state)
       .thenAnswer((_) => const AsyncLoadState<List<SearchHistory>>.initial());
@@ -75,6 +81,9 @@ Widget _buildSearchPage({
   when(() => mockSettingsCubit.state)
       .thenAnswer((_) => SettingsState.defaultSettings());
 
+  when(() => mockSearchHistorySuggestionsBloc.state)
+      .thenAnswer((_) => SearchHistorySuggestionsState.initial());
+
   return MaterialApp(
     home: MultiBlocProvider(
       providers: [
@@ -85,6 +94,8 @@ Widget _buildSearchPage({
         BlocProvider<RelatedTagBloc>.value(value: mockRelatedTagBloc),
         BlocProvider<ThemeBloc>.value(value: mockThemeBloc),
         BlocProvider<SettingsCubit>.value(value: mockSettingsCubit),
+        BlocProvider<SearchHistorySuggestionsBloc>.value(
+            value: mockSearchHistorySuggestionsBloc),
       ],
       child: MultiRepositoryProvider(
         providers: [RepositoryProvider<IConfig>.value(value: DanbooruConfig())],
@@ -132,6 +143,7 @@ void main() {
   testWidgets(
     'when entering text, suggestion should be shown',
     (tester) async {
+      FlutterError.onError = ignoreOverflowErrors;
       final searchBloc = createSearchBloc();
       await tester.pumpWidget(_buildSearchPage(
         searchBloc: searchBloc,
@@ -150,6 +162,7 @@ void main() {
   testWidgets(
     'when deleting text and current text is empty, options should be shown',
     (tester) async {
+      FlutterError.onError = ignoreOverflowErrors;
       final searchBloc = createSearchBloc();
 
       await tester.pumpWidget(_buildSearchPage(
@@ -171,6 +184,7 @@ void main() {
   testWidgets(
     'search a tag will show result',
     (tester) async {
+      FlutterError.onError = ignoreOverflowErrors;
       final searchBloc = createSearchBloc();
       final tagSearchBloc = createTagSearchBloc();
 

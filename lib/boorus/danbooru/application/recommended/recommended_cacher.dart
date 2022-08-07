@@ -45,7 +45,7 @@ class RecommendedPostCacher implements IPostRepository {
       cancelToken: cancelToken,
       skipFavoriteCheck: skipFavoriteCheck,
     );
-    cache.put(key, fresh);
+    await cache.put(key, fresh);
 
     return fresh;
   }

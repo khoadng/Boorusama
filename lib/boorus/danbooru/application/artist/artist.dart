@@ -1,2 +1,2 @@
-export 'artist_commentary_cubit.dart';
-export 'artist_cubit.dart';
+export 'artist_commentary_bloc.dart';
+export 'artist_bloc.dart';

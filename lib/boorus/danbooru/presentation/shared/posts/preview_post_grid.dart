@@ -36,32 +36,35 @@ class PreviewPostGrid extends StatelessWidget {
       );
     }
 
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: posts.length <= 3 ? 1 : 2,
-      ),
-      shrinkWrap: true,
-      physics: physics ?? const NeverScrollableScrollPhysics(),
-      scrollDirection: Axis.horizontal,
-      itemCount: posts.length,
-      itemBuilder: (context, index) => Padding(
-        padding: const EdgeInsets.all(1.5),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: GestureDetector(
-            onTap: () => handleTap(posts[index], index),
-            child: CachedNetworkImage(
-              height: MediaQuery.of(context).size.height * 0.2,
-              width: MediaQuery.of(context).size.width * 0.3,
-              fit: BoxFit.cover,
-              imageUrl: _getImageUrl(
-                posts[index],
-                imageQuality,
-              ),
-              placeholder: (context, url) => Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(4),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: MediaQuery.removePadding(
+        context: context,
+        removeTop: true,
+        child: GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 3,
+            crossAxisSpacing: 3,
+            mainAxisSpacing: 3,
+          ),
+          shrinkWrap: true,
+          physics: physics ?? const NeverScrollableScrollPhysics(),
+          itemCount: posts.length,
+          itemBuilder: (context, index) => ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: GestureDetector(
+              onTap: () => handleTap(posts[index], index),
+              child: CachedNetworkImage(
+                fit: BoxFit.cover,
+                imageUrl: _getImageUrl(
+                  posts[index],
+                  imageQuality,
+                ),
+                placeholder: (context, url) => Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
                 ),
               ),
             ),
