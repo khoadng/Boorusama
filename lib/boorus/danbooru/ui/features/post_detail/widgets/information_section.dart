@@ -8,7 +8,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'post_info.dart';
 
 // double _screenSizeToInfoModalPercent(ScreenSize size) {

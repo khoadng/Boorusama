@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/infrastructure/device_info_service.dart';
-import 'package:boorusama/core/infrastructure/io_helper.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/infra/io_helper.dart';
 
 bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
     hasScopedStorage(deviceInfo);

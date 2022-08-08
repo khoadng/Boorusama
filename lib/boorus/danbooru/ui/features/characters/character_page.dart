@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class CharacterPage extends StatelessWidget {
   const CharacterPage({

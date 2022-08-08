@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
-import 'package:boorusama/core/infrastructure/http_parser.dart';
+import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
       value: value,

@@ -6,7 +6,7 @@ import 'package:hive/hive.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/core/infrastructure/caching/cacher.dart';
+import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class AutocompleteHttpCacher implements Cacher<String, String> {
   const AutocompleteHttpCacher({

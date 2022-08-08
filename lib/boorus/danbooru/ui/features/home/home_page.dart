@@ -16,9 +16,9 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dar
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/presentation/network_unavailable_indicator.dart';
-import 'package:boorusama/core/presentation/widgets/animated_indexed_stack.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
+import 'package:boorusama/core/ui/network_unavailable_indicator.dart';
+import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
+import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 

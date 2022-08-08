@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/presentation/download_provider_widget.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'widgets/post_note.dart';
 
 class PostImagePage extends StatefulWidget {

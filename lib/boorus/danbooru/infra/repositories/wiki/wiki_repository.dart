@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
-import 'package:boorusama/core/infrastructure/http_parser.dart';
+import 'package:boorusama/core/infra/http_parser.dart';
 
 class WikiRepository implements IWikiRepository {
   WikiRepository(Api api) : _api = api;

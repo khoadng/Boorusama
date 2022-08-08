@@ -19,7 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/string_utils.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
 

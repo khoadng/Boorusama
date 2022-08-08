@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/core/application/exception.dart';
-import 'package:boorusama/core/infrastructure/http_parser.dart';
+import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
       value: value,

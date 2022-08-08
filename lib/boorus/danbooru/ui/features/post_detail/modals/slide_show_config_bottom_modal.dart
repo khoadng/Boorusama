@@ -8,7 +8,7 @@ import 'package:number_inc_dec/number_inc_dec.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/slide_show_configuration.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({

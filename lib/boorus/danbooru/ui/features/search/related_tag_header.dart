@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
+import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
 class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({

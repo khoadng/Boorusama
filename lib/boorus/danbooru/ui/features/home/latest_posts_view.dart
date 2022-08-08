@@ -18,7 +18,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_render_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({

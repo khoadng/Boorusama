@@ -11,8 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infrastructure/device_info_service.dart';
-import 'package:boorusama/core/infrastructure/io_helper.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/infra/io_helper.dart';
 
 const String _basePath = '/storage/emulated/0/';
 const List<String> _allowedFolders = ['Download', 'Documents', 'Pictures'];

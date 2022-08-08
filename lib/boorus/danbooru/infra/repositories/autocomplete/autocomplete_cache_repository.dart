@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
-import 'package:boorusama/core/infrastructure/caching/cacher.dart';
+import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class AutocompleteCacheRepository implements AutocompleteRepository {
   const AutocompleteCacheRepository({

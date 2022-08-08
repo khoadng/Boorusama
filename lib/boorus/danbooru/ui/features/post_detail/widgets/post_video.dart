@@ -7,7 +7,7 @@ import 'package:video_player/video_player.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/presentation/material_desktop_controls.dart';
+import 'package:boorusama/core/ui/material_desktop_controls.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {

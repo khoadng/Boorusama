@@ -17,8 +17,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/download_provider_widget.dart';
-import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
 class PostActionToolbar extends StatefulWidget {
   const PostActionToolbar({

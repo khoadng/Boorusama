@@ -16,7 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/context_menu.dart';
+import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({Key? key, this.maxTagWidth}) : super(key: key);

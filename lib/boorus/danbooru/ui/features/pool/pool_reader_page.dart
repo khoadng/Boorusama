@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool_read_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_note.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
 class PoolReaderPage extends StatelessWidget {
   const PoolReaderPage({

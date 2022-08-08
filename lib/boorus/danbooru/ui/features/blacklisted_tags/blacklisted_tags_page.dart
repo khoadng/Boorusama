@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autoco
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/parallax_slide_in_page_route.dart';
+import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'blacklisted_tags_search_page.dart';
 
 class BlacklistedTagsPage extends StatelessWidget {

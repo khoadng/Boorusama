@@ -28,10 +28,10 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_m
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/download_provider_widget.dart';
-import 'package:boorusama/core/presentation/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/presentation/widgets/shadow_gradient_overlay.dart';
-import 'package:boorusama/core/presentation/widgets/side_sheet.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
+import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
+import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'models/slide_show_configuration.dart';
 import 'parent_child_post_page.dart';
