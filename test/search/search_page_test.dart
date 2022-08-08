@@ -24,7 +24,7 @@ import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/search/search_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import '../test_helpers.dart';
 import 'common.dart';
 

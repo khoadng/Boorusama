@@ -33,23 +33,23 @@ import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repos
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/characters/character_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'presentation/features/accounts/profile/profile_page.dart';
-import 'presentation/features/home/home_page.dart';
-import 'presentation/features/post_detail/post_image_page.dart';
-import 'presentation/features/search/search_page.dart';
+import 'ui/features/accounts/profile/profile_page.dart';
+import 'ui/features/home/home_page.dart';
+import 'ui/features/post_detail/post_image_page.dart';
+import 'ui/features/search/search_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
