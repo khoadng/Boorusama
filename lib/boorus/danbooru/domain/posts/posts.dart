@@ -1,9 +1,6 @@
 export 'i_note_repository.dart';
 export 'i_post_repository.dart';
 export 'image_source.dart';
-export 'note.dart';
-export 'note_coordinate.dart';
-export 'note_dto.dart';
 export 'post.dart';
 export 'post_dto.dart';
 export 'post_name.dart';
