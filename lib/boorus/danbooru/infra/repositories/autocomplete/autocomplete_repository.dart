@@ -88,7 +88,7 @@ class AutocompleteRepository {
   final IAccountRepository _accountRepository;
   final AutocompleteHttpCacher _cache;
 
-  Future<List<AutocompleteData>> getAutocomplete(String query) =>
+  Future<List<AutocompleteData>> getAutocomplete(String query) async =>
       _accountRepository
           .get()
           .then((account) async {

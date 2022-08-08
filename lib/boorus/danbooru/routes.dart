@@ -31,7 +31,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
@@ -112,8 +112,8 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final posts = args[0];
-  final index = args[1];
+  final posts = args[0] as List<Post>;
+  final index = args[1] as int;
 
   final screenSize = Screen.of(context).size;
 
@@ -123,6 +123,11 @@ final postDetailHandler = Handler(handlerFunc: (
   }
   return MultiBlocProvider(
     providers: [
+      BlocProvider(
+        create: (context) => PostVoteBloc(
+          postVoteRepository: context.read<PostVoteRepository>(),
+        )..add(PostVoteInit.fromPost(posts[index])),
+      ),
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider(
         create: (context) => IsPostFavoritedBloc(

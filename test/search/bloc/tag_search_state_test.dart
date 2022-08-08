@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import '../common.dart';
 import 'tag_search_state_test.mocks.dart';

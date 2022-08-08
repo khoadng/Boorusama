@@ -23,10 +23,10 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
@@ -40,11 +40,7 @@ import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
-double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
-  if (screenSize == ScreenSize.veryLarge) return 0.2;
-  if (screenSize == ScreenSize.large) return 0.3;
-  return 0.38;
-}
+const double _infoBarWidth = 360;
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
@@ -182,8 +178,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ],
                   child: Container(
                     color: Theme.of(context).backgroundColor,
-                    width: MediaQuery.of(context).size.width *
-                        _screenSizeToInfoBoxScreenPercent(screenSize),
+                    width: _infoBarWidth,
                     child: _LargeLayoutContent(
                       post: post,
                       imagePath: imagePath,
@@ -504,12 +499,10 @@ class _LargeLayoutContent extends StatelessWidget {
                 post: post,
                 useSeperator: true,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: PostTagList(
-                  maxTagWidth: MediaQuery.of(context).size.width *
-                      _screenSizeToInfoBoxScreenPercent(size) *
-                      0.5,
+                  maxTagWidth: _infoBarWidth,
                 ),
               )
             ],
@@ -621,6 +614,10 @@ class _CarouselSlider extends StatelessWidget {
                   context
                       .read<IsPostFavoritedBloc>()
                       .add(IsPostFavoritedRequested(postId: posts[index].id));
+
+                  context
+                      .read<PostVoteBloc>()
+                      .add(PostVoteInit.fromPost(posts[index]));
 
                   onPageChanged?.call(index);
                 },

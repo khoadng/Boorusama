@@ -7,5 +7,8 @@ export 'note_dto.dart';
 export 'post.dart';
 export 'post_dto.dart';
 export 'post_name.dart';
+export 'post_vote.dart';
+export 'post_vote_dto.dart';
+export 'post_vote_repository.dart';
 export 'rating.dart';
 export 'time_scale.dart';

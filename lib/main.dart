@@ -97,7 +97,7 @@ void main() async {
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
       const initialSize = Size(1024, 600);
-      const minSize = Size(350, 350);
+      const minSize = Size(300, 300);
       appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
@@ -260,6 +260,9 @@ void main() async {
                     endpoint: state.dio.options.baseUrl,
                   );
 
+                  final postVoteRepo =
+                      PostVoteApiRepository(api: api, accountRepo: accountRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -383,6 +386,8 @@ void main() async {
                           value: wikiRepo),
                       RepositoryProvider<IArtistCommentaryRepository>.value(
                           value: artistCommentaryRepo),
+                      RepositoryProvider<PostVoteRepository>.value(
+                          value: postVoteRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [

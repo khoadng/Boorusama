@@ -16,10 +16,10 @@ import 'package:boorusama/boorus/danbooru/application/search_history/search_hist
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/selected_tag_chip.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'empty_view.dart';
 import 'error_view.dart';

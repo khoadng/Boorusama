@@ -8,8 +8,8 @@ import 'package:path/path.dart' as p;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 
 class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
