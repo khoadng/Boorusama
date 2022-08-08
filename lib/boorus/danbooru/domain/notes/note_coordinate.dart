@@ -1,22 +1,18 @@
-class NoteCoordinate {
-  NoteCoordinate(
-    this._x,
-    this._y,
-    this._width,
-    this._height,
-  );
-  final double _x;
-  final double _y;
-  final double _width;
-  final double _height;
+// Package imports:
+import 'package:equatable/equatable.dart';
 
-  double get x => _x;
+class NoteCoordinate extends Equatable {
+  const NoteCoordinate({
+    required this.x,
+    required this.y,
+    required this.height,
+    required this.width,
+  });
 
-  double get y => _y;
-
-  double get width => _width;
-
-  double get height => _height;
+  final double x;
+  final double y;
+  final double height;
+  final double width;
 
   NoteCoordinate calibrate(
     double screenHeight,
@@ -63,10 +59,13 @@ class NoteCoordinate {
     newHeight = height * aspectRatio;
 
     return NoteCoordinate(
-      newX,
-      newY,
-      newWidth,
-      newHeight,
+      x: newX,
+      y: newY,
+      width: newWidth,
+      height: newHeight,
     );
   }
+
+  @override
+  List<Object?> get props => [x, y, width, height];
 }
