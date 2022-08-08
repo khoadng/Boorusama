@@ -9,13 +9,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart';
 
 // Project imports:
-import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
@@ -57,7 +55,7 @@ import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/caching/fifo_cacher.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
@@ -490,21 +488,3 @@ void main() async {
     }
   }
 }
-
-class PackageInfoProvider {
-  PackageInfoProvider(this.packageInfo);
-
-  final PackageInfo packageInfo;
-
-  PackageInfo getPackageInfo() => packageInfo;
-}
-
-class AppInfoProvider {
-  AppInfoProvider(this.appInfo);
-
-  final AppInfo appInfo;
-
-  AppInfo getAppInfo() => appInfo;
-}
-
-Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();
