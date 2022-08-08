@@ -2,7 +2,7 @@
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
+import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 
 // Project imports:
 

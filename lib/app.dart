@@ -10,7 +10,7 @@ import 'package:flutter_portal/flutter_portal.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'app_constants.dart';
 import 'boorus/danbooru/router.dart';
 

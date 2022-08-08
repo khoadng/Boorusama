@@ -1,6 +1,6 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/pool/pool.dart';
-import 'package:boorusama/core/infrastructure/caching/cacher.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool.dart';
+import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class PoolDescriptionCacher implements PoolDescriptionRepository {
   const PoolDescriptionCacher({
