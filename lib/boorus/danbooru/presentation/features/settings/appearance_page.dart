@@ -10,7 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'settings_tile.dart';

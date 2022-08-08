@@ -50,12 +50,12 @@ import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repos
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_http_cache.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
@@ -67,8 +67,8 @@ import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
-import 'boorus/danbooru/infrastructure/local/repositories/search_history/search_history.dart';
-import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
+import 'boorus/danbooru/infra/repositories/repositories.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
     hide PoolCategory;

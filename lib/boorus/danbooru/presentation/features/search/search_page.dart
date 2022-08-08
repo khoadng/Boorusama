@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/search/selected_tag_chip.dart';
 import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';

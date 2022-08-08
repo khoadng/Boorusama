@@ -7,7 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 

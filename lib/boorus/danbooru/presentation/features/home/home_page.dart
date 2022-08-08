@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_page.dart';

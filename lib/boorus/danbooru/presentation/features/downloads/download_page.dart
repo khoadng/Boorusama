@@ -7,9 +7,9 @@
 
 // // Project imports:
 // import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/repositories/posts/post_repository.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/repositories/tags/tag_repository.dart';
-// import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
+// import 'package:boorusama/boorus/danbooru/infra/repositories/posts/post_repository.dart';
+// import 'package:boorusama/boorus/danbooru/infra/repositories/tags/tag_repository.dart';
+// import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
 // import 'package:boorusama/boorus/danbooru/presentation/shared/search_bar.dart';
 // import 'package:boorusama/boorus/danbooru/presentation/shared/tag_suggestion_items.dart';
 
