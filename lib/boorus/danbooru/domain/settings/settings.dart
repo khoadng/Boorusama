@@ -15,6 +15,11 @@ enum ActionBarDisplayBehavior {
   staticAtBottom,
 }
 
+enum DownloadMethod {
+  flutterDownloader,
+  imageGallerySaver,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -24,6 +29,7 @@ class Settings extends Equatable {
     required this.gridSize,
     required this.dataCollectingStatus,
     required this.downloadPath,
+    required this.downloadMethod,
     required this.imageBorderRadius,
     required this.imageGridSpacing,
     required this.actionBarDisplayBehavior,
@@ -45,6 +51,7 @@ class Settings extends Equatable {
             ? GridSize.values[json['gridSize']]
             : GridSize.normal,
         downloadPath = json['downloadPath'],
+        downloadMethod = json['downloadMethod'],
         actionBarDisplayBehavior = json['actionBarDisplayBehavior'] != null
             ? ActionBarDisplayBehavior.values[json['actionBarDisplayBehavior']]
             : ActionBarDisplayBehavior.scrolling,
@@ -65,6 +72,7 @@ class Settings extends Equatable {
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
     downloadPath: null,
+    downloadMethod: DownloadMethod.flutterDownloader,
     imageBorderRadius: 4,
     imageGridSpacing: 4,
     actionBarDisplayBehavior: ActionBarDisplayBehavior.scrolling,
@@ -78,7 +86,9 @@ class Settings extends Equatable {
   final ThemeMode themeMode;
   final GridSize gridSize;
   final DataCollectingStatus dataCollectingStatus;
+
   final String? downloadPath;
+  final DownloadMethod downloadMethod;
 
   final double imageBorderRadius;
   final double imageGridSpacing;
@@ -97,6 +107,7 @@ class Settings extends Equatable {
     GridSize? gridSize,
     DataCollectingStatus? dataCollectingStatus,
     String? downloadPath,
+    DownloadMethod? downloadMethod,
     double? imageBorderRadius,
     double? imageGridSpacing,
     ActionBarDisplayBehavior? actionBarDisplayBehavior,
@@ -111,6 +122,7 @@ class Settings extends Equatable {
         gridSize: gridSize ?? this.gridSize,
         dataCollectingStatus: dataCollectingStatus ?? this.dataCollectingStatus,
         downloadPath: downloadPath ?? this.downloadPath,
+        downloadMethod: downloadMethod ?? this.downloadMethod,
         imageBorderRadius: imageBorderRadius ?? this.imageBorderRadius,
         imageGridSpacing: imageGridSpacing ?? this.imageGridSpacing,
         actionBarDisplayBehavior:
@@ -128,6 +140,7 @@ class Settings extends Equatable {
         'language': language,
         'gridSize': gridSize.index,
         'downloadPath': downloadPath,
+        'downloadMethod': downloadMethod,
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
         'actionBarDisplayBehavior': actionBarDisplayBehavior.index,
@@ -144,6 +157,7 @@ class Settings extends Equatable {
         gridSize,
         dataCollectingStatus,
         downloadPath,
+        downloadMethod,
         imageBorderRadius,
         imageGridSpacing,
         actionBarDisplayBehavior,
