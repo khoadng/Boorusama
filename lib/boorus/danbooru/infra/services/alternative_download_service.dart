@@ -24,38 +24,25 @@ class AlternativeDownloadService implements IDownloadService<Post> {
   @override
   void dispose() {}
 
-  Future<void> _showNotification(
-    Post post,
-    String message,
-    String fileName, {
-    NotificationDetails? notificationDetails,
-  }) async {
-    await _flutterLocalNotificationsPlugin.show(
-      post.id,
-      fileName,
-      message,
-      notificationDetails,
-      payload: fileName,
-    );
-  }
-
   @override
   Future<void> download(item, {String? path}) async {
     final dio = Dio();
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       item.id.toString(),
       item.id.toString(),
+      playSound: false,
+      enableVibration: false,
     );
     final NotificationDetails platformChannelSpecifics =
         NotificationDetails(android: androidPlatformChannelSpecifics);
     final fileName = _fileNameGenerator.generateFor(item);
 
     try {
-      await _showNotification(
-        item,
-        'in progress',
+      await _flutterLocalNotificationsPlugin.show(
+        item.id,
         fileName,
-        notificationDetails: platformChannelSpecifics,
+        'in progress',
+        platformChannelSpecifics,
       );
 
       final response = await dio.get(
@@ -72,18 +59,35 @@ class AlternativeDownloadService implements IDownloadService<Post> {
         name: fileName,
       );
 
-      await _showNotification(
-        item,
-        'completed',
+      await _flutterLocalNotificationsPlugin.show(
+        item.id,
         fileName,
-        notificationDetails: platformChannelSpecifics,
+        'completed',
+        platformChannelSpecifics,
+        payload: fileName,
+      );
+      await _flutterLocalNotificationsPlugin.show(
+        item.id,
+        fileName,
+        'completed',
+        payload: fileName,
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+          'completed',
+          'completed',
+          importance: Importance.max,
+          priority: Priority.high,
+          playSound: false,
+          enableVibration: false,
+        )),
       );
     } catch (e) {
-      await _showNotification(
-        item,
-        'failed',
+      await _flutterLocalNotificationsPlugin.show(
+        item.id,
         fileName,
-        notificationDetails: platformChannelSpecifics,
+        'failed',
+        platformChannelSpecifics,
+        payload: fileName,
       );
     }
   }

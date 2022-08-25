@@ -147,6 +147,7 @@ void main() async {
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onSelectNotification: (payload) async {
+      if (payload == null) return;
       if (isIOS()) {
         //TODO: update usage for iOS
         final uri = Uri.parse('photos-redirect://');
@@ -167,7 +168,7 @@ void main() async {
   );
 
   final downloader = await createDownloader(
-    DownloadMethod.imageGallerySaver,
+    settings.downloadMethod,
     fileNameGenerator,
     deviceInfo,
     flutterLocalNotificationsPlugin,

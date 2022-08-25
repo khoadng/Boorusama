@@ -51,7 +51,9 @@ class Settings extends Equatable {
             ? GridSize.values[json['gridSize']]
             : GridSize.normal,
         downloadPath = json['downloadPath'],
-        downloadMethod = json['downloadMethod'],
+        downloadMethod = json['downloadMethod'] != null
+            ? DownloadMethod.values[json['downloadMethod']]
+            : DownloadMethod.flutterDownloader,
         actionBarDisplayBehavior = json['actionBarDisplayBehavior'] != null
             ? ActionBarDisplayBehavior.values[json['actionBarDisplayBehavior']]
             : ActionBarDisplayBehavior.scrolling,
@@ -140,7 +142,7 @@ class Settings extends Equatable {
         'language': language,
         'gridSize': gridSize.index,
         'downloadPath': downloadPath,
-        'downloadMethod': downloadMethod,
+        'downloadMethod': downloadMethod.index,
         'imageBorderRadius': imageBorderRadius,
         'imageGridSpacing': imageGridSpacing,
         'actionBarDisplayBehavior': actionBarDisplayBehavior.index,
