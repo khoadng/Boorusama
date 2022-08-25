@@ -4,6 +4,7 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
@@ -28,9 +29,13 @@ Future<IDownloadService<Post>> createDownloader(
   DownloadMethod method,
   FileNameGenerator fileNameGenerator,
   DeviceInfo deviceInfo,
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
 ) async {
   if (method == DownloadMethod.imageGallerySaver) {
-    final d = AlternativeDownloadService(fileNameGenerator: fileNameGenerator);
+    final d = AlternativeDownloadService(
+      fileNameGenerator: fileNameGenerator,
+      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+    );
     await d.init();
     return d;
   }

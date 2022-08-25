@@ -3,15 +3,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/app_info.dart';
@@ -132,13 +136,42 @@ void main() async {
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
+  final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+
+  //TODO: this notification is only used for download feature
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const InitializationSettings initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings(
+    '@mipmap/ic_launcher',
+  ));
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onSelectNotification: (payload) async {
+      if (isIOS()) {
+        //TODO: update usage for iOS
+        final uri = Uri.parse('photos-redirect://');
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+        }
+      } else if (isAndroid()) {
+        final intent = AndroidIntent(
+          action: 'action_view',
+          type: 'image/*',
+          //TODO: download path is hard-coded
+          data: Uri.parse('/storage/emulated/0/Pictures/$payload').toString(),
+          flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
+        );
+        await intent.launch();
+      }
+    },
+  );
+
   final downloader = await createDownloader(
     DownloadMethod.imageGallerySaver,
     fileNameGenerator,
     deviceInfo,
+    flutterLocalNotificationsPlugin,
   );
-
-  final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
