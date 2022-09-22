@@ -98,9 +98,9 @@ class _HomePageState extends State<HomePage> {
                                           value: 1,
                                           index: index,
                                           selectedIcon:
-                                              const Icon(Icons.photo_album),
+                                              const Icon(Icons.explore),
                                           icon: const Icon(
-                                              Icons.photo_album_outlined),
+                                              Icons.explore_outlined),
                                           title: const Text('Explore'),
                                           onTap: (value) =>
                                               viewIndex.value = value,
@@ -109,9 +109,9 @@ class _HomePageState extends State<HomePage> {
                                           value: 2,
                                           index: index,
                                           selectedIcon:
-                                              const Icon(Icons.explore),
+                                              const Icon(Icons.photo_album),
                                           icon: const Icon(
-                                              Icons.explore_outlined),
+                                              Icons.photo_album_outlined),
                                           title: const Text('Pool'),
                                           onTap: (value) =>
                                               viewIndex.value = value,
