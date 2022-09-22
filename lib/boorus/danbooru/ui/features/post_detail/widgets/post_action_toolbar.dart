@@ -24,12 +24,14 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     Key? key,
-    required this.post,
+    required this.postData,
     required this.imagePath,
   }) : super(key: key);
 
-  final Post post;
+  final PostData postData;
   final String? imagePath;
+
+  Post get post => postData.post;
 
   @override
   Widget build(BuildContext context) {

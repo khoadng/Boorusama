@@ -41,7 +41,10 @@ class SearchButton extends StatelessWidget {
   void _onPress(BuildContext context, List<TagSearchItem> selectedTags) {
     final tags = selectedTags.map((e) => e.toString()).join(' ');
     context.read<SearchBloc>().add(const SearchRequested());
-    context.read<PostBloc>().add(PostRefreshed(tag: tags));
+    context.read<PostBloc>().add(PostRefreshed(
+          tag: tags,
+          fetcher: SearchedPostFetcher.fromTags(tags),
+        ));
     context.read<SearchHistoryCubit>().addHistory(tags);
   }
 }

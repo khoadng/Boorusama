@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,6 +13,8 @@ import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_most_viewed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'datetime_selector.dart';
 import 'explore_post_grid.dart';

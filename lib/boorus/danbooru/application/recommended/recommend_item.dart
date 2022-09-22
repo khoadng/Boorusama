@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 
 class Recommended {
   Recommended({
@@ -10,5 +10,5 @@ class Recommended {
 
   final String tag;
   final String title;
-  final List<Post> posts;
+  final List<PostData> posts;
 }

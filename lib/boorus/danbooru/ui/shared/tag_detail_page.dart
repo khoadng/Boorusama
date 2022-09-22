@@ -171,13 +171,15 @@ class _PanelState extends State<_Panel> {
               scrollController: widget.scrollController,
               refreshController: refreshController,
               enableLoadMore: state.hasMore,
-              onLoadMore: () => context
-                  .read<PostBloc>()
-                  .add(PostFetched(tags: widget.tagName)),
+              onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                    tags: widget.tagName,
+                    fetcher: SearchedPostFetcher.fromTags(widget.tagName),
+                  )),
               onRefresh: (controller) {
-                context
-                    .read<PostBloc>()
-                    .add(PostRefreshed(tag: widget.tagName));
+                context.read<PostBloc>().add(PostRefreshed(
+                      tag: widget.tagName,
+                      fetcher: SearchedPostFetcher.fromTags(widget.tagName),
+                    ));
                 Future.delayed(const Duration(milliseconds: 500),
                     () => controller.refreshCompleted());
               },
@@ -208,7 +210,11 @@ class _PanelState extends State<_Panel> {
                         onToggle: (category) => context.read<PostBloc>().add(
                               PostRefreshed(
                                 tag: widget.tagName,
-                                order: _tagFilterCategoryToPostsOrder(category),
+                                fetcher: SearchedPostFetcher.fromTags(
+                                  widget.tagName,
+                                  order:
+                                      _tagFilterCategoryToPostsOrder(category),
+                                ),
                               ),
                             ),
                       ),

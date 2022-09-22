@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+// Package imports:
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 class PostData extends Equatable {
   const PostData({

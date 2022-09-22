@@ -74,7 +74,10 @@ final artistHandler = Handler(handlerFunc: (
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
                 accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(tag: args[0]))),
+              )..add(PostRefreshed(
+                  tag: args[0],
+                  fetcher: SearchedPostFetcher.fromTags(args[0]),
+                ))),
       BlocProvider.value(
           value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
@@ -100,7 +103,10 @@ final characterHandler = Handler(handlerFunc: (
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
                 accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(tag: args[0]))),
+              )..add(PostRefreshed(
+                  tag: args[0],
+                  fetcher: SearchedPostFetcher.fromTags(args[0]),
+                ))),
       BlocProvider.value(
           value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
     ],
@@ -186,7 +192,7 @@ final postDetailHandler = Handler(handlerFunc: (
           },
           child: PostDetailPage(
             intitialIndex: index,
-            posts: posts,
+            posts: postDatas,
           ),
         ),
       ),
@@ -337,7 +343,11 @@ final favoritesHandler =
                     favoritePostRepository:
                         context.read<IFavoritePostRepository>(),
                     accountRepository: context.read<IAccountRepository>(),
-                  )..add(PostRefreshed(tag: 'ordfav:$username'))),
+                  )..add(PostRefreshed(
+                      tag: 'ordfav:$username',
+                      fetcher: SearchedPostFetcher.fromTags(
+                        'ordfav:$username',
+                      )))),
         ],
         child: FavoritesPage(
           username: username,

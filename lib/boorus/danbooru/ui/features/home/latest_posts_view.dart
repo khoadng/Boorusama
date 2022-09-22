@@ -38,8 +38,10 @@ class _LatestViewState extends State<LatestView> {
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
 
-  void _sendRefresh(String tag) =>
-      context.read<PostBloc>().add(PostRefreshed(tag: tag));
+  void _sendRefresh(String tag) => context.read<PostBloc>().add(PostRefreshed(
+        tag: tag,
+        fetcher: const LatestPostFetcher(),
+      ));
 
   @override
   void initState() {
@@ -70,9 +72,10 @@ class _LatestViewState extends State<LatestView> {
         return InfiniteLoadList(
           extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
-          onLoadMore: () => context
-              .read<PostBloc>()
-              .add(PostFetched(tags: _selectedTag.value)),
+          onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                tags: _selectedTag.value,
+                fetcher: const LatestPostFetcher(),
+              )),
           onRefresh: (controller) {
             _sendRefresh(_selectedTag.value);
             Future.delayed(const Duration(seconds: 1),
@@ -138,8 +141,9 @@ class _LatestViewState extends State<LatestView> {
               color: Theme.of(context).cardColor,
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(20),
-              onPressed: () =>
-                  context.read<PostBloc>().add(const PostRefreshed()),
+              onPressed: () => context.read<PostBloc>().add(const PostRefreshed(
+                    fetcher: LatestPostFetcher(),
+                  )),
               child: const Icon(Icons.refresh),
             ),
         ],

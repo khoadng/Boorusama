@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +14,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -197,6 +197,8 @@ class SliverPostGridItem extends StatelessWidget {
             const _OverlayIcon(icon: Icons.comment, size: 20),
           if (post.hasParentOrChildren)
             const _OverlayIcon(icon: FontAwesomeIcons.images, size: 16),
+          if (postData.isFavorited)
+            const _OverlayIcon(icon: FontAwesomeIcons.heart, size: 16),
         ],
       ),
     );

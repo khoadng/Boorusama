@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -17,13 +18,13 @@ class PreviewPostGrid extends StatelessWidget {
     this.physics,
   }) : super(key: key);
 
-  final List<Post> posts;
+  final List<PostData> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
 
   @override
   Widget build(BuildContext context) {
-    void handleTap(Post post, int index) {
+    void handleTap(int index) {
       AppRouter.router.navigateTo(
         context,
         '/post/detail',
@@ -53,11 +54,11 @@ class PreviewPostGrid extends StatelessWidget {
           itemBuilder: (context, index) => ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: GestureDetector(
-              onTap: () => handleTap(posts[index], index),
+              onTap: () => handleTap(index),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: _getImageUrl(
-                  posts[index],
+                  posts[index].post,
                   imageQuality,
                 ),
                 placeholder: (context, url) => Container(

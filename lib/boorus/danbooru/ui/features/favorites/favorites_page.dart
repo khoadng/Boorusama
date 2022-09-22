@@ -66,13 +66,15 @@ class FavoritesPage extends StatelessWidget {
           builder: (context, state) {
             return InfiniteLoadList(
               enableLoadMore: state.hasMore,
-              onLoadMore: () => context
-                  .read<PostBloc>()
-                  .add(PostFetched(tags: 'ordfav:$username')),
+              onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                    tags: 'ordfav:$username',
+                    fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
+                  )),
               onRefresh: (controller) {
-                context
-                    .read<PostBloc>()
-                    .add(PostRefreshed(tag: 'ordfav:$username'));
+                context.read<PostBloc>().add(PostRefreshed(
+                      tag: 'ordfav:$username',
+                      fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
+                    ));
                 Future.delayed(const Duration(milliseconds: 500),
                     () => controller.refreshCompleted());
               },
