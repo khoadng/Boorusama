@@ -39,8 +39,9 @@ class PostActionToolbar extends StatelessWidget {
         alignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildFavoriteButton(authState),
-          if (authState is Authenticated) _buildUpvoteButton(),
-          if (authState is Authenticated) _buildDownvoteButton(),
+          //TODO: kinda laggy so removed for now
+          // if (authState is Authenticated) _buildUpvoteButton(),
+          // if (authState is Authenticated) _buildDownvoteButton(),
           _buildCommentButton(context),
           _buildDownloadButton(),
           _buildShareButton(context),
@@ -49,6 +50,7 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildUpvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
@@ -69,6 +71,7 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
+  // ignore: unused_element
   Widget _buildDownvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
