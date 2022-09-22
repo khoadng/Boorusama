@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -11,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'common.dart';
+import 'post_data.dart';
 
 @immutable
 class PostPopularState extends Equatable {
@@ -30,16 +33,16 @@ class PostPopularState extends Equatable {
         hasMore: true,
       );
 
-  final List<Post> posts;
-  final List<Post> filteredPosts;
+  final List<PostData> posts;
+  final List<PostData> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
 
   PostPopularState copyWith({
     LoadStatus? status,
-    List<Post>? posts,
-    List<Post>? filteredPosts,
+    List<PostData>? posts,
+    List<PostData>? filteredPosts,
     int? page,
     bool? hasMore,
   }) =>
@@ -90,6 +93,8 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
   PostPopularBloc({
     required IPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
+    required IFavoritePostRepository favoritePostRepository,
+    required IAccountRepository accountRepository,
   }) : super(PostPopularState.initial()) {
     on<PostPopularFetched>(
       (event, emit) async {
@@ -105,14 +110,16 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
           onSuccess: (posts) async {
-            final filteredPosts = filterBlacklisted(posts, blacklisted);
+            final postDatas = await createPostData(
+                favoritePostRepository, posts, accountRepository);
+            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
 
             emit(
               state.copyWith(
                 status: LoadStatus.success,
                 posts: [
                   ...state.posts,
-                  ...filter(posts, blacklisted),
+                  ...filter(postDatas, blacklisted),
                 ],
                 filteredPosts: [
                   ...state.filteredPosts,
@@ -141,15 +148,20 @@ class PostPopularBloc extends Bloc<PostPopularEvent, PostPopularState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) =>
               emit(state.copyWith(status: LoadStatus.failure)),
-          onSuccess: (posts) async => emit(
-            state.copyWith(
-              status: LoadStatus.success,
-              posts: filter(posts, blacklisted),
-              filteredPosts: filterBlacklisted(posts, blacklisted),
-              page: 1,
-              hasMore: posts.isNotEmpty,
-            ),
-          ),
+          onSuccess: (posts) async {
+            final postDatas = await createPostData(
+                favoritePostRepository, posts, accountRepository);
+            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: filter(postDatas, blacklisted),
+                filteredPosts: filteredPosts,
+                page: 1,
+                hasMore: posts.isNotEmpty,
+              ),
+            );
+          },
         );
       },
       transformer: restartable(),

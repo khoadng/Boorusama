@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:collection/collection.dart';
 
 // Project imports:
@@ -6,16 +8,64 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-List<Post> filter(List<Post> posts, List<String> blacklistedTags) {
+Future<List<PostData>> createPostData(
+  IFavoritePostRepository favoritePostRepository,
+  List<Post> posts,
+  IAccountRepository accountRepository,
+) async {
+  final account = await accountRepository.get();
+  if (account == Account.empty) {
+    return posts
+        .map((post) => PostData(
+              post: post,
+              isFavorited: false,
+            ))
+        .toList();
+  } else {
+    //TODO: shoudn't hardcode limit count
+    final favs = await favoritePostRepository.filterFavoritesFromUserId(
+      posts.map((e) => e.id).toList(),
+      account.id,
+      200,
+    );
+    final favSet = favs.map((e) => e.postId).toSet();
+    return posts
+        .map((post) => PostData(
+              post: post,
+              isFavorited: favSet.contains(post.id),
+            ))
+        .toList();
+  }
+}
+
+List<PostData> filter(
+  List<PostData> posts,
+  List<String> blacklistedTags,
+) {
+  final groups = _parse(blacklistedTags);
+
+  return posts
+      .whereNot((post) => _hasBlacklistedTag(post.post, groups))
+      .toList();
+}
+
+//TODO: extract common method
+List<Post> filterRawPost(
+  List<Post> posts,
+  List<String> blacklistedTags,
+) {
   final groups = _parse(blacklistedTags);
 
   return posts.whereNot((post) => _hasBlacklistedTag(post, groups)).toList();
 }
 
-List<Post> filterBlacklisted(List<Post> posts, List<String> blacklistedTags) {
+List<PostData> filterBlacklisted(
+  List<PostData> posts,
+  List<String> blacklistedTags,
+) {
   final groups = _parse(blacklistedTags);
 
-  return posts.where((post) => _hasBlacklistedTag(post, groups)).toList();
+  return posts.where((post) => _hasBlacklistedTag(post.post, groups)).toList();
 }
 
 List<FilterGroup> _parse(List<String> tags) =>

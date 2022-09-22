@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -12,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'common.dart';
+import 'post_data.dart';
 
 enum PostsOrder {
   popular,
@@ -37,8 +41,8 @@ class PostState extends Equatable {
         hasMore: true,
       );
 
-  final List<Post> posts;
-  final List<Post> filteredPosts;
+  final List<PostData> posts;
+  final List<PostData> filteredPosts;
   final LoadStatus status;
   final int page;
   final bool hasMore;
@@ -46,8 +50,8 @@ class PostState extends Equatable {
 
   PostState copyWith({
     LoadStatus? status,
-    List<Post>? posts,
-    List<Post>? filteredPosts,
+    List<PostData>? posts,
+    List<PostData>? filteredPosts,
     int? page,
     bool? hasMore,
     String? exceptionMessage,
@@ -100,6 +104,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required IPostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
+    required IFavoritePostRepository favoritePostRepository,
+    required IAccountRepository accountRepository,
   }) : super(PostState.initial()) {
     on<PostFetched>(
       (event, emit) async {
@@ -111,15 +117,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
-            final filteredPosts = filterBlacklisted(posts, blacklisted);
-            // print(
-            //     '${filteredPosts.length} posts got filtered. Total: ${state.filteredPosts.length + filteredPosts.length}');
+            final postDatas = await createPostData(
+                favoritePostRepository, posts, accountRepository);
+            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+
             emit(
               state.copyWith(
                 status: LoadStatus.success,
                 posts: [
                   ...state.posts,
-                  ...filter(posts, blacklisted),
+                  ...filter(postDatas, blacklisted),
                 ],
                 filteredPosts: [
                   ...state.filteredPosts,
@@ -145,15 +152,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           action: () => postRepository.getPosts(query, 1),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
-          onSuccess: (posts) async => emit(
-            state.copyWith(
-              status: LoadStatus.success,
-              posts: filter(posts, blacklisted),
-              filteredPosts: filterBlacklisted(posts, blacklisted),
-              page: 1,
-              hasMore: posts.isNotEmpty,
-            ),
-          ),
+          onSuccess: (posts) async {
+            final postDatas = await createPostData(
+                favoritePostRepository, posts, accountRepository);
+            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: filter(postDatas, blacklisted),
+                filteredPosts: filteredPosts,
+                page: 1,
+                hasMore: posts.isNotEmpty,
+              ),
+            );
+          },
         );
       },
       transformer: restartable(),

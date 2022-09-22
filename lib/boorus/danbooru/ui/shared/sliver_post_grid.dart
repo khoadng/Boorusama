@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -78,7 +79,7 @@ class SliverPostGrid extends HookWidget {
     this.postAnnotationBuilder,
   }) : super(key: key);
 
-  final List<Post> posts;
+  final List<PostData> posts;
   final AutoScrollController scrollController;
   final ValueChanged<int>? onItemChanged;
   final void Function(Post post, int index)? onTap;
@@ -128,7 +129,7 @@ class SliverPostGrid extends HookWidget {
                 children: [
                   Expanded(
                     child: SliverPostGridItem(
-                      post: post,
+                      postData: post,
                       index: index,
                       borderRadius: BorderRadius.circular(
                           state.settings.imageBorderRadius),
@@ -138,7 +139,7 @@ class SliverPostGrid extends HookWidget {
                       onTap: onTap,
                     ),
                   ),
-                  postAnnotationBuilder?.call(context, post, index) ??
+                  postAnnotationBuilder?.call(context, post.post, index) ??
                       const SizedBox.shrink(),
                 ],
               );
@@ -154,7 +155,7 @@ class SliverPostGrid extends HookWidget {
 class SliverPostGridItem extends StatelessWidget {
   const SliverPostGridItem({
     Key? key,
-    required this.post,
+    required this.postData,
     required this.index,
     required this.borderRadius,
     required this.gridSize,
@@ -163,13 +164,15 @@ class SliverPostGridItem extends StatelessWidget {
     required this.scrollController,
   }) : super(key: key);
 
-  final Post post;
+  final PostData postData;
   final int index;
   final AutoScrollController scrollController;
   final void Function(Post post, int index)? onTap;
   final GridSize gridSize;
   final BorderRadius? borderRadius;
   final ImageQuality imageQuality;
+
+  Post get post => postData.post;
 
   @override
   Widget build(BuildContext context) {

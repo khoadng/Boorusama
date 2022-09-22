@@ -40,7 +40,7 @@ class FavoritesPage extends StatelessWidget {
                     switch (value) {
                       case _Action.downloadAll:
                         // ignore: avoid_function_literals_in_foreach_calls
-                        state.posts.forEach((p) => download(p));
+                        state.posts.forEach((p) => download(p.post));
                         break;
                       default:
                     }

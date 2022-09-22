@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -29,7 +30,7 @@ class ExplorePostGrid extends StatelessWidget {
   final DateTime date;
   final TimeScale scale;
   final LoadStatus status;
-  final List<Post> posts;
+  final List<PostData> posts;
   final void Function(DateTime date, TimeScale scale) onLoadMore;
   final void Function(DateTime date, TimeScale scale) onRefresh;
   final RefreshController controller;

@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -275,6 +277,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                       blacklistedTagsRepository:
                                                           context.read<
                                                               BlacklistedTagsRepository>(),
+                                                      favoritePostRepository:
+                                                          context.read<
+                                                              IFavoritePostRepository>(),
+                                                      accountRepository:
+                                                          context.read<
+                                                              IAccountRepository>(),
                                                     )..add(PostRefreshed(
                                                             tag: data
                                                                 .tagQueryForDataFetching)),
@@ -402,6 +410,10 @@ class _LargeLayoutContent extends StatelessWidget {
                               postRepository: context.read<IPostRepository>(),
                               blacklistedTagsRepository:
                                   context.read<BlacklistedTagsRepository>(),
+                              favoritePostRepository:
+                                  context.read<IFavoritePostRepository>(),
+                              accountRepository:
+                                  context.read<IAccountRepository>(),
                             )..add(PostRefreshed(
                                 tag: data.tagQueryForDataFetching)),
                           )

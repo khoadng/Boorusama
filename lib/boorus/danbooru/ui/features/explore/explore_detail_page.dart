@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -98,6 +100,9 @@ class ExploreDetailPage extends StatelessWidget {
                   postRepository: context.read<IPostRepository>(),
                   blacklistedTagsRepository:
                       context.read<BlacklistedTagsRepository>(),
+                  favoritePostRepository:
+                      context.read<IFavoritePostRepository>(),
+                  accountRepository: context.read<IAccountRepository>(),
                 )..add(
                     PostPopularRefreshed(
                       date: state.date,
@@ -138,6 +143,9 @@ class ExploreDetailPage extends StatelessWidget {
                   postRepository: context.read<IPostRepository>(),
                   blacklistedTagsRepository:
                       context.read<BlacklistedTagsRepository>(),
+                  favoritePostRepository:
+                      context.read<IFavoritePostRepository>(),
+                  accountRepository: context.read<IAccountRepository>(),
                 )..add(
                     PostCuratedRefreshed(
                       date: state.date,
@@ -178,6 +186,9 @@ class ExploreDetailPage extends StatelessWidget {
                   postRepository: context.read<IPostRepository>(),
                   blacklistedTagsRepository:
                       context.read<BlacklistedTagsRepository>(),
+                  favoritePostRepository:
+                      context.read<IFavoritePostRepository>(),
+                  accountRepository: context.read<IAccountRepository>(),
                 )..add(
                     PostMostViewedRefreshed(
                       date: state.date,

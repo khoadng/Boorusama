@@ -30,7 +30,7 @@ class MostViewedCubit extends Cubit<AsyncLoadState<List<Post>>> {
           }
 
           emit(AsyncLoadState.success(
-              filter(posts, blacklisted).take(20).toList()));
+              filterRawPost(posts, blacklisted).take(20).toList()));
         });
   }
 }

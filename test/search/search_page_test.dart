@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -59,6 +61,10 @@ class MockPostRepository extends Mock implements IPostRepository {}
 class MockBlacklistedTagRepository extends Mock
     implements BlacklistedTagsRepository {}
 
+class MockAccountRepository extends Mock implements IAccountRepository {}
+
+class MockFavoriteReposiory extends Mock implements IFavoritePostRepository {}
+
 Widget _buildSearchPage({
   required SearchBloc searchBloc,
   required TagSearchBloc tagSearchBloc,
@@ -112,6 +118,8 @@ void main() {
   final mockAutocompleteRepository = MockAutocompleteRepository();
   final mockPostRepository = MockPostRepository();
   final mockBlacklistedTagRepository = MockBlacklistedTagRepository();
+  final mockAccountRepository = MockAccountRepository();
+  final mockFavoriteReposiory = MockFavoriteReposiory();
 
   SearchBloc createSearchBloc() => SearchBloc(
       initial: const SearchState(displayState: DisplayState.options));
@@ -121,6 +129,8 @@ void main() {
   PostBloc createPostBloc() => PostBloc(
         postRepository: mockPostRepository,
         blacklistedTagsRepository: mockBlacklistedTagRepository,
+        favoritePostRepository: mockFavoriteReposiory,
+        accountRepository: mockAccountRepository,
       );
 
   setUpAll(() {

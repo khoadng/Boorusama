@@ -288,6 +288,8 @@ void main() async {
                   final postBloc = PostBloc(
                     postRepository: postRepo,
                     blacklistedTagsRepository: blacklistedTagRepo,
+                    favoritePostRepository: favoriteRepo,
+                    accountRepository: accountRepo,
                   )..add(const PostRefreshed());
 
                   final tagBloc = TagBloc(

@@ -72,6 +72,8 @@ final artistHandler = Handler(handlerFunc: (
                 postRepository: RepositoryProvider.of<IPostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
       BlocProvider.value(
           value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
@@ -96,6 +98,8 @@ final characterHandler = Handler(handlerFunc: (
                 postRepository: RepositoryProvider.of<IPostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
               )..add(PostRefreshed(tag: args[0]))),
       BlocProvider.value(
           value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
@@ -112,10 +116,11 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final posts = args[0] as List<Post>;
+  final postDatas = args[0] as List<PostData>;
   final index = args[1] as int;
 
   final screenSize = Screen.of(context).size;
+  final posts = postDatas.map((e) => e.post).toList();
 
   AutoScrollController? controller;
   if (args.length == 3) {
@@ -206,6 +211,8 @@ final postSearchHandler = Handler(handlerFunc: (
                 postRepository: context.read<IPostRepository>(),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
               )),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
@@ -294,9 +301,11 @@ final poolDetailHandler =
     providers: [
       BlocProvider(
           create: (context) => PoolDetailCubit(
-              ids: Queue.from(pool.postIds.reversed),
-              postRepository: RepositoryProvider.of<IPostRepository>(context))
-            ..load()),
+                ids: Queue.from(pool.postIds.reversed),
+                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
+              )..load()),
       BlocProvider.value(
           value: context.read<PoolDescriptionBloc>()
             ..add(PoolDescriptionFetched(poolId: pool.id))),
@@ -325,6 +334,9 @@ final favoritesHandler =
                         RepositoryProvider.of<IPostRepository>(context),
                     blacklistedTagsRepository:
                         context.read<BlacklistedTagsRepository>(),
+                    favoritePostRepository:
+                        context.read<IFavoritePostRepository>(),
+                    accountRepository: context.read<IAccountRepository>(),
                   )..add(PostRefreshed(tag: 'ordfav:$username'))),
         ],
         child: FavoritesPage(
