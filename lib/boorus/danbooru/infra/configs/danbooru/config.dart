@@ -4,7 +4,7 @@ import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 class DanbooruConfig implements IConfig {
   @override
   String get cheatSheetUrl =>
-      'https://danbooru.donmai.us/wiki_pages/help:cheatsheet';
+      'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 
   @override
   Map<String, String> get searchOptionHitns => {
