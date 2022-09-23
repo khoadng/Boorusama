@@ -9,13 +9,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:hive/hive.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart';
 
 // Project imports:
-import 'package:boorusama/app_info.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
@@ -27,18 +25,13 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/pool/pool_description_cacher.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag_cacher.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
@@ -50,25 +43,24 @@ import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repos
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/danbooru/config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/wiki/wiki_repository.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/download_service.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
+import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_cacher.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infrastructure/caching/fifo_cacher.dart';
-import 'package:boorusama/core/infrastructure/caching/lru_cacher.dart';
-import 'package:boorusama/core/infrastructure/device_info_service.dart';
+import 'package:boorusama/core/infra/caching/fifo_cacher.dart';
+import 'package:boorusama/core/infra/caching/lru_cacher.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/home/tag_list.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
-import 'boorus/danbooru/infrastructure/local/repositories/search_history/search_history.dart';
-import 'boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
+import 'boorus/danbooru/infra/repositories/repositories.dart';
 
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
     hide PoolCategory;
@@ -97,7 +89,7 @@ void main() async {
   if (isDesktopPlatform()) {
     doWhenWindowReady(() {
       const initialSize = Size(1024, 600);
-      const minSize = Size(350, 350);
+      const minSize = Size(300, 300);
       appWindow.minSize = minSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
@@ -260,6 +252,9 @@ void main() async {
                     endpoint: state.dio.options.baseUrl,
                   );
 
+                  final postVoteRepo =
+                      PostVoteApiRepository(api: api, accountRepo: accountRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit =
@@ -288,11 +283,6 @@ void main() async {
                       category: PoolCategory.series,
                       order: PoolOrder.latest,
                     ));
-
-                  final postBloc = PostBloc(
-                    postRepository: postRepo,
-                    blacklistedTagsRepository: blacklistedTagRepo,
-                  )..add(const PostRefreshed());
 
                   final tagBloc = TagBloc(
                     tagRepository: TagCacher(
@@ -383,6 +373,8 @@ void main() async {
                           value: wikiRepo),
                       RepositoryProvider<IArtistCommentaryRepository>.value(
                           value: artistCommentaryRepo),
+                      RepositoryProvider<PostVoteRepository>.value(
+                          value: postVoteRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -398,7 +390,6 @@ void main() async {
                             create: (context) =>
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
-                        BlocProvider.value(value: postBloc),
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: recommendArtistCubit),
                         BlocProvider.value(value: recommendedCharaCubit),
@@ -490,21 +481,3 @@ void main() async {
     }
   }
 }
-
-class PackageInfoProvider {
-  PackageInfoProvider(this.packageInfo);
-
-  final PackageInfo packageInfo;
-
-  PackageInfo getPackageInfo() => packageInfo;
-}
-
-class AppInfoProvider {
-  AppInfoProvider(this.appInfo);
-
-  final AppInfo appInfo;
-
-  AppInfo getAppInfo() => appInfo;
-}
-
-Future<PackageInfo> getPackageInfo() => PackageInfo.fromPlatform();

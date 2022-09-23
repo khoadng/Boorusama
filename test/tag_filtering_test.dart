@@ -154,7 +154,8 @@ void main() {
 
     final blacklisted = ['b', 'c'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [1]);
   });
 
@@ -172,7 +173,8 @@ void main() {
 
     final blacklisted = ['b c', 'b e'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [1, 2]);
   });
 
@@ -191,7 +193,8 @@ void main() {
 
     final blacklisted = ['a b -c -d'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [0, 1, 2]);
   });
 
@@ -212,7 +215,8 @@ void main() {
 
     final blacklisted = ['~a ~b -c'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [3, 4, 5, 6]);
   });
 
@@ -241,7 +245,8 @@ void main() {
 
     final blacklisted = ['a b ~c -d'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [0, 1, 7, 8, 9, 10, 11, 12, 13, 14]);
   });
 
@@ -262,7 +267,8 @@ void main() {
 
     final blacklisted = ['~a ~b foobar'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [3]);
   });
 
@@ -284,7 +290,8 @@ void main() {
 
     final blacklisted = ['~c %b'];
 
-    final expected = filter(originals, blacklisted).map((e) => e.id).toList();
+    final expected =
+        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
     expect(expected, [0, 1, 2]);
   });
 }

@@ -14,9 +14,9 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/apis/api.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
+import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_http_cache.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
 
 class MockCache extends Mock implements AutocompleteHttpCacher {}
 
