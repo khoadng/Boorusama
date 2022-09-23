@@ -46,10 +46,15 @@ class _ResultViewState extends State<ResultView> {
             enableLoadMore: state.hasMore,
             onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                   tags: tags.map((e) => e.toString()).join(' '),
+                  fetcher: SearchedPostFetcher.fromTags(
+                      tags.map((e) => e.toString()).join(' ')),
                 )),
             onRefresh: (controller) {
-              context.read<PostBloc>().add(
-                  PostRefreshed(tag: tags.map((e) => e.toString()).join(' ')));
+              context.read<PostBloc>().add(PostRefreshed(
+                    tag: tags.map((e) => e.toString()).join(' '),
+                    fetcher: SearchedPostFetcher.fromTags(
+                        tags.map((e) => e.toString()).join(' ')),
+                  ));
               Future.delayed(const Duration(milliseconds: 500),
                   () => controller.refreshCompleted());
             },

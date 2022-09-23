@@ -6,8 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -185,10 +189,28 @@ class _HomePageState extends State<HomePage> {
                           builder: (context, index, _) => AnimatedIndexedStack(
                             index: index,
                             children: [
-                              LatestView(
-                                onMenuTap: screenSize == ScreenSize.small
-                                    ? () => _onMenuTap(screenSize)
-                                    : null,
+                              MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                      create: (context) => PostBloc(
+                                            postRepository:
+                                                context.read<IPostRepository>(),
+                                            blacklistedTagsRepository:
+                                                context.read<
+                                                    BlacklistedTagsRepository>(),
+                                            favoritePostRepository:
+                                                context.read<
+                                                    IFavoritePostRepository>(),
+                                            accountRepository: context
+                                                .read<IAccountRepository>(),
+                                          )..add(const PostRefreshed(
+                                              fetcher: LatestPostFetcher())))
+                                ],
+                                child: LatestView(
+                                  onMenuTap: screenSize == ScreenSize.small
+                                      ? () => _onMenuTap(screenSize)
+                                      : null,
+                                ),
                               ),
                               const ExplorePage(),
                               MultiBlocProvider(

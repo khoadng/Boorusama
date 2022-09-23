@@ -102,6 +102,9 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                               ],
                             ),
                           ),
+                          onFavoriteUpdated: (postId, value) => context
+                              .read<PoolDetailCubit>()
+                              .updateFavorite(postId, value),
                         );
                       } else if (state.status == LoadStatus.loading) {
                         return const SliverToBoxAdapter(

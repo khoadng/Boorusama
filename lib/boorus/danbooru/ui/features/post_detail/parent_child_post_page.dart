@@ -47,13 +47,19 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
               child: InfiniteLoadList(
                 enableRefresh: false,
                 enableLoadMore: state.hasMore,
-                onLoadMore: () => context
-                    .read<PostBloc>()
-                    .add(PostFetched(tags: 'parent:${widget.parentPostId}')),
+                onLoadMore: () => context.read<PostBloc>().add(
+                      PostFetched(
+                        tags: 'parent:${widget.parentPostId}',
+                        fetcher: SearchedPostFetcher.fromTags(
+                            'parent:${widget.parentPostId}'),
+                      ),
+                    ),
                 onRefresh: (controller) {
-                  context
-                      .read<PostBloc>()
-                      .add(PostRefreshed(tag: 'parent:${widget.parentPostId}'));
+                  context.read<PostBloc>().add(PostRefreshed(
+                        tag: 'parent:${widget.parentPostId}',
+                        fetcher: SearchedPostFetcher.fromTags(
+                            'parent:${widget.parentPostId}'),
+                      ));
                   Future.delayed(const Duration(milliseconds: 500),
                       () => controller.refreshCompleted());
                 },
@@ -88,6 +94,10 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                                   ],
                                 ),
                               ),
+                              onFavoriteUpdated: (postId, value) => context
+                                  .read<PostBloc>()
+                                  .add(PostFavoriteUpdated(
+                                      postId: postId, favorite: value)),
                             );
                           } else if (state.status == LoadStatus.loading) {
                             return const SliverToBoxAdapter(

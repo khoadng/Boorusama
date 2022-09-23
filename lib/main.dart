@@ -26,7 +26,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
@@ -285,11 +284,6 @@ void main() async {
                       order: PoolOrder.latest,
                     ));
 
-                  final postBloc = PostBloc(
-                    postRepository: postRepo,
-                    blacklistedTagsRepository: blacklistedTagRepo,
-                  )..add(const PostRefreshed());
-
                   final tagBloc = TagBloc(
                     tagRepository: TagCacher(
                       cache: LruCacher(capacity: 1000),
@@ -396,7 +390,6 @@ void main() async {
                             create: (context) =>
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
-                        BlocProvider.value(value: postBloc),
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: recommendArtistCubit),
                         BlocProvider.value(value: recommendedCharaCubit),

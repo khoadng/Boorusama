@@ -40,7 +40,7 @@ class FavoritesPage extends StatelessWidget {
                     switch (value) {
                       case _Action.downloadAll:
                         // ignore: avoid_function_literals_in_foreach_calls
-                        state.posts.forEach((p) => download(p));
+                        state.posts.forEach((p) => download(p.post));
                         break;
                       default:
                     }
@@ -66,13 +66,15 @@ class FavoritesPage extends StatelessWidget {
           builder: (context, state) {
             return InfiniteLoadList(
               enableLoadMore: state.hasMore,
-              onLoadMore: () => context
-                  .read<PostBloc>()
-                  .add(PostFetched(tags: 'ordfav:$username')),
+              onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                    tags: 'ordfav:$username',
+                    fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
+                  )),
               onRefresh: (controller) {
-                context
-                    .read<PostBloc>()
-                    .add(PostRefreshed(tag: 'ordfav:$username'));
+                context.read<PostBloc>().add(PostRefreshed(
+                      tag: 'ordfav:$username',
+                      fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
+                    ));
                 Future.delayed(const Duration(milliseconds: 500),
                     () => controller.refreshCompleted());
               },

@@ -65,7 +65,10 @@ class _SearchPageState extends State<SearchPage> {
             .read<TagSearchBloc>()
             .add(TagSearchNewRawStringTagSelected(widget.initialQuery));
         context.read<SearchBloc>().add(const SearchRequested());
-        context.read<PostBloc>().add(PostRefreshed(tag: widget.initialQuery));
+        context.read<PostBloc>().add(PostRefreshed(
+              tag: widget.initialQuery,
+              fetcher: SearchedPostFetcher.fromTags(widget.initialQuery),
+            ));
       });
     } else {
       Future.delayed(const Duration(milliseconds: 100), () {
@@ -150,7 +153,10 @@ class _SearchPageState extends State<SearchPage> {
               final tags =
                   state.selectedTags.map((e) => e.toString()).join(' ');
 
-              context.read<PostBloc>().add(PostRefreshed(tag: tags));
+              context.read<PostBloc>().add(PostRefreshed(
+                    tag: tags,
+                    fetcher: SearchedPostFetcher.fromTags(widget.initialQuery),
+                  ));
               context
                   .read<RelatedTagBloc>()
                   .add(RelatedTagRequested(query: tags));
