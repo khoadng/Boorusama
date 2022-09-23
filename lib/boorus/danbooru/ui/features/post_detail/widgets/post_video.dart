@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:chewie/chewie.dart';
+import 'package:chewie/chewie.dart' hide MaterialDesktopControls;
 import 'package:video_player/video_player.dart';
 
 // Project imports:

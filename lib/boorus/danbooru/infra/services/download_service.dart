@@ -69,7 +69,7 @@ class DownloadService implements IDownloadService<Post> {
   @override
   Future<void> init() async {
     _bindBackgroundIsolate();
-    FlutterDownloader.registerCallback(downloadCallback);
+    await FlutterDownloader.registerCallback(downloadCallback);
     await _prepare();
   }
 
