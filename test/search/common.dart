@@ -7,6 +7,7 @@ TagSearchState tagSearchStateEmpty() => const TagSearchState(
       query: '',
       selectedTags: [],
       suggestionTags: [],
+      metaTagMatches: [],
       isDone: false,
       operator: FilterOperator.none,
     );

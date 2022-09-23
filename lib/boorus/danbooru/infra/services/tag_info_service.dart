@@ -4,6 +4,9 @@ import 'dart:convert';
 // Flutter imports:
 import 'package:flutter/services.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+
 const String _assetUrl = 'assets/tagdef.json';
 
 class TagInfoService {
@@ -16,10 +19,18 @@ class TagInfoService {
     try {
       final data = await rootBundle.loadString(_assetUrl);
       final Map<String, dynamic> json = jsonDecode(data);
-      final metatags = json['metatags'];
+      final metatags = <String>[...json['metatags']];
+      final freeMetatags = <String>{...json['free_metatags']};
       final defaultBlacklistedTags = json['default_blacklisted_tags'];
       return TagInfoService(
-        metatags: [...metatags],
+        metatags: metatags
+            .map((t) => Metatag(
+                  name: t,
+                  description: '',
+                  example: '',
+                  isFree: freeMetatags.contains(t),
+                ))
+            .toList(),
         defaultBlacklistedTags: [...defaultBlacklistedTags],
       );
     } catch (e) {
@@ -30,7 +41,7 @@ class TagInfoService {
     }
   }
 
-  final List<String> metatags;
+  final List<Metatag> metatags;
   final List<String> defaultBlacklistedTags;
 
   TagInfo getInfo() {
@@ -47,6 +58,6 @@ class TagInfo {
     required this.defaultBlacklistedTags,
   });
 
-  final List<String> metatags;
+  final List<Metatag> metatags;
   final List<String> defaultBlacklistedTags;
 }

@@ -62,14 +62,18 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
     required this.histories,
     required this.onItemTap,
     required this.onHistoryTap,
+    required this.onMetatagTap,
     required this.currentQuery,
+    required this.metatags,
   }) : super(key: key);
 
   final List<AutocompleteData> tags;
   final List<HistorySuggestion> histories;
   final void Function(AutocompleteData tag) onItemTap;
   final void Function(HistorySuggestion history) onHistoryTap;
+  final void Function(Metatag tag) onMetatagTap;
   final String currentQuery;
+  final List<Metatag> metatags;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +81,20 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (histories.isNotEmpty)
+                ListTile(
+                  visualDensity: VisualDensity.compact,
+                  dense: true,
+                  title: Text(
+                    'Recent',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                  ),
+                ),
               ...histories.map(
                 (history) => ListTile(
                   visualDensity: VisualDensity.compact,
@@ -107,6 +124,63 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                 ),
               ),
               if (histories.isNotEmpty) const Divider(),
+              if (metatags.isNotEmpty)
+                ListTile(
+                  visualDensity: VisualDensity.compact,
+                  dense: true,
+                  title: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Metatags',
+                        style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                              fontWeight: FontWeight.w700,
+                              fontSize: 18,
+                            ),
+                      ),
+                      IconButton(
+                          visualDensity: VisualDensity.compact,
+                          onPressed: () => showGeneralDialog(
+                              context: context,
+                              pageBuilder: (context, animation,
+                                      secondaryAnimation) =>
+                                  AlertDialog(
+                                    title: const Text('Metatags'),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                      vertical: 16,
+                                    ),
+                                    actionsPadding: const EdgeInsets.symmetric(
+                                      horizontal: 4,
+                                    ),
+                                    content: const Text(
+                                        'Free metatags do not count against the tag search limits.'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
+                                        child: const Text('OK'),
+                                      )
+                                    ],
+                                  )),
+                          icon: const Icon(Icons.info_rounded))
+                    ],
+                  ),
+                ),
+              ...metatags.map(
+                (tag) => ListTile(
+                  visualDensity: VisualDensity.compact,
+                  title: Text(tag.name),
+                  trailing: tag.isFree
+                      ? const Chip(
+                          label: Text('Free'),
+                          visualDensity: VisualDensity.compact,
+                        )
+                      : null,
+                  onTap: () => onMetatagTap(tag),
+                ),
+              ),
+              if (metatags.isNotEmpty) const Divider(),
               ...tags
                   .map(
                     (tag) => ListTile(
