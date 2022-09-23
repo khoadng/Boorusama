@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -101,6 +102,9 @@ class ExplorePostGrid extends StatelessWidget {
             ],
           ),
         ),
+        onFavoriteUpdated: (postId, value) => context
+            .read<PostBloc>()
+            .add(PostFavoriteUpdated(postId: postId, favorite: value)),
       );
     } else if (status == LoadStatus.loading) {
       if (posts.isEmpty) {
@@ -120,6 +124,9 @@ class ExplorePostGrid extends StatelessWidget {
               ],
             ),
           ),
+          onFavoriteUpdated: (postId, value) => context
+              .read<PostBloc>()
+              .add(PostFavoriteUpdated(postId: postId, favorite: value)),
         );
       }
     } else {

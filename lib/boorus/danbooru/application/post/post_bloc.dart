@@ -132,7 +132,6 @@ abstract class PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   );
 }
 
@@ -149,7 +148,6 @@ class PopularPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   ) async {
     final posts = await repo.getPopularPosts(date, page, scale);
 
@@ -170,7 +168,6 @@ class CuratedPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   ) async {
     final posts = await repo.getCuratedPosts(date, page, scale);
 
@@ -189,7 +186,6 @@ class MostViewedPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   ) async {
     final posts = await repo.getMostViewedPosts(date);
 
@@ -204,7 +200,6 @@ class LatestPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   ) async {
     final posts = await repo.getPosts('', page);
 
@@ -229,7 +224,6 @@ class SearchedPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     IPostRepository repo,
     int page,
-    // String query,
   ) async {
     final posts = await repo.getPosts(query, page);
 
@@ -283,10 +277,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     on<PostRefreshed>(
       (event, emit) async {
-        final query = '${event.tag ?? ''} ${_postsOrderToString(event.order)}';
-
         await tryAsync<List<Post>>(
-          action: () => postRepository.getPosts(query, 1),
+          action: () => event.fetcher.fetch(
+            postRepository,
+            1,
+          ),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {

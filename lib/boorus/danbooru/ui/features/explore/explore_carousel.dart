@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post_data.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -36,7 +37,9 @@ class ExploreCarousel extends StatelessWidget {
               '/post/detail',
               routeSettings: RouteSettings(
                 arguments: [
-                  posts,
+                  posts
+                      .map((e) => PostData(post: e, isFavorited: false))
+                      .toList(),
                   index,
                 ],
               ),

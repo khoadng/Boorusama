@@ -78,4 +78,22 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
       },
     );
   }
+
+  void updateFavorite(int postId, bool value) {
+    final index =
+        state.posts.indexWhere((element) => element.post.id == postId);
+    if (index > 0) {
+      final posts = [...state.posts];
+      posts[index] = PostData(
+        post: state.posts[index].post,
+        isFavorited: value,
+      );
+
+      emit(
+        state.copyWith(
+          posts: posts,
+        ),
+      );
+    }
+  }
 }

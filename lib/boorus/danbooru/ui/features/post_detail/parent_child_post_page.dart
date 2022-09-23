@@ -94,6 +94,10 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                                   ],
                                 ),
                               ),
+                              onFavoriteUpdated: (postId, value) => context
+                                  .read<PostBloc>()
+                                  .add(PostFavoriteUpdated(
+                                      postId: postId, favorite: value)),
                             );
                           } else if (state.status == LoadStatus.loading) {
                             return const SliverToBoxAdapter(
