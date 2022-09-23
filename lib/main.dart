@@ -138,25 +138,7 @@ void main() async {
   ));
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
-    onSelectNotification: (payload) async {
-      if (payload == null) return;
-      if (isIOS()) {
-        //TODO: update usage for iOS
-        final uri = Uri.parse('photos-redirect://');
-        if (await canLaunchUrl(uri)) {
-          await launchUrl(uri);
-        }
-      } else if (isAndroid()) {
-        final intent = AndroidIntent(
-          action: 'action_view',
-          type: 'image/*',
-          //TODO: download path is hard-coded
-          data: Uri.parse('/storage/emulated/0/Pictures/$payload').toString(),
-          flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
-        );
-        await intent.launch();
-      }
-    },
+    onDidReceiveNotificationResponse: _localNotificatonHandler,
   );
 
   final downloader = await createDownloader(
@@ -507,5 +489,26 @@ void main() async {
     } else {
       run();
     }
+  }
+}
+
+Future<void> _localNotificatonHandler(NotificationResponse response) async {
+  if (response.payload == null) return;
+  if (isIOS()) {
+    //TODO: update usage for iOS
+    final uri = Uri.parse('photos-redirect://');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  } else if (isAndroid()) {
+    final intent = AndroidIntent(
+      action: 'action_view',
+      type: 'image/*',
+      //TODO: download path is hard-coded
+      data: Uri.parse('/storage/emulated/0/Pictures/${response.payload}')
+          .toString(),
+      flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
+    );
+    await intent.launch();
   }
 }

@@ -71,7 +71,7 @@ dependencies:
   bitsdojo_window: ^0.1.2
   flutter_improved_scrolling: ^0.0.3
   image_gallery_saver: ^1.7.1
-  flutter_local_notifications: 9.7.1
+  flutter_local_notifications: ^11.0.0
   android_intent_plus: ^3.1.1+1
 
 dev_dependencies:
