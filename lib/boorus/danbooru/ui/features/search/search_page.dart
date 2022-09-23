@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
@@ -365,15 +364,15 @@ class _TagSuggestionItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<AutocompleteData>>(
-      selector: (state) => state.suggestionTags,
-      builder: (context, tags) {
+    return BlocBuilder<TagSearchBloc, TagSearchState>(
+      builder: (context, tagState) {
         return BlocBuilder<SearchHistorySuggestionsBloc,
             SearchHistorySuggestionsState>(
           builder: (context, state) {
             return SliverTagSuggestionItemsWithHistory(
-              tags: tags,
+              tags: tagState.suggestionTags,
               histories: state.histories,
+              currentQuery: tagState.query,
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context

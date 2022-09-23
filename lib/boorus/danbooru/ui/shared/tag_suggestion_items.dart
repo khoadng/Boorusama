@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 // Project imports:
@@ -20,11 +19,13 @@ class TagSuggestionItems extends StatelessWidget {
     Key? key,
     required List<AutocompleteData> tags,
     required this.onItemTap,
+    required this.currentQuery,
   })  : _tags = tags,
         super(key: key);
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
+  final String currentQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class TagSuggestionItems extends StatelessWidget {
                     ? Text(NumberFormat.compact().format(tag.postCount),
                         style: const TextStyle(color: Colors.grey))
                     : null,
-                title: _getTitle(tag, state.theme),
+                title: _getTitle(tag, state.theme, currentQuery),
               );
             },
           );
@@ -61,12 +62,14 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
     required this.histories,
     required this.onItemTap,
     required this.onHistoryTap,
+    required this.currentQuery,
   }) : super(key: key);
 
   final List<AutocompleteData> tags;
   final List<HistorySuggestion> histories;
   final void Function(AutocompleteData tag) onItemTap;
   final void Function(HistorySuggestion history) onHistoryTap;
+  final String currentQuery;
 
   @override
   Widget build(BuildContext context) {
@@ -113,8 +116,8 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                               style: const TextStyle(color: Colors.grey))
                           : null,
                       title: BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) =>
-                            _getTitle(tag, state.theme),
+                        builder: (context, state) => _getTitle(tag, state.theme,
+                            currentQuery.replaceAll('_', ' ')),
                       ),
                     ),
                   )
@@ -127,38 +130,49 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   }
 }
 
-Widget _getTitle(AutocompleteData tag, ThemeMode theme) {
+Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
   if (tag.hasAlias) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: '${tag.antecedent!.replaceAll('_', '')}  ',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: _getTagColor(tag, theme),
-            ),
-          ),
-          const WidgetSpan(
-            child: FaIcon(FontAwesomeIcons.arrowRightLong, size: 14),
-          ),
-          TextSpan(
-            text: '  ${tag.label}',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: _getTagColor(tag, theme),
-            ),
-          ),
-        ],
-      ),
+    return Html(
+      style: {
+        'p': Style(
+          fontSize: const FontSize(16),
+          color: _getTagColor(tag, theme),
+        ),
+        'body': Style(
+          padding: EdgeInsets.zero,
+          margin: EdgeInsets.zero,
+        ),
+        'b': Style(
+          fontWeight: FontWeight.w900,
+        ),
+      },
+      data: '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(
+            currentQuery,
+            '<b>$currentQuery</b>',
+          )} ➞ ${tag.label.replaceAll(
+        currentQuery,
+        '<b>$currentQuery</b>',
+      )}</p>',
     );
   } else {
-    return Text(
-      tag.label,
-      style: TextStyle(
-        fontWeight: FontWeight.w600,
-        color: _getTagColor(tag, theme),
-      ),
+    return Html(
+      style: {
+        'p': Style(
+          fontSize: const FontSize(16),
+          color: _getTagColor(tag, theme),
+        ),
+        'body': Style(
+          padding: EdgeInsets.zero,
+          margin: EdgeInsets.zero,
+        ),
+        'b': Style(
+          fontWeight: FontWeight.w900,
+        ),
+      },
+      data: '<p>${tag.label.replaceAll(
+        currentQuery,
+        '<b>$currentQuery</b>',
+      )}</p>',
     );
   }
 }
