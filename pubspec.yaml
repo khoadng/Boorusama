@@ -41,7 +41,7 @@ dependencies:
   package_info_plus: ^1.4.2
   path: ^1.8.1
   path_provider: ^2.0.11
-  permission_handler: ^9.2.0
+  permission_handler: ^10.0.1
   pull_to_refresh:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
@@ -51,7 +51,7 @@ dependencies:
   retrofit: ^3.0.1+1
   rxdart: ^0.27.4
   scroll_to_index: ^3.0.1
-  sentry_flutter: ^6.5.1
+  sentry_flutter: ^6.10.0
   share_plus: ^4.0.7
   timeago: ^3.2.2
   tuple: ^2.0.0
@@ -61,7 +61,7 @@ dependencies:
   collection: ^1.16.0
   video_player: ^2.4.4
   toggle_switch: ^2.0.1
-  file_picker: ^4.6.1
+  file_picker: ^5.2.0
   device_info_plus: ^4.0.0
   rich_text_controller:
     git:
@@ -78,7 +78,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: ^2.1.11
   dart_code_metrics: ^4.15.2
-  flutter_launcher_icons: ^0.9.3
+  flutter_launcher_icons: ^0.10.0
   flutter_lints: ^2.0.1
   import_sorter: ^4.6.0
   retrofit_generator: ^4.0.1

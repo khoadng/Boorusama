@@ -71,8 +71,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
             ),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Theme.of(context).cardColor,
-                onPrimary: Theme.of(context).iconTheme.color,
+                foregroundColor: Theme.of(context).iconTheme.color, backgroundColor: Theme.of(context).cardColor,
                 side: BorderSide(
                   color: Theme.of(context).hintColor,
                 ),
@@ -216,9 +215,7 @@ class _RelatedTagButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.only(left: 6, right: 2),
-          primary: Theme.of(context).cardColor,
-          onPrimary: backgroundColor,
+          foregroundColor: backgroundColor, padding: const EdgeInsets.only(left: 6, right: 2), backgroundColor: Theme.of(context).cardColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
           side: BorderSide(
             color: Theme.of(context).hintColor,
