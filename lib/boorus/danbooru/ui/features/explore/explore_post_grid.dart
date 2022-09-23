@@ -2,11 +2,13 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -29,7 +31,7 @@ class ExplorePostGrid extends StatelessWidget {
   final DateTime date;
   final TimeScale scale;
   final LoadStatus status;
-  final List<Post> posts;
+  final List<PostData> posts;
   final void Function(DateTime date, TimeScale scale) onLoadMore;
   final void Function(DateTime date, TimeScale scale) onRefresh;
   final RefreshController controller;
@@ -100,6 +102,9 @@ class ExplorePostGrid extends StatelessWidget {
             ],
           ),
         ),
+        onFavoriteUpdated: (postId, value) => context
+            .read<PostBloc>()
+            .add(PostFavoriteUpdated(postId: postId, favorite: value)),
       );
     } else if (status == LoadStatus.loading) {
       if (posts.isEmpty) {
@@ -119,6 +124,9 @@ class ExplorePostGrid extends StatelessWidget {
               ],
             ),
           ),
+          onFavoriteUpdated: (postId, value) => context
+              .read<PostBloc>()
+              .add(PostFavoriteUpdated(postId: postId, favorite: value)),
         );
       }
     } else {

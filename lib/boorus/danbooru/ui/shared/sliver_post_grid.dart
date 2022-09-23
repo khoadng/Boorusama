@@ -14,7 +14,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -70,6 +73,7 @@ class SliverPostGrid extends HookWidget {
     Key? key,
     required this.posts,
     required this.scrollController,
+    required this.onFavoriteUpdated,
     this.onItemChanged,
     this.onTap,
     this.quality,
@@ -78,7 +82,7 @@ class SliverPostGrid extends HookWidget {
     this.postAnnotationBuilder,
   }) : super(key: key);
 
-  final List<Post> posts;
+  final List<PostData> posts;
   final AutoScrollController scrollController;
   final ValueChanged<int>? onItemChanged;
   final void Function(Post post, int index)? onTap;
@@ -87,6 +91,7 @@ class SliverPostGrid extends HookWidget {
   final BorderRadiusGeometry? borderRadius;
   final Widget Function(BuildContext context, Post post, int index)?
       postAnnotationBuilder;
+  final void Function(int postId, bool value) onFavoriteUpdated;
 
   @override
   Widget build(BuildContext context) {
@@ -128,7 +133,7 @@ class SliverPostGrid extends HookWidget {
                 children: [
                   Expanded(
                     child: SliverPostGridItem(
-                      post: post,
+                      postData: post,
                       index: index,
                       borderRadius: BorderRadius.circular(
                           state.settings.imageBorderRadius),
@@ -136,9 +141,10 @@ class SliverPostGrid extends HookWidget {
                       scrollController: scrollController,
                       imageQuality: state.settings.imageQuality,
                       onTap: onTap,
+                      onFavoriteUpdated: onFavoriteUpdated,
                     ),
                   ),
-                  postAnnotationBuilder?.call(context, post, index) ??
+                  postAnnotationBuilder?.call(context, post.post, index) ??
                       const SizedBox.shrink(),
                 ],
               );
@@ -154,22 +160,26 @@ class SliverPostGrid extends HookWidget {
 class SliverPostGridItem extends StatelessWidget {
   const SliverPostGridItem({
     Key? key,
-    required this.post,
+    required this.postData,
     required this.index,
     required this.borderRadius,
     required this.gridSize,
     this.onTap,
     required this.imageQuality,
     required this.scrollController,
+    required this.onFavoriteUpdated,
   }) : super(key: key);
 
-  final Post post;
+  final PostData postData;
   final int index;
   final AutoScrollController scrollController;
   final void Function(Post post, int index)? onTap;
   final GridSize gridSize;
   final BorderRadius? borderRadius;
   final ImageQuality imageQuality;
+  final void Function(int postId, bool value) onFavoriteUpdated;
+
+  Post get post => postData.post;
 
   @override
   Widget build(BuildContext context) {
@@ -199,7 +209,7 @@ class SliverPostGridItem extends StatelessWidget {
     );
   }
 
-  Widget _buildImage(BuildContext context) {
+  Widget _buildImage(BuildContext gridContext) {
     return CupertinoContextMenu(
       previewBuilder: (context, animation, child) => PostImage(
         imageUrl: getImageUrlForDisplay(
@@ -222,13 +232,61 @@ class SliverPostGridItem extends StatelessWidget {
             child: const Text('download.download').tr(),
           ),
         ),
+        FutureBuilder<Account>(
+          future: gridContext.read<IAccountRepository>().get(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData && snapshot.data! != Account.empty) {
+              return CupertinoContextMenuAction(
+                trailingIcon: postData.isFavorited
+                    ? Icons.favorite
+                    : Icons.favorite_outline,
+                onPressed: () async {
+                  Navigator.of(context).pop();
+
+                  final action = postData.isFavorited
+                      ? context
+                          .read<IFavoritePostRepository>()
+                          .removeFromFavorites(post.id)
+                      : context
+                          .read<IFavoritePostRepository>()
+                          .addToFavorites(post.id);
+
+                  final success = await action;
+                  final successMsg =
+                      postData.isFavorited ? 'Unfavorited' : 'Favorited';
+                  final failMsg = postData.isFavorited
+                      ? 'Fail to unfavorite this post'
+                      : 'Fail to favorite this post';
+
+                  if (success) {
+                    onFavoriteUpdated.call(post.id, !postData.isFavorited);
+                    showSimpleSnackBar(
+                      context: gridContext,
+                      content: Text(successMsg),
+                      duration: const Duration(seconds: 1),
+                    );
+                  } else {
+                    showSimpleSnackBar(
+                      context: gridContext,
+                      content: Text(failMsg),
+                      duration: const Duration(seconds: 2),
+                    );
+                  }
+                },
+                child: Text(postData.isFavorited ? 'Unfavorite' : 'Favorite'),
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        ),
         if (post.isTranslated)
           CupertinoContextMenuAction(
             trailingIcon: Icons.translate,
             onPressed: () {
-              Navigator.of(context).pop();
+              Navigator.of(gridContext).pop();
               AppRouter.router.navigateTo(
-                context,
+                gridContext,
                 '/posts/image',
                 routeSettings: RouteSettings(arguments: [post]),
                 transition: TransitionType.material,

@@ -10,9 +10,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_curated_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_most_viewed_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_popular_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'datetime_selector.dart';
 import 'explore_post_grid.dart';
@@ -75,6 +75,20 @@ class _ExploreDetailState extends State<ExploreDetail> {
   }
 }
 
+PostFetcher _categoryToFetcher(
+  ExploreCategory category,
+  DateTime date,
+  TimeScale scale,
+) {
+  if (category == ExploreCategory.curated) {
+    return CuratedPostFetcher(date: date, scale: scale);
+  } else if (category == ExploreCategory.popular) {
+    return PopularPostFetcher(date: date, scale: scale);
+  } else {
+    return MostViewedPostFetcher(date: date);
+  }
+}
+
 class ExploreDetailPage extends StatelessWidget {
   const ExploreDetailPage({
     Key? key,
@@ -92,123 +106,44 @@ class ExploreDetailPage extends StatelessWidget {
         return ExploreDetail(
           title: title,
           builder: (context, refreshController, scrollController) {
-            if (category == ExploreCategory.popular) {
-              return BlocProvider(
-                create: (context) => PostPopularBloc(
-                  postRepository: context.read<IPostRepository>(),
-                  blacklistedTagsRepository:
-                      context.read<BlacklistedTagsRepository>(),
-                )..add(
-                    PostPopularRefreshed(
-                      date: state.date,
-                      scale: state.scale,
-                    ),
-                  ),
-                child: BlocBuilder<PostPopularBloc, PostPopularState>(
-                  builder: (context, ppstate) => ExplorePostGrid(
-                    header: DateAndTimeScaleHeader(
-                      onDateChanged: (date) => context
-                          .read<ExploreDetailBloc>()
-                          .add(ExploreDetailDateChanged(date)),
-                      onTimeScaleChanged: (scale) => context
-                          .read<ExploreDetailBloc>()
-                          .add(ExploreDetailTimeScaleChanged(scale)),
-                      date: state.date,
-                      scale: state.scale,
-                    ),
-                    hasMore: ppstate.hasMore,
-                    scrollController: scrollController,
-                    controller: refreshController,
+            return BlocProvider(
+              create: (context) => PostBloc(
+                postRepository: context.read<IPostRepository>(),
+                blacklistedTagsRepository:
+                    context.read<BlacklistedTagsRepository>(),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
+              )..add(
+                  PostRefreshed(
+                      fetcher: _categoryToFetcher(
+                          category, state.date, state.scale)),
+                ),
+              child: BlocBuilder<PostBloc, PostState>(
+                builder: (context, ppstate) => ExplorePostGrid(
+                  header: DateTimeSelector(
+                    onDateChanged: (date) => context
+                        .read<ExploreDetailBloc>()
+                        .add(ExploreDetailDateChanged(date)),
                     date: state.date,
                     scale: state.scale,
-                    status: ppstate.status,
-                    posts: ppstate.posts,
-                    onLoadMore: (date, scale) => context
-                        .read<PostPopularBloc>()
-                        .add(PostPopularFetched(date: date, scale: scale)),
-                    onRefresh: (date, scale) => context
-                        .read<PostPopularBloc>()
-                        .add(PostPopularRefreshed(date: date, scale: scale)),
                   ),
+                  hasMore: ppstate.hasMore,
+                  scrollController: scrollController,
+                  controller: refreshController,
+                  date: state.date,
+                  scale: state.scale,
+                  status: ppstate.status,
+                  posts: ppstate.posts,
+                  onLoadMore: (date, scale) => context.read<PostBloc>().add(
+                      PostFetched(
+                          tags: '',
+                          fetcher: _categoryToFetcher(category, date, scale))),
+                  onRefresh: (date, scale) => context.read<PostBloc>().add(
+                      PostRefreshed(
+                          fetcher: _categoryToFetcher(category, date, scale))),
                 ),
-              );
-            } else if (category == ExploreCategory.curated) {
-              return BlocProvider(
-                create: (context) => PostCuratedBloc(
-                  postRepository: context.read<IPostRepository>(),
-                  blacklistedTagsRepository:
-                      context.read<BlacklistedTagsRepository>(),
-                )..add(
-                    PostCuratedRefreshed(
-                      date: state.date,
-                      scale: state.scale,
-                    ),
-                  ),
-                child: BlocBuilder<PostCuratedBloc, PostCuratedState>(
-                  builder: (context, ppstate) => ExplorePostGrid(
-                    header: DateAndTimeScaleHeader(
-                      onDateChanged: (date) => context
-                          .read<ExploreDetailBloc>()
-                          .add(ExploreDetailDateChanged(date)),
-                      onTimeScaleChanged: (scale) => context
-                          .read<ExploreDetailBloc>()
-                          .add(ExploreDetailTimeScaleChanged(scale)),
-                      date: state.date,
-                      scale: state.scale,
-                    ),
-                    hasMore: ppstate.hasMore,
-                    scrollController: scrollController,
-                    controller: refreshController,
-                    date: state.date,
-                    scale: state.scale,
-                    status: ppstate.status,
-                    posts: ppstate.posts,
-                    onLoadMore: (date, scale) => context
-                        .read<PostCuratedBloc>()
-                        .add(PostCuratedFetched(date: date, scale: scale)),
-                    onRefresh: (date, scale) => context
-                        .read<PostCuratedBloc>()
-                        .add(PostCuratedRefreshed(date: date, scale: scale)),
-                  ),
-                ),
-              );
-            } else {
-              return BlocProvider(
-                create: (context) => PostMostViewedBloc(
-                  postRepository: context.read<IPostRepository>(),
-                  blacklistedTagsRepository:
-                      context.read<BlacklistedTagsRepository>(),
-                )..add(
-                    PostMostViewedRefreshed(
-                      date: state.date,
-                    ),
-                  ),
-                child: BlocBuilder<PostMostViewedBloc, PostMostViewedState>(
-                  builder: (context, ppstate) => ExplorePostGrid(
-                    header: DateTimeSelector(
-                      onDateChanged: (date) => context
-                          .read<ExploreDetailBloc>()
-                          .add(ExploreDetailDateChanged(date)),
-                      date: state.date,
-                      scale: state.scale,
-                    ),
-                    hasMore: ppstate.hasMore,
-                    scrollController: scrollController,
-                    controller: refreshController,
-                    date: state.date,
-                    scale: state.scale,
-                    status: ppstate.status,
-                    posts: ppstate.posts,
-                    onLoadMore: (date, scale) => context
-                        .read<PostMostViewedBloc>()
-                        .add(PostMostViewedFetched(date: date)),
-                    onRefresh: (date, scale) => context
-                        .read<PostMostViewedBloc>()
-                        .add(PostMostViewedRefreshed(date: date)),
-                  ),
-                ),
-              );
-            }
+              ),
+            );
           },
         );
       },

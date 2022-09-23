@@ -75,9 +75,9 @@ class PostTagList extends StatelessWidget {
 
             return ContextMenu<String>(
               items: [
-                PopupMenuItem(
-                    value: 'blacklist',
-                    child: const Text('post.detail.add_to_blacklist').tr()),
+                // PopupMenuItem(
+                //     value: 'blacklist',
+                //     child: const Text('post.detail.add_to_blacklist').tr()),
                 PopupMenuItem(
                     value: 'wiki',
                     child: const Text('post.detail.open_wiki').tr()),

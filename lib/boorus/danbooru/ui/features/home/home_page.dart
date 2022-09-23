@@ -6,8 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -16,9 +20,9 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dar
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/display.dart';
-import 'package:boorusama/core/ui/network_unavailable_indicator.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
+import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 
@@ -98,9 +102,9 @@ class _HomePageState extends State<HomePage> {
                                           value: 1,
                                           index: index,
                                           selectedIcon:
-                                              const Icon(Icons.photo_album),
+                                              const Icon(Icons.explore),
                                           icon: const Icon(
-                                              Icons.photo_album_outlined),
+                                              Icons.explore_outlined),
                                           title: const Text('Explore'),
                                           onTap: (value) =>
                                               viewIndex.value = value,
@@ -109,9 +113,9 @@ class _HomePageState extends State<HomePage> {
                                           value: 2,
                                           index: index,
                                           selectedIcon:
-                                              const Icon(Icons.explore),
+                                              const Icon(Icons.photo_album),
                                           icon: const Icon(
-                                              Icons.explore_outlined),
+                                              Icons.photo_album_outlined),
                                           title: const Text('Pool'),
                                           onTap: (value) =>
                                               viewIndex.value = value,
@@ -185,10 +189,28 @@ class _HomePageState extends State<HomePage> {
                           builder: (context, index, _) => AnimatedIndexedStack(
                             index: index,
                             children: [
-                              LatestView(
-                                onMenuTap: screenSize == ScreenSize.small
-                                    ? () => _onMenuTap(screenSize)
-                                    : null,
+                              MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                      create: (context) => PostBloc(
+                                            postRepository:
+                                                context.read<IPostRepository>(),
+                                            blacklistedTagsRepository:
+                                                context.read<
+                                                    BlacklistedTagsRepository>(),
+                                            favoritePostRepository:
+                                                context.read<
+                                                    IFavoritePostRepository>(),
+                                            accountRepository: context
+                                                .read<IAccountRepository>(),
+                                          )..add(const PostRefreshed(
+                                              fetcher: LatestPostFetcher())))
+                                ],
+                                child: LatestView(
+                                  onMenuTap: screenSize == ScreenSize.small
+                                      ? () => _onMenuTap(screenSize)
+                                      : null,
+                                ),
                               ),
                               const ExplorePage(),
                               MultiBlocProvider(

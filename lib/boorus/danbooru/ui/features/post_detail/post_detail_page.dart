@@ -20,6 +20,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
@@ -40,11 +42,7 @@ import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
 
-double _screenSizeToInfoBoxScreenPercent(ScreenSize screenSize) {
-  if (screenSize == ScreenSize.veryLarge) return 0.2;
-  if (screenSize == ScreenSize.large) return 0.3;
-  return 0.38;
-}
+const double _infoBarWidth = 360;
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
@@ -54,7 +52,7 @@ class PostDetailPage extends StatefulWidget {
   }) : super(key: key);
 
   final int intitialIndex;
-  final List<Post> posts;
+  final List<PostData> posts;
 
   @override
   State<PostDetailPage> createState() => _PostDetailPageState();
@@ -112,17 +110,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Screen.of(context).size != ScreenSize.small) {
-        context
-            .read<TagBloc>()
-            .add(TagFetched(tags: widget.posts[widget.intitialIndex].tags));
+        context.read<TagBloc>().add(
+            TagFetched(tags: widget.posts[widget.intitialIndex].post.tags));
         context.read<ArtistCommentaryBloc>().add(ArtistCommentaryFetched(
-              postId: widget.posts[widget.intitialIndex].id,
+              postId: widget.posts[widget.intitialIndex].post.id,
             ));
       }
     });
   }
 
-  Post get post => widget.posts[currentPostIndex.value];
+  Post get post => widget.posts[currentPostIndex.value].post;
+  PostData get postData => widget.posts[currentPostIndex.value];
 
   @override
   Widget build(BuildContext context) {
@@ -182,10 +180,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   ],
                   child: Container(
                     color: Theme.of(context).backgroundColor,
-                    width: MediaQuery.of(context).size.width *
-                        _screenSizeToInfoBoxScreenPercent(screenSize),
+                    width: _infoBarWidth,
                     child: _LargeLayoutContent(
-                      post: post,
+                      post: postData,
                       imagePath: imagePath,
                       size: screenSize,
                     ),
@@ -214,7 +211,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       posts: widget.posts,
       builder: (post, minimal) {
         final media = PostMediaItem(
-          post: post,
+          post: post.post,
           onCached: (path) => imagePath.value = path,
         );
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -232,7 +229,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     builder: (context, state) {
                       return Stack(
                         children: [
-                          if (screenSize != ScreenSize.small && !post.isVideo)
+                          if (screenSize != ScreenSize.small &&
+                              !post.post.isVideo)
                             Center(
                               child: media,
                             )
@@ -250,7 +248,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        InformationSection(post: post),
+                                        InformationSection(post: post.post),
                                         if (state.settings
                                                 .actionBarDisplayBehavior ==
                                             ActionBarDisplayBehavior.scrolling)
@@ -259,12 +257,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                 bottom: 10),
                                             child: ActionBar(
                                               imagePath: imagePath,
-                                              post: post,
+                                              postData: post,
                                             ),
                                           ),
-                                        if (post.hasParentOrChildren)
+                                        if (post.post.hasParentOrChildren)
                                           ParentChildTile(
-                                            data: getParentChildData(post),
+                                            data: getParentChildData(post.post),
                                             onTap: (data) =>
                                                 showBarModalBottomSheet(
                                               context: context,
@@ -280,9 +278,19 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                       blacklistedTagsRepository:
                                                           context.read<
                                                               BlacklistedTagsRepository>(),
+                                                      favoritePostRepository:
+                                                          context.read<
+                                                              IFavoritePostRepository>(),
+                                                      accountRepository:
+                                                          context.read<
+                                                              IAccountRepository>(),
                                                     )..add(PostRefreshed(
                                                             tag: data
-                                                                .tagQueryForDataFetching)),
+                                                                .tagQueryForDataFetching,
+                                                            fetcher: SearchedPostFetcher
+                                                                .fromTags(data
+                                                                    .tagQueryForDataFetching),
+                                                          )),
                                                   )
                                                 ],
                                                 child: ParentChildPostPage(
@@ -291,11 +299,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                               ),
                                             ),
                                           ),
-                                        if (!post.hasParentOrChildren)
+                                        if (!post.post.hasParentOrChildren)
                                           const Divider(
                                               height: 8, thickness: 1),
-                                        RecommendArtistList(post: post),
-                                        RecommendCharacterList(post: post),
+                                        RecommendArtistList(post: post.post),
+                                        RecommendCharacterList(post: post.post),
                                       ],
                                     ),
                                   ),
@@ -310,7 +318,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               child: FloatingGlassyCard(
                                 child: ActionBar(
                                   imagePath: imagePath,
-                                  post: post,
+                                  postData: post,
                                 ),
                               ),
                             ),
@@ -333,7 +341,7 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.size,
   }) : super(key: key);
 
-  final Post post;
+  final PostData post;
   final ValueNotifier<String?> imagePath;
   final ScreenSize size;
 
@@ -349,7 +357,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 height: MediaQuery.of(context).viewPadding.top,
               ),
               InformationSection(
-                post: post,
+                post: post.post,
                 tappable: false,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
@@ -357,7 +365,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 8),
                 child: ActionBar(
                   imagePath: imagePath,
-                  post: post,
+                  postData: post,
                 ),
               ),
               const Divider(height: 0),
@@ -368,21 +376,24 @@ class _LargeLayoutContent extends StatelessWidget {
                   children: [
                     InfoChip(
                       leftLabel: const Text('post.detail.rating').tr(),
-                      rightLabel: Text(
-                          post.rating.toString().split('.').last.pascalCase),
+                      rightLabel: Text(post.post.rating
+                          .toString()
+                          .split('.')
+                          .last
+                          .pascalCase),
                       leftColor: Theme.of(context).cardColor,
                       rightColor: Theme.of(context).backgroundColor,
                     ),
                     InfoChip(
                       leftLabel: const Text('post.detail.size').tr(),
-                      rightLabel: Text(filesize(post.fileSize, 1)),
+                      rightLabel: Text(filesize(post.post.fileSize, 1)),
                       leftColor: Theme.of(context).cardColor,
                       rightColor: Theme.of(context).backgroundColor,
                     ),
                     InfoChip(
                       leftLabel: const Text('post.detail.resolution').tr(),
-                      rightLabel:
-                          Text('${post.width.toInt()}x${post.height.toInt()}'),
+                      rightLabel: Text(
+                          '${post.post.width.toInt()}x${post.post.height.toInt()}'),
                       leftColor: Theme.of(context).cardColor,
                       rightColor: Theme.of(context).backgroundColor,
                     ),
@@ -390,14 +401,14 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               ArtistSection(
-                post: post,
+                post: post.post,
               ),
-              if (!post.hasParentOrChildren) const Divider(),
-              if (post.hasParentOrChildren)
+              if (!post.post.hasParentOrChildren) const Divider(),
+              if (post.post.hasParentOrChildren)
                 Padding(
                   padding: const EdgeInsets.only(top: 8),
                   child: ParentChildTile(
-                    data: getParentChildData(post),
+                    data: getParentChildData(post.post),
                     onTap: (data) => showSideSheetFromRight(
                       context: context,
                       body: MultiBlocProvider(
@@ -407,8 +418,15 @@ class _LargeLayoutContent extends StatelessWidget {
                               postRepository: context.read<IPostRepository>(),
                               blacklistedTagsRepository:
                                   context.read<BlacklistedTagsRepository>(),
+                              favoritePostRepository:
+                                  context.read<IFavoritePostRepository>(),
+                              accountRepository:
+                                  context.read<IAccountRepository>(),
                             )..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching)),
+                                tag: data.tagQueryForDataFetching,
+                                fetcher: SearchedPostFetcher.fromTags(
+                                    data.tagQueryForDataFetching),
+                              )),
                           )
                         ],
                         child: ParentChildPostPage(parentPostId: data.parentId),
@@ -469,7 +487,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 },
               ),
               RecommendArtistList(
-                post: post,
+                post: post.post,
                 useSeperator: true,
                 header: (item) => ListTile(
                   visualDensity: VisualDensity.compact,
@@ -480,7 +498,7 @@ class _LargeLayoutContent extends StatelessWidget {
                     routeSettings: RouteSettings(
                       arguments: [
                         item.tag,
-                        post.normalImageUrl,
+                        post.post.normalImageUrl,
                       ],
                     ),
                   ),
@@ -501,15 +519,13 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               RecommendCharacterList(
-                post: post,
+                post: post.post,
                 useSeperator: true,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16),
                 child: PostTagList(
-                  maxTagWidth: MediaQuery.of(context).size.width *
-                      _screenSizeToInfoBoxScreenPercent(size) *
-                      0.5,
+                  maxTagWidth: _infoBarWidth,
                 ),
               )
             ],
@@ -528,7 +544,7 @@ class _MoreActionButton extends StatelessWidget {
   }) : super(key: key);
 
   final ValueNotifier<int> currentPostIndex;
-  final List<Post> posts;
+  final List<PostData> posts;
 
   @override
   Widget build(BuildContext context) {
@@ -539,7 +555,7 @@ class _MoreActionButton extends StatelessWidget {
           onSelected: (value) async {
             switch (value) {
               case PostAction.download:
-                download(posts[index]);
+                download(posts[index].post);
                 break;
               default:
             }
@@ -573,8 +589,8 @@ class _CarouselSlider extends StatelessWidget {
   final ValueNotifier<bool> autoPlay;
   final ValueNotifier<SlideShowConfiguration> slideShowConfig;
   final ValueNotifier<int> currentPostIndex;
-  final List<Post> posts;
-  final Widget Function(Post post, bool minimal) builder;
+  final List<PostData> posts;
+  final Widget Function(PostData post, bool minimal) builder;
   final void Function(int index)? onPageChanged;
 
   @override
@@ -604,23 +620,25 @@ class _CarouselSlider extends StatelessWidget {
                       .add(RecommendedPostRequested(
                         amount:
                             Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].id,
-                        tags: posts[index].artistTags,
+                        currentPostId: posts[index].post.id,
+                        tags: posts[index].post.artistTags,
                       ));
                   context
                       .read<RecommendedCharacterPostCubit>()
                       .add(RecommendedPostRequested(
                         amount:
                             Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].id,
-                        tags: posts[index].characterTags.take(3).toList(),
+                        currentPostId: posts[index].post.id,
+                        tags: posts[index].post.characterTags.take(3).toList(),
                       ));
+                  context.read<PoolFromPostIdBloc>().add(
+                      PoolFromPostIdRequested(postId: posts[index].post.id));
+                  context.read<IsPostFavoritedBloc>().add(
+                      IsPostFavoritedRequested(postId: posts[index].post.id));
+
                   context
-                      .read<PoolFromPostIdBloc>()
-                      .add(PoolFromPostIdRequested(postId: posts[index].id));
-                  context
-                      .read<IsPostFavoritedBloc>()
-                      .add(IsPostFavoritedRequested(postId: posts[index].id));
+                      .read<PostVoteBloc>()
+                      .add(PostVoteInit.fromPost(posts[index].post));
 
                   onPageChanged?.call(index);
                 },

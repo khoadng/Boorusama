@@ -19,10 +19,12 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart'
     hide PoolCategory;
 
 bool _isTagType(String? type) => [
+      'tag',
       'tag-alias',
       'tag-abbreviation',
       'tag-other-name',
       'tag-autocorrect',
+      'tag-word',
     ].contains(type);
 
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
@@ -31,22 +33,14 @@ List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
 List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .map((e) {
       try {
-        if (e.type == 'tag') {
+        if (_isTagType(e.type)) {
           return AutocompleteData(
             type: e.type,
             label: e.label!,
             value: e.value!,
             category: TagCategory(category: t.intToTagCategory(e.category)),
             postCount: e.postCount!,
-          );
-        } else if (_isTagType(e.type)) {
-          return AutocompleteData(
-            type: e.type,
-            label: e.label!,
-            value: e.value!,
-            category: TagCategory(category: t.intToTagCategory(e.category)),
-            postCount: e.postCount!,
-            antecedent: e.antecedent!,
+            antecedent: e.antecedent,
           );
         } else if (e.type == 'pool') {
           return AutocompleteData(
@@ -88,7 +82,7 @@ class AutocompleteRepository {
   final IAccountRepository _accountRepository;
   final AutocompleteHttpCacher _cache;
 
-  Future<List<AutocompleteData>> getAutocomplete(String query) =>
+  Future<List<AutocompleteData>> getAutocomplete(String query) async =>
       _accountRepository
           .get()
           .then((account) async {

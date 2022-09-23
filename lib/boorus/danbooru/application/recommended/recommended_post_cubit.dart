@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
@@ -59,7 +60,10 @@ class RecommendedPostBloc
                     tag: tag,
                     title:
                         tag.split(' ').join(', ').removeUnderscoreWithSpace(),
-                    posts: filtered.take(event.amount).toList(),
+                    posts: filtered
+                        .take(event.amount)
+                        .map((e) => PostData(post: e, isFavorited: false))
+                        .toList(),
                   );
                 }).toList()),
             onFailure: (stackTrace, error) =>

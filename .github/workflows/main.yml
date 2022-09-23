@@ -32,8 +32,8 @@ jobs:
       - name: Generate boilerplates
         run: flutter pub run build_runner build --delete-conflicting-outputs
 
-      - name: Analyze
-        run: flutter analyze lib test
+      # - name: Analyze
+      #   run: flutter analyze lib test
 
       - name: Run unit tests
         run: flutter test --no-pub --coverage --test-randomize-ordering-seed random test

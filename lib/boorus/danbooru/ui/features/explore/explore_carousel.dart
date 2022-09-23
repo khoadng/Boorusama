@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post_data.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -36,7 +37,9 @@ class ExploreCarousel extends StatelessWidget {
               '/post/detail',
               routeSettings: RouteSettings(
                 arguments: [
-                  posts,
+                  posts
+                      .map((e) => PostData(post: e, isFavorited: false))
+                      .toList(),
                   index,
                 ],
               ),
@@ -72,7 +75,7 @@ class ExploreCarousel extends StatelessWidget {
         },
         options: CarouselOptions(
           aspectRatio: 1.5,
-          viewportFraction: _screenSizeToViewPortFraction(screenSize),
+          viewportFraction: screenSizeToViewPortFraction(screenSize),
           enlargeCenterPage: true,
         ),
       ),
@@ -80,7 +83,7 @@ class ExploreCarousel extends StatelessWidget {
   }
 }
 
-double _screenSizeToViewPortFraction(ScreenSize size) {
+double screenSizeToViewPortFraction(ScreenSize size) {
   if (size == ScreenSize.large) return 0.2;
   if (size == ScreenSize.medium) return 0.3;
   return 0.4;

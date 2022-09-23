@@ -47,7 +47,11 @@ class NoteDto {
 extension NoteDtoX on NoteDto {
   Note toEntity() {
     final coord = NoteCoordinate(
-        x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble());
+      x: x.toDouble(),
+      y: y.toDouble(),
+      width: width.toDouble(),
+      height: height.toDouble(),
+    );
     return Note(
       coordinate: coord,
       content: body,
