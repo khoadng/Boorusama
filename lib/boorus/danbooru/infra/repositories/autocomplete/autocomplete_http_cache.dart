@@ -134,7 +134,7 @@ final responseDirective = [
 ];
 
 Map<String, String> parseCacheControl(String? value) {
-  String _parseKey(String v) {
+  String parseKey(String v) {
     for (final d in responseDirective) {
       if (v.contains(d)) {
         return d;
@@ -144,7 +144,7 @@ Map<String, String> parseCacheControl(String? value) {
   }
 
   if (value == null) return {};
-  return {for (var i in value.split(',').map((e) => e.trim())) _parseKey(i): i};
+  return {for (var i in value.split(',').map((e) => e.trim())) parseKey(i): i};
 }
 
 int parseMaxAge(String value) {

@@ -314,7 +314,7 @@ class _Footer extends StatelessWidget {
               Uri.parse(context.read<AppInfoProvider>().appInfo.githubUrl),
               mode: LaunchMode.externalApplication,
             ),
-            icon: const FaIcon(FontAwesomeIcons.githubSquare),
+            icon: const FaIcon(FontAwesomeIcons.squareGithub),
           ),
           IconButton(
             onPressed: () => launchExternalUrl(

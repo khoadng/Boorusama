@@ -189,7 +189,7 @@ class LoginBox extends HookWidget {
       TextEditingController passwordTextController,
       ValueNotifier<bool> isValidUsernameAndPassword) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(onPrimary: Colors.white),
+      style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
       child: Text('login.form.login'.tr()),
       onPressed: () {
         if (formKey.value.currentState!.validate()) {
