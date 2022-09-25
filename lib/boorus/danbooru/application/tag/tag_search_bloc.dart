@@ -163,7 +163,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           operator: operator,
           metaTagMatches: tagInfo.metatags
               .where((e) => e.name.startsWith(query))
-              .take(3)
+              .take(2)
               .toList(),
         ));
 
