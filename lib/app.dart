@@ -10,8 +10,9 @@ import 'package:flutter_portal/flutter_portal.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'app_constants.dart';
+import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/ui/platforms/windows/windows.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'boorus/danbooru/router.dart';
 
 class App extends StatefulWidget {
@@ -69,7 +70,7 @@ class _AppState extends State<App> {
             locale: context.locale,
             debugShowCheckedModeBanner: false,
             onGenerateRoute: AppRouter.router.generator,
-            title: AppConstants.appName,
+            title: context.read<AppInfoProvider>().appInfo.appName,
           );
         },
       ),
@@ -85,36 +86,4 @@ class AppScrollBehavior extends ScrollBehavior {
     AxisDirection axisDirection,
   ) =>
       child;
-}
-
-final buttonColors = WindowButtonColors(
-  iconNormal: Colors.white54,
-  mouseOver: Colors.white12,
-  mouseDown: Colors.white30,
-  iconMouseOver: Colors.white70,
-  iconMouseDown: Colors.white,
-);
-
-final closeButtonColors = WindowButtonColors(
-  mouseOver: const Color(0xFFD32F2F),
-  mouseDown: const Color(0xFFB71C1C),
-  iconNormal: Colors.white54,
-  iconMouseOver: Colors.white,
-);
-
-class WindowButtons extends StatelessWidget {
-  const WindowButtons({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        MinimizeWindowButton(colors: buttonColors),
-        MaximizeWindowButton(colors: buttonColors),
-        CloseWindowButton(colors: closeButtonColors),
-      ],
-    );
-  }
 }

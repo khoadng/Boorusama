@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 
 // Project imports:
-import 'note.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 
 abstract class INoteRepository {
   Future<List<Note>> getNotesFrom(

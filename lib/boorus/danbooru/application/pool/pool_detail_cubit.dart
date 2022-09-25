@@ -10,6 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/collection_utils.dart';
 
@@ -21,7 +24,7 @@ class PoolDetailState extends Equatable {
   });
 
   PoolDetailState copyWith({
-    List<Post>? posts,
+    List<PostData>? posts,
     LoadStatus? status,
   }) =>
       PoolDetailState(
@@ -29,7 +32,7 @@ class PoolDetailState extends Equatable {
         status: status ?? this.status,
       );
 
-  final List<Post> posts;
+  final List<PostData> posts;
   final LoadStatus status;
 
   @override
@@ -39,6 +42,8 @@ class PoolDetailState extends Equatable {
 class PoolDetailCubit extends Cubit<PoolDetailState> {
   PoolDetailCubit({
     required this.postRepository,
+    required this.favoritePostRepository,
+    required this.accountRepository,
     required this.ids,
   }) : super(const PoolDetailState(
           posts: [],
@@ -46,6 +51,8 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
         ));
 
   final IPostRepository postRepository;
+  final IFavoritePostRepository favoritePostRepository;
+  final IAccountRepository accountRepository;
   final Queue<int> ids;
 
   void load() {
@@ -56,9 +63,37 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
           emit(state.copyWith(status: LoadStatus.failure)),
       onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
       onSuccess: (posts) async {
+        final postDatas = await createPostData(
+          favoritePostRepository,
+          posts,
+          accountRepository,
+        );
         emit(state.copyWith(
-            status: LoadStatus.success, posts: [...state.posts, ...posts]));
+          status: LoadStatus.success,
+          posts: [
+            ...state.posts,
+            ...postDatas,
+          ],
+        ));
       },
     );
+  }
+
+  void updateFavorite(int postId, bool value) {
+    final index =
+        state.posts.indexWhere((element) => element.post.id == postId);
+    if (index > 0) {
+      final posts = [...state.posts];
+      posts[index] = PostData(
+        post: state.posts[index].post,
+        isFavorited: value,
+      );
+
+      emit(
+        state.copyWith(
+          posts: posts,
+        ),
+      );
+    }
   }
 }

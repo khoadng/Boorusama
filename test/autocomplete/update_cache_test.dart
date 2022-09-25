@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:test/test.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/autocomplete/autocomplete_http_cache.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_http_cache.dart';
 
 class MockBox extends Mock implements Box<String> {}
 

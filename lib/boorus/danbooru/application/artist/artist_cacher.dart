@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-import 'package:boorusama/core/infrastructure/caching/cacher.dart';
+import 'package:boorusama/core/infra/caching/cacher.dart';
 
 class ArtistCacher implements IArtistRepository {
   const ArtistCacher({

@@ -31,25 +31,25 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/repositories/repositories.dart';
-import 'package:boorusama/boorus/danbooru/infrastructure/services/tag_info_service.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/accounts/login/login_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/artists/artist_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/blacklisted_tags/blacklisted_tags_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/characters/character_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/favorites/favorites_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/pool/pool_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/post_detail/post_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/features/settings/settings_page.dart';
-import 'package:boorusama/boorus/danbooru/presentation/shared/shared.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/presentation/widgets/conditional_parent_widget.dart';
-import 'presentation/features/accounts/profile/profile_page.dart';
-import 'presentation/features/home/home_page.dart';
-import 'presentation/features/post_detail/post_image_page.dart';
-import 'presentation/features/search/search_page.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'ui/features/accounts/profile/profile_page.dart';
+import 'ui/features/home/home_page.dart';
+import 'ui/features/post_detail/post_image_page.dart';
+import 'ui/features/search/search_page.dart';
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -72,7 +72,12 @@ final artistHandler = Handler(handlerFunc: (
                 postRepository: RepositoryProvider.of<IPostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
-              )..add(PostRefreshed(tag: args[0]))),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
+              )..add(PostRefreshed(
+                  tag: args[0],
+                  fetcher: SearchedPostFetcher.fromTags(args[0]),
+                ))),
       BlocProvider.value(
           value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
@@ -96,7 +101,12 @@ final characterHandler = Handler(handlerFunc: (
                 postRepository: RepositoryProvider.of<IPostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
-              )..add(PostRefreshed(tag: args[0]))),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
+              )..add(PostRefreshed(
+                  tag: args[0],
+                  fetcher: SearchedPostFetcher.fromTags(args[0]),
+                ))),
       BlocProvider.value(
           value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
     ],
@@ -112,10 +122,11 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final posts = args[0];
-  final index = args[1];
+  final postDatas = args[0] as List<PostData>;
+  final index = args[1] as int;
 
   final screenSize = Screen.of(context).size;
+  final posts = postDatas.map((e) => e.post).toList();
 
   AutoScrollController? controller;
   if (args.length == 3) {
@@ -123,6 +134,11 @@ final postDetailHandler = Handler(handlerFunc: (
   }
   return MultiBlocProvider(
     providers: [
+      BlocProvider(
+        create: (context) => PostVoteBloc(
+          postVoteRepository: context.read<PostVoteRepository>(),
+        )..add(PostVoteInit.fromPost(posts[index])),
+      ),
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider(
         create: (context) => IsPostFavoritedBloc(
@@ -176,7 +192,7 @@ final postDetailHandler = Handler(handlerFunc: (
           },
           child: PostDetailPage(
             intitialIndex: index,
-            posts: posts,
+            posts: postDatas,
           ),
         ),
       ),
@@ -201,6 +217,8 @@ final postSearchHandler = Handler(handlerFunc: (
                 postRepository: context.read<IPostRepository>(),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
               )),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
@@ -289,9 +307,11 @@ final poolDetailHandler =
     providers: [
       BlocProvider(
           create: (context) => PoolDetailCubit(
-              ids: Queue.from(pool.postIds.reversed),
-              postRepository: RepositoryProvider.of<IPostRepository>(context))
-            ..load()),
+                ids: Queue.from(pool.postIds.reversed),
+                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                favoritePostRepository: context.read<IFavoritePostRepository>(),
+                accountRepository: context.read<IAccountRepository>(),
+              )..load()),
       BlocProvider.value(
           value: context.read<PoolDescriptionBloc>()
             ..add(PoolDescriptionFetched(poolId: pool.id))),
@@ -320,7 +340,14 @@ final favoritesHandler =
                         RepositoryProvider.of<IPostRepository>(context),
                     blacklistedTagsRepository:
                         context.read<BlacklistedTagsRepository>(),
-                  )..add(PostRefreshed(tag: 'ordfav:$username'))),
+                    favoritePostRepository:
+                        context.read<IFavoritePostRepository>(),
+                    accountRepository: context.read<IAccountRepository>(),
+                  )..add(PostRefreshed(
+                      tag: 'ordfav:$username',
+                      fetcher: SearchedPostFetcher.fromTags(
+                        'ordfav:$username',
+                      )))),
         ],
         child: FavoritesPage(
           username: username,
