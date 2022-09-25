@@ -34,7 +34,7 @@ class SearchPage extends StatefulWidget {
   }) : super(key: key);
 
   final String initialQuery;
-  final List<String> metatags;
+  final List<Metatag> metatags;
   final Color metatagHighlightColor;
 
   @override
@@ -42,7 +42,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late final _tags = widget.metatags.join('|');
+  late final _tags = widget.metatags.map((e) => e.name).join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
       RegExp('($_tags)+:'): TextStyle(
@@ -207,7 +207,9 @@ class _LargeLayout extends StatelessWidget {
                       selector: (state) => state.displayState,
                       builder: (context, displayState) {
                         if (displayState == DisplayState.suggestion) {
-                          return const _TagSuggestionItems();
+                          return _TagSuggestionItems(
+                            queryEditingController: queryEditingController,
+                          );
                         } else {
                           return SearchOptions(
                             config: context.read<IConfig>(),
@@ -319,7 +321,9 @@ class _SmallLayout extends StatelessWidget {
                 selector: (state) => state.displayState,
                 builder: (context, displayState) {
                   if (displayState == DisplayState.suggestion) {
-                    return const _TagSuggestionItems();
+                    return _TagSuggestionItems(
+                      queryEditingController: queryEditingController,
+                    );
                   } else if (displayState == DisplayState.result) {
                     return const ResultView();
                   } else if (displayState == DisplayState.error) {
@@ -360,7 +364,10 @@ class _SmallLayout extends StatelessWidget {
 class _TagSuggestionItems extends StatelessWidget {
   const _TagSuggestionItems({
     Key? key,
+    required this.queryEditingController,
   }) : super(key: key);
+
+  final TextEditingController queryEditingController;
 
   @override
   Widget build(BuildContext context) {
@@ -373,6 +380,12 @@ class _TagSuggestionItems extends StatelessWidget {
               tags: tagState.suggestionTags,
               histories: state.histories,
               currentQuery: tagState.query,
+              metatags: tagState.metaTagMatches,
+              onMetatagTap: (tag) {
+                final query = '${tag.name}:';
+                queryEditingController.text = query;
+                context.read<TagSearchBloc>().add(TagSearchChanged(query));
+              },
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
