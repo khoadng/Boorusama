@@ -4,10 +4,13 @@ import 'dart:ui';
 
 // Package imports:
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/alternative_download_service.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
@@ -21,6 +24,32 @@ Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
     hasScopedStorage(deviceInfo)
         ? defaultPath
         : await IOHelper.getDownloadPath();
+
+Future<IDownloadService<Post>> createDownloader(
+  DownloadMethod method,
+  FileNameGenerator fileNameGenerator,
+  DeviceInfo deviceInfo,
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+) async {
+  if (method == DownloadMethod.imageGallerySaver) {
+    final d = AlternativeDownloadService(
+      fileNameGenerator: fileNameGenerator,
+      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+    );
+    await d.init();
+    return d;
+  }
+
+  final d = DownloadService(
+      fileNameGenerator: fileNameGenerator, deviceInfo: deviceInfo);
+
+  if (isAndroid() || isIOS()) {
+    await FlutterDownloader.initialize();
+  }
+
+  await d.init();
+  return d;
+}
 
 class DownloadService implements IDownloadService<Post> {
   DownloadService({

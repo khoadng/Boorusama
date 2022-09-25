@@ -3,15 +3,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:android_intent_plus/android_intent.dart';
+import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_factory.dart';
@@ -125,17 +128,25 @@ void main() async {
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
-  final downloader = DownloadService(
-    fileNameGenerator: fileNameGenerator,
-    deviceInfo: deviceInfo,
+  final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+
+  //TODO: this notification is only used for download feature
+  final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  const InitializationSettings initializationSettings = InitializationSettings(
+      android: AndroidInitializationSettings(
+    '@mipmap/ic_launcher',
+  ));
+  await flutterLocalNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: _localNotificatonHandler,
   );
 
-  if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize();
-    await downloader.init();
-  }
-
-  final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+  final downloader = await createDownloader(
+    settings.downloadMethod,
+    fileNameGenerator,
+    deviceInfo,
+    flutterLocalNotificationsPlugin,
+  );
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
@@ -153,6 +164,7 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
+            RepositoryProvider<IDownloadService>.value(value: downloader),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -347,8 +359,6 @@ void main() async {
                           value: favoriteRepo),
                       RepositoryProvider<IAccountRepository>.value(
                           value: accountRepo),
-                      RepositoryProvider<IDownloadService>.value(
-                          value: downloader),
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
@@ -479,5 +489,26 @@ void main() async {
     } else {
       run();
     }
+  }
+}
+
+Future<void> _localNotificatonHandler(NotificationResponse response) async {
+  if (response.payload == null) return;
+  if (isIOS()) {
+    //TODO: update usage for iOS
+    final uri = Uri.parse('photos-redirect://');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  } else if (isAndroid()) {
+    final intent = AndroidIntent(
+      action: 'action_view',
+      type: 'image/*',
+      //TODO: download path is hard-coded
+      data: Uri.parse('/storage/emulated/0/Pictures/${response.payload}')
+          .toString(),
+      flags: [Flag.FLAG_ACTIVITY_NEW_TASK],
+    );
+    await intent.launch();
   }
 }

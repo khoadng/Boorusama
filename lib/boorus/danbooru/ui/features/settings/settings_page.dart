@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/core/core.dart';
@@ -77,16 +78,15 @@ class SettingsPage extends StatelessWidget {
                               oldWidget: this,
                             )),
                           ),
-                          //TODO: Files downloaded in custom location won't show up in gallery app. Re-enable this feature when a better download support for Flutter landed.
-                          // ListTile(
-                          //   title: const Text('Download'),
-                          //   leading: const FaIcon(FontAwesomeIcons.download),
-                          //   onTap: () =>
-                          //       Navigator.of(context).push(ParallaxSlideInPageRoute(
-                          //     enterWidget: const DownloadPage(),
-                          //     oldWidget: this,
-                          //   )),
-                          // ),
+                          ListTile(
+                            title: const Text('download.download').tr(),
+                            leading: const FaIcon(FontAwesomeIcons.download),
+                            onTap: () => Navigator.of(context)
+                                .push(ParallaxSlideInPageRoute(
+                              enterWidget: const DownloadPage(),
+                              oldWidget: this,
+                            )),
+                          ),
                           ListTile(
                             title: const Text('settings.privacy.privacy').tr(),
                             leading:
@@ -97,7 +97,6 @@ class SettingsPage extends StatelessWidget {
                               oldWidget: this,
                             )),
                           ),
-
                           ListTile(
                             title: const Text('settings.information').tr(),
                             leading: const Icon(Icons.info),
