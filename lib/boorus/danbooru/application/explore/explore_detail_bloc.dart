@@ -14,6 +14,7 @@ enum ExploreCategory {
   popular,
   curated,
   mostViewed,
+  hot,
 }
 
 @immutable

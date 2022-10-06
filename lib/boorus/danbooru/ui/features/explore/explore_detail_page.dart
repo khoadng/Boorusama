@@ -84,6 +84,8 @@ PostFetcher _categoryToFetcher(
     return CuratedPostFetcher(date: date, scale: scale);
   } else if (category == ExploreCategory.popular) {
     return PopularPostFetcher(date: date, scale: scale);
+  } else if (category == ExploreCategory.hot) {
+    return const HotPostFetcher();
   } else {
     return MostViewedPostFetcher(date: date);
   }
