@@ -133,9 +133,9 @@ void main() async {
   //TODO: this notification is only used for download feature
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   const InitializationSettings initializationSettings = InitializationSettings(
-      android: AndroidInitializationSettings(
-    '@mipmap/ic_launcher',
-  ));
+    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    iOS: DarwinInitializationSettings(),
+  );
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
     onDidReceiveNotificationResponse: _localNotificatonHandler,

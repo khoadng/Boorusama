@@ -33,8 +33,12 @@ class AlternativeDownloadService implements IDownloadService<Post> {
       playSound: false,
       enableVibration: false,
     );
-    final NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
+    final NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: const DarwinNotificationDetails(
+        presentSound: false,
+      ),
+    );
     final fileName = _fileNameGenerator.generateFor(item);
 
     try {
