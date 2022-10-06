@@ -20,7 +20,7 @@
             "api_key_instruction" : "1. Войдите в свой аккаунт.\n2. Откройте свой профиль\n3. Найдите и скопируйте свой API ключ в строку для логина\n4. ???\n5. Готово!"
         },
         "errors" : {
-            "invalidUsernameOrPassword" : "Invalid username or API key",
+            "invalidUsernameOrPassword" : "Неправильное имя пользователя или Api ключ",
             "missingUsername" : "Пожалуйста, введите имя пользователя",
             "missingPassword" : "Пожалуйста, введите свой API ключ"
         }
@@ -60,7 +60,7 @@
             },
             "copied" : "Скопировано",
             "show_original" : "Показать оригинал",
-            "show_translated" : "Show translated",
+            "show_translated" : "Показать перевод",
             "login_required_notice" : "Вы должны войти в аккаунт для совершения действия",
             "open_wiki" : "Открыть wiki",
             "add_to_blacklist" : "Добавить в чёрный список"
@@ -69,7 +69,7 @@
             "children_of": "Дочерний для"
         },
         "quick_preview" : {
-            "view_notes" : "View translated notes"
+            "view_notes" : "Показать перевод текста"
         },
         "image_fullview" : {
             "view_original" : "Просмотреть оригинальное изображение",
