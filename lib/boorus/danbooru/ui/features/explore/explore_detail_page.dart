@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -22,9 +23,11 @@ class ExploreDetail extends StatefulWidget {
     Key? key,
     required this.title,
     required this.builder,
+    this.actions,
   }) : super(key: key);
 
   final Widget title;
+  final List<Widget>? actions;
   final Widget Function(
     BuildContext context,
     RefreshController refreshController,
@@ -51,6 +54,7 @@ class _ExploreDetailState extends State<ExploreDetail> {
     return Scaffold(
       appBar: AppBar(
         title: widget.title,
+        actions: widget.actions,
       ),
       body: BlocConsumer<ExploreDetailBloc, ExploreDetailState>(
         listener: (context, state) {
@@ -91,7 +95,7 @@ PostFetcher _categoryToFetcher(
   }
 }
 
-Widget _categoryToListHeader(
+List<Widget> _categoryToListHeader(
   BuildContext context,
   ExploreCategory category,
   DateTime date,
@@ -99,24 +103,35 @@ Widget _categoryToListHeader(
 ) {
   if (category == ExploreCategory.curated ||
       category == ExploreCategory.popular) {
-    return DateAndTimeScaleHeader(
-      onDateChanged: (date) =>
-          context.read<ExploreDetailBloc>().add(ExploreDetailDateChanged(date)),
-      onTimeScaleChanged: (scale) => context
-          .read<ExploreDetailBloc>()
-          .add(ExploreDetailTimeScaleChanged(scale)),
-      date: date,
-      scale: scale,
-    );
+    return [
+      DateTimeSelector(
+        onDateChanged: (date) => context
+            .read<ExploreDetailBloc>()
+            .add(ExploreDetailDateChanged(date)),
+        date: date,
+        scale: scale,
+      ),
+      TimeScaleToggleSwitch(
+        onToggle: (scale) => {
+          context
+              .read<ExploreDetailBloc>()
+              .add(ExploreDetailTimeScaleChanged(scale))
+        },
+      ),
+      const SizedBox(height: 20),
+    ];
   } else if (category == ExploreCategory.hot) {
-    return const SizedBox.shrink();
+    return [];
   } else {
-    return DateTimeSelector(
-      onDateChanged: (date) =>
-          context.read<ExploreDetailBloc>().add(ExploreDetailDateChanged(date)),
-      date: date,
-      scale: scale,
-    );
+    return [
+      DateTimeSelector(
+        onDateChanged: (date) => context
+            .read<ExploreDetailBloc>()
+            .add(ExploreDetailDateChanged(date)),
+        date: date,
+        scale: scale,
+      )
+    ];
   }
 }
 
@@ -151,7 +166,7 @@ class ExploreDetailPage extends StatelessWidget {
                 ),
               child: BlocBuilder<PostBloc, PostState>(
                 builder: (context, ppstate) => ExplorePostGrid(
-                  header: _categoryToListHeader(
+                  headers: _categoryToListHeader(
                     context,
                     category,
                     state.date,
@@ -181,93 +196,53 @@ class ExploreDetailPage extends StatelessWidget {
   }
 }
 
-class DateAndTimeScaleHeader extends StatelessWidget {
-  const DateAndTimeScaleHeader({
+class TimeScaleToggleSwitch extends StatefulWidget {
+  const TimeScaleToggleSwitch({
     Key? key,
-    required this.onDateChanged,
-    required this.onTimeScaleChanged,
-    required this.date,
-    required this.scale,
+    required this.onToggle,
   }) : super(key: key);
 
-  final void Function(DateTime date) onDateChanged;
-  final void Function(TimeScale scale) onTimeScaleChanged;
-  final DateTime date;
-  final TimeScale scale;
+  final void Function(TimeScale category) onToggle;
 
   @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        DateTimeSelector(
-          onDateChanged: onDateChanged,
-          date: date,
-          scale: scale,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _TimeScaleSelectButton(
-              scale: scale,
-              onTimeScaleChanged: onTimeScaleChanged,
-            ),
-          ],
-        ),
-        const SizedBox(height: 10),
-      ],
-    );
-  }
+  State<TimeScaleToggleSwitch> createState() => _TimeScaleToggleSwitchState();
 }
 
-class _TimeScaleSelectButton extends StatelessWidget {
-  const _TimeScaleSelectButton({
-    Key? key,
-    required this.scale,
-    required this.onTimeScaleChanged,
-  }) : super(key: key);
-
-  final TimeScale scale;
-  final void Function(TimeScale scale) onTimeScaleChanged;
+class _TimeScaleToggleSwitchState extends State<TimeScaleToggleSwitch> {
+  final ValueNotifier<int> selected = ValueNotifier(0);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 4,
-          vertical: 4,
-        ),
-        child: DropdownButtonHideUnderline(
-          child: DropdownButton<TimeScale>(
-            alignment: AlignmentDirectional.center,
-            isDense: true,
-            value: scale,
-            focusColor: Colors.transparent,
-            icon: const Padding(
-              padding: EdgeInsets.only(left: 5, top: 2),
-              child: Icon(Icons.arrow_drop_down),
-            ),
-            onChanged: (newValue) {
-              if (newValue != null) onTimeScaleChanged(newValue);
-            },
-            items: TimeScale.values.map<DropdownMenuItem<TimeScale>>((value) {
-              return DropdownMenuItem<TimeScale>(
-                value: value,
-                child: Text(
-                  _timeScaleToString(value).tr().toUpperCase(),
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.headline6!.color,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14,
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
+    return Center(
+      child: ValueListenableBuilder<int>(
+        valueListenable: selected,
+        builder: (context, value, _) => ToggleSwitch(
+          dividerColor: Colors.black,
+          changeOnTap: false,
+          initialLabelIndex: value,
+          minWidth: 80,
+          minHeight: 30,
+          cornerRadius: 5,
+          labels: [
+            _timeScaleToString(TimeScale.day).tr(),
+            _timeScaleToString(TimeScale.week).tr(),
+            _timeScaleToString(TimeScale.month).tr(),
+          ],
+          activeBgColor: [Theme.of(context).colorScheme.primary],
+          inactiveBgColor: Theme.of(context).colorScheme.background,
+          borderWidth: 1,
+          borderColor: [Theme.of(context).hintColor],
+          onToggle: (index) {
+            if (index == 0) {
+              widget.onToggle(TimeScale.day);
+            } else if (index == 1) {
+              widget.onToggle(TimeScale.week);
+            } else {
+              widget.onToggle(TimeScale.month);
+            }
+
+            selected.value = index ?? 0;
+          },
         ),
       ),
     );

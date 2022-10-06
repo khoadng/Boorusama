@@ -25,7 +25,7 @@ class ExplorePostGrid extends StatelessWidget {
     required this.controller,
     required this.scrollController,
     required this.hasMore,
-    required this.header,
+    required this.headers,
   }) : super(key: key);
 
   final DateTime date;
@@ -37,7 +37,7 @@ class ExplorePostGrid extends StatelessWidget {
   final RefreshController controller;
   final AutoScrollController scrollController;
   final bool hasMore;
-  final Widget header;
+  final List<Widget> headers;
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +54,7 @@ class ExplorePostGrid extends StatelessWidget {
       builder: (context, controller) => CustomScrollView(
         controller: controller,
         slivers: [
-          SliverToBoxAdapter(
-            child: header,
-          ),
+          ...headers.map((header) => SliverToBoxAdapter(child: header)),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             sliver: mapLoadStatusToWidget(context, status, controller),

@@ -73,7 +73,7 @@ class ExploreDetailBloc extends Bloc<ExploreDetailEvent, ExploreDetailState> {
     );
     on<ExploreDetailTimeScaleChanged>(
       (event, emit) => emit(state.copyWith(scale: event.scale)),
-      transformer: debounce(const Duration(milliseconds: 200)),
+      transformer: debounce(const Duration(milliseconds: 350)),
     );
   }
 }
