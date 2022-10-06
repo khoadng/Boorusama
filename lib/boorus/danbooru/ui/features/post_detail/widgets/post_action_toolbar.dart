@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cross_file/cross_file.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,8 +43,8 @@ class PostActionToolbar extends StatelessWidget {
         children: [
           _buildFavoriteButton(authState),
           //TODO: kinda laggy so removed for now
-          // if (authState is Authenticated) _buildUpvoteButton(),
-          // if (authState is Authenticated) _buildDownvoteButton(),
+          if (authState is Authenticated) _buildUpvoteButton(),
+          if (authState is Authenticated) _buildDownvoteButton(),
           _buildCommentButton(context),
           _buildDownloadButton(),
           _buildShareButton(context),
@@ -109,7 +110,7 @@ class PostActionToolbar extends StatelessWidget {
         return ModalShare(
           endpoint: state.booru.url,
           onTap: Share.share,
-          onTapFile: (filePath) => Share.shareFiles([filePath]),
+          onTapFile: (filePath) => Share.shareXFiles([XFile(filePath)]),
           post: post,
           imagePath: imagePath,
         );

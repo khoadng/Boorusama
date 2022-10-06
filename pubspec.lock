@@ -310,7 +310,7 @@ packages:
     source: hosted
     version: "1.3.2"
   cross_file:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: cross_file
       url: "https://pub.dartlang.org"
