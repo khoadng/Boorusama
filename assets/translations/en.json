@@ -183,6 +183,7 @@
         "language" : {
             "language" : "Language",
             "english" : "English",
+            "russian" : "Russian",
             "vietnamese" : "Vietnamese"
         },
         "theme" : {
