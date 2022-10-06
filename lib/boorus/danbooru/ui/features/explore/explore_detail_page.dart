@@ -91,6 +91,35 @@ PostFetcher _categoryToFetcher(
   }
 }
 
+Widget _categoryToListHeader(
+  BuildContext context,
+  ExploreCategory category,
+  DateTime date,
+  TimeScale scale,
+) {
+  if (category == ExploreCategory.curated ||
+      category == ExploreCategory.popular) {
+    return DateAndTimeScaleHeader(
+      onDateChanged: (date) =>
+          context.read<ExploreDetailBloc>().add(ExploreDetailDateChanged(date)),
+      onTimeScaleChanged: (scale) => context
+          .read<ExploreDetailBloc>()
+          .add(ExploreDetailTimeScaleChanged(scale)),
+      date: date,
+      scale: scale,
+    );
+  } else if (category == ExploreCategory.hot) {
+    return const SizedBox.shrink();
+  } else {
+    return DateTimeSelector(
+      onDateChanged: (date) =>
+          context.read<ExploreDetailBloc>().add(ExploreDetailDateChanged(date)),
+      date: date,
+      scale: scale,
+    );
+  }
+}
+
 class ExploreDetailPage extends StatelessWidget {
   const ExploreDetailPage({
     Key? key,
@@ -122,12 +151,11 @@ class ExploreDetailPage extends StatelessWidget {
                 ),
               child: BlocBuilder<PostBloc, PostState>(
                 builder: (context, ppstate) => ExplorePostGrid(
-                  header: DateTimeSelector(
-                    onDateChanged: (date) => context
-                        .read<ExploreDetailBloc>()
-                        .add(ExploreDetailDateChanged(date)),
-                    date: state.date,
-                    scale: state.scale,
+                  header: _categoryToListHeader(
+                    context,
+                    category,
+                    state.date,
+                    state.scale,
                   ),
                   hasMore: ppstate.hasMore,
                   scrollController: scrollController,
