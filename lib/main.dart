@@ -27,6 +27,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/hot_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -451,11 +452,16 @@ void main() async {
                               postRepository: postRepo,
                               blacklistedTagsRepository: blacklistedTagRepo,
                             )..getCurated();
+                            final hotCubit = HotCubit(
+                              postRepository: postRepo,
+                              blacklistedTagsRepository: blacklistedTagRepo,
+                            )..getHot();
                             return MultiBlocProvider(
                               providers: [
                                 BlocProvider.value(value: mostViewedCubit),
                                 BlocProvider.value(value: popularCubit),
                                 BlocProvider.value(value: curatedCubit),
+                                BlocProvider.value(value: hotCubit),
                               ],
                               child: const App(),
                             );
