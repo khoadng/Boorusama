@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:timeago/timeago.dart' as timeago;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -66,4 +67,26 @@ void showSimpleSnackBar({
     content: content,
   );
   ScaffoldMessenger.of(context).showSnackBar(snackbar);
+}
+
+Future<T?> showAdaptiveBottomSheet<T>(
+  BuildContext context, {
+  required Widget Function(BuildContext context) builder,
+}) {
+  if (Screen.of(context).size != ScreenSize.small) {
+    return showGeneralDialog<T>(
+      context: context,
+      pageBuilder: (context, animation, secondaryAnimation) => builder(context),
+    );
+  } else {
+    return showBarModalBottomSheet<T>(
+      context: context,
+      barrierColor: Colors.black45,
+      backgroundColor: Colors.transparent,
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.65,
+        child: builder(context),
+      ),
+    );
+  }
 }

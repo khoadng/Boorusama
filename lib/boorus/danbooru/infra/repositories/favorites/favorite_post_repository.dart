@@ -117,4 +117,8 @@ class FavoritePostRepository implements IFavoritePostRepository {
           )
           .then((value) => (value.response.data as List).isNotEmpty)
           .catchError((Object obj) => false);
+
+  @override
+  Future<List<FavoriteDto>> getFavorites(int postId, int page) =>
+      _api.getFavorites(postId, page, 20).then(parseFavorite);
 }

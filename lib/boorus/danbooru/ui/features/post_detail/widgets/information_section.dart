@@ -8,7 +8,9 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post_favorite_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
@@ -103,8 +105,22 @@ class InformationSection extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               InkWell(
-                onTap: () => showSimpleSnackBar(
-                    context: context, content: Text(post.favCount.toString())),
+                onTap: () => showAdaptiveBottomSheet(
+                  context,
+                  builder: (context) => BlocProvider(
+                    create: (context) => PostFavoriteInfoBloc(
+                      favoritePostRepository:
+                          context.read<IFavoritePostRepository>(),
+                      userRepository: context.read<IUserRepository>(),
+                    )..add(PostFavoriteInfoFetched(
+                        postId: post.id,
+                        refresh: true,
+                      )),
+                    child: FavoriterView(
+                      post: post,
+                    ),
+                  ),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(6),
                   child: Html(
@@ -158,7 +174,7 @@ class InformationSection extends StatelessWidget {
                         ),
                       },
                       data:
-                          '<b>${post.upScore}</b> <span>Points (${(post.upvotePercent * 100).toInt()}% upvoted)</span>'),
+                          '<b>${post.upScore}</b> <span>Points ${_generatePercentText(post)}</span>'),
                 ),
               ),
             ],
@@ -166,6 +182,14 @@ class InformationSection extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+String _generatePercentText(Post post) {
+  if (post.totalVote > 0) {
+    return '(${(post.upvotePercent * 100).toInt()}% upvoted)';
+  } else {
+    return '';
   }
 }
 
@@ -252,23 +276,84 @@ class _VoterViewState extends State<VoterView> {
   }
 }
 
-Future<T?> showAdaptiveBottomSheet<T>(
-  BuildContext context, {
-  required Widget Function(BuildContext context) builder,
-}) {
-  if (Screen.of(context).size != ScreenSize.small) {
-    return showGeneralDialog<T>(
-      context: context,
-      pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    );
-  } else {
-    return showBarModalBottomSheet<T>(
-      context: context,
-      barrierColor: Colors.black45,
-      backgroundColor: Colors.transparent,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.65,
-        child: builder(context),
+class FavoriterView extends StatefulWidget {
+  const FavoriterView({
+    Key? key,
+    required this.post,
+  }) : super(key: key);
+
+  final Post post;
+
+  @override
+  State<FavoriterView> createState() => _FavoriterViewState();
+}
+
+class _FavoriterViewState extends State<FavoriterView> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    scrollController.addListener(() {
+      if (_isBottom) {
+        context
+            .read<PostFavoriteInfoBloc>()
+            .add(PostFavoriteInfoFetched(postId: widget.post.id));
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  bool get _isBottom {
+    if (!scrollController.hasClients) return false;
+    final maxScroll = scrollController.position.maxScrollExtent;
+    final currentScroll = scrollController.offset;
+    return currentScroll >= (maxScroll * 0.9);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(Icons.close),
+          )
+        ],
+      ),
+      body: BlocBuilder<PostFavoriteInfoBloc, PostFavoriteInfoState>(
+        builder: (context, state) => state.refreshing
+            ? const Center(child: CircularProgressIndicator.adaptive())
+            : CustomScrollView(
+                controller: scrollController,
+                slivers: [
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final user = state.favoriters[index];
+                      return ListTile(
+                        title: Text(
+                          user.name.value,
+                          style: TextStyle(color: Color(user.level.hexColor)),
+                        ),
+                      );
+                    },
+                    childCount: state.favoriters.length,
+                  )),
+                  if (state.loading)
+                    const SliverToBoxAdapter(
+                      child:
+                          Center(child: CircularProgressIndicator.adaptive()),
+                    )
+                ],
+              ),
       ),
     );
   }

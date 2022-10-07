@@ -39,6 +39,14 @@ abstract class DanbooruApi implements Api {
     @Query('limit') int limit,
   );
 
+  @GET('/posts/{postId}/favorites.json')
+  @override
+  Future<HttpResponse> getFavorites(
+    @Path() int postId,
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
   @GET('/comments.json')
   @override
   Future<HttpResponse> getComments(
