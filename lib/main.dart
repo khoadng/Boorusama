@@ -73,6 +73,7 @@ import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
 const supportedLocales = [
   Locale('en', ''),
   Locale('vi', ''),
+  Locale('ru', ''),
 ];
 
 void main() async {
@@ -151,6 +152,7 @@ void main() async {
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
+  setLocaleMessages('ru', RuMessages());
 
   void run() {
     runApp(
@@ -159,6 +161,7 @@ void main() async {
         supportedLocales: supportedLocales,
         path: 'assets/translations',
         fallbackLocale: const Locale('en', ''),
+        useFallbackTranslations: true,
         child: MultiRepositoryProvider(
           providers: [
             RepositoryProvider.value(value: packageInfo),
