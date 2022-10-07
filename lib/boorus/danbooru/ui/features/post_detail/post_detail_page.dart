@@ -615,14 +615,8 @@ class _CarouselSlider extends StatelessWidget {
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
 
-                  // context.read<PoolFromPostIdBloc>().add(
-                  //     PoolFromPostIdRequested(postId: posts[index].post.id));
                   context.read<IsPostFavoritedBloc>().add(
                       IsPostFavoritedRequested(postId: posts[index].post.id));
-
-                  context
-                      .read<PostVoteBloc>()
-                      .add(PostVoteInit.fromPost(posts[index].post));
 
                   onPageChanged?.call(index);
                 },
