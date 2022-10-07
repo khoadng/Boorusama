@@ -39,6 +39,14 @@ abstract class DanbooruApi implements Api {
     @Query('limit') int limit,
   );
 
+  @GET('/posts/{postId}/favorites.json')
+  @override
+  Future<HttpResponse> getFavorites(
+    @Path() int postId,
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
   @GET('/comments.json')
   @override
   Future<HttpResponse> getComments(
@@ -315,8 +323,10 @@ abstract class DanbooruApi implements Api {
   Future<HttpResponse> getPostVotes(
     @Query('login') String login,
     @Query('api_key') String apiKey,
+    @Query('page') int page,
     @Query('search[post_id]') String postIdsComma,
     @Query('search[user_id]') String userId,
     @Query('search[is_deleted]') bool isDeleted,
+    @Query('limit') int limit,
   );
 }

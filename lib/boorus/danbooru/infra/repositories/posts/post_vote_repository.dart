@@ -30,9 +30,25 @@ class PostVoteApiRepository implements PostVoteRepository {
       .then((account) => _api.getPostVotes(
             account.username,
             account.apiKey,
+            1,
             postIds.join(','),
             account.id.toString(),
             false,
+            100,
+          ))
+      .then(parsePostVote);
+
+  @override
+  Future<List<PostVote>> getAllVotes(int postId, int page) => _accountRepository
+      .get()
+      .then((account) => _api.getPostVotes(
+            account.username,
+            account.apiKey,
+            page,
+            postId.toString(),
+            '',
+            false,
+            100,
           ))
       .then(parsePostVote);
 

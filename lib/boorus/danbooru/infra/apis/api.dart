@@ -24,6 +24,12 @@ abstract class Api {
     int limit,
   );
 
+  Future<HttpResponse> getFavorites(
+    int postId,
+    int page,
+    int limit,
+  );
+
   Future<HttpResponse> getArtist(
     String name, {
     CancelToken? cancelToken,
@@ -236,8 +242,10 @@ abstract class Api {
   Future<HttpResponse> getPostVotes(
     String login,
     String apiKey,
+    int page,
     String postIdComma,
     String userId,
     bool isDeleted,
+    int limit,
   );
 }
