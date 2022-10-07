@@ -34,6 +34,7 @@ class PostVoteApiRepository implements PostVoteRepository {
             postIds.join(','),
             account.id.toString(),
             false,
+            100,
           ))
       .then(parsePostVote);
 
@@ -47,6 +48,7 @@ class PostVoteApiRepository implements PostVoteRepository {
             postId.toString(),
             '',
             false,
+            100,
           ))
       .then(parsePostVote);
 

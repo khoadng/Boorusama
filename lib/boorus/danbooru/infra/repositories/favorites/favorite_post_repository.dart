@@ -120,5 +120,5 @@ class FavoritePostRepository implements IFavoritePostRepository {
 
   @override
   Future<List<FavoriteDto>> getFavorites(int postId, int page) =>
-      _api.getFavorites(postId, page, 20).then(parseFavorite);
+      _api.getFavorites(postId, page, 100).then(parseFavorite);
 }

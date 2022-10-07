@@ -246,5 +246,6 @@ abstract class Api {
     String postIdComma,
     String userId,
     bool isDeleted,
+    int limit,
   );
 }

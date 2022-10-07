@@ -327,5 +327,6 @@ abstract class DanbooruApi implements Api {
     @Query('search[post_id]') String postIdsComma,
     @Query('search[user_id]') String userId,
     @Query('search[is_deleted]') bool isDeleted,
+    @Query('limit') int limit,
   );
 }

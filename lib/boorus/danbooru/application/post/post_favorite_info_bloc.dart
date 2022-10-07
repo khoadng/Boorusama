@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 class PostFavoriteInfoState extends Equatable {
   const PostFavoriteInfoState({
@@ -138,7 +137,6 @@ class PostFavoriteInfoBloc
           emit(state.copyWith(error: 'Something went wrong'));
         }
       },
-      transformer: debounce(const Duration(milliseconds: 100)),
     );
   }
 }

@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 class PostVoteInfoState extends Equatable {
   const PostVoteInfoState({
@@ -139,7 +138,7 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
           emit(state.copyWith(error: 'Something went wrong'));
         }
       },
-      transformer: debounce(const Duration(milliseconds: 100)),
+      // transformer: debounce(const Duration(milliseconds: 100)),
     );
   }
 }

@@ -18,12 +18,6 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'post_info.dart';
 
-// double _screenSizeToInfoModalPercent(ScreenSize size) {
-//   if (size == ScreenSize.veryLarge) return 0.3;
-//   if (size == ScreenSize.large) return 0.4;
-//   return 0.45;
-// }
-
 class InformationSection extends StatelessWidget {
   const InformationSection({
     Key? key,
@@ -130,7 +124,10 @@ class InformationSection extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w900,
                       ),
-                      'span': Style(color: Theme.of(context).hintColor),
+                      'span': Style(
+                        color: Theme.of(context).hintColor,
+                        fontSize: FontSize.small,
+                      ),
                       'body': Style(
                         padding: EdgeInsets.zero,
                         margin: EdgeInsets.zero,
@@ -167,7 +164,10 @@ class InformationSection extends StatelessWidget {
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.w900,
                         ),
-                        'span': Style(color: Theme.of(context).hintColor),
+                        'span': Style(
+                          color: Theme.of(context).hintColor,
+                          fontSize: FontSize.small,
+                        ),
                         'body': Style(
                           padding: EdgeInsets.zero,
                           margin: EdgeInsets.zero,
