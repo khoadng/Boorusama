@@ -25,7 +25,7 @@ class PostVoteInfoState extends Equatable {
         loading: false,
       );
 
-  final List<User> upvoters;
+  final List<Voter> upvoters;
   final int page;
   final bool hasMore;
   final bool refreshing;
@@ -33,7 +33,7 @@ class PostVoteInfoState extends Equatable {
   final String? error;
 
   PostVoteInfoState copyWith({
-    List<User>? upvoters,
+    List<Voter>? upvoters,
     int? page,
     bool? hasMore,
     bool? refreshing,
@@ -80,6 +80,24 @@ class PostVoteInfoFetched extends PostVoteInfoEvent {
       ];
 }
 
+class Voter extends Equatable {
+  const Voter({
+    required this.user,
+    required this.voteTime,
+  });
+
+  factory Voter.create(User user, PostVote vote) => Voter(
+        user: user,
+        voteTime: vote.createdAt,
+      );
+
+  final User user;
+  final DateTime voteTime;
+
+  @override
+  List<Object?> get props => [user, voteTime];
+}
+
 class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
   PostVoteInfoBloc({
     required PostVoteRepository postVoteRepository,
@@ -93,24 +111,22 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
           if (event.refresh) {
             emit(state.copyWith(
               refreshing: true,
-              page: 1,
             ));
-            final votes = await postVoteRepository.getAllVotes(
-              event.postId,
-              state.page,
-            );
 
-            final users = await userRepository.getUsersByIdStringComma(
-                votes.map((e) => e.userId.value).join(','));
+            final votes = await postVoteRepository.getAllVotes(event.postId, 1);
+            final voters = await _createVoters(userRepository, votes);
+
             emit(state.copyWith(
               refreshing: false,
-              upvoters: users,
+              upvoters: voters,
+              page: 1,
               hasMore: true,
             ));
           } else {
             if (!state.hasMore) return;
-            final page = state.page + 1;
             emit(state.copyWith(loading: true));
+
+            final page = state.page + 1;
 
             // Fetch votes with post ID
             final votes =
@@ -123,11 +139,10 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
                 hasMore: false,
               ));
             } else {
-              final users = await userRepository.getUsersByIdStringComma(
-                  votes.map((e) => e.userId.value).join(','));
+              final voters = await _createVoters(userRepository, votes);
               emit(state.copyWith(
                 loading: false,
-                upvoters: [...state.upvoters, ...users],
+                upvoters: [...state.upvoters, ...voters],
                 hasMore: true,
               ));
             }
@@ -138,7 +153,21 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
           emit(state.copyWith(error: 'Something went wrong'));
         }
       },
-      // transformer: debounce(const Duration(milliseconds: 100)),
     );
   }
+}
+
+Future<List<Voter>> _createVoters(
+  IUserRepository userRepository,
+  List<PostVote> votes,
+) async {
+  final voteMap = {for (final vote in votes) vote.userId: vote};
+
+  final users = await userRepository
+      .getUsersByIdStringComma(votes.map((e) => e.userId.value).join(','));
+
+  final voters =
+      users.map((user) => Voter.create(user, voteMap[user.id]!)).toList();
+
+  return voters;
 }

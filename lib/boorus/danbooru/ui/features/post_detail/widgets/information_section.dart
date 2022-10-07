@@ -276,12 +276,10 @@ class _VoterViewState extends State<VoterView> {
                   SliverList(
                       delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      final user = state.upvoters[index];
-                      return ListTile(
-                        title: Text(
-                          user.name.value,
-                          style: TextStyle(color: Color(user.level.hexColor)),
-                        ),
+                      final voter = state.upvoters[index];
+                      return InfoTile(
+                        title: voter.user.name.value,
+                        level: voter.user.level,
                       );
                     },
                     childCount: state.upvoters.length,
@@ -293,6 +291,28 @@ class _VoterViewState extends State<VoterView> {
                     )
                 ],
               ),
+      ),
+    );
+  }
+}
+
+class InfoTile extends StatelessWidget {
+  const InfoTile({
+    Key? key,
+    required this.title,
+    required this.level,
+  }) : super(key: key);
+
+  final String title;
+  final UserLevel level;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      visualDensity: VisualDensity.comfortable,
+      title: Text(
+        title,
+        style: TextStyle(color: Color(level.hexColor)),
       ),
     );
   }
