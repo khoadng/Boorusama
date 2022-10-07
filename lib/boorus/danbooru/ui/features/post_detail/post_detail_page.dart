@@ -234,81 +234,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               child: media,
                             )
                           else
-                            CustomScrollView(
-                              slivers: [
-                                SliverToBoxAdapter(
-                                  child: media,
-                                ),
-                                if (screenSize == ScreenSize.small) ...[
-                                  SliverToBoxAdapter(
-                                      child: PoolTiles(post: post.post)),
-                                  SliverToBoxAdapter(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        InformationSection(post: post.post),
-                                        if (state.settings
-                                                .actionBarDisplayBehavior ==
-                                            ActionBarDisplayBehavior.scrolling)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
-                                            child: ActionBar(
-                                              imagePath: imagePath,
-                                              postData: post,
-                                            ),
-                                          ),
-                                        if (post.post.hasParentOrChildren)
-                                          ParentChildTile(
-                                            data: getParentChildData(post.post),
-                                            onTap: (data) =>
-                                                showBarModalBottomSheet(
-                                              context: context,
-                                              builder: (context) =>
-                                                  MultiBlocProvider(
-                                                providers: [
-                                                  BlocProvider(
-                                                    create: (context) =>
-                                                        PostBloc(
-                                                      postRepository:
-                                                          context.read<
-                                                              IPostRepository>(),
-                                                      blacklistedTagsRepository:
-                                                          context.read<
-                                                              BlacklistedTagsRepository>(),
-                                                      favoritePostRepository:
-                                                          context.read<
-                                                              IFavoritePostRepository>(),
-                                                      accountRepository:
-                                                          context.read<
-                                                              IAccountRepository>(),
-                                                    )..add(PostRefreshed(
-                                                            tag: data
-                                                                .tagQueryForDataFetching,
-                                                            fetcher: SearchedPostFetcher
-                                                                .fromTags(data
-                                                                    .tagQueryForDataFetching),
-                                                          )),
-                                                  )
-                                                ],
-                                                child: ParentChildPostPage(
-                                                    parentPostId:
-                                                        data.parentId),
-                                              ),
-                                            ),
-                                          ),
-                                        if (!post.post.hasParentOrChildren)
-                                          const Divider(
-                                              height: 8, thickness: 1),
-                                        RecommendArtistList(post: post.post),
-                                        RecommendCharacterList(post: post.post),
-                                      ],
-                                    ),
-                                  ),
-                                ]
-                              ],
+                            _CarouselContent(
+                              media: media,
+                              imagePath: imagePath,
+                              actionBarDisplayBehavior:
+                                  state.settings.actionBarDisplayBehavior,
+                              post: post,
                             ),
                           if (state.settings.actionBarDisplayBehavior ==
                               ActionBarDisplayBehavior.staticAtBottom)
@@ -331,6 +262,95 @@ class _PostDetailPageState extends State<PostDetailPage> {
       },
     );
   }
+}
+
+class _CarouselContent extends StatefulWidget {
+  const _CarouselContent({
+    Key? key,
+    required this.media,
+    required this.imagePath,
+    required this.actionBarDisplayBehavior,
+    required this.post,
+  }) : super(key: key);
+
+  final PostMediaItem media;
+  final ValueNotifier<String?> imagePath;
+  final PostData post;
+  final ActionBarDisplayBehavior actionBarDisplayBehavior;
+
+  @override
+  State<_CarouselContent> createState() => _CarouselContentState();
+}
+
+class _CarouselContentState extends State<_CarouselContent>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    final screenSize = Screen.of(context).size;
+    return CustomScrollView(
+      slivers: [
+        SliverToBoxAdapter(
+          child: widget.media,
+        ),
+        if (screenSize == ScreenSize.small) ...[
+          SliverToBoxAdapter(child: PoolTiles(post: widget.post.post)),
+          SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                InformationSection(post: widget.post.post),
+                if (widget.actionBarDisplayBehavior ==
+                    ActionBarDisplayBehavior.scrolling)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: ActionBar(
+                      imagePath: widget.imagePath,
+                      postData: widget.post,
+                    ),
+                  ),
+                if (widget.post.post.hasParentOrChildren)
+                  ParentChildTile(
+                    data: getParentChildData(widget.post.post),
+                    onTap: (data) => showBarModalBottomSheet(
+                      context: context,
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider(
+                            create: (context) => PostBloc(
+                              postRepository: context.read<IPostRepository>(),
+                              blacklistedTagsRepository:
+                                  context.read<BlacklistedTagsRepository>(),
+                              favoritePostRepository:
+                                  context.read<IFavoritePostRepository>(),
+                              accountRepository:
+                                  context.read<IAccountRepository>(),
+                            )..add(PostRefreshed(
+                                tag: data.tagQueryForDataFetching,
+                                fetcher: SearchedPostFetcher.fromTags(
+                                    data.tagQueryForDataFetching),
+                              )),
+                          )
+                        ],
+                        child: ParentChildPostPage(parentPostId: data.parentId),
+                      ),
+                    ),
+                  ),
+                if (!widget.post.post.hasParentOrChildren)
+                  const Divider(height: 8, thickness: 1),
+                RecommendArtistList(post: widget.post.post),
+                RecommendCharacterList(post: widget.post.post),
+              ],
+            ),
+          ),
+        ]
+      ],
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _LargeLayoutContent extends StatelessWidget {

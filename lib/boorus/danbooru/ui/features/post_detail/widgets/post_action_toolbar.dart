@@ -22,7 +22,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
-class PostActionToolbar extends StatefulWidget {
+class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
     Key? key,
     required this.postData,
@@ -32,17 +32,10 @@ class PostActionToolbar extends StatefulWidget {
   final PostData postData;
   final String? imagePath;
 
-  @override
-  State<PostActionToolbar> createState() => _PostActionToolbarState();
-}
-
-class _PostActionToolbarState extends State<PostActionToolbar>
-    with AutomaticKeepAliveClientMixin {
-  Post get post => widget.postData.post;
+  Post get post => postData.post;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocProvider(
       create: (context) => PostVoteBloc(
         postVoteRepository: context.read<PostVoteRepository>(),
@@ -121,7 +114,7 @@ class _PostActionToolbarState extends State<PostActionToolbar>
           onTap: Share.share,
           onTapFile: (filePath) => Share.shareXFiles([XFile(filePath)]),
           post: post,
-          imagePath: widget.imagePath,
+          imagePath: imagePath,
         );
       },
     );
@@ -252,9 +245,6 @@ class _PostActionToolbarState extends State<PostActionToolbar>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 void _onPressed({

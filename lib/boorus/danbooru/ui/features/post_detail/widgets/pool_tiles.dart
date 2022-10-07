@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/utils.dart';
 
-class PoolTiles extends StatefulWidget {
+class PoolTiles extends StatelessWidget {
   const PoolTiles({
     Key? key,
     required this.post,
@@ -24,18 +24,11 @@ class PoolTiles extends StatefulWidget {
   final Post post;
 
   @override
-  State<PoolTiles> createState() => _PoolTilesState();
-}
-
-class _PoolTilesState extends State<PoolTiles>
-    with AutomaticKeepAliveClientMixin {
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
     return BlocProvider(
       create: (context) =>
           PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
-            ..add(PoolFromPostIdRequested(postId: widget.post.id)),
+            ..add(PoolFromPostIdRequested(postId: post.id)),
       child: Builder(builder: (context) {
         return BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
           builder: (context, state) {
@@ -78,7 +71,4 @@ class _PoolTilesState extends State<PoolTiles>
       }),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

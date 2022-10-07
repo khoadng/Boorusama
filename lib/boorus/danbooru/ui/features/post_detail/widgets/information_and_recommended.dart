@@ -14,7 +14,7 @@ import 'package:boorusama/core/core.dart';
 import 'post_action_toolbar.dart';
 import 'recommend_section.dart';
 
-class RecommendArtistList extends StatefulWidget {
+class RecommendArtistList extends StatelessWidget {
   const RecommendArtistList({
     Key? key,
     required this.post,
@@ -27,15 +27,8 @@ class RecommendArtistList extends StatefulWidget {
   final bool useSeperator;
 
   @override
-  State<RecommendArtistList> createState() => _RecommendArtistListState();
-}
-
-class _RecommendArtistListState extends State<RecommendArtistList>
-    with AutomaticKeepAliveClientMixin {
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-    if (widget.post.artistTags.isEmpty) return const SizedBox.shrink();
+    if (post.artistTags.isEmpty) return const SizedBox.shrink();
     final screenSize = Screen.of(context).size;
 
     return BlocProvider(
@@ -44,8 +37,8 @@ class _RecommendArtistListState extends State<RecommendArtistList>
       )..add(
           RecommendedPostRequested(
             amount: screenSize == ScreenSize.large ? 9 : 6,
-            currentPostId: widget.post.id,
-            tags: widget.post.artistTags,
+            currentPostId: post.id,
+            tags: post.artistTags,
           ),
         ),
       child: Builder(builder: (context) {
@@ -60,7 +53,7 @@ class _RecommendArtistListState extends State<RecommendArtistList>
               return Column(children: [
                 ...recommendedItems
                     .map((item) => RecommendPostSection(
-                          header: widget.header?.call(item) ??
+                          header: header?.call(item) ??
                               ListTile(
                                 onTap: () => AppRouter.router.navigateTo(
                                   context,
@@ -68,7 +61,7 @@ class _RecommendArtistListState extends State<RecommendArtistList>
                                   routeSettings: RouteSettings(
                                     arguments: [
                                       item.tag,
-                                      widget.post.normalImageUrl,
+                                      post.normalImageUrl,
                                     ],
                                   ),
                                 ),
@@ -79,7 +72,7 @@ class _RecommendArtistListState extends State<RecommendArtistList>
                           posts: item.posts,
                         ))
                     .toList(),
-                if (widget.useSeperator) const Divider(),
+                if (useSeperator) const Divider(),
               ]);
             } else {
               return const SizedBox.shrink();
@@ -89,12 +82,9 @@ class _RecommendArtistListState extends State<RecommendArtistList>
       }),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
-class RecommendCharacterList extends StatefulWidget {
+class RecommendCharacterList extends StatelessWidget {
   const RecommendCharacterList({
     Key? key,
     required this.post,
@@ -105,23 +95,16 @@ class RecommendCharacterList extends StatefulWidget {
   final bool useSeperator;
 
   @override
-  State<RecommendCharacterList> createState() => _RecommendCharacterListState();
-}
-
-class _RecommendCharacterListState extends State<RecommendCharacterList>
-    with AutomaticKeepAliveClientMixin {
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-    if (widget.post.characterTags.isEmpty) return const SizedBox.shrink();
+    if (post.characterTags.isEmpty) return const SizedBox.shrink();
     final screenSize = Screen.of(context).size;
     return BlocProvider(
       create: (context) => RecommendedCharacterPostCubit(
           postRepository: context.read<IPostRepository>())
         ..add(RecommendedPostRequested(
           amount: screenSize == ScreenSize.large ? 9 : 6,
-          currentPostId: widget.post.id,
-          tags: widget.post.characterTags.take(3).toList(),
+          currentPostId: post.id,
+          tags: post.characterTags.take(3).toList(),
         )),
       child: Builder(builder: (context) {
         return BlocBuilder<RecommendedCharacterPostCubit,
@@ -143,7 +126,7 @@ class _RecommendCharacterListState extends State<RecommendCharacterList>
                                 routeSettings: RouteSettings(
                                   arguments: [
                                     item.tag,
-                                    widget.post.normalImageUrl,
+                                    post.normalImageUrl,
                                   ],
                                 ),
                               ),
@@ -154,7 +137,7 @@ class _RecommendCharacterListState extends State<RecommendCharacterList>
                             posts: item.posts,
                           ))
                       .toList(),
-                  if (widget.useSeperator) const Divider(),
+                  if (useSeperator) const Divider(),
                 ],
               );
             } else {
@@ -165,9 +148,6 @@ class _RecommendCharacterListState extends State<RecommendCharacterList>
       }),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class ActionBar extends StatelessWidget {
