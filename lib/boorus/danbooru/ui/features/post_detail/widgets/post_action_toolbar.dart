@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -36,10 +37,20 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => PostVoteBloc(
-        postVoteRepository: context.read<PostVoteRepository>(),
-      )..add(PostVoteInit.fromPost(post)),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostVoteBloc(
+            postVoteRepository: context.read<PostVoteRepository>(),
+          )..add(PostVoteInit.fromPost(post)),
+        ),
+        BlocProvider(
+          create: (context) => IsPostFavoritedBloc(
+            accountRepository: context.read<IAccountRepository>(),
+            favoritePostRepository: context.read<IFavoritePostRepository>(),
+          )..add(IsPostFavoritedRequested(postId: post.id)),
+        ),
+      ],
       child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
         builder: (context, authState) => ButtonBar(
           buttonPadding: EdgeInsets.zero,

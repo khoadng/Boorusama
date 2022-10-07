@@ -133,12 +133,6 @@ final postDetailHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
-      BlocProvider(
-        create: (context) => IsPostFavoritedBloc(
-          accountRepository: context.read<IAccountRepository>(),
-          favoritePostRepository: context.read<IFavoritePostRepository>(),
-        )..add(IsPostFavoritedRequested(postId: posts[index].id)),
-      ),
       BlocProvider.value(value: context.read<AuthenticationCubit>()),
       BlocProvider.value(value: context.read<ApiEndpointCubit>()),
       BlocProvider.value(value: context.read<ThemeBloc>()),

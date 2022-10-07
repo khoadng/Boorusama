@@ -14,7 +14,6 @@ import 'package:recase/recase.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
@@ -634,9 +633,6 @@ class _CarouselSlider extends StatelessWidget {
                   context
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
-
-                  context.read<IsPostFavoritedBloc>().add(
-                      IsPostFavoritedRequested(postId: posts[index].post.id));
 
                   onPageChanged?.call(index);
                 },
