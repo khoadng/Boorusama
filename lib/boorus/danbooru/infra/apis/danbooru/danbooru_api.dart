@@ -315,6 +315,7 @@ abstract class DanbooruApi implements Api {
   Future<HttpResponse> getPostVotes(
     @Query('login') String login,
     @Query('api_key') String apiKey,
+    @Query('page') int page,
     @Query('search[post_id]') String postIdsComma,
     @Query('search[user_id]') String userId,
     @Query('search[is_deleted]') bool isDeleted,

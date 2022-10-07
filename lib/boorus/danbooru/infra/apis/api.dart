@@ -236,6 +236,7 @@ abstract class Api {
   Future<HttpResponse> getPostVotes(
     String login,
     String apiKey,
+    int page,
     String postIdComma,
     String userId,
     bool isDeleted,

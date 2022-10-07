@@ -184,6 +184,8 @@ class Post extends Equatable {
   bool get hasBothParentAndChildren => hasChildren && hasParent;
   bool get hasParentOrChildren => hasChildren || hasParent;
 
+  double get upvotePercent => upScore / (upScore + -downScore);
+
   @override
   List<Object?> get props => [id];
 }
