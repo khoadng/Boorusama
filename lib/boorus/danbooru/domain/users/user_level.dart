@@ -1,5 +1,7 @@
 UserLevel intToUserLevel(int value) {
   switch (value) {
+    case 10:
+      return UserLevel.restricted;
     case 20:
       return UserLevel.member;
     case 30:
@@ -14,6 +16,8 @@ UserLevel intToUserLevel(int value) {
       return UserLevel.moderator;
     case 50:
       return UserLevel.admin;
+    case 60:
+      return UserLevel.owner;
     default:
       return UserLevel.member;
   }
@@ -21,6 +25,8 @@ UserLevel intToUserLevel(int value) {
 
 UserLevel stringToUserLevel(String value) {
   switch (value.toLowerCase()) {
+    case 'restricted':
+      return UserLevel.restricted;
     case 'member':
       return UserLevel.member;
     case 'gold':
@@ -35,12 +41,15 @@ UserLevel stringToUserLevel(String value) {
       return UserLevel.moderator;
     case 'admin':
       return UserLevel.admin;
+    case 'owner':
+      return UserLevel.owner;
     default:
       return UserLevel.member;
   }
 }
 
 enum UserLevel {
+  restricted,
   member,
   gold,
   platinum,
@@ -48,6 +57,7 @@ enum UserLevel {
   janitor,
   moderator,
   admin,
+  owner,
 }
 
 extension LevelExtension on UserLevel {
@@ -56,7 +66,7 @@ extension LevelExtension on UserLevel {
       case UserLevel.member:
         return 0xff0073ff;
       case UserLevel.gold:
-        return 0xff0000ff;
+        return 0xffd0ba79;
       case UserLevel.platinum:
         return 0xff808080;
       case UserLevel.builder:
@@ -64,8 +74,10 @@ extension LevelExtension on UserLevel {
       case UserLevel.janitor:
         return 0xffffa500;
       case UserLevel.moderator:
-        return 0xffffa500;
+        return 0xff33ba48;
       case UserLevel.admin:
+        return 0xffff0000;
+      case UserLevel.owner:
         return 0xffff0000;
       default:
         return 0xff0073ff;
