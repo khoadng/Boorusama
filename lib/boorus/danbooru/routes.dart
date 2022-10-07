@@ -144,12 +144,6 @@ final postDetailHandler = Handler(handlerFunc: (
           favoritePostRepository: context.read<IFavoritePostRepository>(),
         )..add(IsPostFavoritedRequested(postId: posts[index].id)),
       ),
-      BlocProvider.value(
-        value: context.read<PoolFromPostIdBloc>()
-          ..add(
-            PoolFromPostIdRequested(postId: posts[index].id),
-          ),
-      ),
       BlocProvider.value(value: context.read<AuthenticationCubit>()),
       BlocProvider.value(value: context.read<ApiEndpointCubit>()),
       BlocProvider.value(value: context.read<ThemeBloc>()),

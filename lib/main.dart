@@ -305,13 +305,6 @@ void main() async {
                     ),
                   );
 
-                  final poolFromIdBloc = PoolFromPostIdBloc(
-                    poolRepository: PoolFromPostCacher(
-                      cache: LruCacher(capacity: 500),
-                      poolRepository: poolRepo,
-                    ),
-                  );
-
                   final artistBloc = ArtistBloc(
                     artistRepository: ArtistCacher(
                       repo: artistRepo,
@@ -389,7 +382,6 @@ void main() async {
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: tagBloc),
-                        BlocProvider.value(value: poolFromIdBloc),
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),

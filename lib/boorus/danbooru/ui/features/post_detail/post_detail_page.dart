@@ -240,7 +240,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   child: media,
                                 ),
                                 if (screenSize == ScreenSize.small) ...[
-                                  const SliverToBoxAdapter(child: PoolTiles()),
+                                  SliverToBoxAdapter(
+                                      child: PoolTiles(post: post.post)),
                                   SliverToBoxAdapter(
                                     child: Column(
                                       crossAxisAlignment:
@@ -614,8 +615,8 @@ class _CarouselSlider extends StatelessWidget {
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
 
-                  context.read<PoolFromPostIdBloc>().add(
-                      PoolFromPostIdRequested(postId: posts[index].post.id));
+                  // context.read<PoolFromPostIdBloc>().add(
+                  //     PoolFromPostIdRequested(postId: posts[index].post.id));
                   context.read<IsPostFavoritedBloc>().add(
                       IsPostFavoritedRequested(postId: posts[index].post.id));
 

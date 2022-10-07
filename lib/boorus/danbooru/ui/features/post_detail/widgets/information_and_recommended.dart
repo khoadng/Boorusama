@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/core/core.dart';
 import 'post_action_toolbar.dart';
 import 'recommend_section.dart';
 
