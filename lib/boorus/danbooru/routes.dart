@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
@@ -125,7 +124,6 @@ final postDetailHandler = Handler(handlerFunc: (
   final postDatas = args[0] as List<PostData>;
   final index = args[1] as int;
 
-  final screenSize = Screen.of(context).size;
   final posts = postDatas.map((e) => e.post).toList();
 
   AutoScrollController? controller;
@@ -145,26 +143,6 @@ final postDetailHandler = Handler(handlerFunc: (
           accountRepository: context.read<IAccountRepository>(),
           favoritePostRepository: context.read<IFavoritePostRepository>(),
         )..add(IsPostFavoritedRequested(postId: posts[index].id)),
-      ),
-      BlocProvider.value(
-        value: context.read<RecommendedArtistPostCubit>()
-          ..add(
-            RecommendedPostRequested(
-              amount: screenSize == ScreenSize.large ? 9 : 6,
-              currentPostId: posts[index].id,
-              tags: posts[index].artistTags,
-            ),
-          ),
-      ),
-      BlocProvider.value(
-        value: context.read<RecommendedCharacterPostCubit>()
-          ..add(
-            RecommendedPostRequested(
-              amount: screenSize == ScreenSize.large ? 9 : 6,
-              currentPostId: posts[index].id,
-              tags: posts[index].characterTags.take(3).toList(),
-            ),
-          ),
       ),
       BlocProvider.value(
         value: context.read<PoolFromPostIdBloc>()

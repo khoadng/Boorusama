@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
@@ -615,22 +614,6 @@ class _CarouselSlider extends StatelessWidget {
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
 
-                  context
-                      .read<RecommendedArtistPostCubit>()
-                      .add(RecommendedPostRequested(
-                        amount:
-                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].post.id,
-                        tags: posts[index].post.artistTags,
-                      ));
-                  context
-                      .read<RecommendedCharacterPostCubit>()
-                      .add(RecommendedPostRequested(
-                        amount:
-                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].post.id,
-                        tags: posts[index].post.characterTags.take(3).toList(),
-                      ));
                   context.read<PoolFromPostIdBloc>().add(
                       PoolFromPostIdRequested(postId: posts[index].post.id));
                   context.read<IsPostFavoritedBloc>().add(

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -28,42 +29,57 @@ class RecommendArtistList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (post.artistTags.isEmpty) return const SizedBox.shrink();
-    return BlocBuilder<RecommendedArtistPostCubit,
-        AsyncLoadState<List<Recommended>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final recommendedItems = state.data!;
+    final screenSize = Screen.of(context).size;
 
-          if (recommendedItems.isEmpty) return const SizedBox.shrink();
+    return BlocProvider(
+      create: (context) => RecommendedArtistPostCubit(
+        postRepository: context.read<IPostRepository>(),
+      )..add(
+          RecommendedPostRequested(
+            amount: screenSize == ScreenSize.large ? 9 : 6,
+            currentPostId: post.id,
+            tags: post.artistTags,
+          ),
+        ),
+      child: Builder(builder: (context) {
+        return BlocBuilder<RecommendedArtistPostCubit,
+            AsyncLoadState<List<Recommended>>>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              final recommendedItems = state.data!;
 
-          return Column(children: [
-            ...recommendedItems
-                .map((item) => RecommendPostSection(
-                      header: header?.call(item) ??
-                          ListTile(
-                            onTap: () => AppRouter.router.navigateTo(
-                              context,
-                              '/artist',
-                              routeSettings: RouteSettings(
-                                arguments: [
-                                  item.tag,
-                                  post.normalImageUrl,
-                                ],
+              if (recommendedItems.isEmpty) return const SizedBox.shrink();
+
+              return Column(children: [
+                ...recommendedItems
+                    .map((item) => RecommendPostSection(
+                          header: header?.call(item) ??
+                              ListTile(
+                                onTap: () => AppRouter.router.navigateTo(
+                                  context,
+                                  '/artist',
+                                  routeSettings: RouteSettings(
+                                    arguments: [
+                                      item.tag,
+                                      post.normalImageUrl,
+                                    ],
+                                  ),
+                                ),
+                                title: Text(item.title),
+                                trailing: const Icon(
+                                    Icons.keyboard_arrow_right_rounded),
                               ),
-                            ),
-                            title: Text(item.title),
-                            trailing:
-                                const Icon(Icons.keyboard_arrow_right_rounded),
-                          ),
-                      posts: item.posts,
-                    ))
-                .toList(),
-            if (useSeperator) const Divider(),
-          ]);
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+                          posts: item.posts,
+                        ))
+                    .toList(),
+                if (useSeperator) const Divider(),
+              ]);
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        );
+      }),
     );
   }
 }
@@ -82,43 +98,55 @@ class RecommendCharacterList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (post.characterTags.isEmpty) return const SizedBox.shrink();
-    return BlocBuilder<RecommendedCharacterPostCubit,
-        AsyncLoadState<List<Recommended>>>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final recommendedItems = state.data!;
+    final screenSize = Screen.of(context).size;
+    return BlocProvider(
+      create: (context) => RecommendedCharacterPostCubit(
+          postRepository: context.read<IPostRepository>())
+        ..add(RecommendedPostRequested(
+          amount: screenSize == ScreenSize.large ? 9 : 6,
+          currentPostId: post.id,
+          tags: post.characterTags.take(3).toList(),
+        )),
+      child: Builder(builder: (context) {
+        return BlocBuilder<RecommendedCharacterPostCubit,
+            AsyncLoadState<List<Recommended>>>(
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              final recommendedItems = state.data!;
 
-          if (recommendedItems.isEmpty) return const SizedBox.shrink();
+              if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
-          return Column(
-            children: [
-              ...recommendedItems
-                  .map((item) => RecommendPostSection(
-                        header: ListTile(
-                          onTap: () => AppRouter.router.navigateTo(
-                            context,
-                            '/character',
-                            routeSettings: RouteSettings(
-                              arguments: [
-                                item.tag,
-                                post.normalImageUrl,
-                              ],
+              return Column(
+                children: [
+                  ...recommendedItems
+                      .map((item) => RecommendPostSection(
+                            header: ListTile(
+                              onTap: () => AppRouter.router.navigateTo(
+                                context,
+                                '/character',
+                                routeSettings: RouteSettings(
+                                  arguments: [
+                                    item.tag,
+                                    post.normalImageUrl,
+                                  ],
+                                ),
+                              ),
+                              title: Text(item.title),
+                              trailing: const Icon(
+                                  Icons.keyboard_arrow_right_rounded),
                             ),
-                          ),
-                          title: Text(item.title),
-                          trailing:
-                              const Icon(Icons.keyboard_arrow_right_rounded),
-                        ),
-                        posts: item.posts,
-                      ))
-                  .toList(),
-              if (useSeperator) const Divider(),
-            ],
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+                            posts: item.posts,
+                          ))
+                      .toList(),
+                  if (useSeperator) const Divider(),
+                ],
+              );
+            } else {
+              return const SizedBox.shrink();
+            }
+          },
+        );
+      }),
     );
   }
 }
