@@ -203,7 +203,7 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildFavoriteButton(AuthenticationState authState) {
     return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-      builder: (context, state) => TextButton.icon(
+      builder: (context, state) => IconButton(
         onPressed: () async {
           _onPressedWithLoadingToast(
             context: context,
@@ -240,12 +240,12 @@ class PostActionToolbar extends StatelessWidget {
             : const FaIcon(
                 FontAwesomeIcons.heart,
               ),
-        label: Text(
-          post.favCount.toString(),
-          style: state.status == LoadStatus.success && state.data!
-              ? const TextStyle(color: Colors.red)
-              : null,
-        ),
+        // label: Text(
+        //   post.favCount.toString(),
+        //   style: state.status == LoadStatus.success && state.data!
+        //       ? const TextStyle(color: Colors.red)
+        //       : null,
+        // ),
       ),
     );
   }
