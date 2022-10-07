@@ -112,8 +112,8 @@ class PostFavoriteInfoBloc
             final page = state.page + 1;
             emit(state.copyWith(loading: true));
 
-            final favs = await favoritePostRepository.getFavorites(
-                event.postId, state.page);
+            final favs =
+                await favoritePostRepository.getFavorites(event.postId, page);
 
             // Prevent fetching more if next page is empty
             if (favs.isEmpty) {
