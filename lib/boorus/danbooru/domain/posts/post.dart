@@ -186,6 +186,8 @@ class Post extends Equatable {
 
   double get upvotePercent => totalVote > 0 ? upScore / totalVote : 1;
   int get totalVote => upScore + -downScore;
+  bool get hasVoter => upScore != 1 && downScore != 0;
+  bool get hasFavorite => favCount > 0;
 
   @override
   List<Object?> get props => [id];

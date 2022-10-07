@@ -98,7 +98,8 @@ class InformationSection extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              InkWell(
+              _StatButton(
+                enable: post.hasFavorite,
                 onTap: () => showAdaptiveBottomSheet(
                   context,
                   builder: (context) => BlocProvider(
@@ -115,9 +116,43 @@ class InformationSection extends StatelessWidget {
                     ),
                   ),
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Html(
+                child: Html(
+                  shrinkWrap: true,
+                  style: {
+                    'b': Style(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.w900,
+                    ),
+                    'span': Style(
+                      color: Theme.of(context).hintColor,
+                      fontSize: FontSize.small,
+                    ),
+                    'body': Style(
+                      padding: EdgeInsets.zero,
+                      margin: EdgeInsets.zero,
+                    ),
+                  },
+                  data: '<b>${post.favCount}</b> <span>Favorites</span>',
+                ),
+              ),
+              _StatButton(
+                enable: post.hasVoter,
+                onTap: () => showAdaptiveBottomSheet(
+                  context,
+                  builder: (context) => BlocProvider(
+                    create: (context) => PostVoteInfoBloc(
+                      postVoteRepository: context.read<PostVoteRepository>(),
+                      userRepository: context.read<IUserRepository>(),
+                    )..add(PostVoteInfoFetched(
+                        postId: post.id,
+                        refresh: true,
+                      )),
+                    child: VoterView(
+                      post: post,
+                    ),
+                  ),
+                ),
+                child: Html(
                     shrinkWrap: true,
                     style: {
                       'b': Style(
@@ -133,54 +168,41 @@ class InformationSection extends StatelessWidget {
                         margin: EdgeInsets.zero,
                       ),
                     },
-                    data: '<b>${post.favCount}</b> <span>Favorites</span>',
-                  ),
-                ),
-              ),
-              InkWell(
-                onTap: () {
-                  showAdaptiveBottomSheet(
-                    context,
-                    builder: (context) => BlocProvider(
-                      create: (context) => PostVoteInfoBloc(
-                        postVoteRepository: context.read<PostVoteRepository>(),
-                        userRepository: context.read<IUserRepository>(),
-                      )..add(PostVoteInfoFetched(
-                          postId: post.id,
-                          refresh: true,
-                        )),
-                      child: VoterView(
-                        post: post,
-                      ),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(6),
-                  child: Html(
-                      shrinkWrap: true,
-                      style: {
-                        'b': Style(
-                          color: Theme.of(context).colorScheme.primary,
-                          fontWeight: FontWeight.w900,
-                        ),
-                        'span': Style(
-                          color: Theme.of(context).hintColor,
-                          fontSize: FontSize.small,
-                        ),
-                        'body': Style(
-                          padding: EdgeInsets.zero,
-                          margin: EdgeInsets.zero,
-                        ),
-                      },
-                      data:
-                          '<b>${post.upScore}</b> <span>Points ${_generatePercentText(post)}</span>'),
-                ),
+                    data:
+                        '<b>${post.score}</b> <span>Points ${_generatePercentText(post)}</span>'),
               ),
             ],
           ),
         ),
       ],
+    );
+  }
+}
+
+class _StatButton extends StatelessWidget {
+  const _StatButton({
+    Key? key,
+    required this.child,
+    required this.enable,
+    required this.onTap,
+  }) : super(key: key);
+
+  final Widget child;
+  final bool enable;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConditionalParentWidget(
+      condition: enable,
+      conditionalBuilder: (child) => InkWell(
+        onTap: onTap,
+        child: child,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: child,
+      ),
     );
   }
 }
