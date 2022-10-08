@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -171,6 +172,28 @@ class InformationSection extends StatelessWidget {
                     data:
                         '<b>${post.score}</b> <span>Points ${_generatePercentText(post)}</span>'),
               ),
+              _StatButton(
+                enable: post.hasComment,
+                child: Html(
+                  shrinkWrap: true,
+                  style: {
+                    'b': Style(
+                      fontWeight: FontWeight.w900,
+                      color: Theme.of(context).hintColor,
+                    ),
+                    'span': Style(
+                      color: Theme.of(context).hintColor,
+                      fontSize: FontSize.small,
+                    ),
+                    'body': Style(
+                      padding: EdgeInsets.zero,
+                      margin: EdgeInsets.zero,
+                    ),
+                  },
+                  data:
+                      '<b>${post.totalComments}</b> <span>${"comment.comments".tr()}</span>',
+                ),
+              ),
             ],
           ),
         ),
@@ -184,12 +207,12 @@ class _StatButton extends StatelessWidget {
     Key? key,
     required this.child,
     required this.enable,
-    required this.onTap,
+    this.onTap,
   }) : super(key: key);
 
   final Widget child;
   final bool enable;
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {

@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class Post extends Equatable {
@@ -34,6 +35,8 @@ class Post extends Equatable {
     required this.hasParent,
     this.parentId,
     required this.hasLarge,
+    required this.comments,
+    required this.totalComments,
   });
 
   factory Post.empty() => Post(
@@ -64,6 +67,8 @@ class Post extends Equatable {
         hasChildren: false,
         hasParent: false,
         hasLarge: false,
+        comments: const [],
+        totalComments: 0,
       );
 
   factory Post.banned({
@@ -121,6 +126,8 @@ class Post extends Equatable {
         hasParent: hasParent,
         parentId: parentId,
         hasLarge: hasLarge,
+        comments: const [],
+        totalComments: 0,
       );
   final int id;
   final String previewImageUrl;
@@ -150,6 +157,8 @@ class Post extends Equatable {
   final bool hasParent;
   final int? parentId;
   final bool hasLarge;
+  final List<Comment> comments;
+  final int totalComments;
 
   double get aspectRatio => width / height;
 

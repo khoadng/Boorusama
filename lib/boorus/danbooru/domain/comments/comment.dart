@@ -29,7 +29,7 @@ class Comment extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
-  final User creator;
+  final User? creator;
 
   @override
   List<Object?> get props => [
@@ -44,3 +44,6 @@ class Comment extends Equatable {
 }
 
 bool notDeleted(Comment comment) => !comment.isDeleted;
+bool hasDeletedCreator(Comment comment) => comment.creator == null;
+bool isCommentValid(Comment comment) =>
+    notDeleted(comment) && !hasDeletedCreator(comment);

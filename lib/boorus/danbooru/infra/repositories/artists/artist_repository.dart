@@ -3,8 +3,8 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(

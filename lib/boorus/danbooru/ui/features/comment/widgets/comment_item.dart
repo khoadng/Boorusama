@@ -31,9 +31,17 @@ class CommentItem extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _CommentHeader(comment: comment),
+        _CommentHeader(
+          authorName: comment.authorName,
+          authorLevel: comment.authorLevel,
+          createdAt: comment.createdAt,
+        ),
         const SizedBox(height: 4),
-        _buidCommentBody(),
+        Dtext.parse(
+          comment.body,
+          '[quote]',
+          '[/quote]',
+        ),
         if (comment.recentlyUpdated)
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -61,12 +69,34 @@ class CommentItem extends StatelessWidget {
       ],
     );
   }
+}
 
-  Widget _buidCommentBody() {
-    return Dtext.parse(
-      comment.body,
-      '[quote]',
-      '[/quote]',
+class SimpleCommentItem extends StatelessWidget {
+  const SimpleCommentItem({
+    Key? key,
+    required this.authorName,
+    required this.content,
+    required this.createdAt,
+  }) : super(key: key);
+  final String authorName;
+  final String content;
+  final DateTime createdAt;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _CommentHeader(
+          authorName: authorName,
+          createdAt: createdAt,
+        ),
+        Dtext.parse(
+          content,
+          '[quote]',
+          '[/quote]',
+        ),
+      ],
     );
   }
 }
@@ -182,10 +212,14 @@ class _VoteButton extends StatelessWidget {
 class _CommentHeader extends StatelessWidget {
   const _CommentHeader({
     Key? key,
-    required this.comment,
+    required this.authorName,
+    this.authorLevel,
+    required this.createdAt,
   }) : super(key: key);
 
-  final CommentData comment;
+  final String authorName;
+  final UserLevel? authorLevel;
+  final DateTime createdAt;
 
   @override
   Widget build(BuildContext context) {
@@ -194,9 +228,9 @@ class _CommentHeader extends StatelessWidget {
       runAlignment: WrapAlignment.center,
       children: [
         Text(
-          comment.authorName.replaceAll('_', ' '),
+          authorName.replaceAll('_', ' '),
           style: TextStyle(
-            color: Color(comment.authorLevel.hexColor),
+            color: authorLevel != null ? Color(authorLevel!.hexColor) : null,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),
@@ -205,7 +239,7 @@ class _CommentHeader extends StatelessWidget {
           width: 6,
         ),
         Text(
-          DateFormat('MMM d, yyyy hh:mm a').format(comment.createdAt.toLocal()),
+          DateFormat('MMM d, yyyy hh:mm a').format(createdAt.toLocal()),
           style: const TextStyle(color: Colors.grey, fontSize: 12),
         ),
       ],

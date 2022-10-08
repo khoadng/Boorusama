@@ -283,6 +283,8 @@ class _CarouselContent extends StatefulWidget {
 
 class _CarouselContentState extends State<_CarouselContent>
     with AutomaticKeepAliveClientMixin {
+  Post get post => widget.post.post;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -293,13 +295,13 @@ class _CarouselContentState extends State<_CarouselContent>
           child: widget.media,
         ),
         if (screenSize == ScreenSize.small) ...[
-          SliverToBoxAdapter(child: PoolTiles(post: widget.post.post)),
+          SliverToBoxAdapter(child: PoolTiles(post: post)),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                InformationSection(post: widget.post.post),
+                InformationSection(post: post),
                 if (widget.actionBarDisplayBehavior ==
                     ActionBarDisplayBehavior.scrolling)
                   Padding(
@@ -309,9 +311,9 @@ class _CarouselContentState extends State<_CarouselContent>
                       postData: widget.post,
                     ),
                   ),
-                if (widget.post.post.hasParentOrChildren)
+                if (post.hasParentOrChildren)
                   ParentChildTile(
-                    data: getParentChildData(widget.post.post),
+                    data: getParentChildData(post),
                     onTap: (data) => showBarModalBottomSheet(
                       context: context,
                       builder: (context) => MultiBlocProvider(
@@ -336,10 +338,10 @@ class _CarouselContentState extends State<_CarouselContent>
                       ),
                     ),
                   ),
-                if (!widget.post.post.hasParentOrChildren)
+                if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
-                RecommendArtistList(post: widget.post.post),
-                RecommendCharacterList(post: widget.post.post),
+                RecommendArtistList(post: post),
+                RecommendCharacterList(post: post),
               ],
             ),
           ),

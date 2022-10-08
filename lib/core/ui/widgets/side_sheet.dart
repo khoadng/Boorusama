@@ -3,7 +3,7 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-Future<String> showSideSheetFromLeft({
+Future<T?> showSideSheetFromLeft<T>({
   required Widget body,
   required BuildContext context,
   double? width,
@@ -11,23 +11,19 @@ Future<String> showSideSheetFromLeft({
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
   Duration transitionDuration = const Duration(milliseconds: 300),
-}) async {
-  final data = await _showSheetSide(
-    body: body,
-    width: width,
-    rightSide: false,
-    context: context,
-    barrierLabel: barrierLabel,
-    barrierDismissible: barrierDismissible,
-    barrierColor: barrierColor,
-    transitionDuration: transitionDuration,
-  );
-  if (data == null) return '';
+}) async =>
+    _showSheetSide<T>(
+      body: body,
+      width: width,
+      rightSide: false,
+      context: context,
+      barrierLabel: barrierLabel,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor,
+      transitionDuration: transitionDuration,
+    );
 
-  return data;
-}
-
-Future<String> showSideSheetFromRight({
+Future<T?> showSideSheetFromRight<T>({
   required Widget body,
   required BuildContext context,
   double? width,
@@ -35,21 +31,17 @@ Future<String> showSideSheetFromRight({
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
   Duration transitionDuration = const Duration(milliseconds: 300),
-}) async {
-  final data = await _showSheetSide(
-    body: body,
-    width: width,
-    rightSide: true,
-    context: context,
-    barrierLabel: barrierLabel,
-    barrierDismissible: barrierDismissible,
-    barrierColor: barrierColor,
-    transitionDuration: transitionDuration,
-  );
-  if (data == null) return '';
-
-  return data;
-}
+}) =>
+    _showSheetSide<T>(
+      body: body,
+      width: width,
+      rightSide: true,
+      context: context,
+      barrierLabel: barrierLabel,
+      barrierDismissible: barrierDismissible,
+      barrierColor: barrierColor,
+      transitionDuration: transitionDuration,
+    );
 
 Future<T?> _showSheetSide<T>({
   required Widget body,
