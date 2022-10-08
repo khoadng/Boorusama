@@ -188,6 +188,7 @@ Post postDtoToPost(PostDto dto) {
       );
     }
 
+    final comments = _commentDtosToComments(dto.comments);
     return Post(
       id: dto.id!,
       previewImageUrl: dto.previewFileUrl!,
@@ -217,9 +218,13 @@ Post postDtoToPost(PostDto dto) {
       hasParent: dto.parentId != null,
       parentId: dto.parentId,
       hasLarge: dto.hasLarge ?? false,
-      comments: dto.comments.map((e) => commentDtoToComment(e)).toList(),
+      comments: comments.take(3).toList(),
+      totalComments: comments.length,
     );
   } catch (e) {
     return Post.empty();
   }
 }
+
+Iterable<Comment> _commentDtosToComments(List<dynamic> dtos) =>
+    dtos.map((e) => commentDtoToComment(e));

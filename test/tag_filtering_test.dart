@@ -36,6 +36,7 @@ Post createPost(int id, List<String> tags) => Post(
       hasParent: false,
       hasLarge: false,
       comments: const [],
+      totalComments: 0,
     );
 
 void main() {

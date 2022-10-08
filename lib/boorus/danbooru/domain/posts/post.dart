@@ -36,6 +36,7 @@ class Post extends Equatable {
     this.parentId,
     required this.hasLarge,
     required this.comments,
+    required this.totalComments,
   });
 
   factory Post.empty() => Post(
@@ -67,6 +68,7 @@ class Post extends Equatable {
         hasParent: false,
         hasLarge: false,
         comments: const [],
+        totalComments: 0,
       );
 
   factory Post.banned({
@@ -125,6 +127,7 @@ class Post extends Equatable {
         parentId: parentId,
         hasLarge: hasLarge,
         comments: const [],
+        totalComments: 0,
       );
   final int id;
   final String previewImageUrl;
@@ -155,6 +158,7 @@ class Post extends Equatable {
   final int? parentId;
   final bool hasLarge;
   final List<Comment> comments;
+  final int totalComments;
 
   double get aspectRatio => width / height;
 
