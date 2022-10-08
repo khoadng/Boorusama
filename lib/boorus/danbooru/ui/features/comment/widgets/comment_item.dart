@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:

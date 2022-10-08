@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:boorusama/boorus/danbooru/infra/repositories/comments/comments.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
