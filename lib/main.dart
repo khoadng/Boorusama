@@ -31,7 +31,6 @@ import 'package:boorusama/boorus/danbooru/application/explore/hot_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
@@ -56,7 +55,6 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/i_download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infra/caching/fifo_cacher.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'app.dart';
@@ -307,27 +305,6 @@ void main() async {
                     ),
                   );
 
-                  final recommendArtistCubit = RecommendedArtistPostCubit(
-                    postRepository: RecommendedPostCacher(
-                      cache: LruCacher(capacity: 500),
-                      postRepository: postRepo,
-                    ),
-                  );
-
-                  final recommendedCharaCubit = RecommendedCharacterPostCubit(
-                    postRepository: RecommendedPostCacher(
-                      cache: FifoCacher(capacity: 500),
-                      postRepository: postRepo,
-                    ),
-                  );
-
-                  final poolFromIdBloc = PoolFromPostIdBloc(
-                    poolRepository: PoolFromPostCacher(
-                      cache: LruCacher(capacity: 500),
-                      poolRepository: poolRepo,
-                    ),
-                  );
-
                   final artistBloc = ArtistBloc(
                     artistRepository: ArtistCacher(
                       repo: artistRepo,
@@ -405,9 +382,6 @@ void main() async {
                                 ThemeBloc(initialTheme: settings.themeMode)),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: tagBloc),
-                        BlocProvider.value(value: recommendArtistCubit),
-                        BlocProvider.value(value: recommendedCharaCubit),
-                        BlocProvider.value(value: poolFromIdBloc),
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),

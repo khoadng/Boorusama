@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -36,24 +37,37 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) => ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildFavoriteButton(authState),
-          //TODO: kinda laggy so removed for now
-          if (authState is Authenticated) _buildUpvoteButton(),
-          if (authState is Authenticated) _buildDownvoteButton(),
-          _buildCommentButton(context),
-          _buildDownloadButton(),
-          _buildShareButton(context),
-        ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostVoteBloc(
+            postVoteRepository: context.read<PostVoteRepository>(),
+          )..add(PostVoteInit.fromPost(post)),
+        ),
+        BlocProvider(
+          create: (context) => IsPostFavoritedBloc(
+            accountRepository: context.read<IAccountRepository>(),
+            favoritePostRepository: context.read<IFavoritePostRepository>(),
+          )..add(IsPostFavoritedRequested(postId: post.id)),
+        ),
+      ],
+      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+        builder: (context, authState) => ButtonBar(
+          buttonPadding: EdgeInsets.zero,
+          alignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildFavoriteButton(authState),
+            if (authState is Authenticated) _buildUpvoteButton(),
+            if (authState is Authenticated) _buildDownvoteButton(),
+            _buildCommentButton(context),
+            _buildDownloadButton(),
+            _buildShareButton(context),
+          ],
+        ),
       ),
     );
   }
 
-  // ignore: unused_element
   Widget _buildUpvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
@@ -74,7 +88,6 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
-  // ignore: unused_element
   Widget _buildDownvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
@@ -240,12 +253,6 @@ class PostActionToolbar extends StatelessWidget {
             : const FaIcon(
                 FontAwesomeIcons.heart,
               ),
-        // label: Text(
-        //   post.favCount.toString(),
-        //   style: state.status == LoadStatus.success && state.data!
-        //       ? const TextStyle(color: Colors.red)
-        //       : null,
-        // ),
       ),
     );
   }
