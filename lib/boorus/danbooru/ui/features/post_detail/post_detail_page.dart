@@ -283,7 +283,7 @@ class _CarouselContentState extends State<_CarouselContent>
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
-          child: widget.media,
+          child: RepaintBoundary(child: widget.media),
         ),
         if (screenSize == ScreenSize.small) ...[
           SliverToBoxAdapter(child: PoolTiles(post: post)),
@@ -296,15 +296,17 @@ class _CarouselContentState extends State<_CarouselContent>
                 const Divider(height: 8, thickness: 1),
                 if (widget.actionBarDisplayBehavior ==
                     ActionBarDisplayBehavior.scrolling)
-                  ActionBar(
-                    imagePath: widget.imagePath,
-                    postData: widget.post,
+                  RepaintBoundary(
+                    child: ActionBar(
+                      imagePath: widget.imagePath,
+                      postData: widget.post,
+                    ),
                   ),
                 const Divider(height: 8, thickness: 1),
                 ArtistSection(post: post),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: PostStatsTile(post: post),
+                  child: RepaintBoundary(child: PostStatsTile(post: post)),
                 ),
                 if (post.hasParentOrChildren)
                   ParentChildTile(
@@ -337,7 +339,7 @@ class _CarouselContentState extends State<_CarouselContent>
                   const Divider(height: 8, thickness: 1),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10),
-                  child: InfoChips(post: post),
+                  child: RepaintBoundary(child: InfoChips(post: post)),
                 ),
                 RecommendArtistList(post: post),
                 RecommendCharacterList(post: post),
@@ -350,7 +352,7 @@ class _CarouselContentState extends State<_CarouselContent>
   }
 
   @override
-  bool get wantKeepAlive => true;
+  bool get wantKeepAlive => !post.isVideo;
 }
 
 class _LargeLayoutContent extends StatelessWidget {
