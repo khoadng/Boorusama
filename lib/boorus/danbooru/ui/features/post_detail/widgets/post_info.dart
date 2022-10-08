@@ -186,6 +186,7 @@ class SourceLink extends StatelessWidget {
         ),
       ),
       leading: CircleAvatar(
+        backgroundColor: Theme.of(context).backgroundColor,
         child: Center(
           child: Text(name.getFirstCharacter().toUpperCase()),
         ),
