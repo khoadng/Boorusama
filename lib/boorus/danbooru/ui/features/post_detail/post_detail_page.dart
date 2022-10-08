@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -283,6 +285,8 @@ class _CarouselContent extends StatefulWidget {
 
 class _CarouselContentState extends State<_CarouselContent>
     with AutomaticKeepAliveClientMixin {
+  Post get post => widget.post.post;
+
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -293,13 +297,13 @@ class _CarouselContentState extends State<_CarouselContent>
           child: widget.media,
         ),
         if (screenSize == ScreenSize.small) ...[
-          SliverToBoxAdapter(child: PoolTiles(post: widget.post.post)),
+          SliverToBoxAdapter(child: PoolTiles(post: post)),
           SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                InformationSection(post: widget.post.post),
+                InformationSection(post: post),
                 if (widget.actionBarDisplayBehavior ==
                     ActionBarDisplayBehavior.scrolling)
                   Padding(
@@ -309,9 +313,9 @@ class _CarouselContentState extends State<_CarouselContent>
                       postData: widget.post,
                     ),
                   ),
-                if (widget.post.post.hasParentOrChildren)
+                if (post.hasParentOrChildren)
                   ParentChildTile(
-                    data: getParentChildData(widget.post.post),
+                    data: getParentChildData(post),
                     onTap: (data) => showBarModalBottomSheet(
                       context: context,
                       builder: (context) => MultiBlocProvider(
@@ -336,10 +340,43 @@ class _CarouselContentState extends State<_CarouselContent>
                       ),
                     ),
                   ),
-                if (!widget.post.post.hasParentOrChildren)
+                if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
-                RecommendArtistList(post: widget.post.post),
-                RecommendCharacterList(post: widget.post.post),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          '${post.totalComments} Comments',
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
+                      ),
+                      ...post.comments
+                          .map((e) => Padding(
+                                padding: const EdgeInsets.all(4),
+                                child: SimpleCommentItem(
+                                  authorName:
+                                      e.creator?.name.value ?? 'Anonymous',
+                                  content: e.body,
+                                  createdAt: e.createdAt,
+                                ),
+                              ))
+                          .toList(),
+                      if (post.totalComments > post.comments.length)
+                        TextButton.icon(
+                          onPressed: () =>
+                              showCommentPage(context, postId: post.id),
+                          icon: const Icon(Icons.chevron_right),
+                          label: const Text('Show more comments'),
+                        )
+                    ],
+                  ),
+                ),
+                RecommendArtistList(post: post),
+                RecommendCharacterList(post: post),
               ],
             ),
           ),

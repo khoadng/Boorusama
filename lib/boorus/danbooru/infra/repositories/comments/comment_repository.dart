@@ -8,6 +8,9 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
+const String commentResourceApiParam =
+    'creator,id,post_id,body,score,is_deleted,created_at,updated_at,is_sticky,do_not_bump_post,updater_id';
+
 List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
       value: value,
       converter: (item) => CommentDto.fromJson(item),
@@ -32,8 +35,7 @@ class CommentRepository implements ICommentRepository {
           .getComments(
             postId,
             1000,
-            only:
-                'creator,id,post_id,body,score,is_deleted,created_at,updated_at,is_sticky,do_not_bump_post,updater_id',
+            only: commentResourceApiParam,
             cancelToken: cancelToken,
           )
           .then(parseComment)

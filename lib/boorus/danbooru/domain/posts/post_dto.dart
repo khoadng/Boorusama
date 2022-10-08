@@ -190,7 +190,9 @@ Post postDtoToPost(PostDto dto) {
 
     final comments = dto.comments
         .map((e) => CommentDto.fromJson(e))
-        .map((e) => commentDtoToComment(e));
+        .map((e) => commentDtoToComment(e))
+        .where(isCommentValid)
+        .toList();
 
     return Post(
       id: dto.id!,

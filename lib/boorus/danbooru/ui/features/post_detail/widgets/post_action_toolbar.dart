@@ -153,61 +153,7 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildCommentButton(BuildContext context) {
     return IconButton(
-      onPressed: () => Screen.of(context).size == ScreenSize.small
-          ? showBarModalBottomSheet(
-              expand: false,
-              context: context,
-              builder: (context) => CommentPage(
-                postId: post.id,
-              ),
-            )
-          : showSideSheetFromRight(
-              width: MediaQuery.of(context).size.width * 0.41,
-              body: Container(
-                  color: Colors.transparent,
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).viewPadding.top),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: kToolbarHeight * 0.8,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).backgroundColor,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(6),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const SizedBox(width: 8),
-                            Text(
-                              'comment.comments',
-                              style: Theme.of(context).textTheme.headline6,
-                            ).tr(),
-                            const Spacer(),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: Navigator.of(context).pop,
-                                child: const Icon(Icons.close),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: CommentPage(
-                          useAppBar: false,
-                          postId: post.id,
-                        ),
-                      )
-                    ],
-                  )),
-              context: context,
-            ),
+      onPressed: () => showCommentPage(context, postId: post.id),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
       ),

@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/widgets/side_sheet.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,7 +12,67 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'widgets/widgets.dart';
+
+Future<T?> showCommentPage<T>(
+  BuildContext context, {
+  required int postId,
+}) =>
+    Screen.of(context).size == ScreenSize.small
+        ? showBarModalBottomSheet<T>(
+            context: context,
+            builder: (context) => CommentPage(
+              postId: postId,
+            ),
+          )
+        : showSideSheetFromRight(
+            width: MediaQuery.of(context).size.width * 0.41,
+            body: Container(
+                color: Colors.transparent,
+                padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).viewPadding.top),
+                child: Column(
+                  children: [
+                    Container(
+                      height: kToolbarHeight * 0.8,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).backgroundColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(6),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          const SizedBox(width: 8),
+                          Text(
+                            'comment.comments',
+                            style: Theme.of(context).textTheme.headline6,
+                          ).tr(),
+                          const Spacer(),
+                          Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: Navigator.of(context).pop,
+                              child: const Icon(Icons.close),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                      ),
+                    ),
+                    Expanded(
+                      child: CommentPage(
+                        useAppBar: false,
+                        postId: postId,
+                      ),
+                    )
+                  ],
+                )),
+            context: context,
+          );
 
 class CommentPage extends StatefulWidget {
   const CommentPage({
