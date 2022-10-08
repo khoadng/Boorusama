@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/info_chips.dart';
@@ -174,6 +175,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     color: Theme.of(context).backgroundColor,
                     width: _infoBarWidth,
                     child: _LargeLayoutContent(
+                      key: ValueKey(post.id),
                       post: postData,
                       imagePath: imagePath,
                       size: screenSize,
@@ -398,6 +400,16 @@ class _LargeLayoutContent extends StatelessWidget {
               ArtistSection(
                 post: post.post,
               ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: RepaintBoundary(
+                      child: PostStatsTile(
+                    post: post.post,
+                    padding: EdgeInsets.zero,
+                  )),
+                ),
+              ),
               if (!post.post.hasParentOrChildren) const Divider(),
               if (post.post.hasParentOrChildren)
                 Padding(
@@ -429,57 +441,64 @@ class _LargeLayoutContent extends StatelessWidget {
                     ),
                   ),
                 ),
-              BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.success) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (state.data!.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              top: 16,
-                            ),
-                            child: Text(
-                              '${state.data!.length} Pools',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).hintColor,
+              BlocProvider(
+                create: (context) => PoolFromPostIdBloc(
+                  poolRepository: context.read<PoolRepository>(),
+                )..add(PoolFromPostIdRequested(postId: post.post.id)),
+                child:
+                    BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.data!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                top: 16,
+                              ),
+                              child: Text(
+                                '${state.data!.length} Pools',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).hintColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ...state.data!
-                            .map((e) => Column(
-                                  children: [
-                                    ListTile(
-                                      dense: true,
-                                      visualDensity: VisualDensity.compact,
-                                      title: Text(
-                                        e.name.removeUnderscoreWithSpace(),
-                                        maxLines: 2,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
+                          ...state.data!
+                              .map((e) => Column(
+                                    children: [
+                                      ListTile(
+                                        dense: true,
+                                        visualDensity: VisualDensity.compact,
+                                        title: Text(
+                                          e.name.removeUnderscoreWithSpace(),
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        subtitle: Text('${e.postCount} posts'),
+                                        trailing: const Icon(Icons.arrow_right),
+                                        onTap: () =>
+                                            AppRouter.router.navigateTo(
+                                          context,
+                                          'pool/detail',
+                                          routeSettings:
+                                              RouteSettings(arguments: [e]),
+                                        ),
                                       ),
-                                      subtitle: Text('${e.postCount} posts'),
-                                      trailing: const Icon(Icons.arrow_right),
-                                      onTap: () => AppRouter.router.navigateTo(
-                                        context,
-                                        'pool/detail',
-                                        routeSettings:
-                                            RouteSettings(arguments: [e]),
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                            .toList(),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
+                                    ],
+                                  ))
+                              .toList(),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
               ),
               RecommendArtistList(
                 post: post.post,
@@ -519,8 +538,10 @@ class _LargeLayoutContent extends StatelessWidget {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: PostTagList(
-                  maxTagWidth: _infoBarWidth,
+                child: RepaintBoundary(
+                  child: PostTagList(
+                    maxTagWidth: _infoBarWidth,
+                  ),
                 ),
               )
             ],
@@ -708,10 +729,12 @@ class _SlideShowButtonState extends State<_SlideShowButton>
     return ValueListenableBuilder<bool>(
       valueListenable: widget.autoPlay,
       builder: (context, value, _) => value
-          ? AnimatedSpinningIcon(
-              icon: const Icon(Icons.sync),
-              animation: rotateAnimation,
-              onPressed: () => widget.autoPlay.value = false,
+          ? RepaintBoundary(
+              child: AnimatedSpinningIcon(
+                icon: const Icon(Icons.sync),
+                animation: rotateAnimation,
+                onPressed: () => widget.autoPlay.value = false,
+              ),
             )
           : IconButton(
               icon: const Icon(Icons.slideshow),

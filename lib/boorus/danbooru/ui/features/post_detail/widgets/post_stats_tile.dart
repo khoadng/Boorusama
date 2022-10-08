@@ -20,16 +20,17 @@ class PostStatsTile extends StatelessWidget {
   const PostStatsTile({
     Key? key,
     required this.post,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16),
   }) : super(key: key);
 
   final Post post;
+  final EdgeInsets padding;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
+      padding: padding,
+      child: Wrap(
         children: [
           _StatButton(
             enable: post.hasFavorite,
@@ -153,7 +154,7 @@ class _StatButton extends StatelessWidget {
         child: child,
       ),
       child: Padding(
-        padding: const EdgeInsets.all(6),
+        padding: const EdgeInsets.all(4),
         child: child,
       ),
     );
