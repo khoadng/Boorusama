@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -342,39 +340,6 @@ class _CarouselContentState extends State<_CarouselContent>
                   ),
                 if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(
-                          '${post.totalComments} Comments',
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                      ),
-                      ...post.comments
-                          .map((e) => Padding(
-                                padding: const EdgeInsets.all(4),
-                                child: SimpleCommentItem(
-                                  authorName:
-                                      e.creator?.name.value ?? 'Anonymous',
-                                  content: e.body,
-                                  createdAt: e.createdAt,
-                                ),
-                              ))
-                          .toList(),
-                      if (post.totalComments > post.comments.length)
-                        TextButton.icon(
-                          onPressed: () =>
-                              showCommentPage(context, postId: post.id),
-                          icon: const Icon(Icons.chevron_right),
-                          label: const Text('Show more comments'),
-                        )
-                    ],
-                  ),
-                ),
                 RecommendArtistList(post: post),
                 RecommendCharacterList(post: post),
               ],

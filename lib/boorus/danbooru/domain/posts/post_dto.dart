@@ -191,7 +191,7 @@ Post postDtoToPost(PostDto dto) {
     final comments = dto.comments
         .map((e) => CommentDto.fromJson(e))
         .map((e) => commentDtoToComment(e))
-        .where(isCommentValid)
+        .where(notDeleted)
         .toList();
 
     return Post(
