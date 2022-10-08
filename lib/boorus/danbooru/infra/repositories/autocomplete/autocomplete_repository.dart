@@ -6,12 +6,12 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart' as t;
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 import 'autocomplete_http_cache.dart';
 

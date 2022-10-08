@@ -124,8 +124,6 @@ final postDetailHandler = Handler(handlerFunc: (
   final postDatas = args[0] as List<PostData>;
   final index = args[1] as int;
 
-  final posts = postDatas.map((e) => e.post).toList();
-
   AutoScrollController? controller;
   if (args.length == 3) {
     controller = args[2];
