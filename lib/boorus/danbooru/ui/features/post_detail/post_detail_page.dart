@@ -5,13 +5,10 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -25,7 +22,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/info_chips.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -110,9 +109,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       if (Screen.of(context).size != ScreenSize.small) {
         context.read<TagBloc>().add(
             TagFetched(tags: widget.posts[widget.intitialIndex].post.tags));
-        context.read<ArtistCommentaryBloc>().add(ArtistCommentaryFetched(
-              postId: widget.posts[widget.intitialIndex].post.id,
-            ));
       }
     });
   }
@@ -173,8 +169,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 MultiBlocProvider(
                   providers: [
                     BlocProvider.value(value: context.read<TagBloc>()),
-                    BlocProvider.value(
-                        value: context.read<ArtistCommentaryBloc>()),
                   ],
                   child: Container(
                     color: Theme.of(context).backgroundColor,
@@ -198,9 +192,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       onPageChanged: (index) {
         if (screenSize != ScreenSize.small) {
           context.read<TagBloc>().add(TagFetched(tags: post.tags));
-          context
-              .read<ArtistCommentaryBloc>()
-              .add(ArtistCommentaryFetched(postId: post.id));
         }
       },
       autoPlay: autoPlay,
@@ -302,15 +293,19 @@ class _CarouselContentState extends State<_CarouselContent>
               mainAxisSize: MainAxisSize.min,
               children: [
                 InformationSection(post: post),
+                const Divider(height: 8, thickness: 1),
                 if (widget.actionBarDisplayBehavior ==
                     ActionBarDisplayBehavior.scrolling)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: ActionBar(
-                      imagePath: widget.imagePath,
-                      postData: widget.post,
-                    ),
+                  ActionBar(
+                    imagePath: widget.imagePath,
+                    postData: widget.post,
                   ),
+                const Divider(height: 8, thickness: 1),
+                ArtistSection(post: post),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: PostStatsTile(post: post),
+                ),
                 if (post.hasParentOrChildren)
                   ParentChildTile(
                     data: getParentChildData(post),
@@ -340,6 +335,10 @@ class _CarouselContentState extends State<_CarouselContent>
                   ),
                 if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 10),
+                  child: InfoChips(post: post),
+                ),
                 RecommendArtistList(post: post),
                 RecommendCharacterList(post: post),
               ],
@@ -392,34 +391,7 @@ class _LargeLayoutContent extends StatelessWidget {
               const Divider(height: 0),
               Padding(
                 padding: const EdgeInsets.all(12),
-                child: Wrap(
-                  spacing: 5,
-                  children: [
-                    InfoChip(
-                      leftLabel: const Text('post.detail.rating').tr(),
-                      rightLabel: Text(post.post.rating
-                          .toString()
-                          .split('.')
-                          .last
-                          .pascalCase),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                    InfoChip(
-                      leftLabel: const Text('post.detail.size').tr(),
-                      rightLabel: Text(filesize(post.post.fileSize, 1)),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                    InfoChip(
-                      leftLabel: const Text('post.detail.resolution').tr(),
-                      rightLabel: Text(
-                          '${post.post.width.toInt()}x${post.post.height.toInt()}'),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                  ],
-                ),
+                child: InfoChips(post: post.post),
               ),
               ArtistSection(
                 post: post.post,
@@ -754,55 +726,5 @@ class _SlideShowButtonState extends State<_SlideShowButton>
         ..stop()
         ..reset();
     }
-  }
-}
-
-class InfoChip extends StatelessWidget {
-  const InfoChip({
-    Key? key,
-    required this.leftLabel,
-    required this.rightLabel,
-    required this.leftColor,
-    required this.rightColor,
-  }) : super(key: key);
-
-  final Color leftColor;
-  final Color rightColor;
-  final Widget leftLabel;
-  final Widget rightLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: leftColor,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 1),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
-            ),
-          ),
-          label: leftLabel,
-        ),
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: rightColor,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(8),
-              bottomRight: Radius.circular(8),
-            ),
-          ),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-          label: rightLabel,
-        )
-      ],
-    );
   }
 }

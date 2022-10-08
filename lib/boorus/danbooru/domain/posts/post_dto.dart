@@ -1,4 +1,5 @@
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
@@ -50,6 +51,7 @@ class PostDto {
     required this.largeFileUrl,
     required this.previewFileUrl,
     required this.comments,
+    this.artistCommentary,
   });
 
   factory PostDto.fromJson(Map<String, dynamic> json) => PostDto(
@@ -105,6 +107,7 @@ class PostDto {
         largeFileUrl: json['large_file_url'],
         previewFileUrl: json['preview_file_url'],
         comments: json['comments'],
+        artistCommentary: json['artist_commentary'],
       );
 
   final int? id;
@@ -153,6 +156,7 @@ class PostDto {
   final String? largeFileUrl;
   final String? previewFileUrl;
   final List<dynamic> comments;
+  final dynamic artistCommentary;
 }
 
 List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
@@ -194,6 +198,10 @@ Post postDtoToPost(PostDto dto) {
         .where(notDeleted)
         .toList();
 
+    final artistCommentaryDto = dto.artistCommentary != null
+        ? ArtistCommentaryDto.fromJson(dto.artistCommentary)
+        : null;
+
     return Post(
       id: dto.id!,
       previewImageUrl: dto.previewFileUrl!,
@@ -225,6 +233,9 @@ Post postDtoToPost(PostDto dto) {
       hasLarge: dto.hasLarge ?? false,
       comments: comments.take(3).toList(),
       totalComments: comments.length,
+      artistCommentary: artistCommentaryDto != null
+          ? artistCommentaryDtoToArtistCommentary(artistCommentaryDto)
+          : null,
     );
   } catch (e) {
     return Post.empty();

@@ -50,7 +50,10 @@ class PostTagList extends StatelessWidget {
               ],
             );
           } else {
-            return const SizedBox.shrink();
+            return const Padding(
+              padding: EdgeInsets.only(top: 32),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            );
           }
         },
       ),

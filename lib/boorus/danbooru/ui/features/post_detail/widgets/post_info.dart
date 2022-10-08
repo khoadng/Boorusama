@@ -7,13 +7,9 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -69,45 +65,6 @@ class _PostInfoState extends State<PostInfo> {
             shrinkWrap: true,
             slivers: [
               SliverToBoxAdapter(
-                child: ArtistSection(
-                  post: widget.post,
-                ),
-              ),
-              SliverToBoxAdapter(
-                  child: Container(
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6),
-                    color: Theme.of(context).cardColor),
-                margin: const EdgeInsets.all(10),
-                child: Column(
-                  children: [
-                    ListTile(
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      title: const Text('post.detail.size').tr(),
-                      trailing: Text(filesize(widget.post.fileSize, 1)),
-                    ),
-                    ListTile(
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      title: const Text('post.detail.resolution').tr(),
-                      trailing: Text(
-                          '${widget.post.width.toInt()}x${widget.post.height.toInt()}'),
-                    ),
-                    ListTile(
-                      dense: true,
-                      visualDensity: VisualDensity.compact,
-                      title: const Text('post.detail.rating').tr(),
-                      trailing: Text(widget.post.rating
-                          .toString()
-                          .split('.')
-                          .last
-                          .pascalCase),
-                    ),
-                  ],
-                ),
-              )),
-              SliverToBoxAdapter(
                   child: BlocProvider.value(
                 value: context.read<TagBloc>()
                   ..add(TagFetched(tags: widget.post.tags)),
@@ -141,76 +98,51 @@ class ArtistSection extends StatefulWidget {
 class _ArtistSectionState extends State<ArtistSection> {
   final artistCommentaryDisplay =
       ValueNotifier(ArtistCommentaryTranlationState.original);
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context
-          .read<ArtistCommentaryBloc>()
-          .add(ArtistCommentaryFetched(postId: widget.post.id));
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ArtistCommentaryBloc, ArtistCommentaryState>(
-      builder: (context, state) {
-        if (state.status == LoadStatus.success) {
-          final artistCommentary = state.commentary;
+    if (widget.post.artistCommentary == null) {
+      return Container();
+    }
 
-          return ValueListenableBuilder<ArtistCommentaryTranlationState>(
-            valueListenable: artistCommentaryDisplay,
-            builder: (context, display, _) => Wrap(
-              children: [
-                SourceLink(
-                  name: widget.post.artistTags.isEmpty
-                      ? ''
-                      : widget.post.artistTags.first,
-                  title: Text(widget.post.artistTags.join(' ')),
-                  uri: widget.post.source.uri,
-                  actionBuilder: () => artistCommentary.isTranslated
-                      ? PopupMenuButton<ArtistCommentaryTranlationState>(
-                          padding: EdgeInsets.zero,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          onSelected: (value) =>
-                              artistCommentaryDisplay.value = value,
-                          itemBuilder: (_) => [
-                            PopupMenuItem<ArtistCommentaryTranlationState>(
-                              value: getTranslationNextState(display),
-                              child: Text(getTranslationText(display)).tr(),
-                            ),
-                          ],
-                        )
-                      : const SizedBox.shrink(),
-                ),
-                if (artistCommentary.hasCommentary)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                    ),
-                    child: SelectableText(
-                      getDescriptionText(display, artistCommentary),
-                    ),
-                  ),
-              ],
-            ),
-          );
-        } else if (state.status == LoadStatus.initial ||
-            state.status == LoadStatus.loading) {
-          return const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(
-              child: SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator.adaptive(strokeWidth: 2),
+    final artistCommentary = widget.post.artistCommentary!;
+
+    return ValueListenableBuilder<ArtistCommentaryTranlationState>(
+      valueListenable: artistCommentaryDisplay,
+      builder: (context, display, _) => Wrap(
+        children: [
+          SourceLink(
+            name: widget.post.artistTags.isEmpty
+                ? ''
+                : widget.post.artistTags.first,
+            title: Text(widget.post.artistTags.join(' ')),
+            uri: widget.post.source.uri,
+            actionBuilder: () => artistCommentary.isTranslated
+                ? PopupMenuButton<ArtistCommentaryTranlationState>(
+                    padding: EdgeInsets.zero,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    onSelected: (value) =>
+                        artistCommentaryDisplay.value = value,
+                    itemBuilder: (_) => [
+                      PopupMenuItem<ArtistCommentaryTranlationState>(
+                        value: getTranslationNextState(display),
+                        child: Text(getTranslationText(display)).tr(),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
+          if (artistCommentary.hasCommentary)
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: SelectableText(
+                getDescriptionText(display, artistCommentary),
               ),
             ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
+        ],
+      ),
     );
   }
 }
