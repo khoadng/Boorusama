@@ -150,6 +150,7 @@ abstract class Api {
     @Query('date') String date,
     @Query('scale') String scale,
     @Query('page') int page,
+    @Query('only') String only,
     @Query('limit') int limit,
   );
 
@@ -160,6 +161,7 @@ abstract class Api {
     @Query('date') String date,
     @Query('scale') String scale,
     @Query('page') int page,
+    @Query('only') String only,
     @Query('limit') int limit,
   );
 
@@ -168,6 +170,7 @@ abstract class Api {
     @Query('login') String login,
     @Query('api_key') String apiKey,
     @Query('date') String date,
+    @Query('only') String only,
   );
 
   @GET('/explore/posts/searches.json')

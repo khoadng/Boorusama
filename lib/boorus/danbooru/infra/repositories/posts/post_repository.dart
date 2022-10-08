@@ -44,6 +44,7 @@ class PostRepository implements IPostRepository {
               '${date.year}-${date.month}-${date.day}',
               scale.toString().split('.').last,
               page,
+              _postParams,
               _limit,
             ),
           )
@@ -77,6 +78,7 @@ class PostRepository implements IPostRepository {
               account.username,
               account.apiKey,
               '${date.year}-${date.month}-${date.day}',
+              _postParams,
             ),
           )
           .then(parsePost)
@@ -113,6 +115,7 @@ class PostRepository implements IPostRepository {
               '${date.year}-${date.month}-${date.day}',
               scale.toString().split('.').last,
               page,
+              _postParams,
               _limit,
             ),
           )
