@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -15,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/string_utils.dart';
+import 'package:boorusama/core/application/comment_parser.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
 import 'post_tag_list.dart';
@@ -137,8 +139,15 @@ class _ArtistSectionState extends State<ArtistSection> {
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
               ),
-              child: SelectableText(
-                getDescriptionText(display, artistCommentary),
+              child: SelectableHtml(
+                style: {
+                  'body': Style(
+                    whiteSpace: WhiteSpace.PRE,
+                  ),
+                },
+                data: getDescriptionText(display, artistCommentary),
+                onLinkTap: (url, context, attributes, element) =>
+                    url != null ? launchExternalUrl(Uri.parse(url)) : null,
               ),
             ),
         ],
@@ -255,9 +264,14 @@ String getDescriptionText(
   ArtistCommentaryTranlationState currentState,
   ArtistCommentary artistCommentary,
 ) {
-  if (currentState == ArtistCommentaryTranlationState.translated) {
-    return '${artistCommentary.translatedTitle}\n${artistCommentary.translatedDescription}';
-  } else {
-    return '${artistCommentary.originalTitle}\n${artistCommentary.originalDescription}';
-  }
+  final titleTranslated = artistCommentary.translatedTitle != ''
+      ? '<h2>${artistCommentary.translatedTitle}</h2>'
+      : '';
+  final titleOriginal = artistCommentary.originalTitle != ''
+      ? '<h2>${artistCommentary.originalTitle}</h2>'
+      : '';
+  return parseTextToHtml(
+      currentState == ArtistCommentaryTranlationState.translated
+          ? '$titleTranslated${artistCommentary.translatedDescription}'
+          : '$titleOriginal${artistCommentary.originalDescription}');
 }
