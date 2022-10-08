@@ -188,7 +188,10 @@ Post postDtoToPost(PostDto dto) {
       );
     }
 
-    final comments = _commentDtosToComments(dto.comments);
+    final comments = dto.comments
+        .map((e) => CommentDto.fromJson(e))
+        .map((e) => commentDtoToComment(e));
+
     return Post(
       id: dto.id!,
       previewImageUrl: dto.previewFileUrl!,
@@ -225,6 +228,3 @@ Post postDtoToPost(PostDto dto) {
     return Post.empty();
   }
 }
-
-Iterable<Comment> _commentDtosToComments(List<dynamic> dtos) =>
-    dtos.map((e) => commentDtoToComment(e));
