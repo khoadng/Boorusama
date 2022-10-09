@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
@@ -340,8 +341,19 @@ class _CarouselContentState extends State<_CarouselContent>
                 if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10, top: 10),
+                  padding: const EdgeInsets.only(left: 10, top: 10, bottom: 5),
                   child: RepaintBoundary(child: InfoChips(post: post)),
+                ),
+                BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return ExpansionTile(
+                      title: Text('${post.tags.length} tags'),
+                      children: [
+                        SimplePostTagList(post: post),
+                        const SizedBox(height: 8),
+                      ],
+                    );
+                  },
                 ),
                 RecommendArtistList(post: post),
                 RecommendCharacterList(post: post),
@@ -382,7 +394,6 @@ class _LargeLayoutContent extends StatelessWidget {
               ),
               InformationSection(
                 post: post.post,
-                tappable: false,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
               Padding(

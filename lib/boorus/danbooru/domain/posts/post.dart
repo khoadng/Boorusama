@@ -16,6 +16,7 @@ class Post extends Equatable {
     required this.characterTags,
     required this.artistTags,
     required this.generalTags,
+    required this.metaTags,
     required this.tags,
     required this.width,
     required this.height,
@@ -50,6 +51,7 @@ class Post extends Equatable {
         characterTags: const [],
         artistTags: const [],
         generalTags: const [],
+        metaTags: const [],
         tags: const [],
         width: 1,
         height: 1,
@@ -94,6 +96,7 @@ class Post extends Equatable {
     required List<String> characterTags,
     required List<String> copyrightTags,
     required List<String> artistTags,
+    required List<String> metaTags,
     required bool hasChildren,
     required bool hasParent,
     required bool hasLarge,
@@ -108,6 +111,7 @@ class Post extends Equatable {
         characterTags: characterTags,
         artistTags: artistTags,
         generalTags: generalTags,
+        metaTags: metaTags,
         tags: tags,
         width: imageWidth,
         height: imageHeight,
@@ -139,6 +143,7 @@ class Post extends Equatable {
   final List<String> characterTags;
   final List<String> artistTags;
   final List<String> generalTags;
+  final List<String> metaTags;
   final List<String> tags;
   final double width;
   final double height;

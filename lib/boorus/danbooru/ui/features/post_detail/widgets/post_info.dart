@@ -7,78 +7,14 @@ import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:boorusama/core/utils.dart';
-import 'post_tag_list.dart';
-
-class PostInfo extends StatefulWidget {
-  const PostInfo({
-    Key? key,
-    required this.post,
-    this.scrollController,
-    this.isModal = true,
-  }) : super(key: key);
-
-  final Post post;
-  final ScrollController? scrollController;
-  final bool isModal;
-
-  @override
-  State<PostInfo> createState() => _PostInfoState();
-}
-
-class _PostInfoState extends State<PostInfo> {
-  late final scrollController = widget.scrollController ?? ScrollController();
-
-  @override
-  void dispose() {
-    if (widget.scrollController == null) {
-      scrollController.dispose();
-    }
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ConditionalParentWidget(
-      condition: widget.isModal,
-      conditionalBuilder: (child) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.75,
-        child: Modal(
-          child: child,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: Padding(
-          padding: const EdgeInsets.all(12),
-          child: CustomScrollView(
-            controller: widget.scrollController,
-            shrinkWrap: true,
-            slivers: [
-              SliverToBoxAdapter(
-                  child: BlocProvider.value(
-                value: context.read<TagBloc>()
-                  ..add(TagFetched(tags: widget.post.tags)),
-                child: const PostTagList(),
-              )),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
 
 enum ArtistCommentaryTranlationState {
   original,
@@ -143,6 +79,9 @@ class _ArtistSectionState extends State<ArtistSection> {
                 style: {
                   'body': Style(
                     whiteSpace: WhiteSpace.pre,
+                  ),
+                  'h2': Style(
+                    padding: const EdgeInsets.only(top: 4, bottom: 8),
                   ),
                 },
                 data: getDescriptionText(display, artistCommentary),

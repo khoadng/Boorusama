@@ -16,6 +16,7 @@ Post createPost(int id, List<String> tags) => Post(
       characterTags: const [],
       artistTags: const [],
       generalTags: const [],
+      metaTags: const [],
       tags: tags,
       width: 1,
       height: 1,
