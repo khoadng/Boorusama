@@ -44,3 +44,11 @@ extension ArtistCommentaryDtoX on ArtistCommentaryDto {
         translatedDescription: translatedDescription ?? '');
   }
 }
+
+ArtistCommentary artistCommentaryDtoToArtistCommentary(ArtistCommentaryDto d) =>
+    ArtistCommentary(
+      originalTitle: d.originalTitle ?? '',
+      originalDescription: d.originalDescription ?? '',
+      translatedTitle: d.translatedTitle ?? '',
+      translatedDescription: d.translatedDescription ?? '',
+    );

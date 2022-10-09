@@ -2,6 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
@@ -37,6 +38,7 @@ class Post extends Equatable {
     required this.hasLarge,
     required this.comments,
     required this.totalComments,
+    this.artistCommentary,
   });
 
   factory Post.empty() => Post(
@@ -159,6 +161,7 @@ class Post extends Equatable {
   final bool hasLarge;
   final List<Comment> comments;
   final int totalComments;
+  final ArtistCommentary? artistCommentary;
 
   double get aspectRatio => width / height;
 

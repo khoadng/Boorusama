@@ -50,30 +50,33 @@ class RecommendArtistList extends StatelessWidget {
 
               if (recommendedItems.isEmpty) return const SizedBox.shrink();
 
-              return Column(children: [
-                ...recommendedItems
-                    .map((item) => RecommendPostSection(
-                          header: header?.call(item) ??
-                              ListTile(
-                                onTap: () => AppRouter.router.navigateTo(
-                                  context,
-                                  '/artist',
-                                  routeSettings: RouteSettings(
-                                    arguments: [
-                                      item.tag,
-                                      post.normalImageUrl,
-                                    ],
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ...recommendedItems
+                      .map((item) => RecommendPostSection(
+                            header: header?.call(item) ??
+                                ListTile(
+                                  onTap: () => AppRouter.router.navigateTo(
+                                    context,
+                                    '/artist',
+                                    routeSettings: RouteSettings(
+                                      arguments: [
+                                        item.tag,
+                                        post.normalImageUrl,
+                                      ],
+                                    ),
                                   ),
+                                  title: Text(item.title),
+                                  trailing: const Icon(
+                                      Icons.keyboard_arrow_right_rounded),
                                 ),
-                                title: Text(item.title),
-                                trailing: const Icon(
-                                    Icons.keyboard_arrow_right_rounded),
-                              ),
-                          posts: item.posts,
-                        ))
-                    .toList(),
-                if (useSeperator) const Divider(),
-              ]);
+                            posts: item.posts,
+                          ))
+                      .toList(),
+                  if (useSeperator) const Divider(),
+                ],
+              );
             } else {
               return const SizedBox.shrink();
             }

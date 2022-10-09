@@ -50,7 +50,10 @@ class PostTagList extends StatelessWidget {
               ],
             );
           } else {
-            return const SizedBox.shrink();
+            return const Padding(
+              padding: EdgeInsets.only(top: 32),
+              child: Center(child: CircularProgressIndicator.adaptive()),
+            );
           }
         },
       ),
@@ -71,7 +74,6 @@ class PostTagList extends StatelessWidget {
           itemCount: tags.length,
           itemBuilder: (index) {
             final tag = tags[index];
-            final tagKey = GlobalKey();
 
             return ContextMenu<String>(
               items: [
@@ -95,53 +97,7 @@ class PostTagList extends StatelessWidget {
                   '/posts/search',
                   routeSettings: RouteSettings(arguments: [tag.rawName]),
                 ),
-                child: BlocBuilder<ThemeBloc, ThemeState>(
-                  builder: (context, state) {
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      key: tagKey,
-                      children: [
-                        Chip(
-                            visualDensity: const VisualDensity(
-                                horizontal: -4, vertical: -4),
-                            backgroundColor:
-                                getTagColor(tag.category, state.theme),
-                            shape: const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(8),
-                                    bottomLeft: Radius.circular(8))),
-                            label: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                  maxWidth: maxTagWidth ??
-                                      MediaQuery.of(context).size.width * 0.70),
-                              child: Text(
-                                tag.displayName,
-                                overflow: TextOverflow.fade,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: state.theme == ThemeMode.light
-                                        ? Colors.white
-                                        : Colors.white),
-                              ),
-                            )),
-                        Chip(
-                          visualDensity:
-                              const VisualDensity(horizontal: -4, vertical: -4),
-                          backgroundColor: Colors.grey[800],
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.only(
-                                  topRight: Radius.circular(8),
-                                  bottomRight: Radius.circular(8))),
-                          label: Text(
-                            tag.postCount.toString(),
-                            style: const TextStyle(
-                                color: Colors.white60, fontSize: 12),
-                          ),
-                        )
-                      ],
-                    );
-                  },
-                ),
+                child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
               ),
             );
           },
@@ -150,6 +106,68 @@ class PostTagList extends StatelessWidget {
     );
   }
 }
+
+class _Chip extends StatelessWidget {
+  const _Chip({
+    Key? key,
+    required this.tag,
+    required this.maxTagWidth,
+  }) : super(key: key);
+
+  final Tag tag;
+  final double? maxTagWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeBloc, ThemeState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Chip(
+                visualDensity:
+                    const VisualDensity(horizontal: -4, vertical: -4),
+                backgroundColor: getTagColor(tag.category, state.theme),
+                shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(8),
+                        bottomLeft: Radius.circular(8))),
+                label: ConstrainedBox(
+                  constraints: BoxConstraints(
+                      maxWidth: maxTagWidth ??
+                          MediaQuery.of(context).size.width * 0.70),
+                  child: Text(
+                    _getTagStringDisplayName(tag),
+                    overflow: TextOverflow.fade,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: state.theme == ThemeMode.light
+                            ? Colors.white
+                            : Colors.white),
+                  ),
+                )),
+            Chip(
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              backgroundColor: Colors.grey[800],
+              shape: const RoundedRectangleBorder(
+                  borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(8),
+                      bottomRight: Radius.circular(8))),
+              label: Text(
+                tag.postCount.toString(),
+                style: const TextStyle(color: Colors.white60, fontSize: 12),
+              ),
+            )
+          ],
+        );
+      },
+    );
+  }
+}
+
+String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
+    ? '${tag.displayName.substring(0, 30)}...'
+    : tag.displayName;
 
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle(

@@ -30,7 +30,10 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   flutter_downloader: ^1.8.4
   flutter_hooks: ^0.18.4
-  flutter_html: ^3.0.0-alpha.5
+  flutter_html:
+    git:
+      url: https://github.com/khoadng/flutter_html.git
+      ref: rebuild-fix
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^11.0.0
   flutter_portal: ^1.1.1
