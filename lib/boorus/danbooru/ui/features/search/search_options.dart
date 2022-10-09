@@ -1,14 +1,17 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/warning_container.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 
@@ -24,16 +27,6 @@ class SearchOptions extends StatefulWidget {
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
 
-  static const icons = {
-    // "fav": Icons.favorite,
-    'favcount': FontAwesomeIcons.arrowUpWideShort,
-    // "id": FontAwesomeIcons.idCard,
-    // "date": FontAwesomeIcons.calendar,
-    'age': FontAwesomeIcons.clock,
-    'rating': FontAwesomeIcons.exclamation,
-    'score': FontAwesomeIcons.star,
-  };
-
   final IConfig config;
   final List<Metatag> metatags;
 
@@ -48,7 +41,6 @@ class _SearchOptionsState extends State<SearchOptions>
     duration: kThemeAnimationDuration,
   );
 
-  late List<Metatag> tags = widget.metatags;
   bool editMode = false;
 
   @override
@@ -98,9 +90,7 @@ class _SearchOptionsState extends State<SearchOptions>
                         if (!editMode)
                           IconButton(
                             splashRadius: 18,
-                            onPressed: () => setState(() {
-                              editMode = editMode = true;
-                            }),
+                            onPressed: () => setState(() => editMode = true),
                             icon: const Icon(
                               Icons.edit,
                               size: 16,
@@ -126,23 +116,25 @@ class _SearchOptionsState extends State<SearchOptions>
               Wrap(
                 spacing: 4,
                 children: [
-                  ...tags
-                      .take(10)
-                      .map((e) => GestureDetector(
+                  ...context
+                      .read<UserMetatagRepository>()
+                      .getAll()
+                      .map((tag) => GestureDetector(
                             onTap: editMode
                                 ? null
-                                : () => widget.onOptionTap?.call(e.name),
+                                : () => widget.onOptionTap?.call(tag),
                             child: Chip(
-                              label: Text(e.name),
+                              label: Text(tag),
                               deleteIcon: const Icon(
                                 Icons.close,
                                 size: 18,
                               ),
                               onDeleted: editMode
-                                  ? () {
-                                      setState(() {
-                                        tags.remove(e);
-                                      });
+                                  ? () async {
+                                      await context
+                                          .read<UserMetatagRepository>()
+                                          .delete(tag);
+                                      setState(() => {});
                                     }
                                   : null,
                             ),
@@ -153,12 +145,48 @@ class _SearchOptionsState extends State<SearchOptions>
                       iconSize: 28,
                       splashRadius: 20,
                       onPressed: () {
-                        setState(() {
-                          tags.add(const Metatag(
-                              name: 'a',
-                              description: 'description',
-                              example: ''));
-                        });
+                        showAdaptiveBottomSheet(context,
+                            builder: (context) => Scaffold(
+                                  appBar: AppBar(
+                                    title: const Text('Metatags'),
+                                    automaticallyImplyLeading: false,
+                                    actions: [
+                                      IconButton(
+                                        onPressed: Navigator.of(context).pop,
+                                        icon: const Icon(Icons.close),
+                                      )
+                                    ],
+                                  ),
+                                  body: Column(
+                                    children: [
+                                      InfoContainer(
+                                          contentBuilder: (context) => const Text(
+                                              "Free metatags won't count against the tag limit")),
+                                      Expanded(
+                                        child: ListView.builder(
+                                          itemCount: widget.metatags.length,
+                                          itemBuilder: (context, index) {
+                                            final tag = widget.metatags[index];
+                                            return ListTile(
+                                              onTap: () => setState(() {
+                                                Navigator.of(context).pop();
+                                                context
+                                                    .read<
+                                                        UserMetatagRepository>()
+                                                    .put(tag.name);
+                                              }),
+                                              title: Text(tag.name),
+                                              trailing: tag.isFree
+                                                  ? const Chip(
+                                                      label: Text('Free'))
+                                                  : null,
+                                            );
+                                          },
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ));
                       },
                       icon: const Icon(Icons.add),
                     )

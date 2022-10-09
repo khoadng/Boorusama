@@ -340,21 +340,27 @@ class _CarouselContentState extends State<_CarouselContent>
                   ),
                 if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
+                BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, state) {
+                    return Theme(
+                      data: Theme.of(context)
+                          .copyWith(dividerColor: Colors.transparent),
+                      child: ExpansionTile(
+                        title: Text('${post.tags.length} tags'),
+                        children: [
+                          SimplePostTagList(post: post),
+                          const SizedBox(height: 8),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const Divider(height: 8, thickness: 1),
                 Padding(
                   padding: const EdgeInsets.only(left: 10, top: 10, bottom: 5),
                   child: RepaintBoundary(child: InfoChips(post: post)),
                 ),
-                BlocBuilder<ThemeBloc, ThemeState>(
-                  builder: (context, state) {
-                    return ExpansionTile(
-                      title: Text('${post.tags.length} tags'),
-                      children: [
-                        SimplePostTagList(post: post),
-                        const SizedBox(height: 8),
-                      ],
-                    );
-                  },
-                ),
+                const Divider(height: 8, thickness: 1),
                 RecommendArtistList(post: post),
                 RecommendCharacterList(post: post),
               ],

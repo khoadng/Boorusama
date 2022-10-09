@@ -48,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
@@ -110,6 +111,24 @@ void main() async {
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
 
+  Box<String> userMetatagBox;
+  if (await Hive.boxExists('user_metatags')) {
+    userMetatagBox = await Hive.openBox<String>('user_metatags');
+  } else {
+    userMetatagBox = await Hive.openBox<String>('user_metatags');
+    for (final e in [
+      'age',
+      'rating',
+      'order',
+      'score',
+      'id',
+      'user',
+    ]) {
+      await userMetatagBox.put(e, e);
+    }
+  }
+  final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
+
   final searchHistoryBox =
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
   final searchHistoryRepo = SearchHistoryRepository(
@@ -167,6 +186,7 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<IDownloadService>.value(value: downloader),
+            RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(
             providers: [
