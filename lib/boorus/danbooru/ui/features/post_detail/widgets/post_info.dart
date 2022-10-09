@@ -142,7 +142,7 @@ class _ArtistSectionState extends State<ArtistSection> {
               child: SelectableHtml(
                 style: {
                   'body': Style(
-                    whiteSpace: WhiteSpace.PRE,
+                    whiteSpace: WhiteSpace.pre,
                   ),
                 },
                 data: getDescriptionText(display, artistCommentary),

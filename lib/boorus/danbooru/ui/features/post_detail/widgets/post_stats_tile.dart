@@ -63,7 +63,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 'body': Style(
                   padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
+                  margin: Margins.zero,
                 ),
               },
               data: '<b>${post.favCount}</b> <span>Favorites</span>',
@@ -99,7 +99,7 @@ class PostStatsTile extends StatelessWidget {
                   ),
                   'body': Style(
                     padding: EdgeInsets.zero,
-                    margin: EdgeInsets.zero,
+                    margin: Margins.zero,
                   ),
                 },
                 data:
@@ -120,7 +120,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 'body': Style(
                   padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
+                  margin: Margins.zero,
                 ),
               },
               data:
