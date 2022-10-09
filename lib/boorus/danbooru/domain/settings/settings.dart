@@ -42,7 +42,7 @@ class Settings extends Equatable {
         blacklistedTags = json['hideBlacklist'] ?? [],
         themeMode = json['themeMode'] != null
             ? ThemeMode.values[json['themeMode']]
-            : ThemeMode.dark,
+            : ThemeMode.amoledDark,
         dataCollectingStatus = json['dataCollectingStatus'] != null
             ? DataCollectingStatus.values[json['dataCollectingStatus']]
             : DataCollectingStatus.allow,
