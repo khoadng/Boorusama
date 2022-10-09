@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -212,12 +213,14 @@ class _LargeLayout extends StatelessWidget {
                           );
                         } else {
                           return SearchOptions(
+                            metatags: context.read<TagInfo>().metatags,
                             config: context.read<IConfig>(),
                             onOptionTap: (value) {
+                              final query = '$value:';
+                              queryEditingController.text = query;
                               context
                                   .read<TagSearchBloc>()
-                                  .add(TagSearchChanged(value));
-                              queryEditingController.text = '$value:';
+                                  .add(TagSearchChanged(query));
                             },
                             onHistoryTap: (value) {
                               FocusManager.instance.primaryFocus?.unfocus();
@@ -336,12 +339,14 @@ class _SmallLayout extends StatelessWidget {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
                     return SearchOptions(
+                      metatags: context.read<TagInfo>().metatags,
                       config: context.read<IConfig>(),
                       onOptionTap: (value) {
+                        final query = '$value:';
+                        queryEditingController.text = query;
                         context
                             .read<TagSearchBloc>()
-                            .add(TagSearchChanged(value));
-                        queryEditingController.text = '$value:';
+                            .add(TagSearchChanged(query));
                       },
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
@@ -380,12 +385,6 @@ class _TagSuggestionItems extends StatelessWidget {
               tags: tagState.suggestionTags,
               histories: state.histories,
               currentQuery: tagState.query,
-              metatags: tagState.metaTagMatches,
-              onMetatagTap: (tag) {
-                final query = '${tag.name}:';
-                queryEditingController.text = query;
-                context.read<TagSearchBloc>().add(TagSearchChanged(query));
-              },
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
