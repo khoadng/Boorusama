@@ -9,7 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/home/tag_list.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
@@ -118,85 +118,89 @@ class _SearchOptionsState extends State<SearchOptions>
                   ],
                 ),
               ),
-              Wrap(
-                spacing: 4,
-                runSpacing: -4,
-                children: [
-                  ...context
-                      .read<UserMetatagRepository>()
-                      .getAll()
-                      .map((tag) => GestureDetector(
-                            onTap: editMode
-                                ? null
-                                : () => widget.onOptionTap?.call(tag),
-                            child: Chip(
-                              label: Text(tag),
-                              deleteIcon: const Icon(
-                                Icons.close,
-                                size: 18,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Wrap(
+                  spacing: 4,
+                  runSpacing: -4,
+                  children: [
+                    ...context
+                        .read<UserMetatagRepository>()
+                        .getAll()
+                        .map((tag) => GestureDetector(
+                              onTap: editMode
+                                  ? null
+                                  : () => widget.onOptionTap?.call(tag),
+                              child: Chip(
+                                label: Text(tag),
+                                deleteIcon: const Icon(
+                                  Icons.close,
+                                  size: 18,
+                                ),
+                                onDeleted: editMode
+                                    ? () async {
+                                        await context
+                                            .read<UserMetatagRepository>()
+                                            .delete(tag);
+                                        setState(() => {});
+                                      }
+                                    : null,
                               ),
-                              onDeleted: editMode
-                                  ? () async {
-                                      await context
-                                          .read<UserMetatagRepository>()
-                                          .delete(tag);
-                                      setState(() => {});
-                                    }
-                                  : null,
-                            ),
-                          ))
-                      .toList(),
-                  if (editMode)
-                    IconButton(
-                      iconSize: 28,
-                      splashRadius: 20,
-                      onPressed: () {
-                        showAdaptiveBottomSheet(context,
-                            builder: (context) => Scaffold(
-                                  appBar: AppBar(
-                                    title: const Text('Metatags'),
-                                    automaticallyImplyLeading: false,
-                                    actions: [
-                                      IconButton(
-                                        onPressed: Navigator.of(context).pop,
-                                        icon: const Icon(Icons.close),
-                                      )
-                                    ],
-                                  ),
-                                  body: Column(
-                                    children: [
-                                      InfoContainer(
-                                          contentBuilder: (context) => const Text(
-                                              "Free metatags won't count against the tag limit")),
-                                      Expanded(
-                                        child: ListView.builder(
-                                          itemCount: widget.metatags.length,
-                                          itemBuilder: (context, index) {
-                                            final tag = widget.metatags[index];
-                                            return ListTile(
-                                              onTap: () => setState(() {
-                                                Navigator.of(context).pop();
-                                                context
-                                                    .read<
-                                                        UserMetatagRepository>()
-                                                    .put(tag.name);
-                                              }),
-                                              title: Text(tag.name),
-                                              trailing: tag.isFree
-                                                  ? const Chip(
-                                                      label: Text('Free'))
-                                                  : null,
-                                            );
-                                          },
+                            ))
+                        .toList(),
+                    if (editMode)
+                      IconButton(
+                        iconSize: 28,
+                        splashRadius: 20,
+                        onPressed: () {
+                          showAdaptiveBottomSheet(context,
+                              builder: (context) => Scaffold(
+                                    appBar: AppBar(
+                                      title: const Text('Metatags'),
+                                      automaticallyImplyLeading: false,
+                                      actions: [
+                                        IconButton(
+                                          onPressed: Navigator.of(context).pop,
+                                          icon: const Icon(Icons.close),
+                                        )
+                                      ],
+                                    ),
+                                    body: Column(
+                                      children: [
+                                        InfoContainer(
+                                            contentBuilder: (context) => const Text(
+                                                "Free metatags won't count against the tag search limits")),
+                                        Expanded(
+                                          child: ListView.builder(
+                                            itemCount: widget.metatags.length,
+                                            itemBuilder: (context, index) {
+                                              final tag =
+                                                  widget.metatags[index];
+                                              return ListTile(
+                                                onTap: () => setState(() {
+                                                  Navigator.of(context).pop();
+                                                  context
+                                                      .read<
+                                                          UserMetatagRepository>()
+                                                      .put(tag.name);
+                                                }),
+                                                title: Text(tag.name),
+                                                trailing: tag.isFree
+                                                    ? const Chip(
+                                                        label: Text('Free'))
+                                                    : null,
+                                              );
+                                            },
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ));
-                      },
-                      icon: const Icon(Icons.add),
-                    )
-                ],
+                                      ],
+                                    ),
+                                  ));
+                        },
+                        icon: const Icon(Icons.add),
+                      )
+                  ],
+                ),
               ),
               if (editMode)
                 Row(
@@ -209,6 +213,7 @@ class _SearchOptionsState extends State<SearchOptions>
                         child: const Text('Done')),
                   ],
                 ),
+              const Divider(thickness: 1),
               Padding(
                 padding: const EdgeInsets.only(left: 10, top: 16),
                 child: Row(
@@ -223,7 +228,7 @@ class _SearchOptionsState extends State<SearchOptions>
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(top: 8),
+                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: BlocBuilder<SearchKeywordCubit,
                     AsyncLoadState<List<Search>>>(
                   builder: (context, state) {

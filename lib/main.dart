@@ -60,7 +60,7 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
-import 'boorus/danbooru/application/home/tag_list.dart';
+import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
@@ -291,8 +291,10 @@ void main() async {
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final popularSearchCubit =
-                      SearchKeywordCubit(popularSearchRepo)..getTags();
+                  final popularSearchCubit = SearchKeywordCubit(
+                    popularSearchRepo,
+                    settings.safeMode ? tagInfo.r18Tags.toSet() : {},
+                  )..getTags();
                   final profileCubit =
                       ProfileCubit(profileRepository: profileRepo);
                   final commentBloc = CommentBloc(

@@ -8,8 +8,10 @@ import '../common.dart';
 class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
   SearchKeywordCubit(
     this.popularSearchRepository,
+    this.excludedTags,
   ) : super(const AsyncLoadState.initial());
   final IPopularSearchRepository popularSearchRepository;
+  final Set<String> excludedTags;
 
   Future<void> getTags() async => tryAsync<List<Search>>(
       action: () => popularSearchRepository.getSearchByDate(DateTime.now()),
@@ -21,6 +23,10 @@ class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
           searches = await popularSearchRepository.getSearchByDate(
               DateTime.now().subtract(const Duration(days: 1)));
         }
-        emit(AsyncLoadState.success(searches));
+
+        final filtered =
+            searches.where((s) => !excludedTags.contains(s.keyword)).toList();
+
+        emit(AsyncLoadState.success(filtered));
       });
 }

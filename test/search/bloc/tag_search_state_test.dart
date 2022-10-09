@@ -16,7 +16,11 @@ import 'tag_search_state_test.mocks.dart';
 void main() {
   group('Tag search', () {
     final autocompleteRepository = MockAutocompleteRepository();
-    const tagInfo = TagInfo(metatags: [], defaultBlacklistedTags: []);
+    const tagInfo = TagInfo(
+      metatags: [],
+      defaultBlacklistedTags: [],
+      r18Tags: [],
+    );
 
     when(autocompleteRepository.getAutocomplete('a'))
         .thenAnswer((_) => Future.value([autocompleteData('a')]));
