@@ -228,6 +228,12 @@ class _LargeLayout extends StatelessWidget {
                                   .read<TagSearchBloc>()
                                   .add(TagSearchTagFromHistorySelected(value));
                             },
+                            onTagTap: (value) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              context
+                                  .read<TagSearchBloc>()
+                                  .add(TagSearchNewRawStringTagSelected(value));
+                            },
                           );
                         }
                       },
@@ -353,6 +359,12 @@ class _SmallLayout extends StatelessWidget {
                         context
                             .read<TagSearchBloc>()
                             .add(TagSearchTagFromHistorySelected(value));
+                      },
+                      onTagTap: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context
+                            .read<TagSearchBloc>()
+                            .add(TagSearchNewRawStringTagSelected(value));
                       },
                     );
                   }

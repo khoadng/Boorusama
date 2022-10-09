@@ -8,7 +8,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/home/tag_list.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/warning_container.dart';
@@ -21,11 +24,13 @@ class SearchOptions extends StatefulWidget {
     required this.config,
     this.onOptionTap,
     this.onHistoryTap,
+    this.onTagTap,
     required this.metatags,
   }) : super(key: key);
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<String>? onTagTap;
 
   final IConfig config;
   final List<Metatag> metatags;
@@ -115,6 +120,7 @@ class _SearchOptionsState extends State<SearchOptions>
               ),
               Wrap(
                 spacing: 4,
+                runSpacing: -4,
                 children: [
                   ...context
                       .read<UserMetatagRepository>()
@@ -203,6 +209,46 @@ class _SearchOptionsState extends State<SearchOptions>
                         child: const Text('Done')),
                   ],
                 ),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, top: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      'Trending'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8),
+                child: BlocBuilder<SearchKeywordCubit,
+                    AsyncLoadState<List<Search>>>(
+                  builder: (context, state) {
+                    if (state.status != LoadStatus.success) {
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else {
+                      return Wrap(
+                        spacing: 4,
+                        runSpacing: -4,
+                        children: state.data!
+                            .take(15)
+                            .map((e) => GestureDetector(
+                                  onTap: () => widget.onTagTap?.call(e.keyword),
+                                  child: Chip(
+                                      label:
+                                          Text(e.keyword.replaceAll('_', ' '))),
+                                ))
+                            .toList(),
+                      );
+                    }
+                  },
+                ),
+              ),
               SearchHistorySection(
                 onHistoryTap: (history) => widget.onHistoryTap?.call(history),
               ),
