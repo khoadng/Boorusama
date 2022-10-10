@@ -528,11 +528,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: rebuild-fix
-      resolved-ref: dbcfb663a110a1064b3deab228af879dc39c77de
+      ref: fix-rebuild
+      resolved-ref: cbca2e86e35ca9f37021f5a1e39e154da7e02eac
       url: "https://github.com/khoadng/flutter_html.git"
     source: git
-    version: "3.0.0-alpha.6"
+    version: "3.0.0-alpha.5"
   flutter_improved_scrolling:
     dependency: "direct main"
     description:
@@ -850,7 +850,7 @@ packages:
       name: numerus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "1.1.1"
   octo_image:
     dependency: transitive
     description:

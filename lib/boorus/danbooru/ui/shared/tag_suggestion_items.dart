@@ -105,7 +105,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                       ),
                       'body': Style(
                         padding: EdgeInsets.zero,
-                        margin: Margins.zero,
+                        margin: EdgeInsets.zero,
                       ),
                       'b': Style(
                         color: Colors.redAccent,
@@ -153,7 +153,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
         ),
         'body': Style(
           padding: EdgeInsets.zero,
-          margin: Margins.zero,
+          margin: EdgeInsets.zero,
         ),
         'b': Style(
           fontWeight: FontWeight.w900,
@@ -176,7 +176,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
         ),
         'body': Style(
           padding: EdgeInsets.zero,
-          margin: Margins.zero,
+          margin: EdgeInsets.zero,
         ),
         'b': Style(
           fontWeight: FontWeight.w900,

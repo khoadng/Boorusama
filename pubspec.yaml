@@ -33,7 +33,7 @@ dependencies:
   flutter_html:
     git:
       url: https://github.com/khoadng/flutter_html.git
-      ref: rebuild-fix
+      ref: fix-rebuild
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^11.0.0
   flutter_portal: ^1.1.1

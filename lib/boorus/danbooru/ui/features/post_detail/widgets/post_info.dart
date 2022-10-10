@@ -78,7 +78,7 @@ class _ArtistSectionState extends State<ArtistSection> {
               child: SelectableHtml(
                 style: {
                   'body': Style(
-                    whiteSpace: WhiteSpace.pre,
+                    whiteSpace: WhiteSpace.PRE,
                   ),
                   'h2': Style(
                     padding: const EdgeInsets.only(top: 4, bottom: 8),
