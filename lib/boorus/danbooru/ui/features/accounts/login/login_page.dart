@@ -30,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               WarningContainer(
                   contentBuilder: (context) =>
-                      const Text('Only support Danbooru for now')),
+                      const Text('Only support Danbooru.')),
               const Center(
                 child: LoginBox(),
               ),
