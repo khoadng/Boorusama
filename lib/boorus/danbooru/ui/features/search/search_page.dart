@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/selected_tag_chip.dart';
@@ -212,18 +213,26 @@ class _LargeLayout extends StatelessWidget {
                           );
                         } else {
                           return SearchOptions(
+                            metatags: context.read<TagInfo>().metatags,
                             config: context.read<IConfig>(),
                             onOptionTap: (value) {
+                              final query = '$value:';
+                              queryEditingController.text = query;
                               context
                                   .read<TagSearchBloc>()
-                                  .add(TagSearchChanged(value));
-                              queryEditingController.text = '$value:';
+                                  .add(TagSearchChanged(query));
                             },
                             onHistoryTap: (value) {
                               FocusManager.instance.primaryFocus?.unfocus();
                               context
                                   .read<TagSearchBloc>()
                                   .add(TagSearchTagFromHistorySelected(value));
+                            },
+                            onTagTap: (value) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              context
+                                  .read<TagSearchBloc>()
+                                  .add(TagSearchNewRawStringTagSelected(value));
                             },
                           );
                         }
@@ -336,18 +345,26 @@ class _SmallLayout extends StatelessWidget {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
                     return SearchOptions(
+                      metatags: context.read<TagInfo>().metatags,
                       config: context.read<IConfig>(),
                       onOptionTap: (value) {
+                        final query = '$value:';
+                        queryEditingController.text = query;
                         context
                             .read<TagSearchBloc>()
-                            .add(TagSearchChanged(value));
-                        queryEditingController.text = '$value:';
+                            .add(TagSearchChanged(query));
                       },
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<TagSearchBloc>()
                             .add(TagSearchTagFromHistorySelected(value));
+                      },
+                      onTagTap: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context
+                            .read<TagSearchBloc>()
+                            .add(TagSearchNewRawStringTagSelected(value));
                       },
                     );
                   }
@@ -380,12 +397,6 @@ class _TagSuggestionItems extends StatelessWidget {
               tags: tagState.suggestionTags,
               histories: state.histories,
               currentQuery: tagState.query,
-              metatags: tagState.metaTagMatches,
-              onMetatagTap: (tag) {
-                final query = '${tag.name}:';
-                queryEditingController.text = query;
-                context.read<TagSearchBloc>().add(TagSearchChanged(query));
-              },
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context

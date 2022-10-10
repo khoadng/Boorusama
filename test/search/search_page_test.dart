@@ -125,7 +125,11 @@ void main() {
       initial: const SearchState(displayState: DisplayState.options));
   TagSearchBloc createTagSearchBloc() => TagSearchBloc(
       autocompleteRepository: mockAutocompleteRepository,
-      tagInfo: const TagInfo(metatags: [], defaultBlacklistedTags: []));
+      tagInfo: const TagInfo(
+        metatags: [],
+        defaultBlacklistedTags: [],
+        r18Tags: [],
+      ));
   PostBloc createPostBloc() => PostBloc(
         postRepository: mockPostRepository,
         blacklistedTagsRepository: mockBlacklistedTagRepository,

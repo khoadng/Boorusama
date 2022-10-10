@@ -48,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
@@ -59,7 +60,7 @@ import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
-import 'boorus/danbooru/application/home/tag_list.dart';
+import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
@@ -109,6 +110,24 @@ void main() async {
 
   final accountBox = Hive.openBox('accounts');
   final accountRepo = AccountRepository(accountBox);
+
+  Box<String> userMetatagBox;
+  if (await Hive.boxExists('user_metatags')) {
+    userMetatagBox = await Hive.openBox<String>('user_metatags');
+  } else {
+    userMetatagBox = await Hive.openBox<String>('user_metatags');
+    for (final e in [
+      'age',
+      'rating',
+      'order',
+      'score',
+      'id',
+      'user',
+    ]) {
+      await userMetatagBox.put(e, e);
+    }
+  }
+  final userMetatagRepo = UserMetatagRepository(box: userMetatagBox);
 
   final searchHistoryBox =
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
@@ -167,6 +186,7 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<IDownloadService>.value(value: downloader),
+            RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -271,8 +291,10 @@ void main() async {
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
-                  final popularSearchCubit =
-                      SearchKeywordCubit(popularSearchRepo)..getTags();
+                  final popularSearchCubit = SearchKeywordCubit(
+                    popularSearchRepo,
+                    settings.safeMode ? tagInfo.r18Tags.toSet() : {},
+                  )..getTags();
                   final profileCubit =
                       ProfileCubit(profileRepository: profileRepo);
                   final commentBloc = CommentBloc(

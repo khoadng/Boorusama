@@ -42,7 +42,7 @@ class Settings extends Equatable {
         blacklistedTags = json['hideBlacklist'] ?? [],
         themeMode = json['themeMode'] != null
             ? ThemeMode.values[json['themeMode']]
-            : ThemeMode.dark,
+            : ThemeMode.amoledDark,
         dataCollectingStatus = json['dataCollectingStatus'] != null
             ? DataCollectingStatus.values[json['dataCollectingStatus']]
             : DataCollectingStatus.allow,
@@ -69,7 +69,7 @@ class Settings extends Equatable {
   static const defaultSettings = Settings(
     safeMode: true,
     blacklistedTags: '',
-    themeMode: ThemeMode.dark,
+    themeMode: ThemeMode.amoledDark,
     language: 'en',
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,

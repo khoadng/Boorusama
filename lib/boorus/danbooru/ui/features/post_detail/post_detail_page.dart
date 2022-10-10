@@ -24,7 +24,6 @@ import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/info_chips.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -285,88 +284,91 @@ class _CarouselContentState extends State<_CarouselContent>
     final screenSize = Screen.of(context).size;
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: RepaintBoundary(child: widget.media),
-        ),
-        if (screenSize == ScreenSize.small) ...[
-          SliverToBoxAdapter(child: PoolTiles(post: post)),
-          SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                InformationSection(post: post),
-                const Divider(height: 8, thickness: 1),
-                if (widget.actionBarDisplayBehavior ==
-                    ActionBarDisplayBehavior.scrolling)
-                  RepaintBoundary(
-                    child: ActionBar(
-                      imagePath: widget.imagePath,
-                      postData: widget.post,
-                    ),
-                  ),
-                const Divider(height: 8, thickness: 1),
-                ArtistSection(post: post),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: RepaintBoundary(child: PostStatsTile(post: post)),
-                ),
-                if (post.hasParentOrChildren)
-                  ParentChildTile(
-                    data: getParentChildData(post),
-                    onTap: (data) => showBarModalBottomSheet(
-                      context: context,
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc(
-                              postRepository: context.read<IPostRepository>(),
-                              blacklistedTagsRepository:
-                                  context.read<BlacklistedTagsRepository>(),
-                              favoritePostRepository:
-                                  context.read<IFavoritePostRepository>(),
-                              accountRepository:
-                                  context.read<IAccountRepository>(),
-                            )..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                    data.tagQueryForDataFetching),
-                              )),
-                          )
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
+        SliverList(
+            delegate: SliverChildListDelegate(
+          [
+            RepaintBoundary(child: widget.media),
+            if (screenSize == ScreenSize.small) ...[
+              PoolTiles(post: post),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InformationSection(post: post),
+                  const Divider(height: 8, thickness: 1),
+                  if (widget.actionBarDisplayBehavior ==
+                      ActionBarDisplayBehavior.scrolling)
+                    RepaintBoundary(
+                      child: ActionBar(
+                        imagePath: widget.imagePath,
+                        postData: widget.post,
                       ),
                     ),
-                  ),
-                if (!post.hasParentOrChildren)
                   const Divider(height: 8, thickness: 1),
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, top: 10, bottom: 5),
-                  child: RepaintBoundary(child: InfoChips(post: post)),
-                ),
-                BlocBuilder<ThemeBloc, ThemeState>(
-                  builder: (context, state) {
-                    return ExpansionTile(
-                      title: Text('${post.tags.length} tags'),
-                      children: [
-                        SimplePostTagList(post: post),
-                        const SizedBox(height: 8),
-                      ],
-                    );
-                  },
-                ),
-                RecommendArtistList(post: post),
-                RecommendCharacterList(post: post),
-              ],
-            ),
-          ),
-        ]
+                  ArtistSection(post: post),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: RepaintBoundary(child: PostStatsTile(post: post)),
+                  ),
+                  if (post.hasParentOrChildren)
+                    ParentChildTile(
+                      data: getParentChildData(post),
+                      onTap: (data) => showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => PostBloc(
+                                postRepository: context.read<IPostRepository>(),
+                                blacklistedTagsRepository:
+                                    context.read<BlacklistedTagsRepository>(),
+                                favoritePostRepository:
+                                    context.read<IFavoritePostRepository>(),
+                                accountRepository:
+                                    context.read<IAccountRepository>(),
+                              )..add(PostRefreshed(
+                                  tag: data.tagQueryForDataFetching,
+                                  fetcher: SearchedPostFetcher.fromTags(
+                                      data.tagQueryForDataFetching),
+                                )),
+                            )
+                          ],
+                          child:
+                              ParentChildPostPage(parentPostId: data.parentId),
+                        ),
+                      ),
+                    ),
+                  if (!post.hasParentOrChildren)
+                    const Divider(height: 8, thickness: 1),
+                  BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) {
+                      return Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          title: Text('${post.tags.length} tags'),
+                          children: [
+                            SimplePostTagList(post: post),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 8, thickness: 1),
+                  RecommendArtistList(post: post),
+                  RecommendCharacterList(post: post),
+                ],
+              ),
+            ]
+          ],
+        ))
       ],
     );
   }
 
   @override
-  bool get wantKeepAlive => !post.isVideo;
+  bool get wantKeepAlive => false;
 }
 
 class _LargeLayoutContent extends StatelessWidget {
@@ -385,10 +387,9 @@ class _LargeLayoutContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
               SizedBox(
                 height: MediaQuery.of(context).viewPadding.top,
               ),
@@ -404,10 +405,6 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               const Divider(height: 0),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: InfoChips(post: post.post),
-              ),
               ArtistSection(
                 post: post.post,
               ),

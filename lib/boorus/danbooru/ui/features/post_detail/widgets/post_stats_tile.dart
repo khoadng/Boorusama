@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post_favorite_info_bloc.dart';
@@ -50,23 +49,24 @@ class PostStatsTile extends StatelessWidget {
                 ),
               ),
             ),
-            child: Html(
-              shrinkWrap: true,
-              style: {
-                'b': Style(
+            child: RichText(
+              text: TextSpan(
+                text: '${post.favCount} ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w900,
                 ),
-                'span': Style(
-                  color: Theme.of(context).hintColor,
-                  fontSize: FontSize.small,
-                ),
-                'body': Style(
-                  padding: EdgeInsets.zero,
-                  margin: Margins.zero,
-                ),
-              },
-              data: '<b>${post.favCount}</b> <span>Favorites</span>',
+                children: [
+                  TextSpan(
+                    text: 'Favorites',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           _StatButton(
@@ -86,45 +86,46 @@ class PostStatsTile extends StatelessWidget {
                 ),
               ),
             ),
-            child: Html(
-                shrinkWrap: true,
-                style: {
-                  'b': Style(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.w900,
+            child: RichText(
+              text: TextSpan(
+                text: '${post.score} ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Points ${_generatePercentText(post)}',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).hintColor,
+                    ),
                   ),
-                  'span': Style(
-                    color: Theme.of(context).hintColor,
-                    fontSize: FontSize.small,
-                  ),
-                  'body': Style(
-                    padding: EdgeInsets.zero,
-                    margin: Margins.zero,
-                  ),
-                },
-                data:
-                    '<b>${post.score}</b> <span>Points ${_generatePercentText(post)}</span>'),
+                ],
+              ),
+            ),
           ),
           _StatButton(
             enable: post.hasComment,
-            child: Html(
-              shrinkWrap: true,
-              style: {
-                'b': Style(
-                  fontWeight: FontWeight.w900,
-                  color: Theme.of(context).hintColor,
+            child: RichText(
+              text: TextSpan(
+                text: '${post.totalComments} ',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
                 ),
-                'span': Style(
-                  color: Theme.of(context).hintColor,
-                  fontSize: FontSize.small,
-                ),
-                'body': Style(
-                  padding: EdgeInsets.zero,
-                  margin: Margins.zero,
-                ),
-              },
-              data:
-                  '<b>${post.totalComments}</b> <span>${"comment.comments".tr()}</span>',
+                children: [
+                  TextSpan(
+                    text: 'comment.comments'.tr(),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w400,
+                      color: Theme.of(context).hintColor,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

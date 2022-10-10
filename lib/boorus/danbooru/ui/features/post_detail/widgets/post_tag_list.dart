@@ -246,6 +246,9 @@ class _Badge extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         child: Ink(
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+          ),
           padding: EdgeInsets.symmetric(
               horizontal: label.length < 6 ? 10 : 4, vertical: 4),
           child: Text(

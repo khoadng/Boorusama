@@ -3,11 +3,18 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/warning_container.dart';
 import 'package:boorusama/core/utils.dart';
 import 'search_history.dart';
 
@@ -17,22 +24,16 @@ class SearchOptions extends StatefulWidget {
     required this.config,
     this.onOptionTap,
     this.onHistoryTap,
+    this.onTagTap,
+    required this.metatags,
   }) : super(key: key);
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
-
-  static const icons = {
-    // "fav": Icons.favorite,
-    'favcount': FontAwesomeIcons.arrowUpWideShort,
-    // "id": FontAwesomeIcons.idCard,
-    // "date": FontAwesomeIcons.calendar,
-    'age': FontAwesomeIcons.clock,
-    'rating': FontAwesomeIcons.exclamation,
-    'score': FontAwesomeIcons.star,
-  };
+  final ValueChanged<String>? onTagTap;
 
   final IConfig config;
+  final List<Metatag> metatags;
 
   @override
   State<SearchOptions> createState() => _SearchOptionsState();
@@ -44,6 +45,8 @@ class _SearchOptionsState extends State<SearchOptions>
     vsync: this,
     duration: kThemeAnimationDuration,
   );
+
+  bool editMode = false;
 
   @override
   void initState() {
@@ -80,11 +83,25 @@ class _SearchOptionsState extends State<SearchOptions>
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'search.search_options'.tr().toUpperCase(),
-                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
+                    Row(
+                      children: [
+                        Text(
+                          'search.search_options'.tr().toUpperCase(),
+                          style:
+                              Theme.of(context).textTheme.subtitle2!.copyWith(
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                        ),
+                        if (!editMode)
+                          IconButton(
+                            splashRadius: 18,
+                            onPressed: () => setState(() => editMode = true),
+                            icon: const Icon(
+                              Icons.edit,
+                              size: 16,
+                            ),
+                          )
+                      ],
                     ),
                     IconButton(
                       onPressed: () {
@@ -101,33 +118,142 @@ class _SearchOptionsState extends State<SearchOptions>
                   ],
                 ),
               ),
-              ...widget.config.searchOptions
-                  .map((option) => ListTile(
-                        visualDensity: VisualDensity.compact,
-                        onTap: () => widget.onOptionTap?.call(option),
-                        title: RichText(
-                          text: TextSpan(
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: '$option:',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .subtitle1!
-                                      .copyWith(fontWeight: FontWeight.w600)),
-                              TextSpan(
-                                  text:
-                                      ' ${widget.config.searchOptionHitns[option]}',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .caption!
-                                      .copyWith(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400)),
-                            ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Wrap(
+                  spacing: 4,
+                  runSpacing: -4,
+                  children: [
+                    ...context
+                        .read<UserMetatagRepository>()
+                        .getAll()
+                        .map((tag) => GestureDetector(
+                              onTap: editMode
+                                  ? null
+                                  : () => widget.onOptionTap?.call(tag),
+                              child: Chip(
+                                label: Text(tag),
+                                deleteIcon: const Icon(
+                                  Icons.close,
+                                  size: 18,
+                                ),
+                                onDeleted: editMode
+                                    ? () async {
+                                        await context
+                                            .read<UserMetatagRepository>()
+                                            .delete(tag);
+                                        setState(() => {});
+                                      }
+                                    : null,
+                              ),
+                            ))
+                        .toList(),
+                    if (editMode)
+                      IconButton(
+                        iconSize: 28,
+                        splashRadius: 20,
+                        onPressed: () {
+                          showAdaptiveBottomSheet(context,
+                              builder: (context) => Scaffold(
+                                    appBar: AppBar(
+                                      title: const Text('Metatags'),
+                                      automaticallyImplyLeading: false,
+                                      actions: [
+                                        IconButton(
+                                          onPressed: Navigator.of(context).pop,
+                                          icon: const Icon(Icons.close),
+                                        )
+                                      ],
+                                    ),
+                                    body: Column(
+                                      children: [
+                                        InfoContainer(
+                                            contentBuilder: (context) => const Text(
+                                                "Free metatags won't count against the tag search limits")),
+                                        Expanded(
+                                          child: ListView.builder(
+                                            itemCount: widget.metatags.length,
+                                            itemBuilder: (context, index) {
+                                              final tag =
+                                                  widget.metatags[index];
+                                              return ListTile(
+                                                onTap: () => setState(() {
+                                                  Navigator.of(context).pop();
+                                                  context
+                                                      .read<
+                                                          UserMetatagRepository>()
+                                                      .put(tag.name);
+                                                }),
+                                                title: Text(tag.name),
+                                                trailing: tag.isFree
+                                                    ? const Chip(
+                                                        label: Text('Free'))
+                                                    : null,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ));
+                        },
+                        icon: const Icon(Icons.add),
+                      )
+                  ],
+                ),
+              ),
+              if (editMode)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () => setState(() {
+                              editMode = false;
+                            }),
+                        child: const Text('Done')),
+                  ],
+                ),
+              const Divider(thickness: 1),
+              Padding(
+                padding: const EdgeInsets.only(left: 10, top: 16),
+                child: Row(
+                  children: [
+                    Text(
+                      'Trending'.tr().toUpperCase(),
+                      style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                            fontWeight: FontWeight.w700,
                           ),
-                        ),
-                      ))
-                  .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 8, right: 8),
+                child: BlocBuilder<SearchKeywordCubit,
+                    AsyncLoadState<List<Search>>>(
+                  builder: (context, state) {
+                    if (state.status != LoadStatus.success) {
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else {
+                      return Wrap(
+                        spacing: 4,
+                        runSpacing: -4,
+                        children: state.data!
+                            .take(15)
+                            .map((e) => GestureDetector(
+                                  onTap: () => widget.onTagTap?.call(e.keyword),
+                                  child: Chip(
+                                      label:
+                                          Text(e.keyword.replaceAll('_', ' '))),
+                                ))
+                            .toList(),
+                      );
+                    }
+                  },
+                ),
+              ),
               SearchHistorySection(
                 onHistoryTap: (history) => widget.onHistoryTap?.call(history),
               ),
