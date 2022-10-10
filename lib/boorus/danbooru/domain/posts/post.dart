@@ -180,7 +180,7 @@ class Post extends Equatable {
 
   bool get isVideo {
     //TODO: handle other kind of video format
-    final supportVideoFormat = ['mp4', 'webm', 'zip'];
+    final supportVideoFormat = {'mp4', 'webm', 'zip'};
     if (supportVideoFormat.contains(format)) {
       return true;
     } else {
