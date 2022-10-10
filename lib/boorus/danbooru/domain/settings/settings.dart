@@ -69,7 +69,7 @@ class Settings extends Equatable {
   static const defaultSettings = Settings(
     safeMode: true,
     blacklistedTags: '',
-    themeMode: ThemeMode.dark,
+    themeMode: ThemeMode.amoledDark,
     language: 'en',
     gridSize: GridSize.normal,
     dataCollectingStatus: DataCollectingStatus.allow,
