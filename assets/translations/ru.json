@@ -98,7 +98,7 @@
     "explore" : {
         "latest": "Последнее",
         "popular": "Популярное",
-        "curated": "Куратор",
+        "curated": "Лучшее",
         "most_viewed": "Самое просматриваемое",
         "see_more" : "Просмотреть больше"
     },
@@ -121,17 +121,17 @@
     },
 
     "pool" : {
-        "pool" : "Пул",
-        "pool_gallery" : "Галерея пула",
+        "pool" : "Альбом",
+        "pool_gallery" : "Альбомы",
         "mature_banned_content" : "Взрослый/Заблокированный контент",
         "order" : {
             "recent" : "Недавнее",
             "new" : "Новое",
-            "post_count": "Количество постов",
+            "post_count": "Размер",
             "name" : "Имя"
         },
         "search" : {
-            "hint": "Поиск пула"
+            "hint": "Поиск альбома"
         },
         "detail" : {
             "last_updated" : "Последнее обновление"
