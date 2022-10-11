@@ -296,7 +296,7 @@ abstract class Api {
     @Query('limit') int limit,
   );
 
-  @PUT('/post/{postId}.json')
+  @PUT('/posts/{postId}.json')
   @FormUrlEncoded()
   Future<HttpResponse> putTag(
     @Query('login') String login,
