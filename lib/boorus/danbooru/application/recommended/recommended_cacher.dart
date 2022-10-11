@@ -5,14 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class RecommendedPostCacher implements IPostRepository {
+class RecommendedPostCacher implements PostRepository {
   const RecommendedPostCacher({
     required this.cache,
     required this.postRepository,
   });
 
   final Cacher cache;
-  final IPostRepository postRepository;
+  final PostRepository postRepository;
 
   @override
   Future<List<Post>> getCuratedPosts(

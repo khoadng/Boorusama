@@ -319,7 +319,7 @@ class _CarouselContentState extends State<_CarouselContent>
                           providers: [
                             BlocProvider(
                               create: (context) => PostBloc(
-                                postRepository: context.read<IPostRepository>(),
+                                postRepository: context.read<PostRepository>(),
                                 blacklistedTagsRepository:
                                     context.read<BlacklistedTagsRepository>(),
                                 favoritePostRepository:
@@ -430,7 +430,7 @@ class _LargeLayoutContent extends StatelessWidget {
                         providers: [
                           BlocProvider(
                             create: (context) => PostBloc(
-                              postRepository: context.read<IPostRepository>(),
+                              postRepository: context.read<PostRepository>(),
                               blacklistedTagsRepository:
                                   context.read<BlacklistedTagsRepository>(),
                               favoritePostRepository:

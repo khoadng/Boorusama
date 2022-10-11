@@ -154,7 +154,7 @@ class ExploreDetailPage extends StatelessWidget {
           builder: (context, refreshController, scrollController) {
             return BlocProvider(
               create: (context) => PostBloc(
-                postRepository: context.read<IPostRepository>(),
+                postRepository: context.read<PostRepository>(),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),

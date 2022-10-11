@@ -57,7 +57,7 @@ class _HomePageState extends State<HomePage> {
           child: BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, state) {
               final latestPostBloc = PostBloc(
-                postRepository: context.read<IPostRepository>(),
+                postRepository: context.read<PostRepository>(),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
@@ -223,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                                           poolRepository:
                                               context.read<PoolRepository>(),
                                           postRepository:
-                                              context.read<IPostRepository>(),
+                                              context.read<PostRepository>(),
                                         )..add(const PoolRefreshed(
                                             category: PoolCategory.series,
                                             order: PoolOrder.latest,

@@ -68,7 +68,7 @@ final artistHandler = Handler(handlerFunc: (
     providers: [
       BlocProvider(
           create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                postRepository: RepositoryProvider.of<PostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
@@ -97,7 +97,7 @@ final characterHandler = Handler(handlerFunc: (
     providers: [
       BlocProvider(
           create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                postRepository: RepositoryProvider.of<PostRepository>(context),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
@@ -173,7 +173,7 @@ final postSearchHandler = Handler(handlerFunc: (
                   context.read<ISearchHistoryRepository>())),
       BlocProvider(
           create: (context) => PostBloc(
-                postRepository: context.read<IPostRepository>(),
+                postRepository: context.read<PostRepository>(),
                 blacklistedTagsRepository:
                     context.read<BlacklistedTagsRepository>(),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
@@ -267,7 +267,7 @@ final poolDetailHandler =
       BlocProvider(
           create: (context) => PoolDetailCubit(
                 ids: Queue.from(pool.postIds.reversed),
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
+                postRepository: RepositoryProvider.of<PostRepository>(context),
                 favoritePostRepository: context.read<IFavoritePostRepository>(),
                 accountRepository: context.read<IAccountRepository>(),
               )..load()),
@@ -296,7 +296,7 @@ final favoritesHandler =
           BlocProvider(
               create: (context) => PostBloc(
                     postRepository:
-                        RepositoryProvider.of<IPostRepository>(context),
+                        RepositoryProvider.of<PostRepository>(context),
                     blacklistedTagsRepository:
                         context.read<BlacklistedTagsRepository>(),
                     favoritePostRepository:

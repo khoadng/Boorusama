@@ -33,7 +33,7 @@ class RecommendArtistList extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => RecommendedArtistPostCubit(
-        postRepository: context.read<IPostRepository>(),
+        postRepository: context.read<PostRepository>(),
       )..add(
           RecommendedPostRequested(
             amount: screenSize == ScreenSize.large ? 9 : 6,
@@ -103,7 +103,7 @@ class RecommendCharacterList extends StatelessWidget {
     final screenSize = Screen.of(context).size;
     return BlocProvider(
       create: (context) => RecommendedCharacterPostCubit(
-          postRepository: context.read<IPostRepository>())
+          postRepository: context.read<PostRepository>())
         ..add(RecommendedPostRequested(
           amount: screenSize == ScreenSize.large ? 9 : 6,
           currentPostId: post.id,

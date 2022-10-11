@@ -242,7 +242,7 @@ void main() async {
                   final profileRepo = ProfileRepository(
                       accountRepository: accountRepo, api: api);
 
-                  final postRepo = PostRepository(api, accountRepo);
+                  final postRepo = PostRepositoryApi(api, accountRepo);
 
                   final commentRepo = CommentRepository(api, accountRepo);
 
@@ -366,8 +366,7 @@ void main() async {
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
                           value: noteRepo),
-                      RepositoryProvider<IPostRepository>.value(
-                          value: postRepo),
+                      RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
                           value: searchHistoryRepo),
                       RepositoryProvider<IConfig>.value(value: config),

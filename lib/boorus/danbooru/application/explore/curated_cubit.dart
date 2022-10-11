@@ -13,7 +13,7 @@ class CuratedCubit extends Cubit<AsyncLoadState<List<Post>>> {
     required this.blacklistedTagsRepository,
   }) : super(const AsyncLoadState.initial());
 
-  final IPostRepository postRepository;
+  final PostRepository postRepository;
   final BlacklistedTagsRepository blacklistedTagsRepository;
 
   Future<void> getCurated() async {

@@ -10,7 +10,7 @@ class FavoritesCubit extends Cubit<AsyncLoadState<List<Post>>> {
     required this.postRepository,
   }) : super(const AsyncLoadState.initial());
 
-  final IPostRepository postRepository;
+  final PostRepository postRepository;
 
   void getUserFavoritePosts(String username) {
     tryAsync<List<Post>>(

@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'post.dart';
 import 'time_scale.dart';
 
-abstract class IPostRepository {
+abstract class PostRepository {
   Future<List<Post>> getPosts(
     String tags,
     int page, {

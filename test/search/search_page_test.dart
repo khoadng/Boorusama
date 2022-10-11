@@ -56,7 +56,7 @@ class MockSearchHistorySuggestionsBloc extends MockBloc<
 class MockAutocompleteRepository extends Mock
     implements AutocompleteRepository {}
 
-class MockPostRepository extends Mock implements IPostRepository {}
+class MockPostRepository extends Mock implements PostRepository {}
 
 class MockBlacklistedTagRepository extends Mock
     implements BlacklistedTagsRepository {}

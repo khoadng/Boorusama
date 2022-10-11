@@ -37,7 +37,7 @@ class RecommendedPostRequested extends RecommendedPostEvent {
 class RecommendedPostBloc
     extends Bloc<RecommendedPostEvent, AsyncLoadState<List<Recommended>>> {
   RecommendedPostBloc({
-    required IPostRepository postRepository,
+    required PostRepository postRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<RecommendedPostRequested>(
       (event, emit) async {
@@ -78,11 +78,11 @@ class RecommendedPostBloc
 }
 
 class RecommendedArtistPostCubit extends RecommendedPostBloc {
-  RecommendedArtistPostCubit({required IPostRepository postRepository})
+  RecommendedArtistPostCubit({required PostRepository postRepository})
       : super(postRepository: postRepository);
 }
 
 class RecommendedCharacterPostCubit extends RecommendedPostBloc {
-  RecommendedCharacterPostCubit({required IPostRepository postRepository})
+  RecommendedCharacterPostCubit({required PostRepository postRepository})
       : super(postRepository: postRepository);
 }

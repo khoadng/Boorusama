@@ -109,7 +109,7 @@ class PoolItem {
 class PoolBloc extends Bloc<PoolEvent, PoolState> {
   PoolBloc({
     required PoolRepository poolRepository,
-    required IPostRepository postRepository,
+    required PostRepository postRepository,
   }) : super(PoolState.initial()) {
     on<PoolRefreshed>(
       (event, emit) async {
@@ -167,7 +167,7 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
   }
 
   Future<List<PoolItem>> poolsToPoolItems(
-      List<Pool> pools, IPostRepository postRepository) async {
+      List<Pool> pools, PostRepository postRepository) async {
     final poolFiltered =
         pools.where((element) => element.postIds.isNotEmpty).toList();
 

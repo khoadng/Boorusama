@@ -131,7 +131,7 @@ class PostFavoriteUpdated extends PostEvent {
 
 abstract class PostFetcher {
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   );
 }
@@ -147,7 +147,7 @@ class PopularPostFetcher implements PostFetcher {
 
   @override
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   ) async {
     final posts = await repo.getPopularPosts(date, page, scale);
@@ -167,7 +167,7 @@ class CuratedPostFetcher implements PostFetcher {
 
   @override
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   ) async {
     final posts = await repo.getCuratedPosts(date, page, scale);
@@ -185,7 +185,7 @@ class MostViewedPostFetcher implements PostFetcher {
 
   @override
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   ) async {
     final posts = await repo.getMostViewedPosts(date);
@@ -198,7 +198,7 @@ class HotPostFetcher implements PostFetcher {
   const HotPostFetcher();
 
   @override
-  Future<List<Post>> fetch(IPostRepository repo, int page) async {
+  Future<List<Post>> fetch(PostRepository repo, int page) async {
     final posts = await repo.getPosts('order:rank', page);
 
     return posts;
@@ -210,7 +210,7 @@ class LatestPostFetcher implements PostFetcher {
 
   @override
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   ) async {
     final posts = await repo.getPosts('', page);
@@ -234,7 +234,7 @@ class SearchedPostFetcher implements PostFetcher {
 
   @override
   Future<List<Post>> fetch(
-    IPostRepository repo,
+    PostRepository repo,
     int page,
   ) async {
     final posts = await repo.getPosts(query, page);
@@ -245,7 +245,7 @@ class SearchedPostFetcher implements PostFetcher {
 
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
-    required IPostRepository postRepository,
+    required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required IFavoritePostRepository favoritePostRepository,
     required IAccountRepository accountRepository,

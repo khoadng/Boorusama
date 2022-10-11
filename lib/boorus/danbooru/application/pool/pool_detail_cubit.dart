@@ -50,7 +50,7 @@ class PoolDetailCubit extends Cubit<PoolDetailState> {
           status: LoadStatus.initial,
         ));
 
-  final IPostRepository postRepository;
+  final PostRepository postRepository;
   final IFavoritePostRepository favoritePostRepository;
   final IAccountRepository accountRepository;
   final Queue<int> ids;
