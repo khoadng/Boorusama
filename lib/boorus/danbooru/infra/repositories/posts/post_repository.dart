@@ -184,6 +184,15 @@ class PostRepositoryApi implements PostRepository {
   @override
   Future<List<Post>> getPostsFromIds(List<int> ids) =>
       getPosts('id:${ids.join(',')}', 1);
+
+  @override
+  Future<bool> putTag(int postId, String tagString) => _accountRepository
+      .get()
+      .then((account) => _api.putTag(account.username, account.apiKey, postId, {
+            'post[tag_string]': tagString,
+            'post[old_tag_string]': '',
+          }))
+      .then((value) => value.response.statusCode == 200);
 }
 
 class CannotSearchMoreThanTwoTags implements BooruException {

@@ -17,4 +17,5 @@ abstract class PostRepository {
   Future<List<Post>> getCuratedPosts(DateTime date, int page, TimeScale scale);
   Future<List<Post>> getMostViewedPosts(DateTime date);
   Future<List<Post>> getPostsFromIds(List<int> ids);
+  Future<bool> putTag(int postId, String tagString);
 }

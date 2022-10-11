@@ -53,4 +53,8 @@ class RecommendedPostCacher implements PostRepository {
   @override
   Future<List<Post>> getPostsFromIds(List<int> ids) =>
       postRepository.getPostsFromIds(ids);
+
+  @override
+  Future<bool> putTag(int postId, String tagString) =>
+      postRepository.putTag(postId, tagString);
 }
