@@ -19,6 +19,7 @@ class TagSearchState extends Equatable {
     required this.query,
     required this.selectedTags,
     required this.suggestionTags,
+    required this.metaTagMatches,
     required this.isDone,
     required this.operator,
   });
@@ -27,11 +28,13 @@ class TagSearchState extends Equatable {
         query: '',
         selectedTags: [],
         suggestionTags: [],
+        metaTagMatches: [],
         isDone: false,
         operator: FilterOperator.none,
       );
   final List<TagSearchItem> selectedTags;
   final List<AutocompleteData> suggestionTags;
+  final List<Metatag> metaTagMatches;
   final String query;
   final bool isDone;
   final FilterOperator operator;
@@ -40,6 +43,7 @@ class TagSearchState extends Equatable {
     String? query,
     List<TagSearchItem>? selectedTags,
     List<AutocompleteData>? suggestionTags,
+    List<Metatag>? metaTagMatches,
     bool? isDone,
     FilterOperator? operator,
   }) =>
@@ -47,13 +51,20 @@ class TagSearchState extends Equatable {
         query: query ?? this.query,
         selectedTags: selectedTags ?? this.selectedTags,
         suggestionTags: suggestionTags ?? this.suggestionTags,
+        metaTagMatches: metaTagMatches ?? this.metaTagMatches,
         isDone: isDone ?? this.isDone,
         operator: operator ?? this.operator,
       );
 
   @override
-  List<Object?> get props =>
-      [query, selectedTags, suggestionTags, isDone, operator];
+  List<Object?> get props => [
+        query,
+        selectedTags,
+        suggestionTags,
+        metaTagMatches,
+        isDone,
+        operator,
+      ];
 }
 
 @immutable
@@ -150,6 +161,10 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         emit(state.copyWith(
           query: query,
           operator: operator,
+          metaTagMatches: tagInfo.metatags
+              .where((e) => e.name.startsWith(query))
+              .take(2)
+              .toList(),
         ));
 
         await tryAsync<List<AutocompleteData>>(

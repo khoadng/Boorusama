@@ -33,28 +33,39 @@ Boorusama is one of the most feature-rich unofficial clients for [Danbooru](http
 * Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
 * Clone or download the repo. Make sure you have [Git](https://git-scm.com/downloads) installed first.
 ```bash
-> git clone https://github.com/khoadng/Boorusama.git
-> cd Boorusama
+git clone https://github.com/khoadng/Boorusama.git
+cd Boorusama
 ```
 * Install dependencies and generate boilerplates code.
 ```bash
-> flutter pub get
-> flutter pub run build_runner build --delete-conflicting-outputs
+flutter pub get
+flutter pub run build_runner build --delete-conflicting-outputs
 ```
 * Connect to an Android device/emulator and run the app.
 ```bash
-> flutter run --release
+flutter run --release
 ```
 or you could build an apk and install it manually.
 
 ```bash
-> flutter build apk --release
+flutter build apk --release
 ```
+## Translation
+1. Fork this repo
+2. Use the existing English translations as a reference.
+2. Create a new file JSON in [translation](./assets/translations/) folder with your two-letter [language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes)
+3. [Submit a PR](https://github.com/khoadng/Boorusama/pulls)
+
+Or just send me the JSON file through Discord if you are not familiar with programming.
+
+|Language|Contributors|Source|
+|--------|------------|------|
+|Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru.json`](./assets/translations/ru.json)|
 
 ## Feedback
-
 Feel free to send me feedback on [Discord](https://discord.gg/tvyYVxjfBr) or [file an issue](https://github.com/khoadng/Boorusama/issues/new). Feature requests are always welcome.
-
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+

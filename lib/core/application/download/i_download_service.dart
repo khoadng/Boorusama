@@ -1,5 +1,5 @@
 abstract class IDownloadService<T> {
-  void download(
+  Future<void> download(
     T item, {
     String? path,
   });

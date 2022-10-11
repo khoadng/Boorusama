@@ -12,13 +12,16 @@ import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import '../common.dart';
 import 'tag_search_state_test.mocks.dart';
 
-@GenerateMocks([AutocompleteRepository, TagInfo])
+@GenerateMocks([AutocompleteRepository])
 void main() {
   group('Tag search', () {
     final autocompleteRepository = MockAutocompleteRepository();
-    final tagInfo = MockTagInfo();
+    const tagInfo = TagInfo(
+      metatags: [],
+      defaultBlacklistedTags: [],
+      r18Tags: [],
+    );
 
-    when(tagInfo.metatags).thenReturn([]);
     when(autocompleteRepository.getAutocomplete('a'))
         .thenAnswer((_) => Future.value([autocompleteData('a')]));
     when(autocompleteRepository.getAutocomplete('a_a_a'))

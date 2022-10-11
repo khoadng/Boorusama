@@ -3,9 +3,9 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<FavoriteDto> parseFavorite(HttpResponse<dynamic> value) => parse(
@@ -117,4 +117,8 @@ class FavoritePostRepository implements IFavoritePostRepository {
           )
           .then((value) => (value.response.data as List).isNotEmpty)
           .catchError((Object obj) => false);
+
+  @override
+  Future<List<FavoriteDto>> getFavorites(int postId, int page) =>
+      _api.getFavorites(postId, page, 100).then(parseFavorite);
 }

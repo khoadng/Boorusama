@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cross_file/cross_file.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -13,13 +14,13 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
@@ -35,24 +36,37 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
-      builder: (context, authState) => ButtonBar(
-        buttonPadding: EdgeInsets.zero,
-        alignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildFavoriteButton(authState),
-          //TODO: kinda laggy so removed for now
-          // if (authState is Authenticated) _buildUpvoteButton(),
-          // if (authState is Authenticated) _buildDownvoteButton(),
-          _buildCommentButton(context),
-          _buildDownloadButton(),
-          _buildShareButton(context),
-        ],
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostVoteBloc(
+            postVoteRepository: context.read<PostVoteRepository>(),
+          )..add(PostVoteInit.fromPost(post)),
+        ),
+        BlocProvider(
+          create: (context) => IsPostFavoritedBloc(
+            accountRepository: context.read<IAccountRepository>(),
+            favoritePostRepository: context.read<IFavoritePostRepository>(),
+          )..add(IsPostFavoritedRequested(postId: post.id)),
+        ),
+      ],
+      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
+        builder: (context, authState) => ButtonBar(
+          buttonPadding: EdgeInsets.zero,
+          alignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildFavoriteButton(authState),
+            if (authState is Authenticated) _buildUpvoteButton(),
+            if (authState is Authenticated) _buildDownvoteButton(),
+            _buildCommentButton(context),
+            _buildDownloadButton(),
+            _buildShareButton(context),
+          ],
+        ),
       ),
     );
   }
 
-  // ignore: unused_element
   Widget _buildUpvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
@@ -73,7 +87,6 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
-  // ignore: unused_element
   Widget _buildDownvoteButton() {
     return BlocBuilder<PostVoteBloc, PostVoteState>(
       builder: (context, state) => IconButton(
@@ -109,7 +122,7 @@ class PostActionToolbar extends StatelessWidget {
         return ModalShare(
           endpoint: state.booru.url,
           onTap: Share.share,
-          onTapFile: (filePath) => Share.shareFiles([filePath]),
+          onTapFile: (filePath) => Share.shareXFiles([XFile(filePath)]),
           post: post,
           imagePath: imagePath,
         );
@@ -139,61 +152,7 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildCommentButton(BuildContext context) {
     return IconButton(
-      onPressed: () => Screen.of(context).size == ScreenSize.small
-          ? showBarModalBottomSheet(
-              expand: false,
-              context: context,
-              builder: (context) => CommentPage(
-                postId: post.id,
-              ),
-            )
-          : showSideSheetFromRight(
-              width: MediaQuery.of(context).size.width * 0.41,
-              body: Container(
-                  color: Colors.transparent,
-                  padding: EdgeInsets.only(
-                      top: MediaQuery.of(context).viewPadding.top),
-                  child: Column(
-                    children: [
-                      Container(
-                        height: kToolbarHeight * 0.8,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).backgroundColor,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(6),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const SizedBox(width: 8),
-                            Text(
-                              'comment.comments',
-                              style: Theme.of(context).textTheme.headline6,
-                            ).tr(),
-                            const Spacer(),
-                            Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: Navigator.of(context).pop,
-                                child: const Icon(Icons.close),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: CommentPage(
-                          useAppBar: false,
-                          postId: post.id,
-                        ),
-                      )
-                    ],
-                  )),
-              context: context,
-            ),
+      onPressed: () => showCommentPage(context, postId: post.id),
       icon: const FaIcon(
         FontAwesomeIcons.comment,
       ),
@@ -202,7 +161,7 @@ class PostActionToolbar extends StatelessWidget {
 
   Widget _buildFavoriteButton(AuthenticationState authState) {
     return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-      builder: (context, state) => TextButton.icon(
+      builder: (context, state) => IconButton(
         onPressed: () async {
           _onPressedWithLoadingToast(
             context: context,
@@ -239,12 +198,6 @@ class PostActionToolbar extends StatelessWidget {
             : const FaIcon(
                 FontAwesomeIcons.heart,
               ),
-        label: Text(
-          post.favCount.toString(),
-          style: state.status == LoadStatus.success && state.data!
-              ? const TextStyle(color: Colors.red)
-              : null,
-        ),
       ),
     );
   }

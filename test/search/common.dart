@@ -7,6 +7,7 @@ TagSearchState tagSearchStateEmpty() => const TagSearchState(
       query: '',
       selectedTags: [],
       suggestionTags: [],
+      metaTagMatches: [],
       isDone: false,
       operator: FilterOperator.none,
     );
@@ -16,6 +17,7 @@ TagSearchItem tagSearchItemFromString(String value) => TagSearchItem.fromString(
       const TagInfo(
         metatags: [],
         defaultBlacklistedTags: [],
+        r18Tags: [],
       ),
     );
 

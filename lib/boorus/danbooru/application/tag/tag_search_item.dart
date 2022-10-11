@@ -38,7 +38,8 @@ class TagSearchItem extends Equatable {
         .replaceAll('$metatag:', '')
         .replaceAll('_', ' ');
 
-    final isValidMetatag = tagInfo.metatags.contains(metatag);
+    final isValidMetatag =
+        tagInfo.metatags.map((e) => e.name).contains(metatag);
 
     return TagSearchItem(
       tag: isValidMetatag ? tag : '$metatag:$tag',

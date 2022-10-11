@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 final languages = {
   'en': 'english',
   'vi': 'vietnamese',
+  'ru': 'russian',
 };
 
 String getLanguageText(String value) {

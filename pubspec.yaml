@@ -1,91 +1,98 @@
 name: boorusama
 description: A mobile client for Danbooru.
 
-publish_to: "none" 
-version: 2.4.0+25
+publish_to: "none"
+version: 2.5.0+27
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
+  android_intent_plus: ^3.1.1+1
+  bitsdojo_window: ^0.1.2
   bloc_concurrency: ^0.2.0
-  cached_network_image: ^3.2.1
+  cached_network_image: ^3.2.2
   carousel_slider: ^4.1.1
-  chewie: ^1.3.3
-  connectivity_plus: ^2.3.3
+  chewie: ^1.3.5
+  collection: ^1.16.0
+  connectivity_plus: ^2.3.7
+  cross_file: ^0.3.3+2
+  device_info_plus: ^4.0.0
   dio: ^4.0.6
   easy_localization: ^3.0.1
-  equatable: ^2.0.3
+  equatable: ^2.0.5
+  file_picker: ^5.2.0
   filesize: ^2.0.1
   fluro: ^2.0.3
-  flutter_bloc: ^8.0.1
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.0
   flutter_cache_manager: ^3.3.0
-  flutter_downloader: ^1.8.0+1
+  flutter_downloader: ^1.8.4
   flutter_hooks: ^0.18.4
-  flutter_html: ^3.0.0-alpha.5
-  flutter_portal: ^1.1.0
+  flutter_html:
+    git:
+      url: https://github.com/khoadng/flutter_html.git
+      ref: fix-rebuild
+  flutter_improved_scrolling: ^0.0.3
+  flutter_local_notifications: ^11.0.0
+  flutter_portal: ^1.1.1
   flutter_tags_x: ^1.1.0
-  font_awesome_flutter: ^10.1.0
-  hive: ^2.2.2
+  font_awesome_flutter: ^10.2.1
+  hive: ^2.2.3
+  html: ^0.15.0
+  image_gallery_saver: ^1.7.1
   intl: ^0.17.0
   jiffy: ^5.0.0
-  lottie: ^1.3.0
+  lottie: ^1.4.3
   mockito: ^5.2.0
-  modal_bottom_sheet: ^2.0.1
+  modal_bottom_sheet: ^2.1.1
   number_inc_dec:
     git:
       url: https://github.com/hilalbaig/number_inc_dec.git
       ref: f66ee872727172ce2fe57f118d569339d54c384d
   package_info_plus: ^1.4.2
-  path: ^1.8.1
+  path: ^1.8.2
   path_provider: ^2.0.11
-  permission_handler: ^9.2.0
+  permission_handler: ^10.0.1
   pull_to_refresh:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
       ref: flutter-3.0
   quiver: ^3.1.0
+  rate_my_app: ^1.1.3
   recase: ^4.0.0
   retrofit: ^3.0.1+1
-  rxdart: ^0.27.4
-  scroll_to_index: ^3.0.1
-  sentry_flutter: ^6.5.1
-  share_plus: ^4.0.7
-  timeago: ^3.2.2
-  tuple: ^2.0.0
-  url_launcher: ^6.1.3
-  webview_flutter: ^3.0.4
-  html: ^0.15.0
-  collection: ^1.16.0
-  video_player: ^2.4.4
-  toggle_switch: ^2.0.1
-  file_picker: ^4.6.1
-  device_info_plus: ^4.0.0
   rich_text_controller:
     git:
       url: https://github.com/khoadng/rich_text_controller.git
       ref: flutter-3.0
-  rate_my_app: ^1.1.3
-  bitsdojo_window: ^0.1.2
-  flutter_improved_scrolling: ^0.0.3
+  rxdart: ^0.27.4
+  scroll_to_index: ^3.0.1
+  sentry_flutter: ^6.11.2
+  share_plus: ^4.4.0
+  timeago: ^3.3.0
+  toggle_switch: ^2.0.1
+  tuple: ^2.0.0
+  url_launcher: ^6.1.5
+  video_player: ^2.4.7
+  webview_flutter: ^3.0.4
 
 dev_dependencies:
+  bloc_test: ^9.0.3
+  build_runner: ^2.1.11
+  dart_code_metrics: ^4.15.2
+  flutter_launcher_icons: ^0.10.0
+  flutter_lints: ^2.0.1
   flutter_localizations:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  build_runner: ^2.1.11
-  dart_code_metrics: ^4.15.2
-  flutter_launcher_icons: ^0.9.3
-  flutter_lints: ^2.0.1
+  hive_generator: ^1.1.3
   import_sorter: ^4.6.0
+  mocktail: ^0.3.0
   retrofit_generator: ^4.0.1
   test: ^1.21.1
-  bloc_test: ^9.0.3
-  mocktail: ^0.3.0
-  hive_generator: ^1.1.3
 
 flutter_icons:
   remove_alpha_ios: true

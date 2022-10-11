@@ -51,3 +51,6 @@ generated_plugin*
 
 .env
 lcov.info
+
+# iOS local build
+exportOptions.plist

@@ -77,7 +77,20 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
       slivers: [
         SliverToBoxAdapter(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (histories.isNotEmpty)
+                ListTile(
+                  visualDensity: VisualDensity.compact,
+                  dense: true,
+                  title: Text(
+                    'Recent',
+                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                  ),
+                ),
               ...histories.map(
                 (history) => ListTile(
                   visualDensity: VisualDensity.compact,
@@ -88,7 +101,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                   title: Html(
                     style: {
                       'p': Style(
-                        fontSize: const FontSize(16),
+                        fontSize: FontSize.medium,
                       ),
                       'body': Style(
                         padding: EdgeInsets.zero,
@@ -135,7 +148,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
     return Html(
       style: {
         'p': Style(
-          fontSize: const FontSize(16),
+          fontSize: FontSize.medium,
           color: _getTagColor(tag, theme),
         ),
         'body': Style(
@@ -158,7 +171,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
     return Html(
       style: {
         'p': Style(
-          fontSize: const FontSize(16),
+          fontSize: FontSize.medium,
           color: _getTagColor(tag, theme),
         ),
         'body': Style(

@@ -2,11 +2,11 @@
 import 'package:retrofit/dio.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
@@ -30,9 +30,25 @@ class PostVoteApiRepository implements PostVoteRepository {
       .then((account) => _api.getPostVotes(
             account.username,
             account.apiKey,
+            1,
             postIds.join(','),
             account.id.toString(),
             false,
+            100,
+          ))
+      .then(parsePostVote);
+
+  @override
+  Future<List<PostVote>> getAllVotes(int postId, int page) => _accountRepository
+      .get()
+      .then((account) => _api.getPostVotes(
+            account.username,
+            account.apiKey,
+            page,
+            postId.toString(),
+            '',
+            false,
+            100,
           ))
       .then(parsePostVote);
 

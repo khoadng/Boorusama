@@ -4,9 +4,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/api.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/api.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/danbooru/danbooru_api.dart';
 
 Dio newDio(String url) => Dio(BaseOptions(baseUrl: url));
@@ -49,7 +49,7 @@ class ApiState extends Equatable {
     required this.dio,
   });
   factory ApiState.initial(Dio dio) => ApiState(
-        api: DanbooruApi(dio),
+        api: Api(dio),
         dio: dio,
       );
 
@@ -77,7 +77,7 @@ class ApiCubit extends Cubit<ApiState> {
   void changeApi(Booru booru) {
     final dio = newDio(booru.url);
     emit(state.copyWith(
-      api: DanbooruApi(dio),
+      api: Api(dio),
       dio: dio,
     ));
   }

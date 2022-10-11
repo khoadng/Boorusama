@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/selected_tag_chip.dart';
@@ -34,7 +35,7 @@ class SearchPage extends StatefulWidget {
   }) : super(key: key);
 
   final String initialQuery;
-  final List<String> metatags;
+  final List<Metatag> metatags;
   final Color metatagHighlightColor;
 
   @override
@@ -42,7 +43,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  late final _tags = widget.metatags.join('|');
+  late final _tags = widget.metatags.map((e) => e.name).join('|');
   late final queryEditingController = RichTextController(
     patternMatchMap: {
       RegExp('($_tags)+:'): TextStyle(
@@ -207,21 +208,31 @@ class _LargeLayout extends StatelessWidget {
                       selector: (state) => state.displayState,
                       builder: (context, displayState) {
                         if (displayState == DisplayState.suggestion) {
-                          return const _TagSuggestionItems();
+                          return _TagSuggestionItems(
+                            queryEditingController: queryEditingController,
+                          );
                         } else {
                           return SearchOptions(
+                            metatags: context.read<TagInfo>().metatags,
                             config: context.read<IConfig>(),
                             onOptionTap: (value) {
+                              final query = '$value:';
+                              queryEditingController.text = query;
                               context
                                   .read<TagSearchBloc>()
-                                  .add(TagSearchChanged(value));
-                              queryEditingController.text = '$value:';
+                                  .add(TagSearchChanged(query));
                             },
                             onHistoryTap: (value) {
                               FocusManager.instance.primaryFocus?.unfocus();
                               context
                                   .read<TagSearchBloc>()
                                   .add(TagSearchTagFromHistorySelected(value));
+                            },
+                            onTagTap: (value) {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              context
+                                  .read<TagSearchBloc>()
+                                  .add(TagSearchNewRawStringTagSelected(value));
                             },
                           );
                         }
@@ -319,7 +330,9 @@ class _SmallLayout extends StatelessWidget {
                 selector: (state) => state.displayState,
                 builder: (context, displayState) {
                   if (displayState == DisplayState.suggestion) {
-                    return const _TagSuggestionItems();
+                    return _TagSuggestionItems(
+                      queryEditingController: queryEditingController,
+                    );
                   } else if (displayState == DisplayState.result) {
                     return const ResultView();
                   } else if (displayState == DisplayState.error) {
@@ -332,18 +345,26 @@ class _SmallLayout extends StatelessWidget {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
                     return SearchOptions(
+                      metatags: context.read<TagInfo>().metatags,
                       config: context.read<IConfig>(),
                       onOptionTap: (value) {
+                        final query = '$value:';
+                        queryEditingController.text = query;
                         context
                             .read<TagSearchBloc>()
-                            .add(TagSearchChanged(value));
-                        queryEditingController.text = '$value:';
+                            .add(TagSearchChanged(query));
                       },
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         context
                             .read<TagSearchBloc>()
                             .add(TagSearchTagFromHistorySelected(value));
+                      },
+                      onTagTap: (value) {
+                        FocusManager.instance.primaryFocus?.unfocus();
+                        context
+                            .read<TagSearchBloc>()
+                            .add(TagSearchNewRawStringTagSelected(value));
                       },
                     );
                   }
@@ -360,7 +381,10 @@ class _SmallLayout extends StatelessWidget {
 class _TagSuggestionItems extends StatelessWidget {
   const _TagSuggestionItems({
     Key? key,
+    required this.queryEditingController,
   }) : super(key: key);
+
+  final TextEditingController queryEditingController;
 
   @override
   Widget build(BuildContext context) {

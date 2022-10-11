@@ -1,15 +1,14 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_html/style.dart';
-
 // Project imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -29,17 +28,12 @@ class _LoginPageState extends State<LoginPage> {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              Text(
-                'login.form.greeting'.tr(),
-                style: TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: Colors.white70,
-                  fontSize: FontSize.xLarge.size,
-                ),
-              ),
+              WarningContainer(
+                  contentBuilder: (context) =>
+                      const Text('Only support Danbooru.')),
               const Center(
                 child: LoginBox(),
-              )
+              ),
             ],
           ),
         ),

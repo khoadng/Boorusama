@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/hot_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
@@ -51,6 +52,15 @@ class ExplorePage extends StatelessWidget {
               category: ExploreCategory.popular,
               builder: (_) =>
                   BlocBuilder<PopularCubit, AsyncLoadState<List<Post>>>(
+                builder: mapStateToCarousel,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: ExploreSection(
+              title: 'explore.hot'.tr(),
+              category: ExploreCategory.hot,
+              builder: (_) => BlocBuilder<HotCubit, AsyncLoadState<List<Post>>>(
                 builder: mapStateToCarousel,
               ),
             ),

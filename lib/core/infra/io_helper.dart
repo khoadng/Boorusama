@@ -21,7 +21,8 @@ class IOHelper {
           (await getApplicationDocumentsDirectory());
       return root.path;
     } else {
-      throw UnimplementedError();
+      final root = await getApplicationDocumentsDirectory();
+      return root.path;
     }
   }
 }

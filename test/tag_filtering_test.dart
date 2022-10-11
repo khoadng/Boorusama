@@ -16,6 +16,7 @@ Post createPost(int id, List<String> tags) => Post(
       characterTags: const [],
       artistTags: const [],
       generalTags: const [],
+      metaTags: const [],
       tags: tags,
       width: 1,
       height: 1,
@@ -35,6 +36,8 @@ Post createPost(int id, List<String> tags) => Post(
       hasChildren: false,
       hasParent: false,
       hasLarge: false,
+      comments: const [],
+      totalComments: 0,
     );
 
 void main() {

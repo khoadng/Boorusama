@@ -5,29 +5,27 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/is_post_favorited.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -112,9 +110,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       if (Screen.of(context).size != ScreenSize.small) {
         context.read<TagBloc>().add(
             TagFetched(tags: widget.posts[widget.intitialIndex].post.tags));
-        context.read<ArtistCommentaryBloc>().add(ArtistCommentaryFetched(
-              postId: widget.posts[widget.intitialIndex].post.id,
-            ));
       }
     });
   }
@@ -175,13 +170,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 MultiBlocProvider(
                   providers: [
                     BlocProvider.value(value: context.read<TagBloc>()),
-                    BlocProvider.value(
-                        value: context.read<ArtistCommentaryBloc>()),
                   ],
                   child: Container(
                     color: Theme.of(context).backgroundColor,
                     width: _infoBarWidth,
                     child: _LargeLayoutContent(
+                      key: ValueKey(post.id),
                       post: postData,
                       imagePath: imagePath,
                       size: screenSize,
@@ -200,9 +194,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       onPageChanged: (index) {
         if (screenSize != ScreenSize.small) {
           context.read<TagBloc>().add(TagFetched(tags: post.tags));
-          context
-              .read<ArtistCommentaryBloc>()
-              .add(ArtistCommentaryFetched(postId: post.id));
         }
       },
       autoPlay: autoPlay,
@@ -235,80 +226,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               child: media,
                             )
                           else
-                            CustomScrollView(
-                              slivers: [
-                                SliverToBoxAdapter(
-                                  child: media,
-                                ),
-                                if (screenSize == ScreenSize.small) ...[
-                                  const SliverToBoxAdapter(child: PoolTiles()),
-                                  SliverToBoxAdapter(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        InformationSection(post: post.post),
-                                        if (state.settings
-                                                .actionBarDisplayBehavior ==
-                                            ActionBarDisplayBehavior.scrolling)
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                bottom: 10),
-                                            child: ActionBar(
-                                              imagePath: imagePath,
-                                              postData: post,
-                                            ),
-                                          ),
-                                        if (post.post.hasParentOrChildren)
-                                          ParentChildTile(
-                                            data: getParentChildData(post.post),
-                                            onTap: (data) =>
-                                                showBarModalBottomSheet(
-                                              context: context,
-                                              builder: (context) =>
-                                                  MultiBlocProvider(
-                                                providers: [
-                                                  BlocProvider(
-                                                    create: (context) =>
-                                                        PostBloc(
-                                                      postRepository:
-                                                          context.read<
-                                                              IPostRepository>(),
-                                                      blacklistedTagsRepository:
-                                                          context.read<
-                                                              BlacklistedTagsRepository>(),
-                                                      favoritePostRepository:
-                                                          context.read<
-                                                              IFavoritePostRepository>(),
-                                                      accountRepository:
-                                                          context.read<
-                                                              IAccountRepository>(),
-                                                    )..add(PostRefreshed(
-                                                            tag: data
-                                                                .tagQueryForDataFetching,
-                                                            fetcher: SearchedPostFetcher
-                                                                .fromTags(data
-                                                                    .tagQueryForDataFetching),
-                                                          )),
-                                                  )
-                                                ],
-                                                child: ParentChildPostPage(
-                                                    parentPostId:
-                                                        data.parentId),
-                                              ),
-                                            ),
-                                          ),
-                                        if (!post.post.hasParentOrChildren)
-                                          const Divider(
-                                              height: 8, thickness: 1),
-                                        RecommendArtistList(post: post.post),
-                                        RecommendCharacterList(post: post.post),
-                                      ],
-                                    ),
-                                  ),
-                                ]
-                              ],
+                            _CarouselContent(
+                              media: media,
+                              imagePath: imagePath,
+                              actionBarDisplayBehavior:
+                                  state.settings.actionBarDisplayBehavior,
+                              post: post,
                             ),
                           if (state.settings.actionBarDisplayBehavior ==
                               ActionBarDisplayBehavior.staticAtBottom)
@@ -333,6 +256,121 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 }
 
+class _CarouselContent extends StatefulWidget {
+  const _CarouselContent({
+    Key? key,
+    required this.media,
+    required this.imagePath,
+    required this.actionBarDisplayBehavior,
+    required this.post,
+  }) : super(key: key);
+
+  final PostMediaItem media;
+  final ValueNotifier<String?> imagePath;
+  final PostData post;
+  final ActionBarDisplayBehavior actionBarDisplayBehavior;
+
+  @override
+  State<_CarouselContent> createState() => _CarouselContentState();
+}
+
+class _CarouselContentState extends State<_CarouselContent>
+    with AutomaticKeepAliveClientMixin {
+  Post get post => widget.post.post;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    final screenSize = Screen.of(context).size;
+    return CustomScrollView(
+      slivers: [
+        SliverList(
+            delegate: SliverChildListDelegate(
+          [
+            RepaintBoundary(child: widget.media),
+            if (screenSize == ScreenSize.small) ...[
+              PoolTiles(post: post),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  InformationSection(post: post),
+                  const Divider(height: 8, thickness: 1),
+                  if (widget.actionBarDisplayBehavior ==
+                      ActionBarDisplayBehavior.scrolling)
+                    RepaintBoundary(
+                      child: ActionBar(
+                        imagePath: widget.imagePath,
+                        postData: widget.post,
+                      ),
+                    ),
+                  const Divider(height: 8, thickness: 1),
+                  ArtistSection(post: post),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: RepaintBoundary(child: PostStatsTile(post: post)),
+                  ),
+                  if (post.hasParentOrChildren)
+                    ParentChildTile(
+                      data: getParentChildData(post),
+                      onTap: (data) => showBarModalBottomSheet(
+                        context: context,
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => PostBloc(
+                                postRepository: context.read<IPostRepository>(),
+                                blacklistedTagsRepository:
+                                    context.read<BlacklistedTagsRepository>(),
+                                favoritePostRepository:
+                                    context.read<IFavoritePostRepository>(),
+                                accountRepository:
+                                    context.read<IAccountRepository>(),
+                              )..add(PostRefreshed(
+                                  tag: data.tagQueryForDataFetching,
+                                  fetcher: SearchedPostFetcher.fromTags(
+                                      data.tagQueryForDataFetching),
+                                )),
+                            )
+                          ],
+                          child:
+                              ParentChildPostPage(parentPostId: data.parentId),
+                        ),
+                      ),
+                    ),
+                  if (!post.hasParentOrChildren)
+                    const Divider(height: 8, thickness: 1),
+                  BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) {
+                      return Theme(
+                        data: Theme.of(context)
+                            .copyWith(dividerColor: Colors.transparent),
+                        child: ExpansionTile(
+                          title: Text('${post.tags.length} tags'),
+                          children: [
+                            SimplePostTagList(post: post),
+                            const SizedBox(height: 8),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                  const Divider(height: 8, thickness: 1),
+                  RecommendArtistList(post: post),
+                  RecommendCharacterList(post: post),
+                ],
+              ),
+            ]
+          ],
+        ))
+      ],
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => false;
+}
+
 class _LargeLayoutContent extends StatelessWidget {
   const _LargeLayoutContent({
     Key? key,
@@ -349,16 +387,14 @@ class _LargeLayoutContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        SliverToBoxAdapter(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+        SliverList(
+          delegate: SliverChildListDelegate(
+            [
               SizedBox(
                 height: MediaQuery.of(context).viewPadding.top,
               ),
               InformationSection(
                 post: post.post,
-                tappable: false,
                 padding: const EdgeInsets.symmetric(horizontal: 8),
               ),
               Padding(
@@ -369,39 +405,18 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               const Divider(height: 0),
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Wrap(
-                  spacing: 5,
-                  children: [
-                    InfoChip(
-                      leftLabel: const Text('post.detail.rating').tr(),
-                      rightLabel: Text(post.post.rating
-                          .toString()
-                          .split('.')
-                          .last
-                          .pascalCase),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                    InfoChip(
-                      leftLabel: const Text('post.detail.size').tr(),
-                      rightLabel: Text(filesize(post.post.fileSize, 1)),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                    InfoChip(
-                      leftLabel: const Text('post.detail.resolution').tr(),
-                      rightLabel: Text(
-                          '${post.post.width.toInt()}x${post.post.height.toInt()}'),
-                      leftColor: Theme.of(context).cardColor,
-                      rightColor: Theme.of(context).backgroundColor,
-                    ),
-                  ],
-                ),
-              ),
               ArtistSection(
                 post: post.post,
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: RepaintBoundary(
+                      child: PostStatsTile(
+                    post: post.post,
+                    padding: EdgeInsets.zero,
+                  )),
+                ),
               ),
               if (!post.post.hasParentOrChildren) const Divider(),
               if (post.post.hasParentOrChildren)
@@ -434,57 +449,64 @@ class _LargeLayoutContent extends StatelessWidget {
                     ),
                   ),
                 ),
-              BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.success) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (state.data!.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 16,
-                              top: 16,
-                            ),
-                            child: Text(
-                              '${state.data!.length} Pools',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(context).hintColor,
+              BlocProvider(
+                create: (context) => PoolFromPostIdBloc(
+                  poolRepository: context.read<PoolRepository>(),
+                )..add(PoolFromPostIdRequested(postId: post.post.id)),
+                child:
+                    BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    if (state.status == LoadStatus.success) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (state.data!.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 16,
+                                top: 16,
+                              ),
+                              child: Text(
+                                '${state.data!.length} Pools',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).hintColor,
+                                ),
                               ),
                             ),
-                          ),
-                        ...state.data!
-                            .map((e) => Column(
-                                  children: [
-                                    ListTile(
-                                      dense: true,
-                                      visualDensity: VisualDensity.compact,
-                                      title: Text(
-                                        e.name.removeUnderscoreWithSpace(),
-                                        maxLines: 2,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
+                          ...state.data!
+                              .map((e) => Column(
+                                    children: [
+                                      ListTile(
+                                        dense: true,
+                                        visualDensity: VisualDensity.compact,
+                                        title: Text(
+                                          e.name.removeUnderscoreWithSpace(),
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        subtitle: Text('${e.postCount} posts'),
+                                        trailing: const Icon(Icons.arrow_right),
+                                        onTap: () =>
+                                            AppRouter.router.navigateTo(
+                                          context,
+                                          'pool/detail',
+                                          routeSettings:
+                                              RouteSettings(arguments: [e]),
+                                        ),
                                       ),
-                                      subtitle: Text('${e.postCount} posts'),
-                                      trailing: const Icon(Icons.arrow_right),
-                                      onTap: () => AppRouter.router.navigateTo(
-                                        context,
-                                        'pool/detail',
-                                        routeSettings:
-                                            RouteSettings(arguments: [e]),
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                            .toList(),
-                      ],
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                },
+                                    ],
+                                  ))
+                              .toList(),
+                        ],
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  },
+                ),
               ),
               RecommendArtistList(
                 post: post.post,
@@ -524,8 +546,10 @@ class _LargeLayoutContent extends StatelessWidget {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16),
-                child: PostTagList(
-                  maxTagWidth: _infoBarWidth,
+                child: RepaintBoundary(
+                  child: PostTagList(
+                    maxTagWidth: _infoBarWidth,
+                  ),
                 ),
               )
             ],
@@ -614,31 +638,6 @@ class _CarouselSlider extends StatelessWidget {
                   context
                       .read<SliverPostGridBloc>()
                       .add(SliverPostGridItemChanged(index: index));
-
-                  context
-                      .read<RecommendedArtistPostCubit>()
-                      .add(RecommendedPostRequested(
-                        amount:
-                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].post.id,
-                        tags: posts[index].post.artistTags,
-                      ));
-                  context
-                      .read<RecommendedCharacterPostCubit>()
-                      .add(RecommendedPostRequested(
-                        amount:
-                            Screen.of(context).size == ScreenSize.large ? 9 : 6,
-                        currentPostId: posts[index].post.id,
-                        tags: posts[index].post.characterTags.take(3).toList(),
-                      ));
-                  context.read<PoolFromPostIdBloc>().add(
-                      PoolFromPostIdRequested(postId: posts[index].post.id));
-                  context.read<IsPostFavoritedBloc>().add(
-                      IsPostFavoritedRequested(postId: posts[index].post.id));
-
-                  context
-                      .read<PostVoteBloc>()
-                      .add(PostVoteInit.fromPost(posts[index].post));
 
                   onPageChanged?.call(index);
                 },
@@ -738,10 +737,12 @@ class _SlideShowButtonState extends State<_SlideShowButton>
     return ValueListenableBuilder<bool>(
       valueListenable: widget.autoPlay,
       builder: (context, value, _) => value
-          ? AnimatedSpinningIcon(
-              icon: const Icon(Icons.sync),
-              animation: rotateAnimation,
-              onPressed: () => widget.autoPlay.value = false,
+          ? RepaintBoundary(
+              child: AnimatedSpinningIcon(
+                icon: const Icon(Icons.sync),
+                animation: rotateAnimation,
+                onPressed: () => widget.autoPlay.value = false,
+              ),
             )
           : IconButton(
               icon: const Icon(Icons.slideshow),
@@ -758,55 +759,5 @@ class _SlideShowButtonState extends State<_SlideShowButton>
         ..stop()
         ..reset();
     }
-  }
-}
-
-class InfoChip extends StatelessWidget {
-  const InfoChip({
-    Key? key,
-    required this.leftLabel,
-    required this.rightLabel,
-    required this.leftColor,
-    required this.rightColor,
-  }) : super(key: key);
-
-  final Color leftColor;
-  final Color rightColor;
-  final Widget leftLabel;
-  final Widget rightLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: leftColor,
-          labelPadding: const EdgeInsets.symmetric(horizontal: 1),
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(8),
-              bottomLeft: Radius.circular(8),
-            ),
-          ),
-          label: leftLabel,
-        ),
-        Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: rightColor,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(color: Theme.of(context).hintColor),
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(8),
-              bottomRight: Radius.circular(8),
-            ),
-          ),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-          label: rightLabel,
-        )
-      ],
-    );
   }
 }

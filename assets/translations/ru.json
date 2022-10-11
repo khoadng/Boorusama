@@ -1,0 +1,236 @@
+{
+    "profile": {
+        "profile" : "Профиль",
+        "favorites" : "Любимое",
+        "see_more" : "Просмотреть больше",
+        "user_id" : "ID пользователя",
+        "level" : "Уровень",
+        "favorites_count" : "Любимое",
+        "comments_count" : "Комментарии"
+    },
+
+    "login" : {
+        "form" : {
+            "username" : "Имя",
+            "password" : "API ключ",
+            "login" : "Логин",
+            "greeting" : "Привет!",
+            "cancel" : "Отмена",
+            "open_web_browser" : "Открыть в браузере",
+            "api_key_instruction" : "1. Войдите в свой аккаунт.\n2. Откройте свой профиль\n3. Найдите и скопируйте свой API ключ в строку для логина\n4. ???\n5. Готово!"
+        },
+        "errors" : {
+            "invalidUsernameOrPassword" : "Неправильное имя пользователя или Api ключ",
+            "missingUsername" : "Пожалуйста, введите имя пользователя",
+            "missingPassword" : "Пожалуйста, введите свой API ключ"
+        }
+    },
+
+    "network" : {
+        "unavailable" : "Нет доступа к интернету"
+    },
+
+    "tag" : {
+        "related" : {
+            "more" : "Больше",
+            "related" : "Связанные",
+            "add_to_current_search" : "Добавить к запросу",
+            "open_wiki" : "Открыть wiki"
+        }
+    },
+
+    "post" : {
+        "detail" : {
+            "view": "Просмотр",
+            "slide_show" : {
+                "interval" : "Интервал (секунды)",
+                "skip_anim" : "Пропускать анимацию",
+                "ok" : "OK",
+                "cancel" : "Отмена"
+            },
+            "has_parent_notice" : "Пост имеет родителя",
+            "has_children_notice" : "Пост имеет дочерний пост",
+            "size" : "Размер",
+            "resolution" : "Разрешение",
+            "rating" : "Рейтинг",
+            "share" : {
+                "source" : "Поделиться ссылкой на первоисточник",
+                "booru" : "Поделиться ссылкой на сайт",
+                "image" : "Поделиться изображением"
+            },
+            "copied" : "Скопировано",
+            "show_original" : "Показать оригинал",
+            "show_translated" : "Показать перевод",
+            "login_required_notice" : "Вы должны войти в аккаунт для совершения действия",
+            "open_wiki" : "Открыть wiki",
+            "add_to_blacklist" : "Добавить в чёрный список"
+        },
+        "parent_child": {
+            "children_of": "Дочерний для"
+        },
+        "quick_preview" : {
+            "view_notes" : "Показать перевод текста"
+        },
+        "image_fullview" : {
+            "view_original" : "Просмотреть оригинальное изображение",
+            "view_resized" : "Просмотреть изменённое изображение"
+        }
+    },
+
+    "comment" : {
+        "comments" : "Коментарии",
+        "create" : {
+            "hint" : "Коментарий",
+            "loading" : "Подождите...",
+            "error": "Ошибка"
+        },
+        "list": {
+            "edit" : "Изменить",
+            "reply" : "Ответить",
+            "reply_to" : "Ответил",
+            "delete" : "Удалить",
+            "noComments" : "Ещё нет коментареев",
+            "last_updated" : "Обновленно",
+            "send" : "Отправить"
+        }
+    },
+
+    "explore" : {
+        "latest": "Последнее",
+        "popular": "Популярное",
+        "curated": "Куратор",
+        "most_viewed": "Самое просматриваемое",
+        "see_more" : "Просмотреть больше"
+    },
+
+    "search" : {
+        "errors" : {
+            "generic" : "Что-то пошло не так",
+            "tag_limit" : "Максимальное количество тегов. Обновите свой аккаун для расширения лимита",
+            "database_timeout" : "Запрос прерван из-за слишком долгой обработки",
+            "unknown" : "Неизвестная ошибка, попробуйте ещё раз"
+        },
+        "hint": "Поиск...",
+        "no_result" : "Мы искали и там, и тут, но ничего не нашли.",
+        "empty" : "Пусто...",
+        "search_options" : "Параметры поиска",
+        "history" : {
+            "history" : "История",
+            "clear": "Очистить"
+        }
+    },
+
+    "pool" : {
+        "pool" : "Пул",
+        "pool_gallery" : "Галерея пула",
+        "mature_banned_content" : "Взрослый/Заблокированный контент",
+        "order" : {
+            "recent" : "Недавнее",
+            "new" : "Новое",
+            "post_count": "Количество постов",
+            "name" : "Имя"
+        },
+        "search" : {
+            "hint": "Поиск пула"
+        },
+        "detail" : {
+            "last_updated" : "Последнее обновление"
+        },
+        "item" : {
+            "one": "{} предмет",
+            "other": "{} предметов"
+        } 
+    },
+
+    "settings" : {
+        "settings" : "Настройки",
+        "app_settings" :"Настройки приложения",
+        "appearance" :  "Внешний вид",
+        "general" :  "Генеральные",
+        "information" : "Информация",
+        "image_grid" : {
+            "image_grid" : "Сетка изображений",
+            "grid_size" : {
+                "grid_size" : "Размер сетки",
+                "small" : "Маленькая",
+                "medium" : "Средняя",
+                "large" : "Большая"
+            },
+            "image_quality" : {
+                "image_quality" : "Качество изображения",
+                "high_quality_notice" : "Лучшее качество изображения займёт больше времени для загрузки",
+                "high" : "Высокое",
+                "low" : "Низкое",
+                "original" : "Оригинальное",
+                "automatic" : "Автоматическое"
+            },
+            "spacing" : "Промежуток",
+            "corner_radius" : "Количество углов"
+        },
+        "image_viewer" : {
+            "image_viewer" : "Просмотр изображений",
+            "full_res_as_default" : "Всегда отображать полное разрешение",
+            "full_res_notice" : "Загрузка займёт какое-то время, в зависимости от размеров изображения"
+        },
+        "image_detail" : {
+            "image_detail" : "Детали изображения",
+            "action_bar_display_behavior" : {
+                "action_bar_display_behavior" : "Панель действий",
+                "scrolling" : "Динамическая",
+                "static_at_bottom" : "Статичная"
+            } 
+        },
+        "language" : {
+            "language" : "Язык",
+            "english" : "Английский",
+            "russian" : "Русский",
+            "vietnamese" : "Вьетнамский"
+        },
+        "theme" : {
+            "theme" : "Тема",
+            "dark" : "Тёмная",
+            "light" : "Светлая",
+            "amoled_dark": "AMOLED Тёмная" 
+        },
+        "privacy" : {
+            "privacy" : "Приватность",
+            "send_error_data_notice" : "Отправлять анонимные данные для обработки ошибок"
+        },
+        "safe_mode" : "Безопасный режим"
+    },
+
+    "blacklisted_tags" : {
+        "remove": "Удалить",
+        "edit" : "Изменить",
+        "blacklisted_tags" : "Чёрный список тегов",
+        "load_error" : "Ошибка загрузки чёрного списка",
+        "updated" : "Чёрный список обновлён",
+        "limitation_notice" : "Поддерживает только <b>НЕ</b> оператор и <b>ИЛИ</b> оператор.\n\nИспользование чёрного списка с метатегами не работает в текущей версии."
+    },
+
+    "download" : {
+        "download" : "Скачать",
+        "open_app_settings" : "Открыть настройки",
+        "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов."
+    },
+
+    "rating" : {
+        "rate_request": "Оценить приложение",
+        "rate" : "Оценить",
+        "cancel" : "Нет, спасибо",
+        "later" : "Может, позже",
+        "rationale" : "Если вам понравилось приложение, не могли вы бы оценить его?\nЭто займёт лишь несколько секунд, и очень поможет проекту в развитии."
+    },
+
+    "sideMenu": {
+        "login" : "Войти",
+        "profile" : "Профиль",
+        "settings" : "Настройки"
+    },
+
+    "dateRange" : {
+        "day" : "День",
+        "week": "Неделя",
+        "month" : "Месяц"
+    }
+}

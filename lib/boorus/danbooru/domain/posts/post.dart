@@ -2,6 +2,8 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class Post extends Equatable {
@@ -14,6 +16,7 @@ class Post extends Equatable {
     required this.characterTags,
     required this.artistTags,
     required this.generalTags,
+    required this.metaTags,
     required this.tags,
     required this.width,
     required this.height,
@@ -34,6 +37,9 @@ class Post extends Equatable {
     required this.hasParent,
     this.parentId,
     required this.hasLarge,
+    required this.comments,
+    required this.totalComments,
+    this.artistCommentary,
   });
 
   factory Post.empty() => Post(
@@ -45,6 +51,7 @@ class Post extends Equatable {
         characterTags: const [],
         artistTags: const [],
         generalTags: const [],
+        metaTags: const [],
         tags: const [],
         width: 1,
         height: 1,
@@ -64,6 +71,8 @@ class Post extends Equatable {
         hasChildren: false,
         hasParent: false,
         hasLarge: false,
+        comments: const [],
+        totalComments: 0,
       );
 
   factory Post.banned({
@@ -87,6 +96,7 @@ class Post extends Equatable {
     required List<String> characterTags,
     required List<String> copyrightTags,
     required List<String> artistTags,
+    required List<String> metaTags,
     required bool hasChildren,
     required bool hasParent,
     required bool hasLarge,
@@ -101,6 +111,7 @@ class Post extends Equatable {
         characterTags: characterTags,
         artistTags: artistTags,
         generalTags: generalTags,
+        metaTags: metaTags,
         tags: tags,
         width: imageWidth,
         height: imageHeight,
@@ -121,6 +132,8 @@ class Post extends Equatable {
         hasParent: hasParent,
         parentId: parentId,
         hasLarge: hasLarge,
+        comments: const [],
+        totalComments: 0,
       );
   final int id;
   final String previewImageUrl;
@@ -130,6 +143,7 @@ class Post extends Equatable {
   final List<String> characterTags;
   final List<String> artistTags;
   final List<String> generalTags;
+  final List<String> metaTags;
   final List<String> tags;
   final double width;
   final double height;
@@ -150,6 +164,9 @@ class Post extends Equatable {
   final bool hasParent;
   final int? parentId;
   final bool hasLarge;
+  final List<Comment> comments;
+  final int totalComments;
+  final ArtistCommentary? artistCommentary;
 
   double get aspectRatio => width / height;
 
@@ -163,7 +180,7 @@ class Post extends Equatable {
 
   bool get isVideo {
     //TODO: handle other kind of video format
-    final supportVideoFormat = ['mp4', 'webm', 'zip'];
+    final supportVideoFormat = {'mp4', 'webm', 'zip'};
     if (supportVideoFormat.contains(format)) {
       return true;
     } else {
@@ -183,6 +200,11 @@ class Post extends Equatable {
 
   bool get hasBothParentAndChildren => hasChildren && hasParent;
   bool get hasParentOrChildren => hasChildren || hasParent;
+
+  double get upvotePercent => totalVote > 0 ? upScore / totalVote : 1;
+  int get totalVote => upScore + -downScore;
+  bool get hasVoter => upScore != 0 || downScore != 0;
+  bool get hasFavorite => favCount > 0;
 
   @override
   List<Object?> get props => [id];

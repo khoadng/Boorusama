@@ -26,6 +26,7 @@ enum PostListCategory {
   latest,
   mostViewed,
   curated,
+  hot,
 }
 
 @immutable
@@ -188,6 +189,17 @@ class MostViewedPostFetcher implements PostFetcher {
     int page,
   ) async {
     final posts = await repo.getMostViewedPosts(date);
+
+    return posts;
+  }
+}
+
+class HotPostFetcher implements PostFetcher {
+  const HotPostFetcher();
+
+  @override
+  Future<List<Post>> fetch(IPostRepository repo, int page) async {
+    final posts = await repo.getPosts('order:rank', page);
 
     return posts;
   }

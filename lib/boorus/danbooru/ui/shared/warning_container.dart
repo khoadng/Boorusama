@@ -41,3 +41,44 @@ class WarningContainer extends StatelessWidget {
     );
   }
 }
+
+class InfoContainer extends StatelessWidget {
+  const InfoContainer({
+    Key? key,
+    required this.contentBuilder,
+  }) : super(key: key);
+
+  final Widget Function(BuildContext context) contentBuilder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 8,
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Theme.of(context).cardColor,
+        ),
+        width: MediaQuery.of(context).size.width,
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(right: 12),
+                child: FaIcon(
+                  FontAwesomeIcons.lightbulb,
+                  color: Colors.amber,
+                ),
+              ),
+              Expanded(child: contentBuilder(context)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

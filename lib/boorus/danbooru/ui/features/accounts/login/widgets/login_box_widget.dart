@@ -103,7 +103,9 @@ class LoginBox extends HookWidget {
                               child: IconButton(
                                   splashColor: Colors.transparent,
                                   icon: const FaIcon(
-                                      FontAwesomeIcons.solidCircleXmark),
+                                    FontAwesomeIcons.solidCircleXmark,
+                                    size: 18,
+                                  ),
                                   onPressed: usernameTextController.clear),
                             )
                           : null,
@@ -126,8 +128,14 @@ class LoginBox extends HookWidget {
                       suffixIcon: IconButton(
                           splashColor: Colors.transparent,
                           icon: showPassword.value
-                              ? const FaIcon(FontAwesomeIcons.solidEyeSlash)
-                              : const FaIcon(FontAwesomeIcons.solidEye),
+                              ? const FaIcon(
+                                  FontAwesomeIcons.solidEyeSlash,
+                                  size: 18,
+                                )
+                              : const FaIcon(
+                                  FontAwesomeIcons.solidEye,
+                                  size: 18,
+                                ),
                           onPressed: () =>
                               showPassword.value = !showPassword.value),
                     ),
@@ -189,7 +197,7 @@ class LoginBox extends HookWidget {
       TextEditingController passwordTextController,
       ValueNotifier<bool> isValidUsernameAndPassword) {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(onPrimary: Colors.white),
+      style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
       child: Text('login.form.login'.tr()),
       onPressed: () {
         if (formKey.value.currentState!.validate()) {
