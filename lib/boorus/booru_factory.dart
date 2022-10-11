@@ -23,13 +23,14 @@ class BooruFactory {
 
   Booru create({
     required bool isSafeMode,
+  }) =>
+      from(type: isSafeMode ? BooruType.safebooru : BooruType.danbooru);
+
+  Booru from({
+    required BooruType type,
   }) {
     try {
-      if (isSafeMode) {
-        return _boorus[BooruType.safebooru]!;
-      } else {
-        return _boorus[BooruType.danbooru]!;
-      }
+      return _boorus[type]!;
     } catch (e) {
       return safebooru();
     }
