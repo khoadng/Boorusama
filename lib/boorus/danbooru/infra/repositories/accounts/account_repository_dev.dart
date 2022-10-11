@@ -9,9 +9,7 @@ class AccountRepositoryDev implements IAccountRepository {
   final Account account;
 
   @override
-  Future<void> add(Account account) {
-    throw UnimplementedError();
-  }
+  Future<void> add(Account account) async {}
 
   @override
   Future<bool> exists(String username) {
