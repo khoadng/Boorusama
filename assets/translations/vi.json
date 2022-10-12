@@ -184,6 +184,7 @@
             "language" : "Ngôn ngữ",
             "english" : "Tiếng Anh",
             "russian" : "Tiếng Nga",
+            "belarusian" : "Tiếng Belarus",
             "vietnamese" : "Tiếng Việt"
         },
         "theme" : {
