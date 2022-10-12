@@ -185,6 +185,7 @@
             "language" : "Language",
             "english" : "English",
             "russian" : "Russian",
+            "belarusian" : "Belarusian",
             "vietnamese" : "Vietnamese"
         },
         "theme" : {
