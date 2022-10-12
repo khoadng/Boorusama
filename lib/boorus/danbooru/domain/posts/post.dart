@@ -168,6 +168,47 @@ class Post extends Equatable {
   final int totalComments;
   final ArtistCommentary? artistCommentary;
 
+  Post copyWith({
+    List<String>? copyrightTags,
+    List<String>? characterTags,
+    List<String>? artistTags,
+    List<String>? generalTags,
+    List<String>? metaTags,
+    List<String>? tags,
+  }) =>
+      Post(
+        id: id,
+        previewImageUrl: previewImageUrl,
+        normalImageUrl: normalImageUrl,
+        fullImageUrl: fullImageUrl,
+        copyrightTags: copyrightTags ?? this.copyrightTags,
+        characterTags: characterTags ?? this.characterTags,
+        artistTags: artistTags ?? this.artistTags,
+        generalTags: generalTags ?? this.generalTags,
+        metaTags: metaTags ?? this.metaTags,
+        tags: tags ?? this.tags,
+        width: width,
+        height: height,
+        format: format,
+        lastCommentAt: lastCommentAt,
+        source: source,
+        createdAt: createdAt,
+        score: score,
+        upScore: upScore,
+        downScore: downScore,
+        favCount: favCount,
+        uploaderId: uploaderId,
+        rating: rating,
+        fileSize: fileSize,
+        pixivId: pixivId,
+        isBanned: isBanned,
+        hasChildren: hasChildren,
+        hasParent: hasParent,
+        hasLarge: hasLarge,
+        comments: comments,
+        totalComments: totalComments,
+      );
+
   double get aspectRatio => width / height;
 
   PostName get name {

@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
@@ -49,6 +50,11 @@ import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
 import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/search/search_page.dart';
+
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    as autocomplete;
+
+
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -128,12 +134,51 @@ final postDetailHandler = Handler(handlerFunc: (
   if (args.length == 3) {
     controller = args[2];
   }
+
+  final tags = postDatas
+      .map((e) => e.post)
+      .map((p) => [
+            ...p.artistTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.artist(),
+                  postId: p.id,
+                )),
+            ...p.characterTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.character(),
+                  postId: p.id,
+                )),
+            ...p.copyrightTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.copyright(),
+                  postId: p.id,
+                )),
+            ...p.generalTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.general(),
+                  postId: p.id,
+                )),
+            ...p.metaTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.meta(),
+                  postId: p.id,
+                )),
+          ])
+      .expand((e) => e)
+      .toList();
+
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider.value(value: context.read<AuthenticationCubit>()),
       BlocProvider.value(value: context.read<ApiEndpointCubit>()),
       BlocProvider.value(value: context.read<ThemeBloc>()),
+      BlocProvider(
+        create: (context) => PostDetailBloc(
+          postRepository: context.read<PostRepository>(),
+          tags: tags,
+        ),
+      )
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),

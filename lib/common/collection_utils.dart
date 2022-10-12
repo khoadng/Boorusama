@@ -18,3 +18,31 @@ extension QueueX<E> on Queue<E> {
     return list;
   }
 }
+
+extension ListX<E> on List<E> {
+  List<E> replaceAt(
+    int index,
+    E e,
+  ) {
+    final items = [...this];
+
+    if (index < 0 || index > length - 1) return this;
+
+    items[index] = e;
+
+    return items;
+  }
+
+  List<E> replaceFirst(
+    E e,
+    bool Function(E item) selector,
+  ) {
+    final items = [...this];
+
+    final index = items.indexWhere((el) => selector(el));
+
+    if (index < 0) return this;
+
+    return replaceAt(index, e);
+  }
+}

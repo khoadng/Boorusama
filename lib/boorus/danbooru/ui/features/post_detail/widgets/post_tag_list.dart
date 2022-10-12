@@ -8,9 +8,9 @@ import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -19,6 +19,8 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    as autocomplete;
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -129,10 +131,10 @@ class _Tag {
 class SimplePostTagList extends StatelessWidget {
   const SimplePostTagList({
     Key? key,
-    required this.post,
+    required this.tags,
   }) : super(key: key);
 
-  final Post post;
+  final List<PostDetailTag> tags;
 
   @override
   Widget build(BuildContext context) {
@@ -140,55 +142,33 @@ class SimplePostTagList extends StatelessWidget {
       builder: (context, state) {
         return BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, themeState) {
-            final tags = [
-              ...post.artistTags.map((e) => _Tag(
-                  rawName: e,
-                  displayName: e.replaceAll('_', ' '),
-                  category: TagCategory.artist,
-                  color: getTagColor(
-                    TagCategory.artist,
-                    themeState.theme,
-                  ))),
-              ...post.copyrightTags.map((e) => _Tag(
-                  rawName: e,
-                  displayName: e.replaceAll('_', ' '),
-                  category: TagCategory.copyright,
-                  color: getTagColor(
-                    TagCategory.copyright,
-                    themeState.theme,
-                  ))),
-              ...post.characterTags.map((e) => _Tag(
-                  rawName: e,
-                  displayName: e.replaceAll('_', ' '),
-                  category: TagCategory.charater,
-                  color: getTagColor(
-                    TagCategory.charater,
-                    themeState.theme,
-                  ))),
-              ...post.generalTags.map((e) => _Tag(
-                  rawName: e,
-                  displayName: e.replaceAll('_', ' '),
-                  category: TagCategory.general,
-                  color: getTagColor(
-                    TagCategory.general,
-                    themeState.theme,
-                  ))),
-              ...post.metaTags.map((e) => _Tag(
-                  rawName: e,
-                  displayName: e.replaceAll('_', ' '),
-                  category: TagCategory.meta,
-                  color: getTagColor(
-                    TagCategory.meta,
-                    themeState.theme,
-                  ))),
-            ];
+            final tags_ = [
+              ...tags.where(
+                  (e) => e.category == autocomplete.TagCategory.artist()),
+              ...tags.where(
+                  (e) => e.category == autocomplete.TagCategory.copyright()),
+              ...tags.where(
+                  (e) => e.category == autocomplete.TagCategory.character()),
+              ...tags.where(
+                  (e) => e.category == autocomplete.TagCategory.general()),
+              ...tags
+                  .where((e) => e.category == autocomplete.TagCategory.meta()),
+            ].map((e) => _Tag(
+                rawName: e.name,
+                displayName: e.name.replaceAll('_', ' '),
+                category: TagCategory.meta,
+                color: getTagColor(
+                  TagCategory.values[e.category.getIndex()],
+                  themeState.theme,
+                )));
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Center(
                 child: Wrap(
                   spacing: 4,
                   runSpacing: 4,
-                  children: tags
+                  children: tags_
                       .map((tag) => ContextMenu<String>(
                             items: [
                               // PopupMenuItem(
