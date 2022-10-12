@@ -184,6 +184,7 @@
             "language" : "Язык",
             "english" : "Английский",
             "russian" : "Русский",
+            "belarusian" : "Белорусский",
             "vietnamese" : "Вьетнамский"
         },
         "theme" : {
