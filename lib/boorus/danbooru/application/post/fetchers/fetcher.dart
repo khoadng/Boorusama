@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 abstract class PostFetcher {

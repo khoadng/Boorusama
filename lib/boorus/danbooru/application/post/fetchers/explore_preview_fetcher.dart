@@ -1,6 +1,6 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-
 import 'fetchers.dart';
 
 class ExplorePreviewFetcher implements PostFetcher {

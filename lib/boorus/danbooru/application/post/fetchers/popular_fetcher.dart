@@ -1,5 +1,5 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-
 import 'fetcher.dart';
 
 class PopularPostFetcher implements PostFetcher {
