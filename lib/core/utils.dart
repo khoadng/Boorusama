@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 Future<bool> launchExternalUrl(
   Uri url, {
@@ -72,6 +73,7 @@ void showSimpleSnackBar({
 Future<T?> showAdaptiveBottomSheet<T>(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,
+  bool expand = false,
 }) {
   if (Screen.of(context).size != ScreenSize.small) {
     return showGeneralDialog<T>(
@@ -83,9 +85,13 @@ Future<T?> showAdaptiveBottomSheet<T>(
       context: context,
       barrierColor: Colors.black45,
       backgroundColor: Colors.transparent,
-      builder: (context) => SizedBox(
-        height: MediaQuery.of(context).size.height * 0.65,
+      builder: (context) => ConditionalParentWidget(
+        condition: !expand,
         child: builder(context),
+        conditionalBuilder: (child) => SizedBox(
+          height: MediaQuery.of(context).size.height * 0.65,
+          child: child,
+        ),
       ),
     );
   }

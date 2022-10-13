@@ -410,6 +410,7 @@ void main() async {
                           BlocListener<AuthenticationCubit,
                               AuthenticationState>(
                             listener: (context, state) {
+                              //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {

@@ -6,5 +6,9 @@
     {
         "name" : "safebooru",
         "url" : "https://safebooru.donmai.us/"
+    },
+    {
+        "name" : "testbooru",
+        "url" : "https://testbooru.donmai.us/"
     }
 ]

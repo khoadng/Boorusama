@@ -295,4 +295,13 @@ abstract class Api {
     @Query('search[is_deleted]') bool isDeleted,
     @Query('limit') int limit,
   );
+
+  @PUT('/posts/{postId}.json')
+  @FormUrlEncoded()
+  Future<HttpResponse> putTag(
+    @Query('login') String login,
+    @Query('api_key') String apiKey,
+    @Path() int postId,
+    @Body() Map<String, dynamic> map,
+  );
 }
