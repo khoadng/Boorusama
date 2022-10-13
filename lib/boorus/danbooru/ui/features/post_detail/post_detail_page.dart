@@ -282,88 +282,100 @@ class _CarouselContentState extends State<_CarouselContent>
   Widget build(BuildContext context) {
     super.build(context);
     final screenSize = Screen.of(context).size;
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-            delegate: SliverChildListDelegate(
-          [
-            RepaintBoundary(child: widget.media),
-            if (screenSize == ScreenSize.small) ...[
-              PoolTiles(post: post),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InformationSection(post: post),
-                  const Divider(height: 8, thickness: 1),
-                  if (widget.actionBarDisplayBehavior ==
-                      ActionBarDisplayBehavior.scrolling)
-                    RepaintBoundary(
-                      child: ActionBar(
-                        imagePath: widget.imagePath,
-                        postData: widget.post,
-                      ),
-                    ),
-                  const Divider(height: 8, thickness: 1),
-                  ArtistSection(post: post),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RepaintBoundary(child: PostStatsTile(post: post)),
-                  ),
-                  if (post.hasParentOrChildren)
-                    ParentChildTile(
-                      data: getParentChildData(post),
-                      onTap: (data) => showBarModalBottomSheet(
-                        context: context,
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => PostBloc(
-                                postRepository: context.read<PostRepository>(),
-                                blacklistedTagsRepository:
-                                    context.read<BlacklistedTagsRepository>(),
-                                favoritePostRepository:
-                                    context.read<IFavoritePostRepository>(),
-                                accountRepository:
-                                    context.read<IAccountRepository>(),
-                              )..add(PostRefreshed(
-                                  tag: data.tagQueryForDataFetching,
-                                  fetcher: SearchedPostFetcher.fromTags(
-                                      data.tagQueryForDataFetching),
-                                )),
-                            )
-                          ],
-                          child:
-                              ParentChildPostPage(parentPostId: data.parentId),
-                        ),
-                      ),
-                    ),
-                  if (!post.hasParentOrChildren)
+    return BlocProvider(
+      create: (context) =>
+          PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
+            ..add(PoolFromPostIdRequested(postId: post.id)),
+      child: CustomScrollView(
+        slivers: [
+          SliverList(
+              delegate: SliverChildListDelegate(
+            [
+              RepaintBoundary(child: widget.media),
+              if (screenSize == ScreenSize.small) ...[
+                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    return state.status == LoadStatus.success
+                        ? PoolTiles(pools: state.data!)
+                        : const SizedBox.shrink();
+                  },
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InformationSection(post: post),
                     const Divider(height: 8, thickness: 1),
-                  BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) {
-                      return Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: Text('${post.tags.length} tags'),
-                          children: [
-                            SimplePostTagList(post: post),
-                            const SizedBox(height: 8),
-                          ],
+                    if (widget.actionBarDisplayBehavior ==
+                        ActionBarDisplayBehavior.scrolling)
+                      RepaintBoundary(
+                        child: ActionBar(
+                          imagePath: widget.imagePath,
+                          postData: widget.post,
                         ),
-                      );
-                    },
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  RecommendArtistList(post: post),
-                  RecommendCharacterList(post: post),
-                ],
-              ),
-            ]
-          ],
-        ))
-      ],
+                      ),
+                    const Divider(height: 8, thickness: 1),
+                    ArtistSection(post: post),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: RepaintBoundary(child: PostStatsTile(post: post)),
+                    ),
+                    if (post.hasParentOrChildren)
+                      ParentChildTile(
+                        data: getParentChildData(post),
+                        onTap: (data) => showBarModalBottomSheet(
+                          context: context,
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => PostBloc(
+                                  postRepository:
+                                      context.read<PostRepository>(),
+                                  blacklistedTagsRepository:
+                                      context.read<BlacklistedTagsRepository>(),
+                                  favoritePostRepository:
+                                      context.read<IFavoritePostRepository>(),
+                                  accountRepository:
+                                      context.read<IAccountRepository>(),
+                                )..add(PostRefreshed(
+                                    tag: data.tagQueryForDataFetching,
+                                    fetcher: SearchedPostFetcher.fromTags(
+                                        data.tagQueryForDataFetching),
+                                  )),
+                              )
+                            ],
+                            child: ParentChildPostPage(
+                                parentPostId: data.parentId),
+                          ),
+                        ),
+                      ),
+                    if (!post.hasParentOrChildren)
+                      const Divider(height: 8, thickness: 1),
+                    BlocBuilder<ThemeBloc, ThemeState>(
+                      builder: (context, state) {
+                        return Theme(
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
+                          child: ExpansionTile(
+                            title: Text('${post.tags.length} tags'),
+                            children: [
+                              SimplePostTagList(post: post),
+                              const SizedBox(height: 8),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    RecommendArtistList(post: post),
+                    RecommendCharacterList(post: post),
+                  ],
+                ),
+              ]
+            ],
+          ))
+        ],
+      ),
     );
   }
 
@@ -519,7 +531,7 @@ class _LargeLayoutContent extends StatelessWidget {
                     '/artist',
                     routeSettings: RouteSettings(
                       arguments: [
-                        item.tag,
+                        item,
                         post.post.normalImageUrl,
                       ],
                     ),
@@ -533,8 +545,7 @@ class _LargeLayoutContent extends StatelessWidget {
                             style:
                                 TextStyle(color: Theme.of(context).hintColor)),
                         TextSpan(
-                            text: item.tag,
-                            style: const TextStyle(fontSize: 16)),
+                            text: item, style: const TextStyle(fontSize: 16)),
                       ],
                     ),
                   ),
