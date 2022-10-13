@@ -62,6 +62,16 @@ class RecommendArtistList extends StatelessWidget {
                             const Icon(Icons.keyboard_arrow_right_rounded),
                       ),
                   posts: state.posts,
+                  onTap: (index) => AppRouter.router.navigateTo(
+                    context,
+                    '/post/detail',
+                    routeSettings: RouteSettings(
+                      arguments: [
+                        state.posts,
+                        index,
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
@@ -116,6 +126,16 @@ class RecommendCharacterList extends StatelessWidget {
                     trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                   ),
                   posts: state.posts,
+                  onTap: (index) => AppRouter.router.navigateTo(
+                    context,
+                    '/post/detail',
+                    routeSettings: RouteSettings(
+                      arguments: [
+                        state.posts,
+                        index,
+                      ],
+                    ),
+                  ),
                 );
               },
             ),
