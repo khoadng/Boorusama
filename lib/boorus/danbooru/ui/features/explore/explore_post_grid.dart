@@ -89,17 +89,14 @@ class ExplorePostGrid extends StatelessWidget {
       return SliverPostGrid(
         posts: posts,
         scrollController: controller,
-        onTap: (post, index) => AppRouter.router.navigateTo(
-          context,
-          '/post/detail',
-          routeSettings: RouteSettings(
-            arguments: [
-              posts,
-              index,
-              controller,
-            ],
-          ),
-        ),
+        onTap: (post, index) {
+          goToDetailPage(
+            context: context,
+            posts: posts,
+            initialIndex: index,
+            postBloc: context.read<PostBloc>(),
+          );
+        },
         onFavoriteUpdated: (postId, value) => context
             .read<PostBloc>()
             .add(PostFavoriteUpdated(postId: postId, favorite: value)),
@@ -111,17 +108,14 @@ class ExplorePostGrid extends StatelessWidget {
         return SliverPostGrid(
           posts: posts,
           scrollController: controller,
-          onTap: (post, index) => AppRouter.router.navigateTo(
-            context,
-            '/post/detail',
-            routeSettings: RouteSettings(
-              arguments: [
-                posts,
-                index,
-                controller,
-              ],
-            ),
-          ),
+          onTap: (post, index) {
+            goToDetailPage(
+              context: context,
+              posts: posts,
+              initialIndex: index,
+              postBloc: context.read<PostBloc>(),
+            );
+          },
           onFavoriteUpdated: (postId, value) => context
               .read<PostBloc>()
               .add(PostFavoriteUpdated(postId: postId, favorite: value)),
