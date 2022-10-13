@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'widgets/login_box_widget.dart';
@@ -29,8 +32,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               WarningContainer(
-                  contentBuilder: (context) =>
-                      const Text('Only support Danbooru.')),
+                  contentBuilder: (context) => const Text('login.notice').tr()),
               const Center(
                 child: LoginBox(),
               ),
