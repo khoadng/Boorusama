@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -365,30 +366,42 @@ class _CarouselContentState extends State<_CarouselContent> {
                                 title: Text('${tags.length} tags'),
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
-                                trailing: IconButton(
-                                  onPressed: () async {
-                                    final bloc = context.read<PostDetailBloc>();
+                                trailing: BlocBuilder<AuthenticationCubit,
+                                    AuthenticationState>(
+                                  builder: (context, state) {
+                                    return state is Authenticated
+                                        ? IconButton(
+                                            onPressed: () async {
+                                              final bloc = context
+                                                  .read<PostDetailBloc>();
 
-                                    await showAdaptiveBottomSheet(context,
-                                        expand: true,
-                                        builder: (context) =>
-                                            BlocProvider.value(
-                                              value: bloc,
-                                              child: BlocBuilder<PostDetailBloc,
-                                                  PostDetailState>(
-                                                builder: (context, state) {
-                                                  return TagEditView(
-                                                    post: post,
-                                                    tags: state.tags
-                                                        .where((t) =>
-                                                            t.postId == post.id)
-                                                        .toList(),
-                                                  );
-                                                },
-                                              ),
-                                            ));
+                                              await showAdaptiveBottomSheet(
+                                                  context,
+                                                  expand: true,
+                                                  builder: (context) =>
+                                                      BlocProvider.value(
+                                                        value: bloc,
+                                                        child: BlocBuilder<
+                                                            PostDetailBloc,
+                                                            PostDetailState>(
+                                                          builder:
+                                                              (context, state) {
+                                                            return TagEditView(
+                                                              post: post,
+                                                              tags: state.tags
+                                                                  .where((t) =>
+                                                                      t.postId ==
+                                                                      post.id)
+                                                                  .toList(),
+                                                            );
+                                                          },
+                                                        ),
+                                                      ));
+                                            },
+                                            icon: const Icon(Icons.add),
+                                          )
+                                        : const SizedBox.shrink();
                                   },
-                                  icon: const Icon(Icons.add),
                                 ),
                                 children: [
                                   SimplePostTagList(
