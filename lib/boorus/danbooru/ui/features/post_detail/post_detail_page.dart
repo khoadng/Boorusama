@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
@@ -17,8 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
@@ -327,16 +324,8 @@ class _CarouselContentState extends State<_CarouselContent> {
                           builder: (context) => MultiBlocProvider(
                             providers: [
                               BlocProvider(
-                                create: (context) => PostBloc(
-                                  postRepository:
-                                      context.read<PostRepository>(),
-                                  blacklistedTagsRepository:
-                                      context.read<BlacklistedTagsRepository>(),
-                                  favoritePostRepository:
-                                      context.read<IFavoritePostRepository>(),
-                                  accountRepository:
-                                      context.read<IAccountRepository>(),
-                                )..add(PostRefreshed(
+                                create: (context) => PostBloc.of(context)
+                                  ..add(PostRefreshed(
                                     tag: data.tagQueryForDataFetching,
                                     fetcher: SearchedPostFetcher.fromTags(
                                         data.tagQueryForDataFetching),
@@ -485,15 +474,8 @@ class _LargeLayoutContent extends StatelessWidget {
                       body: MultiBlocProvider(
                         providers: [
                           BlocProvider(
-                            create: (context) => PostBloc(
-                              postRepository: context.read<PostRepository>(),
-                              blacklistedTagsRepository:
-                                  context.read<BlacklistedTagsRepository>(),
-                              favoritePostRepository:
-                                  context.read<IFavoritePostRepository>(),
-                              accountRepository:
-                                  context.read<IAccountRepository>(),
-                            )..add(PostRefreshed(
+                            create: (context) => PostBloc.of(context)
+                              ..add(PostRefreshed(
                                 tag: data.tagQueryForDataFetching,
                                 fetcher: SearchedPostFetcher.fromTags(
                                     data.tagQueryForDataFetching),

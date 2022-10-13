@@ -9,11 +9,8 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'datetime_selector.dart';
 import 'explore_post_grid.dart';
@@ -153,13 +150,8 @@ class ExploreDetailPage extends StatelessWidget {
           title: title,
           builder: (context, refreshController, scrollController) {
             return BlocProvider(
-              create: (context) => PostBloc(
-                postRepository: context.read<PostRepository>(),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(
+              create: (context) => PostBloc.of(context)
+                ..add(
                   PostRefreshed(
                       fetcher: _categoryToFetcher(
                           category, state.date, state.scale)),

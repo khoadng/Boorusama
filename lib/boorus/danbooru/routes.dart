@@ -23,8 +23,6 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
@@ -69,16 +67,11 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<PostRepository>(context),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(
-                  tag: args[0],
-                  fetcher: SearchedPostFetcher.fromTags(args[0]),
-                ))),
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: args[0],
+              fetcher: SearchedPostFetcher.fromTags(args[0]),
+            ))),
       BlocProvider.value(
           value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
@@ -98,16 +91,11 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<PostRepository>(context),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(
-                  tag: args[0],
-                  fetcher: SearchedPostFetcher.fromTags(args[0]),
-                ))),
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: args[0],
+              fetcher: SearchedPostFetcher.fromTags(args[0]),
+            ))),
       BlocProvider.value(
           value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
     ],
@@ -223,14 +211,7 @@ final postSearchHandler = Handler(handlerFunc: (
           create: (context) => SearchHistoryCubit(
               searchHistoryRepository:
                   context.read<ISearchHistoryRepository>())),
-      BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: context.read<PostRepository>(),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )),
+      BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
           create: (context) => TagSearchBloc(
@@ -340,19 +321,12 @@ final favoritesHandler =
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => PostBloc(
-                    postRepository:
-                        RepositoryProvider.of<PostRepository>(context),
-                    blacklistedTagsRepository:
-                        context.read<BlacklistedTagsRepository>(),
-                    favoritePostRepository:
-                        context.read<IFavoritePostRepository>(),
-                    accountRepository: context.read<IAccountRepository>(),
-                  )..add(PostRefreshed(
-                      tag: 'ordfav:$username',
-                      fetcher: SearchedPostFetcher.fromTags(
-                        'ordfav:$username',
-                      )))),
+              create: (context) => PostBloc.of(context)
+                ..add(PostRefreshed(
+                    tag: 'ordfav:$username',
+                    fetcher: SearchedPostFetcher.fromTags(
+                      'ordfav:$username',
+                    )))),
         ],
         child: FavoritesPage(
           username: username,
