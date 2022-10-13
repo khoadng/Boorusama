@@ -1,10 +1,8 @@
-// Dart imports:
-import 'dart:collection';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -264,13 +262,6 @@ final poolDetailHandler =
 
   return MultiBlocProvider(
     providers: [
-      BlocProvider(
-          create: (context) => PoolDetailCubit(
-                ids: Queue.from(pool.postIds.reversed),
-                postRepository: RepositoryProvider.of<PostRepository>(context),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..load()),
       BlocProvider.value(
           value: context.read<PoolDescriptionBloc>()
             ..add(PoolDescriptionFetched(poolId: pool.id))),
@@ -280,6 +271,7 @@ final poolDetailHandler =
     ],
     child: PoolDetailPage(
       pool: pool,
+      postIds: QueueList.from(pool.postIds),
     ),
   );
 });
