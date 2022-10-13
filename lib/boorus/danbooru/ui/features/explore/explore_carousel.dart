@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post_data.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/display.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -16,9 +14,11 @@ class ExploreCarousel extends StatelessWidget {
   const ExploreCarousel({
     Key? key,
     required this.posts,
+    required this.onTap,
   }) : super(key: key);
 
   final List<Post> posts;
+  final void Function(int index) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +32,7 @@ class ExploreCarousel extends StatelessWidget {
         itemBuilder: (context, index, realIndex) {
           final post = posts[index];
           return GestureDetector(
-            onTap: () => AppRouter.router.navigateTo(
-              context,
-              '/post/detail',
-              routeSettings: RouteSettings(
-                arguments: [
-                  posts
-                      .map((e) => PostData(post: e, isFavorited: false))
-                      .toList(),
-                  index,
-                ],
-              ),
-            ),
+            onTap: () => onTap(index),
             child: Stack(
               children: [
                 PostImage(
