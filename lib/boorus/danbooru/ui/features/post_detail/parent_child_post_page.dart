@@ -82,18 +82,14 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                             return SliverPostGrid(
                               posts: state.posts,
                               scrollController: controller,
-                              onTap: (post, index) =>
-                                  AppRouter.router.navigateTo(
-                                context,
-                                '/post/detail',
-                                routeSettings: RouteSettings(
-                                  arguments: [
-                                    state.posts,
-                                    index,
-                                    controller,
-                                  ],
-                                ),
-                              ),
+                              onTap: (post, index) {
+                                goToDetailPage(
+                                  context: context,
+                                  posts: state.posts,
+                                  initialIndex: index,
+                                  postBloc: context.read<PostBloc>(),
+                                );
+                              },
                               onFavoriteUpdated: (postId, value) => context
                                   .read<PostBloc>()
                                   .add(PostFavoriteUpdated(

@@ -50,16 +50,11 @@ class HomePostGrid extends StatelessWidget {
                   borderRadius: _gridSizeToBorderRadius(gridSize),
                   onTap: (post, index) {
                     onTap?.call();
-                    AppRouter.router.navigateTo(
-                      context,
-                      '/post/detail',
-                      routeSettings: RouteSettings(
-                        arguments: [
-                          state.posts,
-                          index,
-                          controller,
-                        ],
-                      ),
+                    goToDetailPage(
+                      context: context,
+                      posts: state.posts,
+                      initialIndex: index,
+                      postBloc: context.read<PostBloc>(),
                     );
                   },
                   onFavoriteUpdated: (postId, value) => context

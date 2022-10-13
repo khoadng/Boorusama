@@ -29,15 +29,11 @@ class ExplorePage extends StatelessWidget {
       return ExploreCarousel(
         posts: state.posts.map((e) => e.post).toList(),
         onTap: (index) {
-          AppRouter.router.navigateTo(
-            context,
-            '/post/detail',
-            routeSettings: RouteSettings(
-              arguments: [
-                state.posts,
-                index,
-              ],
-            ),
+          goToDetailPage(
+            context: context,
+            posts: state.posts,
+            initialIndex: index,
+            postBloc: context.read<PostBloc>(),
           );
         },
       );
