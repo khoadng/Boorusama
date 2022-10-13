@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/fetchers/recommend_post_fetcher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -44,25 +45,39 @@ class RecommendArtistList extends StatelessWidget {
               ))),
             child: BlocBuilder<PostBloc, PostState>(
               builder: (context, state) {
-                return RecommendPostSection(
-                  header: header?.call(tag) ??
-                      ListTile(
-                        onTap: () => AppRouter.router.navigateTo(
-                          context,
-                          '/artist',
-                          routeSettings: RouteSettings(
-                            arguments: [
-                              tag,
-                              post.normalImageUrl,
-                            ],
+                if (state.status == LoadStatus.success) {
+                  return RecommendPostSection(
+                    header: header?.call(tag) ??
+                        ListTile(
+                          onTap: () => AppRouter.router.navigateTo(
+                            context,
+                            '/artist',
+                            routeSettings: RouteSettings(
+                              arguments: [
+                                tag,
+                                post.normalImageUrl,
+                              ],
+                            ),
                           ),
+                          title: Text(tag.removeUnderscoreWithSpace()),
+                          trailing:
+                              const Icon(Icons.keyboard_arrow_right_rounded),
                         ),
-                        title: Text(tag.removeUnderscoreWithSpace()),
-                        trailing:
-                            const Icon(Icons.keyboard_arrow_right_rounded),
+                    posts: state.posts,
+                    onTap: (index) => AppRouter.router.navigateTo(
+                      context,
+                      '/post/detail',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          state.posts,
+                          index,
+                        ],
                       ),
-                  posts: state.posts,
-                );
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
             ),
           ),
@@ -100,23 +115,37 @@ class RecommendCharacterList extends StatelessWidget {
               ))),
             child: BlocBuilder<PostBloc, PostState>(
               builder: (context, state) {
-                return RecommendPostSection(
-                  header: ListTile(
-                    onTap: () => AppRouter.router.navigateTo(
+                if (state.status == LoadStatus.success) {
+                  return RecommendPostSection(
+                    header: ListTile(
+                      onTap: () => AppRouter.router.navigateTo(
+                        context,
+                        '/character',
+                        routeSettings: RouteSettings(
+                          arguments: [
+                            tag,
+                            post.normalImageUrl,
+                          ],
+                        ),
+                      ),
+                      title: Text(tag.removeUnderscoreWithSpace()),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                    posts: state.posts,
+                    onTap: (index) => AppRouter.router.navigateTo(
                       context,
-                      '/character',
+                      '/post/detail',
                       routeSettings: RouteSettings(
                         arguments: [
-                          tag,
-                          post.normalImageUrl,
+                          state.posts,
+                          index,
                         ],
                       ),
                     ),
-                    title: Text(tag.removeUnderscoreWithSpace()),
-                    trailing: const Icon(Icons.keyboard_arrow_right_rounded),
-                  ),
-                  posts: state.posts,
-                );
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
               },
             ),
           ),

@@ -14,10 +14,12 @@ class RecommendPostSection extends StatelessWidget {
     Key? key,
     required this.posts,
     required this.header,
+    required this.onTap,
   }) : super(key: key);
 
   final List<PostData> posts;
   final Widget header;
+  final void Function(int index) onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +33,7 @@ class RecommendPostSection extends StatelessWidget {
               child: PreviewPostGrid(
                 posts: posts,
                 imageQuality: state.settings.imageQuality,
+                onTap: onTap,
               ),
             ),
           ],
