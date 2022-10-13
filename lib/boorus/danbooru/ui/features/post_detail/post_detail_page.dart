@@ -9,7 +9,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -38,7 +37,6 @@ import 'models/parent_child_data.dart';
 import 'models/slide_show_configuration.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
-import 'tag_edit_view.dart';
 import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
@@ -366,43 +364,43 @@ class _CarouselContentState extends State<_CarouselContent> {
                                 title: Text('${tags.length} tags'),
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
-                                trailing: BlocBuilder<AuthenticationCubit,
-                                    AuthenticationState>(
-                                  builder: (context, state) {
-                                    return state is Authenticated
-                                        ? IconButton(
-                                            onPressed: () async {
-                                              final bloc = context
-                                                  .read<PostDetailBloc>();
+                                // trailing: BlocBuilder<AuthenticationCubit,
+                                //     AuthenticationState>(
+                                //   builder: (context, state) {
+                                //     return state is Authenticated
+                                //         ? IconButton(
+                                //             onPressed: () async {
+                                //               final bloc = context
+                                //                   .read<PostDetailBloc>();
 
-                                              await showAdaptiveBottomSheet(
-                                                  context,
-                                                  expand: true,
-                                                  builder: (context) =>
-                                                      BlocProvider.value(
-                                                        value: bloc,
-                                                        child: BlocBuilder<
-                                                            PostDetailBloc,
-                                                            PostDetailState>(
-                                                          builder:
-                                                              (context, state) {
-                                                            return TagEditView(
-                                                              post: post,
-                                                              tags: state.tags
-                                                                  .where((t) =>
-                                                                      t.postId ==
-                                                                      post.id)
-                                                                  .toList(),
-                                                            );
-                                                          },
-                                                        ),
-                                                      ));
-                                            },
-                                            icon: const Icon(Icons.add),
-                                          )
-                                        : const SizedBox.shrink();
-                                  },
-                                ),
+                                //               await showAdaptiveBottomSheet(
+                                //                   context,
+                                //                   expand: true,
+                                //                   builder: (context) =>
+                                //                       BlocProvider.value(
+                                //                         value: bloc,
+                                //                         child: BlocBuilder<
+                                //                             PostDetailBloc,
+                                //                             PostDetailState>(
+                                //                           builder:
+                                //                               (context, state) {
+                                //                             return TagEditView(
+                                //                               post: post,
+                                //                               tags: state.tags
+                                //                                   .where((t) =>
+                                //                                       t.postId ==
+                                //                                       post.id)
+                                //                                   .toList(),
+                                //                             );
+                                //                           },
+                                //                         ),
+                                //                       ));
+                                //             },
+                                //             icon: const Icon(Icons.add),
+                                //           )
+                                //         : const SizedBox.shrink();
+                                // },
+                                // ),
                                 children: [
                                   SimplePostTagList(
                                     tags: tags,
