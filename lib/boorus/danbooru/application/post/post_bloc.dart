@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -129,120 +129,6 @@ class PostFavoriteUpdated extends PostEvent {
   List<Object?> get props => [postId, favorite];
 }
 
-abstract class PostFetcher {
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  );
-}
-
-class PopularPostFetcher implements PostFetcher {
-  const PopularPostFetcher({
-    required this.date,
-    required this.scale,
-  });
-
-  final DateTime date;
-  final TimeScale scale;
-
-  @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPopularPosts(date, page, scale);
-
-    return posts;
-  }
-}
-
-class CuratedPostFetcher implements PostFetcher {
-  const CuratedPostFetcher({
-    required this.date,
-    required this.scale,
-  });
-
-  final DateTime date;
-  final TimeScale scale;
-
-  @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getCuratedPosts(date, page, scale);
-
-    return posts;
-  }
-}
-
-class MostViewedPostFetcher implements PostFetcher {
-  const MostViewedPostFetcher({
-    required this.date,
-  });
-
-  final DateTime date;
-
-  @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getMostViewedPosts(date);
-
-    return posts;
-  }
-}
-
-class HotPostFetcher implements PostFetcher {
-  const HotPostFetcher();
-
-  @override
-  Future<List<Post>> fetch(PostRepository repo, int page) async {
-    final posts = await repo.getPosts('order:rank', page);
-
-    return posts;
-  }
-}
-
-class LatestPostFetcher implements PostFetcher {
-  const LatestPostFetcher();
-
-  @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPosts('', page);
-
-    return posts;
-  }
-}
-
-class SearchedPostFetcher implements PostFetcher {
-  const SearchedPostFetcher({
-    required this.query,
-  });
-
-  factory SearchedPostFetcher.fromTags(
-    String tags, {
-    PostsOrder? order,
-  }) =>
-      SearchedPostFetcher(query: '$tags ${_postsOrderToString(order)}');
-
-  final String query;
-
-  @override
-  Future<List<Post>> fetch(
-    PostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPosts(query, page);
-
-    return posts;
-  }
-}
-
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required PostRepository postRepository,
@@ -339,6 +225,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     });
   }
 
+  factory PostBloc.of(BuildContext context) => PostBloc(
+        postRepository: context.read<PostRepository>(),
+        blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+        favoritePostRepository: context.read<IFavoritePostRepository>(),
+        accountRepository: context.read<IAccountRepository>(),
+      );
+
   void _emitError(Object error, Emitter emit) {
     if (error is CannotSearchMoreThanTwoTags) {
       emit(state.copyWith(
@@ -356,14 +249,5 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         exceptionMessage: 'search.errors.unknown',
       ));
     }
-  }
-}
-
-String _postsOrderToString(PostsOrder? order) {
-  switch (order) {
-    case PostsOrder.popular:
-      return 'order:favcount';
-    default:
-      return '';
   }
 }
