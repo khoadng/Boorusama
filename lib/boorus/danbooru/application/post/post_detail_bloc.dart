@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    as autocomplete;
 
 class PostDetailTag extends Equatable {
   const PostDetailTag({
@@ -18,7 +20,7 @@ class PostDetailTag extends Equatable {
   });
 
   final String name;
-  final TagCategory category;
+  final autocomplete.TagCategory category;
   final int postId;
 
   @override
@@ -65,7 +67,7 @@ class PostDetailTagUpdated extends PostDetailEvent {
     required this.postId,
   });
 
-  final TagCategory category;
+  final int? category;
   final String tag;
   final int postId;
 
@@ -77,11 +79,19 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required PostRepository postRepository,
     required List<PostDetailTag> tags,
+    required void Function(
+      int postId,
+      String tag,
+      TagCategory tagCategory,
+    )
+        onPostUpdated,
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
         )) {
     on<PostDetailTagUpdated>((event, emit) async {
+      if (event.category == null) return;
+
       await tryAsync<bool>(
         action: () => postRepository.putTag(event.postId, event.tag),
         onSuccess: (data) async {
@@ -90,12 +100,20 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               ...state.tags,
               PostDetailTag(
                 name: event.tag,
-                category: event.category,
+                category: autocomplete.TagCategory(
+                  category: TagCategory.values[event.category!],
+                ),
                 postId: event.postId,
               ),
-            ],
+            ]..sort((a, b) => a.name.compareTo(b.name)),
             id: Random().nextDouble(),
           ));
+
+          onPostUpdated(
+            event.postId,
+            event.tag,
+            TagCategory.values[event.category!],
+          );
         },
       );
     });

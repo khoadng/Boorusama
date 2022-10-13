@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
@@ -36,6 +37,7 @@ import 'models/parent_child_data.dart';
 import 'models/slide_show_configuration.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
+import 'tag_edit_view.dart';
 import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
@@ -274,13 +276,11 @@ class _CarouselContent extends StatefulWidget {
   State<_CarouselContent> createState() => _CarouselContentState();
 }
 
-class _CarouselContentState extends State<_CarouselContent>
-    with AutomaticKeepAliveClientMixin {
+class _CarouselContentState extends State<_CarouselContent> {
   Post get post => widget.post.post;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final screenSize = Screen.of(context).size;
     return BlocProvider(
       create: (context) =>
@@ -356,12 +356,46 @@ class _CarouselContentState extends State<_CarouselContent>
                         return Theme(
                           data: Theme.of(context)
                               .copyWith(dividerColor: Colors.transparent),
-                          child: ExpansionTile(
-                            title: Text('${post.tags.length} tags'),
-                            children: [
-                              SimplePostTagList(post: post),
-                              const SizedBox(height: 8),
-                            ],
+                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                            builder: (context, detailState) {
+                              return ExpansionTile(
+                                title: Text('${post.tags.length} tags'),
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                trailing: IconButton(
+                                  onPressed: () async {
+                                    final bloc = context.read<PostDetailBloc>();
+
+                                    await showAdaptiveBottomSheet(context,
+                                        expand: true,
+                                        builder: (context) =>
+                                            BlocProvider.value(
+                                              value: bloc,
+                                              child: BlocBuilder<PostDetailBloc,
+                                                  PostDetailState>(
+                                                builder: (context, state) {
+                                                  return TagEditView(
+                                                    post: post,
+                                                    tags: state.tags
+                                                        .where((t) =>
+                                                            t.postId == post.id)
+                                                        .toList(),
+                                                  );
+                                                },
+                                              ),
+                                            ));
+                                  },
+                                  icon: const Icon(Icons.add),
+                                ),
+                                children: [
+                                  SimplePostTagList(
+                                      tags: detailState.tags
+                                          .where((e) => e.postId == post.id)
+                                          .toList()),
+                                  const SizedBox(height: 8),
+                                ],
+                              );
+                            },
                           ),
                         );
                       },
@@ -378,9 +412,6 @@ class _CarouselContentState extends State<_CarouselContent>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }
 
 class _LargeLayoutContent extends StatelessWidget {

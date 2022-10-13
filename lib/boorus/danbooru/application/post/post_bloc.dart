@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -38,6 +41,7 @@ class PostState extends Equatable {
     required this.page,
     required this.hasMore,
     this.exceptionMessage,
+    required this.id,
   });
 
   factory PostState.initial() => const PostState(
@@ -46,6 +50,7 @@ class PostState extends Equatable {
         filteredPosts: [],
         page: 1,
         hasMore: true,
+        id: 0,
       );
 
   final List<PostData> posts;
@@ -55,6 +60,9 @@ class PostState extends Equatable {
   final bool hasMore;
   final String? exceptionMessage;
 
+  //TODO: quick hack to force rebuild...
+  final double id;
+
   PostState copyWith({
     LoadStatus? status,
     List<PostData>? posts,
@@ -62,6 +70,7 @@ class PostState extends Equatable {
     int? page,
     bool? hasMore,
     String? exceptionMessage,
+    double? id,
   }) =>
       PostState(
         status: status ?? this.status,
@@ -70,11 +79,12 @@ class PostState extends Equatable {
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
         exceptionMessage: exceptionMessage ?? this.exceptionMessage,
+        id: id ?? this.id,
       );
 
   @override
   List<Object?> get props =>
-      [status, posts, filteredPosts, page, hasMore, exceptionMessage];
+      [status, posts, filteredPosts, page, hasMore, exceptionMessage, id];
 }
 
 @immutable
@@ -127,6 +137,17 @@ class PostFavoriteUpdated extends PostEvent {
 
   @override
   List<Object?> get props => [postId, favorite];
+}
+
+class PostUpdated extends PostEvent {
+  const PostUpdated({
+    required this.post,
+  }) : super();
+
+  final Post post;
+
+  @override
+  List<Object?> get props => [post];
 }
 
 class PostBloc extends Bloc<PostEvent, PostState> {
@@ -221,6 +242,25 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         );
 
         //print('${event.postId}: $old -> ${posts[index].isFavorited}');
+      }
+    });
+
+    on<PostUpdated>((event, emit) {
+      final index =
+          state.posts.indexWhere((element) => element.post.id == event.post.id);
+      if (index > 0) {
+        final posts = [...state.posts];
+        posts[index] = PostData(
+          post: event.post,
+          isFavorited: state.posts[index].isFavorited,
+        );
+
+        emit(
+          state.copyWith(
+            posts: posts,
+            id: Random().nextDouble(),
+          ),
+        );
       }
     });
   }

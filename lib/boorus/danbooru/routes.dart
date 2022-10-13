@@ -52,8 +52,6 @@ import 'ui/features/search/search_page.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
     as autocomplete;
 
-
-
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
@@ -128,10 +126,8 @@ final postDetailHandler = Handler(handlerFunc: (
   final postDatas = args[0] as List<PostData>;
   final index = args[1] as int;
 
-  AutoScrollController? controller;
-  if (args.length == 3) {
-    controller = args[2];
-  }
+  final AutoScrollController? controller = args[2];
+  final PostBloc? postBloc = args[3];
 
   final tags = postDatas
       .map((e) => e.post)
@@ -175,6 +171,19 @@ final postDetailHandler = Handler(handlerFunc: (
         create: (context) => PostDetailBloc(
           postRepository: context.read<PostRepository>(),
           tags: tags,
+          onPostUpdated: (postId, tag, category) {
+            if (postBloc == null) return;
+
+            final posts = postDatas.where((e) => e.post.id == postId).toList();
+            if (posts.isEmpty) return;
+
+            postBloc.add(PostUpdated(
+                post: _newPost(
+              posts.first.post,
+              tag,
+              category,
+            )));
+          },
         ),
       )
     ],
@@ -364,3 +373,32 @@ final blacklistedTagsHandler =
     child: const BlacklistedTagsPage(),
   );
 });
+
+Post _newPost(Post post, String tag, TagCategory category) {
+  if (category == TagCategory.artist) {
+    return post.copyWith(
+      artistTags: [...post.artistTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.copyright) {
+    return post.copyWith(
+      copyrightTags: [...post.copyrightTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.charater) {
+    return post.copyWith(
+      characterTags: [...post.characterTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.meta) {
+    return post.copyWith(
+      metaTags: [...post.metaTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else {
+    return post.copyWith(
+      generalTags: [...post.generalTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  }
+}

@@ -59,6 +59,10 @@ class AppTheme {
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData()
         .copyWith(backgroundColor: Colors.black),
+    expansionTileTheme: ThemeData.dark().expansionTileTheme.copyWith(
+          textColor: Colors.white,
+          iconColor: Colors.white,
+        ),
   );
 
   static final darkAmoledTheme = ThemeData.dark().copyWith(
@@ -96,5 +100,9 @@ class AppTheme {
     ),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData()
         .copyWith(backgroundColor: Colors.black),
+    expansionTileTheme: ThemeData.dark().expansionTileTheme.copyWith(
+          textColor: Colors.white,
+          iconColor: Colors.white,
+        ),
   );
 }
