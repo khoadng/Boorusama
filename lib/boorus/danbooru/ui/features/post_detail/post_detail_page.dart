@@ -358,8 +358,11 @@ class _CarouselContentState extends State<_CarouselContent> {
                               .copyWith(dividerColor: Colors.transparent),
                           child: BlocBuilder<PostDetailBloc, PostDetailState>(
                             builder: (context, detailState) {
+                              final tags = detailState.tags
+                                  .where((e) => e.postId == post.id)
+                                  .toList();
                               return ExpansionTile(
-                                title: Text('${post.tags.length} tags'),
+                                title: Text('${tags.length} tags'),
                                 controlAffinity:
                                     ListTileControlAffinity.leading,
                                 trailing: IconButton(
@@ -389,9 +392,8 @@ class _CarouselContentState extends State<_CarouselContent> {
                                 ),
                                 children: [
                                   SimplePostTagList(
-                                      tags: detailState.tags
-                                          .where((e) => e.postId == post.id)
-                                          .toList()),
+                                    tags: tags,
+                                  ),
                                   const SizedBox(height: 8),
                                 ],
                               );

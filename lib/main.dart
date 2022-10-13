@@ -17,6 +17,7 @@ import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
@@ -46,6 +47,7 @@ import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
 import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/accounts/account_repository_dev.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_cacher.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
@@ -105,8 +107,13 @@ void main() async {
 
   final settings = await settingRepository.load();
 
-  final accountBox = Hive.openBox('accounts');
-  final accountRepo = AccountRepository(accountBox);
+  // final accountBox = Hive.openBox('accounts');
+  final accountRepo = AccountRepositoryDev(
+      account: const Account(
+    id: 111,
+    username: 'metest',
+    apiKey: 'ddDF6gbzcFmXnCLtf5P4mLar',
+  ));
 
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
@@ -144,7 +151,8 @@ void main() async {
   final deviceInfo =
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
-  final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+  // final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+  final defaultBooru = booruFactory.from(type: BooruType.testbooru);
 
   //TODO: this notification is only used for download feature
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -410,6 +418,7 @@ void main() async {
                           BlocListener<AuthenticationCubit,
                               AuthenticationState>(
                             listener: (context, state) {
+                              //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {

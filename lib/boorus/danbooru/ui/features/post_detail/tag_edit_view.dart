@@ -8,22 +8,27 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'widgets/post_tag_list.dart';
+
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    as autocomplete;
 
 class TagEditView extends StatelessWidget {
   const TagEditView({
     Key? key,
     required this.post,
     required this.tags,
+    this.recommendedTotalOfTag = 20,
   }) : super(key: key);
 
   final Post post;
   final List<PostDetailTag> tags;
+  final int recommendedTotalOfTag;
 
   @override
   Widget build(BuildContext context) {
@@ -43,23 +48,63 @@ class TagEditView extends StatelessWidget {
           Expanded(
             child: CustomScrollView(
               slivers: [
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      WarningContainer(
-                          contentBuilder: (context) => const Text(
-                              'Before editing, read the how to tag guide.')),
-                      SimplePostTagList(
-                        tags: tags,
-                      ),
-                    ],
+                SliverToBoxAdapter(
+                  child: WarningContainer(
+                      contentBuilder: (context) => const Text(
+                          'Before editing, read the how to tag guide.')),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Tags',
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        Text('${tags.length}/$recommendedTotalOfTag'),
+                      ],
+                    ),
                   ),
+                ),
+                const SliverToBoxAdapter(
+                    child: Divider(
+                  thickness: 2,
+                )),
+                BlocBuilder<ThemeBloc, ThemeState>(
+                  builder: (context, themeState) {
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          return ListTile(
+                            title: Text(
+                              tags[index].name.replaceAll('_', ' '),
+                              style: TextStyle(
+                                color: getTagColor(
+                                  TagCategory
+                                      .values[tags[index].category.getIndex()],
+                                  themeState.theme,
+                                ),
+                              ),
+                            ),
+                            // trailing: IconButton(
+                            //   onPressed: null,
+                            //   icon: const FaIcon(FontAwesomeIcons.xmark),
+                            // ),
+                          );
+                        },
+                        childCount: tags.length,
+                      ),
+                    );
+                  },
                 ),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
             child: SearchBar(
               enabled: false,
               hintText: 'Add tag',
@@ -91,7 +136,7 @@ class SimpleTagSearchView extends StatelessWidget {
     required this.onSelected,
   }) : super(key: key);
 
-  final void Function(AutocompleteData tag) onSelected;
+  final void Function(autocomplete.AutocompleteData tag) onSelected;
 
   @override
   Widget build(BuildContext context) {
