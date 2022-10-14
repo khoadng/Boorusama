@@ -127,4 +127,83 @@ void main() {
       );
     });
   });
+
+  group('[vote test]', () {
+    test('total vote', () {
+      final post = Post.empty().copyWith(
+        upScore: 10,
+        downScore: -5,
+      );
+
+      expect(post.totalVote, equals(15));
+    });
+
+    test('have voters', () {
+      final posts = [
+        [1, 0],
+        [0, -1],
+        [5, -10],
+      ]
+          .map((e) => Post.empty().copyWith(
+                upScore: e[0],
+                downScore: e[1],
+              ))
+          .toList();
+
+      expect(posts.every((post) => post.hasVoter), isTrue);
+    });
+
+    test("doesn't have voters", () {
+      final posts = [
+        [0, 0],
+      ]
+          .map((e) => Post.empty().copyWith(
+                upScore: e[0],
+                downScore: e[1],
+              ))
+          .toList();
+
+      expect(posts.every((post) => post.hasVoter), isFalse);
+    });
+
+    test('upvote percent should be 100% when there is not vote yet', () {
+      final post = Post.empty().copyWith(
+        upScore: 0,
+        downScore: 0,
+      );
+
+      expect(post.upvotePercent, equals(1));
+    });
+
+    test('upvote percent 0.5', () {
+      final post = Post.empty().copyWith(
+        upScore: 10,
+        downScore: -10,
+      );
+
+      expect(post.upvotePercent, equals(0.5));
+    });
+  });
+
+  group('favorite test', () {
+    test('have favorites', () {
+      final posts = [1, 2, 3]
+          .map((e) => Post.empty().copyWith(
+                favCount: e,
+              ))
+          .toList();
+
+      expect(posts.every((post) => post.hasFavorite), isTrue);
+    });
+
+    test("doesn't have favorites", () {
+      final posts = [-1, 0]
+          .map((e) => Post.empty().copyWith(
+                favCount: e,
+              ))
+          .toList();
+
+      expect(posts.every((post) => post.hasFavorite), isFalse);
+    });
+  });
 }

@@ -179,6 +179,9 @@ class Post extends Equatable {
     DateTime? lastCommentAt,
     String? normalImageUrl,
     String? fullImageUrl,
+    int? upScore,
+    int? downScore,
+    int? favCount,
   }) =>
       Post(
         id: id,
@@ -198,9 +201,9 @@ class Post extends Equatable {
         source: source,
         createdAt: createdAt,
         score: score,
-        upScore: upScore,
-        downScore: downScore,
-        favCount: favCount,
+        upScore: upScore ?? this.upScore,
+        downScore: downScore ?? this.downScore,
+        favCount: favCount ?? this.favCount,
         uploaderId: uploaderId,
         rating: rating,
         fileSize: fileSize,
