@@ -182,6 +182,8 @@ class Post extends Equatable {
     int? upScore,
     int? downScore,
     int? favCount,
+    bool? hasParent,
+    bool? hasChildren,
   }) =>
       Post(
         id: id,
@@ -209,8 +211,8 @@ class Post extends Equatable {
         fileSize: fileSize,
         pixivId: pixivId,
         isBanned: isBanned,
-        hasChildren: hasChildren,
-        hasParent: hasParent,
+        hasChildren: hasChildren ?? this.hasChildren,
+        hasParent: hasParent ?? this.hasParent,
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,

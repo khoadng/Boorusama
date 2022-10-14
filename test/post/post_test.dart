@@ -206,4 +206,38 @@ void main() {
       expect(posts.every((post) => post.hasFavorite), isFalse);
     });
   });
+
+  group('parent child', () {
+    test('has both parent and child', () {
+      final post = Post.empty().copyWith(
+        hasChildren: true,
+        hasParent: true,
+      );
+
+      expect(post.hasBothParentAndChildren, isTrue);
+    });
+
+    test('has parent or child', () {
+      final posts = [
+        [true, false],
+        [false, true]
+      ]
+          .map((e) => Post.empty().copyWith(
+                hasChildren: e[0],
+                hasParent: e[1],
+              ))
+          .toList();
+
+      expect(posts.every((post) => post.hasParentOrChildren), isTrue);
+    });
+
+    test('have no parent and child', () {
+      final post = Post.empty().copyWith(
+        hasChildren: false,
+        hasParent: false,
+      );
+
+      expect(post.hasParentOrChildren, isFalse);
+    });
+  });
 }
