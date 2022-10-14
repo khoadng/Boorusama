@@ -175,6 +175,7 @@ class Post extends Equatable {
     List<String>? generalTags,
     List<String>? metaTags,
     List<String>? tags,
+    String? format,
   }) =>
       Post(
         id: id,
@@ -189,7 +190,7 @@ class Post extends Equatable {
         tags: tags ?? this.tags,
         width: width,
         height: height,
-        format: format,
+        format: format ?? this.format,
         lastCommentAt: lastCommentAt,
         source: source,
         createdAt: createdAt,
