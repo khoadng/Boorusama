@@ -23,7 +23,8 @@
             "invalidUsernameOrPassword" : "Tài khoản hoặc API key không chính xác",
             "missingUsername" : "Chưa nhập tên tài khoản",
             "missingPassword" : "Chưa nhập API key"
-        }
+        },
+        "notice" : "Chỉ hỗ trợ Danbooru."
     },
 
     "network" : {
@@ -115,6 +116,7 @@
         "no_result" : "Không tìm được kết quả phù hợp.",
         "empty" : "Trống",
         "search_options" : "Tùy chọn",
+        "metatags_notice": "Free metatags không tính vào giới hạn tag search",
         "history" : {
             "history" : "Lịch sử",
             "clear": "Xóa"
