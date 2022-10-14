@@ -220,14 +220,6 @@ class Post extends Equatable {
 
   double get aspectRatio => width / height;
 
-  PostName get name {
-    return PostName(
-      artistTags: artistTags.join(' '),
-      characterTags: characterTags.join(' '),
-      copyrightTags: copyrightTags.join(' '),
-    );
-  }
-
   bool get isVideo {
     //TODO: handle other kind of video format
     final supportVideoFormat = {'mp4', 'webm', 'zip'};

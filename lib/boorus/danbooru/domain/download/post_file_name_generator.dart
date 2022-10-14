@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
@@ -8,8 +9,9 @@ import 'package:boorusama/core/domain/file_name_generator.dart';
 class PostFileNameGenerator implements FileNameGenerator<Post> {
   @override
   String generateFor(Post item) {
-    final fileName = '${item.name.full} - ${path.basename(item.downloadUrl)}'
-        .fixInvalidCharacterForPathName();
+    final fileName =
+        '${generateFullReadableName(item)} - ${path.basename(item.downloadUrl)}'
+            .fixInvalidCharacterForPathName();
     return fileName;
   }
 }
