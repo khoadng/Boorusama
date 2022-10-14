@@ -60,6 +60,7 @@ Or just send me the JSON file through Discord if you are not familiar with progr
 
 |Language|Contributors|Source|
 |--------|------------|------|
+|Vietnamese| [@khoadng](https://github.com/khoadng) |[`vi.json`](./assets/translations/vi.json)|
 |Russian| [@lesh6295-png](https://github.com/lesh6295-png) |[`ru.json`](./assets/translations/ru.json)|
 |Belarusian| [@lesh6295-png](https://github.com/lesh6295-png) |[`be.json`](./assets/translations/be.json)|
 
