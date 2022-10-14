@@ -48,21 +48,3 @@ class PostName {
 
   String get full => '$characterOnly ($copyRightOnly) drawn by $_artistTags';
 }
-
-extension CapExtension on String {
-  String get inCaps {
-    if (isNotEmpty) {
-      return '${this[0].toUpperCase()}${substring(1)}';
-    } else {
-      return this;
-    }
-  }
-
-  String get allInCaps => toUpperCase();
-  String get capitalizeFirstofEach =>
-      split(' ').map((str) => str.inCaps).join(' ');
-}
-
-extension PrettyExtension on String {
-  String get pretty => replaceAll('_', ' ');
-}
