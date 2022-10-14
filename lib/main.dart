@@ -70,6 +70,7 @@ const supportedLocales = [
   Locale('en', ''),
   Locale('vi', ''),
   Locale('ru', ''),
+  Locale('be', ''),
 ];
 
 void main() async {
@@ -167,6 +168,7 @@ void main() async {
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
   setLocaleMessages('ru', RuMessages());
+  setLocaleMessages('be', RuMessages());
 
   void run() {
     runApp(
