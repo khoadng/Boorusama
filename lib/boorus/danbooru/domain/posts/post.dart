@@ -175,12 +175,21 @@ class Post extends Equatable {
     List<String>? generalTags,
     List<String>? metaTags,
     List<String>? tags,
+    String? format,
+    DateTime? lastCommentAt,
+    String? normalImageUrl,
+    String? fullImageUrl,
+    int? upScore,
+    int? downScore,
+    int? favCount,
+    bool? hasParent,
+    bool? hasChildren,
   }) =>
       Post(
         id: id,
         previewImageUrl: previewImageUrl,
-        normalImageUrl: normalImageUrl,
-        fullImageUrl: fullImageUrl,
+        normalImageUrl: normalImageUrl ?? this.normalImageUrl,
+        fullImageUrl: fullImageUrl ?? this.fullImageUrl,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
         artistTags: artistTags ?? this.artistTags,
@@ -189,35 +198,27 @@ class Post extends Equatable {
         tags: tags ?? this.tags,
         width: width,
         height: height,
-        format: format,
-        lastCommentAt: lastCommentAt,
+        format: format ?? this.format,
+        lastCommentAt: lastCommentAt ?? this.lastCommentAt,
         source: source,
         createdAt: createdAt,
         score: score,
-        upScore: upScore,
-        downScore: downScore,
-        favCount: favCount,
+        upScore: upScore ?? this.upScore,
+        downScore: downScore ?? this.downScore,
+        favCount: favCount ?? this.favCount,
         uploaderId: uploaderId,
         rating: rating,
         fileSize: fileSize,
         pixivId: pixivId,
         isBanned: isBanned,
-        hasChildren: hasChildren,
-        hasParent: hasParent,
+        hasChildren: hasChildren ?? this.hasChildren,
+        hasParent: hasParent ?? this.hasParent,
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,
       );
 
   double get aspectRatio => width / height;
-
-  PostName get name {
-    return PostName(
-      artistTags: artistTags.join(' '),
-      characterTags: characterTags.join(' '),
-      copyrightTags: copyrightTags.join(' '),
-    );
-  }
 
   bool get isVideo {
     //TODO: handle other kind of video format

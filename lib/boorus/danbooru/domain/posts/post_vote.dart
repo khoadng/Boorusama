@@ -17,6 +17,16 @@ class PostVote extends Equatable {
     required this.isDeleted,
   });
 
+  factory PostVote.empty() => PostVote(
+        id: -1,
+        postId: -1,
+        userId: const UserId(-1),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        score: 0,
+        isDeleted: false,
+      );
+
   final PostVoteId id;
   final int postId;
   final UserId userId;
@@ -24,6 +34,25 @@ class PostVote extends Equatable {
   final DateTime updatedAt;
   final int score;
   final bool isDeleted;
+
+  PostVote copyWith({
+    PostVoteId? id,
+    int? postId,
+    UserId? userId,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    int? score,
+    bool? isDeleted,
+  }) =>
+      PostVote(
+        id: id ?? this.id,
+        postId: postId ?? this.postId,
+        userId: userId ?? this.userId,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        score: score ?? this.score,
+        isDeleted: isDeleted ?? this.isDeleted,
+      );
 
   @override
   List<Object?> get props => [
