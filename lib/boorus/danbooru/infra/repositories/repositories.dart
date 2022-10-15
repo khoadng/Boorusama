@@ -5,7 +5,6 @@ export 'artists/artist_repository.dart';
 export 'artists/artists.dart';
 export 'autocomplete/autocomplete.dart';
 export 'autocomplete/autocomplete_cache_repository.dart';
-export 'autocomplete/autocomplete_http_cache.dart';
 export 'autocomplete/autocomplete_repository.dart';
 export 'comments/comment_repository.dart';
 export 'comments/comment_vote_repository.dart';

@@ -1,11 +1,11 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
 

@@ -1,5 +1,10 @@
+// Dart imports:
+import 'dart:io';
+
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +14,15 @@ import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/danbooru/danbooru_api.dart';
 
-Dio newDio(String url) => Dio(BaseOptions(baseUrl: url));
+Dio dio(Directory dir, String baseUrl) => Dio(BaseOptions(baseUrl: baseUrl))
+  ..interceptors.add(
+    DioCacheInterceptor(
+        options: CacheOptions(
+      store: HiveCacheStore(dir.path),
+      maxStale: const Duration(days: 7),
+      hitCacheOnErrorExcept: [],
+    )),
+  );
 
 class ApiEndpointState extends Equatable {
   const ApiEndpointState({
@@ -72,10 +85,14 @@ class ApiState extends Equatable {
 class ApiCubit extends Cubit<ApiState> {
   ApiCubit({
     required String defaultUrl,
-  }) : super(ApiState.initial(newDio(defaultUrl)));
+    required Dio Function(String baseUrl) onDioRequest,
+  })  : _onDioRequest = onDioRequest,
+        super(ApiState.initial(onDioRequest(defaultUrl)));
+
+  final Dio Function(String baseUrl) _onDioRequest;
 
   void changeApi(Booru booru) {
-    final dio = newDio(booru.url);
+    final dio = _onDioRequest(booru.url);
     emit(state.copyWith(
       api: Api(dio),
       dio: dio,

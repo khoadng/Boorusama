@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 String generateFullReadableName(Post post) =>

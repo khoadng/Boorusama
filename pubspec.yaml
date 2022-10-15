@@ -19,6 +19,8 @@ dependencies:
   cross_file: ^0.3.3+2
   device_info_plus: ^4.0.0
   dio: ^4.0.6
+  dio_cache_interceptor: ^3.3.1
+  dio_cache_interceptor_hive_store: ^3.2.0
   easy_localization: ^3.0.1
   equatable: ^2.0.5
   file_picker: ^5.2.0

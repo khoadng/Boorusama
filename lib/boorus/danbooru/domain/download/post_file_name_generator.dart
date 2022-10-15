@@ -1,8 +1,8 @@
 // Package imports:
-import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:path/path.dart' as path;
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 
