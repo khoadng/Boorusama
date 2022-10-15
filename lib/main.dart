@@ -335,14 +335,6 @@ void main() async {
                     repo: noteRepo,
                   ));
 
-                  final poolDescriptionBloc = PoolDescriptionBloc(
-                    endpoint: state.dio.options.baseUrl,
-                    poolDescriptionRepository: PoolDescriptionCacher(
-                      cache: LruCacher(capacity: 100),
-                      repo: poolDescriptionRepo,
-                    ),
-                  );
-
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -377,6 +369,8 @@ void main() async {
                           value: artistCommentaryRepo),
                       RepositoryProvider<PostVoteRepository>.value(
                           value: postVoteRepo),
+                      RepositoryProvider<PoolDescriptionRepository>.value(
+                          value: poolDescriptionRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -396,7 +390,6 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
-                        BlocProvider.value(value: poolDescriptionBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

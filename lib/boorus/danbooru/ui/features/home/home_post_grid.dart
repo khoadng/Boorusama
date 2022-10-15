@@ -18,10 +18,12 @@ class HomePostGrid extends StatelessWidget {
     Key? key,
     required this.controller,
     this.onTap,
+    this.usePlaceholder = true,
   }) : super(key: key);
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
+  final bool usePlaceholder;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,11 @@ class HomePostGrid extends StatelessWidget {
                 current.status != LoadStatus.loading,
             builder: (context, state) {
               if (state.status == LoadStatus.initial) {
-                return SliverPostGridPlaceHolder(gridSize: gridSize);
+                return usePlaceholder
+                    ? SliverPostGridPlaceHolder(gridSize: gridSize)
+                    : const SliverToBoxAdapter(
+                        child: SizedBox.shrink(),
+                      );
               } else if (state.status == LoadStatus.success) {
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(

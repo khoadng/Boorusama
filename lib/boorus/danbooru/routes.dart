@@ -28,6 +28,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
@@ -295,19 +296,27 @@ final poolDetailHandler =
   final args = context!.settings!.arguments as List;
   final pool = args[0] as Pool;
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(
-          value: context.read<PoolDescriptionBloc>()
-            ..add(PoolDescriptionFetched(poolId: pool.id))),
-      BlocProvider(
-          create: (context) => NoteBloc(
-              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
-    ],
-    child: PoolDetailPage(
-      pool: pool,
-      postIds: QueueList.from(pool.postIds),
-    ),
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+              value: PoolDescriptionBloc(
+            endpoint: state.booru.url,
+            poolDescriptionRepository:
+                context.read<PoolDescriptionRepository>(),
+          )..add(PoolDescriptionFetched(poolId: pool.id))),
+          BlocProvider(
+              create: (context) => NoteBloc(
+                  noteRepository:
+                      RepositoryProvider.of<INoteRepository>(context))),
+        ],
+        child: PoolDetailPage(
+          pool: pool,
+          postIds: QueueList.from(pool.postIds),
+        ),
+      );
+    },
   );
 });
 

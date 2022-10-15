@@ -102,7 +102,10 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                         },
                       ),
                     ),
-                    HomePostGrid(controller: controller),
+                    HomePostGrid(
+                      controller: controller,
+                      usePlaceholder: false,
+                    ),
                     BlocBuilder<PostBloc, PostState>(
                       builder: (context, state) {
                         if (state.status == LoadStatus.loading) {

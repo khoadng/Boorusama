@@ -56,6 +56,14 @@ class _HomePageState extends State<HomePage> {
               final latestPostBloc = PostBloc.of(context)
                 ..add(const PostRefreshed(fetcher: LatestPostFetcher()));
 
+              final poolBloc = PoolBloc(
+                poolRepository: context.read<PoolRepository>(),
+                postRepository: context.read<PostRepository>(),
+              )..add(const PoolRefreshed(
+                  category: PoolCategory.series,
+                  order: PoolOrder.latest,
+                ));
+
               return Scaffold(
                 extendBody: true,
                 key: scaffoldKey,
@@ -210,17 +218,7 @@ class _HomePageState extends State<HomePage> {
                                   const ExplorePage(),
                                   MultiBlocProvider(
                                     providers: [
-                                      BlocProvider(
-                                        create: (context) => PoolBloc(
-                                          poolRepository:
-                                              context.read<PoolRepository>(),
-                                          postRepository:
-                                              context.read<PostRepository>(),
-                                        )..add(const PoolRefreshed(
-                                            category: PoolCategory.series,
-                                            order: PoolOrder.latest,
-                                          )),
-                                      ),
+                                      BlocProvider.value(value: poolBloc),
                                     ],
                                     child: const PoolPage(),
                                   ),
