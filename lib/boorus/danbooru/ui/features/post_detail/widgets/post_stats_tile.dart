@@ -58,7 +58,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Favorites',
+                    text: 'favorites.counter'.plural(post.favCount),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -95,7 +95,8 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Points ${_generatePercentText(post)}',
+                    text:
+                        '${'post.detail.score'.plural(post.score)} ${_generatePercentText(post)}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -117,7 +118,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'comment.comments'.tr(),
+                    text: 'comment.counter'.plural(post.totalComments),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,

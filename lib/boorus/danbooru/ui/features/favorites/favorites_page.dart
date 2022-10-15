@@ -50,7 +50,8 @@ class FavoritesPage extends StatelessWidget {
                       value: _Action.downloadAll,
                       child: ListTile(
                         leading: const Icon(Icons.download_rounded),
-                        title: Text('Download ${state.posts.length} images'),
+                        title: const Text('download.image_counter')
+                            .plural(state.posts.length),
                       ),
                     ),
                   ],

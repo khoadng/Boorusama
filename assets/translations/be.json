@@ -1,4 +1,8 @@
 {
+    "generic" : {
+        "done" : "Done"
+    },
+    
     "profile": {
         "profile" : "Профіль",
         "favorites" : "Любімае",
@@ -37,6 +41,10 @@
             "related" : "Звязаныя",
             "add_to_current_search" : "Дадаць да запыту",
             "open_wiki" : "Адкрыць wiki"
+        },
+        "explore" : {
+            "new": "New",
+            "popular": "Popular"
         }
     },
 
@@ -64,7 +72,11 @@
             "show_translated" : "Паказаць пераклад",
             "login_required_notice" : "Вы павінны ўвайсці ў акаўнт для здзяйснення дзеяння",
             "open_wiki" : "Адкрыць wiki",
-            "add_to_blacklist" : "Дадаць у чорны спіс"
+            "add_to_blacklist" : "Дадаць у чорны спіс",
+            "score" : {
+                "one" : "Point",
+                "other": "Points"
+            }
         },
         "parent_child": {
             "children_of": "Дачэрны для"
@@ -93,6 +105,10 @@
             "noComments" : "Яшчэ няма каментарыяў",
             "last_updated" : "Абноўлена",
             "send" : "Адправіць"
+        },
+        "counter" : {
+            "one" : "Comment",
+            "other" : "Comments"
         }
     },
 
@@ -100,6 +116,7 @@
         "latest": "Апошняе",
         "popular": "Папулярнае",
         "curated": "Лепшае",
+        "hot": "Hot",
         "most_viewed": "Самае прагляданае",
         "see_more" : "Прагледзець больш"
     },
@@ -118,7 +135,8 @@
         "metatags_notice": "Ліміт тэгаў для пошуку не ўплывае на бясплатныя метатеги.",
         "history" : {
             "history" : "Гісторыя",
-            "clear": "Ачысціць"
+            "clear": "Ачысціць",
+            "recent" : "Recent"
         },
         "trending" : "Папулярнае"
     },
@@ -222,7 +240,24 @@
         "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
         "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
         "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
-        "app_restart_request" : "You need to restart the app for this change to take effect"
+        "app_restart_request" : "You need to restart the app for this change to take effect",
+        "image_counter" : {
+            "one": "Download {} image",
+            "other": "Download {} images"
+        }
+    },
+
+    "favorites" : {
+        "counter" : {
+            "one" : "Favorite",
+            "other" : "Favorites"
+        },
+        "favorited" : "Favorited",
+        "favorite" : "Favorite",
+        "unfavorite"  : "Unfavorite",
+        "unfavorited"  : "Unfavorited",
+        "failed_to_unfavorite" : "Fail to unfavorite this post",
+        "failed_to_favorite" : "Fail to unfavorite this post"
     },
 
     "rating" : {
