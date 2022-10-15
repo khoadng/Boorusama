@@ -43,8 +43,8 @@
             "open_wiki" : "Открыть wiki"
         },
         "explore" : {
-            "new": "New",
-            "popular": "Popular"
+            "new": "Новое",
+            "popular": "Популярное"
         }
     },
 
@@ -74,8 +74,8 @@
             "open_wiki" : "Открыть wiki",
             "add_to_blacklist" : "Добавить в чёрный список",
             "score" : {
-                "one" : "Point",
-                "other": "Points"
+                "one" : "Оценка",
+                "other": "Оценки"
             }
         },
         "parent_child": {
@@ -107,8 +107,8 @@
             "send" : "Отправить"
         },
         "counter" : {
-            "one" : "Comment",
-            "other" : "Comments"
+            "one" : "Коментарий",
+            "other" : "Коментарии"
         }
     },
 
@@ -136,7 +136,7 @@
         "history" : {
             "history" : "История",
             "clear": "Очистить",
-            "recent" : "Recent"
+            "recent" : "Последнее"
         },
         "trending" : "Популярное"
     },
@@ -152,8 +152,8 @@
             "name" : "Имя"
         },
         "category" : {
-            "series" : "Series",
-            "collection" : "Collection"
+            "series" : "Серии",
+            "collection" : "Сборники"
         },
         "search" : {
             "hint": "Поиск альбома"
@@ -238,26 +238,26 @@
         "download" : "Скачать",
         "open_app_settings" : "Открыть настройки",
         "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
-        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
-        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
-        "app_restart_request" : "You need to restart the app for this change to take effect",
+        "alternative_method_reason": "Используйте это, если стандартный способ загрузки не работает. Альтернативный способ также лучше работает с уведомлениями.",
+        "alternative_method_title" : "(БЕТА) Использовать альтернативный способ загрузки",
+        "app_restart_request" : "Перезагрузите приложение для того, чтобы изменения вступили в силу",
         "image_counter" : {
-            "one": "Download {} image",
-            "other": "Download {} images"
+            "one": "Скачать {} изображение",
+            "other": "Скачать {} изображений"
         }
     },
 
     "favorites" : {
         "counter" : {
-            "one" : "Favorite",
-            "other" : "Favorites"
+            "one" : "Добавление в любимые",
+            "other" : "Добавление в любимые"
         },
-        "favorited" : "Favorited",
-        "favorite" : "Favorite",
-        "unfavorite"  : "Unfavorite",
-        "unfavorited"  : "Unfavorited",
-        "failed_to_unfavorite" : "Fail to unfavorite this post",
-        "failed_to_favorite" : "Fail to unfavorite this post"
+        "favorited" : "В любимых",
+        "favorite" : "Любимое",
+        "unfavorite"  : "Удалить из любимых",
+        "unfavorited"  : "Не в любимых",
+        "failed_to_unfavorite" : "Ошибка удаления из любимых",
+        "failed_to_favorite" : "Ошибка добавления в любимые"
     },
 
     "rating" : {
