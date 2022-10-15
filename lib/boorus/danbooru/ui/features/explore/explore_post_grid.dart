@@ -94,6 +94,7 @@ class ExplorePostGrid extends StatelessWidget {
             context: context,
             posts: posts,
             initialIndex: index,
+            scrollController: controller,
             postBloc: context.read<PostBloc>(),
           );
         },
@@ -113,6 +114,7 @@ class ExplorePostGrid extends StatelessWidget {
               context: context,
               posts: posts,
               initialIndex: index,
+              scrollController: controller,
               postBloc: context.read<PostBloc>(),
             );
           },

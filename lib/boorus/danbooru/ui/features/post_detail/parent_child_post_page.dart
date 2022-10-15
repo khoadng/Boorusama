@@ -87,6 +87,7 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                                   context: context,
                                   posts: state.posts,
                                   initialIndex: index,
+                                  scrollController: controller,
                                   postBloc: context.read<PostBloc>(),
                                 );
                               },
