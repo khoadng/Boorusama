@@ -1,6 +1,9 @@
 {
     "generic" : {
-        "done" : "Xong"
+        "done" : "Xong",
+        "errors" : {
+            "no_data" : "Không có dữ liệu"
+        }
     },
 
     "profile": {

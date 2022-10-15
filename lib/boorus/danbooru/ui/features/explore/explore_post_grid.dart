@@ -82,9 +82,7 @@ class ExplorePostGrid extends StatelessWidget {
       return const SliverPostGridPlaceHolder();
     } else if (status == LoadStatus.success) {
       if (posts.isEmpty) {
-        return const SliverToBoxAdapter(
-          child: Center(child: Text('No data')),
-        );
+        return const SliverToBoxAdapter(child: NoDataBox());
       }
       return SliverPostGrid(
         posts: posts,

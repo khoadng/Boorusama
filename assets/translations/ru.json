@@ -1,8 +1,11 @@
 {
     "generic" : {
-        "done" : "Done"
+        "done" : "Done",
+        "errors" : {
+            "no_data" : "No data available"
+        }
     },
-    
+
     "profile": {
         "profile" : "Профиль",
         "favorites" : "Любимое",

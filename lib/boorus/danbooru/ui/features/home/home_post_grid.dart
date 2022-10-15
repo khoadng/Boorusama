@@ -46,8 +46,7 @@ class HomePostGrid extends StatelessWidget {
                       );
               } else if (state.status == LoadStatus.success) {
                 if (state.posts.isEmpty) {
-                  return const SliverToBoxAdapter(
-                      child: Center(child: Text('No data')));
+                  return const SliverToBoxAdapter(child: NoDataBox());
                 }
                 return SliverPostGrid(
                   posts: state.posts,

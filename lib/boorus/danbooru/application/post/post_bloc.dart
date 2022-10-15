@@ -212,7 +212,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             emit(
               state.copyWith(
                 status: LoadStatus.success,
-                posts: filter(postDatas, blacklisted),
+                posts: [],
                 filteredPosts: filteredPosts,
                 page: 1,
                 hasMore: posts.isNotEmpty,

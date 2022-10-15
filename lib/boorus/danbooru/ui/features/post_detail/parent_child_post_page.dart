@@ -77,7 +77,7 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                           } else if (state.status == LoadStatus.success) {
                             if (state.posts.isEmpty) {
                               return const SliverToBoxAdapter(
-                                  child: Center(child: Text('No data')));
+                                  child: NoDataBox());
                             }
                             return SliverPostGrid(
                               posts: state.posts,
