@@ -1,4 +1,8 @@
 {
+    "generic" : {
+        "done" : "Done"
+    },
+    
     "profile": {
         "profile" : "Профиль",
         "favorites" : "Любимое",
@@ -37,6 +41,10 @@
             "related" : "Связанные",
             "add_to_current_search" : "Добавить к запросу",
             "open_wiki" : "Открыть wiki"
+        },
+        "explore" : {
+            "new": "New",
+            "popular": "Popular"
         }
     },
 
@@ -64,7 +72,11 @@
             "show_translated" : "Показать перевод",
             "login_required_notice" : "Вы должны войти в аккаунт для совершения действия",
             "open_wiki" : "Открыть wiki",
-            "add_to_blacklist" : "Добавить в чёрный список"
+            "add_to_blacklist" : "Добавить в чёрный список",
+            "score" : {
+                "one" : "Point",
+                "other": "Points"
+            }
         },
         "parent_child": {
             "children_of": "Дочерний для"
@@ -93,6 +105,10 @@
             "noComments" : "Ещё нет коментареев",
             "last_updated" : "Обновленно",
             "send" : "Отправить"
+        },
+        "counter" : {
+            "one" : "Comment",
+            "other" : "Comments"
         }
     },
 
@@ -100,6 +116,7 @@
         "latest": "Последнее",
         "popular": "Популярное",
         "curated": "Лучшее",
+        "hot": "Hot",
         "most_viewed": "Самое просматриваемое",
         "see_more" : "Просмотреть больше"
     },
@@ -118,7 +135,8 @@
         "metatags_notice": "Лимит тегов для поиска не влияет на бесплатные метатеги.",
         "history" : {
             "history" : "История",
-            "clear": "Очистить"
+            "clear": "Очистить",
+            "recent" : "Recent"
         },
         "trending" : "Популярное"
     },
@@ -132,6 +150,10 @@
             "new" : "Новое",
             "post_count": "Размер",
             "name" : "Имя"
+        },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
         },
         "search" : {
             "hint": "Поиск альбома"
@@ -215,7 +237,27 @@
     "download" : {
         "download" : "Скачать",
         "open_app_settings" : "Открыть настройки",
-        "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов."
+        "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
+        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
+        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
+        "app_restart_request" : "You need to restart the app for this change to take effect",
+        "image_counter" : {
+            "one": "Download {} image",
+            "other": "Download {} images"
+        }
+    },
+
+    "favorites" : {
+        "counter" : {
+            "one" : "Favorite",
+            "other" : "Favorites"
+        },
+        "favorited" : "Favorited",
+        "favorite" : "Favorite",
+        "unfavorite"  : "Unfavorite",
+        "unfavorited"  : "Unfavorited",
+        "failed_to_unfavorite" : "Fail to unfavorite this post",
+        "failed_to_favorite" : "Fail to unfavorite this post"
     },
 
     "rating" : {

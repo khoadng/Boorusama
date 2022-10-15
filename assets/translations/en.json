@@ -1,4 +1,8 @@
 {
+    "generic" : {
+        "done" : "Done"
+    },
+    
     "profile": {
         "profile" : "Profile",
         "favorites" : "Favorites",
@@ -37,6 +41,10 @@
             "related" : "Related",
             "add_to_current_search" : "Add to current search",
             "open_wiki" : "Open wiki"
+        },
+        "explore" : {
+            "new": "New",
+            "popular": "Popular"
         }
     },
 
@@ -64,7 +72,11 @@
             "show_translated" : "Show translated",
             "login_required_notice" : "You have to log in to perform this action",
             "open_wiki" : "Open wiki",
-            "add_to_blacklist" : "Add to blacklist"
+            "add_to_blacklist" : "Add to blacklist",
+            "score" : {
+                "one" : "Point",
+                "other": "Points"
+            }
         },
         "parent_child": {
             "children_of": "Children of"
@@ -93,6 +105,10 @@
             "noComments" : "There are no comments",
             "last_updated" : "Last updated",
             "send" : "Send"
+        },
+        "counter" : {
+            "one" : "Comment",
+            "other" : "Comments"
         }
     },
 
@@ -119,7 +135,8 @@
         "metatags_notice": "Free metatags won't count against the tag search limits",
         "history" : {
             "history" : "History",
-            "clear": "Clear"
+            "clear": "Clear",
+            "recent" : "Recent"
         },
         "trending" : "Trending"
     },
@@ -133,6 +150,10 @@
             "new" : "New",
             "post_count": "Post count",
             "name" : "Name"
+        },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
         },
         "search" : {
             "hint": "Search a pool"
@@ -216,7 +237,27 @@
     "download" : {
         "download" : "Download",
         "open_app_settings" : "Open settings",
-        "storage_permission_explanation" : "Storage permission is needed to store download files."
+        "storage_permission_explanation" : "Storage permission is needed to store download files.",
+        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
+        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
+        "app_restart_request" : "You need to restart the app for this change to take effect",
+        "image_counter" : {
+            "one": "Download {} image",
+            "other": "Download {} images"
+        }
+    },
+
+    "favorites" : {
+        "counter" : {
+            "one" : "Favorite",
+            "other" : "Favorites"
+        },
+        "favorited" : "Favorited",
+        "favorite" : "Favorite",
+        "unfavorite"  : "Unfavorite",
+        "unfavorited"  : "Unfavorited",
+        "failed_to_unfavorite" : "Fail to unfavorite this post",
+        "failed_to_favorite" : "Fail to unfavorite this post"
     },
 
     "rating" : {

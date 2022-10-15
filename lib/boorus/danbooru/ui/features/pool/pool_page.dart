@@ -207,7 +207,10 @@ class PoolOptionsHeader extends StatelessWidget {
             borderWidth: 1,
             inactiveBgColor: Theme.of(context).chipTheme.backgroundColor,
             activeBgColor: [Theme.of(context).colorScheme.primary],
-            labels: [PoolCategory.series.name, PoolCategory.collection.name],
+            labels: [
+              _poolCategoryToString(PoolCategory.series).tr(),
+              _poolCategoryToString(PoolCategory.collection).tr(),
+            ],
             onToggle: (index) {
               context.read<PoolOverviewBloc>().add(PoolOverviewChanged(
                     category: index == 0
@@ -297,3 +300,6 @@ String _poolOrderToString(PoolOrder order) {
       return 'pool.order.recent';
   }
 }
+
+String _poolCategoryToString(PoolCategory category) =>
+    'pool.category.${category.name}';

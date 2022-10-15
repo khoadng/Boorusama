@@ -209,10 +209,11 @@ class _SearchOptionsState extends State<SearchOptions>
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                        onPressed: () => setState(() {
-                              editMode = false;
-                            }),
-                        child: const Text('Done')),
+                      onPressed: () => setState(() {
+                        editMode = false;
+                      }),
+                      child: const Text('generic.done').tr(),
+                    ),
                   ],
                 ),
               const Divider(thickness: 1),

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
@@ -289,10 +290,13 @@ class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
           ],
           changeOnTap: false,
           initialLabelIndex: value,
-          minWidth: 80,
+          minWidth: 100,
           minHeight: 30,
           cornerRadius: 5,
-          labels: const ['New', 'Popular'],
+          labels: [
+            'tag.explore.new'.tr(),
+            'tag.explore.popular'.tr(),
+          ],
           activeBgColor: [Theme.of(context).colorScheme.primary],
           inactiveBgColor: Theme.of(context).colorScheme.background,
           borderWidth: 1,
