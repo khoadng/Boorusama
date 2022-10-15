@@ -19,11 +19,13 @@ class HomePostGrid extends StatelessWidget {
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
+    this.onRefresh,
   }) : super(key: key);
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
   final bool usePlaceholder;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +75,7 @@ class HomePostGrid extends StatelessWidget {
                   child: SizedBox.shrink(),
                 );
               } else {
-                return const SliverToBoxAdapter(
-                  child: ErrorBox(),
-                );
+                return const SliverToBoxAdapter(child: ErrorBox());
               }
             },
           );
