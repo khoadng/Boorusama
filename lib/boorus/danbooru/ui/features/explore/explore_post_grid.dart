@@ -123,9 +123,7 @@ class ExplorePostGrid extends StatelessWidget {
       }
     } else {
       return const SliverToBoxAdapter(
-        child: Center(
-          child: Text('Something went wrong'),
-        ),
+        child: ErrorBox(),
       );
     }
   }

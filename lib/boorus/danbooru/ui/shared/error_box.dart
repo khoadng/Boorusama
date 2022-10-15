@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 
-class NoDataBox extends StatelessWidget {
-  const NoDataBox({
+class ErrorBox extends StatelessWidget {
+  const ErrorBox({
     Key? key,
   }) : super(key: key);
 
@@ -16,7 +16,7 @@ class NoDataBox extends StatelessWidget {
       height: MediaQuery.of(context).size.height / 2,
       child: Center(
         child: Text(
-          'generic.errors.no_data',
+          'generic.errors.unknown',
           style: Theme.of(context).textTheme.titleLarge,
         ).tr(),
       ),

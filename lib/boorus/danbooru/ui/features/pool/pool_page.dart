@@ -120,9 +120,7 @@ class _PoolPageState extends State<PoolPage> {
                   );
                 } else {
                   return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text('Something went wrong'),
-                    ),
+                    child: ErrorBox(),
                   );
                 }
               },

@@ -102,9 +102,7 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                             );
                           } else {
                             return const SliverToBoxAdapter(
-                              child: Center(
-                                child: Text('Something went wrong'),
-                              ),
+                              child: ErrorBox(),
                             );
                           }
                         },

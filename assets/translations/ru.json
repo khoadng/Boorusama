@@ -2,7 +2,8 @@
     "generic" : {
         "done" : "Done",
         "errors" : {
-            "no_data" : "No data available"
+            "no_data" : "No data available",
+            "unknown" : "Something went wrong"
         }
     },
 
