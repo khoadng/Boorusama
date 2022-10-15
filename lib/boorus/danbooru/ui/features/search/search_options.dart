@@ -221,7 +221,7 @@ class _SearchOptionsState extends State<SearchOptions>
                 child: Row(
                   children: [
                     Text(
-                      'Trending'.tr().toUpperCase(),
+                      'search.trending'.tr().toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),

@@ -119,7 +119,8 @@
         "history" : {
             "history" : "История",
             "clear": "Очистить"
-        }
+        },
+        "trending" : "Trending"
     },
 
     "pool" : {

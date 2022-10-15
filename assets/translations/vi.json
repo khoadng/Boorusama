@@ -120,7 +120,8 @@
         "history" : {
             "history" : "Lịch sử",
             "clear": "Xóa"
-        }
+        },
+        "trending" : "Xu hướng"
     },
 
     "pool" : {
