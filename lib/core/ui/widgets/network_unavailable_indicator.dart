@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 
+// Project imports:
+import 'package:boorusama/core/core.dart';
+
 class NetworkUnavailableIndicator extends StatelessWidget {
   const NetworkUnavailableIndicator({
     Key? key,
@@ -14,7 +17,10 @@ class NetworkUnavailableIndicator extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
+        padding: EdgeInsets.only(
+          bottom: 8,
+          top: hasStatusBar() ? MediaQuery.of(context).viewPadding.top : 0,
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
