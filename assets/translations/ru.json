@@ -133,6 +133,10 @@
             "post_count": "Размер",
             "name" : "Имя"
         },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
+        },
         "search" : {
             "hint": "Поиск альбома"
         },

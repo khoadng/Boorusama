@@ -134,6 +134,10 @@
             "post_count": "Số lượng",
             "name" : "Tên"
         },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
+        },
         "search" : {
             "hint": "Tìm ảnh"
         },

@@ -134,6 +134,10 @@
             "post_count": "Post count",
             "name" : "Name"
         },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
+        },
         "search" : {
             "hint": "Search a pool"
         },

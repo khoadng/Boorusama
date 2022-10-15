@@ -133,6 +133,10 @@
             "post_count": "Колькасць прадметаў",
             "name" : "Імя"
         },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
+        },
         "search" : {
             "hint": "Пошук альбома"
         },
