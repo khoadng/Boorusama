@@ -204,7 +204,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
-            throw Exception();
             final blacklisted =
                 await blacklistedTagsRepository.getBlacklistedTags();
             final postDatas = await createPostData(
