@@ -219,7 +219,10 @@
     "download" : {
         "download" : "Скачать",
         "open_app_settings" : "Адкрыць настройкі",
-        "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў."
+        "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
+        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
+        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
+        "app_restart_request" : "You need to restart the app for this change to take effect"
     },
 
     "rating" : {

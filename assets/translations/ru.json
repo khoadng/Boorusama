@@ -219,7 +219,10 @@
     "download" : {
         "download" : "Скачать",
         "open_app_settings" : "Открыть настройки",
-        "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов."
+        "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
+        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
+        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
+        "app_restart_request" : "You need to restart the app for this change to take effect"
     },
 
     "rating" : {
