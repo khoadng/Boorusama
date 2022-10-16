@@ -3,15 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 
 class ProfileCubit extends Cubit<AsyncLoadState<Profile>> {
   ProfileCubit({
     required this.profileRepository,
   }) : super(const AsyncLoadState.initial());
 
-  final IProfileRepository profileRepository;
+  final ProfileRepository profileRepository;
 
   void getProfile() {
     tryAsync<Profile?>(

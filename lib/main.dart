@@ -38,7 +38,7 @@ import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_genera
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/i_profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
@@ -235,7 +235,7 @@ void main() async {
 
                   final artistRepo = ArtistRepository(api: api);
 
-                  final profileRepo = ProfileRepository(
+                  final profileRepo = ProfileRepositoryApi(
                       accountRepository: accountRepo, api: api);
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
@@ -341,7 +341,7 @@ void main() async {
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
-                      RepositoryProvider<IProfileRepository>.value(
+                      RepositoryProvider<ProfileRepository>.value(
                           value: profileRepo),
                       RepositoryProvider<IFavoritePostRepository>.value(
                           value: favoriteRepo),

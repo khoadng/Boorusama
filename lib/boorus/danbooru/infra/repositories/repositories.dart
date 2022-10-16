@@ -22,7 +22,7 @@ export 'posts/post_repository.dart';
 export 'posts/post_vote_repository.dart';
 export 'posts/posts.dart';
 export 'profile/profile.dart';
-export 'profile/profile_repository.dart';
+export 'profile/profile_repository_api.dart';
 export 'settings/i_setting_repository.dart';
 export 'settings/setting_repository.dart';
 export 'settings/settings.dart';
