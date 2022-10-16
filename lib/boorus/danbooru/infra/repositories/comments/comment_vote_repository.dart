@@ -2,7 +2,7 @@
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/api.dart';
+import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/core/infra/http_parser.dart';

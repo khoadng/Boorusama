@@ -11,10 +11,9 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/api.dart';
+import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/danbooru/danbooru_api.dart';
 
 const maxRetry = 7;
 
