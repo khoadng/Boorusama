@@ -306,7 +306,7 @@ final poolDetailHandler =
           BlocProvider(
               create: (context) => NoteBloc(
                   noteRepository:
-                      RepositoryProvider.of<INoteRepository>(context))),
+                      RepositoryProvider.of<NoteRepository>(context))),
         ],
         child: PoolDetailPage(
           pool: pool,

@@ -11,7 +11,7 @@ export 'comments/comments.dart';
 export 'favorites/favorite_post_repository_api.dart';
 export 'favorites/favorites.dart';
 export 'notes/note_cacher.dart';
-export 'notes/note_repository.dart';
+export 'notes/note_repository_api.dart';
 export 'notes/notes.dart';
 export 'pool/pool.dart';
 export 'pool/pool_description_cacher.dart';

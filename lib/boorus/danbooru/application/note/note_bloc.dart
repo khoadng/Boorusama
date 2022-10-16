@@ -13,7 +13,7 @@ import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 class NoteBloc extends Bloc<NoteEvent, AsyncLoadState<List<Note>>> {
   NoteBloc({
-    required INoteRepository noteRepository,
+    required NoteRepository noteRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<NoteRequested>(
       (event, emit) async {

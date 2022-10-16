@@ -6,13 +6,13 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class NoteCacher implements INoteRepository {
+class NoteCacher implements NoteRepository {
   const NoteCacher({
     required this.cache,
     required this.repo,
   });
 
-  final INoteRepository repo;
+  final NoteRepository repo;
   final Cacher<int, List<Note>> cache;
 
   @override

@@ -246,7 +246,7 @@ void main() async {
                   final userRepo = UserRepository(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
-                  final noteRepo = NoteRepository(api);
+                  final noteRepo = NoteRepositoryApi(api);
 
                   final favoriteRepo =
                       FavoritePostRepositoryApi(api, accountRepo);
@@ -351,8 +351,7 @@ void main() async {
                           value: accountRepo),
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),
-                      RepositoryProvider<INoteRepository>.value(
-                          value: noteRepo),
+                      RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
                           value: searchHistoryRepo),

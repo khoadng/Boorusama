@@ -13,8 +13,8 @@ List<Note> parseNote(HttpResponse<dynamic> value) => parse(
       converter: (item) => NoteDto.fromJson(item),
     ).map((e) => e.toEntity()).toList();
 
-class NoteRepository implements INoteRepository {
-  NoteRepository(this._api);
+class NoteRepositoryApi implements NoteRepository {
+  NoteRepositoryApi(this._api);
   final Api _api;
 
   @override
