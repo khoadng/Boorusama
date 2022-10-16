@@ -46,8 +46,6 @@ import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
@@ -71,6 +69,8 @@ const supportedLocales = [
   Locale('ru', ''),
   Locale('be', ''),
 ];
+
+const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -132,7 +132,6 @@ void main() async {
     db: searchHistoryBox,
   );
 
-  final config = DanbooruConfig();
   final booruFactory = BooruFactory.from(await loadBooruList());
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
@@ -356,7 +355,6 @@ void main() async {
                       RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
                           value: searchHistoryRepo),
-                      RepositoryProvider<IConfig>.value(value: config),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
                       RepositoryProvider<UserRepository>.value(value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
