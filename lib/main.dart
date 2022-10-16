@@ -270,7 +270,7 @@ void main() async {
                     accountRepository: accountRepo,
                   );
 
-                  final relatedTagRepo = RelatedTagApiRepository(api);
+                  final relatedTagRepo = RelatedTagRepositoryApi(api);
 
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
