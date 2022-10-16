@@ -261,7 +261,7 @@
         "unfavorite"  : "Unfavorite",
         "unfavorited"  : "Unfavorited",
         "failed_to_unfavorite" : "Fail to unfavorite this post",
-        "failed_to_favorite" : "Fail to unfavorite this post"
+        "failed_to_favorite" : "Fail to favorite this post"
     },
 
     "rating" : {

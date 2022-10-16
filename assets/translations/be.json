@@ -1,9 +1,9 @@
 {
     "generic" : {
-        "done" : "Done",
+        "done" : "Зроблена",
         "errors" : {
-            "no_data" : "No data available",
-            "unknown" : "Something went wrong"
+            "no_data" : "Няма даступных даных",
+            "unknown" : "Нешта пайшло не так"
         }
     },
 
@@ -47,8 +47,8 @@
             "open_wiki" : "Адкрыць wiki"
         },
         "explore" : {
-            "new": "New",
-            "popular": "Popular"
+            "new": "Новы",
+            "popular": "Папулярны"
         }
     },
 
@@ -78,8 +78,8 @@
             "open_wiki" : "Адкрыць wiki",
             "add_to_blacklist" : "Дадаць у чорны спіс",
             "score" : {
-                "one" : "Point",
-                "other": "Points"
+                "one" : "Адзнака",
+                "other": "Адзнакі"
             }
         },
         "parent_child": {
@@ -111,8 +111,8 @@
             "send" : "Адправіць"
         },
         "counter" : {
-            "one" : "Comment",
-            "other" : "Comments"
+            "one" : "Каментарый",
+            "other" : "Каментарыі"
         }
     },
 
@@ -140,7 +140,7 @@
         "history" : {
             "history" : "Гісторыя",
             "clear": "Ачысціць",
-            "recent" : "Recent"
+            "recent" : "Нядаўняе"
         },
         "trending" : "Папулярнае"
     },
@@ -156,8 +156,8 @@
             "name" : "Імя"
         },
         "category" : {
-            "series" : "Series",
-            "collection" : "Collection"
+            "series" : "Серыі",
+            "collection" : "Зборнікі"
         },
         "search" : {
             "hint": "Пошук альбома"
@@ -242,26 +242,26 @@
         "download" : "Скачать",
         "open_app_settings" : "Адкрыць настройкі",
         "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
-        "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",
-        "alternative_method_title" : "Use alternative download method (EXPERIMENTAL)",
-        "app_restart_request" : "You need to restart the app for this change to take effect",
+        "alternative_method_reason": "Выкарыстоўвайце гэта, калі метад загрузкі па змаўчанні не працуе. Альтэрнатыўны таксама мае лепшую падтрымку апавяшчэнняў.",
+        "alternative_method_title" : "(БЭТА) Выкарыстоўваць альтэрнатыўны спосаб загрузкі",
+        "app_restart_request" : "Вам неабходна перазапусціць прылажэнне, каб змяненне ўступіла ў сілу",
         "image_counter" : {
-            "one": "Download {} image",
-            "other": "Download {} images"
+            "one": "Скачаць {} малюнак",
+            "other": "Скачаць {} малюнкаў"
         }
     },
 
     "favorites" : {
         "counter" : {
-            "one" : "Favorite",
-            "other" : "Favorites"
+            "one" : "Дададзена у любімыя",
+            "other" : "Дададзена у любімыя"
         },
-        "favorited" : "Favorited",
-        "favorite" : "Favorite",
-        "unfavorite"  : "Unfavorite",
-        "unfavorited"  : "Unfavorited",
-        "failed_to_unfavorite" : "Fail to unfavorite this post",
-        "failed_to_favorite" : "Fail to unfavorite this post"
+        "favorited" : "У любімых",
+        "favorite" : "Любімае",
+        "unfavorite"  : "Выдаліць з любімых",
+        "unfavorited"  : "Не ў любімых",
+        "failed_to_unfavorite" : "Памылка выдалення з любімых",
+        "failed_to_favorite" : "Памылка дабаўлення у любімыя"
     },
 
     "rating" : {
