@@ -125,8 +125,7 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
                   );
                 } else if (state.status == LoadStatus.success) {
                   if (state.pools.isEmpty) {
-                    return const SliverToBoxAdapter(
-                        child: Center(child: Text('No data')));
+                    return const SliverToBoxAdapter(child: NoDataBox());
                   }
                   return BlocBuilder<SettingsCubit, SettingsState>(
                     builder: (context, settingsState) {
@@ -142,9 +141,7 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
                   );
                 } else {
                   return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text('Something went wrong'),
-                    ),
+                    child: ErrorBox(),
                   );
                 }
               },

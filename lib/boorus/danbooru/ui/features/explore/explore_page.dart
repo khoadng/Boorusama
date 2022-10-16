@@ -38,9 +38,7 @@ class ExplorePage extends StatelessWidget {
         },
       );
     } else if (state.status == LoadStatus.failure) {
-      return const Center(
-        child: Text('Something went wrong'),
-      );
+      return CarouselPlaceholder.error(context);
     } else {
       return const CarouselPlaceholder();
     }

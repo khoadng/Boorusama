@@ -19,11 +19,13 @@ class HomePostGrid extends StatelessWidget {
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
+    this.onRefresh,
   }) : super(key: key);
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
   final bool usePlaceholder;
+  final VoidCallback? onRefresh;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +48,7 @@ class HomePostGrid extends StatelessWidget {
                       );
               } else if (state.status == LoadStatus.success) {
                 if (state.posts.isEmpty) {
-                  return const SliverToBoxAdapter(
-                      child: Center(child: Text('No data')));
+                  return const SliverToBoxAdapter(child: NoDataBox());
                 }
                 return SliverPostGrid(
                   posts: state.posts,
@@ -74,11 +75,7 @@ class HomePostGrid extends StatelessWidget {
                   child: SizedBox.shrink(),
                 );
               } else {
-                return const SliverToBoxAdapter(
-                  child: Center(
-                    child: Text('Something went wrong'),
-                  ),
-                );
+                return const SliverToBoxAdapter(child: ErrorBox());
               }
             },
           );
