@@ -4,8 +4,8 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete_dto.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/core/infra/http_parser.dart';

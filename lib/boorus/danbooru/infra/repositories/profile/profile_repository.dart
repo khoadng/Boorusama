@@ -5,8 +5,8 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/i_profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
 
 class ProfileRepository implements IProfileRepository {
   ProfileRepository(

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/i_profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/profile/profile_repository.dart';
 
 part 'authentication_state.dart';
