@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart' as p;
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart' as t;
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
@@ -47,11 +47,11 @@ abstract class AutocompleteCategory extends Equatable {
   int getIndex();
 }
 
-class PoolCategory extends AutocompleteCategory {
-  PoolCategory({
+class PoolAutocompleteCategory extends AutocompleteCategory {
+  PoolAutocompleteCategory({
     required this.category,
   });
-  final p.PoolCategory category;
+  final PoolCategory category;
 
   @override
   String getName() => category.name;

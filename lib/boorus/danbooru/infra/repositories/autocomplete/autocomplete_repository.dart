@@ -42,7 +42,8 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             type: e.type,
             label: e.label!,
             value: e.value!,
-            category: PoolCategory(category: stringToPoolCategory(e.category)),
+            category: PoolAutocompleteCategory(
+                category: stringToPoolCategory(e.category)),
             postCount: e.postCount!,
           );
         } else if (e.type == 'user') {
