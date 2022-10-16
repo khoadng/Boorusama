@@ -9,7 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/application/device_storage_permission/device_storage_permission_bloc.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
 
 void _download(
@@ -19,12 +19,12 @@ void _download(
 }) {
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
-    context.read<IDownloadService>().download(downloadable);
+    context.read<DownloadService>().download(downloadable);
     return;
   }
 
   if (permission == PermissionStatus.granted) {
-    context.read<IDownloadService>().download(downloadable);
+    context.read<DownloadService>().download(downloadable);
   } else {
     context
         .read<DeviceStoragePermissionBloc>()

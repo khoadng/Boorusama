@@ -1,4 +1,4 @@
-abstract class IDownloadService<T> {
+abstract class DownloadService<T> {
   Future<void> download(
     T item, {
     String? path,

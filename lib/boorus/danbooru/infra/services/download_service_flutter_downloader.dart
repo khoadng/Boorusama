@@ -11,7 +11,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/alternative_download_service.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
@@ -25,7 +25,7 @@ Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
         ? defaultPath
         : await IOHelper.getDownloadPath();
 
-Future<IDownloadService<Post>> createDownloader(
+Future<DownloadService<Post>> createDownloader(
   DownloadMethod method,
   FileNameGenerator fileNameGenerator,
   DeviceInfo deviceInfo,
@@ -40,7 +40,7 @@ Future<IDownloadService<Post>> createDownloader(
     return d;
   }
 
-  final d = DownloadService(
+  final d = DownloadServiceFlutterDownloader(
       fileNameGenerator: fileNameGenerator, deviceInfo: deviceInfo);
 
   if (isAndroid() || isIOS()) {
@@ -51,8 +51,8 @@ Future<IDownloadService<Post>> createDownloader(
   return d;
 }
 
-class DownloadService implements IDownloadService<Post> {
-  DownloadService({
+class DownloadServiceFlutterDownloader implements DownloadService<Post> {
+  DownloadServiceFlutterDownloader({
     required FileNameGenerator fileNameGenerator,
     required this.deviceInfo,
   }) : _fileNameGenerator = fileNameGenerator;

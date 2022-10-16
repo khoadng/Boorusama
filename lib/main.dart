@@ -47,10 +47,10 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -181,7 +181,7 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
-            RepositoryProvider<IDownloadService>.value(value: downloader),
+            RepositoryProvider<DownloadService>.value(value: downloader),
             RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(
