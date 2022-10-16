@@ -1,6 +1,10 @@
 {
     "generic" : {
-        "done" : "Xong"
+        "done" : "Xong",
+        "errors" : {
+            "no_data" : "Không có dữ liệu",
+            "unknown" : "Xảy ra lỗi ngoài dự kiến"
+        }
     },
 
     "profile": {

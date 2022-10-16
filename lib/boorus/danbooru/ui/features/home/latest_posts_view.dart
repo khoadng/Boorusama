@@ -90,7 +90,9 @@ class _LatestViewState extends State<LatestView> {
                 padding: const EdgeInsets.only(bottom: 2),
                 sliver: _buildMostSearchTagList(),
               ),
-              HomePostGrid(controller: controller),
+              HomePostGrid(
+                controller: controller,
+              ),
               BlocBuilder<PostBloc, PostState>(
                 builder: (context, state) {
                   if (state.status == LoadStatus.loading) {
