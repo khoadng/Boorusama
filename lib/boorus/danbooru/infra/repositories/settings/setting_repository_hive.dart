@@ -6,10 +6,10 @@ import 'package:hive/hive.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/settings/i_setting_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 
-class SettingRepository implements ISettingRepository {
-  SettingRepository(
+class SettingRepositoryHive implements SettingRepository {
+  SettingRepositoryHive(
     this._prefs,
     this._defaultSetting,
   );

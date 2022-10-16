@@ -98,7 +98,7 @@ void main() async {
     });
   }
 
-  final settingRepository = SettingRepository(
+  final settingRepository = SettingRepositoryHive(
     Hive.openBox('settings'),
     Settings.defaultSettings,
   );
@@ -350,7 +350,7 @@ void main() async {
                           value: favoriteRepo),
                       RepositoryProvider<AccountRepository>.value(
                           value: accountRepo),
-                      RepositoryProvider<ISettingRepository>.value(
+                      RepositoryProvider<SettingRepository>.value(
                           value: settingRepository),
                       RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
