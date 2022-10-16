@@ -18,12 +18,12 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
 
 class PopularSearchRepository implements IPopularSearchRepository {
   PopularSearchRepository({
-    required IAccountRepository accountRepository,
+    required AccountRepository accountRepository,
     required Api api,
   })  : _accountRepository = accountRepository,
         _api = api;
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
 
   @override

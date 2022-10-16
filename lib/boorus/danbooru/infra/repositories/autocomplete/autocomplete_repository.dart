@@ -69,12 +69,12 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
 class AutocompleteRepository {
   const AutocompleteRepository({
     required Api api,
-    required IAccountRepository accountRepository,
+    required AccountRepository accountRepository,
   })  : _accountRepository = accountRepository,
         _api = api;
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   Future<List<AutocompleteData>> getAutocomplete(String query) async =>
       _accountRepository

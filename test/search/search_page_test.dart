@@ -61,7 +61,7 @@ class MockPostRepository extends Mock implements PostRepository {}
 class MockBlacklistedTagRepository extends Mock
     implements BlacklistedTagsRepository {}
 
-class MockAccountRepository extends Mock implements IAccountRepository {}
+class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockFavoriteReposiory extends Mock implements IFavoritePostRepository {}
 

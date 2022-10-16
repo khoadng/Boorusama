@@ -24,7 +24,7 @@ class UserRepository implements IUserRepository {
     this.defaultBlacklistedTags,
   );
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
   final List<String> defaultBlacklistedTags;
 

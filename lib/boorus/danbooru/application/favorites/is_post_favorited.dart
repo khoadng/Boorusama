@@ -28,7 +28,7 @@ class IsPostFavoritedRequested extends IsPostFavoritedEvent {
 class IsPostFavoritedBloc
     extends Bloc<IsPostFavoritedEvent, AsyncLoadState<bool>> {
   IsPostFavoritedBloc({
-    required IAccountRepository accountRepository,
+    required AccountRepository accountRepository,
     required IFavoritePostRepository favoritePostRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<IsPostFavoritedRequested>(

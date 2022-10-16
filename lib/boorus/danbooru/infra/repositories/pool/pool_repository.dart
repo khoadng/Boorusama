@@ -19,7 +19,7 @@ class PoolRepository {
   );
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final _limit = 20;
 
   Future<List<Pool>> getPools(

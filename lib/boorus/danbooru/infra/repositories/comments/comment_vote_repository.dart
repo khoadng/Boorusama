@@ -3,7 +3,7 @@ import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -13,12 +13,12 @@ List<CommentVote> parseCommentVote(HttpResponse<dynamic> value) => parse(
     ).map(commentVoteDtoToCommentVote).toList();
 
 class CommentVoteApiRepository implements CommentVoteRepository {
-  const CommentVoteApiRepository(Api api, IAccountRepository accountRepository)
+  const CommentVoteApiRepository(Api api, AccountRepository accountRepository)
       : _api = api,
         _accountRepository = accountRepository;
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   @override
   Future<List<CommentVote>> getCommentVotes(List<int> commentIds) =>

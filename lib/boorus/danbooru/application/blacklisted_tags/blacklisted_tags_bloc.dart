@@ -112,7 +112,7 @@ class BlacklistedTagsError extends BlacklistedTagsState {
 class BlacklistedTagsBloc
     extends Bloc<BlacklistedTagsEvent, BlacklistedTagsState> {
   BlacklistedTagsBloc({
-    required IAccountRepository accountRepository,
+    required AccountRepository accountRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
   }) : super(BlacklistedTagsState.initial()) {
     on<BlacklistedTagRequested>((event, emit) async {

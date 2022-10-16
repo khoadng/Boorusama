@@ -9,7 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 class ArtistCommentaryRepository implements IArtistCommentaryRepository {
   ArtistCommentaryRepository(this._api, this._accountRepository);
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   @override
   Future<ArtistCommentaryDto> getCommentary(

@@ -104,7 +104,7 @@ void main() async {
   final settings = await settingRepository.load();
 
   final accountBox = Hive.openBox('accounts');
-  final accountRepo = AccountRepository(accountBox);
+  final accountRepo = AccountRepositoryApi(accountBox);
 
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
@@ -345,7 +345,7 @@ void main() async {
                           value: profileRepo),
                       RepositoryProvider<IFavoritePostRepository>.value(
                           value: favoriteRepo),
-                      RepositoryProvider<IAccountRepository>.value(
+                      RepositoryProvider<AccountRepository>.value(
                           value: accountRepo),
                       RepositoryProvider<ISettingRepository>.value(
                           value: settingRepository),

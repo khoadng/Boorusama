@@ -15,7 +15,7 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required this.profileRepository,
   }) : super(AuthenticationInitial());
 
-  final IAccountRepository accountRepository;
+  final AccountRepository accountRepository;
   final ProfileRepository profileRepository;
 
   Future<void> logIn([String username = '', String password = '']) async {

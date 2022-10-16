@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
-abstract class IAccountRepository {
+abstract class AccountRepository {
   Future<void> add(Account account);
   Future<void> remove(int accountId);
   Future<List<Account>> getAll();

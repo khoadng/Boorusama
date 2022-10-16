@@ -20,7 +20,7 @@ class TagRepository implements ITagRepository {
   );
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   @override
   Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page) =>

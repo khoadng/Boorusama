@@ -20,11 +20,11 @@ const String _postParams =
 class PostRepositoryApi implements PostRepository {
   PostRepositoryApi(
     Api api,
-    IAccountRepository accountRepository,
+    AccountRepository accountRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
 
   static const int _limit = 60;

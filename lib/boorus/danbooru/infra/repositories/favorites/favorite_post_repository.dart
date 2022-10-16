@@ -20,7 +20,7 @@ class FavoritePostRepository implements IFavoritePostRepository {
   );
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   @override
   Future<bool> addToFavorites(int postId) => _accountRepository

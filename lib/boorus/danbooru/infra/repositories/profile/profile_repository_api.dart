@@ -10,11 +10,11 @@ import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dar
 
 class ProfileRepositoryApi implements ProfileRepository {
   ProfileRepositoryApi(
-      {required IAccountRepository accountRepository, required Api api})
+      {required AccountRepository accountRepository, required Api api})
       : _api = api,
         _accountRepository = accountRepository;
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
 
   @override

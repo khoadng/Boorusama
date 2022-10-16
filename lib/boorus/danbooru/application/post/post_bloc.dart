@@ -13,7 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -155,7 +155,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required IFavoritePostRepository favoritePostRepository,
-    required IAccountRepository accountRepository,
+    required AccountRepository accountRepository,
   }) : super(PostState.initial()) {
     on<PostFetched>(
       (event, emit) async {
@@ -269,7 +269,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         postRepository: context.read<PostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<IFavoritePostRepository>(),
-        accountRepository: context.read<IAccountRepository>(),
+        accountRepository: context.read<AccountRepository>(),
       );
 
   void _emitError(Object error, Emitter emit) {

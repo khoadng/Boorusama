@@ -19,12 +19,12 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
 class CommentRepository implements ICommentRepository {
   CommentRepository(
     Api api,
-    IAccountRepository accountRepository,
+    AccountRepository accountRepository,
   )   : _api = api,
         _accountRepository = accountRepository;
 
   final Api _api;
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
 
   @override
   Future<List<Comment>> getCommentsFromPostId(

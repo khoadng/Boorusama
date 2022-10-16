@@ -233,7 +233,7 @@ class SliverPostGridItem extends StatelessWidget {
           ),
         ),
         FutureBuilder<Account>(
-          future: gridContext.read<IAccountRepository>().get(),
+          future: gridContext.read<AccountRepository>().get(),
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data! != Account.empty) {
               return CupertinoContextMenuAction(
