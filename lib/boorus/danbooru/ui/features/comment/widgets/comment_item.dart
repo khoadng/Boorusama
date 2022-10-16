@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/dtext_parser.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/dtext.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/core/core.dart';
 
 class CommentItem extends StatelessWidget {
@@ -43,6 +44,9 @@ class CommentItem extends StatelessWidget {
           '[quote]',
           '[/quote]',
         ),
+        ...comment.uris
+            .where((e) => e.host == youtubeUrl)
+            .map((e) => YoutubePreviewBox(uri: e)),
         if (comment.recentlyUpdated)
           Padding(
             padding: const EdgeInsets.only(top: 8),

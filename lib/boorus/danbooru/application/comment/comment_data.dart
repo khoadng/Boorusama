@@ -1,16 +1,20 @@
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/core/application/application.dart';
 
 enum CommentVoteState {
   unvote,
   downvoted,
   upvoted,
 }
+
+const youtubeUrl = 'www.youtube.com';
 
 class CommentData extends Equatable {
   const CommentData({
@@ -25,6 +29,7 @@ class CommentData extends Equatable {
     required this.recentlyUpdated,
     required this.voteState,
     this.voteId,
+    required this.uris,
   });
 
   final int id;
@@ -38,6 +43,7 @@ class CommentData extends Equatable {
   final bool recentlyUpdated;
   final int? voteId;
   final CommentVoteState voteState;
+  final List<Uri> uris;
 
   bool get hasVote => voteState != CommentVoteState.unvote;
 
@@ -47,17 +53,19 @@ class CommentData extends Equatable {
     int? voteId,
   }) =>
       CommentData(
-          id: id,
-          authorName: authorName,
-          authorLevel: authorLevel,
-          body: body,
-          createdAt: createdAt,
-          updatedAt: updatedAt,
-          score: score ?? this.score,
-          isSelf: isSelf,
-          recentlyUpdated: recentlyUpdated,
-          voteState: voteState ?? this.voteState,
-          voteId: voteId);
+        id: id,
+        authorName: authorName,
+        authorLevel: authorLevel,
+        body: body,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        score: score ?? this.score,
+        isSelf: isSelf,
+        recentlyUpdated: recentlyUpdated,
+        voteState: voteState ?? this.voteState,
+        voteId: voteId,
+        uris: uris,
+      );
 
   @override
   List<Object?> get props => [
@@ -72,6 +80,7 @@ class CommentData extends Equatable {
         recentlyUpdated,
         voteState,
         voteId,
+        uris,
       ];
 }
 
@@ -92,7 +101,20 @@ CommentData commentDataFrom(
         isSelf: comment.creator?.id.value == account.id,
         recentlyUpdated: comment.createdAt != comment.updatedAt,
         voteState: _getVoteState(comment, votes),
-        voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id);
+        voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,
+        uris: RegExp(urlPattern)
+            .allMatches(comment.body)
+            .map((match) {
+              try {
+                final url = comment.body.substring(match.start, match.end);
+                return Uri.parse(url);
+              } catch (e) {
+                return null;
+              }
+            })
+            .whereNotNull()
+            .where((e) => e.host.contains(youtubeUrl))
+            .toList());
 
 CommentVoteState _getVoteState(Comment comment, List<CommentVote> votes) {
   final voteMap = {
