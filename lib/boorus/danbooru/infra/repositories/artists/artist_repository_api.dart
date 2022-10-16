@@ -12,8 +12,8 @@ List<Artist> parseArtist(HttpResponse<dynamic> value) => parse(
       converter: (item) => ArtistDto.fromJson(item),
     ).map((e) => e.toEntity()).toList();
 
-class ArtistRepository implements IArtistRepository {
-  ArtistRepository({
+class ArtistRepositoryApi implements ArtistRepository {
+  ArtistRepositoryApi({
     required Api api,
   }) : _api = api;
 

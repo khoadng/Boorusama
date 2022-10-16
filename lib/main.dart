@@ -233,7 +233,7 @@ void main() async {
 
                   final tagRepo = TagRepository(api, accountRepo);
 
-                  final artistRepo = ArtistRepository(api: api);
+                  final artistRepo = ArtistRepositoryApi(api: api);
 
                   final profileRepo = ProfileRepositoryApi(
                       accountRepository: accountRepo, api: api);
@@ -360,7 +360,7 @@ void main() async {
                           value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
                           value: blacklistedTagRepo),
-                      RepositoryProvider<IArtistRepository>.value(
+                      RepositoryProvider<ArtistRepository>.value(
                           value: artistRepo),
                       RepositoryProvider<AutocompleteRepository>.value(
                           value: autocompleteRepo),

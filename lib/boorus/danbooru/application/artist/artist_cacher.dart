@@ -5,13 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class ArtistCacher implements IArtistRepository {
+class ArtistCacher implements ArtistRepository {
   const ArtistCacher({
     required this.repo,
     required this.cache,
   });
 
-  final IArtistRepository repo;
+  final ArtistRepository repo;
   final Cacher<String, Artist> cache;
 
   @override
