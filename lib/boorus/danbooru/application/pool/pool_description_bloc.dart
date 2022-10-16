@@ -8,8 +8,7 @@ import 'package:html/parser.dart' show parse;
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 
 @immutable
 class PoolDescriptionState extends Equatable {

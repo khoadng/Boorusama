@@ -277,7 +277,7 @@ void main() async {
 
                   final wikiRepo = WikiRepository(api);
 
-                  final poolDescriptionRepo = PoolDescriptionRepository(
+                  final poolDescriptionRepo = PoolDescriptionRepositoryApi(
                     dio: state.dio,
                     endpoint: state.dio.options.baseUrl,
                   );
