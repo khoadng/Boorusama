@@ -1,6 +1,6 @@
 export 'accounts/account_repository_api.dart';
 export 'accounts/accounts.dart';
-export 'artists/artist_commentary_repository.dart';
+export 'artists/artist_commentary_repository_api.dart';
 export 'artists/artist_repository.dart';
 export 'artists/artists.dart';
 export 'autocomplete/autocomplete.dart';

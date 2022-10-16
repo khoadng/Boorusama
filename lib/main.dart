@@ -251,7 +251,7 @@ void main() async {
 
                   final artistCommentaryRepo = ArtistCommentaryCacher(
                     cache: LruCacher(capacity: 200),
-                    repo: ArtistCommentaryRepository(api, accountRepo),
+                    repo: ArtistCommentaryRepositoryApi(api, accountRepo),
                   );
 
                   final poolRepo = PoolRepositoryCacher(
@@ -368,7 +368,7 @@ void main() async {
                           value: relatedTagRepo),
                       RepositoryProvider<IWikiRepository>.value(
                           value: wikiRepo),
-                      RepositoryProvider<IArtistCommentaryRepository>.value(
+                      RepositoryProvider<ArtistCommentaryRepository>.value(
                           value: artistCommentaryRepo),
                       RepositoryProvider<PostVoteRepository>.value(
                           value: postVoteRepo),

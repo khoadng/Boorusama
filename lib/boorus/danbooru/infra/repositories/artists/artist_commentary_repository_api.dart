@@ -6,8 +6,8 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 
-class ArtistCommentaryRepository implements IArtistCommentaryRepository {
-  ArtistCommentaryRepository(this._api, this._accountRepository);
+class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
+  ArtistCommentaryRepositoryApi(this._api, this._accountRepository);
   final Api _api;
   final AccountRepository _accountRepository;
 

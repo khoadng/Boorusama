@@ -57,7 +57,7 @@ class ArtistCommentaryFetched extends ArtistCommentaryEvent {
 class ArtistCommentaryBloc
     extends Bloc<ArtistCommentaryEvent, ArtistCommentaryState> {
   ArtistCommentaryBloc({
-    required IArtistCommentaryRepository artistCommentaryRepository,
+    required ArtistCommentaryRepository artistCommentaryRepository,
   }) : super(ArtistCommentaryState.initial()) {
     on<ArtistCommentaryFetched>(
       (event, emit) async {
