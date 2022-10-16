@@ -15,4 +15,14 @@ extension StringX on String {
 
     return this;
   }
+
+  String pipe(
+    List<String Function(String text)> funcs,
+  ) {
+    var t = this;
+    for (final f in funcs) {
+      t = f(t);
+    }
+    return t;
+  }
 }
