@@ -38,7 +38,7 @@ class PostStatsTile extends StatelessWidget {
               builder: (context) => BlocProvider(
                 create: (context) => PostFavoriteInfoBloc(
                   favoritePostRepository:
-                      context.read<IFavoritePostRepository>(),
+                      context.read<FavoritePostRepository>(),
                   userRepository: context.read<IUserRepository>(),
                 )..add(PostFavoriteInfoFetched(
                     postId: post.id,

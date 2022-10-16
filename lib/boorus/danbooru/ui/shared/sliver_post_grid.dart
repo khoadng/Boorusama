@@ -245,10 +245,10 @@ class SliverPostGridItem extends StatelessWidget {
 
                   final action = postData.isFavorited
                       ? context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .removeFromFavorites(post.id)
                       : context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .addToFavorites(post.id);
 
                   final success = await action;

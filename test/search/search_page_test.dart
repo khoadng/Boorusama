@@ -63,7 +63,7 @@ class MockBlacklistedTagRepository extends Mock
 
 class MockAccountRepository extends Mock implements AccountRepository {}
 
-class MockFavoriteReposiory extends Mock implements IFavoritePostRepository {}
+class MockFavoriteReposiory extends Mock implements FavoritePostRepository {}
 
 Widget _buildSearchPage({
   required SearchBloc searchBloc,

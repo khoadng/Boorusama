@@ -83,7 +83,7 @@ class PostFavoriteInfoFetched extends PostFavoriteInfoEvent {
 class PostFavoriteInfoBloc
     extends Bloc<PostFavoriteInfoEvent, PostFavoriteInfoState> {
   PostFavoriteInfoBloc({
-    required IFavoritePostRepository favoritePostRepository,
+    required FavoritePostRepository favoritePostRepository,
     required IUserRepository userRepository,
   }) : super(PostFavoriteInfoState.initial()) {
     on<PostFavoriteInfoFetched>(

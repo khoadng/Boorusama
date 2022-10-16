@@ -1,7 +1,7 @@
 // Project imports:
 import 'favorite_dto.dart';
 
-abstract class IFavoritePostRepository {
+abstract class FavoritePostRepository {
   Future<bool> addToFavorites(int postId);
   Future<bool> removeFromFavorites(int postId);
   Future<List<FavoriteDto>> filterFavoritesFromUserId(

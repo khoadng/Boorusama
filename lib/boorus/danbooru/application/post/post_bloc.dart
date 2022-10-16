@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 
@@ -154,7 +154,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
-    required IFavoritePostRepository favoritePostRepository,
+    required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
   }) : super(PostState.initial()) {
     on<PostFetched>(
@@ -268,7 +268,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   factory PostBloc.of(BuildContext context) => PostBloc(
         postRepository: context.read<PostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
-        favoritePostRepository: context.read<IFavoritePostRepository>(),
+        favoritePostRepository: context.read<FavoritePostRepository>(),
         accountRepository: context.read<AccountRepository>(),
       );
 

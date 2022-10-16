@@ -13,8 +13,8 @@ List<FavoriteDto> parseFavorite(HttpResponse<dynamic> value) => parse(
       converter: (item) => FavoriteDto.fromJson(item),
     );
 
-class FavoritePostRepository implements IFavoritePostRepository {
-  FavoritePostRepository(
+class FavoritePostRepositoryApi implements FavoritePostRepository {
+  FavoritePostRepositoryApi(
     this._api,
     this._accountRepository,
   );

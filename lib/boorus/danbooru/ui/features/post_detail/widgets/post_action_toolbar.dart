@@ -46,7 +46,7 @@ class PostActionToolbar extends StatelessWidget {
         BlocProvider(
           create: (context) => IsPostFavoritedBloc(
             accountRepository: context.read<AccountRepository>(),
-            favoritePostRepository: context.read<IFavoritePostRepository>(),
+            favoritePostRepository: context.read<FavoritePostRepository>(),
           )..add(IsPostFavoritedRequested(postId: post.id)),
         ),
       ],
@@ -179,9 +179,9 @@ class PostActionToolbar extends StatelessWidget {
               }
 
               final result = state.data!
-                  ? RepositoryProvider.of<IFavoritePostRepository>(context)
+                  ? RepositoryProvider.of<FavoritePostRepository>(context)
                       .removeFromFavorites(post.id)
-                  : RepositoryProvider.of<IFavoritePostRepository>(context)
+                  : RepositoryProvider.of<FavoritePostRepository>(context)
                       .addToFavorites(post.id);
 
               await result;

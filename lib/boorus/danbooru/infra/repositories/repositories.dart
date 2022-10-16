@@ -8,7 +8,7 @@ export 'autocomplete/autocomplete_repository_api.dart';
 export 'comments/comment_repository_api.dart';
 export 'comments/comment_vote_repository_api.dart';
 export 'comments/comments.dart';
-export 'favorites/favorite_post_repository.dart';
+export 'favorites/favorite_post_repository_api.dart';
 export 'favorites/favorites.dart';
 export 'notes/note_cacher.dart';
 export 'notes/note_repository.dart';

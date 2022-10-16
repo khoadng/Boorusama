@@ -36,7 +36,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
@@ -248,7 +248,8 @@ void main() async {
 
                   final noteRepo = NoteRepository(api);
 
-                  final favoriteRepo = FavoritePostRepository(api, accountRepo);
+                  final favoriteRepo =
+                      FavoritePostRepositoryApi(api, accountRepo);
 
                   final artistCommentaryRepo = ArtistCommentaryCacher(
                     cache: LruCacher(capacity: 200),
@@ -344,7 +345,7 @@ void main() async {
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
                       RepositoryProvider<ProfileRepository>.value(
                           value: profileRepo),
-                      RepositoryProvider<IFavoritePostRepository>.value(
+                      RepositoryProvider<FavoritePostRepository>.value(
                           value: favoriteRepo),
                       RepositoryProvider<AccountRepository>.value(
                           value: accountRepo),
