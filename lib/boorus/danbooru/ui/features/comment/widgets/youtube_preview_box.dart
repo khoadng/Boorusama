@@ -20,71 +20,75 @@ class YoutubePreviewBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<PreviewUrlData>(
-      future: Dio()
-          .getUri(uri)
-          .then((value) => value.data)
-          .then((value) => parseHtmlAsync(value, uri.toString())),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          final data = snapshot.data!;
-          return Card(
-              child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data.siteName,
-                  style: Theme.of(context).textTheme.caption,
-                ),
-                TextButton(
-                  onPressed: () => launchExternalUrl(uri),
-                  child: Text(
-                    data.title,
-                    style: Theme.of(context)
-                        .textTheme
-                        .titleMedium!
-                        .copyWith(color: Colors.blue),
+    try {
+      return FutureBuilder<PreviewUrlData>(
+        future: Dio()
+            .getUri(uri)
+            .then((value) => value.data)
+            .then((value) => parseHtmlAsync(value, uri.toString())),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final data = snapshot.data!;
+            return Card(
+                child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    data.siteName,
+                    style: Theme.of(context).textTheme.caption,
                   ),
-                ),
-                if (data.previewImage != null)
-                  Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: CachedNetworkImage(
-                            fit: BoxFit.contain,
-                            imageUrl: data.previewImage!,
-                          ),
-                        ),
-                        if (data.isVideo)
-                          Align(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8),
-                                color: Colors.black87,
-                              ),
-                              child: IconButton(
-                                onPressed: () => launchExternalUrl(uri),
-                                icon: const Icon(Icons.play_arrow),
-                              ),
-                            ),
-                          )
-                      ],
+                  TextButton(
+                    onPressed: () => launchExternalUrl(uri),
+                    child: Text(
+                      data.title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleMedium!
+                          .copyWith(color: Colors.blue),
                     ),
                   ),
-              ],
-            ),
-          ));
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
-    );
+                  if (data.previewImage != null)
+                    Padding(
+                      padding: const EdgeInsets.all(4),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: CachedNetworkImage(
+                              fit: BoxFit.contain,
+                              imageUrl: data.previewImage!,
+                            ),
+                          ),
+                          if (data.isVideo)
+                            Align(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Colors.black87,
+                                ),
+                                child: IconButton(
+                                  onPressed: () => launchExternalUrl(uri),
+                                  icon: const Icon(Icons.play_arrow),
+                                ),
+                              ),
+                            )
+                        ],
+                      ),
+                    ),
+                ],
+              ),
+            ));
+          } else {
+            return const SizedBox.shrink();
+          }
+        },
+      );
+    } catch (e) {
+      return const SizedBox.shrink();
+    }
   }
 }
 
