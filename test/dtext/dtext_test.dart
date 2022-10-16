@@ -28,7 +28,14 @@ void main() {
               '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
             ));
 
-    test('all of the above', () {
+    test(
+        'link with markdown text',
+        () => expect(
+              linkMarkdownStyle('[https://foo.com](Foo)'),
+              '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
+            ));
+
+    test('multiple items', () {
       const text = '''
 [b]foo[/b]
 [i]foo[/i]

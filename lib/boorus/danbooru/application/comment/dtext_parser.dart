@@ -9,6 +9,7 @@ String parseDtext(String text) => text.pipe([
       strikethrough,
       linkCustomText,
       linkCustomTextNoBrackets,
+      linkMarkdownStyle,
     ]);
 
 String bold(String text) => text.replaceAllMapped(
@@ -51,3 +52,8 @@ String linkCustomTextNoBrackets(String text) {
     return text;
   }
 }
+
+String linkMarkdownStyle(String text) => text.replaceAllMapped(
+      RegExp(r'\[(.*?)\]\((.*?)\)'),
+      (match) => linkify(title: match.group(2), address: match.group(1)),
+    );
