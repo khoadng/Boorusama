@@ -7,11 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
-    as autocomplete;
 
 class PostDetailTag extends Equatable {
   const PostDetailTag({
@@ -21,7 +19,7 @@ class PostDetailTag extends Equatable {
   });
 
   final String name;
-  final autocomplete.TagCategory category;
+  final TagAutocompleteCategory category;
   final int postId;
 
   @override
@@ -101,7 +99,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               ...state.tags,
               PostDetailTag(
                 name: event.tag,
-                category: autocomplete.TagCategory(
+                category: TagAutocompleteCategory(
                   category: TagCategory.values[event.category!],
                 ),
                 postId: event.postId,

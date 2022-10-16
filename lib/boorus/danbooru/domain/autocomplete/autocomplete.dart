@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart' as t;
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -63,20 +62,23 @@ class PoolAutocompleteCategory extends AutocompleteCategory {
   List<Object?> get props => [category];
 }
 
-class TagCategory extends AutocompleteCategory {
-  TagCategory({
+class TagAutocompleteCategory extends AutocompleteCategory {
+  TagAutocompleteCategory({
     required this.category,
   });
 
-  factory TagCategory.artist() => TagCategory(category: t.TagCategory.artist);
-  factory TagCategory.character() =>
-      TagCategory(category: t.TagCategory.charater);
-  factory TagCategory.copyright() =>
-      TagCategory(category: t.TagCategory.copyright);
-  factory TagCategory.general() => TagCategory(category: t.TagCategory.general);
-  factory TagCategory.meta() => TagCategory(category: t.TagCategory.meta);
+  factory TagAutocompleteCategory.artist() =>
+      TagAutocompleteCategory(category: TagCategory.artist);
+  factory TagAutocompleteCategory.character() =>
+      TagAutocompleteCategory(category: TagCategory.charater);
+  factory TagAutocompleteCategory.copyright() =>
+      TagAutocompleteCategory(category: TagCategory.copyright);
+  factory TagAutocompleteCategory.general() =>
+      TagAutocompleteCategory(category: TagCategory.general);
+  factory TagAutocompleteCategory.meta() =>
+      TagAutocompleteCategory(category: TagCategory.meta);
 
-  final t.TagCategory category;
+  final TagCategory category;
 
   @override
   String getName() => category.name;

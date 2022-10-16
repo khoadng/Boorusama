@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
@@ -47,9 +48,6 @@ import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
 import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/search/search_page.dart';
-
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
-    as autocomplete;
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -123,27 +121,27 @@ final postDetailHandler = Handler(handlerFunc: (
       .map((p) => [
             ...p.artistTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.artist(),
+                  category: TagAutocompleteCategory.artist(),
                   postId: p.id,
                 )),
             ...p.characterTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.character(),
+                  category: TagAutocompleteCategory.character(),
                   postId: p.id,
                 )),
             ...p.copyrightTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.copyright(),
+                  category: TagAutocompleteCategory.copyright(),
                   postId: p.id,
                 )),
             ...p.generalTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.general(),
+                  category: TagAutocompleteCategory.general(),
                   postId: p.id,
                 )),
             ...p.metaTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.meta(),
+                  category: TagAutocompleteCategory.meta(),
                   postId: p.id,
                 )),
           ])

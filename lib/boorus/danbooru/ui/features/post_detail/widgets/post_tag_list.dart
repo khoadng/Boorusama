@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -19,9 +20,6 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/context_menu.dart';
-
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
-    as autocomplete;
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
@@ -144,16 +142,16 @@ class SimplePostTagList extends StatelessWidget {
         return BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, themeState) {
             final tags_ = [
-              ...tags.where(
-                  (e) => e.category == autocomplete.TagCategory.artist()),
-              ...tags.where(
-                  (e) => e.category == autocomplete.TagCategory.copyright()),
-              ...tags.where(
-                  (e) => e.category == autocomplete.TagCategory.character()),
-              ...tags.where(
-                  (e) => e.category == autocomplete.TagCategory.general()),
               ...tags
-                  .where((e) => e.category == autocomplete.TagCategory.meta()),
+                  .where((e) => e.category == TagAutocompleteCategory.artist()),
+              ...tags.where(
+                  (e) => e.category == TagAutocompleteCategory.copyright()),
+              ...tags.where(
+                  (e) => e.category == TagAutocompleteCategory.character()),
+              ...tags.where(
+                  (e) => e.category == TagAutocompleteCategory.general()),
+              ...tags
+                  .where((e) => e.category == TagAutocompleteCategory.meta()),
             ].map((e) => _Tag(
                 rawName: e.name,
                 displayName: e.name.replaceAll('_', ' '),

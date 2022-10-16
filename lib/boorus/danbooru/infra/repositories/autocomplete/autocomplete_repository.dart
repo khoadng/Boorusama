@@ -6,7 +6,7 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete_dto.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart' as t;
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -33,7 +33,8 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             type: e.type,
             label: e.label!,
             value: e.value!,
-            category: TagCategory(category: t.intToTagCategory(e.category)),
+            category:
+                TagAutocompleteCategory(category: intToTagCategory(e.category)),
             postCount: e.postCount!,
             antecedent: e.antecedent,
           );
