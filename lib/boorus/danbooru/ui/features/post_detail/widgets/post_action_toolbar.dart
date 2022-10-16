@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
@@ -45,8 +45,8 @@ class PostActionToolbar extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => IsPostFavoritedBloc(
-            accountRepository: context.read<IAccountRepository>(),
-            favoritePostRepository: context.read<IFavoritePostRepository>(),
+            accountRepository: context.read<AccountRepository>(),
+            favoritePostRepository: context.read<FavoritePostRepository>(),
           )..add(IsPostFavoritedRequested(postId: post.id)),
         ),
       ],
@@ -179,9 +179,9 @@ class PostActionToolbar extends StatelessWidget {
               }
 
               final result = state.data!
-                  ? RepositoryProvider.of<IFavoritePostRepository>(context)
+                  ? RepositoryProvider.of<FavoritePostRepository>(context)
                       .removeFromFavorites(post.id)
-                  : RepositoryProvider.of<IFavoritePostRepository>(context)
+                  : RepositoryProvider.of<FavoritePostRepository>(context)
                       .addToFavorites(post.id);
 
               await result;

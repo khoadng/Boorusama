@@ -11,7 +11,7 @@ import '../../common.dart';
 class MockBlacklistedTagsRepository extends Mock
     implements BlacklistedTagsRepository {}
 
-class MockAccountRepository extends Mock implements IAccountRepository {}
+class MockAccountRepository extends Mock implements AccountRepository {}
 
 BlacklistedTagsRepository createBlacklistedTagRepo() {
   final MockBlacklistedTagsRepository mockBlacklistedTagsRepository =

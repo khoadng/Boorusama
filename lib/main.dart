@@ -34,23 +34,23 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/download/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/wiki/wiki_cacher.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/download_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -69,6 +69,8 @@ const supportedLocales = [
   Locale('ru', ''),
   Locale('be', ''),
 ];
+
+const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -96,7 +98,7 @@ void main() async {
     });
   }
 
-  final settingRepository = SettingRepository(
+  final settingRepository = SettingRepositoryHive(
     Hive.openBox('settings'),
     Settings.defaultSettings,
   );
@@ -104,7 +106,7 @@ void main() async {
   final settings = await settingRepository.load();
 
   final accountBox = Hive.openBox('accounts');
-  final accountRepo = AccountRepository(accountBox);
+  final accountRepo = AccountRepositoryApi(accountBox);
 
   Box<String> userMetatagBox;
   if (await Hive.boxExists('user_metatags')) {
@@ -130,7 +132,6 @@ void main() async {
     db: searchHistoryBox,
   );
 
-  final config = DanbooruConfig();
   final booruFactory = BooruFactory.from(await loadBooruList());
   final packageInfo = PackageInfoProvider(await getPackageInfo());
   final appInfo = AppInfoProvider(await getAppInfo());
@@ -180,7 +181,7 @@ void main() async {
             RepositoryProvider.value(value: appInfo),
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
-            RepositoryProvider<IDownloadService>.value(value: downloader),
+            RepositoryProvider<DownloadService>.value(value: downloader),
             RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(
@@ -228,59 +229,60 @@ void main() async {
                 builder: (context, state) {
                   final api = state.api;
 
-                  final popularSearchRepo = PopularSearchRepository(
+                  final popularSearchRepo = PopularSearchRepositoryApi(
                       accountRepository: accountRepo, api: api);
 
-                  final tagRepo = TagRepository(api, accountRepo);
+                  final tagRepo = TagRepositoryApi(api, accountRepo);
 
-                  final artistRepo = ArtistRepository(api: api);
+                  final artistRepo = ArtistRepositoryApi(api: api);
 
-                  final profileRepo = ProfileRepository(
+                  final profileRepo = ProfileRepositoryApi(
                       accountRepository: accountRepo, api: api);
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
 
-                  final commentRepo = CommentRepository(api, accountRepo);
+                  final commentRepo = CommentRepositoryApi(api, accountRepo);
 
-                  final userRepo = UserRepository(
+                  final userRepo = UserRepositoryApi(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
-                  final noteRepo = NoteRepository(api);
+                  final noteRepo = NoteRepositoryApi(api);
 
-                  final favoriteRepo = FavoritePostRepository(api, accountRepo);
+                  final favoriteRepo =
+                      FavoritePostRepositoryApi(api, accountRepo);
 
                   final artistCommentaryRepo = ArtistCommentaryCacher(
                     cache: LruCacher(capacity: 200),
-                    repo: ArtistCommentaryRepository(api, accountRepo),
+                    repo: ArtistCommentaryRepositoryApi(api, accountRepo),
                   );
 
                   final poolRepo = PoolRepositoryCacher(
                     cache: LruCacher(capacity: 15),
-                    repo: PoolRepository(api, accountRepo),
+                    repo: PoolRepositoryApi(api, accountRepo),
                   );
 
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
-                  final autocompleteRepo = AutocompleteRepository(
+                  final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,
                     accountRepository: accountRepo,
                   );
 
-                  final relatedTagRepo = RelatedTagApiRepository(api);
+                  final relatedTagRepo = RelatedTagRepositoryApi(api);
 
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
 
-                  final wikiRepo = WikiRepository(api);
+                  final wikiRepo = WikiRepositoryApi(api);
 
-                  final poolDescriptionRepo = PoolDescriptionRepository(
+                  final poolDescriptionRepo = PoolDescriptionRepositoryApi(
                     dio: state.dio,
                     endpoint: state.dio.options.baseUrl,
                   );
 
-                  final postVoteRepo =
-                      PostVoteApiRepository(api: api, accountRepo: accountRepo);
+                  final postVoteRepo = PostVoteApiRepositoryApi(
+                      api: api, accountRepo: accountRepo);
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
@@ -340,35 +342,31 @@ void main() async {
 
                   return MultiRepositoryProvider(
                     providers: [
-                      RepositoryProvider<ITagRepository>.value(value: tagRepo),
-                      RepositoryProvider<IProfileRepository>.value(
+                      RepositoryProvider<TagRepository>.value(value: tagRepo),
+                      RepositoryProvider<ProfileRepository>.value(
                           value: profileRepo),
-                      RepositoryProvider<IFavoritePostRepository>.value(
+                      RepositoryProvider<FavoritePostRepository>.value(
                           value: favoriteRepo),
-                      RepositoryProvider<IAccountRepository>.value(
+                      RepositoryProvider<AccountRepository>.value(
                           value: accountRepo),
-                      RepositoryProvider<ISettingRepository>.value(
+                      RepositoryProvider<SettingRepository>.value(
                           value: settingRepository),
-                      RepositoryProvider<INoteRepository>.value(
-                          value: noteRepo),
+                      RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
                           value: searchHistoryRepo),
-                      RepositoryProvider<IConfig>.value(value: config),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
-                      RepositoryProvider<IUserRepository>.value(
-                          value: userRepo),
+                      RepositoryProvider<UserRepository>.value(value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
                           value: blacklistedTagRepo),
-                      RepositoryProvider<IArtistRepository>.value(
+                      RepositoryProvider<ArtistRepository>.value(
                           value: artistRepo),
                       RepositoryProvider<AutocompleteRepository>.value(
                           value: autocompleteRepo),
                       RepositoryProvider<RelatedTagRepository>.value(
                           value: relatedTagRepo),
-                      RepositoryProvider<IWikiRepository>.value(
-                          value: wikiRepo),
-                      RepositoryProvider<IArtistCommentaryRepository>.value(
+                      RepositoryProvider<WikiRepository>.value(value: wikiRepo),
+                      RepositoryProvider<ArtistCommentaryRepository>.value(
                           value: artistCommentaryRepo),
                       RepositoryProvider<PostVoteRepository>.value(
                           value: postVoteRepo),

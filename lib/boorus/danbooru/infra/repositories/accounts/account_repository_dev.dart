@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 
-class AccountRepositoryDev implements IAccountRepository {
+class AccountRepositoryDev implements AccountRepository {
   AccountRepositoryDev({
     required this.account,
   });

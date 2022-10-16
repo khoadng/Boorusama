@@ -17,14 +17,14 @@ List<User> parseUser(
       converter: (item) => UserDto.fromJson(item),
     ).map((u) => userDtoToUser(u, defaultBlacklistedTags)).toList();
 
-class UserRepository implements IUserRepository {
-  UserRepository(
+class UserRepositoryApi implements UserRepository {
+  UserRepositoryApi(
     this._api,
     this._accountRepository,
     this.defaultBlacklistedTags,
   );
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
   final List<String> defaultBlacklistedTags;
 

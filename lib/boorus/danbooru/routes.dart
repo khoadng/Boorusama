@@ -23,12 +23,12 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
@@ -47,9 +47,6 @@ import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
 import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/search/search_page.dart';
-
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
-    as autocomplete;
 
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
@@ -123,27 +120,27 @@ final postDetailHandler = Handler(handlerFunc: (
       .map((p) => [
             ...p.artistTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.artist(),
+                  category: TagAutocompleteCategory.artist(),
                   postId: p.id,
                 )),
             ...p.characterTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.character(),
+                  category: TagAutocompleteCategory.character(),
                   postId: p.id,
                 )),
             ...p.copyrightTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.copyright(),
+                  category: TagAutocompleteCategory.copyright(),
                   postId: p.id,
                 )),
             ...p.generalTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.general(),
+                  category: TagAutocompleteCategory.general(),
                   postId: p.id,
                 )),
             ...p.metaTags.map((e) => PostDetailTag(
                   name: e,
-                  category: autocomplete.TagCategory.meta(),
+                  category: TagAutocompleteCategory.meta(),
                   postId: p.id,
                 )),
           ])
@@ -177,7 +174,7 @@ final postDetailHandler = Handler(handlerFunc: (
       )
     ],
     child: RepositoryProvider.value(
-      value: RepositoryProvider.of<ITagRepository>(context),
+      value: context.read<TagRepository>(),
       child: Builder(
         builder: (context) =>
             BlocListener<SliverPostGridBloc, SliverPostGridState>(
@@ -309,7 +306,7 @@ final poolDetailHandler =
           BlocProvider(
               create: (context) => NoteBloc(
                   noteRepository:
-                      RepositoryProvider.of<INoteRepository>(context))),
+                      RepositoryProvider.of<NoteRepository>(context))),
         ],
         child: PoolDetailPage(
           pool: pool,

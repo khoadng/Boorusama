@@ -53,7 +53,7 @@ class TagFetched extends TagEvent {
 
 class TagBloc extends Bloc<TagEvent, TagState> {
   TagBloc({
-    required ITagRepository tagRepository,
+    required TagRepository tagRepository,
   }) : super(TagState.initial()) {
     on<TagFetched>(
       (event, emit) async {

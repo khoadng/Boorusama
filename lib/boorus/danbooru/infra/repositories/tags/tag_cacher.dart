@@ -5,13 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class TagCacher implements ITagRepository {
+class TagCacher implements TagRepository {
   TagCacher({
     required this.cache,
     required this.repo,
   });
 
-  final ITagRepository repo;
+  final TagRepository repo;
   final Cacher<String, Tag> cache;
 
   @override

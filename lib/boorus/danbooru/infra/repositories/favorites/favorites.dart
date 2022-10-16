@@ -1,1 +1,1 @@
-export 'favorite_post_repository.dart';
+export 'favorite_post_repository_api.dart';

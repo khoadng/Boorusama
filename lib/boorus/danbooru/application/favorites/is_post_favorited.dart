@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 @immutable
@@ -28,8 +28,8 @@ class IsPostFavoritedRequested extends IsPostFavoritedEvent {
 class IsPostFavoritedBloc
     extends Bloc<IsPostFavoritedEvent, AsyncLoadState<bool>> {
   IsPostFavoritedBloc({
-    required IAccountRepository accountRepository,
-    required IFavoritePostRepository favoritePostRepository,
+    required AccountRepository accountRepository,
+    required FavoritePostRepository favoritePostRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<IsPostFavoritedRequested>(
       (event, emit) async {

@@ -233,7 +233,7 @@ class SliverPostGridItem extends StatelessWidget {
           ),
         ),
         FutureBuilder<Account>(
-          future: gridContext.read<IAccountRepository>().get(),
+          future: gridContext.read<AccountRepository>().get(),
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data! != Account.empty) {
               return CupertinoContextMenuAction(
@@ -245,10 +245,10 @@ class SliverPostGridItem extends StatelessWidget {
 
                   final action = postData.isFavorited
                       ? context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .removeFromFavorites(post.id)
                       : context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .addToFavorites(post.id);
 
                   final success = await action;

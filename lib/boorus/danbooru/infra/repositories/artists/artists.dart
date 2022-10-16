@@ -1,2 +1,2 @@
-export 'artist_commentary_repository.dart';
-export 'artist_repository.dart';
+export 'artist_commentary_repository_api.dart';
+export 'artist_repository_api.dart';

@@ -9,8 +9,8 @@ import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
-    required ICommentRepository commentRepository,
-    required IAccountRepository accountRepository,
+    required CommentRepository commentRepository,
+    required AccountRepository accountRepository,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {

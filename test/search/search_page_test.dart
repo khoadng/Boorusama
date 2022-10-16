@@ -18,13 +18,11 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/danbooru/config.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page.dart';
 import '../test_helpers.dart';
@@ -61,9 +59,9 @@ class MockPostRepository extends Mock implements PostRepository {}
 class MockBlacklistedTagRepository extends Mock
     implements BlacklistedTagsRepository {}
 
-class MockAccountRepository extends Mock implements IAccountRepository {}
+class MockAccountRepository extends Mock implements AccountRepository {}
 
-class MockFavoriteReposiory extends Mock implements IFavoritePostRepository {}
+class MockFavoriteReposiory extends Mock implements FavoritePostRepository {}
 
 Widget _buildSearchPage({
   required SearchBloc searchBloc,
@@ -103,12 +101,9 @@ Widget _buildSearchPage({
         BlocProvider<SearchHistorySuggestionsBloc>.value(
             value: mockSearchHistorySuggestionsBloc),
       ],
-      child: MultiRepositoryProvider(
-        providers: [RepositoryProvider<IConfig>.value(value: DanbooruConfig())],
-        child: const SearchPage(
-          metatags: [],
-          metatagHighlightColor: Colors.blueAccent,
-        ),
+      child: const SearchPage(
+        metatags: [],
+        metatagHighlightColor: Colors.blueAccent,
       ),
     ),
   );

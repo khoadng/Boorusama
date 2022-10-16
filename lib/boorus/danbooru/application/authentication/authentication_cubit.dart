@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profile/i_profile_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/profile/profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/profile/profile_repository_api.dart';
 
 part 'authentication_state.dart';
 
@@ -15,8 +15,8 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
     required this.profileRepository,
   }) : super(AuthenticationInitial());
 
-  final IAccountRepository accountRepository;
-  final IProfileRepository profileRepository;
+  final AccountRepository accountRepository;
+  final ProfileRepository profileRepository;
 
   Future<void> logIn([String username = '', String password = '']) async {
     if (state is AuthenticationInitial) {

@@ -1,4 +1,3 @@
-export 'i_note_repository.dart';
 export 'post_repository.dart';
 export 'image_source.dart';
 export 'post.dart';

@@ -9,9 +9,9 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 Future<List<PostData>> createPostData(
-  IFavoritePostRepository favoritePostRepository,
+  FavoritePostRepository favoritePostRepository,
   List<Post> posts,
-  IAccountRepository accountRepository,
+  AccountRepository accountRepository,
 ) async {
   final account = await accountRepository.get();
   if (account == Account.empty) {

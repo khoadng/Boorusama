@@ -8,12 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc_stream_transformer.dart';
 
 class NoteBloc extends Bloc<NoteEvent, AsyncLoadState<List<Note>>> {
   NoteBloc({
-    required INoteRepository noteRepository,
+    required NoteRepository noteRepository,
   }) : super(const AsyncLoadState.initial()) {
     on<NoteRequested>(
       (event, emit) async {

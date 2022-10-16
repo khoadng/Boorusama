@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
 
 class PostFavoriteInfoState extends Equatable {
   const PostFavoriteInfoState({
@@ -83,8 +83,8 @@ class PostFavoriteInfoFetched extends PostFavoriteInfoEvent {
 class PostFavoriteInfoBloc
     extends Bloc<PostFavoriteInfoEvent, PostFavoriteInfoState> {
   PostFavoriteInfoBloc({
-    required IFavoritePostRepository favoritePostRepository,
-    required IUserRepository userRepository,
+    required FavoritePostRepository favoritePostRepository,
+    required UserRepository userRepository,
   }) : super(PostFavoriteInfoState.initial()) {
     on<PostFavoriteInfoFetched>(
       (event, emit) async {

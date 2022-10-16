@@ -5,13 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class WikiCacher implements IWikiRepository {
+class WikiCacher implements WikiRepository {
   const WikiCacher({
     required this.cache,
     required this.repo,
   });
 
-  final IWikiRepository repo;
+  final WikiRepository repo;
   final Cacher<String, Wiki?> cache;
 
   @override

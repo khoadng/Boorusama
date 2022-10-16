@@ -5,9 +5,9 @@ import 'package:mocktail/mocktail.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
-class MockAccountRepo extends Mock implements IAccountRepository {}
+class MockAccountRepo extends Mock implements AccountRepository {}
 
-IAccountRepository mockAccountRepo({
+AccountRepository mockAccountRepo({
   Account? account,
 }) {
   final repo = MockAccountRepo();
@@ -15,14 +15,14 @@ IAccountRepository mockAccountRepo({
   return repo;
 }
 
-IAccountRepository emptyAccountRepo() => mockAccountRepo();
-IAccountRepository fakeAccountRepo() => mockAccountRepo(
+AccountRepository emptyAccountRepo() => mockAccountRepo();
+AccountRepository fakeAccountRepo() => mockAccountRepo(
       account: Account.create('foo', 'bar', 0),
     );
 
-class MockUserRepo extends Mock implements IUserRepository {}
+class MockUserRepo extends Mock implements UserRepository {}
 
-IUserRepository mockUserRepo(List<String> tags) {
+UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();
   when(() => repo.getUserById(any())).thenAnswer(
     (_) async => User(
