@@ -9,8 +9,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'settings_tile.dart';
