@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
 
 class PostVoteInfoState extends Equatable {
   const PostVoteInfoState({
@@ -101,7 +101,7 @@ class Voter extends Equatable {
 class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
   PostVoteInfoBloc({
     required PostVoteRepository postVoteRepository,
-    required IUserRepository userRepository,
+    required UserRepository userRepository,
   }) : super(PostVoteInfoState.initial()) {
     on<PostVoteInfoFetched>(
       (event, emit) async {
@@ -158,7 +158,7 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
 }
 
 Future<List<Voter>> _createVoters(
-  IUserRepository userRepository,
+  UserRepository userRepository,
   List<PostVote> votes,
 ) async {
   final voteMap = {for (final vote in votes) vote.userId: vote};

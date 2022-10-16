@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'user.dart';
 
-abstract class IUserRepository {
+abstract class UserRepository {
   Future<List<User>> getUsersByIdStringComma(
     String idComma, {
     CancelToken? cancelToken,

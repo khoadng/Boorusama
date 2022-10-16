@@ -9,7 +9,7 @@ class BlacklistedTagsRepository {
     this.accountRepository,
   );
 
-  final IUserRepository userRepository;
+  final UserRepository userRepository;
   final AccountRepository accountRepository;
   List<String>? _cache;
 

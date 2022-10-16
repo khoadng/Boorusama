@@ -10,8 +10,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post_favorite_info_bl
 import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -39,7 +39,7 @@ class PostStatsTile extends StatelessWidget {
                 create: (context) => PostFavoriteInfoBloc(
                   favoritePostRepository:
                       context.read<FavoritePostRepository>(),
-                  userRepository: context.read<IUserRepository>(),
+                  userRepository: context.read<UserRepository>(),
                 )..add(PostFavoriteInfoFetched(
                     postId: post.id,
                     refresh: true,
@@ -76,7 +76,7 @@ class PostStatsTile extends StatelessWidget {
               builder: (context) => BlocProvider(
                 create: (context) => PostVoteInfoBloc(
                   postVoteRepository: context.read<PostVoteRepository>(),
-                  userRepository: context.read<IUserRepository>(),
+                  userRepository: context.read<UserRepository>(),
                 )..add(PostVoteInfoFetched(
                     postId: post.id,
                     refresh: true,

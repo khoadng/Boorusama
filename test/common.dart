@@ -20,9 +20,9 @@ AccountRepository fakeAccountRepo() => mockAccountRepo(
       account: Account.create('foo', 'bar', 0),
     );
 
-class MockUserRepo extends Mock implements IUserRepository {}
+class MockUserRepo extends Mock implements UserRepository {}
 
-IUserRepository mockUserRepo(List<String> tags) {
+UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();
   when(() => repo.getUserById(any())).thenAnswer(
     (_) async => User(

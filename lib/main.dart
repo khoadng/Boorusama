@@ -244,7 +244,7 @@ void main() async {
 
                   final commentRepo = CommentRepositoryApi(api, accountRepo);
 
-                  final userRepo = UserRepository(
+                  final userRepo = UserRepositoryApi(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);
 
                   final noteRepo = NoteRepositoryApi(api);
@@ -358,8 +358,7 @@ void main() async {
                           value: searchHistoryRepo),
                       RepositoryProvider<IConfig>.value(value: config),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
-                      RepositoryProvider<IUserRepository>.value(
-                          value: userRepo),
+                      RepositoryProvider<UserRepository>.value(value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
                           value: blacklistedTagRepo),
                       RepositoryProvider<ArtistRepository>.value(
