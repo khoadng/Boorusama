@@ -14,8 +14,8 @@ List<PostVote> parsePostVote(HttpResponse<dynamic> value) => parse(
       converter: (item) => PostVoteDto.fromJson(item),
     ).map(postVoteDtoToPostVote).toList();
 
-class PostVoteApiRepository implements PostVoteRepository {
-  const PostVoteApiRepository({
+class PostVoteApiRepositoryApi implements PostVoteRepository {
+  const PostVoteApiRepositoryApi({
     required Api api,
     required AccountRepository accountRepo,
   })  : _api = api,

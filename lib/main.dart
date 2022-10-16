@@ -282,8 +282,8 @@ void main() async {
                     endpoint: state.dio.options.baseUrl,
                   );
 
-                  final postVoteRepo =
-                      PostVoteApiRepository(api: api, accountRepo: accountRepo);
+                  final postVoteRepo = PostVoteApiRepositoryApi(
+                      api: api, accountRepo: accountRepo);
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
