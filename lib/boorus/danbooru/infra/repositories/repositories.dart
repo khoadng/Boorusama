@@ -6,7 +6,7 @@ export 'artists/artists.dart';
 export 'autocomplete/autocomplete.dart';
 export 'autocomplete/autocomplete_repository_api.dart';
 export 'comments/comment_repository_api.dart';
-export 'comments/comment_vote_repository.dart';
+export 'comments/comment_vote_repository_api.dart';
 export 'comments/comments.dart';
 export 'favorites/favorite_post_repository.dart';
 export 'favorites/favorites.dart';
