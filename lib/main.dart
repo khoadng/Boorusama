@@ -275,7 +275,7 @@ void main() async {
                   final commentVoteRepo =
                       CommentVoteApiRepository(api, accountRepo);
 
-                  final wikiRepo = WikiRepository(api);
+                  final wikiRepo = WikiRepositoryApi(api);
 
                   final poolDescriptionRepo = PoolDescriptionRepositoryApi(
                     dio: state.dio,
@@ -367,8 +367,7 @@ void main() async {
                           value: autocompleteRepo),
                       RepositoryProvider<RelatedTagRepository>.value(
                           value: relatedTagRepo),
-                      RepositoryProvider<IWikiRepository>.value(
-                          value: wikiRepo),
+                      RepositoryProvider<WikiRepository>.value(value: wikiRepo),
                       RepositoryProvider<ArtistCommentaryRepository>.value(
                           value: artistCommentaryRepo),
                       RepositoryProvider<PostVoteRepository>.value(

@@ -31,4 +31,4 @@ export 'tags/tag_repository_api.dart';
 export 'tags/tags.dart';
 export 'users/user_repository.dart';
 export 'users/users.dart';
-export 'wiki/wiki_repository.dart';
+export 'wiki/wiki_repository_api.dart';
