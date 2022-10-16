@@ -27,7 +27,7 @@ export 'settings/settings.dart';
 export 'tags/popular_search_repository.dart';
 export 'tags/related_tag_repository.dart';
 export 'tags/tag_cacher.dart';
-export 'tags/tag_repository.dart';
+export 'tags/tag_repository_api.dart';
 export 'tags/tags.dart';
 export 'users/user_repository.dart';
 export 'users/users.dart';

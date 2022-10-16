@@ -233,7 +233,7 @@ void main() async {
                   final popularSearchRepo = PopularSearchRepository(
                       accountRepository: accountRepo, api: api);
 
-                  final tagRepo = TagRepository(api, accountRepo);
+                  final tagRepo = TagRepositoryApi(api, accountRepo);
 
                   final artistRepo = ArtistRepositoryApi(api: api);
 
@@ -343,7 +343,7 @@ void main() async {
 
                   return MultiRepositoryProvider(
                     providers: [
-                      RepositoryProvider<ITagRepository>.value(value: tagRepo),
+                      RepositoryProvider<TagRepository>.value(value: tagRepo),
                       RepositoryProvider<ProfileRepository>.value(
                           value: profileRepo),
                       RepositoryProvider<FavoritePostRepository>.value(

@@ -174,7 +174,7 @@ final postDetailHandler = Handler(handlerFunc: (
       )
     ],
     child: RepositoryProvider.value(
-      value: RepositoryProvider.of<ITagRepository>(context),
+      value: context.read<TagRepository>(),
       child: Builder(
         builder: (context) =>
             BlocListener<SliverPostGridBloc, SliverPostGridState>(

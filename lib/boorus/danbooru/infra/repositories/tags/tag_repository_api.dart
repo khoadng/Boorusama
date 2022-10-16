@@ -13,8 +13,8 @@ List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
       converter: (item) => Tag.fromJson(item),
     ).toList();
 
-class TagRepository implements ITagRepository {
-  TagRepository(
+class TagRepositoryApi implements TagRepository {
+  TagRepositoryApi(
     this._api,
     this._accountRepository,
   );

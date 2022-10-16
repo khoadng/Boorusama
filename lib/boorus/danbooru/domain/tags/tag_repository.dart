@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
 
-abstract class ITagRepository {
+abstract class TagRepository {
   Future<List<Tag>> getTagsByNamePattern(String stringPattern, int page);
   Future<List<Tag>> getTagsByNameComma(
     String stringComma,
