@@ -16,8 +16,8 @@ List<Search> parseSearch(HttpResponse<dynamic> value) => parse(
       ),
     );
 
-class PopularSearchRepository implements IPopularSearchRepository {
-  PopularSearchRepository({
+class PopularSearchRepositoryApi implements PopularSearchRepository {
+  PopularSearchRepositoryApi({
     required AccountRepository accountRepository,
     required Api api,
   })  : _accountRepository = accountRepository,

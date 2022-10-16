@@ -230,7 +230,7 @@ void main() async {
                 builder: (context, state) {
                   final api = state.api;
 
-                  final popularSearchRepo = PopularSearchRepository(
+                  final popularSearchRepo = PopularSearchRepositoryApi(
                       accountRepository: accountRepo, api: api);
 
                   final tagRepo = TagRepositoryApi(api, accountRepo);

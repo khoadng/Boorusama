@@ -24,7 +24,7 @@ export 'profile/profile.dart';
 export 'profile/profile_repository_api.dart';
 export 'settings/setting_repository_hive.dart';
 export 'settings/settings.dart';
-export 'tags/popular_search_repository.dart';
+export 'tags/popular_search_repository_api.dart';
 export 'tags/related_tag_repository.dart';
 export 'tags/tag_cacher.dart';
 export 'tags/tag_repository_api.dart';
