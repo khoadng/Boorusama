@@ -241,7 +241,7 @@ void main() async {
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
 
-                  final commentRepo = CommentRepository(api, accountRepo);
+                  final commentRepo = CommentRepositoryApi(api, accountRepo);
 
                   final userRepo = UserRepository(
                       api, accountRepo, tagInfo.defaultBlacklistedTags);

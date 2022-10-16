@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'comment.dart';
 
-abstract class ICommentRepository {
+abstract class CommentRepository {
   Future<List<Comment>> getCommentsFromPostId(
     int postId, {
     CancelToken? cancelToken,

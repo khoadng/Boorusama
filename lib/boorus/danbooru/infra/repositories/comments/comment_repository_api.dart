@@ -16,8 +16,8 @@ List<Comment> parseComment(HttpResponse<dynamic> value) => parse(
       converter: (item) => CommentDto.fromJson(item),
     ).map(commentDtoToComment).toList();
 
-class CommentRepository implements ICommentRepository {
-  CommentRepository(
+class CommentRepositoryApi implements CommentRepository {
+  CommentRepositoryApi(
     Api api,
     AccountRepository accountRepository,
   )   : _api = api,
