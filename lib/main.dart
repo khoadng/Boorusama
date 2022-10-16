@@ -34,6 +34,7 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
@@ -262,7 +263,7 @@ void main() async {
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
-                  final autocompleteRepo = AutocompleteRepository(
+                  final autocompleteRepo = AutocompleteRepositoryApi(
                     api: api,
                     accountRepository: accountRepo,
                   );

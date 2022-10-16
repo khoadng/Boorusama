@@ -4,8 +4,7 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete_dto.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
@@ -66,8 +65,8 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .where((e) => e != AutocompleteData.empty)
     .toList();
 
-class AutocompleteRepository {
-  const AutocompleteRepository({
+class AutocompleteRepositoryApi implements AutocompleteRepository {
+  const AutocompleteRepositoryApi({
     required Api api,
     required AccountRepository accountRepository,
   })  : _accountRepository = accountRepository,
@@ -76,6 +75,7 @@ class AutocompleteRepository {
   final Api _api;
   final AccountRepository _accountRepository;
 
+  @override
   Future<List<AutocompleteData>> getAutocomplete(String query) async =>
       _accountRepository
           .get()
