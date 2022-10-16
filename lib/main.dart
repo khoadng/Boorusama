@@ -259,7 +259,7 @@ void main() async {
 
                   final poolRepo = PoolRepositoryCacher(
                     cache: LruCacher(capacity: 15),
-                    repo: PoolRepository(api, accountRepo),
+                    repo: PoolRepositoryApi(api, accountRepo),
                   );
 
                   final blacklistedTagRepo =

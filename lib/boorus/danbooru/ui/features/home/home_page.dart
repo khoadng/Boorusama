@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings_state.da
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';

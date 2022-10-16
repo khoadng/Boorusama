@@ -12,8 +12,8 @@ List<Pool> parsePool(HttpResponse<dynamic> value) => parse(
       converter: (item) => PoolDto.fromJson(item),
     ).map(poolDtoToPool).toList();
 
-class PoolRepository {
-  PoolRepository(
+class PoolRepositoryApi implements PoolRepository {
+  PoolRepositoryApi(
     this._api,
     this._accountRepository,
   );
@@ -22,6 +22,7 @@ class PoolRepository {
   final AccountRepository _accountRepository;
   final _limit = 20;
 
+  @override
   Future<List<Pool>> getPools(
     int page, {
     PoolCategory? category,
@@ -42,6 +43,7 @@ class PoolRepository {
           )
           .then(parsePool));
 
+  @override
   Future<List<Pool>> getPoolsByPostId(int postId) =>
       _accountRepository.get().then((account) => _api
           .getPoolsFromPostId(
