@@ -41,7 +41,7 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
@@ -128,7 +128,7 @@ void main() async {
 
   final searchHistoryBox =
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
-  final searchHistoryRepo = SearchHistoryRepository(
+  final searchHistoryRepo = SearchHistoryRepositoryHive(
     db: searchHistoryBox,
   );
 
@@ -353,7 +353,7 @@ void main() async {
                           value: settingRepository),
                       RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
-                      RepositoryProvider<ISearchHistoryRepository>.value(
+                      RepositoryProvider<SearchHistoryRepository>.value(
                           value: searchHistoryRepo),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
                       RepositoryProvider<UserRepository>.value(value: userRepo),

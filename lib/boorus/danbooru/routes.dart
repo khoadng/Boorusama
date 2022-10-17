@@ -27,7 +27,7 @@ import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dar
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
@@ -208,7 +208,7 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
           create: (context) => SearchHistoryCubit(
               searchHistoryRepository:
-                  context.read<ISearchHistoryRepository>())),
+                  context.read<SearchHistoryRepository>())),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
@@ -219,7 +219,7 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
           create: (context) => SearchHistorySuggestionsBloc(
               searchHistoryRepository:
-                  context.read<ISearchHistoryRepository>())),
+                  context.read<SearchHistoryRepository>())),
       BlocProvider(
           create: (context) => SearchBloc(
               initial: const SearchState(displayState: DisplayState.options))),
