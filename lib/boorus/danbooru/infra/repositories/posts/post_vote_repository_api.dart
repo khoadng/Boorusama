@@ -6,7 +6,6 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_vote_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -78,7 +77,7 @@ PostVote postVoteDtoToPostVote(PostVoteDto d) {
   return PostVote(
     id: d.id ?? 0,
     postId: d.postId ?? 0,
-    userId: UserId(d.userId ?? 0),
+    userId: d.userId ?? 0,
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),
     score: d.score ?? 0,

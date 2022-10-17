@@ -234,7 +234,7 @@ class _VoterViewState extends State<VoterView> {
                     (context, index) {
                       final voter = state.upvoters[index];
                       return InfoTile(
-                        title: voter.user.name.value,
+                        title: voter.user.name,
                         level: voter.user.level,
                       );
                     },
@@ -338,7 +338,7 @@ class _FavoriterViewState extends State<FavoriterView> {
                       final user = state.favoriters[index];
                       return ListTile(
                         title: Text(
-                          user.name.value,
+                          user.name,
                           style: TextStyle(color: Color(user.level.hexColor)),
                         ),
                       );

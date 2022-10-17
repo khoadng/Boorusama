@@ -164,7 +164,7 @@ Future<List<Voter>> _createVoters(
   final voteMap = {for (final vote in votes) vote.userId: vote};
 
   final users = await userRepository
-      .getUsersByIdStringComma(votes.map((e) => e.userId.value).join(','));
+      .getUsersByIdStringComma(votes.map((e) => e.userId).join(','));
 
   final voters =
       users.map((user) => Voter.create(user, voteMap[user.id]!)).toList();

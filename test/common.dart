@@ -26,9 +26,9 @@ UserRepository mockUserRepo(List<String> tags) {
   final repo = MockUserRepo();
   when(() => repo.getUserById(any())).thenAnswer(
     (_) async => User(
-      id: const UserId(0),
+      id: 0,
       level: UserLevel.member,
-      name: const Username('User'),
+      name: 'User',
       blacklistedTags: tags,
     ),
   );

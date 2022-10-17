@@ -5,7 +5,6 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
@@ -85,7 +84,7 @@ CommentVote commentVoteDtoToCommentVote(CommentVoteDto d) {
   return CommentVote(
     id: d.id ?? 0,
     commentId: d.commentId ?? 0,
-    userId: UserId(d.userId ?? 0),
+    userId: d.userId ?? 0,
     score: d.score ?? 0,
     createdAt: d.createdAt ?? DateTime.now(),
     updatedAt: d.updatedAt ?? DateTime.now(),

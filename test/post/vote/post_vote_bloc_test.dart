@@ -7,14 +7,13 @@ import 'package:test/test.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
 PostVote postVote(int score) => PostVote(
       id: 0,
       postId: 0,
-      userId: const UserId(0),
+      userId: 0,
       createdAt: DateTime.now(),
       updatedAt: DateTime.now(),
       score: score,

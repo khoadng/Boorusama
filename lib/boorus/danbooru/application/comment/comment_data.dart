@@ -92,13 +92,13 @@ CommentData commentDataFrom(
 ) =>
     CommentData(
         id: comment.id,
-        authorName: user?.name.value ?? 'User',
+        authorName: user?.name ?? 'User',
         authorLevel: user?.level ?? UserLevel.member,
         body: comment.body,
         createdAt: comment.createdAt,
         updatedAt: comment.updatedAt,
         score: comment.score,
-        isSelf: comment.creator?.id.value == account.id,
+        isSelf: comment.creator?.id == account.id,
         recentlyUpdated: comment.createdAt != comment.updatedAt,
         voteState: _getVoteState(comment, votes),
         voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,

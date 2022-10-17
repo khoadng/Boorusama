@@ -20,7 +20,7 @@ class PostVote extends Equatable {
   factory PostVote.empty() => PostVote(
         id: -1,
         postId: -1,
-        userId: const UserId(-1),
+        userId: -1,
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         score: 0,

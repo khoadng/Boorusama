@@ -84,9 +84,9 @@ User userDtoToUser(
 ) {
   try {
     return User(
-      id: UserId(d.id!),
+      id: d.id!,
       level: intToUserLevel(d.level!),
-      name: Username(d.name!),
+      name: d.name!,
       //TODO: need to find a way to distinguish between other user and current user.
       blacklistedTags: d.blacklistedTags == null
           ? defaultBlacklistedTags

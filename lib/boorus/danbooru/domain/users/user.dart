@@ -17,9 +17,9 @@ class User extends Equatable {
   });
 
   factory User.placeholder() => const User(
-        id: UserId(0),
+        id: 0,
         level: UserLevel.member,
-        name: Username('User'),
+        name: 'User',
         blacklistedTags: [],
       );
 
@@ -32,18 +32,7 @@ class User extends Equatable {
   List<Object?> get props => [id, level, name, blacklistedTags];
 }
 
-class Username extends Equatable {
-  const Username(this.value);
-  final String value;
-  @override
-  List<Object?> get props => [value];
-}
-
-class UserId extends Equatable {
-  const UserId(this.value);
-  final int value;
-  @override
-  List<Object?> get props => [value];
-}
+typedef UserId = int;
+typedef Username = String;
 
 List<String> tagStringToListTagString(String str) => str.split('\n');
