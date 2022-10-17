@@ -12,7 +12,7 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
   final AccountRepository _accountRepository;
 
   @override
-  Future<ArtistCommentaryDto> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {
@@ -35,13 +35,13 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
       }
 
       return commentaries.isNotEmpty
-          ? commentaries.first
+          ? commentaries.first.toEntity()
           : ArtistCommentaryDto(
               createdAt: DateTime.now(),
               id: -1,
               postId: -1,
               updatedAt: DateTime.now(),
-            );
+            ).toEntity();
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
@@ -50,7 +50,7 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
           id: -1,
           postId: -1,
           updatedAt: DateTime.now(),
-        );
+        ).toEntity();
       } else {
         throw Exception("Failed to get artist's comment for $postId");
       }

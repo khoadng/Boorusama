@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 
 abstract class ArtistCommentaryRepository {
-  Future<ArtistCommentaryDto> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   });

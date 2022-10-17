@@ -15,7 +15,7 @@ class ArtistCommentaryCacher implements ArtistCommentaryRepository {
   final ArtistCommentaryRepository repo;
 
   @override
-  Future<ArtistCommentaryDto> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {
