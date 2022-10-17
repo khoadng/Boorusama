@@ -6,7 +6,7 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/application/exception.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
@@ -49,22 +49,8 @@ class PostRepositoryApi implements PostRepository {
             ),
           )
           .then(parsePost)
-          .catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-            final response = (obj as DioError).response;
-            if (response == null) {
-              throw Exception('Failed to get popular posts for $date');
-            }
-            if (response.statusCode == 500) {
-              throw DatabaseTimeOut(
-                  'Your search took too long to execute and was cancelled.');
-            } else {
-              throw Exception('Failed to get popular posts for $date');
-            }
-          default:
-        }
-        return <Post>[];
+          .catchError((e) {
+        handleError(e);
       });
 
   @override
@@ -82,22 +68,8 @@ class PostRepositoryApi implements PostRepository {
             ),
           )
           .then(parsePost)
-          .catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-            final response = (obj as DioError).response;
-            if (response == null) {
-              throw Exception('Failed to get popular posts for $date');
-            }
-            if (response.statusCode == 500) {
-              throw DatabaseTimeOut(
-                  'Your search took too long to execute and was cancelled.');
-            } else {
-              throw Exception('Failed to get popular posts for $date');
-            }
-          default:
-        }
-        return <Post>[];
+          .catchError((e) {
+        handleError(e);
       });
 
   @override
@@ -120,22 +92,8 @@ class PostRepositoryApi implements PostRepository {
             ),
           )
           .then(parsePost)
-          .catchError((Object obj) {
-        switch (obj.runtimeType) {
-          case DioError:
-            final response = (obj as DioError).response;
-            if (response == null) {
-              throw Exception('Failed to get popular posts for $date');
-            }
-            if (response.statusCode == 500) {
-              throw DatabaseTimeOut(
-                  'Your search took too long to execute and was cancelled.');
-            } else {
-              throw Exception('Failed to get popular posts for $date');
-            }
-          default:
-        }
-        return <Post>[];
+          .catchError((e) {
+        handleError(e);
       });
 
   @override
@@ -160,25 +118,8 @@ class PostRepositoryApi implements PostRepository {
             ),
           )
           .then(parsePost)
-          .catchError((Object e) {
-        if (e is DioError) {
-          if (e.type == DioErrorType.cancel) {
-            // Cancel token triggered, skip this request
-            return <Post>[];
-          } else if (e.response == null) {
-            throw Exception('Failed to get posts for $tags');
-          } else if (e.response!.statusCode == 422) {
-            throw CannotSearchMoreThanTwoTags(
-                "${e.response!.data['message']} Upgrade your account to search for more tags at once.");
-          } else if (e.response!.statusCode == 500) {
-            throw DatabaseTimeOut(
-                'Your search took too long to execute and was cancelled.');
-          } else {
-            throw Exception('Failed to get posts for $tags');
-          }
-        } else {
-          throw Exception('Failed to get posts for $tags');
-        }
+          .catchError((e) {
+        handleError(e);
       });
 
   @override
@@ -193,18 +134,4 @@ class PostRepositoryApi implements PostRepository {
             'post[old_tag_string]': '',
           }))
       .then((value) => value.response.statusCode == 200);
-}
-
-class CannotSearchMoreThanTwoTags implements BooruException {
-  CannotSearchMoreThanTwoTags(this.message);
-
-  @override
-  final String message;
-}
-
-class DatabaseTimeOut implements BooruException {
-  DatabaseTimeOut(this.message);
-
-  @override
-  final String message;
 }

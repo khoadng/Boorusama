@@ -66,7 +66,7 @@ PODS:
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry (~> 7.27.0)
+    - Sentry (~> 7.27.1)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -173,7 +173,7 @@ SPEC CHECKSUMS:
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: e5cc87bf736e60f49592f307bdf9e157189298a3
   Sentry: bc644307e2eb6a4c9c55cf117a80b895bb2a25a7
-  sentry_flutter: a8616c994ac18c371aabee21a953cc727c166421
+  sentry_flutter: 649559f0512e00d3f6fc92cf51f74bc2fe68d1d3
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
