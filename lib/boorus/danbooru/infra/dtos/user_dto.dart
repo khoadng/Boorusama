@@ -1,3 +1,6 @@
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+
 class UserDto {
   UserDto({
     required this.id,
@@ -222,4 +225,23 @@ class UserDto {
   final int? positiveFeedbackCount;
   final int? neutralFeedbackCount;
   final int? negativeFeedbackCount;
+}
+
+User userDtoToUser(
+  UserDto d,
+  List<String> defaultBlacklistedTags,
+) {
+  try {
+    return User(
+      id: UserId(d.id!),
+      level: intToUserLevel(d.level!),
+      name: Username(d.name!),
+      //TODO: need to find a way to distinguish between other user and current user.
+      blacklistedTags: d.blacklistedTags == null
+          ? defaultBlacklistedTags
+          : tagStringToListTagString(d.blacklistedTags!),
+    );
+  } catch (e) {
+    throw Exception('fail to parse one of the required field\n $e');
+  }
 }

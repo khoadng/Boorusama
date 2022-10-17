@@ -1,7 +1,8 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'artist_commentary_dto.dart';
+import 'comment_dto.dart';
 
 class PostDto {
   PostDto({

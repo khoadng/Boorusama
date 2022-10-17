@@ -1,5 +1,5 @@
 // Project imports:
-import 'wiki.dart';
+import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 
 class WikiDto {
   WikiDto({

@@ -1,6 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'user_dto.dart';
 
 class CommentDto {
   const CommentDto({

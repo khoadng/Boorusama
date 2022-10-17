@@ -1,5 +1,5 @@
 // Project imports:
-import 'favorite_dto.dart';
+import '../../infra/dtos/favorite_dto.dart';
 
 abstract class FavoritePostRepository {
   Future<bool> addToFavorites(int postId);
