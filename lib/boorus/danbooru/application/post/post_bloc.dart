@@ -1,5 +1,8 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -38,6 +41,7 @@ class PostState extends Equatable {
     required this.page,
     required this.hasMore,
     this.exceptionMessage,
+    required this.id,
   });
 
   factory PostState.initial() => const PostState(
@@ -46,6 +50,7 @@ class PostState extends Equatable {
         filteredPosts: [],
         page: 1,
         hasMore: true,
+        id: 0,
       );
 
   final List<PostData> posts;
@@ -55,6 +60,9 @@ class PostState extends Equatable {
   final bool hasMore;
   final String? exceptionMessage;
 
+  //TODO: quick hack to force rebuild...
+  final double id;
+
   PostState copyWith({
     LoadStatus? status,
     List<PostData>? posts,
@@ -62,6 +70,7 @@ class PostState extends Equatable {
     int? page,
     bool? hasMore,
     String? exceptionMessage,
+    double? id,
   }) =>
       PostState(
         status: status ?? this.status,
@@ -70,11 +79,12 @@ class PostState extends Equatable {
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
         exceptionMessage: exceptionMessage ?? this.exceptionMessage,
+        id: id ?? this.id,
       );
 
   @override
   List<Object?> get props =>
-      [status, posts, filteredPosts, page, hasMore, exceptionMessage];
+      [status, posts, filteredPosts, page, hasMore, exceptionMessage, id];
 }
 
 @immutable
@@ -129,123 +139,20 @@ class PostFavoriteUpdated extends PostEvent {
   List<Object?> get props => [postId, favorite];
 }
 
-abstract class PostFetcher {
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  );
-}
+class PostUpdated extends PostEvent {
+  const PostUpdated({
+    required this.post,
+  }) : super();
 
-class PopularPostFetcher implements PostFetcher {
-  const PopularPostFetcher({
-    required this.date,
-    required this.scale,
-  });
-
-  final DateTime date;
-  final TimeScale scale;
+  final Post post;
 
   @override
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPopularPosts(date, page, scale);
-
-    return posts;
-  }
-}
-
-class CuratedPostFetcher implements PostFetcher {
-  const CuratedPostFetcher({
-    required this.date,
-    required this.scale,
-  });
-
-  final DateTime date;
-  final TimeScale scale;
-
-  @override
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getCuratedPosts(date, page, scale);
-
-    return posts;
-  }
-}
-
-class MostViewedPostFetcher implements PostFetcher {
-  const MostViewedPostFetcher({
-    required this.date,
-  });
-
-  final DateTime date;
-
-  @override
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getMostViewedPosts(date);
-
-    return posts;
-  }
-}
-
-class HotPostFetcher implements PostFetcher {
-  const HotPostFetcher();
-
-  @override
-  Future<List<Post>> fetch(IPostRepository repo, int page) async {
-    final posts = await repo.getPosts('order:rank', page);
-
-    return posts;
-  }
-}
-
-class LatestPostFetcher implements PostFetcher {
-  const LatestPostFetcher();
-
-  @override
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPosts('', page);
-
-    return posts;
-  }
-}
-
-class SearchedPostFetcher implements PostFetcher {
-  const SearchedPostFetcher({
-    required this.query,
-  });
-
-  factory SearchedPostFetcher.fromTags(
-    String tags, {
-    PostsOrder? order,
-  }) =>
-      SearchedPostFetcher(query: '$tags ${_postsOrderToString(order)}');
-
-  final String query;
-
-  @override
-  Future<List<Post>> fetch(
-    IPostRepository repo,
-    int page,
-  ) async {
-    final posts = await repo.getPosts(query, page);
-
-    return posts;
-  }
+  List<Object?> get props => [post];
 }
 
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
-    required IPostRepository postRepository,
+    required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required IFavoritePostRepository favoritePostRepository,
     required IAccountRepository accountRepository,
@@ -337,7 +244,33 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         //print('${event.postId}: $old -> ${posts[index].isFavorited}');
       }
     });
+
+    on<PostUpdated>((event, emit) {
+      final index =
+          state.posts.indexWhere((element) => element.post.id == event.post.id);
+      if (index > 0) {
+        final posts = [...state.posts];
+        posts[index] = PostData(
+          post: event.post,
+          isFavorited: state.posts[index].isFavorited,
+        );
+
+        emit(
+          state.copyWith(
+            posts: posts,
+            id: Random().nextDouble(),
+          ),
+        );
+      }
+    });
   }
+
+  factory PostBloc.of(BuildContext context) => PostBloc(
+        postRepository: context.read<PostRepository>(),
+        blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
+        favoritePostRepository: context.read<IFavoritePostRepository>(),
+        accountRepository: context.read<IAccountRepository>(),
+      );
 
   void _emitError(Object error, Emitter emit) {
     if (error is CannotSearchMoreThanTwoTags) {
@@ -356,14 +289,5 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         exceptionMessage: 'search.errors.unknown',
       ));
     }
-  }
-}
-
-String _postsOrderToString(PostsOrder? order) {
-  switch (order) {
-    case PostsOrder.popular:
-      return 'order:favcount';
-    default:
-      return '';
   }
 }

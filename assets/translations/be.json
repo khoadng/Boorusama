@@ -1,0 +1,240 @@
+{
+    "profile": {
+        "profile" : "Профіль",
+        "favorites" : "Любімае",
+        "see_more" : "Прагледзець больш",
+        "user_id" : "ID карыстальніка",
+        "level" : "Узровень акаўнта",
+        "favorites_count" : "Любімае",
+        "comments_count" : "Каментарыі"
+    },
+
+    "login" : {
+        "form" : {
+            "username" : "Імя",
+            "password" : "API ключ",
+            "login" : "Лагін",
+            "greeting" : "Прывітанне!",
+            "cancel" : "Адмена",
+            "open_web_browser" : "Адкрыць у браўзэры",
+            "api_key_instruction" : "1. Ўвайдзіце ў свой рахунак.\n2. Адкрыйце свой профіль\n3. Знайдзіце і скапіруйце свой API ключ у радок для лагіна\n4. ???\n5. Гатова!"
+        },
+        "errors" : {
+            "invalidUsernameOrPassword" : "Няправільнае імя карыстальніка або API ключ",
+            "missingUsername" : "Калі ласка, увядзіце імя карыстальніка",
+            "missingPassword" : "Калі ласка, увядзіце свой API ключ"
+        },
+        "notice" : "Падтрымлівае толькі Danbooru."
+    },
+
+    "network" : {
+        "unavailable" : "Няма доступу да Інтэрнэту"
+    },
+
+    "tag" : {
+        "related" : {
+            "more" : "Больш",
+            "related" : "Звязаныя",
+            "add_to_current_search" : "Дадаць да запыту",
+            "open_wiki" : "Адкрыць wiki"
+        }
+    },
+
+    "post" : {
+        "detail" : {
+            "view": "Прагляд",
+            "slide_show" : {
+                "interval" : "Інтэрвал (секунды)",
+                "skip_anim" : "Прапускаць анімацыю",
+                "ok" : "OK",
+                "cancel" : "Адмена"
+            },
+            "has_parent_notice" : "Малюнак мае бацьку",
+            "has_children_notice" : "Малюнак мае дачэрны малюнак",
+            "size" : "Памер",
+            "resolution" : "Разрашэнне",
+            "rating" : "Рэйтынг",
+            "share" : {
+                "source" : "Падзяліцца спасылкай на першакрыніцу",
+                "booru" : "Падзяліцца спасылкай на сайт",
+                "image" : "Падзяліцца малюнкам"
+            },
+            "copied" : "Скапіравана",
+            "show_original" : "Паказаць арыгінал",
+            "show_translated" : "Паказаць пераклад",
+            "login_required_notice" : "Вы павінны ўвайсці ў акаўнт для здзяйснення дзеяння",
+            "open_wiki" : "Адкрыць wiki",
+            "add_to_blacklist" : "Дадаць у чорны спіс"
+        },
+        "parent_child": {
+            "children_of": "Дачэрны для"
+        },
+        "quick_preview" : {
+            "view_notes" : "Паказаць пераклад тэксту"
+        },
+        "image_fullview" : {
+            "view_original" : "Паглядзець арыгінальны малюнак",
+            "view_resized" : "Паглядзець зменены малюнак"
+        }
+    },
+
+    "comment" : {
+        "comments" : "Каментарыі",
+        "create" : {
+            "hint" : "Каментарый",
+            "loading" : "Пачакайце...",
+            "error": "Непаладка"
+        },
+        "list": {
+            "edit" : "Змяніць",
+            "reply" : "Адказаць",
+            "reply_to" : "Адказаў",
+            "delete" : "Выдаліць",
+            "noComments" : "Яшчэ няма каментарыяў",
+            "last_updated" : "Абноўлена",
+            "send" : "Адправіць"
+        }
+    },
+
+    "explore" : {
+        "latest": "Апошняе",
+        "popular": "Папулярнае",
+        "curated": "Лепшае",
+        "most_viewed": "Самае прагляданае",
+        "see_more" : "Прагледзець больш"
+    },
+
+    "search" : {
+        "errors" : {
+            "generic" : "Нешта пайшло не так",
+            "tag_limit" : "Максімальную колькасць тэгаў. Абновіце свой акаўнт для пашырэння ліміту",
+            "database_timeout" : "Запыт перапынены з-за занадта доўгай апрацоўкі",
+            "unknown" : "Невядомая памылка, паспрабуйце яшчэ раз"
+        },
+        "hint": "Пошук...",
+        "no_result" : "Мы шукалі і там, і тут, але нічога не знайшлі.",
+        "empty" : "Пуста...",
+        "search_options" : "Параметры пошуку",
+        "metatags_notice": "Ліміт тэгаў для пошуку не ўплывае на бясплатныя метатеги.",
+        "history" : {
+            "history" : "Гісторыя",
+            "clear": "Ачысціць"
+        },
+        "trending" : "Trending"
+    },
+
+    "pool" : {
+        "pool" : "Альбом",
+        "pool_gallery" : "Альбомы",
+        "mature_banned_content" : "Дарослы/Заблакаваны кантэнт",
+        "order" : {
+            "recent" : "Нядаўняе",
+            "new" : "Новае",
+            "post_count": "Колькасць прадметаў",
+            "name" : "Імя"
+        },
+        "search" : {
+            "hint": "Пошук альбома"
+        },
+        "detail" : {
+            "last_updated" : "Апошняе абнаўленне"
+        },
+        "item" : {
+            "one": "{} прадмет",
+            "other": "{} прадметаў"
+        } 
+    },
+
+    "settings" : {
+        "settings" : "Настроікі",
+        "app_settings" :"Настроікі прылажэння",
+        "appearance" :  "Пастава",
+        "general" :  "Генеральныя",
+        "information" : "Інфармацыя",
+        "image_grid" : {
+            "image_grid" : "Сетка малюнкаў",
+            "grid_size" : {
+                "grid_size" : "Памер сеткі",
+                "small" : "Маленькая",
+                "medium" : "Сярэдняя",
+                "large" : "Вялікая"
+            },
+            "image_quality" : {
+                "image_quality" : "Якасць малюнка",
+                "high_quality_notice" : "Лепшае якасць малюнка зойме больш часу для загрузкі",
+                "high" : "Высокае",
+                "low" : "Нізкае",
+                "original" : "Арыгінальнае",
+                "automatic" : "Аўтаматычнае"
+            },
+            "spacing" : "Прамежак",
+            "corner_radius" : "Колькасць кутоў"
+        },
+        "image_viewer" : {
+            "image_viewer" : "Прагляд малюнкаў",
+            "full_res_as_default" : "Заўсёды адлюстроўваць поўны малюнак",
+            "full_res_notice" : "Загрузка зойме нейкае час, у залежнасці ад памераў малюнка"
+        },
+        "image_detail" : {
+            "image_detail" : "Дэталі малюнка",
+            "action_bar_display_behavior" : {
+                "action_bar_display_behavior" : "Панэль дзеянняў",
+                "scrolling" : "Дынамічная",
+                "static_at_bottom" : "Статычная"
+            } 
+        },
+        "language" : {
+            "language" : "Мова",
+            "english" : "Англійскі",
+            "russian" : "Рускі",
+            "belarusian" : "Беларускі",
+            "vietnamese" : "В'етнамскі"
+        },
+        "theme" : {
+            "theme" : "Тэма",
+            "dark" : "Цёмная",
+            "light" : "Светлая",
+            "amoled_dark": "AMOLED цёмная" 
+        },
+        "privacy" : {
+            "privacy" : "Прыватнасць",
+            "send_error_data_notice" : "Адпраўляць ананімныя дадзеныя для апрацоўкі памылак"
+        },
+        "safe_mode" : "Бяспечны рэжым"
+    },
+
+    "blacklisted_tags" : {
+        "remove": "Выдаліць",
+        "edit" : "Змяніць",
+        "blacklisted_tags" : "Чорны спіс тэгаў",
+        "load_error" : "Памылка загрузкі чорнага спісу тэгаў",
+        "updated" : "Чорны спіс абноўлены",
+        "limitation_notice" : "Падтрымлівае толькі <b>НЕ</b> аператар і <b>АБО</b> аператар.\n\n Выкарыстанне чорнага спісу з метатегами не працуе ў бягучай версіі."
+    },
+
+    "download" : {
+        "download" : "Скачать",
+        "open_app_settings" : "Адкрыць настройкі",
+        "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў."
+    },
+
+    "rating" : {
+        "rate_request": "Ацаніць прылажэнне",
+        "rate" : "Ацаніць",
+        "cancel" : "Не, дзякуй",
+        "later" : "Можа, пазней",
+        "rationale" : "Калі вам спадабаласе прылажэнне, не маглі б вы ацаніць яго?\nГэта зойме толькі некалькі секунд, і вельмі дапаможа праекту ў развіцці."
+    },
+
+    "sideMenu": {
+        "login" : "Увайсці",
+        "profile" : "Профіль",
+        "settings" : "Настроіць"
+    },
+
+    "dateRange" : {
+        "day" : "Дзень",
+        "week": "Тыдзень",
+        "month" : "Месяц"
+    }
+}

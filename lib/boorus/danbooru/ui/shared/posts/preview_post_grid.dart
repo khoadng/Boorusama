@@ -7,7 +7,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 
 class PreviewPostGrid extends StatelessWidget {
@@ -15,28 +14,17 @@ class PreviewPostGrid extends StatelessWidget {
     Key? key,
     required this.posts,
     required this.imageQuality,
+    required this.onTap,
     this.physics,
   }) : super(key: key);
 
   final List<PostData> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
+  final void Function(int index) onTap;
 
   @override
   Widget build(BuildContext context) {
-    void handleTap(int index) {
-      AppRouter.router.navigateTo(
-        context,
-        '/post/detail',
-        routeSettings: RouteSettings(
-          arguments: [
-            posts,
-            index,
-          ],
-        ),
-      );
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: MediaQuery.removePadding(
@@ -54,7 +42,7 @@ class PreviewPostGrid extends StatelessWidget {
           itemBuilder: (context, index) => ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: GestureDetector(
-              onTap: () => handleTap(index),
+              onTap: () => onTap(index),
               child: CachedNetworkImage(
                 fit: BoxFit.cover,
                 imageUrl: _getImageUrl(

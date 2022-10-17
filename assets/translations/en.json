@@ -23,7 +23,8 @@
             "invalidUsernameOrPassword" : "Invalid username or API key",
             "missingUsername" : "Please enter your username",
             "missingPassword" : "Please enter your API key"
-        }
+        },
+        "notice" : "Only support Danbooru."
     },
 
     "network" : {
@@ -115,10 +116,12 @@
         "no_result" : "We searched far and wide, but no results were found.",
         "empty" : "Such empty",
         "search_options" : "Search options",
+        "metatags_notice": "Free metatags won't count against the tag search limits",
         "history" : {
             "history" : "History",
             "clear": "Clear"
-        }
+        },
+        "trending" : "Trending"
     },
 
     "pool" : {
@@ -185,6 +188,7 @@
             "language" : "Language",
             "english" : "English",
             "russian" : "Russian",
+            "belarusian" : "Belarusian",
             "vietnamese" : "Vietnamese"
         },
         "theme" : {

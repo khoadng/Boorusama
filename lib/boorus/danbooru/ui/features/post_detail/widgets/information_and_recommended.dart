@@ -6,8 +6,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/fetchers/recommend_post_fetcher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/recommended/recommended.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
@@ -23,7 +23,7 @@ class RecommendArtistList extends StatelessWidget {
   }) : super(key: key);
 
   final Post post;
-  final Widget Function(Recommended item)? header;
+  final Widget Function(String item)? header;
   final bool useSeperator;
 
   @override
@@ -31,58 +31,58 @@ class RecommendArtistList extends StatelessWidget {
     if (post.artistTags.isEmpty) return const SizedBox.shrink();
     final screenSize = Screen.of(context).size;
 
-    return BlocProvider(
-      create: (context) => RecommendedArtistPostCubit(
-        postRepository: context.read<IPostRepository>(),
-      )..add(
-          RecommendedPostRequested(
-            amount: screenSize == ScreenSize.large ? 9 : 6,
-            currentPostId: post.id,
-            tags: post.artistTags,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...post.artistTags.map(
+          (tag) => BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                  fetcher: RecommendPostFetcher(
+                tag: tag,
+                postId: post.id,
+                amount: screenSize == ScreenSize.large ? 9 : 6,
+              ))),
+            child: BlocBuilder<PostBloc, PostState>(
+              builder: (context, state) {
+                if (state.status == LoadStatus.success) {
+                  return RecommendPostSection(
+                    header: header?.call(tag) ??
+                        ListTile(
+                          onTap: () => AppRouter.router.navigateTo(
+                            context,
+                            '/artist',
+                            routeSettings: RouteSettings(
+                              arguments: [
+                                tag,
+                                post.normalImageUrl,
+                              ],
+                            ),
+                          ),
+                          title: Text(tag.removeUnderscoreWithSpace()),
+                          trailing:
+                              const Icon(Icons.keyboard_arrow_right_rounded),
+                        ),
+                    posts: state.posts,
+                    onTap: (index) => AppRouter.router.navigateTo(
+                      context,
+                      '/post/detail',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          state.posts,
+                          index,
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
           ),
         ),
-      child: Builder(builder: (context) {
-        return BlocBuilder<RecommendedArtistPostCubit,
-            AsyncLoadState<List<Recommended>>>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              final recommendedItems = state.data!;
-
-              if (recommendedItems.isEmpty) return const SizedBox.shrink();
-
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ...recommendedItems
-                      .map((item) => RecommendPostSection(
-                            header: header?.call(item) ??
-                                ListTile(
-                                  onTap: () => AppRouter.router.navigateTo(
-                                    context,
-                                    '/artist',
-                                    routeSettings: RouteSettings(
-                                      arguments: [
-                                        item.tag,
-                                        post.normalImageUrl,
-                                      ],
-                                    ),
-                                  ),
-                                  title: Text(item.title),
-                                  trailing: const Icon(
-                                      Icons.keyboard_arrow_right_rounded),
-                                ),
-                            posts: item.posts,
-                          ))
-                      .toList(),
-                  if (useSeperator) const Divider(),
-                ],
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        );
-      }),
+      ],
     );
   }
 }
@@ -101,54 +101,56 @@ class RecommendCharacterList extends StatelessWidget {
   Widget build(BuildContext context) {
     if (post.characterTags.isEmpty) return const SizedBox.shrink();
     final screenSize = Screen.of(context).size;
-    return BlocProvider(
-      create: (context) => RecommendedCharacterPostCubit(
-          postRepository: context.read<IPostRepository>())
-        ..add(RecommendedPostRequested(
-          amount: screenSize == ScreenSize.large ? 9 : 6,
-          currentPostId: post.id,
-          tags: post.characterTags.take(3).toList(),
-        )),
-      child: Builder(builder: (context) {
-        return BlocBuilder<RecommendedCharacterPostCubit,
-            AsyncLoadState<List<Recommended>>>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              final recommendedItems = state.data!;
-
-              if (recommendedItems.isEmpty) return const SizedBox.shrink();
-
-              return Column(
-                children: [
-                  ...recommendedItems
-                      .map((item) => RecommendPostSection(
-                            header: ListTile(
-                              onTap: () => AppRouter.router.navigateTo(
-                                context,
-                                '/character',
-                                routeSettings: RouteSettings(
-                                  arguments: [
-                                    item.tag,
-                                    post.normalImageUrl,
-                                  ],
-                                ),
-                              ),
-                              title: Text(item.title),
-                              trailing: const Icon(
-                                  Icons.keyboard_arrow_right_rounded),
-                            ),
-                            posts: item.posts,
-                          ))
-                      .toList(),
-                  if (useSeperator) const Divider(),
-                ],
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        );
-      }),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...post.characterTags.map(
+          (tag) => BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                  fetcher: RecommendPostFetcher(
+                tag: tag,
+                postId: post.id,
+                amount: screenSize == ScreenSize.large ? 9 : 6,
+              ))),
+            child: BlocBuilder<PostBloc, PostState>(
+              builder: (context, state) {
+                if (state.status == LoadStatus.success) {
+                  return RecommendPostSection(
+                    header: ListTile(
+                      onTap: () => AppRouter.router.navigateTo(
+                        context,
+                        '/character',
+                        routeSettings: RouteSettings(
+                          arguments: [
+                            tag,
+                            post.normalImageUrl,
+                          ],
+                        ),
+                      ),
+                      title: Text(tag.removeUnderscoreWithSpace()),
+                      trailing: const Icon(Icons.keyboard_arrow_right_rounded),
+                    ),
+                    posts: state.posts,
+                    onTap: (index) => AppRouter.router.navigateTo(
+                      context,
+                      '/post/detail',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          state.posts,
+                          index,
+                        ],
+                      ),
+                    ),
+                  );
+                } else {
+                  return const SizedBox.shrink();
+                }
+              },
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

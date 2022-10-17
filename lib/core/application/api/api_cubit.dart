@@ -1,5 +1,12 @@
+// Dart imports:
+import 'dart:io';
+import 'dart:math';
+
 // Package imports:
 import 'package:dio/dio.dart';
+import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
+import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
+import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,7 +16,35 @@ import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 import 'package:boorusama/boorus/danbooru/infra/apis/danbooru/danbooru_api.dart';
 
-Dio newDio(String url) => Dio(BaseOptions(baseUrl: url));
+const maxRetry = 7;
+
+List<Duration> exponentialBackoff(int retries) =>
+    [for (var i = 0; i < retries; i += 1) i]
+        .map((count) => pow(2, count))
+        .map((e) => Duration(seconds: e.toInt()))
+        .toList();
+
+Dio dio(Directory dir, String baseUrl) {
+  final dio = Dio(BaseOptions(baseUrl: baseUrl));
+
+  dio.interceptors.add(
+    DioCacheInterceptor(
+        options: CacheOptions(
+      store: HiveCacheStore(dir.path),
+      maxStale: const Duration(days: 7),
+      hitCacheOnErrorExcept: [],
+    )),
+  );
+
+  dio.interceptors.add(RetryInterceptor(
+    dio: dio,
+    logPrint: print,
+    retries: maxRetry,
+    retryDelays: exponentialBackoff(maxRetry),
+  ));
+
+  return dio;
+}
 
 class ApiEndpointState extends Equatable {
   const ApiEndpointState({
@@ -72,10 +107,14 @@ class ApiState extends Equatable {
 class ApiCubit extends Cubit<ApiState> {
   ApiCubit({
     required String defaultUrl,
-  }) : super(ApiState.initial(newDio(defaultUrl)));
+    required Dio Function(String baseUrl) onDioRequest,
+  })  : _onDioRequest = onDioRequest,
+        super(ApiState.initial(onDioRequest(defaultUrl)));
+
+  final Dio Function(String baseUrl) _onDioRequest;
 
   void changeApi(Booru booru) {
-    final dio = newDio(booru.url);
+    final dio = _onDioRequest(booru.url);
     emit(state.copyWith(
       api: Api(dio),
       dio: dio,

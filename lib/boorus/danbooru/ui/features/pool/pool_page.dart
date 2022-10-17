@@ -172,7 +172,7 @@ class _PoolPageState extends State<PoolPage> {
                     BlocProvider(
                       create: (context) => PoolBloc(
                         poolRepository: context.read<PoolRepository>(),
-                        postRepository: context.read<IPostRepository>(),
+                        postRepository: context.read<PostRepository>(),
                       ),
                     ),
                     BlocProvider(
@@ -221,7 +221,8 @@ class PoolOptionsHeader extends StatelessWidget {
             builder: (context, state) {
               return TextButton(
                 style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).textTheme.headline6!.color, backgroundColor: Theme.of(context).cardColor,
+                  foregroundColor: Theme.of(context).textTheme.headline6!.color,
+                  backgroundColor: Theme.of(context).cardColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18),
                   ),

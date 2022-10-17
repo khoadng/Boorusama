@@ -9,15 +9,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
@@ -274,101 +272,148 @@ class _CarouselContent extends StatefulWidget {
   State<_CarouselContent> createState() => _CarouselContentState();
 }
 
-class _CarouselContentState extends State<_CarouselContent>
-    with AutomaticKeepAliveClientMixin {
+class _CarouselContentState extends State<_CarouselContent> {
   Post get post => widget.post.post;
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     final screenSize = Screen.of(context).size;
-    return CustomScrollView(
-      slivers: [
-        SliverList(
-            delegate: SliverChildListDelegate(
-          [
-            RepaintBoundary(child: widget.media),
-            if (screenSize == ScreenSize.small) ...[
-              PoolTiles(post: post),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  InformationSection(post: post),
-                  const Divider(height: 8, thickness: 1),
-                  if (widget.actionBarDisplayBehavior ==
-                      ActionBarDisplayBehavior.scrolling)
-                    RepaintBoundary(
-                      child: ActionBar(
-                        imagePath: widget.imagePath,
-                        postData: widget.post,
-                      ),
-                    ),
-                  const Divider(height: 8, thickness: 1),
-                  ArtistSection(post: post),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: RepaintBoundary(child: PostStatsTile(post: post)),
-                  ),
-                  if (post.hasParentOrChildren)
-                    ParentChildTile(
-                      data: getParentChildData(post),
-                      onTap: (data) => showBarModalBottomSheet(
-                        context: context,
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => PostBloc(
-                                postRepository: context.read<IPostRepository>(),
-                                blacklistedTagsRepository:
-                                    context.read<BlacklistedTagsRepository>(),
-                                favoritePostRepository:
-                                    context.read<IFavoritePostRepository>(),
-                                accountRepository:
-                                    context.read<IAccountRepository>(),
-                              )..add(PostRefreshed(
-                                  tag: data.tagQueryForDataFetching,
-                                  fetcher: SearchedPostFetcher.fromTags(
-                                      data.tagQueryForDataFetching),
-                                )),
-                            )
-                          ],
-                          child:
-                              ParentChildPostPage(parentPostId: data.parentId),
-                        ),
-                      ),
-                    ),
-                  if (!post.hasParentOrChildren)
+    return BlocProvider(
+      create: (context) =>
+          PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
+            ..add(PoolFromPostIdRequested(postId: post.id)),
+      child: CustomScrollView(
+        slivers: [
+          SliverList(
+              delegate: SliverChildListDelegate(
+            [
+              RepaintBoundary(child: widget.media),
+              if (screenSize == ScreenSize.small) ...[
+                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  builder: (context, state) {
+                    return state.status == LoadStatus.success
+                        ? PoolTiles(pools: state.data!)
+                        : const SizedBox.shrink();
+                  },
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    InformationSection(post: post),
                     const Divider(height: 8, thickness: 1),
-                  BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) {
-                      return Theme(
-                        data: Theme.of(context)
-                            .copyWith(dividerColor: Colors.transparent),
-                        child: ExpansionTile(
-                          title: Text('${post.tags.length} tags'),
-                          children: [
-                            SimplePostTagList(post: post),
-                            const SizedBox(height: 8),
-                          ],
+                    if (widget.actionBarDisplayBehavior ==
+                        ActionBarDisplayBehavior.scrolling)
+                      RepaintBoundary(
+                        child: ActionBar(
+                          imagePath: widget.imagePath,
+                          postData: widget.post,
                         ),
-                      );
-                    },
-                  ),
-                  const Divider(height: 8, thickness: 1),
-                  RecommendArtistList(post: post),
-                  RecommendCharacterList(post: post),
-                ],
-              ),
-            ]
-          ],
-        ))
-      ],
+                      ),
+                    const Divider(height: 8, thickness: 1),
+                    ArtistSection(post: post),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: RepaintBoundary(child: PostStatsTile(post: post)),
+                    ),
+                    if (post.hasParentOrChildren)
+                      ParentChildTile(
+                        data: getParentChildData(post),
+                        onTap: (data) => showBarModalBottomSheet(
+                          context: context,
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider(
+                                create: (context) => PostBloc.of(context)
+                                  ..add(PostRefreshed(
+                                    tag: data.tagQueryForDataFetching,
+                                    fetcher: SearchedPostFetcher.fromTags(
+                                        data.tagQueryForDataFetching),
+                                  )),
+                              )
+                            ],
+                            child: ParentChildPostPage(
+                                parentPostId: data.parentId),
+                          ),
+                        ),
+                      ),
+                    if (!post.hasParentOrChildren)
+                      const Divider(height: 8, thickness: 1),
+                    BlocBuilder<ThemeBloc, ThemeState>(
+                      builder: (context, state) {
+                        return Theme(
+                          data: Theme.of(context)
+                              .copyWith(dividerColor: Colors.transparent),
+                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                            builder: (context, detailState) {
+                              final tags = detailState.tags
+                                  .where((e) => e.postId == post.id)
+                                  .toList();
+                              return ExpansionTile(
+                                title: Text('${tags.length} tags'),
+                                controlAffinity:
+                                    ListTileControlAffinity.leading,
+                                // trailing: BlocBuilder<AuthenticationCubit,
+                                //     AuthenticationState>(
+                                //   builder: (context, state) {
+                                //     return state is Authenticated
+                                //         ? IconButton(
+                                //             onPressed: () async {
+                                //               final bloc = context
+                                //                   .read<PostDetailBloc>();
+
+                                //               await showAdaptiveBottomSheet(
+                                //                   context,
+                                //                   expand: true,
+                                //                   builder: (context) =>
+                                //                       BlocProvider.value(
+                                //                         value: bloc,
+                                //                         child: BlocBuilder<
+                                //                             PostDetailBloc,
+                                //                             PostDetailState>(
+                                //                           builder:
+                                //                               (context, state) {
+                                //                             return TagEditView(
+                                //                               post: post,
+                                //                               tags: state.tags
+                                //                                   .where((t) =>
+                                //                                       t.postId ==
+                                //                                       post.id)
+                                //                                   .toList(),
+                                //                             );
+                                //                           },
+                                //                         ),
+                                //                       ));
+                                //             },
+                                //             icon: const Icon(Icons.add),
+                                //           )
+                                //         : const SizedBox.shrink();
+                                // },
+                                // ),
+                                children: [
+                                  SimplePostTagList(
+                                    tags: tags,
+                                  ),
+                                  const SizedBox(height: 8),
+                                ],
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
+                    const Divider(height: 8, thickness: 1),
+                    RecommendArtistList(post: post),
+                    RecommendCharacterList(post: post),
+                  ],
+                ),
+              ]
+            ],
+          ))
+        ],
+      ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => false;
 }
 
 class _LargeLayoutContent extends StatelessWidget {
@@ -429,15 +474,8 @@ class _LargeLayoutContent extends StatelessWidget {
                       body: MultiBlocProvider(
                         providers: [
                           BlocProvider(
-                            create: (context) => PostBloc(
-                              postRepository: context.read<IPostRepository>(),
-                              blacklistedTagsRepository:
-                                  context.read<BlacklistedTagsRepository>(),
-                              favoritePostRepository:
-                                  context.read<IFavoritePostRepository>(),
-                              accountRepository:
-                                  context.read<IAccountRepository>(),
-                            )..add(PostRefreshed(
+                            create: (context) => PostBloc.of(context)
+                              ..add(PostRefreshed(
                                 tag: data.tagQueryForDataFetching,
                                 fetcher: SearchedPostFetcher.fromTags(
                                     data.tagQueryForDataFetching),
@@ -519,7 +557,7 @@ class _LargeLayoutContent extends StatelessWidget {
                     '/artist',
                     routeSettings: RouteSettings(
                       arguments: [
-                        item.tag,
+                        item,
                         post.post.normalImageUrl,
                       ],
                     ),
@@ -533,8 +571,7 @@ class _LargeLayoutContent extends StatelessWidget {
                             style:
                                 TextStyle(color: Theme.of(context).hintColor)),
                         TextSpan(
-                            text: item.tag,
-                            style: const TextStyle(fontSize: 16)),
+                            text: item, style: const TextStyle(fontSize: 16)),
                       ],
                     ),
                   ),

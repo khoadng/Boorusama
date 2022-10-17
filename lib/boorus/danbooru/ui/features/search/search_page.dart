@@ -155,7 +155,7 @@ class _SearchPageState extends State<SearchPage> {
 
               context.read<PostBloc>().add(PostRefreshed(
                     tag: tags,
-                    fetcher: SearchedPostFetcher.fromTags(widget.initialQuery),
+                    fetcher: SearchedPostFetcher.fromTags(tags),
                   ));
               context
                   .read<RelatedTagBloc>()

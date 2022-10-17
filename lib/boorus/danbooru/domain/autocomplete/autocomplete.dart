@@ -42,13 +42,13 @@ class AutocompleteData extends Equatable {
       [label, value, type, category, postCount, level, antecedent];
 }
 
-abstract class AutocompleteCategory {
+abstract class AutocompleteCategory extends Equatable {
   String getName();
   int getIndex();
 }
 
-class PoolCategory implements AutocompleteCategory {
-  const PoolCategory({
+class PoolCategory extends AutocompleteCategory {
+  PoolCategory({
     required this.category,
   });
   final p.PoolCategory category;
@@ -58,16 +58,31 @@ class PoolCategory implements AutocompleteCategory {
 
   @override
   int getIndex() => category.index;
+
+  @override
+  List<Object?> get props => [category];
 }
 
-class TagCategory implements AutocompleteCategory {
-  const TagCategory({
+class TagCategory extends AutocompleteCategory {
+  TagCategory({
     required this.category,
   });
+
+  factory TagCategory.artist() => TagCategory(category: t.TagCategory.artist);
+  factory TagCategory.character() =>
+      TagCategory(category: t.TagCategory.charater);
+  factory TagCategory.copyright() =>
+      TagCategory(category: t.TagCategory.copyright);
+  factory TagCategory.general() => TagCategory(category: t.TagCategory.general);
+  factory TagCategory.meta() => TagCategory(category: t.TagCategory.meta);
+
   final t.TagCategory category;
 
   @override
   String getName() => category.name;
   @override
   int getIndex() => category.index;
+
+  @override
+  List<Object?> get props => [category];
 }

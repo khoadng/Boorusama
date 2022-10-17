@@ -40,7 +40,7 @@ class _LatestViewState extends State<LatestView> {
 
   void _sendRefresh(String tag) => context.read<PostBloc>().add(PostRefreshed(
         tag: tag,
-        fetcher: const LatestPostFetcher(),
+        fetcher: SearchedPostFetcher.fromTags(tag),
       ));
 
   @override

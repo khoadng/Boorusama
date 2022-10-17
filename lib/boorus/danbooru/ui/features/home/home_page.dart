@@ -6,14 +6,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
@@ -56,13 +53,16 @@ class _HomePageState extends State<HomePage> {
           ),
           child: BlocBuilder<SettingsCubit, SettingsState>(
             builder: (context, state) {
-              final latestPostBloc = PostBloc(
-                postRepository: context.read<IPostRepository>(),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(const PostRefreshed(fetcher: LatestPostFetcher()));
+              final latestPostBloc = PostBloc.of(context)
+                ..add(const PostRefreshed(fetcher: LatestPostFetcher()));
+
+              final poolBloc = PoolBloc(
+                poolRepository: context.read<PoolRepository>(),
+                postRepository: context.read<PostRepository>(),
+              )..add(const PoolRefreshed(
+                  category: PoolCategory.series,
+                  order: PoolOrder.latest,
+                ));
 
               return Scaffold(
                 extendBody: true,
@@ -218,17 +218,7 @@ class _HomePageState extends State<HomePage> {
                                   const ExplorePage(),
                                   MultiBlocProvider(
                                     providers: [
-                                      BlocProvider(
-                                        create: (context) => PoolBloc(
-                                          poolRepository:
-                                              context.read<PoolRepository>(),
-                                          postRepository:
-                                              context.read<IPostRepository>(),
-                                        )..add(const PoolRefreshed(
-                                            category: PoolCategory.series,
-                                            order: PoolOrder.latest,
-                                          )),
-                                      ),
+                                      BlocProvider.value(value: poolBloc),
                                     ],
                                     child: const PoolPage(),
                                   ),

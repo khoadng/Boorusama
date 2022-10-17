@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/utils.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
 
@@ -37,7 +38,7 @@ class InformationSection extends StatelessWidget {
                     Text(
                       post.characterTags.isEmpty
                           ? 'Original'
-                          : post.name.characterOnly
+                          : generateCharacterOnlyReadableName(post)
                               .removeUnderscoreWithSpace()
                               .titleCase,
                       overflow: TextOverflow.fade,
@@ -47,7 +48,7 @@ class InformationSection extends StatelessWidget {
                     Text(
                         post.copyrightTags.isEmpty
                             ? 'Original'
-                            : post.name.copyRightOnly
+                            : generateCopyrightOnlyReadableName(post)
                                 .removeUnderscoreWithSpace()
                                 .titleCase,
                         overflow: TextOverflow.fade,

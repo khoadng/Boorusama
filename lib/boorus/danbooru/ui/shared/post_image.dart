@@ -82,9 +82,15 @@ class _PostImageState extends State<PostImage> {
                 color: Theme.of(context).cardColor,
               ),
             ),
-      errorWidget: (context, url, error) =>
-          const Center(child: Icon(Icons.error)),
+      errorWidget: (context, url, error) => Container(
+        decoration: BoxDecoration(
+          borderRadius: widget.borderRadius ?? BorderRadius.circular(8),
+          color: Theme.of(context).cardColor,
+        ),
+        child: const Center(child: Icon(Icons.broken_image_rounded)),
+      ),
       fadeInDuration: const Duration(microseconds: 10),
+      fadeOutDuration: const Duration(microseconds: 500),
     );
   }
 }

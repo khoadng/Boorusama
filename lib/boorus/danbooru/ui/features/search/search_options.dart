@@ -168,8 +168,10 @@ class _SearchOptionsState extends State<SearchOptions>
                                     body: Column(
                                       children: [
                                         InfoContainer(
-                                            contentBuilder: (context) => const Text(
-                                                "Free metatags won't count against the tag search limits")),
+                                            contentBuilder: (context) =>
+                                                const Text(
+                                                        'search.metatags_notice')
+                                                    .tr()),
                                         Expanded(
                                           child: ListView.builder(
                                             itemCount: widget.metatags.length,
@@ -219,7 +221,7 @@ class _SearchOptionsState extends State<SearchOptions>
                 child: Row(
                   children: [
                     Text(
-                      'Trending'.tr().toUpperCase(),
+                      'search.trending'.tr().toUpperCase(),
                       style: Theme.of(context).textTheme.subtitle2!.copyWith(
                             fontWeight: FontWeight.w700,
                           ),

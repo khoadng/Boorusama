@@ -1,10 +1,8 @@
-// Dart imports:
-import 'dart:collection';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -17,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
@@ -24,13 +23,12 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/i_favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/i_search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/autocomplete/autocomplete_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
@@ -50,6 +48,9 @@ import 'ui/features/home/home_page.dart';
 import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/search/search_page.dart';
 
+import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
+    as autocomplete;
+
 final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
@@ -67,16 +68,11 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(
-                  tag: args[0],
-                  fetcher: SearchedPostFetcher.fromTags(args[0]),
-                ))),
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: args[0],
+              fetcher: SearchedPostFetcher.fromTags(args[0]),
+            ))),
       BlocProvider.value(
           value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
     ],
@@ -96,16 +92,11 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..add(PostRefreshed(
-                  tag: args[0],
-                  fetcher: SearchedPostFetcher.fromTags(args[0]),
-                ))),
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: args[0],
+              fetcher: SearchedPostFetcher.fromTags(args[0]),
+            ))),
       BlocProvider.value(
           value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
     ],
@@ -124,16 +115,66 @@ final postDetailHandler = Handler(handlerFunc: (
   final postDatas = args[0] as List<PostData>;
   final index = args[1] as int;
 
-  AutoScrollController? controller;
-  if (args.length == 3) {
-    controller = args[2];
-  }
+  final AutoScrollController? controller = args[2];
+  final PostBloc? postBloc = args[3];
+
+  final tags = postDatas
+      .map((e) => e.post)
+      .map((p) => [
+            ...p.artistTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.artist(),
+                  postId: p.id,
+                )),
+            ...p.characterTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.character(),
+                  postId: p.id,
+                )),
+            ...p.copyrightTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.copyright(),
+                  postId: p.id,
+                )),
+            ...p.generalTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.general(),
+                  postId: p.id,
+                )),
+            ...p.metaTags.map((e) => PostDetailTag(
+                  name: e,
+                  category: autocomplete.TagCategory.meta(),
+                  postId: p.id,
+                )),
+          ])
+      .expand((e) => e)
+      .toList();
+
   return MultiBlocProvider(
     providers: [
       BlocProvider(create: (context) => SliverPostGridBloc()),
       BlocProvider.value(value: context.read<AuthenticationCubit>()),
       BlocProvider.value(value: context.read<ApiEndpointCubit>()),
       BlocProvider.value(value: context.read<ThemeBloc>()),
+      BlocProvider(
+        create: (context) => PostDetailBloc(
+          postRepository: context.read<PostRepository>(),
+          tags: tags,
+          onPostUpdated: (postId, tag, category) {
+            if (postBloc == null) return;
+
+            final posts = postDatas.where((e) => e.post.id == postId).toList();
+            if (posts.isEmpty) return;
+
+            postBloc.add(PostUpdated(
+                post: _newPost(
+              posts.first.post,
+              tag,
+              category,
+            )));
+          },
+        ),
+      )
     ],
     child: RepositoryProvider.value(
       value: RepositoryProvider.of<ITagRepository>(context),
@@ -171,14 +212,7 @@ final postSearchHandler = Handler(handlerFunc: (
           create: (context) => SearchHistoryCubit(
               searchHistoryRepository:
                   context.read<ISearchHistoryRepository>())),
-      BlocProvider(
-          create: (context) => PostBloc(
-                postRepository: context.read<IPostRepository>(),
-                blacklistedTagsRepository:
-                    context.read<BlacklistedTagsRepository>(),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )),
+      BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
           create: (context) => TagSearchBloc(
@@ -262,25 +296,27 @@ final poolDetailHandler =
   final args = context!.settings!.arguments as List;
   final pool = args[0] as Pool;
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-          create: (context) => PoolDetailCubit(
-                ids: Queue.from(pool.postIds.reversed),
-                postRepository: RepositoryProvider.of<IPostRepository>(context),
-                favoritePostRepository: context.read<IFavoritePostRepository>(),
-                accountRepository: context.read<IAccountRepository>(),
-              )..load()),
-      BlocProvider.value(
-          value: context.read<PoolDescriptionBloc>()
-            ..add(PoolDescriptionFetched(poolId: pool.id))),
-      BlocProvider(
-          create: (context) => NoteBloc(
-              noteRepository: RepositoryProvider.of<INoteRepository>(context))),
-    ],
-    child: PoolDetailPage(
-      pool: pool,
-    ),
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+              value: PoolDescriptionBloc(
+            endpoint: state.booru.url,
+            poolDescriptionRepository:
+                context.read<PoolDescriptionRepository>(),
+          )..add(PoolDescriptionFetched(poolId: pool.id))),
+          BlocProvider(
+              create: (context) => NoteBloc(
+                  noteRepository:
+                      RepositoryProvider.of<INoteRepository>(context))),
+        ],
+        child: PoolDetailPage(
+          pool: pool,
+          postIds: QueueList.from(pool.postIds),
+        ),
+      );
+    },
   );
 });
 
@@ -294,19 +330,12 @@ final favoritesHandler =
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => PostBloc(
-                    postRepository:
-                        RepositoryProvider.of<IPostRepository>(context),
-                    blacklistedTagsRepository:
-                        context.read<BlacklistedTagsRepository>(),
-                    favoritePostRepository:
-                        context.read<IFavoritePostRepository>(),
-                    accountRepository: context.read<IAccountRepository>(),
-                  )..add(PostRefreshed(
-                      tag: 'ordfav:$username',
-                      fetcher: SearchedPostFetcher.fromTags(
-                        'ordfav:$username',
-                      )))),
+              create: (context) => PostBloc.of(context)
+                ..add(PostRefreshed(
+                    tag: 'ordfav:$username',
+                    fetcher: SearchedPostFetcher.fromTags(
+                      'ordfav:$username',
+                    )))),
         ],
         child: FavoritesPage(
           username: username,
@@ -327,3 +356,32 @@ final blacklistedTagsHandler =
     child: const BlacklistedTagsPage(),
   );
 });
+
+Post _newPost(Post post, String tag, TagCategory category) {
+  if (category == TagCategory.artist) {
+    return post.copyWith(
+      artistTags: [...post.artistTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.copyright) {
+    return post.copyWith(
+      copyrightTags: [...post.copyrightTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.charater) {
+    return post.copyWith(
+      characterTags: [...post.characterTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.meta) {
+    return post.copyWith(
+      metaTags: [...post.metaTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else {
+    return post.copyWith(
+      generalTags: [...post.generalTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  }
+}

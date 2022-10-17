@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fluro/fluro.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
 
 @immutable
@@ -39,4 +41,25 @@ class AppRouter {
           handler: blacklistedTagsHandler,
           transitionType: TransitionType.material);
   }
+}
+
+void goToDetailPage({
+  required BuildContext context,
+  required List<PostData> posts,
+  required int initialIndex,
+  AutoScrollController? scrollController,
+  PostBloc? postBloc,
+}) {
+  AppRouter.router.navigateTo(
+    context,
+    '/post/detail',
+    routeSettings: RouteSettings(
+      arguments: [
+        posts,
+        initialIndex,
+        scrollController,
+        postBloc,
+      ],
+    ),
+  );
 }

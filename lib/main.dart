@@ -25,9 +25,6 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_c
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/explore/hot_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -65,14 +62,12 @@ import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart'
-    hide PoolCategory;
-
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [
   Locale('en', ''),
   Locale('vi', ''),
   Locale('ru', ''),
+  Locale('be', ''),
 ];
 
 void main() async {
@@ -135,9 +130,6 @@ void main() async {
     db: searchHistoryBox,
   );
 
-  final autocompleteBox = await Hive.openBox<String>('autocomplete');
-  final autocompleteHttpCacher = AutocompleteHttpCacher(box: autocompleteBox);
-
   final config = DanbooruConfig();
   final booruFactory = BooruFactory.from(await loadBooruList());
   final packageInfo = PackageInfoProvider(await getPackageInfo());
@@ -148,6 +140,8 @@ void main() async {
       await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
 
   final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
+
+  final tempPath = await getTemporaryDirectory();
 
   //TODO: this notification is only used for download feature
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -170,6 +164,7 @@ void main() async {
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
   setLocaleMessages('ru', RuMessages());
+  setLocaleMessages('be', RuMessages());
 
   void run() {
     runApp(
@@ -197,6 +192,7 @@ void main() async {
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,
+                  onDioRequest: (baseUrl) => dio(tempPath, baseUrl),
                 ),
               ),
               BlocProvider(
@@ -242,7 +238,7 @@ void main() async {
                   final profileRepo = ProfileRepository(
                       accountRepository: accountRepo, api: api);
 
-                  final postRepo = PostRepository(api, accountRepo);
+                  final postRepo = PostRepositoryApi(api, accountRepo);
 
                   final commentRepo = CommentRepository(api, accountRepo);
 
@@ -258,20 +254,17 @@ void main() async {
                     repo: ArtistCommentaryRepository(api, accountRepo),
                   );
 
-                  final poolRepo = PoolRepository(api, accountRepo);
+                  final poolRepo = PoolRepositoryCacher(
+                    cache: LruCacher(capacity: 15),
+                    repo: PoolRepository(api, accountRepo),
+                  );
 
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);
 
-                  final autocompleteRepo = AutocompleteCacheRepository(
-                    cacher: LruCacher<String, List<AutocompleteData>>(
-                      capacity: 10,
-                    ),
-                    repo: AutocompleteRepository(
-                      api: api,
-                      accountRepository: accountRepo,
-                      cache: autocompleteHttpCacher,
-                    ),
+                  final autocompleteRepo = AutocompleteRepository(
+                    api: api,
+                    accountRepository: accountRepo,
                   );
 
                   final relatedTagRepo = RelatedTagApiRepository(api);
@@ -345,14 +338,6 @@ void main() async {
                     repo: noteRepo,
                   ));
 
-                  final poolDescriptionBloc = PoolDescriptionBloc(
-                    endpoint: state.dio.options.baseUrl,
-                    poolDescriptionRepository: PoolDescriptionCacher(
-                      cache: LruCacher(capacity: 100),
-                      repo: poolDescriptionRepo,
-                    ),
-                  );
-
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<ITagRepository>.value(value: tagRepo),
@@ -366,8 +351,7 @@ void main() async {
                           value: settingRepository),
                       RepositoryProvider<INoteRepository>.value(
                           value: noteRepo),
-                      RepositoryProvider<IPostRepository>.value(
-                          value: postRepo),
+                      RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<ISearchHistoryRepository>.value(
                           value: searchHistoryRepo),
                       RepositoryProvider<IConfig>.value(value: config),
@@ -388,6 +372,8 @@ void main() async {
                           value: artistCommentaryRepo),
                       RepositoryProvider<PostVoteRepository>.value(
                           value: postVoteRepo),
+                      RepositoryProvider<PoolDescriptionRepository>.value(
+                          value: poolDescriptionRepo),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -407,13 +393,13 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
-                        BlocProvider.value(value: poolDescriptionBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
                           BlocListener<AuthenticationCubit,
                               AuthenticationState>(
                             listener: (context, state) {
+                              //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
                               } else if (state is Unauthenticated) {
@@ -432,40 +418,7 @@ void main() async {
                             },
                           ),
                         ],
-                        child: BlocBuilder<BlacklistedTagsBloc,
-                            BlacklistedTagsState>(
-                          buildWhen: (previous, current) =>
-                              current.status == LoadStatus.success &&
-                              previous.blacklistedTags !=
-                                  current.blacklistedTags,
-                          builder: (context, state) {
-                            final mostViewedCubit = MostViewedCubit(
-                              postRepository: postRepo,
-                              blacklistedTagsRepository: blacklistedTagRepo,
-                            )..getMostViewed();
-                            final popularCubit = PopularCubit(
-                              postRepository: postRepo,
-                              blacklistedTagsRepository: blacklistedTagRepo,
-                            )..getPopular();
-                            final curatedCubit = CuratedCubit(
-                              postRepository: postRepo,
-                              blacklistedTagsRepository: blacklistedTagRepo,
-                            )..getCurated();
-                            final hotCubit = HotCubit(
-                              postRepository: postRepo,
-                              blacklistedTagsRepository: blacklistedTagRepo,
-                            )..getHot();
-                            return MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(value: mostViewedCubit),
-                                BlocProvider.value(value: popularCubit),
-                                BlocProvider.value(value: curatedCubit),
-                                BlocProvider.value(value: hotCubit),
-                              ],
-                              child: const App(),
-                            );
-                          },
-                        ),
+                        child: const App(),
                       ),
                     ),
                   );

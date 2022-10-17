@@ -168,15 +168,57 @@ class Post extends Equatable {
   final int totalComments;
   final ArtistCommentary? artistCommentary;
 
-  double get aspectRatio => width / height;
+  Post copyWith({
+    List<String>? copyrightTags,
+    List<String>? characterTags,
+    List<String>? artistTags,
+    List<String>? generalTags,
+    List<String>? metaTags,
+    List<String>? tags,
+    String? format,
+    DateTime? lastCommentAt,
+    String? normalImageUrl,
+    String? fullImageUrl,
+    int? upScore,
+    int? downScore,
+    int? favCount,
+    bool? hasParent,
+    bool? hasChildren,
+  }) =>
+      Post(
+        id: id,
+        previewImageUrl: previewImageUrl,
+        normalImageUrl: normalImageUrl ?? this.normalImageUrl,
+        fullImageUrl: fullImageUrl ?? this.fullImageUrl,
+        copyrightTags: copyrightTags ?? this.copyrightTags,
+        characterTags: characterTags ?? this.characterTags,
+        artistTags: artistTags ?? this.artistTags,
+        generalTags: generalTags ?? this.generalTags,
+        metaTags: metaTags ?? this.metaTags,
+        tags: tags ?? this.tags,
+        width: width,
+        height: height,
+        format: format ?? this.format,
+        lastCommentAt: lastCommentAt ?? this.lastCommentAt,
+        source: source,
+        createdAt: createdAt,
+        score: score,
+        upScore: upScore ?? this.upScore,
+        downScore: downScore ?? this.downScore,
+        favCount: favCount ?? this.favCount,
+        uploaderId: uploaderId,
+        rating: rating,
+        fileSize: fileSize,
+        pixivId: pixivId,
+        isBanned: isBanned,
+        hasChildren: hasChildren ?? this.hasChildren,
+        hasParent: hasParent ?? this.hasParent,
+        hasLarge: hasLarge,
+        comments: comments,
+        totalComments: totalComments,
+      );
 
-  PostName get name {
-    return PostName(
-      artistTags: artistTags.join(' '),
-      characterTags: characterTags.join(' '),
-      copyrightTags: copyrightTags.join(' '),
-    );
-  }
+  double get aspectRatio => width / height;
 
   bool get isVideo {
     //TODO: handle other kind of video format
