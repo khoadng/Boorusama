@@ -1,6 +1,8 @@
 // Package imports:
-import 'package:boorusama/core/domain/error.dart';
 import 'package:equatable/equatable.dart';
+
+// Project imports:
+import 'package:boorusama/core/domain/error.dart';
 
 Future<void> tryAsync<T extends Object?>({
   required Future<T> Function() action,

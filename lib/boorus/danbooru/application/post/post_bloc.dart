@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/core/domain/error.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/error.dart';
 
 enum PostsOrder {
   popular,
@@ -156,6 +156,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
+    double Function()? stateIdGenerator,
   }) : super(PostState.initial()) {
     on<PostFetched>(
       (event, emit) async {
@@ -167,27 +168,35 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
-            final blacklisted =
-                await blacklistedTagsRepository.getBlacklistedTags();
-            final postDatas = await createPostData(
-                favoritePostRepository, posts, accountRepository);
-            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+            try {
+              final blacklisted =
+                  await blacklistedTagsRepository.getBlacklistedTags();
+              final postDatas = await createPostData(
+                  favoritePostRepository, posts, accountRepository);
+              final filteredPosts = filterBlacklisted(postDatas, blacklisted);
 
-            emit(
-              state.copyWith(
-                status: LoadStatus.success,
-                posts: [
-                  ...state.posts,
-                  ...filter(postDatas, blacklisted),
-                ],
-                filteredPosts: [
-                  ...state.filteredPosts,
-                  ...filteredPosts,
-                ],
-                page: state.page + 1,
-                hasMore: posts.isNotEmpty,
-              ),
-            );
+              emit(
+                state.copyWith(
+                  status: LoadStatus.success,
+                  posts: [
+                    ...state.posts,
+                    ...filter(postDatas, blacklisted),
+                  ],
+                  filteredPosts: [
+                    ...state.filteredPosts,
+                    ...filteredPosts,
+                  ],
+                  page: state.page + 1,
+                  hasMore: posts.isNotEmpty,
+                ),
+              );
+            } catch (e) {
+              if (e is BooruError) {
+                _emitError(e, emit);
+              } else {
+                _emitError(BooruError(error: e), emit);
+              }
+            }
           },
         );
       },
@@ -266,7 +275,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(
           state.copyWith(
             posts: posts,
-            id: Random().nextDouble(),
+            id: stateIdGenerator?.call() ?? Random().nextDouble(),
           ),
         );
       }
