@@ -6,7 +6,7 @@ export 'favorites/favorites.dart';
 export 'notes/notes.dart';
 export 'pool/pool.dart';
 export 'posts/posts.dart';
-export 'profile/profile.dart';
+export 'profiles/profiles.dart';
 export 'settings/settings.dart';
 export 'tags/tags.dart';
 export 'users/users.dart';

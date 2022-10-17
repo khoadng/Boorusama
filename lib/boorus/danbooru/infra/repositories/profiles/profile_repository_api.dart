@@ -5,13 +5,14 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/profile.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
+import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 
 class ProfileRepositoryApi implements ProfileRepository {
-  ProfileRepositoryApi(
-      {required AccountRepository accountRepository, required Api api})
-      : _api = api,
+  ProfileRepositoryApi({
+    required AccountRepository accountRepository,
+    required Api api,
+  })  : _api = api,
         _accountRepository = accountRepository;
 
   final AccountRepository _accountRepository;
@@ -33,7 +34,7 @@ class ProfileRepositoryApi implements ProfileRepository {
         value = await _api.getProfile(account.username, account.apiKey,
             cancelToken: cancelToken);
       }
-      return Profile.fromJson(value.response.data);
+      return profileDtoToProfile(ProfileDto.fromJson(value.response.data));
     } on DioError catch (e) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
@@ -45,4 +46,13 @@ class ProfileRepositoryApi implements ProfileRepository {
   }
 }
 
-class InvalidUsernameOrPassword implements Exception {}
+Profile profileDtoToProfile(ProfileDto d) => Profile(
+      id: d.id,
+      lastLoggedInAt: d.lastLoggedInAt,
+      name: d.name,
+      level: d.level,
+      favoriteCount: d.favoriteCount,
+      levelString: d.levelString,
+      commentCount: d.commentCount,
+      inviterId: d.inviterId,
+    );

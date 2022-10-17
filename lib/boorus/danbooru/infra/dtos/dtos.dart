@@ -8,6 +8,7 @@ export 'note_dto.dart';
 export 'pool_dto.dart';
 export 'post_dto.dart';
 export 'post_vote_dto.dart';
+export 'profile_dto.dart';
 export 'related_tag_dto.dart';
 export 'user_dto.dart';
 export 'wiki_dto.dart';
