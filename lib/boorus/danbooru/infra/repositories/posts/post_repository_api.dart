@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -99,11 +98,8 @@ class PostRepositoryApi implements PostRepository {
   @override
   Future<List<Post>> getPosts(
     String tags,
-    int page, {
-    int limit = 50,
-    CancelToken? cancelToken,
-    bool skipFavoriteCheck = false,
-  }) =>
+    int page,
+  ) =>
       _accountRepository
           .get()
           .then(
@@ -113,8 +109,7 @@ class PostRepositoryApi implements PostRepository {
               page,
               tags,
               _postParams,
-              limit,
-              cancelToken: cancelToken,
+              _limit,
             ),
           )
           .then(parsePost)
