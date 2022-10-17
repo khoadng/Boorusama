@@ -6,12 +6,13 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Tag> parseTag(HttpResponse<dynamic> value) => parse(
       value: value,
-      converter: (item) => Tag.fromJson(item),
-    ).toList();
+      converter: (item) => TagDto.fromJson(item),
+    ).map(tagDtoToTag).toList();
 
 class TagRepositoryApi implements TagRepository {
   TagRepositoryApi(
@@ -71,3 +72,10 @@ class TagRepositoryApi implements TagRepository {
     }
   }
 }
+
+Tag tagDtoToTag(TagDto d) => Tag(
+      name: d.name ?? '',
+      category: TagCategory.values[d.category ?? 0],
+      postCount:
+          d.postCount != null ? PostCountType(d.postCount!) : PostCountType(0),
+    );

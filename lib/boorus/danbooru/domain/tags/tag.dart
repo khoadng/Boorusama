@@ -1,34 +1,35 @@
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/post_count_type.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tag_category.dart';
+import 'post_count_type.dart';
+import 'tag_category.dart';
 
 typedef PostCount = int;
 
-class Tag {
-  Tag(this._name, this._category, this._postCount);
-
-  factory Tag.fromJson(Map<String, dynamic> json) {
-    return Tag(
-      json['name'],
-      TagCategory.values[json['category']],
-      PostCountType(json['post_count']),
-    );
-  }
+class Tag extends Equatable {
+  const Tag({
+    required this.name,
+    required this.category,
+    required this.postCount,
+  });
 
   factory Tag.empty() => Tag(
-        '',
-        TagCategory.invalid_,
-        PostCountType(0),
+        name: '',
+        category: TagCategory.invalid_,
+        postCount: PostCountType(0),
       );
-  final String _name;
-  final TagCategory _category;
-  final PostCountType _postCount;
 
-  String get displayName => _name.replaceAll('_', ' ');
-  String get rawName => _name;
-  PostCountType get postCount => _postCount;
-  TagCategory get category => _category;
+  final String name;
+  final TagCategory category;
+  final PostCountType postCount;
+
+  String get displayName => name.replaceAll('_', ' ');
+  String get rawName => name;
 
   @override
-  String toString() => '$rawName (${_postCount.toString()})';
+  String toString() => '$rawName (${postCount.toString()})';
+
+  @override
+  List<Object?> get props => [name, category, postCount];
 }

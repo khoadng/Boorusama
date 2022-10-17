@@ -1,5 +1,4 @@
 // Package imports:
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -9,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dar
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 bool _isTagType(String? type) => [

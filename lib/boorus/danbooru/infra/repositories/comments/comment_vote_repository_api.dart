@@ -1,11 +1,11 @@
 // Package imports:
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
