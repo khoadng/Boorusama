@@ -9,10 +9,10 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
-List<FavoriteDto> parseFavorite(HttpResponse<dynamic> value) => parse(
+List<Favorite> parseFavorite(HttpResponse<dynamic> value) => parse(
       value: value,
       converter: (item) => FavoriteDto.fromJson(item),
-    );
+    ).map(favoriteDtoToFavorite).toList();
 
 class FavoritePostRepositoryApi implements FavoritePostRepository {
   FavoritePostRepositoryApi(
@@ -81,7 +81,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
   }
 
   @override
-  Future<List<FavoriteDto>> filterFavoritesFromUserId(
+  Future<List<Favorite>> filterFavoritesFromUserId(
     List<int> postIds,
     int userId,
     int limit,
@@ -98,7 +98,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
             ),
           )
           .then(parseFavorite)
-          .catchError((Object obj) => <FavoriteDto>[]);
+          .catchError((Object obj) => <Favorite>[]);
 
   @override
   Future<bool> checkIfFavoritedByUser(
@@ -120,6 +120,12 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
           .catchError((Object obj) => false);
 
   @override
-  Future<List<FavoriteDto>> getFavorites(int postId, int page) =>
+  Future<List<Favorite>> getFavorites(int postId, int page) =>
       _api.getFavorites(postId, page, 100).then(parseFavorite);
 }
+
+Favorite favoriteDtoToFavorite(FavoriteDto d) => Favorite(
+      id: d.id,
+      postId: d.postId,
+      userId: d.userId,
+    );
