@@ -17,7 +17,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/domain/error.dart';
 
 enum PostsOrder {
   popular,
@@ -156,6 +156,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
+    double Function()? stateIdGenerator,
   }) : super(PostState.initial()) {
     on<PostFetched>(
       (event, emit) async {
@@ -167,27 +168,35 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
-            final blacklisted =
-                await blacklistedTagsRepository.getBlacklistedTags();
-            final postDatas = await createPostData(
-                favoritePostRepository, posts, accountRepository);
-            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+            try {
+              final blacklisted =
+                  await blacklistedTagsRepository.getBlacklistedTags();
+              final postDatas = await createPostData(
+                  favoritePostRepository, posts, accountRepository);
+              final filteredPosts = filterBlacklisted(postDatas, blacklisted);
 
-            emit(
-              state.copyWith(
-                status: LoadStatus.success,
-                posts: [
-                  ...state.posts,
-                  ...filter(postDatas, blacklisted),
-                ],
-                filteredPosts: [
-                  ...state.filteredPosts,
-                  ...filteredPosts,
-                ],
-                page: state.page + 1,
-                hasMore: posts.isNotEmpty,
-              ),
-            );
+              emit(
+                state.copyWith(
+                  status: LoadStatus.success,
+                  posts: [
+                    ...state.posts,
+                    ...filter(postDatas, blacklisted),
+                  ],
+                  filteredPosts: [
+                    ...state.filteredPosts,
+                    ...filteredPosts,
+                  ],
+                  page: state.page + 1,
+                  hasMore: posts.isNotEmpty,
+                ),
+              );
+            } catch (e) {
+              if (e is BooruError) {
+                _emitError(e, emit);
+              } else {
+                _emitError(BooruError(error: e), emit);
+              }
+            }
           },
         );
       },
@@ -204,20 +213,28 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
           onSuccess: (posts) async {
-            final blacklisted =
-                await blacklistedTagsRepository.getBlacklistedTags();
-            final postDatas = await createPostData(
-                favoritePostRepository, posts, accountRepository);
-            final filteredPosts = filterBlacklisted(postDatas, blacklisted);
-            emit(
-              state.copyWith(
-                status: LoadStatus.success,
-                posts: filter(postDatas, blacklisted),
-                filteredPosts: filteredPosts,
-                page: 1,
-                hasMore: posts.isNotEmpty,
-              ),
-            );
+            try {
+              final blacklisted =
+                  await blacklistedTagsRepository.getBlacklistedTags();
+              final postDatas = await createPostData(
+                  favoritePostRepository, posts, accountRepository);
+              final filteredPosts = filterBlacklisted(postDatas, blacklisted);
+              emit(
+                state.copyWith(
+                  status: LoadStatus.success,
+                  posts: filter(postDatas, blacklisted),
+                  filteredPosts: filteredPosts,
+                  page: 1,
+                  hasMore: posts.isNotEmpty,
+                ),
+              );
+            } catch (e) {
+              if (e is BooruError) {
+                _emitError(e, emit);
+              } else {
+                _emitError(BooruError(error: e), emit);
+              }
+            }
           },
         );
       },
@@ -258,7 +275,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(
           state.copyWith(
             posts: posts,
-            id: Random().nextDouble(),
+            id: stateIdGenerator?.call() ?? Random().nextDouble(),
           ),
         );
       }
@@ -272,22 +289,42 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         accountRepository: context.read<AccountRepository>(),
       );
 
-  void _emitError(Object error, Emitter emit) {
-    if (error is CannotSearchMoreThanTwoTags) {
-      emit(state.copyWith(
-        status: LoadStatus.failure,
-        exceptionMessage: 'search.errors.tag_limit',
-      ));
-    } else if (error is DatabaseTimeOut) {
-      emit(state.copyWith(
-        status: LoadStatus.failure,
-        exceptionMessage: 'search.errors.database_timeout',
-      ));
-    } else {
-      emit(state.copyWith(
-        status: LoadStatus.failure,
-        exceptionMessage: 'search.errors.unknown',
-      ));
-    }
+  void _emitError(BooruError error, Emitter emit) {
+    final failureState = state.copyWith(status: LoadStatus.failure);
+
+    error.when(
+      appError: (appError) => appError.when(
+        cannotReachServer: () => failureState.copyWith(
+          exceptionMessage: 'Cannot reach server, please check your connection',
+        ),
+        failedToParseJSON: () => failureState.copyWith(
+          exceptionMessage:
+              'Failed to parse data, please report this issue to the developer',
+        ),
+        unknown: () => failureState.copyWith(
+          exceptionMessage: 'generic.errors.unknown',
+        ),
+      ),
+      serverError: (error) {
+        if (error.httpStatusCode == 422) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.tag_limit',
+          ));
+        } else if (error.httpStatusCode == 500) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.database_timeout',
+          ));
+        } else {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.unknown',
+          ));
+        }
+      },
+      unknownError: (_) {
+        emit(failureState.copyWith(
+          exceptionMessage: 'search.errors.unknown',
+        ));
+      },
+    );
   }
 }

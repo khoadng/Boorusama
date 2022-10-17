@@ -169,6 +169,7 @@ class Post extends Equatable {
   final ArtistCommentary? artistCommentary;
 
   Post copyWith({
+    int? id,
     List<String>? copyrightTags,
     List<String>? characterTags,
     List<String>? artistTags,
@@ -186,7 +187,7 @@ class Post extends Equatable {
     bool? hasChildren,
   }) =>
       Post(
-        id: id,
+        id: id ?? this.id,
         previewImageUrl: previewImageUrl,
         normalImageUrl: normalImageUrl ?? this.normalImageUrl,
         fullImageUrl: fullImageUrl ?? this.fullImageUrl,
