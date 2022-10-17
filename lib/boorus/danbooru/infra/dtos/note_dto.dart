@@ -1,6 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
-
 class NoteDto {
   NoteDto({
     required this.id,
@@ -41,19 +38,4 @@ class NoteDto {
   final int postId;
   final String body;
   final int version;
-}
-
-extension NoteDtoX on NoteDto {
-  Note toEntity() {
-    final coord = NoteCoordinate(
-      x: x.toDouble(),
-      y: y.toDouble(),
-      width: width.toDouble(),
-      height: height.toDouble(),
-    );
-    return Note(
-      coordinate: coord,
-      content: body,
-    );
-  }
 }

@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -78,4 +79,16 @@ class CommentVoteApiRepository implements CommentVoteRepository {
           ))
       .then((_) => true)
       .catchError((Object error) => false);
+}
+
+CommentVote commentVoteDtoToCommentVote(CommentVoteDto d) {
+  return CommentVote(
+    id: d.id ?? 0,
+    commentId: d.commentId ?? 0,
+    userId: UserId(d.userId ?? 0),
+    score: d.score ?? 0,
+    createdAt: d.createdAt ?? DateTime.now(),
+    updatedAt: d.updatedAt ?? DateTime.now(),
+    isDeleted: d.isDeleted ?? false,
+  );
 }

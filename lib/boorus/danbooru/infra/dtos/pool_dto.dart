@@ -1,6 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-
 class PoolDto {
   PoolDto({
     this.id,
@@ -44,26 +41,4 @@ class PoolDto {
   final List<int>? postIds;
   final String? category;
   final int? postCount;
-}
-
-Pool poolDtoToPool(PoolDto dto) => Pool(
-      id: dto.id!,
-      postIds: dto.postIds!,
-      category: stringToPoolCategory(dto.category),
-      description: dto.description!,
-      postCount: dto.postCount!,
-      name: dto.name!,
-      createdAt: dto.createdAt!,
-      updatedAt: dto.updatedAt!,
-    );
-
-PoolCategory stringToPoolCategory(String? value) {
-  switch (value) {
-    case 'collection':
-      return PoolCategory.collection;
-    case 'series':
-      return PoolCategory.series;
-    default:
-      return PoolCategory.unknown;
-  }
 }

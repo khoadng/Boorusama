@@ -1,6 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-
 class ArtistDto {
   ArtistDto({
     required this.id,
@@ -32,19 +29,4 @@ class ArtistDto {
   final String groupName;
   final bool isBanned;
   final List<String> otherNames;
-}
-
-extension ArtistDtoX on ArtistDto {
-  Artist toEntity() {
-    return Artist(
-      createdAt: createdAt,
-      id: id,
-      name: name,
-      groupName: groupName,
-      isBanned: isBanned,
-      isDeleted: isDeleted,
-      otherNames: List<String>.from(otherNames),
-      updatedAt: updatedAt,
-    );
-  }
 }

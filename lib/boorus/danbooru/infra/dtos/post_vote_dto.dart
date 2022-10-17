@@ -1,7 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-
 class PostVoteDto {
   PostVoteDto({
     required this.id,
@@ -34,16 +30,4 @@ class PostVoteDto {
   final DateTime? updatedAt;
   final int? score;
   final bool? isDeleted;
-}
-
-PostVote postVoteDtoToPostVote(PostVoteDto d) {
-  return PostVote(
-    id: d.id ?? 0,
-    postId: d.postId ?? 0,
-    userId: UserId(d.userId ?? 0),
-    createdAt: d.createdAt ?? DateTime.now(),
-    updatedAt: d.updatedAt ?? DateTime.now(),
-    score: d.score ?? 0,
-    isDeleted: d.isDeleted ?? false,
-  );
 }

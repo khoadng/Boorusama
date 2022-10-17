@@ -1,7 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
-
 class CommentVoteDto {
   CommentVoteDto({
     this.id,
@@ -34,16 +30,4 @@ class CommentVoteDto {
   final DateTime? createdAt;
   final DateTime? updatedAt;
   final bool? isDeleted;
-}
-
-CommentVote commentVoteDtoToCommentVote(CommentVoteDto d) {
-  return CommentVote(
-    id: d.id ?? 0,
-    commentId: d.commentId ?? 0,
-    userId: UserId(d.userId ?? 0),
-    score: d.score ?? 0,
-    createdAt: d.createdAt ?? DateTime.now(),
-    updatedAt: d.updatedAt ?? DateTime.now(),
-    isDeleted: d.isDeleted ?? false,
-  );
 }

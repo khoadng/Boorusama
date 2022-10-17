@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/users/users.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
@@ -80,4 +82,18 @@ class CommentRepositoryApi implements CommentRepository {
           ))
       .then((_) => true)
       .catchError((Object obj) => false);
+}
+
+Comment commentDtoToComment(CommentDto d) {
+  return Comment(
+    id: d.id ?? 0,
+    score: d.score ?? 0,
+    body: d.body ?? '',
+    postId: d.postId ?? 0,
+    createdAt: d.createdAt ?? DateTime.now(),
+    updatedAt: d.updatedAt ?? DateTime.now(),
+    isDeleted: d.isDeleted ?? false,
+    creator:
+        d.creator == null ? User.placeholder() : userDtoToUser(d.creator!, []),
+  );
 }

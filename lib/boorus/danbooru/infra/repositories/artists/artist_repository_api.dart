@@ -41,3 +41,18 @@ class ArtistRepositoryApi implements ArtistRepository {
     }
   }
 }
+
+extension ArtistDtoX on ArtistDto {
+  Artist toEntity() {
+    return Artist(
+      createdAt: createdAt,
+      id: id,
+      name: name,
+      groupName: groupName,
+      isBanned: isBanned,
+      isDeleted: isDeleted,
+      otherNames: List<String>.from(otherNames),
+      updatedAt: updatedAt,
+    );
+  }
+}

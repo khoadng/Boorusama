@@ -58,3 +58,21 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
     }
   }
 }
+
+ArtistCommentary artistCommentaryDtoToArtistCommentary(ArtistCommentaryDto d) =>
+    ArtistCommentary(
+      originalTitle: d.originalTitle ?? '',
+      originalDescription: d.originalDescription ?? '',
+      translatedTitle: d.translatedTitle ?? '',
+      translatedDescription: d.translatedDescription ?? '',
+    );
+
+extension ArtistCommentaryDtoX on ArtistCommentaryDto {
+  ArtistCommentary toEntity() {
+    return ArtistCommentary(
+        originalTitle: originalTitle ?? '',
+        originalDescription: originalDescription ?? '',
+        translatedTitle: translatedTitle ?? '',
+        translatedDescription: translatedDescription ?? '');
+  }
+}

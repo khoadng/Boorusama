@@ -1,6 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
-
 class WikiDto {
   WikiDto({
     this.id,
@@ -38,17 +35,4 @@ class WikiDto {
   final bool? isLocked;
   final List<String>? otherNames;
   final bool? isDeleted;
-}
-
-Wiki? wikiDtoToWiki(WikiDto d) {
-  try {
-    return Wiki(
-      body: d.body!,
-      id: d.id!,
-      title: d.title!,
-      otherNames: List<String>.from(d.otherNames!),
-    );
-  } catch (e) {
-    return null;
-  }
 }

@@ -1,6 +1,4 @@
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/comments/comment.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'user_dto.dart';
 
 class CommentDto {
@@ -48,18 +46,4 @@ class CommentDto {
   final bool? isDeleted;
   final bool? isSticky;
   final UserDto? creator;
-}
-
-Comment commentDtoToComment(CommentDto d) {
-  return Comment(
-    id: d.id ?? 0,
-    score: d.score ?? 0,
-    body: d.body ?? '',
-    postId: d.postId ?? 0,
-    createdAt: d.createdAt ?? DateTime.now(),
-    updatedAt: d.updatedAt ?? DateTime.now(),
-    isDeleted: d.isDeleted ?? false,
-    creator:
-        d.creator == null ? User.placeholder() : userDtoToUser(d.creator!, []),
-  );
 }

@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -71,4 +72,16 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
 
   @override
   Future<PostVote> upvote(int postId) => _vote(postId, 1);
+}
+
+PostVote postVoteDtoToPostVote(PostVoteDto d) {
+  return PostVote(
+    id: d.id ?? 0,
+    postId: d.postId ?? 0,
+    userId: UserId(d.userId ?? 0),
+    createdAt: d.createdAt ?? DateTime.now(),
+    updatedAt: d.updatedAt ?? DateTime.now(),
+    score: d.score ?? 0,
+    isDeleted: d.isDeleted ?? false,
+  );
 }

@@ -19,3 +19,13 @@ class RelatedTagRepositoryApi implements RelatedTagRepository {
         throw Exception('Failed to get related tags for $query\n\n$obj');
       });
 }
+
+RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
+      query: dto.query,
+      tags: dto.tags
+          .map((e) => RelatedTagItem(
+                tag: e[0] as String,
+                category: intToTagCategory(e[1] as int),
+              ))
+          .toList(),
+    );

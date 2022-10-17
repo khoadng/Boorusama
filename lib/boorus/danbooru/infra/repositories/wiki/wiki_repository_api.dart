@@ -23,3 +23,16 @@ class WikiRepositoryApi implements WikiRepository {
           .then(wikiDtoToWiki)
           .catchError((_) => null);
 }
+
+Wiki? wikiDtoToWiki(WikiDto d) {
+  try {
+    return Wiki(
+      body: d.body!,
+      id: d.id!,
+      title: d.title!,
+      otherNames: List<String>.from(d.otherNames!),
+    );
+  } catch (e) {
+    return null;
+  }
+}

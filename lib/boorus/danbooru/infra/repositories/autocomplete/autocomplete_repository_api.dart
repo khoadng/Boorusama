@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:

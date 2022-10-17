@@ -55,3 +55,25 @@ class PoolRepositoryApi implements PoolRepository {
           )
           .then(parsePool));
 }
+
+Pool poolDtoToPool(PoolDto dto) => Pool(
+      id: dto.id!,
+      postIds: dto.postIds!,
+      category: stringToPoolCategory(dto.category),
+      description: dto.description!,
+      postCount: dto.postCount!,
+      name: dto.name!,
+      createdAt: dto.createdAt!,
+      updatedAt: dto.updatedAt!,
+    );
+
+PoolCategory stringToPoolCategory(String? value) {
+  switch (value) {
+    case 'collection':
+      return PoolCategory.collection;
+    case 'series':
+      return PoolCategory.series;
+    default:
+      return PoolCategory.unknown;
+  }
+}

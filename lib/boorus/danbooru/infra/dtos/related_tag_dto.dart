@@ -1,6 +1,3 @@
-// Project imports:
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-
 class RelatedTagDto {
   const RelatedTagDto({
     required this.query,
@@ -19,13 +16,3 @@ class RelatedTagDto {
   final dynamic category;
   final List<List<dynamic>> tags;
 }
-
-RelatedTag relatedTagDtoToRelatedTag(RelatedTagDto dto) => RelatedTag(
-      query: dto.query,
-      tags: dto.tags
-          .map((e) => RelatedTagItem(
-                tag: e[0] as String,
-                category: intToTagCategory(e[1] as int),
-              ))
-          .toList(),
-    );

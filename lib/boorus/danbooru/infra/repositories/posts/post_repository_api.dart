@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
@@ -130,4 +132,89 @@ class PostRepositoryApi implements PostRepository {
             'post[old_tag_string]': '',
           }))
       .then((value) => value.response.statusCode == 200);
+}
+
+List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
+
+Post postDtoToPost(PostDto dto) {
+  try {
+    if (dto.id == null) {
+      return Post.banned(
+        copyrightTags: splitTag(dto.copyrightTags),
+        characterTags: splitTag(dto.characterTags),
+        artistTags: splitTag(dto.artistTags),
+        generalTags: splitTag(dto.generalTags),
+        metaTags: splitTag(dto.tagsMeta),
+        tags: splitTag(dto.tags),
+        imageWidth: dto.imageWidth.toDouble(),
+        imageHeight: dto.imageHeight.toDouble(),
+        fileExt: dto.fileExt,
+        lastCommentAt: dto.lastCommentedAt,
+        source: ImageSource(dto.source, dto.pixivId),
+        createdAt: dto.createdAt,
+        score: dto.score,
+        upScore: dto.upScore,
+        downScore: dto.downScore,
+        favCount: dto.favCount,
+        uploaderId: dto.uploaderId,
+        rating: mapStringToRating(dto.rating),
+        fileSize: dto.fileSize,
+        pixivId: dto.pixivId,
+        isBanned: dto.isBanned,
+        hasChildren: dto.hasChildren,
+        hasParent: dto.parentId != null,
+        parentId: dto.parentId,
+        hasLarge: dto.hasLarge ?? false,
+      );
+    }
+
+    final comments = dto.comments
+        .map((e) => CommentDto.fromJson(e))
+        .map((e) => commentDtoToComment(e))
+        .where(notDeleted)
+        .toList();
+
+    final artistCommentaryDto = dto.artistCommentary != null
+        ? ArtistCommentaryDto.fromJson(dto.artistCommentary)
+        : null;
+
+    return Post(
+      id: dto.id!,
+      previewImageUrl: dto.previewFileUrl!,
+      normalImageUrl: dto.largeFileUrl!,
+      fullImageUrl: dto.fileUrl!,
+      copyrightTags: splitTag(dto.copyrightTags),
+      characterTags: splitTag(dto.characterTags),
+      artistTags: splitTag(dto.artistTags),
+      generalTags: splitTag(dto.generalTags),
+      metaTags: splitTag(dto.tagsMeta),
+      tags: splitTag(dto.tags),
+      width: dto.imageWidth.toDouble(),
+      height: dto.imageHeight.toDouble(),
+      format: dto.fileExt,
+      lastCommentAt: dto.lastCommentedAt,
+      source: ImageSource(dto.source, dto.pixivId),
+      createdAt: dto.createdAt,
+      score: dto.score,
+      upScore: dto.upScore,
+      downScore: dto.downScore,
+      favCount: dto.favCount,
+      uploaderId: dto.uploaderId,
+      rating: mapStringToRating(dto.rating),
+      fileSize: dto.fileSize,
+      pixivId: dto.pixivId,
+      isBanned: dto.isBanned,
+      hasChildren: dto.hasChildren,
+      hasParent: dto.parentId != null,
+      parentId: dto.parentId,
+      hasLarge: dto.hasLarge ?? false,
+      comments: comments.take(3).toList(),
+      totalComments: comments.length,
+      artistCommentary: artistCommentaryDto != null
+          ? artistCommentaryDtoToArtistCommentary(artistCommentaryDto)
+          : null,
+    );
+  } catch (e) {
+    return Post.empty();
+  }
 }
