@@ -7,7 +7,6 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
-import 'package:boorusama/core/application/exception.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
@@ -135,18 +134,4 @@ class PostRepositoryApi implements PostRepository {
             'post[old_tag_string]': '',
           }))
       .then((value) => value.response.statusCode == 200);
-}
-
-class CannotSearchMoreThanTwoTags implements BooruException {
-  CannotSearchMoreThanTwoTags(this.message);
-
-  @override
-  final String message;
-}
-
-class DatabaseTimeOut implements BooruException {
-  DatabaseTimeOut(this.message);
-
-  @override
-  final String message;
 }

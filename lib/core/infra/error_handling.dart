@@ -4,21 +4,15 @@ import 'package:dio/dio.dart';
 // Project imports:
 import 'package:boorusama/core/domain/error.dart';
 
-void rethrowError(
-  Object error, {
-  required void Function(int? httpStatusCode) handle,
-}) {
+void rethrowError(Object error) {
   if (error is DioError) {
     if (error.response == null) {
-      throw BooruError(
-          type: BooruErrorType.client, error: AppError.cannotReachServer);
+      throw BooruError(error: AppError(type: AppErrorType.cannotReachServer));
     } else {
-      handle(error.response?.statusCode);
+      throw BooruError(
+          error: ServerError(httpStatusCode: error.response?.statusCode));
     }
   } else {
-    throw BooruError(
-      type: BooruErrorType.client,
-      error: AppError.failedToParseJSON,
-    );
+    throw BooruError(error: AppError(type: AppErrorType.failedToParseJSON));
   }
 }
