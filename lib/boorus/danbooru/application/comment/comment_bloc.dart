@@ -20,7 +20,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               emit(state.copyWith(status: LoadStatus.failure)),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (comments) async {
-            final commentList = comments.where(notDeleted);
+            final commentList = comments.where((c) => c.isDeleted == false);
             final votes = await commentVoteRepository
                 .getCommentVotes(commentList.map((e) => e.id).toList());
 

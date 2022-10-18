@@ -22,6 +22,32 @@ class Comment extends Equatable {
     required this.creator,
   });
 
+  factory Comment.emty() => Comment(
+        id: -1,
+        score: 0,
+        body: '',
+        postId: -1,
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        isDeleted: false,
+        creator: null,
+      );
+
+  Comment copyWith({
+    CommentId? id,
+    bool? isDeleted,
+  }) =>
+      Comment(
+        id: id ?? this.id,
+        score: score,
+        body: body,
+        postId: postId,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isDeleted: isDeleted ?? this.isDeleted,
+        creator: creator,
+      );
+
   final CommentId id;
   final CommentScore score;
   final CommentBody body;
@@ -42,8 +68,3 @@ class Comment extends Equatable {
         isDeleted,
       ];
 }
-
-bool notDeleted(Comment comment) => !comment.isDeleted;
-bool hasDeletedCreator(Comment comment) => comment.creator == null;
-bool isCommentValid(Comment comment) =>
-    notDeleted(comment) && !hasDeletedCreator(comment);

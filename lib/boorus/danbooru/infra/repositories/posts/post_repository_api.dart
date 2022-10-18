@@ -4,7 +4,6 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
@@ -171,7 +170,7 @@ Post postDtoToPost(PostDto dto) {
     final comments = dto.comments
         .map((e) => CommentDto.fromJson(e))
         .map((e) => commentDtoToComment(e))
-        .where(notDeleted)
+        .where((c) => !c.isDeleted)
         .toList();
 
     final artistCommentaryDto = dto.artistCommentary != null
