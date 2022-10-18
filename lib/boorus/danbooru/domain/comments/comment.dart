@@ -37,10 +37,11 @@ class Comment extends Equatable {
     CommentId? id,
     bool? isDeleted,
     String? body,
+    int? score,
   }) =>
       Comment(
         id: id ?? this.id,
-        score: score,
+        score: score ?? this.score,
         body: body ?? this.body,
         postId: postId,
         createdAt: createdAt,
