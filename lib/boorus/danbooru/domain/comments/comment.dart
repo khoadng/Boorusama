@@ -27,8 +27,8 @@ class Comment extends Equatable {
         score: 0,
         body: '',
         postId: -1,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(1),
+        updatedAt: DateTime(1),
         isDeleted: false,
         creator: null,
       );
@@ -36,11 +36,12 @@ class Comment extends Equatable {
   Comment copyWith({
     CommentId? id,
     bool? isDeleted,
+    String? body,
   }) =>
       Comment(
         id: id ?? this.id,
         score: score,
-        body: body,
+        body: body ?? this.body,
         postId: postId,
         createdAt: createdAt,
         updatedAt: updatedAt,
