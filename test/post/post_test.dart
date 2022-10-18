@@ -240,4 +240,16 @@ void main() {
       expect(post.hasParentOrChildren, isFalse);
     });
   });
+
+  group('[source]', () {
+    test('pixiv', () {
+      final post = Post.empty().copyWith(pixivId: 1, source: 'foo');
+      expect(post.source, '${pixivLinkUrl}1');
+    });
+
+    test('other', () {
+      final post = Post.empty().copyWith(source: 'foo');
+      expect(post.source, 'foo');
+    });
+  });
 }

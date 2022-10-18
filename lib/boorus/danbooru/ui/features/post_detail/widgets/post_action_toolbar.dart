@@ -239,9 +239,9 @@ enum ShareMode {
 String getShareContent(ShareMode mode, Post post, String endpoint) {
   final booruLink = '${endpoint}posts/${post.id}';
   if (mode == ShareMode.booru) return booruLink;
-  if (post.source.uri == null) return booruLink;
+  if (post.source == null) return booruLink;
 
-  return post.source.uri.toString();
+  return post.source.toString();
 }
 
 class ModalShare extends StatelessWidget {
@@ -268,7 +268,7 @@ class ModalShare extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (post.source.uri != null)
+          if (post.source != null)
             ListTile(
               title: const Text('post.detail.share.source').tr(),
               leading: const FaIcon(FontAwesomeIcons.link),

@@ -22,7 +22,7 @@ Post createPost(int id, List<String> tags) => Post(
       height: 1,
       format: '',
       lastCommentAt: null,
-      source: ImageSource('', null),
+      source: null,
       createdAt: DateTime.now(),
       score: 1,
       upScore: 1,

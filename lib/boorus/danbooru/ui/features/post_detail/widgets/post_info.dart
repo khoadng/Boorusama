@@ -54,7 +54,7 @@ class _ArtistSectionState extends State<ArtistSection> {
                 ? ''
                 : widget.post.artistTags.first,
             title: Text(widget.post.artistTags.join(' ')),
-            uri: widget.post.source.uri,
+            url: widget.post.source,
             actionBuilder: () => artistCommentary.isTranslated
                 ? PopupMenuButton<ArtistCommentaryTranlationState>(
                     padding: EdgeInsets.zero,
@@ -99,13 +99,13 @@ class SourceLink extends StatelessWidget {
   const SourceLink({
     Key? key,
     required this.title,
-    required this.uri,
+    required this.url,
     required this.actionBuilder,
     required this.name,
   }) : super(key: key);
 
   final Widget title;
-  final Uri? uri;
+  final String? url;
   final Widget Function() actionBuilder;
   final String name;
 
@@ -116,18 +116,18 @@ class SourceLink extends StatelessWidget {
       title: title,
       subtitle: InkWell(
         onLongPress: () =>
-            Clipboard.setData(ClipboardData(text: uri.toString()))
+            Clipboard.setData(ClipboardData(text: url.toString()))
                 .then((_) => showSimpleSnackBar(
                       duration: const Duration(seconds: 1),
                       context: context,
                       content: const Text('post.detail.copied').tr(),
                     )),
         onTap: () {
-          if (uri == null) return;
-          launchExternalUrl(uri!);
+          if (url == null) return;
+          launchExternalUrl(Uri.parse(url!));
         },
         child: Text(
-          uri.toString(),
+          url.toString(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: Theme.of(context).textTheme.caption,
