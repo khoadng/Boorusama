@@ -12,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -55,6 +54,7 @@ import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/sentry.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
@@ -433,15 +433,7 @@ void main() async {
     run();
   } else {
     if (settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      await SentryFlutter.init(
-        (options) {
-          options
-            ..dsn =
-                'https://5aebc96ddd7e45d6af7d4e5092884ce3@o1274685.ingest.sentry.io/6469740'
-            ..tracesSampleRate = 0.8;
-        },
-        appRunner: run,
-      );
+      await runWithSentry(run);
     } else {
       run();
     }
