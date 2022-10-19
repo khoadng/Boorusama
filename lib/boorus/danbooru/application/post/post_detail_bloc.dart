@@ -322,22 +322,24 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
     on<PostDetailFavoritesChanged>((event, emit) async {
       var success = false;
+      final originalState = state;
+      final post = state.currentPost;
       emit(state.copyWith(
-        currentPost:
-            PostData(post: state.currentPost.post, isFavorited: event.favorite),
+        currentPost: state.currentPost.copyWith(
+          post: post.post.copyWith(
+            score: post.post.score + (event.favorite ? 1 : -1),
+          ),
+          isFavorited: event.favorite,
+        ),
       ));
       if (event.favorite) {
-        success = await favoritePostRepository
-            .addToFavorites(state.currentPost.post.id);
+        success = await favoritePostRepository.addToFavorites(post.post.id);
       } else {
-        success = await favoritePostRepository
-            .removeFromFavorites(state.currentPost.post.id);
+        success =
+            await favoritePostRepository.removeFromFavorites(post.post.id);
       }
       if (!success) {
-        emit(state.copyWith(
-          currentPost: PostData(
-              post: state.currentPost.post, isFavorited: !event.favorite),
-        ));
+        emit(originalState);
       }
     });
 
@@ -350,9 +352,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final down = post.voteState == VoteState.downvoted
           ? post.post.downScore + 1
           : post.post.downScore;
+
       emit(state.copyWith(
         currentPost: post.copyWith(
           post: post.post.copyWith(
+            score: post.post.score + 1,
             upScore: up,
             downScore: down,
           ),
@@ -379,6 +383,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(state.copyWith(
         currentPost: post.copyWith(
           post: post.post.copyWith(
+            score: post.post.score - 1,
             upScore: up,
             downScore: down,
           ),
