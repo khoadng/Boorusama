@@ -154,8 +154,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             showSlideShowConfig: showSlideShowConfig,
                           ),
                           _MoreActionButton(
-                            currentPostIndex: currentPostIndex,
-                            posts: widget.posts,
+                            onDownload: (downloader) => downloader(post),
                           ),
                         ],
                       ),
@@ -600,37 +599,32 @@ class _LargeLayoutContent extends StatelessWidget {
 class _MoreActionButton extends StatelessWidget {
   const _MoreActionButton({
     Key? key,
-    required this.currentPostIndex,
-    required this.posts,
+    required this.onDownload,
   }) : super(key: key);
 
-  final ValueNotifier<int> currentPostIndex;
-  final List<PostData> posts;
+  final void Function(Function(Post post) downloader) onDownload;
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<int>(
-      valueListenable: currentPostIndex,
-      builder: (context, index, child) => DownloadProviderWidget(
-        builder: (context, download) => PopupMenuButton<PostAction>(
-          onSelected: (value) async {
-            switch (value) {
-              case PostAction.download:
-                download(posts[index].post);
-                break;
-              default:
-            }
-          },
-          itemBuilder: (context) => [
-            PopupMenuItem<PostAction>(
-              value: PostAction.download,
-              child: ListTile(
-                leading: const Icon(Icons.download_rounded),
-                title: const Text('download.download').tr(),
-              ),
+    return DownloadProviderWidget(
+      builder: (context, download) => PopupMenuButton<PostAction>(
+        onSelected: (value) async {
+          switch (value) {
+            case PostAction.download:
+              onDownload(download);
+              break;
+            default:
+          }
+        },
+        itemBuilder: (context) => [
+          PopupMenuItem<PostAction>(
+            value: PostAction.download,
+            child: ListTile(
+              leading: const Icon(Icons.download_rounded),
+              title: const Text('download.download').tr(),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
