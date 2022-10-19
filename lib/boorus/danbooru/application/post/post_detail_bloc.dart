@@ -343,10 +343,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
     on<PostDetailUpvoted>((event, emit) async {
       final post = state.currentPost;
+      final originalState = state;
       if (post.voteState == VoteState.upvoted) return;
-
-      // Handle error!
-      final _ = await postVoteRepository.upvote(post.post.id);
 
       final up = post.post.upScore + 1;
       final down = post.voteState == VoteState.downvoted
@@ -361,14 +359,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           voteState: VoteState.upvoted,
         ),
       ));
+
+      final vote = await postVoteRepository.upvote(post.post.id);
+
+      if (vote == null) {
+        emit(originalState);
+      }
     });
 
     on<PostDetailDownvoted>((event, emit) async {
       final post = state.currentPost;
+      final originalState = state;
       if (post.voteState == VoteState.downvoted) return;
-
-      // Handle error!
-      final _ = await postVoteRepository.downvote(post.post.id);
 
       final down = post.post.downScore - 1;
       final up = post.voteState == VoteState.upvoted
@@ -383,6 +385,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           voteState: VoteState.downvoted,
         ),
       ));
+
+      final vote = await postVoteRepository.downvote(post.post.id);
+
+      if (vote == null) {
+        emit(originalState);
+      }
     });
 
     add(PostDetailIndexChanged(index: initialIndex));

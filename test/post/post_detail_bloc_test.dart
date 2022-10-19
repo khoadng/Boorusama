@@ -566,6 +566,76 @@ void main() {
     );
 
     blocTest<PostDetailBloc, PostDetailState>(
+      'upvote failed -> restore state',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(apiKey: '', username: '', id: 100));
+        when(() => postVoteRepo.upvote(any()))
+            .thenAnswer((invocation) async => null);
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+        reset(postVoteRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailUpvoted()),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.upvoted,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 1,
+              downScore: 0,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.unvote,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
       'downvote',
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
@@ -619,6 +689,76 @@ void main() {
               id: 1,
               upScore: 0,
               downScore: -1,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'downvote failed -> restore state',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(apiKey: '', username: '', id: 100));
+        when(() => postVoteRepo.downvote(any()))
+            .thenAnswer((invocation) async => null);
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+        reset(postVoteRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailDownvoted()),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.downvoted,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: -1,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.unvote,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
             ),
           ),
         ),

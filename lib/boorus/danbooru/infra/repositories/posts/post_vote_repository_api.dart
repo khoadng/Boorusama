@@ -52,7 +52,7 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
           ))
       .then(parsePostVote);
 
-  Future<PostVote> _vote(int postId, int score) => _accountRepository
+  Future<PostVote?> _vote(int postId, int score) => _accountRepository
       .get()
       .then(
         (account) => _api.votePost(
@@ -64,13 +64,15 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
       )
       .then(extractData)
       .then(PostVoteDto.fromJson)
-      .then(postVoteDtoToPostVote);
+      .then(postVoteDtoToPostVote)
+      .then((value) => Future<PostVote?>.value(value))
+      .catchError((e) => null);
 
   @override
-  Future<PostVote> downvote(int postId) => _vote(postId, -1);
+  Future<PostVote?> downvote(int postId) => _vote(postId, -1);
 
   @override
-  Future<PostVote> upvote(int postId) => _vote(postId, 1);
+  Future<PostVote?> upvote(int postId) => _vote(postId, 1);
 }
 
 PostVote postVoteDtoToPostVote(PostVoteDto d) {
