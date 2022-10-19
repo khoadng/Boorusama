@@ -189,13 +189,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget _buildSlider(ScreenSize screenSize) {
     return _CarouselSlider(
       onPageChanged: (index) {
+        currentPostIndex.value = index;
         if (screenSize != ScreenSize.small) {
           context.read<TagBloc>().add(TagFetched(tags: post.tags));
         }
       },
       autoPlay: autoPlay,
       slideShowConfig: slideShowConfig,
-      currentPostIndex: currentPostIndex,
+      initialIndex: currentPostIndex.value,
       posts: widget.posts,
       builder: (post, minimal) {
         final media = PostMediaItem(
@@ -640,7 +641,7 @@ class _CarouselSlider extends StatelessWidget {
     Key? key,
     required this.autoPlay,
     required this.slideShowConfig,
-    required this.currentPostIndex,
+    required this.initialIndex,
     required this.posts,
     required this.builder,
     this.onPageChanged,
@@ -648,7 +649,7 @@ class _CarouselSlider extends StatelessWidget {
 
   final ValueNotifier<bool> autoPlay;
   final ValueNotifier<SlideShowConfiguration> slideShowConfig;
-  final ValueNotifier<int> currentPostIndex;
+  final int initialIndex;
   final List<PostData> posts;
   final Widget Function(PostData post, bool minimal) builder;
   final void Function(int index)? onPageChanged;
@@ -661,32 +662,27 @@ class _CarouselSlider extends StatelessWidget {
           ValueListenableBuilder<SlideShowConfiguration>(
         valueListenable: slideShowConfig,
         builder: (context, config, child) {
-          return ValueListenableBuilder<int>(
-            valueListenable: currentPostIndex,
-            builder: (context, index, _) => CarouselSlider.builder(
-              itemCount: posts.length,
-              itemBuilder: (context, index, realIndex) =>
-                  builder(posts[index], autoPlay),
-              options: CarouselOptions(
-                onPageChanged: (index, reason) {
-                  currentPostIndex.value = index;
+          return CarouselSlider.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index, realIndex) =>
+                builder(posts[index], autoPlay),
+            options: CarouselOptions(
+              onPageChanged: (index, reason) {
+                context
+                    .read<SliverPostGridBloc>()
+                    .add(SliverPostGridItemChanged(index: index));
 
-                  context
-                      .read<SliverPostGridBloc>()
-                      .add(SliverPostGridItemChanged(index: index));
-
-                  onPageChanged?.call(index);
-                },
-                height: MediaQuery.of(context).size.height,
-                viewportFraction: 1,
-                enableInfiniteScroll: false,
-                initialPage: index,
-                autoPlay: autoPlay,
-                autoPlayAnimationDuration: config.skipAnimation
-                    ? const Duration(microseconds: 1)
-                    : const Duration(milliseconds: 600),
-                autoPlayInterval: Duration(seconds: config.interval.toInt()),
-              ),
+                onPageChanged?.call(index);
+              },
+              height: MediaQuery.of(context).size.height,
+              viewportFraction: 1,
+              enableInfiniteScroll: false,
+              initialPage: initialIndex,
+              autoPlay: autoPlay,
+              autoPlayAnimationDuration: config.skipAnimation
+                  ? const Duration(microseconds: 1)
+                  : const Duration(milliseconds: 600),
+              autoPlayInterval: Duration(seconds: config.interval.toInt()),
             ),
           );
         },
