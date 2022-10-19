@@ -37,7 +37,7 @@ enum RecommendType {
   character,
 }
 
-class Recommend {
+class Recommend extends Equatable {
   const Recommend({
     required this.title,
     required this.posts,
@@ -47,6 +47,9 @@ class Recommend {
   final String title;
   final List<PostData> posts;
   final RecommendType type;
+
+  @override
+  List<Object?> get props => [title, posts, type];
 }
 
 class PostDetailState extends Equatable {
@@ -241,7 +244,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           unawaited(favoritePostRepository
               .checkIfFavoritedByUser(account.id, post.post.id)
               .then((fav) {
-            if (fav) {
+            if (!emit.isDone && fav) {
               emit(state.copyWith(
                   currentPost: PostData(post: post.post, isFavorited: true)));
             }

@@ -28,8 +28,13 @@ void main() {
       setUp: () {
         when(() => postRepo.putTag(any(), any()))
             .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
       },
-      tearDown: () => reset(postRepo),
+      tearDown: () {
+        reset(postRepo);
+        reset(accountRepo);
+      },
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
@@ -125,7 +130,101 @@ void main() {
     );
 
     blocTest<PostDetailBloc, PostDetailState>(
+      'index changed with recommends load',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => false);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+        when(() => postRepo.getPosts('foo', any()))
+            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 3)]);
+        when(() => postRepo.getPosts('bar', any()))
+            .thenAnswer((invocation) async => [Post.empty().copyWith(id: 4)]);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(postRepo);
+        reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData(
+            post: Post.empty().copyWith(
+              id: 2,
+              artistTags: ['foo'],
+              characterTags: ['bar'],
+            ),
+            isFavorited: false,
+          ),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 1,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 1,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+          recommends: [
+            Recommend(
+              title: 'foo',
+              posts: [
+                PostData(post: Post.empty().copyWith(id: 3), isFavorited: false)
+              ],
+              type: RecommendType.artist,
+            ),
+          ],
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 1,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+          recommends: [
+            Recommend(
+              title: 'foo',
+              posts: [
+                PostData(post: Post.empty().copyWith(id: 3), isFavorited: false)
+              ],
+              type: RecommendType.artist,
+            ),
+            Recommend(
+              title: 'bar',
+              posts: [
+                PostData(post: Post.empty().copyWith(id: 4), isFavorited: false)
+              ],
+              type: RecommendType.character,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
       'mode changed',
+      setUp: () {
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(accountRepo);
+      },
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
@@ -157,6 +256,13 @@ void main() {
 
     blocTest<PostDetailBloc, PostDetailState>(
       'slide show config changed',
+      setUp: () {
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(accountRepo);
+      },
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
@@ -185,6 +291,202 @@ void main() {
           currentPost:
               PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
         )
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'favorite a post -> success',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => false);
+        when(() => favRepo.addToFavorites(any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'favorite a post -> fail then revert state',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => false);
+        when(() => favRepo.addToFavorites(any()))
+            .thenAnswer((invocation) async => false);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'unfavorite a post -> success',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => favRepo.removeFromFavorites(any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(apiKey: '', username: '', id: 100));
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostDetailFavoritesChanged(favorite: false)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'unfavorite a post -> fail then revert state',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => favRepo.removeFromFavorites(any()))
+            .thenAnswer((invocation) async => false);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostDetailFavoritesChanged(favorite: false)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
+        ),
       ],
     );
   });
