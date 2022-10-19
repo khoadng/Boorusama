@@ -1,5 +1,8 @@
-class SlideShowConfiguration {
-  SlideShowConfiguration({
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+class SlideShowConfiguration extends Equatable {
+  const SlideShowConfiguration({
     required this.interval,
     required this.skipAnimation,
   });
@@ -14,4 +17,7 @@ class SlideShowConfiguration {
         interval: interval ?? this.interval,
         skipAnimation: skipAnimation ?? this.skipAnimation,
       );
+
+  @override
+  List<Object?> get props => [interval, skipAnimation];
 }

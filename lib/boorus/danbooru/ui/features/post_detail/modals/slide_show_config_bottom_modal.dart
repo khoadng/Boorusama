@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:number_inc_dec/number_inc_dec.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/slide_show_configuration.dart';
+import 'package:boorusama/boorus/danbooru/application/post/slide_show_configuration.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -14,11 +14,9 @@ class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({
     Key? key,
     required this.initialConfig,
-    required this.onConfigChanged,
     this.isModal = true,
   }) : super(key: key);
 
-  final void Function(SlideShowConfiguration config) onConfigChanged;
   final SlideShowConfiguration initialConfig;
   final bool isModal;
 
@@ -30,14 +28,6 @@ class SlideShowConfigContainer extends StatefulWidget {
 class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
   final numberEditingController = TextEditingController();
   late var config = ValueNotifier(widget.initialConfig);
-
-  @override
-  void initState() {
-    super.initState();
-    config.addListener(() {
-      widget.onConfigChanged(config.value);
-    });
-  }
 
   @override
   void dispose() {
@@ -110,11 +100,11 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
               alignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(false),
+                  onPressed: () => Navigator.of(context).pop(null),
                   child: const Text('post.detail.slide_show.cancel').tr(),
                 ),
                 ElevatedButton(
-                  onPressed: () => Navigator.of(context).pop(true),
+                  onPressed: () => Navigator.of(context).pop(config.value),
                   child: const Text('post.detail.slide_show.ok').tr(),
                 ),
               ],

@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'slide_show_configuration.dart';
 
 class PostDetailTag extends Equatable {
   const PostDetailTag({
@@ -34,6 +35,7 @@ class PostDetailState extends Equatable {
     required this.currentIndex,
     required this.currentPost,
     this.enableSlideShow = false,
+    required this.slideShowConfig,
   });
 
   factory PostDetailState.initial() => PostDetailState(
@@ -41,12 +43,17 @@ class PostDetailState extends Equatable {
         tags: const [],
         currentIndex: 0,
         currentPost: PostData(post: Post.empty(), isFavorited: false),
+        slideShowConfig: const SlideShowConfiguration(
+          interval: 4,
+          skipAnimation: false,
+        ),
       );
 
   final List<PostDetailTag> tags;
   final int currentIndex;
   final PostData currentPost;
   final bool enableSlideShow;
+  final SlideShowConfiguration slideShowConfig;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -57,6 +64,7 @@ class PostDetailState extends Equatable {
     int? currentIndex,
     PostData? currentPost,
     bool? enableSlideShow,
+    SlideShowConfiguration? slideShowConfig,
   }) =>
       PostDetailState(
         id: id ?? this.id,
@@ -64,11 +72,12 @@ class PostDetailState extends Equatable {
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
+        slideShowConfig: slideShowConfig ?? this.slideShowConfig,
       );
 
   @override
   List<Object?> get props =>
-      [tags, id, currentIndex, currentPost, enableSlideShow];
+      [tags, id, currentIndex, currentPost, enableSlideShow, slideShowConfig];
 }
 
 abstract class PostDetailEvent extends Equatable {
@@ -95,6 +104,17 @@ class PostDetailModeChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [enableSlideshow];
+}
+
+class PostDetailSlideShowConfigChanged extends PostDetailEvent {
+  const PostDetailSlideShowConfigChanged({
+    required this.config,
+  });
+
+  final SlideShowConfiguration config;
+
+  @override
+  List<Object?> get props => [config];
 }
 
 class PostDetailTagUpdated extends PostDetailEvent {
@@ -129,6 +149,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           tags: tags,
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
+          slideShowConfig: PostDetailState.initial().slideShowConfig,
         )) {
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
@@ -169,6 +190,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(
         enableSlideShow: event.enableSlideshow,
+      ));
+    });
+
+    on<PostDetailSlideShowConfigChanged>((event, emit) {
+      emit(state.copyWith(
+        slideShowConfig: event.config,
       ));
     });
   }
