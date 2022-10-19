@@ -101,23 +101,25 @@ class PostRepositoryApi implements PostRepository {
   Future<List<Post>> getPosts(
     String tags,
     int page,
-  ) =>
-      _accountRepository
-          .get()
-          .then(
-            (account) => _api.getPosts(
-              account.username,
-              account.apiKey,
-              page,
-              tags,
-              _postParams,
-              _limit,
-            ),
-          )
-          .then(parsePost)
-          .catchError((e) {
-        handleError(e);
-      });
+  ) {
+    print('request $tags');
+    return _accountRepository
+        .get()
+        .then(
+          (account) => _api.getPosts(
+            account.username,
+            account.apiKey,
+            page,
+            tags,
+            _postParams,
+            _limit,
+          ),
+        )
+        .then(parsePost)
+        .catchError((e) {
+      handleError(e);
+    });
+  }
 
   @override
   Future<List<Post>> getPostsFromIds(List<int> ids) =>

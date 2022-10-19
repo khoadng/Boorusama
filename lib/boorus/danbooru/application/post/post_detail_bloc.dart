@@ -29,6 +29,23 @@ class PostDetailTag extends Equatable {
   List<Object?> get props => [postId, name];
 }
 
+enum RecommendType {
+  artist,
+  character,
+}
+
+class Recommend {
+  const Recommend({
+    required this.title,
+    required this.posts,
+    required this.type,
+  });
+
+  final String title;
+  final List<PostData> posts;
+  final RecommendType type;
+}
+
 class PostDetailState extends Equatable {
   const PostDetailState({
     required this.id,
@@ -37,6 +54,7 @@ class PostDetailState extends Equatable {
     required this.currentPost,
     this.enableSlideShow = false,
     required this.slideShowConfig,
+    required this.recommends,
   });
 
   factory PostDetailState.initial() => PostDetailState(
@@ -48,6 +66,7 @@ class PostDetailState extends Equatable {
           interval: 4,
           skipAnimation: false,
         ),
+        recommends: const [],
       );
 
   final List<PostDetailTag> tags;
@@ -55,6 +74,7 @@ class PostDetailState extends Equatable {
   final PostData currentPost;
   final bool enableSlideShow;
   final SlideShowConfiguration slideShowConfig;
+  final List<Recommend> recommends;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -66,6 +86,7 @@ class PostDetailState extends Equatable {
     PostData? currentPost,
     bool? enableSlideShow,
     SlideShowConfiguration? slideShowConfig,
+    List<Recommend>? recommends,
   }) =>
       PostDetailState(
         id: id ?? this.id,
@@ -74,11 +95,19 @@ class PostDetailState extends Equatable {
         currentPost: currentPost ?? this.currentPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
+        recommends: recommends ?? this.recommends,
       );
 
   @override
-  List<Object?> get props =>
-      [tags, id, currentIndex, currentPost, enableSlideShow, slideShowConfig];
+  List<Object?> get props => [
+        tags,
+        id,
+        currentIndex,
+        currentPost,
+        enableSlideShow,
+        slideShowConfig,
+        recommends,
+      ];
 }
 
 abstract class PostDetailEvent extends Equatable {
@@ -152,6 +181,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
           slideShowConfig: PostDetailState.initial().slideShowConfig,
+          recommends: const [],
         )) {
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
@@ -183,11 +213,42 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<PostDetailIndexChanged>(
-      (event, emit) {
+      (event, emit) async {
         emit(state.copyWith(
           currentIndex: event.index,
           currentPost: posts[event.index],
+          recommends: [],
         ));
+
+        for (final tag in posts[event.index].post.artistTags) {
+          final posts = await postRepository.getPosts(tag, 1);
+          emit(state.copyWith(recommends: [
+            ...state.recommends,
+            Recommend(
+              type: RecommendType.artist,
+              title: tag,
+              posts: posts
+                  .take(6)
+                  .map((e) => PostData(post: e, isFavorited: false))
+                  .toList(),
+            ),
+          ]));
+        }
+
+        for (final tag in posts[event.index].post.characterTags) {
+          final posts = await postRepository.getPosts(tag, 1);
+          emit(state.copyWith(recommends: [
+            ...state.recommends,
+            Recommend(
+              type: RecommendType.character,
+              title: tag,
+              posts: posts
+                  .take(6)
+                  .map((e) => PostData(post: e, isFavorited: false))
+                  .toList(),
+            ),
+          ]));
+        }
       },
       transformer: restartable(),
     );
@@ -203,5 +264,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         slideShowConfig: event.config,
       ));
     });
+
+    add(PostDetailIndexChanged(index: initialIndex));
   }
 }

@@ -200,6 +200,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             post: state.currentPost,
                             imagePath: imagePath,
                             size: screenSize,
+                            recommends: state.recommends,
                           );
                         },
                       ),
@@ -252,6 +253,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                       .settings.actionBarDisplayBehavior,
                                   post: state.currentPost,
                                   key: ValueKey(state.currentIndex),
+                                  recommends: state.recommends,
                                 ),
                               if (settingsState
                                       .settings.actionBarDisplayBehavior ==
@@ -308,12 +310,14 @@ class _CarouselContent extends StatefulWidget {
     required this.imagePath,
     required this.actionBarDisplayBehavior,
     required this.post,
+    required this.recommends,
   }) : super(key: key);
 
   final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
   final PostData post;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
+  final List<Recommend> recommends;
 
   @override
   State<_CarouselContent> createState() => _CarouselContentState();
@@ -450,8 +454,18 @@ class _CarouselContentState extends State<_CarouselContent> {
                       },
                     ),
                     const Divider(height: 8, thickness: 1),
-                    RecommendArtistList(post: post),
-                    RecommendCharacterList(post: post),
+                    RecommendArtistList(
+                      recommends: widget.recommends
+                          .where(
+                              (element) => element.type == RecommendType.artist)
+                          .toList(),
+                    ),
+                    RecommendCharacterList(
+                      recommends: widget.recommends
+                          .where((element) =>
+                              element.type == RecommendType.character)
+                          .toList(),
+                    ),
                   ],
                 ),
               ]
@@ -469,11 +483,13 @@ class _LargeLayoutContent extends StatelessWidget {
     required this.post,
     required this.imagePath,
     required this.size,
+    required this.recommends,
   }) : super(key: key);
 
   final PostData post;
   final ValueNotifier<String?> imagePath;
   final ScreenSize size;
+  final List<Recommend> recommends;
 
   @override
   Widget build(BuildContext context) {
@@ -594,7 +610,9 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               RecommendArtistList(
-                post: post.post,
+                recommends: recommends
+                    .where((element) => element.type == RecommendType.artist)
+                    .toList(),
                 useSeperator: true,
                 header: (item) => ListTile(
                   visualDensity: VisualDensity.compact,
@@ -625,7 +643,9 @@ class _LargeLayoutContent extends StatelessWidget {
                 ),
               ),
               RecommendCharacterList(
-                post: post.post,
+                recommends: recommends
+                    .where((element) => element.type == RecommendType.character)
+                    .toList(),
                 useSeperator: true,
               ),
               const Padding(
