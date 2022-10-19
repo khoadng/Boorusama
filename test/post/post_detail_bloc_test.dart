@@ -1,19 +1,28 @@
 // Package imports:
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:test/scaffolding.dart';
+import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class MockPostRepository extends Mock implements PostRepository {}
 
+class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
+
+class MockAccountRepository extends Mock implements AccountRepository {}
+
 void main() {
   group('[post detail test]', () {
     final postRepo = MockPostRepository();
+    final favRepo = MockFavoritesRepository();
+    final accountRepo = MockAccountRepository();
+
     blocTest<PostDetailBloc, PostDetailState>(
       'add new tag',
       setUp: () {
@@ -24,6 +33,8 @@ void main() {
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -75,9 +86,21 @@ void main() {
 
     blocTest<PostDetailBloc, PostDetailState>(
       'index changed',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => false);
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+      },
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -106,6 +129,8 @@ void main() {
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -135,6 +160,8 @@ void main() {
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),

@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:math';
 
 // Package imports:
@@ -9,7 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'slide_show_configuration.dart';
@@ -125,6 +128,17 @@ class PostDetailIndexChanged extends PostDetailEvent {
   List<Object?> get props => [index];
 }
 
+class PostDetailFavoritesChanged extends PostDetailEvent {
+  const PostDetailFavoritesChanged({
+    required this.favorite,
+  });
+
+  final bool favorite;
+
+  @override
+  List<Object?> get props => [favorite];
+}
+
 class PostDetailModeChanged extends PostDetailEvent {
   const PostDetailModeChanged({
     required this.enableSlideshow,
@@ -165,6 +179,8 @@ class PostDetailTagUpdated extends PostDetailEvent {
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required PostRepository postRepository,
+    required FavoritePostRepository favoritePostRepository,
+    required AccountRepository accountRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
     required List<PostData> posts,
@@ -214,13 +230,25 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
     on<PostDetailIndexChanged>(
       (event, emit) async {
+        final post = posts[event.index];
         emit(state.copyWith(
           currentIndex: event.index,
-          currentPost: posts[event.index],
+          currentPost: post,
           recommends: [],
         ));
+        final account = await accountRepository.get();
+        if (account != Account.empty) {
+          unawaited(favoritePostRepository
+              .checkIfFavoritedByUser(account.id, post.post.id)
+              .then((fav) {
+            if (fav) {
+              emit(state.copyWith(
+                  currentPost: PostData(post: post.post, isFavorited: true)));
+            }
+          }));
+        }
 
-        for (final tag in posts[event.index].post.artistTags) {
+        for (final tag in post.post.artistTags) {
           final posts = await postRepository.getPosts(tag, 1);
           emit(state.copyWith(recommends: [
             ...state.recommends,
@@ -235,7 +263,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           ]));
         }
 
-        for (final tag in posts[event.index].post.characterTags) {
+        for (final tag in post.post.characterTags) {
           final posts = await postRepository.getPosts(tag, 1);
           emit(state.copyWith(recommends: [
             ...state.recommends,
@@ -263,6 +291,27 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(state.copyWith(
         slideShowConfig: event.config,
       ));
+    });
+
+    on<PostDetailFavoritesChanged>((event, emit) async {
+      var success = false;
+      emit(state.copyWith(
+        currentPost:
+            PostData(post: state.currentPost.post, isFavorited: event.favorite),
+      ));
+      if (event.favorite) {
+        success = await favoritePostRepository
+            .addToFavorites(state.currentPost.post.id);
+      } else {
+        success = await favoritePostRepository
+            .removeFromFavorites(state.currentPost.post.id);
+      }
+      if (!success) {
+        emit(state.copyWith(
+          currentPost: PostData(
+              post: state.currentPost.post, isFavorited: !event.favorite),
+        ));
+      }
     });
 
     add(PostDetailIndexChanged(index: initialIndex));

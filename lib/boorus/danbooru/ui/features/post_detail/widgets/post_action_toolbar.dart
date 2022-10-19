@@ -12,10 +12,8 @@ import 'package:share_plus/share_plus.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/core/application/api/api.dart';
@@ -43,19 +41,13 @@ class PostActionToolbar extends StatelessWidget {
             postVoteRepository: context.read<PostVoteRepository>(),
           )..add(PostVoteInit.fromPost(post)),
         ),
-        BlocProvider(
-          create: (context) => IsPostFavoritedBloc(
-            accountRepository: context.read<AccountRepository>(),
-            favoritePostRepository: context.read<FavoritePostRepository>(),
-          )..add(IsPostFavoritedRequested(postId: post.id)),
-        ),
       ],
       child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
         builder: (context, authState) => ButtonBar(
           buttonPadding: EdgeInsets.zero,
           alignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildFavoriteButton(authState),
+            _buildFavoriteButton(context, authState),
             if (authState is Authenticated) _buildUpvoteButton(),
             if (authState is Authenticated) _buildDownvoteButton(),
             _buildCommentButton(context),
@@ -159,46 +151,32 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteButton(AuthenticationState authState) {
-    return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-      builder: (context, state) => IconButton(
-        onPressed: () async {
-          _onPressedWithLoadingToast(
+  Widget _buildFavoriteButton(
+      BuildContext context, AuthenticationState authState) {
+    return IconButton(
+      onPressed: () async {
+        if (authState is Unauthenticated) {
+          showSimpleSnackBar(
             context: context,
-            status: state.status,
-            success: () async {
-              final favBloc = context.read<IsPostFavoritedBloc>();
-              if (authState is Unauthenticated) {
-                showSimpleSnackBar(
-                  context: context,
-                  content: const Text(
-                    'post.detail.login_required_notice',
-                  ).tr(),
-                  duration: const Duration(seconds: 1),
-                );
-              }
-
-              final result = state.data!
-                  ? RepositoryProvider.of<FavoritePostRepository>(context)
-                      .removeFromFavorites(post.id)
-                  : RepositoryProvider.of<FavoritePostRepository>(context)
-                      .addToFavorites(post.id);
-
-              await result;
-
-              favBloc.add(IsPostFavoritedRequested(postId: post.id));
-            },
+            content: const Text(
+              'post.detail.login_required_notice',
+            ).tr(),
+            duration: const Duration(seconds: 1),
           );
-        },
-        icon: state.status == LoadStatus.success && state.data!
-            ? const FaIcon(
-                FontAwesomeIcons.solidHeart,
-                color: Colors.red,
-              )
-            : const FaIcon(
-                FontAwesomeIcons.heart,
-              ),
-      ),
+        }
+
+        context
+            .read<PostDetailBloc>()
+            .add(PostDetailFavoritesChanged(favorite: !postData.isFavorited));
+      },
+      icon: postData.isFavorited
+          ? const FaIcon(
+              FontAwesomeIcons.solidHeart,
+              color: Colors.red,
+            )
+          : const FaIcon(
+              FontAwesomeIcons.heart,
+            ),
     );
   }
 }
