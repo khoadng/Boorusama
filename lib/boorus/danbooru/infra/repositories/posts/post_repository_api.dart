@@ -102,7 +102,6 @@ class PostRepositoryApi implements PostRepository {
     String tags,
     int page,
   ) {
-    print('request $tags');
     return _accountRepository
         .get()
         .then(
