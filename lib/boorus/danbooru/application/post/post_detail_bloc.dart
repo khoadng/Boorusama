@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Package imports:
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -181,12 +182,15 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       );
     });
 
-    on<PostDetailIndexChanged>((event, emit) {
-      emit(state.copyWith(
-        currentIndex: event.index,
-        currentPost: posts[event.index],
-      ));
-    });
+    on<PostDetailIndexChanged>(
+      (event, emit) {
+        emit(state.copyWith(
+          currentIndex: event.index,
+          currentPost: posts[event.index],
+        ));
+      },
+      transformer: restartable(),
+    );
 
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(

@@ -251,6 +251,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   actionBarDisplayBehavior: settingsState
                                       .settings.actionBarDisplayBehavior,
                                   post: state.currentPost,
+                                  key: ValueKey(state.currentIndex),
                                 ),
                               if (settingsState
                                       .settings.actionBarDisplayBehavior ==
