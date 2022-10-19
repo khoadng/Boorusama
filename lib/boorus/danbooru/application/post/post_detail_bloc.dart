@@ -179,11 +179,26 @@ class PostDetailTagUpdated extends PostDetailEvent {
   List<Object?> get props => [tag, category, postId];
 }
 
+class PostDetailUpvoted extends PostDetailEvent {
+  const PostDetailUpvoted();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class PostDetailDownvoted extends PostDetailEvent {
+  const PostDetailDownvoted();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required PostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
+    required PostVoteRepository postVoteRepository,
     required List<PostDetailTag> tags,
     required int initialIndex,
     required List<PostData> posts,
@@ -247,6 +262,15 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             if (!emit.isDone && fav) {
               emit(state.copyWith(
                   currentPost: PostData(post: post.post, isFavorited: true)));
+            }
+          }));
+
+          unawaited(
+              postVoteRepository.getPostVotes([post.post.id]).then((votes) {
+            if (!emit.isDone && votes.isNotEmpty) {
+              emit(state.copyWith(
+                currentPost: post.copyWith(voteState: votes.first.voteState),
+              ));
             }
           }));
         }
@@ -315,6 +339,50 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               post: state.currentPost.post, isFavorited: !event.favorite),
         ));
       }
+    });
+
+    on<PostDetailUpvoted>((event, emit) async {
+      final post = state.currentPost;
+      if (post.voteState == VoteState.upvoted) return;
+
+      // Handle error!
+      final _ = await postVoteRepository.upvote(post.post.id);
+
+      final up = post.post.upScore + 1;
+      final down = post.voteState == VoteState.downvoted
+          ? post.post.downScore + 1
+          : post.post.downScore;
+      emit(state.copyWith(
+        currentPost: post.copyWith(
+          post: post.post.copyWith(
+            upScore: up,
+            downScore: down,
+          ),
+          voteState: VoteState.upvoted,
+        ),
+      ));
+    });
+
+    on<PostDetailDownvoted>((event, emit) async {
+      final post = state.currentPost;
+      if (post.voteState == VoteState.downvoted) return;
+
+      // Handle error!
+      final _ = await postVoteRepository.downvote(post.post.id);
+
+      final down = post.post.downScore - 1;
+      final up = post.voteState == VoteState.upvoted
+          ? post.post.upScore - 1
+          : post.post.upScore;
+      emit(state.copyWith(
+        currentPost: post.copyWith(
+          post: post.post.copyWith(
+            upScore: up,
+            downScore: down,
+          ),
+          voteState: VoteState.downvoted,
+        ),
+      ));
     });
 
     add(PostDetailIndexChanged(index: initialIndex));

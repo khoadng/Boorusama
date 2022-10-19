@@ -17,11 +17,14 @@ class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
 class MockAccountRepository extends Mock implements AccountRepository {}
 
+class MockPostVoteRepository extends Mock implements PostVoteRepository {}
+
 void main() {
   group('[post detail test]', () {
     final postRepo = MockPostRepository();
     final favRepo = MockFavoritesRepository();
     final accountRepo = MockAccountRepository();
+    final postVoteRepo = MockPostVoteRepository();
 
     blocTest<PostDetailBloc, PostDetailState>(
       'add new tag',
@@ -40,6 +43,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [
           PostDetailTag(
             name: 'foo',
@@ -106,6 +110,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -151,6 +156,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -230,6 +236,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -268,6 +275,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -313,6 +321,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -358,6 +367,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -400,16 +410,20 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => accountRepo.get()).thenAnswer((invocation) async =>
             const Account(apiKey: '', username: '', id: 100));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
         reset(accountRepo);
+        reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
@@ -456,6 +470,7 @@ void main() {
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
           PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
@@ -485,6 +500,126 @@ void main() {
           currentPost: PostData(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'upvote',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(apiKey: '', username: '', id: 100));
+        when(() => postVoteRepo.upvote(any()))
+            .thenAnswer((invocation) async => PostVote.empty());
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+        reset(postVoteRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailUpvoted()),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.upvoted,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 1,
+              downScore: 0,
+            ),
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'downvote',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => true);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(apiKey: '', username: '', id: 100));
+        when(() => postVoteRepo.downvote(any()))
+            .thenAnswer((invocation) async => PostVote.empty());
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+        reset(postVoteRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailDownvoted()),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: 0,
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          currentPost: PostData.empty().copyWith(
+            voteState: VoteState.downvoted,
+            post: Post.empty().copyWith(
+              id: 1,
+              upScore: 0,
+              downScore: -1,
+            ),
           ),
         ),
       ],

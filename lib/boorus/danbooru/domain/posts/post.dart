@@ -221,6 +221,7 @@ class Post extends Equatable {
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,
+        artistCommentary: artistCommentary,
       );
 
   double get aspectRatio => width / height;

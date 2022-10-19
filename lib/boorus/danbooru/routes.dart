@@ -162,6 +162,7 @@ final postDetailHandler = Handler(handlerFunc: (
           postRepository: context.read<PostRepository>(),
           favoritePostRepository: context.read<FavoritePostRepository>(),
           accountRepository: context.read<AccountRepository>(),
+          postVoteRepository: context.read<PostVoteRepository>(),
           tags: tags,
           onPostUpdated: (postId, tag, category) {
             if (postBloc == null) return;

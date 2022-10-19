@@ -11,7 +11,6 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -34,68 +33,45 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PostVoteBloc(
-            postVoteRepository: context.read<PostVoteRepository>(),
-          )..add(PostVoteInit.fromPost(post)),
-        ),
-      ],
-      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-        builder: (context, authState) => ButtonBar(
-          buttonPadding: EdgeInsets.zero,
-          alignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildFavoriteButton(context, authState),
-            if (authState is Authenticated) _buildUpvoteButton(),
-            if (authState is Authenticated) _buildDownvoteButton(),
-            _buildCommentButton(context),
-            _buildDownloadButton(),
-            _buildShareButton(context),
-          ],
-        ),
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) => ButtonBar(
+        buttonPadding: EdgeInsets.zero,
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(context, authState),
+          if (authState is Authenticated) _buildUpvoteButton(context),
+          if (authState is Authenticated) _buildDownvoteButton(context),
+          _buildCommentButton(context),
+          _buildDownloadButton(),
+          _buildShareButton(context),
+        ],
       ),
     );
   }
 
-  Widget _buildUpvoteButton() {
-    return BlocBuilder<PostVoteBloc, PostVoteState>(
-      builder: (context, state) => IconButton(
-        icon: Icon(
-          Icons.arrow_upward,
-          color: state.state == VoteState.upvoted ? Colors.redAccent : null,
-        ),
-        onPressed: () {
-          _onPressedWithLoadingToast(
-            context: context,
-            status: state.status,
-            success: () => context
-                .read<PostVoteBloc>()
-                .add(PostVoteUpvoted(postId: post.id)),
-          );
-        },
+  Widget _buildUpvoteButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.arrow_upward,
+        color:
+            postData.voteState == VoteState.upvoted ? Colors.redAccent : null,
       ),
+      onPressed: () {
+        context.read<PostDetailBloc>().add(const PostDetailUpvoted());
+      },
     );
   }
 
-  Widget _buildDownvoteButton() {
-    return BlocBuilder<PostVoteBloc, PostVoteState>(
-      builder: (context, state) => IconButton(
-        icon: Icon(
-          Icons.arrow_downward,
-          color: state.state == VoteState.downvoted ? Colors.redAccent : null,
-        ),
-        onPressed: () {
-          _onPressedWithLoadingToast(
-            context: context,
-            status: state.status,
-            success: () => context
-                .read<PostVoteBloc>()
-                .add(PostVoteDownvoted(postId: post.id)),
-          );
-        },
+  Widget _buildDownvoteButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.arrow_downward,
+        color:
+            postData.voteState == VoteState.downvoted ? Colors.redAccent : null,
       ),
+      onPressed: () {
+        context.read<PostDetailBloc>().add(const PostDetailDownvoted());
+      },
     );
   }
 
@@ -180,34 +156,6 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 }
-
-void _onPressed({
-  required BuildContext context,
-  required LoadStatus status,
-  required void Function() success,
-  required void Function() loading,
-}) {
-  if (status == LoadStatus.success) {
-    success();
-  } else if (status == LoadStatus.initial || status == LoadStatus.loading) {
-    loading();
-  }
-}
-
-void _onPressedWithLoadingToast({
-  required BuildContext context,
-  required LoadStatus status,
-  required void Function() success,
-}) =>
-    _onPressed(
-      context: context,
-      status: status,
-      success: success,
-      loading: () => showSimpleSnackBar(
-        context: context,
-        content: const Text('Please wait...'),
-      ),
-    );
 
 enum ShareMode {
   source,
