@@ -1,5 +1,4 @@
 // Dart imports:
-import 'dart:async';
 import 'dart:math';
 
 // Package imports:
@@ -193,6 +192,22 @@ class PostDetailDownvoted extends PostDetailEvent {
   List<Object?> get props => [];
 }
 
+class _PostDetailFavoriteFetch extends PostDetailEvent {
+  const _PostDetailFavoriteFetch(this.accountId);
+
+  final int accountId;
+
+  @override
+  List<Object?> get props => [accountId];
+}
+
+class _PostDetailVoteFetch extends PostDetailEvent {
+  const _PostDetailVoteFetch();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required PostRepository postRepository,
@@ -246,6 +261,27 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       );
     });
 
+    on<_PostDetailFavoriteFetch>((event, emit) async {
+      await favoritePostRepository
+          .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
+          .then((fav) {
+        emit(state.copyWith(
+            currentPost: state.currentPost.copyWith(isFavorited: fav)));
+      });
+    });
+
+    on<_PostDetailVoteFetch>((event, emit) async {
+      await postVoteRepository
+          .getPostVotes([state.currentPost.post.id]).then((votes) {
+        if (votes.isNotEmpty) {
+          emit(state.copyWith(
+            currentPost:
+                state.currentPost.copyWith(voteState: votes.first.voteState),
+          ));
+        }
+      });
+    });
+
     on<PostDetailIndexChanged>(
       (event, emit) async {
         final post = posts[event.index];
@@ -256,23 +292,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         ));
         final account = await accountRepository.get();
         if (account != Account.empty) {
-          unawaited(favoritePostRepository
-              .checkIfFavoritedByUser(account.id, post.post.id)
-              .then((fav) {
-            if (!emit.isDone && fav) {
-              emit(state.copyWith(
-                  currentPost: PostData(post: post.post, isFavorited: true)));
-            }
-          }));
-
-          unawaited(
-              postVoteRepository.getPostVotes([post.post.id]).then((votes) {
-            if (!emit.isDone && votes.isNotEmpty) {
-              emit(state.copyWith(
-                currentPost: post.copyWith(voteState: votes.first.voteState),
-              ));
-            }
-          }));
+          add(_PostDetailFavoriteFetch(account.id));
+          add(const _PostDetailVoteFetch());
         }
 
         for (final tag in post.post.artistTags) {

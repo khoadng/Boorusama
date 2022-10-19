@@ -221,7 +221,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
           itemCount: widget.posts.length,
           itemBuilder: (context, index, realIndex) {
             final media = PostMediaItem(
-              post: state.currentPost.post,
+              //TODO: this is used to preload image between page
+              post: widget.posts[index].post,
               onCached: (path) => imagePath.value = path,
             );
             return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -252,6 +253,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   actionBarDisplayBehavior: settingsState
                                       .settings.actionBarDisplayBehavior,
                                   post: state.currentPost,
+                                  preloadPost: widget.posts[index].post,
                                   key: ValueKey(state.currentIndex),
                                   recommends: state.recommends,
                                 ),
@@ -310,12 +312,14 @@ class _CarouselContent extends StatefulWidget {
     required this.imagePath,
     required this.actionBarDisplayBehavior,
     required this.post,
+    required this.preloadPost,
     required this.recommends,
   }) : super(key: key);
 
   final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
   final PostData post;
+  final Post preloadPost;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
 
@@ -351,7 +355,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    InformationSection(post: post),
+                    InformationSection(post: widget.preloadPost),
                     const Divider(height: 8, thickness: 1),
                     if (widget.actionBarDisplayBehavior ==
                         ActionBarDisplayBehavior.scrolling)
@@ -362,14 +366,14 @@ class _CarouselContentState extends State<_CarouselContent> {
                         ),
                       ),
                     const Divider(height: 8, thickness: 1),
-                    ArtistSection(post: post),
+                    ArtistSection(post: widget.preloadPost),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: RepaintBoundary(child: PostStatsTile(post: post)),
                     ),
-                    if (post.hasParentOrChildren)
+                    if (widget.preloadPost.hasParentOrChildren)
                       ParentChildTile(
-                        data: getParentChildData(post),
+                        data: getParentChildData(widget.preloadPost),
                         onTap: (data) => showBarModalBottomSheet(
                           context: context,
                           builder: (context) => MultiBlocProvider(
@@ -388,7 +392,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                           ),
                         ),
                       ),
-                    if (!post.hasParentOrChildren)
+                    if (!widget.preloadPost.hasParentOrChildren)
                       const Divider(height: 8, thickness: 1),
                     BlocBuilder<ThemeBloc, ThemeState>(
                       builder: (context, state) {
