@@ -58,8 +58,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
   final autoPlay = ValueNotifier(false);
   final slideShowConfig =
       ValueNotifier(SlideShowConfiguration(interval: 4, skipAnimation: false));
-  late final currentPostIndex =
-      ValueNotifier(widget.posts.indexOf(widget.posts[widget.intitialIndex]));
 
   final imagePath = ValueNotifier<String?>(null);
 
@@ -111,74 +109,92 @@ class _PostDetailPageState extends State<PostDetailPage> {
     });
   }
 
-  Post get post => widget.posts[currentPostIndex.value].post;
-  PostData get postData => widget.posts[currentPostIndex.value];
-
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
-    return BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
-      selector: (state) => state.currentIndex,
-      builder: (context, index) => WillPopScope(
-        onWillPop: () async {
+    return BlocListener<PostDetailBloc, PostDetailState>(
+      listenWhen: (previous, current) =>
+          previous.currentPost != current.currentPost,
+      listener: (context, state) {
+        if (screenSize != ScreenSize.small) {
           context
-              .read<SliverPostGridBloc>()
-              .add(SliverPostGridExited(lastIndex: index));
-          return true;
-        },
-        child: Scaffold(
-          body: Row(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    _buildSlider(screenSize),
-                    ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: [
-                        const Color.fromARGB(16, 0, 0, 0),
-                        Colors.black12.withOpacity(0)
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment(-0.75, getTopActionIconAlignValue()),
-                      child: const _BackButton(),
-                    ),
-                    Align(
-                      alignment: Alignment(0.9, getTopActionIconAlignValue()),
-                      child: ButtonBar(
-                        children: [
-                          _SlideShowButton(
-                            autoPlay: autoPlay,
-                            showSlideShowConfig: showSlideShowConfig,
-                          ),
-                          _MoreActionButton(
-                            onDownload: (downloader) => downloader(post),
-                          ),
+              .read<TagBloc>()
+              .add(TagFetched(tags: state.currentPost.post.tags));
+        }
+      },
+      child: BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
+        selector: (state) => state.currentIndex,
+        builder: (context, index) => WillPopScope(
+          onWillPop: () async {
+            context
+                .read<SliverPostGridBloc>()
+                .add(SliverPostGridExited(lastIndex: index));
+            return true;
+          },
+          child: Scaffold(
+            body: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      _buildSlider(screenSize),
+                      ShadowGradientOverlay(
+                        alignment: Alignment.topCenter,
+                        colors: [
+                          const Color.fromARGB(16, 0, 0, 0),
+                          Colors.black12.withOpacity(0)
                         ],
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              if (screenSize != ScreenSize.small)
-                MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: context.read<TagBloc>()),
-                  ],
-                  child: Container(
-                    color: Theme.of(context).backgroundColor,
-                    width: _infoBarWidth,
-                    child: _LargeLayoutContent(
-                      key: ValueKey(post.id),
-                      post: postData,
-                      imagePath: imagePath,
-                      size: screenSize,
-                    ),
+                      Align(
+                        alignment:
+                            Alignment(-0.75, getTopActionIconAlignValue()),
+                        child: const _BackButton(),
+                      ),
+                      Align(
+                        alignment: Alignment(0.9, getTopActionIconAlignValue()),
+                        child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                          builder: (context, state) {
+                            return ButtonBar(
+                              children: [
+                                _SlideShowButton(
+                                  autoPlay: autoPlay,
+                                  showSlideShowConfig: showSlideShowConfig,
+                                ),
+                                _MoreActionButton(
+                                  onDownload: (downloader) =>
+                                      downloader(state.currentPost.post),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-            ],
+                if (screenSize != ScreenSize.small)
+                  MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: context.read<TagBloc>()),
+                    ],
+                    child: Container(
+                      color: Theme.of(context).backgroundColor,
+                      width: _infoBarWidth,
+                      child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                        builder: (context, state) {
+                          return _LargeLayoutContent(
+                            key: ValueKey(state.currentPost.post.id),
+                            post: state.currentPost,
+                            imagePath: imagePath,
+                            size: screenSize,
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
@@ -186,67 +202,72 @@ class _PostDetailPageState extends State<PostDetailPage> {
   }
 
   Widget _buildSlider(ScreenSize screenSize) {
-    return _CarouselSlider(
-      onPageChanged: (index) {
-        currentPostIndex.value = index;
-        if (screenSize != ScreenSize.small) {
-          context.read<TagBloc>().add(TagFetched(tags: post.tags));
-        }
-      },
-      autoPlay: autoPlay,
-      slideShowConfig: slideShowConfig,
-      initialIndex: currentPostIndex.value,
-      posts: widget.posts,
-      builder: (post, minimal) {
-        final media = PostMediaItem(
-          post: post.post,
-          onCached: (path) => imagePath.value = path,
-        );
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: minimal
-                ? Center(
-                    child: media,
-                  )
-                : BlocBuilder<SettingsCubit, SettingsState>(
-                    buildWhen: (previous, current) =>
-                        previous.settings.actionBarDisplayBehavior !=
-                        current.settings.actionBarDisplayBehavior,
-                    builder: (context, state) {
-                      return Stack(
-                        children: [
-                          if (screenSize != ScreenSize.small &&
-                              !post.post.isVideo)
-                            Center(
-                              child: media,
-                            )
-                          else
-                            _CarouselContent(
-                              media: media,
-                              imagePath: imagePath,
-                              actionBarDisplayBehavior:
-                                  state.settings.actionBarDisplayBehavior,
-                              post: post,
-                            ),
-                          if (state.settings.actionBarDisplayBehavior ==
-                              ActionBarDisplayBehavior.staticAtBottom)
-                            Positioned(
-                              bottom: 6,
-                              left: MediaQuery.of(context).size.width * 0.05,
-                              child: FloatingGlassyCard(
-                                child: ActionBar(
+    return BlocBuilder<PostDetailBloc, PostDetailState>(
+      builder: (context, state) {
+        return _CarouselSlider(
+          onPageChanged: (index) {
+            context
+                .read<PostDetailBloc>()
+                .add(PostDetailIndexChanged(index: index));
+          },
+          autoPlay: autoPlay,
+          slideShowConfig: slideShowConfig,
+          initialIndex: state.currentIndex,
+          posts: widget.posts,
+          builder: (post, minimal) {
+            final media = PostMediaItem(
+              post: post.post,
+              onCached: (path) => imagePath.value = path,
+            );
+            return AnnotatedRegion<SystemUiOverlayStyle>(
+              value: const SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent),
+              child: Scaffold(
+                backgroundColor: Colors.transparent,
+                body: minimal
+                    ? Center(
+                        child: media,
+                      )
+                    : BlocBuilder<SettingsCubit, SettingsState>(
+                        buildWhen: (previous, current) =>
+                            previous.settings.actionBarDisplayBehavior !=
+                            current.settings.actionBarDisplayBehavior,
+                        builder: (context, state) {
+                          return Stack(
+                            children: [
+                              if (screenSize != ScreenSize.small &&
+                                  !post.post.isVideo)
+                                Center(
+                                  child: media,
+                                )
+                              else
+                                _CarouselContent(
+                                  media: media,
                                   imagePath: imagePath,
-                                  postData: post,
+                                  actionBarDisplayBehavior:
+                                      state.settings.actionBarDisplayBehavior,
+                                  post: post,
                                 ),
-                              ),
-                            ),
-                        ],
-                      );
-                    },
-                  ),
-          ),
+                              if (state.settings.actionBarDisplayBehavior ==
+                                  ActionBarDisplayBehavior.staticAtBottom)
+                                Positioned(
+                                  bottom: 6,
+                                  left:
+                                      MediaQuery.of(context).size.width * 0.05,
+                                  child: FloatingGlassyCard(
+                                    child: ActionBar(
+                                      imagePath: imagePath,
+                                      postData: post,
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          );
+                        },
+                      ),
+              ),
+            );
+          },
         );
       },
     );

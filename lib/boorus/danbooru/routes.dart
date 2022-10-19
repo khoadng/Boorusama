@@ -155,6 +155,8 @@ final postDetailHandler = Handler(handlerFunc: (
       BlocProvider.value(value: context.read<ThemeBloc>()),
       BlocProvider(
         create: (context) => PostDetailBloc(
+          posts: postDatas,
+          initialIndex: index,
           postRepository: context.read<PostRepository>(),
           tags: tags,
           onPostUpdated: (postId, tag, category) {

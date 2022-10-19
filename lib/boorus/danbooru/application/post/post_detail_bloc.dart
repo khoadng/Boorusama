@@ -7,8 +7,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 
 class PostDetailTag extends Equatable {
@@ -30,14 +31,20 @@ class PostDetailState extends Equatable {
   const PostDetailState({
     required this.id,
     required this.tags,
+    required this.currentIndex,
+    required this.currentPost,
   });
 
-  factory PostDetailState.initial() => const PostDetailState(
+  factory PostDetailState.initial() => PostDetailState(
         id: 0,
-        tags: [],
+        tags: const [],
+        currentIndex: 0,
+        currentPost: PostData(post: Post.empty(), isFavorited: false),
       );
 
   final List<PostDetailTag> tags;
+  final int currentIndex;
+  final PostData currentPost;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -45,18 +52,33 @@ class PostDetailState extends Equatable {
   PostDetailState copyWith({
     double? id,
     List<PostDetailTag>? tags,
+    int? currentIndex,
+    PostData? currentPost,
   }) =>
       PostDetailState(
         id: id ?? this.id,
         tags: tags ?? this.tags,
+        currentIndex: currentIndex ?? this.currentIndex,
+        currentPost: currentPost ?? this.currentPost,
       );
 
   @override
-  List<Object?> get props => [tags, id];
+  List<Object?> get props => [tags, id, currentIndex, currentPost];
 }
 
 abstract class PostDetailEvent extends Equatable {
   const PostDetailEvent();
+}
+
+class PostDetailIndexChanged extends PostDetailEvent {
+  const PostDetailIndexChanged({
+    required this.index,
+  });
+
+  final int index;
+
+  @override
+  List<Object?> get props => [index];
 }
 
 class PostDetailTagUpdated extends PostDetailEvent {
@@ -78,6 +100,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
     required PostRepository postRepository,
     required List<PostDetailTag> tags,
+    required int initialIndex,
+    required List<PostData> posts,
     required void Function(
       int postId,
       String tag,
@@ -87,6 +111,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
+          currentIndex: initialIndex,
+          currentPost: posts[initialIndex],
         )) {
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
@@ -115,6 +141,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           );
         },
       );
+    });
+
+    on<PostDetailIndexChanged>((event, emit) {
+      emit(state.copyWith(
+        currentIndex: event.index,
+        currentPost: posts[event.index],
+      ));
     });
   }
 }
