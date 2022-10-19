@@ -41,6 +41,18 @@ void main() {
           .add(const PostDetailTagUpdated(tag: 'bar', category: 1, postId: 1)),
       expect: () => [
         PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          tags: [
+            PostDetailTag(
+              name: 'foo',
+              category: TagAutocompleteCategory.general(),
+              postId: 1,
+            ),
+          ],
+        ),
+        PostDetailState.initial().copyWith(
           id: 1,
           currentIndex: 0,
           currentPost:
@@ -77,6 +89,11 @@ void main() {
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
       expect: () => [
         PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ),
+        PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
               PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
@@ -101,6 +118,11 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
           enableSlideShow: true,
           currentPost:
               PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
@@ -123,6 +145,11 @@ void main() {
       act: (bloc) => bloc.add(PostDetailSlideShowConfigChanged(
           config: bloc.state.slideShowConfig.copyWith(skipAnimation: true))),
       expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost:
+              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           slideShowConfig: PostDetailState.initial()
