@@ -309,12 +309,15 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
             .thenAnswer((invocation) async => true);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(id: 1, apiKey: '', username: ''));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
         reset(accountRepo);
+        reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
@@ -349,18 +352,60 @@ void main() {
     );
 
     blocTest<PostDetailBloc, PostDetailState>(
-      'favorite a post -> fail then revert state',
+      'favorite a post when anonymous -> nothing happen',
       setUp: () {
         when(() => favRepo.checkIfFavoritedByUser(any(), any()))
             .thenAnswer((invocation) async => false);
         when(() => favRepo.addToFavorites(any()))
-            .thenAnswer((invocation) async => false);
+            .thenAnswer((invocation) async => true);
         when(() => accountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
       },
       tearDown: () {
         reset(favRepo);
         reset(accountRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+        ],
+        onPostUpdated: (_, __, ___) {},
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          currentPost: PostData(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: false,
+          ),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'favorite a post -> fail then revert state',
+      setUp: () {
+        when(() => favRepo.checkIfFavoritedByUser(any(), any()))
+            .thenAnswer((invocation) async => false);
+        when(() => favRepo.addToFavorites(any()))
+            .thenAnswer((invocation) async => false);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(id: 1, apiKey: '', username: ''));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(favRepo);
+        reset(accountRepo);
+        reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
@@ -458,12 +503,15 @@ void main() {
             .thenAnswer((invocation) async => true);
         when(() => favRepo.removeFromFavorites(any()))
             .thenAnswer((invocation) async => false);
-        when(() => accountRepo.get())
-            .thenAnswer((invocation) async => Account.empty);
+        when(() => accountRepo.get()).thenAnswer((invocation) async =>
+            const Account(id: 1, apiKey: '', username: ''));
+        when(() => postVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(favRepo);
         reset(accountRepo);
+        reset(postVoteRepo);
       },
       build: () => PostDetailBloc(
         initialIndex: 0,

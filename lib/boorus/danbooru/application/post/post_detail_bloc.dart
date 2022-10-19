@@ -321,6 +321,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     });
 
     on<PostDetailFavoritesChanged>((event, emit) async {
+      final account = await accountRepository.get();
+      if (account == Account.empty) return;
+
       var success = false;
       final originalState = state;
       final post = state.currentPost;
