@@ -54,8 +54,8 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
-  final showSlideShowConfig = ValueNotifier(false);
-  final autoPlay = ValueNotifier(false);
+  // final showSlideShowConfig = ValueNotifier(false);
+  // final autoPlay = ValueNotifier(false);
   final slideShowConfig =
       ValueNotifier(SlideShowConfiguration(interval: 4, skipAnimation: false));
 
@@ -64,43 +64,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
   @override
   void initState() {
     super.initState();
-
-    showSlideShowConfig.addListener(() {
-      if (showSlideShowConfig.value) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          final modal = Wrap(
-            children: [
-              SlideShowConfigContainer(
-                initialConfig: slideShowConfig.value,
-                onConfigChanged: (config) => slideShowConfig.value = config,
-              )
-            ],
-          );
-          final confirm = Screen.of(context).size == ScreenSize.small
-              ? (await showModalBottomSheet(
-                    backgroundColor: Colors.transparent,
-                    context: context,
-                    builder: (context) => modal,
-                  ) ??
-                  false)
-              : (await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      content: SlideShowConfigContainer(
-                        isModal: false,
-                        initialConfig: slideShowConfig.value,
-                        onConfigChanged: (config) =>
-                            slideShowConfig.value = config,
-                      ),
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                  ) ??
-                  false);
-          showSlideShowConfig.value = false;
-          autoPlay.value = confirm;
-        });
-      }
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Screen.of(context).size != ScreenSize.small) {
         context.read<TagBloc>().add(
@@ -113,16 +76,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
-    return BlocListener<PostDetailBloc, PostDetailState>(
-      listenWhen: (previous, current) =>
-          previous.currentPost != current.currentPost,
-      listener: (context, state) {
-        if (screenSize != ScreenSize.small) {
-          context
-              .read<TagBloc>()
-              .add(TagFetched(tags: state.currentPost.post.tags));
-        }
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listenWhen: (previous, current) =>
+              previous.currentPost != current.currentPost,
+          listener: (context, state) {
+            if (screenSize != ScreenSize.small) {
+              context
+                  .read<TagBloc>()
+                  .add(TagFetched(tags: state.currentPost.post.tags));
+            }
+          },
+        ),
+      ],
       child: BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
         selector: (state) => state.currentIndex,
         builder: (context, index) => WillPopScope(
@@ -158,8 +125,58 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             return ButtonBar(
                               children: [
                                 _SlideShowButton(
-                                  autoPlay: autoPlay,
-                                  showSlideShowConfig: showSlideShowConfig,
+                                  autoPlay: state.enableSlideShow,
+                                  onStop: () => context
+                                      .read<PostDetailBloc>()
+                                      .add(const PostDetailModeChanged(
+                                          enableSlideshow: false)),
+                                  onShow: (start) {
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) async {
+                                      final modal = Wrap(
+                                        children: [
+                                          SlideShowConfigContainer(
+                                            initialConfig:
+                                                slideShowConfig.value,
+                                            onConfigChanged: (config) =>
+                                                slideShowConfig.value = config,
+                                          )
+                                        ],
+                                      );
+                                      final bloc =
+                                          context.read<PostDetailBloc>();
+                                      final confirm = Screen.of(context).size ==
+                                              ScreenSize.small
+                                          ? (await showModalBottomSheet(
+                                                backgroundColor:
+                                                    Colors.transparent,
+                                                context: context,
+                                                builder: (context) => modal,
+                                              ) ??
+                                              false)
+                                          : (await showDialog(
+                                                context: context,
+                                                builder: (context) =>
+                                                    AlertDialog(
+                                                  content:
+                                                      SlideShowConfigContainer(
+                                                    isModal: false,
+                                                    initialConfig:
+                                                        slideShowConfig.value,
+                                                    onConfigChanged: (config) =>
+                                                        slideShowConfig.value =
+                                                            config,
+                                                  ),
+                                                  contentPadding:
+                                                      EdgeInsets.zero,
+                                                ),
+                                              ) ??
+                                              false);
+                                      if (confirm) start();
+                                      bloc.add(PostDetailModeChanged(
+                                          enableSlideshow: confirm));
+                                    });
+                                  },
                                 ),
                                 _MoreActionButton(
                                   onDownload: (downloader) =>
@@ -204,67 +221,85 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget _buildSlider(ScreenSize screenSize) {
     return BlocBuilder<PostDetailBloc, PostDetailState>(
       builder: (context, state) {
-        return _CarouselSlider(
-          onPageChanged: (index) {
-            context
-                .read<PostDetailBloc>()
-                .add(PostDetailIndexChanged(index: index));
-          },
-          autoPlay: autoPlay,
-          slideShowConfig: slideShowConfig,
-          initialIndex: state.currentIndex,
-          posts: widget.posts,
-          builder: (post, minimal) {
-            final media = PostMediaItem(
-              post: post.post,
-              onCached: (path) => imagePath.value = path,
-            );
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: minimal
-                    ? Center(
-                        child: media,
-                      )
-                    : BlocBuilder<SettingsCubit, SettingsState>(
-                        buildWhen: (previous, current) =>
-                            previous.settings.actionBarDisplayBehavior !=
-                            current.settings.actionBarDisplayBehavior,
-                        builder: (context, state) {
-                          return Stack(
-                            children: [
-                              if (screenSize != ScreenSize.small &&
-                                  !post.post.isVideo)
-                                Center(
-                                  child: media,
-                                )
-                              else
-                                _CarouselContent(
-                                  media: media,
-                                  imagePath: imagePath,
-                                  actionBarDisplayBehavior:
-                                      state.settings.actionBarDisplayBehavior,
-                                  post: post,
-                                ),
-                              if (state.settings.actionBarDisplayBehavior ==
-                                  ActionBarDisplayBehavior.staticAtBottom)
-                                Positioned(
-                                  bottom: 6,
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  child: FloatingGlassyCard(
-                                    child: ActionBar(
+        return ValueListenableBuilder<SlideShowConfiguration>(
+          valueListenable: slideShowConfig,
+          builder: (context, config, child) {
+            return CarouselSlider.builder(
+              itemCount: widget.posts.length,
+              itemBuilder: (context, index, realIndex) {
+                final media = PostMediaItem(
+                  post: state.currentPost.post,
+                  onCached: (path) => imagePath.value = path,
+                );
+                return AnnotatedRegion<SystemUiOverlayStyle>(
+                  value: const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent),
+                  child: Scaffold(
+                    backgroundColor: Colors.transparent,
+                    body: state.enableSlideShow
+                        ? Center(
+                            child: media,
+                          )
+                        : BlocBuilder<SettingsCubit, SettingsState>(
+                            buildWhen: (previous, current) =>
+                                previous.settings.actionBarDisplayBehavior !=
+                                current.settings.actionBarDisplayBehavior,
+                            builder: (context, settingsState) {
+                              return Stack(
+                                children: [
+                                  if (screenSize != ScreenSize.small &&
+                                      !state.currentPost.post.isVideo)
+                                    Center(
+                                      child: media,
+                                    )
+                                  else
+                                    _CarouselContent(
+                                      media: media,
                                       imagePath: imagePath,
-                                      postData: post,
+                                      actionBarDisplayBehavior: settingsState
+                                          .settings.actionBarDisplayBehavior,
+                                      post: state.currentPost,
                                     ),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
+                                  if (settingsState
+                                          .settings.actionBarDisplayBehavior ==
+                                      ActionBarDisplayBehavior.staticAtBottom)
+                                    Positioned(
+                                      bottom: 6,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      child: FloatingGlassyCard(
+                                        child: ActionBar(
+                                          imagePath: imagePath,
+                                          postData: state.currentPost,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              );
+                            },
+                          ),
+                  ),
+                );
+              },
+              options: CarouselOptions(
+                onPageChanged: (index, reason) {
+                  context
+                      .read<SliverPostGridBloc>()
+                      .add(SliverPostGridItemChanged(index: index));
+
+                  context
+                      .read<PostDetailBloc>()
+                      .add(PostDetailIndexChanged(index: index));
+                },
+                height: MediaQuery.of(context).size.height,
+                viewportFraction: 1,
+                enableInfiniteScroll: false,
+                initialPage: state.currentIndex,
+                autoPlay: state.enableSlideShow,
+                autoPlayAnimationDuration: config.skipAnimation
+                    ? const Duration(microseconds: 1)
+                    : const Duration(milliseconds: 600),
+                autoPlayInterval: Duration(seconds: config.interval.toInt()),
               ),
             );
           },
@@ -651,61 +686,6 @@ class _MoreActionButton extends StatelessWidget {
   }
 }
 
-class _CarouselSlider extends StatelessWidget {
-  const _CarouselSlider({
-    Key? key,
-    required this.autoPlay,
-    required this.slideShowConfig,
-    required this.initialIndex,
-    required this.posts,
-    required this.builder,
-    this.onPageChanged,
-  }) : super(key: key);
-
-  final ValueNotifier<bool> autoPlay;
-  final ValueNotifier<SlideShowConfiguration> slideShowConfig;
-  final int initialIndex;
-  final List<PostData> posts;
-  final Widget Function(PostData post, bool minimal) builder;
-  final void Function(int index)? onPageChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: autoPlay,
-      builder: (context, autoPlay, child) =>
-          ValueListenableBuilder<SlideShowConfiguration>(
-        valueListenable: slideShowConfig,
-        builder: (context, config, child) {
-          return CarouselSlider.builder(
-            itemCount: posts.length,
-            itemBuilder: (context, index, realIndex) =>
-                builder(posts[index], autoPlay),
-            options: CarouselOptions(
-              onPageChanged: (index, reason) {
-                context
-                    .read<SliverPostGridBloc>()
-                    .add(SliverPostGridItemChanged(index: index));
-
-                onPageChanged?.call(index);
-              },
-              height: MediaQuery.of(context).size.height,
-              viewportFraction: 1,
-              enableInfiniteScroll: false,
-              initialPage: initialIndex,
-              autoPlay: autoPlay,
-              autoPlayAnimationDuration: config.skipAnimation
-                  ? const Duration(microseconds: 1)
-                  : const Duration(milliseconds: 600),
-              autoPlayInterval: Duration(seconds: config.interval.toInt()),
-            ),
-          );
-        },
-      ),
-    );
-  }
-}
-
 class _BackButton extends StatelessWidget {
   const _BackButton({
     Key? key,
@@ -746,11 +726,13 @@ class _SlideShowButton extends StatefulWidget {
   const _SlideShowButton({
     Key? key,
     required this.autoPlay,
-    required this.showSlideShowConfig,
+    required this.onShow,
+    required this.onStop,
   }) : super(key: key);
 
-  final ValueNotifier<bool> autoPlay;
-  final ValueNotifier<bool> showSlideShowConfig;
+  final bool autoPlay;
+  final void Function(void Function() start) onShow;
+  final void Function() onStop;
 
   @override
   State<_SlideShowButton> createState() => _SlideShowButtonState();
@@ -760,6 +742,7 @@ class _SlideShowButtonState extends State<_SlideShowButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController spinningIconpanelAnimationController;
   late final Animation<double> rotateAnimation;
+  var play = false;
 
   @override
   void initState() {
@@ -768,43 +751,40 @@ class _SlideShowButtonState extends State<_SlideShowButton>
         vsync: this, duration: const Duration(seconds: 200));
     rotateAnimation = Tween<double>(begin: 0, end: 360)
         .animate(spinningIconpanelAnimationController);
-
-    widget.autoPlay.addListener(_onAutoPlay);
   }
 
   @override
   void dispose() {
-    widget.autoPlay.removeListener(_onAutoPlay);
     spinningIconpanelAnimationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: widget.autoPlay,
-      builder: (context, value, _) => value
-          ? RepaintBoundary(
-              child: AnimatedSpinningIcon(
-                icon: const Icon(Icons.sync),
-                animation: rotateAnimation,
-                onPressed: () => widget.autoPlay.value = false,
-              ),
-            )
-          : IconButton(
-              icon: const Icon(Icons.slideshow),
-              onPressed: () => widget.showSlideShowConfig.value = true,
+    return play
+        ? RepaintBoundary(
+            child: AnimatedSpinningIcon(
+              icon: const Icon(Icons.sync),
+              animation: rotateAnimation,
+              onPressed: () {
+                setState(() {
+                  widget.onStop();
+                  play = false;
+                  spinningIconpanelAnimationController
+                    ..stop()
+                    ..reset();
+                });
+              },
             ),
-    );
-  }
-
-  void _onAutoPlay() {
-    if (widget.autoPlay.value) {
-      spinningIconpanelAnimationController.repeat();
-    } else {
-      spinningIconpanelAnimationController
-        ..stop()
-        ..reset();
-    }
+          )
+        : IconButton(
+            icon: const Icon(Icons.slideshow),
+            onPressed: () => widget.onShow(() {
+              setState(() {
+                play = true;
+                spinningIconpanelAnimationController.repeat();
+              });
+            }),
+          );
   }
 }

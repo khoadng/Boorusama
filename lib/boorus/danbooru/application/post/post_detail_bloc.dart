@@ -33,6 +33,7 @@ class PostDetailState extends Equatable {
     required this.tags,
     required this.currentIndex,
     required this.currentPost,
+    this.enableSlideShow = false,
   });
 
   factory PostDetailState.initial() => PostDetailState(
@@ -45,6 +46,7 @@ class PostDetailState extends Equatable {
   final List<PostDetailTag> tags;
   final int currentIndex;
   final PostData currentPost;
+  final bool enableSlideShow;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -54,16 +56,19 @@ class PostDetailState extends Equatable {
     List<PostDetailTag>? tags,
     int? currentIndex,
     PostData? currentPost,
+    bool? enableSlideShow,
   }) =>
       PostDetailState(
         id: id ?? this.id,
         tags: tags ?? this.tags,
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
+        enableSlideShow: enableSlideShow ?? this.enableSlideShow,
       );
 
   @override
-  List<Object?> get props => [tags, id, currentIndex, currentPost];
+  List<Object?> get props =>
+      [tags, id, currentIndex, currentPost, enableSlideShow];
 }
 
 abstract class PostDetailEvent extends Equatable {
@@ -79,6 +84,17 @@ class PostDetailIndexChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [index];
+}
+
+class PostDetailModeChanged extends PostDetailEvent {
+  const PostDetailModeChanged({
+    required this.enableSlideshow,
+  });
+
+  final bool enableSlideshow;
+
+  @override
+  List<Object?> get props => [enableSlideshow];
 }
 
 class PostDetailTagUpdated extends PostDetailEvent {
@@ -147,6 +163,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       emit(state.copyWith(
         currentIndex: event.index,
         currentPost: posts[event.index],
+      ));
+    });
+
+    on<PostDetailModeChanged>((event, emit) {
+      emit(state.copyWith(
+        enableSlideShow: event.enableSlideshow,
       ));
     });
   }
