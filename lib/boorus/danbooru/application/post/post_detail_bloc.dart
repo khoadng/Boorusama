@@ -144,6 +144,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       TagCategory tagCategory,
     )
         onPostUpdated,
+    double Function()? idGenerator,
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
@@ -168,7 +169,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
                 postId: event.postId,
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
-            id: Random().nextDouble(),
+            id: idGenerator?.call() ?? Random().nextDouble(),
           ));
 
           onPostUpdated(
