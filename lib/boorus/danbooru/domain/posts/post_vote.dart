@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
+import 'vote_state.dart';
 
 typedef PostVoteId = int;
 
@@ -66,16 +67,6 @@ class PostVote extends Equatable {
       ];
 }
 
-enum VoteState {
-  unvote,
-  upvoted,
-  downvoted,
-}
-
 extension PostVoteX on PostVote {
-  VoteState get voteState {
-    if (score == -1) return VoteState.downvoted;
-    if (score == 1) return VoteState.upvoted;
-    return VoteState.unvote;
-  }
+  VoteState get voteState => voteStateFromScore(score);
 }

@@ -2,8 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/post_vote.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PostData extends Equatable {
   const PostData({
