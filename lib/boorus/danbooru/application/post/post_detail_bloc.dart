@@ -349,14 +349,19 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       var success = false;
       final originalState = state;
       final post = state.currentPost;
-      emit(state.copyWith(
-        currentPost: state.currentPost.copyWith(
-          post: post.post.copyWith(
-            score: post.post.score + (event.favorite ? 1 : -1),
-          ),
-          isFavorited: event.favorite,
+      final newPost = state.currentPost.copyWith(
+        post: post.post.copyWith(
+          favCount: post.post.favCount + (event.favorite ? 1 : -1),
+          score: post.post.score + (event.favorite ? 1 : -1),
         ),
+        isFavorited: event.favorite,
+      );
+
+      posts[state.currentIndex] = newPost;
+      emit(state.copyWith(
+        currentPost: newPost,
       ));
+
       if (event.favorite) {
         success = await favoritePostRepository.addToFavorites(post.post.id);
       } else {
@@ -365,6 +370,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       }
       if (!success) {
         emit(originalState);
+        posts[state.currentIndex] = post;
       }
     });
 
@@ -378,21 +384,26 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           ? post.post.downScore + 1
           : post.post.downScore;
 
-      emit(state.copyWith(
-        currentPost: post.copyWith(
-          post: post.post.copyWith(
-            score: post.post.score + 1,
-            upScore: up,
-            downScore: down,
-          ),
-          voteState: VoteState.upvoted,
+      final newPost = post.copyWith(
+        post: post.post.copyWith(
+          score: post.post.score + 1,
+          upScore: up,
+          downScore: down,
         ),
+        voteState: VoteState.upvoted,
+      );
+
+      posts[state.currentIndex] = newPost;
+
+      emit(state.copyWith(
+        currentPost: newPost,
       ));
 
       final vote = await postVoteRepository.upvote(post.post.id);
 
       if (vote == null) {
         emit(originalState);
+        posts[state.currentIndex] = post;
       }
     });
 
@@ -405,21 +416,27 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final up = post.voteState == VoteState.upvoted
           ? post.post.upScore - 1
           : post.post.upScore;
-      emit(state.copyWith(
-        currentPost: post.copyWith(
-          post: post.post.copyWith(
-            score: post.post.score - 1,
-            upScore: up,
-            downScore: down,
-          ),
-          voteState: VoteState.downvoted,
+
+      final newPost = post.copyWith(
+        post: post.post.copyWith(
+          score: post.post.score - 1,
+          upScore: up,
+          downScore: down,
         ),
+        voteState: VoteState.downvoted,
+      );
+
+      posts[state.currentIndex] = newPost;
+
+      emit(state.copyWith(
+        currentPost: newPost,
       ));
 
       final vote = await postVoteRepository.downvote(post.post.id);
 
       if (vote == null) {
         emit(originalState);
+        posts[state.currentIndex] = post;
       }
     });
     if (fireIndexChangedAtStart) {
