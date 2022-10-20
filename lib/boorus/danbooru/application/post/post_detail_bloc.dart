@@ -66,7 +66,7 @@ class PostDetailState extends Equatable {
         id: 0,
         tags: const [],
         currentIndex: 0,
-        currentPost: PostData(post: Post.empty(), isFavorited: false),
+        currentPost: PostData.empty(),
         slideShowConfig: const SlideShowConfiguration(
           interval: 4,
           skipAnimation: false,
@@ -306,7 +306,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               title: tag,
               posts: posts
                   .take(6)
-                  .map((e) => PostData(post: e, isFavorited: false))
+                  .map((e) => PostData(
+                        post: e,
+                        isFavorited: false,
+                        pools: const [],
+                      ))
                   .toList(),
             ),
           ]));
@@ -321,7 +325,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               title: tag,
               posts: posts
                   .take(6)
-                  .map((e) => PostData(post: e, isFavorited: false))
+                  .map((e) => PostData(
+                        post: e,
+                        isFavorited: false,
+                        pools: const [],
+                      ))
                   .toList(),
             ),
           ]));

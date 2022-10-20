@@ -255,6 +255,15 @@ abstract class Api {
     @CancelRequest() CancelToken? cancelToken,
   });
 
+  @GET('/pools.json')
+  Future<HttpResponse> getPoolsFromPostIds(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Query('search[post_ids_include_any]') String postIds,
+    @Query('limit') int limit, {
+    @CancelRequest() CancelToken? cancelToken,
+  });
+
   @GET('/autocomplete.json')
   Future<HttpResponse> autocomplete(
     @Query('login') String? login,

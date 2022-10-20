@@ -21,7 +21,7 @@ class PoolRepositoryApi implements PoolRepository {
 
   final Api _api;
   final AccountRepository _accountRepository;
-  final _limit = 20;
+  final _limit = 100;
 
   @override
   Future<List<Pool>> getPools(
@@ -51,6 +51,17 @@ class PoolRepositoryApi implements PoolRepository {
             account.username,
             account.apiKey,
             postId,
+            _limit,
+          )
+          .then(parsePool));
+
+  @override
+  Future<List<Pool>> getPoolsByPostIds(List<int> postIds) =>
+      _accountRepository.get().then((account) => _api
+          .getPoolsFromPostIds(
+            account.username,
+            account.apiKey,
+            postIds.join(' '),
             _limit,
           )
           .then(parsePool));

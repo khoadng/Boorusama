@@ -10,4 +10,5 @@ abstract class PoolRepository {
     String? description,
   });
   Future<List<Pool>> getPoolsByPostId(int postId);
+  Future<List<Pool>> getPoolsByPostIds(List<int> postIds);
 }
