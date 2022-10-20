@@ -197,9 +197,24 @@ dart_code_metrics:
   anti-patterns:
   metrics:
     cyclomatic-complexity: 20
+    halstead-volume: 150
+    lines-of-code: 100
+    maintainability-index: 50
     maximum-nesting-level: 5
+    number-of-methods: 10
     number-of-parameters: 4
     source-lines-of-code: 50
+    technical-debt:
+      threshold: 1
+      todo-cost: 161
+      ignore-cost: 320
+      ignore-for-file-cost: 396
+      as-dynamic-cost: 322
+      deprecated-annotations-cost: 37
+      file-nullsafety-migration-cost: 41
+      unit-type: "USD"
+    weight-of-class: 0.33
+
   metrics-exclude:
     - test/**
   rules:
