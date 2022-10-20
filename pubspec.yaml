@@ -48,7 +48,6 @@ dependencies:
   intl: ^0.17.0
   jiffy: ^5.0.0
   lottie: ^1.4.3
-  mockito: ^5.2.0
   modal_bottom_sheet: ^2.1.1
   number_inc_dec:
     git:

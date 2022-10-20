@@ -1,7 +1,6 @@
 // Package imports:
 import 'package:bloc_test/bloc_test.dart';
-import 'package:mockito/annotations.dart';
-import 'package:mockito/mockito.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
 // Project imports:
@@ -9,9 +8,10 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import '../common.dart';
-import 'tag_search_state_test.mocks.dart';
 
-@GenerateMocks([AutocompleteRepository])
+class MockAutocompleteRepository extends Mock
+    implements AutocompleteRepository {}
+
 void main() {
   group('Tag search', () {
     final autocompleteRepository = MockAutocompleteRepository();
@@ -21,10 +21,10 @@ void main() {
       r18Tags: [],
     );
 
-    when(autocompleteRepository.getAutocomplete('a'))
-        .thenAnswer((_) => Future.value([autocompleteData('a')]));
-    when(autocompleteRepository.getAutocomplete('a_a_a'))
-        .thenAnswer((_) => Future.value([autocompleteData('a_a_a')]));
+    when(() => autocompleteRepository.getAutocomplete('a'))
+        .thenAnswer((_) async => [autocompleteData('a')]);
+    when(() => autocompleteRepository.getAutocomplete('a_a_a'))
+        .thenAnswer((_) async => [autocompleteData('a_a_a')]);
     TagSearchBloc bloc() => TagSearchBloc(
           autocompleteRepository: autocompleteRepository,
           tagInfo: tagInfo,
