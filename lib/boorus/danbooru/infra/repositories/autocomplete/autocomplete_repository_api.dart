@@ -42,7 +42,8 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             label: e.label!,
             value: e.value!,
             category: PoolAutocompleteCategory(
-                category: stringToPoolCategory(e.category)),
+              category: stringToPoolCategory(e.category),
+            ),
             postCount: e.postCount!,
           );
         } else if (e.type == 'user') {
@@ -58,6 +59,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
       } catch (err) {
         // ignore: avoid_print
         print("can't parse ${e.label}");
+
         return const AutocompleteData(label: '', value: '');
       }
     })

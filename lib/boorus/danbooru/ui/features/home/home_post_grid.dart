@@ -50,6 +50,7 @@ class HomePostGrid extends StatelessWidget {
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(child: NoDataBox());
                 }
+
                 return SliverPostGrid(
                   posts: state.posts,
                   scrollController: controller,
@@ -68,7 +69,8 @@ class HomePostGrid extends StatelessWidget {
                   onFavoriteUpdated: (postId, value) => context
                       .read<PostBloc>()
                       .add(
-                          PostFavoriteUpdated(postId: postId, favorite: value)),
+                        PostFavoriteUpdated(postId: postId, favorite: value),
+                      ),
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(

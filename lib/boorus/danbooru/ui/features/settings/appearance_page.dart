@@ -127,8 +127,8 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 SettingsTile<ImageQuality>(
                   title: const Text(
-                          'settings.image_grid.image_quality.image_quality')
-                      .tr(),
+                    'settings.image_grid.image_quality.image_quality',
+                  ).tr(),
                   subtitle: state.settings.imageQuality == ImageQuality.high
                       ? Text(
                           'settings.image_grid.image_quality.high_quality_notice',
@@ -158,7 +158,8 @@ class _AppearancePageState extends State<AppearancePage> {
                 _buildBorderRadiusSlider(state),
                 const Divider(thickness: 1),
                 SettingsHeader(
-                    label: 'settings.image_viewer.image_viewer'.tr()),
+                  label: 'settings.image_viewer.image_viewer'.tr(),
+                ),
                 ListTile(
                   title: const Text('settings.image_viewer.full_res_as_default')
                       .tr(),
@@ -167,31 +168,37 @@ class _AppearancePageState extends State<AppearancePage> {
                       ? const Text('settings.image_viewer.full_res_notice').tr()
                       : null,
                   trailing: Switch(
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      value: state.settings.imageQualityInFullView ==
-                          ImageQuality.original,
-                      onChanged: (value) {
-                        context.read<SettingsCubit>().update(state.settings
-                            .copyWith(
-                                imageQualityInFullView: value
-                                    ? ImageQuality.original
-                                    : ImageQuality.automatic));
-                      }),
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: state.settings.imageQualityInFullView ==
+                        ImageQuality.original,
+                    onChanged: (value) {
+                      context
+                          .read<SettingsCubit>()
+                          .update(state.settings.copyWith(
+                            imageQualityInFullView: value
+                                ? ImageQuality.original
+                                : ImageQuality.automatic,
+                          ));
+                    },
+                  ),
                 ),
                 const Divider(thickness: 1),
                 SettingsHeader(
-                    label: 'settings.image_detail.image_detail'.tr()),
+                  label: 'settings.image_detail.image_detail'.tr(),
+                ),
                 SettingsTile<ActionBarDisplayBehavior>(
                   title: const Text(
-                          'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior')
-                      .tr(),
+                    'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior',
+                  ).tr(),
                   selectedOption: state.settings.actionBarDisplayBehavior,
                   onChanged: (value) => context.read<SettingsCubit>().update(
-                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                        state.settings
+                            .copyWith(actionBarDisplayBehavior: value),
+                      ),
                   items: ActionBarDisplayBehavior.values,
                   optionBuilder: (value) =>
                       Text(_actionBarDisplayBehaviorToString(value)).tr(),
-                )
+                ),
               ],
             ),
           );
@@ -243,6 +250,7 @@ class _AppearancePageState extends State<AppearancePage> {
   }) {
     if (size == GridSize.large) return _largeGrid(spacing / 2, screenSize);
     if (size == GridSize.small) return _smallGrid(spacing / 2, screenSize);
+
     return _normalGrid(spacing / 2, screenSize);
   }
 
@@ -261,26 +269,27 @@ class _AppearancePageState extends State<AppearancePage> {
           child: ValueListenableBuilder<double>(
             valueListenable: _spacingSliderValue,
             builder: (context, value, _) => GridView.builder(
-                itemCount: 100,
-                gridDelegate: _gridSizeToGridDelegate(
-                  Screen.of(context).size,
-                  state.settings.gridSize,
-                  spacing: value,
-                ),
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder<double>(
-                    valueListenable: _borderRadiusSliderValue,
-                    builder: (context, value, _) => Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(value),
-                      ),
-                      child: const Center(
-                        child: SettingsIcon(FontAwesomeIcons.image),
-                      ),
+              itemCount: 100,
+              gridDelegate: _gridSizeToGridDelegate(
+                Screen.of(context).size,
+                state.settings.gridSize,
+                spacing: value,
+              ),
+              itemBuilder: (context, index) {
+                return ValueListenableBuilder<double>(
+                  valueListenable: _borderRadiusSliderValue,
+                  builder: (context, value, _) => Container(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      borderRadius: BorderRadius.circular(value),
                     ),
-                  );
-                }),
+                    child: const Center(
+                      child: SettingsIcon(FontAwesomeIcons.image),
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

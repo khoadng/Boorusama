@@ -43,11 +43,12 @@ FilterGroup? stringToFilterGroup(String value) {
   if (groupType == null) return null;
 
   return FilterGroup(
-      groupType: groupType,
-      filterItems: tags
-          .map((e) => _stringToFilterItem(e, groupType))
-          .whereNotNull()
-          .toList());
+    groupType: groupType,
+    filterItems: tags
+        .map((e) => _stringToFilterItem(e, groupType))
+        .whereNotNull()
+        .toList(),
+  );
 }
 
 class FilterItem extends Equatable {

@@ -27,14 +27,16 @@ class SearchHistorySection extends StatelessWidget {
           if (state.status == LoadStatus.success)
             ..._buildHistories(context, state.data!)
           else
-            const SizedBox.shrink()
+            const SizedBox.shrink(),
         ],
       ),
     );
   }
 
   List<Widget> _buildHistories(
-      BuildContext context, List<SearchHistory> histories) {
+    BuildContext context,
+    List<SearchHistory> histories,
+  ) {
     final widgets = <Widget>[];
 
     final historyTiles = histories
@@ -72,12 +74,13 @@ class SearchHistorySection extends StatelessWidget {
       widgets
         ..insert(0, header)
         ..insert(
-            0,
-            const Divider(
-              thickness: 1,
-              indent: 10,
-              endIndent: 10,
-            ));
+          0,
+          const Divider(
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+          ),
+        );
     }
 
     return widgets;

@@ -25,72 +25,75 @@ class ProfilePage extends StatelessWidget {
         title: Text('profile.profile'.tr()),
         actions: <Widget>[
           IconButton(
-              icon: const Icon(Icons.logout),
-              onPressed: () {
-                ReadContext(context).read<AuthenticationCubit>().logOut();
-                AppRouter.router
-                    .navigateTo(context, '/', clearStack: true, replace: true);
-              }),
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              ReadContext(context).read<AuthenticationCubit>().logOut();
+              AppRouter.router
+                  .navigateTo(context, '/', clearStack: true, replace: true);
+            },
+          ),
         ],
       ),
       body: SafeArea(
         child: BlocConsumer<ProfileCubit, AsyncLoadState<Profile>>(
-            listener: (context, state) => state.status == LoadStatus.success
-                ? ReadContext(context)
-                    .read<FavoritesCubit>()
-                    .getUserFavoritePosts(state.data!.name)
-                : null,
-            builder: (context, state) {
-              if (state.status == LoadStatus.success) {
-                final profile = state.data!;
-                return CustomScrollView(
-                  slivers: <Widget>[
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: [
-                          ListTile(
-                            dense: true,
-                            leading: const Text('profile.user_id').tr(),
-                            trailing: Text(
-                              profile.id.toString(),
-                            ),
+          listener: (context, state) => state.status == LoadStatus.success
+              ? ReadContext(context)
+                  .read<FavoritesCubit>()
+                  .getUserFavoritePosts(state.data!.name)
+              : null,
+          builder: (context, state) {
+            if (state.status == LoadStatus.success) {
+              final profile = state.data!;
+
+              return CustomScrollView(
+                slivers: <Widget>[
+                  SliverToBoxAdapter(
+                    child: Column(
+                      children: [
+                        ListTile(
+                          dense: true,
+                          leading: const Text('profile.user_id').tr(),
+                          trailing: Text(
+                            profile.id.toString(),
                           ),
-                          ListTile(
-                            dense: true,
-                            leading: const Text('profile.level').tr(),
-                            trailing: Text(
-                              profile.levelString,
-                            ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          leading: const Text('profile.level').tr(),
+                          trailing: Text(
+                            profile.levelString,
                           ),
-                          ListTile(
-                            dense: true,
-                            leading: const Text('profile.favorites_count').tr(),
-                            trailing: Text(
-                              profile.favoriteCount.toString(),
-                            ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          leading: const Text('profile.favorites_count').tr(),
+                          trailing: Text(
+                            profile.favoriteCount.toString(),
                           ),
-                          ListTile(
-                            dense: true,
-                            leading: const Text('profile.comments_count').tr(),
-                            trailing: Text(
-                              profile.commentCount.toString(),
-                            ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          leading: const Text('profile.comments_count').tr(),
+                          trailing: Text(
+                            profile.commentCount.toString(),
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                );
-              } else if (state.status == LoadStatus.failure) {
-                return const Center(
-                  child: Text('Fail to load profile'),
-                );
-              } else {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-            }),
+                  ),
+                ],
+              );
+            } else if (state.status == LoadStatus.failure) {
+              return const Center(
+                child: Text('Fail to load profile'),
+              );
+            } else {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          },
+        ),
       ),
     );
   }

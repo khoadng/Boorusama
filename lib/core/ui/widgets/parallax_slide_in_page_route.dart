@@ -8,23 +8,26 @@ RouteTransitionsBuilder parallaxSlideInTransitionBuilder(
     (context, animation, secondaryAnimation, child) => Stack(
           children: <Widget>[
             SlideTransition(
-                position: Tween<Offset>(
-                  begin: Offset.zero,
-                  end: const Offset(-1, 0),
-                ).animate(
-                  CurvedAnimation(
-                      parent: animation, curve: Curves.fastOutSlowIn),
+              position: Tween<Offset>(
+                begin: Offset.zero,
+                end: const Offset(-1, 0),
+              ).animate(
+                CurvedAnimation(
+                  parent: animation,
+                  curve: Curves.fastOutSlowIn,
                 ),
-                child: oldWidget),
+              ),
+              child: oldWidget,
+            ),
             SlideTransition(
-                position: Tween<Offset>(
-                  begin: const Offset(1, 0),
-                  end: Offset.zero,
-                ).animate(
-                  CurvedAnimation(
-                      parent: animation, curve: Curves.fastOutSlowIn),
-                ),
-                child: enterWidget),
+              position: Tween<Offset>(
+                begin: const Offset(1, 0),
+                end: Offset.zero,
+              ).animate(
+                CurvedAnimation(parent: animation, curve: Curves.fastOutSlowIn),
+              ),
+              child: enterWidget,
+            ),
           ],
         );
 

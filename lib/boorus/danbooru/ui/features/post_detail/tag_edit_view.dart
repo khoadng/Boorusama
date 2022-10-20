@@ -37,7 +37,7 @@ class TagEditView extends StatelessWidget {
           IconButton(
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
       body: Column(
@@ -47,8 +47,10 @@ class TagEditView extends StatelessWidget {
               slivers: [
                 SliverToBoxAdapter(
                   child: WarningContainer(
-                      contentBuilder: (context) => const Text(
-                          'Before editing, read the how to tag guide.')),
+                    contentBuilder: (context) => const Text(
+                      'Before editing, read the how to tag guide.',
+                    ),
+                  ),
                 ),
                 SliverToBoxAdapter(
                   child: Padding(
@@ -67,9 +69,10 @@ class TagEditView extends StatelessWidget {
                   ),
                 ),
                 const SliverToBoxAdapter(
-                    child: Divider(
-                  thickness: 2,
-                )),
+                  child: Divider(
+                    thickness: 2,
+                  ),
+                ),
                 BlocBuilder<ThemeBloc, ThemeState>(
                   builder: (context, themeState) {
                     return SliverList(
@@ -108,16 +111,17 @@ class TagEditView extends StatelessWidget {
               onTap: () {
                 final bloc = context.read<PostDetailBloc>();
                 showBarModalBottomSheet(
-                    context: context,
-                    builder: (context) => SimpleTagSearchView(
-                          onSelected: (tag) {
-                            bloc.add(PostDetailTagUpdated(
-                              tag: tag.value,
-                              category: tag.category?.getIndex(),
-                              postId: post.id,
-                            ));
-                          },
-                        ));
+                  context: context,
+                  builder: (context) => SimpleTagSearchView(
+                    onSelected: (tag) {
+                      bloc.add(PostDetailTagUpdated(
+                        tag: tag.value,
+                        category: tag.category?.getIndex(),
+                        postId: post.id,
+                      ));
+                    },
+                  ),
+                );
               },
             ),
           ),
@@ -146,6 +150,7 @@ class SimpleTagSearchView extends StatelessWidget {
         builder: (context, state) {
           final tags =
               state.suggestionTags.where((e) => e.category != null).toList();
+
           return Scaffold(
             body: Column(
               children: [

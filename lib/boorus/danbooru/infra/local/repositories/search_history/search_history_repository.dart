@@ -44,6 +44,7 @@ class SearchHistoryRepositoryHive implements SearchHistoryRepository {
   @override
   Future<bool> clearAll() async {
     final count = await db.clear();
+
     return count > 0;
   }
 }

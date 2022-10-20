@@ -45,7 +45,7 @@ class PoolTiles extends StatelessWidget {
                 size: 12,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

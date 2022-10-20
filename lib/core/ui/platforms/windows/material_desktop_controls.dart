@@ -146,7 +146,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         iconData: Icons.speed,
         title: chewieController.optionsTranslation?.playbackSpeedButtonText ??
             'Playback speed',
-      )
+      ),
     ];
 
     if (chewieController.subtitle != null &&

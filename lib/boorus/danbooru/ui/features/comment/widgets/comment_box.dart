@@ -85,10 +85,11 @@ class _CommentBoxState extends State<CommentBox> {
                     }
 
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CommentCreatePage(
-                              postId: widget.postId,
-                              initialContent: initialContent,
-                            )));
+                      builder: (context) => CommentCreatePage(
+                        postId: widget.postId,
+                        initialContent: initialContent,
+                      ),
+                    ));
                     widget.isEditing.value = false;
                   },
                 ),

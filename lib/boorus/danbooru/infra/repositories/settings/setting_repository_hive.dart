@@ -28,6 +28,7 @@ class SettingRepositoryHive implements SettingRepository {
     final json = jsonDecode(jsonString);
     try {
       final settings = Settings.fromJson(json);
+
       return settings;
     } catch (e) {
       return Settings.defaultSettings;

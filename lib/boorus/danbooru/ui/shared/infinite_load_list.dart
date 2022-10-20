@@ -105,12 +105,14 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
+
     return currentScroll >= (maxScroll * widget.limit);
   }
 
   bool get _isTop {
     if (!_scrollController.hasClients) return false;
     final currentScroll = _scrollController.offset;
+
     return currentScroll == 0;
   }
 
@@ -124,8 +126,9 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
           child: widget.extendBody
               ? Padding(
                   padding: EdgeInsets.only(
-                      bottom: widget.extendBodyHeight ??
-                          kBottomNavigationBarHeight),
+                    bottom:
+                        widget.extendBodyHeight ?? kBottomNavigationBarHeight,
+                  ),
                   child: FloatingActionButton(
                     heroTag: null,
                     child: const FaIcon(FontAwesomeIcons.angleUp),

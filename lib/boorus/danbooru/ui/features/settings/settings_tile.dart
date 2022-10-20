@@ -27,29 +27,31 @@ class SettingsTile<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: leading,
-        subtitle: subtitle,
-        title: title,
-        trailing: DropdownButtonHideUnderline(
-          child: DropdownButton<T>(
-            alignment: AlignmentDirectional.centerEnd,
-            isDense: true,
-            value: selectedOption,
-            focusColor: Colors.transparent,
-            icon: const Padding(
-                padding: EdgeInsets.only(left: 5, top: 2),
-                child: FaIcon(FontAwesomeIcons.angleDown, size: 16)),
-            onChanged: (newValue) {
-              if (newValue != null) onChanged(newValue);
-            },
-            items: items.map<DropdownMenuItem<T>>((value) {
-              return DropdownMenuItem<T>(
-                value: value,
-                child: optionBuilder(value),
-              );
-            }).toList(),
+      leading: leading,
+      subtitle: subtitle,
+      title: title,
+      trailing: DropdownButtonHideUnderline(
+        child: DropdownButton<T>(
+          alignment: AlignmentDirectional.centerEnd,
+          isDense: true,
+          value: selectedOption,
+          focusColor: Colors.transparent,
+          icon: const Padding(
+            padding: EdgeInsets.only(left: 5, top: 2),
+            child: FaIcon(FontAwesomeIcons.angleDown, size: 16),
           ),
-        ));
+          onChanged: (newValue) {
+            if (newValue != null) onChanged(newValue);
+          },
+          items: items.map<DropdownMenuItem<T>>((value) {
+            return DropdownMenuItem<T>(
+              value: value,
+              child: optionBuilder(value),
+            );
+          }).toList(),
+        ),
+      ),
+    );
     // }
   }
 }

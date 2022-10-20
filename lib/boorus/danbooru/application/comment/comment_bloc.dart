@@ -15,31 +15,32 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
       await tryAsync<List<Comment>>(
-          action: () => commentRepository.getCommentsFromPostId(event.postId),
-          onFailure: (stackTrace, error) =>
-              emit(state.copyWith(status: LoadStatus.failure)),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-          onSuccess: (comments) async {
-            final commentList = comments.where((c) => c.isDeleted == false);
-            final votes = await commentVoteRepository
-                .getCommentVotes(commentList.map((e) => e.id).toList());
+        action: () => commentRepository.getCommentsFromPostId(event.postId),
+        onFailure: (stackTrace, error) =>
+            emit(state.copyWith(status: LoadStatus.failure)),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
+        onSuccess: (comments) async {
+          final commentList = comments.where((c) => !c.isDeleted);
+          final votes = await commentVoteRepository
+              .getCommentVotes(commentList.map((e) => e.id).toList());
 
-            final account = await accountRepository.get();
-            final commentData = commentList
-                .map((e) => commentDataFrom(
-                      e,
-                      e.creator,
-                      account,
-                      votes,
-                    ))
-                .toList();
+          final account = await accountRepository.get();
+          final commentData = commentList
+              .map((e) => commentDataFrom(
+                    e,
+                    e.creator,
+                    account,
+                    votes,
+                  ))
+              .toList();
 
-            emit(state.copyWith(
-              comments: commentData..sort((a, b) => a.id.compareTo(b.id)),
-              hiddenComments: [],
-              status: LoadStatus.success,
-            ));
-          });
+          emit(state.copyWith(
+            comments: commentData..sort((a, b) => a.id.compareTo(b.id)),
+            hiddenComments: [],
+            status: LoadStatus.success,
+          ));
+        },
+      );
     });
 
     on<CommentSent>((event, emit) async {
@@ -152,5 +153,6 @@ int _getScore(CommentVoteState state, int initialScore, int vote) {
   // CURRENT: score = 1 -> vote down -> score = 0
   if (state == CommentVoteState.downvoted) return initialScore + vote;
   if (state == CommentVoteState.upvoted) return initialScore + vote;
+
   return initialScore;
 }

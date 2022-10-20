@@ -98,7 +98,9 @@ class PostFavoriteInfoBloc
             ));
 
             final favs = await favoritePostRepository.getFavorites(
-                event.postId, state.page);
+              event.postId,
+              state.page,
+            );
 
             final users = await userRepository
                 .getUsersByIdStringComma(favs.map((e) => e.userId).join(','));

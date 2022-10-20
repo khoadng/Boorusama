@@ -38,6 +38,7 @@ class _PostImageState extends State<PostImage> {
     );
     myImage.image
         .resolve(const ImageConfiguration())
+        // ignore: no-empty-block
         .addListener(ImageStreamListener((_, __) {}));
     super.initState();
   }

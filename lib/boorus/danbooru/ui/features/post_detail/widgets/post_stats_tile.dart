@@ -164,11 +164,9 @@ class _StatButton extends StatelessWidget {
 }
 
 String _generatePercentText(Post post) {
-  if (post.totalVote > 0) {
-    return '(${(post.upvotePercent * 100).toInt()}% upvoted)';
-  } else {
-    return '';
-  }
+  return post.totalVote > 0
+      ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
+      : '';
 }
 
 class VoterView extends StatefulWidget {
@@ -208,6 +206,7 @@ class _VoterViewState extends State<VoterView> {
     if (!scrollController.hasClients) return false;
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.offset;
+
     return currentScroll >= (maxScroll * 0.9);
   }
 
@@ -220,7 +219,7 @@ class _VoterViewState extends State<VoterView> {
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
       body: BlocBuilder<PostVoteInfoBloc, PostVoteInfoState>(
@@ -230,21 +229,23 @@ class _VoterViewState extends State<VoterView> {
                 controller: scrollController,
                 slivers: [
                   SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final voter = state.upvoters[index];
-                      return InfoTile(
-                        title: voter.user.name,
-                        level: voter.user.level,
-                      );
-                    },
-                    childCount: state.upvoters.length,
-                  )),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final voter = state.upvoters[index];
+
+                        return InfoTile(
+                          title: voter.user.name,
+                          level: voter.user.level,
+                        );
+                      },
+                      childCount: state.upvoters.length,
+                    ),
+                  ),
                   if (state.loading)
                     const SliverToBoxAdapter(
                       child:
                           Center(child: CircularProgressIndicator.adaptive()),
-                    )
+                    ),
                 ],
               ),
       ),
@@ -311,6 +312,7 @@ class _FavoriterViewState extends State<FavoriterView> {
     if (!scrollController.hasClients) return false;
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.offset;
+
     return currentScroll >= (maxScroll * 0.9);
   }
 
@@ -323,7 +325,7 @@ class _FavoriterViewState extends State<FavoriterView> {
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
       body: BlocBuilder<PostFavoriteInfoBloc, PostFavoriteInfoState>(
@@ -333,23 +335,25 @@ class _FavoriterViewState extends State<FavoriterView> {
                 controller: scrollController,
                 slivers: [
                   SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final user = state.favoriters[index];
-                      return ListTile(
-                        title: Text(
-                          user.name,
-                          style: TextStyle(color: Color(user.level.hexColor)),
-                        ),
-                      );
-                    },
-                    childCount: state.favoriters.length,
-                  )),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final user = state.favoriters[index];
+
+                        return ListTile(
+                          title: Text(
+                            user.name,
+                            style: TextStyle(color: Color(user.level.hexColor)),
+                          ),
+                        );
+                      },
+                      childCount: state.favoriters.length,
+                    ),
+                  ),
                   if (state.loading)
                     const SliverToBoxAdapter(
                       child:
                           Center(child: CircularProgressIndicator.adaptive()),
-                    )
+                    ),
                 ],
               ),
       ),

@@ -12,6 +12,7 @@ class PostFileNameGenerator implements FileNameGenerator<Post> {
     final fileName =
         '${generateFullReadableName(item)} - ${path.basename(item.downloadUrl)}'
             .fixInvalidCharacterForPathName();
+
     return fileName;
   }
 }

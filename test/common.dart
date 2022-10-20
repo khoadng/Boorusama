@@ -12,6 +12,7 @@ AccountRepository mockAccountRepo({
 }) {
   final repo = MockAccountRepo();
   when(() => repo.get()).thenAnswer((_) async => account ?? Account.empty);
+
   return repo;
 }
 
@@ -35,5 +36,6 @@ UserRepository mockUserRepo(List<String> tags) {
 
   when(() => repo.setUserBlacklistedTags(any(), any()))
       .thenAnswer((_) async => true);
+
   return repo;
 }

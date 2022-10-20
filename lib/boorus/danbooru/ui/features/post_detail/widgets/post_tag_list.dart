@@ -87,8 +87,9 @@ class PostTagList extends StatelessWidget {
                 //     value: 'blacklist',
                 //     child: const Text('post.detail.add_to_blacklist').tr()),
                 PopupMenuItem(
-                    value: 'wiki',
-                    child: const Text('post.detail.open_wiki').tr()),
+                  value: 'wiki',
+                  child: const Text('post.detail.open_wiki').tr(),
+                ),
               ],
               onSelected: (value) {
                 if (value == 'blacklist') {
@@ -145,21 +146,25 @@ class SimplePostTagList extends StatelessWidget {
               ...tags
                   .where((e) => e.category == TagAutocompleteCategory.artist()),
               ...tags.where(
-                  (e) => e.category == TagAutocompleteCategory.copyright()),
+                (e) => e.category == TagAutocompleteCategory.copyright(),
+              ),
               ...tags.where(
-                  (e) => e.category == TagAutocompleteCategory.character()),
+                (e) => e.category == TagAutocompleteCategory.character(),
+              ),
               ...tags.where(
-                  (e) => e.category == TagAutocompleteCategory.general()),
+                (e) => e.category == TagAutocompleteCategory.general(),
+              ),
               ...tags
                   .where((e) => e.category == TagAutocompleteCategory.meta()),
             ].map((e) => _Tag(
-                rawName: e.name,
-                displayName: e.name.replaceAll('_', ' '),
-                category: TagCategory.meta,
-                color: getTagColor(
-                  TagCategory.values[e.category.getIndex()],
-                  themeState.theme,
-                )));
+                  rawName: e.name,
+                  displayName: e.name.replaceAll('_', ' '),
+                  category: TagCategory.meta,
+                  color: getTagColor(
+                    TagCategory.values[e.category.getIndex()],
+                    themeState.theme,
+                  ),
+                ));
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -174,11 +179,12 @@ class SimplePostTagList extends StatelessWidget {
                               //     value: 'blacklist',
                               //     child: const Text('post.detail.add_to_blacklist').tr()),
                               PopupMenuItem(
-                                  value: 'wiki',
-                                  child:
-                                      const Text('post.detail.open_wiki').tr()),
+                                value: 'wiki',
+                                child: const Text('post.detail.open_wiki').tr(),
+                              ),
                             ],
                             onSelected: (value) {
+                              // ignore: no-empty-block
                               if (value == 'blacklist') {
                                 // onAddToBlacklisted(tag);
                               } else if (value == 'wiki') {
@@ -229,7 +235,9 @@ class _Badge extends StatelessWidget {
             color: Theme.of(context).cardColor,
           ),
           padding: EdgeInsets.symmetric(
-              horizontal: label.length < 6 ? 10 : 4, vertical: 4),
+            horizontal: label.length < 6 ? 10 : 4,
+            vertical: 4,
+          ),
           child: Text(
             label,
             style: TextStyle(
@@ -260,39 +268,43 @@ class _Chip extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Chip(
-                visualDensity:
-                    const VisualDensity(horizontal: -4, vertical: -4),
-                backgroundColor: getTagColor(tag.category, state.theme),
-                shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(8),
-                        bottomLeft: Radius.circular(8))),
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                      maxWidth: maxTagWidth ??
-                          MediaQuery.of(context).size.width * 0.70),
-                  child: Text(
-                    _getTagStringDisplayName(tag),
-                    overflow: TextOverflow.fade,
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: state.theme == ThemeMode.light
-                            ? Colors.white
-                            : Colors.white),
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              backgroundColor: getTagColor(tag.category, state.theme),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8),
+                  bottomLeft: Radius.circular(8),
+                ),
+              ),
+              label: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth:
+                      maxTagWidth ?? MediaQuery.of(context).size.width * 0.70,
+                ),
+                child: Text(
+                  _getTagStringDisplayName(tag),
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
-                )),
+                ),
+              ),
+            ),
             Chip(
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
               backgroundColor: Colors.grey[800],
               shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8))),
+                borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(8),
+                  bottomRight: Radius.circular(8),
+                ),
+              ),
               label: Text(
                 tag.postCount.toString(),
                 style: const TextStyle(color: Colors.white60, fontSize: 12),
               ),
-            )
+            ),
           ],
         );
       },
@@ -305,9 +317,11 @@ String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
     : tag.displayName;
 
 class _TagBlockTitle extends StatelessWidget {
-  const _TagBlockTitle(
-      {required this.title, Key? key, this.isFirstBlock = false})
-      : super(key: key);
+  const _TagBlockTitle({
+    required this.title,
+    Key? key,
+    this.isFirstBlock = false,
+  }) : super(key: key);
 
   final bool isFirstBlock;
   final String title;

@@ -97,7 +97,7 @@ class _SearchOptionsState extends State<SearchOptions>
                               Icons.edit,
                               size: 16,
                             ),
-                          )
+                          ),
                       ],
                     ),
                     IconButton(
@@ -111,7 +111,7 @@ class _SearchOptionsState extends State<SearchOptions>
                         FontAwesomeIcons.circleQuestion,
                         size: 18,
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -150,54 +150,54 @@ class _SearchOptionsState extends State<SearchOptions>
                         iconSize: 28,
                         splashRadius: 20,
                         onPressed: () {
-                          showAdaptiveBottomSheet(context,
-                              builder: (context) => Scaffold(
-                                    appBar: AppBar(
-                                      title: const Text('Metatags'),
-                                      automaticallyImplyLeading: false,
-                                      actions: [
-                                        IconButton(
-                                          onPressed: Navigator.of(context).pop,
-                                          icon: const Icon(Icons.close),
-                                        )
-                                      ],
+                          showAdaptiveBottomSheet(
+                            context,
+                            builder: (context) => Scaffold(
+                              appBar: AppBar(
+                                title: const Text('Metatags'),
+                                automaticallyImplyLeading: false,
+                                actions: [
+                                  IconButton(
+                                    onPressed: Navigator.of(context).pop,
+                                    icon: const Icon(Icons.close),
+                                  ),
+                                ],
+                              ),
+                              body: Column(
+                                children: [
+                                  InfoContainer(
+                                    contentBuilder: (context) =>
+                                        const Text('search.metatags_notice')
+                                            .tr(),
+                                  ),
+                                  Expanded(
+                                    child: ListView.builder(
+                                      itemCount: widget.metatags.length,
+                                      itemBuilder: (context, index) {
+                                        final tag = widget.metatags[index];
+
+                                        return ListTile(
+                                          onTap: () => setState(() {
+                                            Navigator.of(context).pop();
+                                            context
+                                                .read<UserMetatagRepository>()
+                                                .put(tag.name);
+                                          }),
+                                          title: Text(tag.name),
+                                          trailing: tag.isFree
+                                              ? const Chip(label: Text('Free'))
+                                              : null,
+                                        );
+                                      },
                                     ),
-                                    body: Column(
-                                      children: [
-                                        InfoContainer(
-                                            contentBuilder: (context) =>
-                                                const Text(
-                                                        'search.metatags_notice')
-                                                    .tr()),
-                                        Expanded(
-                                          child: ListView.builder(
-                                            itemCount: widget.metatags.length,
-                                            itemBuilder: (context, index) {
-                                              final tag =
-                                                  widget.metatags[index];
-                                              return ListTile(
-                                                onTap: () => setState(() {
-                                                  Navigator.of(context).pop();
-                                                  context
-                                                      .read<
-                                                          UserMetatagRepository>()
-                                                      .put(tag.name);
-                                                }),
-                                                title: Text(tag.name),
-                                                trailing: tag.isFree
-                                                    ? const Chip(
-                                                        label: Text('Free'))
-                                                    : null,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ));
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
                         },
                         icon: const Icon(Icons.add),
-                      )
+                      ),
                   ],
                 ),
               ),
@@ -232,25 +232,26 @@ class _SearchOptionsState extends State<SearchOptions>
                 child: BlocBuilder<SearchKeywordCubit,
                     AsyncLoadState<List<Search>>>(
                   builder: (context, state) {
-                    if (state.status != LoadStatus.success) {
-                      return const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      );
-                    } else {
-                      return Wrap(
-                        spacing: 4,
-                        runSpacing: -4,
-                        children: state.data!
-                            .take(15)
-                            .map((e) => GestureDetector(
-                                  onTap: () => widget.onTagTap?.call(e.keyword),
-                                  child: Chip(
-                                      label:
-                                          Text(e.keyword.replaceAll('_', ' '))),
-                                ))
-                            .toList(),
-                      );
-                    }
+                    return state.status != LoadStatus.success
+                        ? const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          )
+                        : Wrap(
+                            spacing: 4,
+                            runSpacing: -4,
+                            children: state.data!
+                                .take(15)
+                                .map((e) => GestureDetector(
+                                      onTap: () =>
+                                          widget.onTagTap?.call(e.keyword),
+                                      child: Chip(
+                                        label: Text(
+                                          e.keyword.replaceAll('_', ' '),
+                                        ),
+                                      ),
+                                    ))
+                                .toList(),
+                          );
                   },
                 ),
               ),

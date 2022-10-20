@@ -41,9 +41,11 @@ class BlacklistedTagsRepository {
         tagsToTagString(tags),
       );
       _cache = tags;
+
       return true;
     } catch (e) {
       _cache = null;
+
       return false;
     }
   }

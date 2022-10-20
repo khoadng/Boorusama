@@ -65,6 +65,7 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
 int displaySizeToGridCountWeight(ScreenSize size) {
   if (size == ScreenSize.small) return 1;
   if (size == ScreenSize.medium) return 2;
+
   return 3;
 }
 
@@ -100,14 +101,18 @@ class SliverPostGrid extends HookWidget {
       PaintingBinding.instance.imageCache.clearLiveImages();
     }));
 
-    useEffect(() {
-      return () => timer.value.cancel();
-    }, []);
+    useEffect(
+      () {
+        return () => timer.value.cancel();
+      },
+      [],
+    );
 
     // Clear live image cache everytime this widget built
     useEffect(() {
       PaintingBinding.instance.imageCache.clearLiveImages();
 
+      // ignore: no-empty-block
       return () {};
     });
 
@@ -128,6 +133,7 @@ class SliverPostGrid extends HookWidget {
           delegate: SliverChildBuilderDelegate(
             (context, index) {
               final post = posts[index];
+
               return Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -136,7 +142,8 @@ class SliverPostGrid extends HookWidget {
                       postData: post,
                       index: index,
                       borderRadius: BorderRadius.circular(
-                          state.settings.imageBorderRadius),
+                        state.settings.imageBorderRadius,
+                      ),
                       gridSize: gridSize,
                       scrollController: scrollController,
                       imageQuality: state.settings.imageQuality,
@@ -213,11 +220,12 @@ class SliverPostGridItem extends StatelessWidget {
     return CupertinoContextMenu(
       previewBuilder: (context, animation, child) => PostImage(
         imageUrl: getImageUrlForDisplay(
-            post,
-            getImageQuality(
-              size: gridSize,
-              presetImageQuality: imageQuality,
-            )),
+          post,
+          getImageQuality(
+            size: gridSize,
+            presetImageQuality: imageQuality,
+          ),
+        ),
         placeholderUrl: post.previewImageUrl,
         fit: BoxFit.contain,
       ),
@@ -235,53 +243,48 @@ class SliverPostGridItem extends StatelessWidget {
         FutureBuilder<Account>(
           future: gridContext.read<AccountRepository>().get(),
           builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data! != Account.empty) {
-              return CupertinoContextMenuAction(
-                trailingIcon: postData.isFavorited
-                    ? Icons.favorite
-                    : Icons.favorite_outline,
-                onPressed: () async {
-                  Navigator.of(context).pop();
-
-                  final action = postData.isFavorited
-                      ? context
-                          .read<FavoritePostRepository>()
-                          .removeFromFavorites(post.id)
-                      : context
-                          .read<FavoritePostRepository>()
-                          .addToFavorites(post.id);
-
-                  final success = await action;
-                  final successMsg = postData.isFavorited
-                      ? 'favorites.unfavorited'
-                      : 'favorites.favorited';
-                  final failMsg = postData.isFavorited
-                      ? 'favorites.fail_to_unfavorite'
-                      : 'favorites.fail_to_favorite';
-
-                  if (success) {
-                    onFavoriteUpdated.call(post.id, !postData.isFavorited);
-                    showSimpleSnackBar(
-                      context: gridContext,
-                      content: Text(successMsg).tr(),
-                      duration: const Duration(seconds: 1),
-                    );
-                  } else {
-                    showSimpleSnackBar(
-                      context: gridContext,
-                      content: Text(failMsg).tr(),
-                      duration: const Duration(seconds: 2),
-                    );
-                  }
-                },
-                child: Text(postData.isFavorited
-                        ? 'favorites.unfavorite'
-                        : 'favorites.favorite')
-                    .tr(),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
+            return snapshot.hasData && snapshot.data! != Account.empty
+                ? CupertinoContextMenuAction(
+                    trailingIcon: postData.isFavorited
+                        ? Icons.favorite
+                        : Icons.favorite_outline,
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      final action = postData.isFavorited
+                          ? context
+                              .read<FavoritePostRepository>()
+                              .removeFromFavorites(post.id)
+                          : context
+                              .read<FavoritePostRepository>()
+                              .addToFavorites(post.id);
+                      final success = await action;
+                      final successMsg = postData.isFavorited
+                          ? 'favorites.unfavorited'
+                          : 'favorites.favorited';
+                      final failMsg = postData.isFavorited
+                          ? 'favorites.fail_to_unfavorite'
+                          : 'favorites.fail_to_favorite';
+                      if (success) {
+                        onFavoriteUpdated.call(post.id, !postData.isFavorited);
+                        showSimpleSnackBar(
+                          context: gridContext,
+                          content: Text(successMsg).tr(),
+                          duration: const Duration(seconds: 1),
+                        );
+                      } else {
+                        showSimpleSnackBar(
+                          context: gridContext,
+                          content: Text(failMsg).tr(),
+                          duration: const Duration(seconds: 2),
+                        );
+                      }
+                    },
+                    child: Text(postData.isFavorited
+                            ? 'favorites.unfavorite'
+                            : 'favorites.favorite')
+                        .tr(),
+                  )
+                : const SizedBox.shrink();
           },
         ),
         if (post.isTranslated)
@@ -305,18 +308,19 @@ class SliverPostGridItem extends StatelessWidget {
           children: [
             PostImage(
               imageUrl: getImageUrlForDisplay(
-                  post,
-                  getImageQuality(
-                    size: gridSize,
-                    presetImageQuality: imageQuality,
-                  )),
+                post,
+                getImageQuality(
+                  size: gridSize,
+                  presetImageQuality: imageQuality,
+                ),
+              ),
               placeholderUrl: post.previewImageUrl,
               borderRadius: borderRadius,
             ),
             Padding(
               padding: const EdgeInsets.only(top: 1, left: 1),
               child: _buildOverlayIcon(),
-            )
+            ),
           ],
         ),
       ),

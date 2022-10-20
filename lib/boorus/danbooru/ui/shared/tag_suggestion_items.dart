@@ -39,11 +39,14 @@ class TagSuggestionItems extends StatelessWidget {
             itemCount: _tags.length,
             itemBuilder: (context, index) {
               final tag = _tags[index];
+
               return ListTile(
                 onTap: () => onItemTap(_tags[index]),
                 trailing: tag.hasCount
-                    ? Text(NumberFormat.compact().format(tag.postCount),
-                        style: const TextStyle(color: Colors.grey))
+                    ? Text(
+                        NumberFormat.compact().format(tag.postCount),
+                        style: const TextStyle(color: Colors.grey),
+                      )
                     : null,
                 title: _getTitle(tag, state.theme, currentQuery),
               );
@@ -125,69 +128,55 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                     (tag) => ListTile(
                       onTap: () => onItemTap(tag),
                       trailing: tag.hasCount
-                          ? Text(NumberFormat.compact().format(tag.postCount),
-                              style: const TextStyle(color: Colors.grey))
+                          ? Text(
+                              NumberFormat.compact().format(tag.postCount),
+                              style: const TextStyle(color: Colors.grey),
+                            )
                           : null,
                       title: BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) => _getTitle(tag, state.theme,
-                            currentQuery.replaceAll('_', ' ')),
+                        builder: (context, state) => _getTitle(
+                          tag,
+                          state.theme,
+                          currentQuery.replaceAll('_', ' '),
+                        ),
                       ),
                     ),
                   )
-                  .toList()
+                  .toList(),
             ],
           ),
-        )
+        ),
       ],
     );
   }
 }
 
 Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
-  if (tag.hasAlias) {
-    return Html(
-      style: {
-        'p': Style(
-          fontSize: FontSize.medium,
-          color: _getTagColor(tag, theme),
-        ),
-        'body': Style(
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-        ),
-        'b': Style(
-          fontWeight: FontWeight.w900,
-        ),
-      },
-      data: '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(
-            currentQuery,
-            '<b>$currentQuery</b>',
-          )} ➞ ${tag.label.replaceAll(
-        currentQuery,
-        '<b>$currentQuery</b>',
-      )}</p>',
-    );
-  } else {
-    return Html(
-      style: {
-        'p': Style(
-          fontSize: FontSize.medium,
-          color: _getTagColor(tag, theme),
-        ),
-        'body': Style(
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-        ),
-        'b': Style(
-          fontWeight: FontWeight.w900,
-        ),
-      },
-      data: '<p>${tag.label.replaceAll(
-        currentQuery,
-        '<b>$currentQuery</b>',
-      )}</p>',
-    );
-  }
+  return tag.hasAlias
+      ? Html(
+          style: {
+            'p': Style(
+              fontSize: FontSize.medium,
+              color: _getTagColor(tag, theme),
+            ),
+            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'b': Style(fontWeight: FontWeight.w900),
+          },
+          data:
+              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(currentQuery, '<b>$currentQuery</b>')} ➞ ${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+        )
+      : Html(
+          style: {
+            'p': Style(
+              fontSize: FontSize.medium,
+              color: _getTagColor(tag, theme),
+            ),
+            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'b': Style(fontWeight: FontWeight.w900),
+          },
+          data:
+              '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+        );
 }
 
 Color? _getTagColor(AutocompleteData tag, ThemeMode theme) {

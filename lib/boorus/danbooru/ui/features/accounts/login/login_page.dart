@@ -32,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               WarningContainer(
-                  contentBuilder: (context) => const Text('login.notice').tr()),
+                contentBuilder: (context) => const Text('login.notice').tr(),
+              ),
               const Center(
                 child: LoginBox(),
               ),

@@ -152,6 +152,7 @@ class ArtistCommentaryPlaceholder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -161,8 +162,9 @@ class ArtistCommentaryPlaceholder extends StatelessWidget {
             margin: EdgeInsets.only(right: width * 0.4),
             height: 20,
             decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8)),
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
         ),
         ...List.generate(
@@ -183,20 +185,17 @@ class ArtistCommentaryPlaceholder extends StatelessWidget {
 }
 
 ArtistCommentaryTranlationState getTranslationNextState(
-    ArtistCommentaryTranlationState currentState) {
-  if (currentState == ArtistCommentaryTranlationState.translated) {
-    return ArtistCommentaryTranlationState.original;
-  } else {
-    return ArtistCommentaryTranlationState.translated;
-  }
+  ArtistCommentaryTranlationState currentState,
+) {
+  return currentState == ArtistCommentaryTranlationState.translated
+      ? ArtistCommentaryTranlationState.original
+      : ArtistCommentaryTranlationState.translated;
 }
 
 String getTranslationText(ArtistCommentaryTranlationState currentState) {
-  if (currentState == ArtistCommentaryTranlationState.translated) {
-    return 'post.detail.show_original';
-  } else {
-    return 'post.detail.show_translated';
-  }
+  return currentState == ArtistCommentaryTranlationState.translated
+      ? 'post.detail.show_original'
+      : 'post.detail.show_translated';
 }
 
 String getDescriptionText(
@@ -209,8 +208,10 @@ String getDescriptionText(
   final titleOriginal = artistCommentary.originalTitle != ''
       ? '<h2>${artistCommentary.originalTitle}</h2>'
       : '';
+
   return parseTextToHtml(
-      currentState == ArtistCommentaryTranlationState.translated
-          ? '$titleTranslated${artistCommentary.translatedDescription}'
-          : '$titleOriginal${artistCommentary.originalDescription}');
+    currentState == ArtistCommentaryTranlationState.translated
+        ? '$titleTranslated${artistCommentary.translatedDescription}'
+        : '$titleOriginal${artistCommentary.originalDescription}',
+  );
 }

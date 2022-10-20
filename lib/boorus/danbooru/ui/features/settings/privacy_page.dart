@@ -31,22 +31,27 @@ class PrivacyPage extends StatelessWidget {
                 )
               : null,
           body: SafeArea(
-              child: Column(children: [
-            ListTile(
-              title: const Text('settings.privacy.send_error_data_notice').tr(),
-              trailing: Switch(
-                activeColor: Theme.of(context).colorScheme.primary,
-                value: state.settings.dataCollectingStatus ==
-                    DataCollectingStatus.allow,
-                onChanged: (value) {
-                  context.read<SettingsCubit>().update(state.settings.copyWith(
-                      dataCollectingStatus: value
-                          ? DataCollectingStatus.allow
-                          : DataCollectingStatus.prohibit));
-                },
+            child: Column(children: [
+              ListTile(
+                title:
+                    const Text('settings.privacy.send_error_data_notice').tr(),
+                trailing: Switch(
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  value: state.settings.dataCollectingStatus ==
+                      DataCollectingStatus.allow,
+                  onChanged: (value) {
+                    context
+                        .read<SettingsCubit>()
+                        .update(state.settings.copyWith(
+                          dataCollectingStatus: value
+                              ? DataCollectingStatus.allow
+                              : DataCollectingStatus.prohibit,
+                        ));
+                  },
+                ),
               ),
-            ),
-          ])),
+            ]),
+          ),
         );
       },
     );

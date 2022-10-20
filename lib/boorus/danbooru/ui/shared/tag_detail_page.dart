@@ -43,17 +43,14 @@ class _TagDetailPageState extends State<TagDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    if (Screen.of(context).size == ScreenSize.small) {
-      return Scaffold(
-        body: Stack(
-          children: [
-            _Panel(
-              tagName: widget.tagName,
-              scrollController: scrollController,
-              header: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+    return Screen.of(context).size == ScreenSize.small
+        ? Scaffold(
+            body: Stack(children: [
+              _Panel(
+                tagName: widget.tagName,
+                scrollController: scrollController,
+                header: [
+                  Column(mainAxisSize: MainAxisSize.min, children: [
                     Text(
                       widget.tagName.removeUnderscoreWithSpace(),
                       style: Theme.of(context).textTheme.headline6!.copyWith(
@@ -62,24 +59,17 @@ class _TagDetailPageState extends State<TagDetailPage> {
                           ),
                     ),
                     widget.otherNamesBuilder(context),
-                  ],
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-    } else {
-      return Scaffold(
-        body: Row(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width * 0.3,
-              child: Stack(
-                children: [
+                  ]),
+                  const SizedBox(height: 50),
+                ],
+              ),
+            ]),
+          )
+        : Scaffold(
+            body: Row(children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.3,
+                child: Stack(children: [
                   Align(
                     alignment: const Alignment(-0.9, -0.9),
                     child: IconButton(
@@ -89,40 +79,30 @@ class _TagDetailPageState extends State<TagDetailPage> {
                   ),
                   Align(
                     alignment: Alignment.centerLeft,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const SizedBox(height: 70),
-                        Text(
-                          widget.tagName.removeUnderscoreWithSpace(),
-                          style:
-                              Theme.of(context).textTheme.headline6!.copyWith(
-                                    fontWeight: FontWeight.w900,
-                                    color: Colors.white,
-                                  ),
-                        ),
-                        Expanded(child: widget.otherNamesBuilder(context)),
-                      ],
-                    ),
+                    child: Column(mainAxisSize: MainAxisSize.min, children: [
+                      const SizedBox(height: 70),
+                      Text(
+                        widget.tagName.removeUnderscoreWithSpace(),
+                        style: Theme.of(context).textTheme.headline6!.copyWith(
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                            ),
+                      ),
+                      Expanded(child: widget.otherNamesBuilder(context)),
+                    ]),
                   ),
-                ],
+                ]),
               ),
-            ),
-            const VerticalDivider(
-              width: 3,
-              thickness: 2,
-            ),
-            Expanded(
-              child: _Panel(
-                useSliverAppBar: false,
-                tagName: widget.tagName,
-                scrollController: scrollController,
+              const VerticalDivider(width: 3, thickness: 2),
+              Expanded(
+                child: _Panel(
+                  useSliverAppBar: false,
+                  tagName: widget.tagName,
+                  scrollController: scrollController,
+                ),
               ),
-            ),
-          ],
-        ),
-      );
-    }
+            ]),
+          );
   }
 }
 
@@ -181,8 +161,10 @@ class _PanelState extends State<_Panel> {
                       tag: widget.tagName,
                       fetcher: SearchedPostFetcher.fromTags(widget.tagName),
                     ));
-                Future.delayed(const Duration(milliseconds: 500),
-                    () => controller.refreshCompleted());
+                Future.delayed(
+                  const Duration(milliseconds: 500),
+                  () => controller.refreshCompleted(),
+                );
               },
               builder: (context, controller) => CustomScrollView(
                 controller: controller,
@@ -224,20 +206,15 @@ class _PanelState extends State<_Panel> {
                   HomePostGrid(controller: controller),
                   BlocBuilder<PostBloc, PostState>(
                     builder: (context, state) {
-                      if (state.status == LoadStatus.loading) {
-                        return const SliverPadding(
-                          padding: EdgeInsets.only(bottom: 20, top: 20),
-                          sliver: SliverToBoxAdapter(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const SliverToBoxAdapter(
-                          child: SizedBox.shrink(),
-                        );
-                      }
+                      return state.status == LoadStatus.loading
+                          ? const SliverPadding(
+                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              sliver: SliverToBoxAdapter(
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              ),
+                            )
+                          : const SliverToBoxAdapter(child: SizedBox.shrink());
                     },
                   ),
                 ],
@@ -257,6 +234,7 @@ enum TagFilterCategory {
 
 PostsOrder _tagFilterCategoryToPostsOrder(TagFilterCategory category) {
   if (category == TagFilterCategory.popular) return PostsOrder.popular;
+
   return PostsOrder.newest;
 }
 
@@ -324,63 +302,66 @@ class TagOtherNames extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Screen.of(context).size == ScreenSize.small) {
-      return Tags(
-        heightHorizontalScroll: 40,
-        spacing: 2,
-        horizontalScroll: true,
-        alignment: WrapAlignment.start,
-        runAlignment: WrapAlignment.start,
-        itemCount: otherNames.length,
-        itemBuilder: (index) {
-          return Chip(
-            shape: const StadiumBorder(side: BorderSide(color: Colors.grey)),
-            padding: const EdgeInsets.all(4),
-            labelPadding: const EdgeInsets.all(1),
-            visualDensity: VisualDensity.compact,
-            label: ConstrainedBox(
-              constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width * 0.85),
-              child: Text(
-                otherNames[index].removeUnderscoreWithSpace(),
-                overflow: TextOverflow.fade,
-                style: const TextStyle(fontWeight: FontWeight.bold),
+    return Screen.of(context).size == ScreenSize.small
+        ? Tags(
+            heightHorizontalScroll: 40,
+            spacing: 2,
+            horizontalScroll: true,
+            alignment: WrapAlignment.start,
+            runAlignment: WrapAlignment.start,
+            itemCount: otherNames.length,
+            itemBuilder: (index) {
+              return Chip(
+                shape:
+                    const StadiumBorder(side: BorderSide(color: Colors.grey)),
+                padding: const EdgeInsets.all(4),
+                labelPadding: const EdgeInsets.all(1),
+                visualDensity: VisualDensity.compact,
+                label: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width * 0.85,
+                  ),
+                  child: Text(
+                    otherNames[index].removeUnderscoreWithSpace(),
+                    overflow: TextOverflow.fade,
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              );
+            },
+          )
+        : SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 2),
+              child: Wrap(
+                spacing: 5,
+                alignment: WrapAlignment.center,
+                runAlignment: WrapAlignment.center,
+                children: otherNames
+                    .map((e) => Chip(
+                          shape: const StadiumBorder(
+                            side: BorderSide(color: Colors.grey),
+                          ),
+                          padding: const EdgeInsets.all(4),
+                          labelPadding: const EdgeInsets.all(1),
+                          visualDensity: VisualDensity.compact,
+                          label: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxWidth:
+                                  MediaQuery.of(context).size.width * 0.85,
+                            ),
+                            child: Text(
+                              e.removeUnderscoreWithSpace(),
+                              overflow: TextOverflow.fade,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ))
+                    .toList(),
               ),
             ),
           );
-        },
-      );
-    } else {
-      return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2),
-          child: Wrap(
-            spacing: 5,
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
-            children: otherNames
-                .map(
-                  (e) => Chip(
-                    shape: const StadiumBorder(
-                        side: BorderSide(color: Colors.grey)),
-                    padding: const EdgeInsets.all(4),
-                    labelPadding: const EdgeInsets.all(1),
-                    visualDensity: VisualDensity.compact,
-                    label: ConstrainedBox(
-                      constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.85),
-                      child: Text(
-                        e.removeUnderscoreWithSpace(),
-                        overflow: TextOverflow.fade,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
-                )
-                .toList(),
-          ),
-        ),
-      );
-    }
   }
 }

@@ -64,43 +64,48 @@ class _SearchBarState extends State<SearchBar> {
           color: Theme.of(context).cardColor,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
           child: Theme(
-              data: Theme.of(context).copyWith(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-              ),
-              child: GestureDetector(
-                onTap: () => widget.onTap?.call(),
-                child: Row(
-                  children: [
-                    const SizedBox(width: 10),
-                    widget.leading ?? const SizedBox.shrink(),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: TextFormField(
-                        focusNode: widget.focus,
-                        onFieldSubmitted: (value) =>
-                            widget.onSubmitted?.call(value),
-                        onChanged: (value) => widget.onChanged?.call(value),
-                        enabled: widget.enabled,
-                        decoration: InputDecoration(
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            border: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            disabledBorder: InputBorder.none,
-                            contentPadding: const EdgeInsets.only(
-                                bottom: 11, top: 11, right: 15),
-                            hintText: widget.hintText ?? 'search.hint'.tr()),
-                        autofocus: widget.autofocus,
-                        controller: _textEditingController,
-                        style: Theme.of(context).inputDecorationTheme.hintStyle,
+            data: Theme.of(context).copyWith(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+            ),
+            child: GestureDetector(
+              onTap: () => widget.onTap?.call(),
+              child: Row(
+                children: [
+                  const SizedBox(width: 10),
+                  widget.leading ?? const SizedBox.shrink(),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: TextFormField(
+                      focusNode: widget.focus,
+                      onFieldSubmitted: (value) =>
+                          widget.onSubmitted?.call(value),
+                      onChanged: (value) => widget.onChanged?.call(value),
+                      enabled: widget.enabled,
+                      decoration: InputDecoration(
+                        floatingLabelBehavior: FloatingLabelBehavior.never,
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        errorBorder: InputBorder.none,
+                        disabledBorder: InputBorder.none,
+                        contentPadding: const EdgeInsets.only(
+                          bottom: 11,
+                          top: 11,
+                          right: 15,
+                        ),
+                        hintText: widget.hintText ?? 'search.hint'.tr(),
                       ),
+                      autofocus: widget.autofocus,
+                      controller: _textEditingController,
+                      style: Theme.of(context).inputDecorationTheme.hintStyle,
                     ),
-                    widget.trailing ?? const SizedBox.shrink(),
-                  ],
-                ),
-              )),
+                  ),
+                  widget.trailing ?? const SizedBox.shrink(),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

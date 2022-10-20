@@ -43,6 +43,7 @@ class _LazyIndexedStackState extends State<LazyIndexedStack> {
     final children = List.generate(_activated.length, (i) {
       return _activated[i] ? widget.children[i] : const SizedBox.shrink();
     });
+
     return IndexedStack(
       alignment: widget.alignment,
       sizing: widget.sizing,

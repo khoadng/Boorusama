@@ -36,7 +36,8 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
         ],
         automaticallyImplyLeading: false,
         title: Text(
-            '${'post.parent_child.children_of'.tr()} ${widget.parentPostId}'),
+          '${'post.parent_child.children_of'.tr()} ${widget.parentPostId}',
+        ),
       ),
       body: SafeArea(
         child: BlocBuilder<PostBloc, PostState>(
@@ -51,17 +52,21 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                       PostFetched(
                         tags: 'parent:${widget.parentPostId}',
                         fetcher: SearchedPostFetcher.fromTags(
-                            'parent:${widget.parentPostId}'),
+                          'parent:${widget.parentPostId}',
+                        ),
                       ),
                     ),
                 onRefresh: (controller) {
                   context.read<PostBloc>().add(PostRefreshed(
                         tag: 'parent:${widget.parentPostId}',
                         fetcher: SearchedPostFetcher.fromTags(
-                            'parent:${widget.parentPostId}'),
+                          'parent:${widget.parentPostId}',
+                        ),
                       ));
-                  Future.delayed(const Duration(milliseconds: 500),
-                      () => controller.refreshCompleted());
+                  Future.delayed(
+                    const Duration(milliseconds: 500),
+                    () => controller.refreshCompleted(),
+                  );
                 },
                 builder: (context, controller) => CustomScrollView(
                   controller: controller,
@@ -77,8 +82,10 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                           } else if (state.status == LoadStatus.success) {
                             if (state.posts.isEmpty) {
                               return const SliverToBoxAdapter(
-                                  child: NoDataBox());
+                                child: NoDataBox(),
+                              );
                             }
+
                             return SliverPostGrid(
                               posts: state.posts,
                               scrollController: controller,
@@ -94,7 +101,9 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                               onFavoriteUpdated: (postId, value) => context
                                   .read<PostBloc>()
                                   .add(PostFavoriteUpdated(
-                                      postId: postId, favorite: value)),
+                                    postId: postId,
+                                    favorite: value,
+                                  )),
                             );
                           } else if (state.status == LoadStatus.loading) {
                             return const SliverToBoxAdapter(

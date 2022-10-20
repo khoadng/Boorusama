@@ -57,11 +57,12 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
                       ),
                       const Expanded(child: Center()),
                       IconButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                            _handleSend(textEditingController.text);
-                          },
-                          icon: const Icon(Icons.send)),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          _handleSend(textEditingController.text);
+                        },
+                        icon: const Icon(Icons.send),
+                      ),
                     ],
                   ),
                 ),
@@ -72,7 +73,8 @@ class _CommentCreatePageState extends State<CommentCreatePage> {
                   child: TextField(
                     controller: textEditingController,
                     decoration: InputDecoration.collapsed(
-                        hintText: 'comment.create.hint'.tr()),
+                      hintText: 'comment.create.hint'.tr(),
+                    ),
                     autofocus: true,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,

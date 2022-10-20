@@ -67,13 +67,15 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(PostRefreshed(
-              tag: args[0],
-              fetcher: SearchedPostFetcher.fromTags(args[0]),
-            ))),
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            tag: args[0],
+            fetcher: SearchedPostFetcher.fromTags(args[0]),
+          )),
+      ),
       BlocProvider.value(
-          value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
+        value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0])),
+      ),
     ],
     child: ArtistPage(
       artistName: args[0],
@@ -91,13 +93,15 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(PostRefreshed(
-              tag: args[0],
-              fetcher: SearchedPostFetcher.fromTags(args[0]),
-            ))),
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            tag: args[0],
+            fetcher: SearchedPostFetcher.fromTags(args[0]),
+          )),
+      ),
       BlocProvider.value(
-          value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
+        value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0])),
+      ),
     ],
     child: CharacterPage(
       characterName: args[0],
@@ -171,14 +175,15 @@ final postDetailHandler = Handler(handlerFunc: (
             if (posts.isEmpty) return;
 
             postBloc.add(PostUpdated(
-                post: _newPost(
-              posts.first.post,
-              tag,
-              category,
-            )));
+              post: _newPost(
+                posts.first.post,
+                tag,
+                category,
+              ),
+            ));
           },
         ),
-      )
+      ),
     ],
     child: RepositoryProvider.value(
       value: context.read<TagRepository>(),
@@ -213,26 +218,33 @@ final postSearchHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => SearchHistoryCubit(
-              searchHistoryRepository:
-                  context.read<SearchHistoryRepository>())),
+        create: (context) => SearchHistoryCubit(
+          searchHistoryRepository: context.read<SearchHistoryRepository>(),
+        ),
+      ),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
-          create: (context) => TagSearchBloc(
-                tagInfo: context.read<TagInfo>(),
-                autocompleteRepository: context.read<AutocompleteRepository>(),
-              )),
+        create: (context) => TagSearchBloc(
+          tagInfo: context.read<TagInfo>(),
+          autocompleteRepository: context.read<AutocompleteRepository>(),
+        ),
+      ),
       BlocProvider(
-          create: (context) => SearchHistorySuggestionsBloc(
-              searchHistoryRepository:
-                  context.read<SearchHistoryRepository>())),
+        create: (context) => SearchHistorySuggestionsBloc(
+          searchHistoryRepository: context.read<SearchHistoryRepository>(),
+        ),
+      ),
       BlocProvider(
-          create: (context) => SearchBloc(
-              initial: const SearchState(displayState: DisplayState.options))),
+        create: (context) => SearchBloc(
+          initial: const SearchState(displayState: DisplayState.options),
+        ),
+      ),
       BlocProvider(
-          create: (context) => RelatedTagBloc(
-              relatedTagRepository: context.read<RelatedTagRepository>())),
+        create: (context) => RelatedTagBloc(
+          relatedTagRepository: context.read<RelatedTagRepository>(),
+        ),
+      ),
     ],
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,
@@ -251,9 +263,10 @@ final postDetailImageHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: context.read<NoteBloc>()
-            ..add(const NoteReset())
-            ..add(NoteRequested(postId: args[0].id))),
+        value: context.read<NoteBloc>()
+          ..add(const NoteReset())
+          ..add(NoteRequested(postId: args[0].id)),
+      ),
     ],
     child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
       selector: (state) => state.settings.imageQualityInFullView,
@@ -305,15 +318,17 @@ final poolDetailHandler =
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(
-              value: PoolDescriptionBloc(
-            endpoint: state.booru.url,
-            poolDescriptionRepository:
-                context.read<PoolDescriptionRepository>(),
-          )..add(PoolDescriptionFetched(poolId: pool.id))),
+            value: PoolDescriptionBloc(
+              endpoint: state.booru.url,
+              poolDescriptionRepository:
+                  context.read<PoolDescriptionRepository>(),
+            )..add(PoolDescriptionFetched(poolId: pool.id)),
+          ),
           BlocProvider(
-              create: (context) => NoteBloc(
-                  noteRepository:
-                      RepositoryProvider.of<NoteRepository>(context))),
+            create: (context) => NoteBloc(
+              noteRepository: RepositoryProvider.of<NoteRepository>(context),
+            ),
+          ),
         ],
         child: PoolDetailPage(
           pool: pool,
@@ -334,12 +349,14 @@ final favoritesHandler =
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => PostBloc.of(context)
-                ..add(PostRefreshed(
-                    tag: 'ordfav:$username',
-                    fetcher: SearchedPostFetcher.fromTags(
-                      'ordfav:$username',
-                    )))),
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                tag: 'ordfav:$username',
+                fetcher: SearchedPostFetcher.fromTags(
+                  'ordfav:$username',
+                ),
+              )),
+          ),
         ],
         child: FavoritesPage(
           username: username,
@@ -354,8 +371,9 @@ final blacklistedTagsHandler =
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: BlocProvider.of<BlacklistedTagsBloc>(context!)
-            ..add(const BlacklistedTagRequested())),
+        value: BlocProvider.of<BlacklistedTagsBloc>(context!)
+          ..add(const BlacklistedTagRequested()),
+      ),
     ],
     child: const BlacklistedTagsPage(),
   );

@@ -180,7 +180,7 @@ class BlacklistedTagsBloc
         final account = await accountRepository.get();
         final tags = [
           ...[...state.blacklistedTags]..remove(event.oldTag),
-          event.newTag
+          event.newTag,
         ];
         await tryAsync<bool>(
           action: () =>

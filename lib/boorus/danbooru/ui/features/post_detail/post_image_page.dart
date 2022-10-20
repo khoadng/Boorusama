@@ -77,11 +77,12 @@ class _PostImagePageState extends State<PostImagePage>
                 ),
                 if (!hide) ...[
                   ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: <Color>[
-                        const Color.fromARGB(16, 0, 0, 0),
-                        Colors.black12.withOpacity(0)
-                      ]),
+                    alignment: Alignment.topCenter,
+                    colors: <Color>[
+                      const Color.fromARGB(16, 0, 0, 0),
+                      Colors.black12.withOpacity(0),
+                    ],
+                  ),
                   _buildBackButton(),
                   ValueListenableBuilder<bool>(
                     valueListenable: fullsize,
@@ -91,7 +92,7 @@ class _PostImagePageState extends State<PostImagePage>
                   if (state.status == LoadStatus.success)
                     ...buildNotes(state.data!, widget.post)
                   else
-                    const SizedBox.shrink()
+                    const SizedBox.shrink(),
                 ],
               ],
             ),
@@ -120,6 +121,7 @@ class _PostImagePageState extends State<PostImagePage>
     Matrix4 endMatrix;
     final position = _doubleTapDetails!.localPosition;
 
+    // ignore: prefer-conditional-expressions
     if (_transformationController.value != Matrix4.identity()) {
       endMatrix = Matrix4.identity();
     } else {
@@ -229,6 +231,7 @@ class _PostImagePageState extends State<PostImagePage>
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
+
     return notes
         .map(
           (note) => PostNote(

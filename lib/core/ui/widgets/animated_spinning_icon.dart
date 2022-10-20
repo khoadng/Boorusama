@@ -15,6 +15,7 @@ class AnimatedSpinningIcon extends AnimatedWidget {
   @override
   Widget build(BuildContext context) {
     final animation = listenable as Animation<double>;
+
     return Transform.rotate(
       angle: animation.value,
       child: IconButton(

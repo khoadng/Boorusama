@@ -25,49 +25,39 @@ class BlacklistedTagsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (Screen.of(context).size == ScreenSize.small) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('blacklisted_tags.blacklisted_tags').tr(),
-          actions: [
-            _buildAddTagButton(),
-          ],
-        ),
-        body: SafeArea(
-          child: _buildTags(),
-        ),
-      );
-    } else {
-      return Scaffold(
-        body: Row(
-          children: [
-            SizedBox(
-              width: 300,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
+    return Screen.of(context).size == ScreenSize.small
+        ? Scaffold(
+            appBar: AppBar(
+              title: const Text('blacklisted_tags.blacklisted_tags').tr(),
+              actions: [_buildAddTagButton()],
+            ),
+            body: SafeArea(child: _buildTags()),
+          )
+        : Scaffold(
+            body: Row(children: [
+              SizedBox(
+                width: 300,
+                child: MultiBlocProvider(
+                  providers: [
+                    BlocProvider(
                       create: (context) => TagSearchBloc(
-                          tagInfo: context.read<TagInfo>(),
-                          autocompleteRepository:
-                              context.read<AutocompleteRepository>())),
-                ],
-                child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) {
+                        tagInfo: context.read<TagInfo>(),
+                        autocompleteRepository:
+                            context.read<AutocompleteRepository>(),
+                      ),
+                    ),
+                  ],
+                  child: BlacklistedTagsSearchPage(onSelectedDone: (tagItems) {
                     context.read<BlacklistedTagsBloc>().add(BlacklistedTagAdded(
                           tag: tagItems.map((e) => e.toString()).join(' '),
                         ));
-                  },
+                  }),
                 ),
               ),
-            ),
-            const VerticalDivider(),
-            Expanded(
-              child: _buildTags(),
-            )
-          ],
-        ),
-      );
-    }
+              const VerticalDivider(),
+              Expanded(child: _buildTags()),
+            ]),
+          );
   }
 
   Widget _buildTags() {
@@ -108,68 +98,71 @@ class BlacklistedTagsPage extends StatelessWidget {
           final tag = state.blacklistedTags[index];
 
           return ListTile(
-              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-              title: Text(tag),
-              trailing: PopupMenuButton(
-                constraints: const BoxConstraints(minWidth: 150),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4)),
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    padding: EdgeInsets.zero,
-                    child: ListTile(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        context
-                            .read<BlacklistedTagsBloc>()
-                            .add(BlacklistedTagRemoved(tag: tag));
-                      },
-                      title: const Text('blacklisted_tags.remove').tr(),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.trash,
-                        size: 16,
-                      ),
+            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+            title: Text(tag),
+            trailing: PopupMenuButton(
+              constraints: const BoxConstraints(minWidth: 150),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  padding: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      context
+                          .read<BlacklistedTagsBloc>()
+                          .add(BlacklistedTagRemoved(tag: tag));
+                    },
+                    title: const Text('blacklisted_tags.remove').tr(),
+                    trailing: const FaIcon(
+                      FontAwesomeIcons.trash,
+                      size: 16,
                     ),
                   ),
-                  PopupMenuItem(
-                    padding: EdgeInsets.zero,
-                    child: ListTile(
-                      onTap: () {
-                        final bloc = context.read<BlacklistedTagsBloc>();
-                        Navigator.of(context).pop();
-                        Navigator.of(context).push(ParallaxSlideInPageRoute(
-                          enterWidget: MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                  create: (context) => TagSearchBloc(
-                                      tagInfo: context.read<TagInfo>(),
-                                      autocompleteRepository: context
-                                          .read<AutocompleteRepository>())),
-                            ],
-                            child: BlacklistedTagsSearchPage(
-                              initialTags: tag.split(' '),
-                              onSelectedDone: (tagItems) {
-                                bloc.add(BlacklistedTagReplaced(
-                                  oldTag: tag,
-                                  newTag: tagItems
-                                      .map((e) => e.toString())
-                                      .join(' '),
-                                ));
-                              },
+                ),
+                PopupMenuItem(
+                  padding: EdgeInsets.zero,
+                  child: ListTile(
+                    onTap: () {
+                      final bloc = context.read<BlacklistedTagsBloc>();
+                      Navigator.of(context).pop();
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        enterWidget: MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => TagSearchBloc(
+                                tagInfo: context.read<TagInfo>(),
+                                autocompleteRepository:
+                                    context.read<AutocompleteRepository>(),
+                              ),
                             ),
+                          ],
+                          child: BlacklistedTagsSearchPage(
+                            initialTags: tag.split(' '),
+                            onSelectedDone: (tagItems) {
+                              bloc.add(BlacklistedTagReplaced(
+                                oldTag: tag,
+                                newTag:
+                                    tagItems.map((e) => e.toString()).join(' '),
+                              ));
+                            },
                           ),
-                          oldWidget: this,
-                        ));
-                      },
-                      title: const Text('blacklisted_tags.edit').tr(),
-                      trailing: const FaIcon(
-                        FontAwesomeIcons.pen,
-                        size: 16,
-                      ),
+                        ),
+                        oldWidget: this,
+                      ));
+                    },
+                    title: const Text('blacklisted_tags.edit').tr(),
+                    trailing: const FaIcon(
+                      FontAwesomeIcons.pen,
+                      size: 16,
                     ),
                   ),
-                ],
-              ));
+                ),
+              ],
+            ),
+          );
         },
         childCount: state.blacklistedTags.length,
       ),
@@ -195,10 +188,12 @@ class BlacklistedTagsPage extends StatelessWidget {
               enterWidget: MultiBlocProvider(
                 providers: [
                   BlocProvider(
-                      create: (context) => TagSearchBloc(
-                          tagInfo: context.read<TagInfo>(),
-                          autocompleteRepository:
-                              context.read<AutocompleteRepository>())),
+                    create: (context) => TagSearchBloc(
+                      tagInfo: context.read<TagInfo>(),
+                      autocompleteRepository:
+                          context.read<AutocompleteRepository>(),
+                    ),
+                  ),
                 ],
                 child: BlacklistedTagsSearchPage(
                   onSelectedDone: (tagItems) {

@@ -24,6 +24,7 @@ class TagInfoService {
       final freeMetatags = <String>{...json['free_metatags']};
       final defaultBlacklistedTags = json['default_blacklisted_tags'];
       final r18Tags = <String>[...json['r18_tags']];
+
       return TagInfoService(
         metatags: metatags
             .map((t) => Metatag(

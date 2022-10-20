@@ -36,7 +36,8 @@ void main() {
           ]);
     },
     build: () => SearchHistorySuggestionsBloc(
-        searchHistoryRepository: searchHistoryRepo),
+      searchHistoryRepository: searchHistoryRepo,
+    ),
     act: (bloc) => bloc.add(const SearchHistorySuggestionsFetched(text: 'foo')),
     expect: () => [
       SearchHistorySuggestionsState(histories: [
@@ -56,7 +57,8 @@ void main() {
           ]);
     },
     build: () => SearchHistorySuggestionsBloc(
-        searchHistoryRepository: searchHistoryRepo),
+      searchHistoryRepository: searchHistoryRepo,
+    ),
     act: (bloc) => bloc.add(const SearchHistorySuggestionsFetched(text: 'foo')),
     expect: () => [
       SearchHistorySuggestionsState(histories: [

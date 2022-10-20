@@ -76,8 +76,10 @@ class FavoritesPage extends StatelessWidget {
                       tag: 'ordfav:$username',
                       fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
                     ));
-                Future.delayed(const Duration(milliseconds: 500),
-                    () => controller.refreshCompleted());
+                Future.delayed(
+                  const Duration(milliseconds: 500),
+                  () => controller.refreshCompleted(),
+                );
               },
               builder: (context, controller) => CustomScrollView(
                 controller: controller,
@@ -85,20 +87,15 @@ class FavoritesPage extends StatelessWidget {
                   HomePostGrid(controller: controller),
                   BlocBuilder<PostBloc, PostState>(
                     builder: (context, state) {
-                      if (state.status == LoadStatus.loading) {
-                        return const SliverPadding(
-                          padding: EdgeInsets.only(bottom: 20, top: 20),
-                          sliver: SliverToBoxAdapter(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const SliverToBoxAdapter(
-                          child: SizedBox.shrink(),
-                        );
-                      }
+                      return state.status == LoadStatus.loading
+                          ? const SliverPadding(
+                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              sliver: SliverToBoxAdapter(
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              ),
+                            )
+                          : const SliverToBoxAdapter(child: SizedBox.shrink());
                     },
                   ),
                 ],

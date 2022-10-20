@@ -96,6 +96,7 @@ class PostActionToolbar extends StatelessWidget {
         );
       },
     );
+
     return IconButton(
       onPressed: () => Screen.of(context).size == ScreenSize.small
           ? showMaterialModalBottomSheet(
@@ -128,7 +129,9 @@ class PostActionToolbar extends StatelessWidget {
   }
 
   Widget _buildFavoriteButton(
-      BuildContext context, AuthenticationState authState) {
+    BuildContext context,
+    AuthenticationState authState,
+  ) {
     return IconButton(
       onPressed: () async {
         if (authState is Unauthenticated) {
@@ -189,39 +192,40 @@ class ModalShare extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        child: SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (post.source != null)
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (post.source != null)
+              ListTile(
+                title: const Text('post.detail.share.source').tr(),
+                leading: const FaIcon(FontAwesomeIcons.link),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onTap.call(getShareContent(ShareMode.source, post, endpoint));
+                },
+              ),
             ListTile(
-              title: const Text('post.detail.share.source').tr(),
-              leading: const FaIcon(FontAwesomeIcons.link),
+              title: const Text('post.detail.share.booru').tr(),
+              leading: const FaIcon(FontAwesomeIcons.box),
               onTap: () {
                 Navigator.of(context).pop();
-                onTap.call(getShareContent(ShareMode.source, post, endpoint));
+                onTap.call(getShareContent(ShareMode.booru, post, endpoint));
               },
             ),
-          ListTile(
-            title: const Text('post.detail.share.booru').tr(),
-            leading: const FaIcon(FontAwesomeIcons.box),
-            onTap: () {
-              Navigator.of(context).pop();
-              onTap.call(getShareContent(ShareMode.booru, post, endpoint));
-            },
-          ),
-          if (imagePath != null)
-            ListTile(
-              title: const Text('post.detail.share.image').tr(),
-              leading: const FaIcon(FontAwesomeIcons.fileImage),
-              onTap: () {
-                Navigator.of(context).pop();
-                onTapFile.call(imagePath!);
-              },
-            ),
-        ],
+            if (imagePath != null)
+              ListTile(
+                title: const Text('post.detail.share.image').tr(),
+                leading: const FaIcon(FontAwesomeIcons.fileImage),
+                onTap: () {
+                  Navigator.of(context).pop();
+                  onTapFile.call(imagePath!);
+                },
+              ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

@@ -112,7 +112,7 @@ List<Widget> _categoryToListHeader(
         onToggle: (scale) => {
           context
               .read<ExploreDetailBloc>()
-              .add(ExploreDetailTimeScaleChanged(scale))
+              .add(ExploreDetailTimeScaleChanged(scale)),
         },
       ),
       const SizedBox(height: 20),
@@ -127,7 +127,7 @@ List<Widget> _categoryToListHeader(
             .add(ExploreDetailDateChanged(date)),
         date: date,
         scale: scale,
-      )
+      ),
     ];
   }
 }
@@ -153,8 +153,9 @@ class ExploreDetailPage extends StatelessWidget {
               create: (context) => PostBloc.of(context)
                 ..add(
                   PostRefreshed(
-                      fetcher: _categoryToFetcher(
-                          category, state.date, state.scale)),
+                    fetcher:
+                        _categoryToFetcher(category, state.date, state.scale),
+                  ),
                 ),
               child: BlocBuilder<PostBloc, PostState>(
                 builder: (context, ppstate) => ExplorePostGrid(
@@ -171,13 +172,16 @@ class ExploreDetailPage extends StatelessWidget {
                   scale: state.scale,
                   status: ppstate.status,
                   posts: ppstate.posts,
-                  onLoadMore: (date, scale) => context.read<PostBloc>().add(
-                      PostFetched(
-                          tags: '',
-                          fetcher: _categoryToFetcher(category, date, scale))),
+                  onLoadMore: (date, scale) =>
+                      context.read<PostBloc>().add(PostFetched(
+                            tags: '',
+                            fetcher: _categoryToFetcher(category, date, scale),
+                          )),
                   onRefresh: (date, scale) => context.read<PostBloc>().add(
-                      PostRefreshed(
-                          fetcher: _categoryToFetcher(category, date, scale))),
+                        PostRefreshed(
+                          fetcher: _categoryToFetcher(category, date, scale),
+                        ),
+                      ),
                 ),
               ),
             );

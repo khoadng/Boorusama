@@ -91,34 +91,36 @@ CommentData commentDataFrom(
   List<CommentVote> votes,
 ) =>
     CommentData(
-        id: comment.id,
-        authorName: user?.name ?? 'User',
-        authorLevel: user?.level ?? UserLevel.member,
-        body: comment.body,
-        createdAt: comment.createdAt,
-        updatedAt: comment.updatedAt,
-        score: comment.score,
-        isSelf: comment.creator?.id == account.id,
-        recentlyUpdated: comment.createdAt != comment.updatedAt,
-        voteState: _getVoteState(comment, votes),
-        voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,
-        uris: RegExp(urlPattern)
-            .allMatches(comment.body)
-            .map((match) {
-              try {
-                final url = comment.body.substring(match.start, match.end);
-                return Uri.parse(url);
-              } catch (e) {
-                return null;
-              }
-            })
-            .whereNotNull()
-            .where((e) => e.host.contains(youtubeUrl))
-            .toList());
+      id: comment.id,
+      authorName: user?.name ?? 'User',
+      authorLevel: user?.level ?? UserLevel.member,
+      body: comment.body,
+      createdAt: comment.createdAt,
+      updatedAt: comment.updatedAt,
+      score: comment.score,
+      isSelf: comment.creator?.id == account.id,
+      recentlyUpdated: comment.createdAt != comment.updatedAt,
+      voteState: _getVoteState(comment, votes),
+      voteId: {for (final v in votes) v.commentId: v}[comment.id]?.id,
+      uris: RegExp(urlPattern)
+          .allMatches(comment.body)
+          .map((match) {
+            try {
+              final url = comment.body.substring(match.start, match.end);
+
+              return Uri.parse(url);
+            } catch (e) {
+              return null;
+            }
+          })
+          .whereNotNull()
+          .where((e) => e.host.contains(youtubeUrl))
+          .toList(),
+    );
 
 CommentVoteState _getVoteState(Comment comment, List<CommentVote> votes) {
   final voteMap = {
-    for (var i = 0; i < votes.length; i += 1) votes[i].commentId: votes[i]
+    for (var i = 0; i < votes.length; i += 1) votes[i].commentId: votes[i],
   };
   final hasVote = voteMap.containsKey(comment.id);
 

@@ -39,14 +39,13 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
   @override
   Future<void> close() {
     subscription?.cancel();
+
     return super.close();
   }
 }
 
 NetworkEvent _connectivityResultToNetworkEvent(ConnectivityResult result) {
-  if (result != ConnectivityResult.none) {
-    return ConnectedEvent();
-  } else {
-    return DisconnectedEvent();
-  }
+  return result != ConnectivityResult.none
+      ? ConnectedEvent()
+      : DisconnectedEvent();
 }

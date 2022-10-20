@@ -6,17 +6,25 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 void main() {
   group('[post rating test]', () {
-    test('general',
-        () => expect(mapStringToRating('g'), equals(Rating.general)));
-    test('sensitive',
-        () => expect(mapStringToRating('s'), equals(Rating.sensitive)));
-    test('questionable',
-        () => expect(mapStringToRating('q'), equals(Rating.questionable)));
-    test('explicit',
-        () => expect(mapStringToRating('e'), equals(Rating.explicit)));
     test(
-        'anything',
-        () =>
-            expect(mapStringToRating('anything'), equals(Rating.questionable)));
+      'general',
+      () => expect(mapStringToRating('g'), equals(Rating.general)),
+    );
+    test(
+      'sensitive',
+      () => expect(mapStringToRating('s'), equals(Rating.sensitive)),
+    );
+    test(
+      'questionable',
+      () => expect(mapStringToRating('q'), equals(Rating.questionable)),
+    );
+    test(
+      'explicit',
+      () => expect(mapStringToRating('e'), equals(Rating.explicit)),
+    );
+    test(
+      'anything',
+      () => expect(mapStringToRating('anything'), equals(Rating.questionable)),
+    );
   });
 }

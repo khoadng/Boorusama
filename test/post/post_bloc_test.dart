@@ -56,7 +56,7 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.tag_limit',
-        )
+        ),
       ],
     );
 
@@ -82,7 +82,7 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.database_timeout',
-        )
+        ),
       ],
     );
 
@@ -108,7 +108,7 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.unknown',
-        )
+        ),
       ],
     );
 
@@ -142,7 +142,7 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.unknown',
-        )
+        ),
       ],
     );
 
@@ -168,7 +168,7 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.unknown',
-        )
+        ),
       ],
     );
   });
@@ -216,7 +216,7 @@ void main() {
             PostData.empty(),
             PostData.empty(),
           ],
-        )
+        ),
       ],
     );
 
@@ -265,7 +265,7 @@ void main() {
             PostData.empty(),
             PostData.empty(),
           ],
-        )
+        ),
       ],
     );
 
@@ -328,7 +328,7 @@ void main() {
               ],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -388,7 +388,7 @@ void main() {
             PostData.empty(),
             PostData.empty(),
           ],
-        )
+        ),
       ],
     );
   });
@@ -414,10 +414,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-          post: Post.empty().copyWith(
-        id: 2,
-        tags: ['foo'],
-      ))),
+        post: Post.empty().copyWith(
+          id: 2,
+          tags: ['foo'],
+        ),
+      )),
       expect: () => [
         PostState.initial().copyWith(
           id: 123,
@@ -452,10 +453,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-          post: Post.empty().copyWith(
-        id: 4,
-        tags: ['foo'],
-      ))),
+        post: Post.empty().copyWith(
+          id: 4,
+          tags: ['foo'],
+        ),
+      )),
       expect: () => [],
     );
   });

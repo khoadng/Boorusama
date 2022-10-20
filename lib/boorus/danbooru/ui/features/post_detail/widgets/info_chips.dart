@@ -89,7 +89,7 @@ class InfoChip extends StatelessWidget {
           ),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: rightLabel,
-        )
+        ),
       ],
     );
   }

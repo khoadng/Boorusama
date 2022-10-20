@@ -9,7 +9,8 @@ class RelatedTagDto {
         query: json['query'],
         category: json['category'],
         tags: List<List<dynamic>>.from(
-            json['tags'].map((x) => List<dynamic>.from(x.map((x) => x)))),
+          json['tags'].map((x) => List<dynamic>.from(x.map((x) => x))),
+        ),
       );
 
   final String query;

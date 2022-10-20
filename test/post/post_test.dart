@@ -220,7 +220,7 @@ void main() {
     test('has parent or child', () {
       final posts = [
         [true, false],
-        [false, true]
+        [false, true],
       ]
           .map((e) => Post.empty().copyWith(
                 hasChildren: e[0],

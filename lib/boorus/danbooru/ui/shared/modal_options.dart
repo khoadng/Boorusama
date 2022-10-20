@@ -37,13 +37,14 @@ class ModalOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-        color: Theme.of(context).backgroundColor,
-        child: SafeArea(
-          top: false,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: children,
-          ),
-        ));
+      color: Theme.of(context).backgroundColor,
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: children,
+        ),
+      ),
+    );
   }
 }

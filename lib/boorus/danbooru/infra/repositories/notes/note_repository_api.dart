@@ -48,6 +48,7 @@ extension NoteDtoX on NoteDto {
       width: width.toDouble(),
       height: height.toDouble(),
     );
+
     return Note(
       coordinate: coord,
       content: body,

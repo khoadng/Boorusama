@@ -53,7 +53,7 @@ void main() {
             commentDataFrom(Comment.emty(), null, Account.empty, []),
             commentDataFrom(Comment.emty(), null, Account.empty, []),
           ],
-        )
+        ),
       ],
     );
 
@@ -94,7 +94,7 @@ void main() {
               [],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -157,7 +157,7 @@ void main() {
               [],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -211,7 +211,7 @@ void main() {
               [],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -219,8 +219,9 @@ void main() {
       'upvote comment',
       setUp: () {
         when(() => commentVoteRepo.upvote(any())).thenAnswer(
-            (invocation) async =>
-                CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1));
+          (invocation) async =>
+              CommentVote.empty().copyWith(id: 2, commentId: 1, score: 1),
+        );
       },
       tearDown: () {
         reset(commentVoteRepo);
@@ -258,7 +259,7 @@ void main() {
               ],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -266,8 +267,9 @@ void main() {
       'downvote comment',
       setUp: () {
         when(() => commentVoteRepo.downvote(any())).thenAnswer(
-            (invocation) async =>
-                CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1));
+          (invocation) async =>
+              CommentVote.empty().copyWith(id: 2, commentId: 1, score: -1),
+        );
       },
       tearDown: () {
         reset(commentVoteRepo);
@@ -302,7 +304,7 @@ void main() {
               ],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -349,7 +351,7 @@ void main() {
               [],
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -396,7 +398,7 @@ void main() {
               [],
             ),
           ],
-        )
+        ),
       ],
     );
   });

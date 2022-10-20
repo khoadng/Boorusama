@@ -79,8 +79,10 @@ class _PoolPageState extends State<PoolPage> {
               category: poState.category,
               order: poState.order,
             ));
-        Future.delayed(const Duration(milliseconds: 500),
-            () => controller.refreshCompleted());
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () => controller.refreshCompleted(),
+        );
       },
       builder: (context, controller) => CustomScrollView(
         controller: controller,
@@ -105,6 +107,7 @@ class _PoolPageState extends State<PoolPage> {
                   if (state.pools.isEmpty) {
                     return const SliverToBoxAdapter(child: NoDataBox());
                   }
+
                   return BlocBuilder<SettingsCubit, SettingsState>(
                     builder: (context, settingsState) {
                       return SliverPoolGrid(
@@ -127,20 +130,14 @@ class _PoolPageState extends State<PoolPage> {
           ),
           BlocBuilder<PoolBloc, PoolState>(
             builder: (context, state) {
-              if (state.status == LoadStatus.loading) {
-                return const SliverPadding(
-                  padding: EdgeInsets.only(bottom: 20, top: 20),
-                  sliver: SliverToBoxAdapter(
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                );
-              } else {
-                return const SliverToBoxAdapter(
-                  child: SizedBox.shrink(),
-                );
-              }
+              return state.status == LoadStatus.loading
+                  ? const SliverPadding(
+                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(child: CircularProgressIndicator()),
+                      ),
+                    )
+                  : const SliverToBoxAdapter(child: SizedBox.shrink());
             },
           ),
         ],
@@ -163,20 +160,23 @@ class _PoolPageState extends State<PoolPage> {
     return IconButton(
       onPressed: () {
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => MultiBlocProvider(
-                  providers: [
-                    BlocProvider(
-                      create: (context) => PoolBloc(
-                        poolRepository: context.read<PoolRepository>(),
-                        postRepository: context.read<PostRepository>(),
-                      ),
-                    ),
-                    BlocProvider(
-                        create: (context) => PoolSearchBloc(
-                            poolRepository: context.read<PoolRepository>())),
-                  ],
-                  child: const PoolSearchPage(),
-                )));
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => PoolBloc(
+                  poolRepository: context.read<PoolRepository>(),
+                  postRepository: context.read<PostRepository>(),
+                ),
+              ),
+              BlocProvider(
+                create: (context) => PoolSearchBloc(
+                  poolRepository: context.read<PoolRepository>(),
+                ),
+              ),
+            ],
+            child: const PoolSearchPage(),
+          ),
+        ));
       },
       icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
     );
@@ -230,18 +230,20 @@ class PoolOptionsHeader extends StatelessWidget {
                   Screen.of(context).size == ScreenSize.small
                       ? showMaterialModalBottomSheet(
                           context: context,
-                          builder: (context) => const _OrderMenu())
+                          builder: (context) => const _OrderMenu(),
+                        )
                       : showDialog(
                           context: context,
                           builder: (context) => const AlertDialog(
-                                contentPadding: EdgeInsets.zero,
-                                content: _OrderMenu(),
-                              ));
+                            contentPadding: EdgeInsets.zero,
+                            content: _OrderMenu(),
+                          ),
+                        );
                 },
                 child: Row(
                   children: <Widget>[
                     Text(_poolOrderToString(state.order)).tr(),
-                    const Icon(Icons.arrow_drop_down)
+                    const Icon(Icons.arrow_drop_down),
                   ],
                 ),
               );
@@ -266,18 +268,19 @@ class _OrderMenu extends StatelessWidget {
         child: SafeArea(
           top: false,
           child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: PoolOrder.values
-                  .map((e) => ListTile(
-                        title: Text(_poolOrderToString(e)).tr(),
-                        onTap: () {
-                          AppRouter.router.pop(context);
-                          context
-                              .read<PoolOverviewBloc>()
-                              .add(PoolOverviewChanged(order: e));
-                        },
-                      ))
-                  .toList()),
+            mainAxisSize: MainAxisSize.min,
+            children: PoolOrder.values
+                .map((e) => ListTile(
+                      title: Text(_poolOrderToString(e)).tr(),
+                      onTap: () {
+                        AppRouter.router.pop(context);
+                        context
+                            .read<PoolOverviewBloc>()
+                            .add(PoolOverviewChanged(order: e));
+                      },
+                    ))
+                .toList(),
+          ),
         ),
       ),
     );

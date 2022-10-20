@@ -61,7 +61,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (Screen.of(context).size != ScreenSize.small) {
         context.read<TagBloc>().add(
-            TagFetched(tags: widget.posts[widget.intitialIndex].post.tags));
+              TagFetched(tags: widget.posts[widget.intitialIndex].post.tags),
+            );
       }
     });
   }
@@ -70,6 +71,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
+
     return MultiBlocListener(
       listeners: [
         BlocListener<PostDetailBloc, PostDetailState>(
@@ -91,6 +93,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             context
                 .read<SliverPostGridBloc>()
                 .add(SliverPostGridExited(lastIndex: index));
+
             return true;
           },
           child: Scaffold(
@@ -104,7 +107,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         alignment: Alignment.topCenter,
                         colors: [
                           const Color.fromARGB(16, 0, 0, 0),
-                          Colors.black12.withOpacity(0)
+                          Colors.black12.withOpacity(0),
                         ],
                       ),
                       Align(
@@ -123,7 +126,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   onStop: () => context
                                       .read<PostDetailBloc>()
                                       .add(const PostDetailModeChanged(
-                                          enableSlideshow: false)),
+                                        enableSlideshow: false,
+                                      )),
                                   onShow: (start) {
                                     WidgetsBinding.instance
                                         .addPostFrameCallback((_) async {
@@ -164,10 +168,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                       if (config != null) {
                                         bloc
                                           ..add(
-                                              PostDetailSlideShowConfigChanged(
-                                                  config: config))
+                                            PostDetailSlideShowConfigChanged(
+                                              config: config,
+                                            ),
+                                          )
                                           ..add(const PostDetailModeChanged(
-                                              enableSlideshow: true));
+                                            enableSlideshow: true,
+                                          ));
                                         start();
                                       }
                                     });
@@ -225,9 +232,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
               post: widget.posts[index].post,
               onCached: (path) => imagePath.value = path,
             );
+
             return AnnotatedRegion<SystemUiOverlayStyle>(
               value: const SystemUiOverlayStyle(
-                  statusBarColor: Colors.transparent),
+                statusBarColor: Colors.transparent,
+              ),
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: state.enableSlideShow
@@ -336,6 +345,7 @@ class _CarouselContentState extends State<_CarouselContent> {
   @override
   Widget build(BuildContext context) {
     final screenSize = Screen.of(context).size;
+
     return BlocProvider(
       create: (context) =>
           PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
@@ -343,142 +353,147 @@ class _CarouselContentState extends State<_CarouselContent> {
       child: CustomScrollView(
         slivers: [
           SliverList(
-              delegate: SliverChildListDelegate(
-            [
-              RepaintBoundary(child: widget.media),
-              if (screenSize == ScreenSize.small) ...[
-                PoolTiles(pools: widget.pools),
-                // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                //   builder: (context, state) {
-                //     return state.status == LoadStatus.success
-                //         ? PoolTiles(pools: state.data!)
-                //         : const SizedBox.shrink();
-                //   },
-                // ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    InformationSection(post: widget.preloadPost),
-                    const Divider(height: 8, thickness: 1),
-                    if (widget.actionBarDisplayBehavior ==
-                        ActionBarDisplayBehavior.scrolling)
-                      RepaintBoundary(
-                        child: ActionBar(
-                          imagePath: widget.imagePath,
-                          postData: widget.post,
-                        ),
-                      ),
-                    const Divider(height: 8, thickness: 1),
-                    ArtistSection(post: widget.preloadPost),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: RepaintBoundary(child: PostStatsTile(post: post)),
-                    ),
-                    if (widget.preloadPost.hasParentOrChildren)
-                      ParentChildTile(
-                        data: getParentChildData(widget.preloadPost),
-                        onTap: (data) => showBarModalBottomSheet(
-                          context: context,
-                          builder: (context) => MultiBlocProvider(
-                            providers: [
-                              BlocProvider(
-                                create: (context) => PostBloc.of(context)
-                                  ..add(PostRefreshed(
-                                    tag: data.tagQueryForDataFetching,
-                                    fetcher: SearchedPostFetcher.fromTags(
-                                        data.tagQueryForDataFetching),
-                                  )),
-                              )
-                            ],
-                            child: ParentChildPostPage(
-                                parentPostId: data.parentId),
-                          ),
-                        ),
-                      ),
-                    if (!widget.preloadPost.hasParentOrChildren)
+            delegate: SliverChildListDelegate(
+              [
+                RepaintBoundary(child: widget.media),
+                if (screenSize == ScreenSize.small) ...[
+                  PoolTiles(pools: widget.pools),
+                  // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                  //   builder: (context, state) {
+                  //     return state.status == LoadStatus.success
+                  //         ? PoolTiles(pools: state.data!)
+                  //         : const SizedBox.shrink();
+                  //   },
+                  // ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      InformationSection(post: widget.preloadPost),
                       const Divider(height: 8, thickness: 1),
-                    BlocBuilder<ThemeBloc, ThemeState>(
-                      builder: (context, state) {
-                        return Theme(
-                          data: Theme.of(context)
-                              .copyWith(dividerColor: Colors.transparent),
-                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                            builder: (context, detailState) {
-                              final tags = detailState.tags
-                                  .where((e) => e.postId == post.id)
-                                  .toList();
-                              return ExpansionTile(
-                                title: Text('${tags.length} tags'),
-                                controlAffinity:
-                                    ListTileControlAffinity.leading,
-                                // trailing: BlocBuilder<AuthenticationCubit,
-                                //     AuthenticationState>(
-                                //   builder: (context, state) {
-                                //     return state is Authenticated
-                                //         ? IconButton(
-                                //             onPressed: () async {
-                                //               final bloc = context
-                                //                   .read<PostDetailBloc>();
-
-                                //               await showAdaptiveBottomSheet(
-                                //                   context,
-                                //                   expand: true,
-                                //                   builder: (context) =>
-                                //                       BlocProvider.value(
-                                //                         value: bloc,
-                                //                         child: BlocBuilder<
-                                //                             PostDetailBloc,
-                                //                             PostDetailState>(
-                                //                           builder:
-                                //                               (context, state) {
-                                //                             return TagEditView(
-                                //                               post: post,
-                                //                               tags: state.tags
-                                //                                   .where((t) =>
-                                //                                       t.postId ==
-                                //                                       post.id)
-                                //                                   .toList(),
-                                //                             );
-                                //                           },
-                                //                         ),
-                                //                       ));
-                                //             },
-                                //             icon: const Icon(Icons.add),
-                                //           )
-                                //         : const SizedBox.shrink();
-                                // },
-                                // ),
-                                children: [
-                                  SimplePostTagList(
-                                    tags: tags,
-                                  ),
-                                  const SizedBox(height: 8),
-                                ],
-                              );
-                            },
+                      if (widget.actionBarDisplayBehavior ==
+                          ActionBarDisplayBehavior.scrolling)
+                        RepaintBoundary(
+                          child: ActionBar(
+                            imagePath: widget.imagePath,
+                            postData: widget.post,
                           ),
-                        );
-                      },
-                    ),
-                    const Divider(height: 8, thickness: 1),
-                    RecommendArtistList(
-                      recommends: widget.recommends
-                          .where(
-                              (element) => element.type == RecommendType.artist)
-                          .toList(),
-                    ),
-                    RecommendCharacterList(
-                      recommends: widget.recommends
-                          .where((element) =>
-                              element.type == RecommendType.character)
-                          .toList(),
-                    ),
-                  ],
-                ),
-              ]
-            ],
-          ))
+                        ),
+                      const Divider(height: 8, thickness: 1),
+                      ArtistSection(post: widget.preloadPost),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child:
+                            RepaintBoundary(child: PostStatsTile(post: post)),
+                      ),
+                      if (widget.preloadPost.hasParentOrChildren)
+                        ParentChildTile(
+                          data: getParentChildData(widget.preloadPost),
+                          onTap: (data) => showBarModalBottomSheet(
+                            context: context,
+                            builder: (context) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider(
+                                  create: (context) => PostBloc.of(context)
+                                    ..add(PostRefreshed(
+                                      tag: data.tagQueryForDataFetching,
+                                      fetcher: SearchedPostFetcher.fromTags(
+                                        data.tagQueryForDataFetching,
+                                      ),
+                                    )),
+                                ),
+                              ],
+                              child: ParentChildPostPage(
+                                parentPostId: data.parentId,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (!widget.preloadPost.hasParentOrChildren)
+                        const Divider(height: 8, thickness: 1),
+                      BlocBuilder<ThemeBloc, ThemeState>(
+                        builder: (context, state) {
+                          return Theme(
+                            data: Theme.of(context)
+                                .copyWith(dividerColor: Colors.transparent),
+                            child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                              builder: (context, detailState) {
+                                final tags = detailState.tags
+                                    .where((e) => e.postId == post.id)
+                                    .toList();
+
+                                return ExpansionTile(
+                                  title: Text('${tags.length} tags'),
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  // trailing: BlocBuilder<AuthenticationCubit,
+                                  //     AuthenticationState>(
+                                  //   builder: (context, state) {
+                                  //     return state is Authenticated
+                                  //         ? IconButton(
+                                  //             onPressed: () async {
+                                  //               final bloc = context
+                                  //                   .read<PostDetailBloc>();
+
+                                  //               await showAdaptiveBottomSheet(
+                                  //                   context,
+                                  //                   expand: true,
+                                  //                   builder: (context) =>
+                                  //                       BlocProvider.value(
+                                  //                         value: bloc,
+                                  //                         child: BlocBuilder<
+                                  //                             PostDetailBloc,
+                                  //                             PostDetailState>(
+                                  //                           builder:
+                                  //                               (context, state) {
+                                  //                             return TagEditView(
+                                  //                               post: post,
+                                  //                               tags: state.tags
+                                  //                                   .where((t) =>
+                                  //                                       t.postId ==
+                                  //                                       post.id)
+                                  //                                   .toList(),
+                                  //                             );
+                                  //                           },
+                                  //                         ),
+                                  //                       ));
+                                  //             },
+                                  //             icon: const Icon(Icons.add),
+                                  //           )
+                                  //         : const SizedBox.shrink();
+                                  // },
+                                  // ),
+                                  children: [
+                                    SimplePostTagList(
+                                      tags: tags,
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 8, thickness: 1),
+                      RecommendArtistList(
+                        recommends: widget.recommends
+                            .where((element) =>
+                                element.type == RecommendType.artist)
+                            .toList(),
+                      ),
+                      RecommendCharacterList(
+                        recommends: widget.recommends
+                            .where((element) =>
+                                element.type == RecommendType.character)
+                            .toList(),
+                      ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -528,10 +543,11 @@ class _LargeLayoutContent extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: RepaintBoundary(
-                      child: PostStatsTile(
-                    post: post.post,
-                    padding: EdgeInsets.zero,
-                  )),
+                    child: PostStatsTile(
+                      post: post.post,
+                      padding: EdgeInsets.zero,
+                    ),
+                  ),
                 ),
               ),
               if (!post.post.hasParentOrChildren) const Divider(),
@@ -549,9 +565,10 @@ class _LargeLayoutContent extends StatelessWidget {
                               ..add(PostRefreshed(
                                 tag: data.tagQueryForDataFetching,
                                 fetcher: SearchedPostFetcher.fromTags(
-                                    data.tagQueryForDataFetching),
+                                  data.tagQueryForDataFetching,
+                                ),
                               )),
-                          )
+                          ),
                         ],
                         child: ParentChildPostPage(parentPostId: data.parentId),
                       ),
@@ -565,55 +582,51 @@ class _LargeLayoutContent extends StatelessWidget {
                 child:
                     BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
                   builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          if (state.data!.isNotEmpty)
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 16,
-                                top: 16,
-                              ),
-                              child: Text(
-                                '${state.data!.length} Pools',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Theme.of(context).hintColor,
+                    return state.status == LoadStatus.success
+                        ? Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (state.data!.isNotEmpty)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 16, top: 16),
+                                  child: Text(
+                                    '${state.data!.length} Pools',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ...state.data!
-                              .map((e) => Column(
-                                    children: [
-                                      ListTile(
-                                        dense: true,
-                                        visualDensity: VisualDensity.compact,
-                                        title: Text(
-                                          e.name.removeUnderscoreWithSpace(),
-                                          maxLines: 2,
-                                          softWrap: false,
-                                          overflow: TextOverflow.ellipsis,
+                              ...state.data!
+                                  .map((e) => Column(children: [
+                                        ListTile(
+                                          dense: true,
+                                          visualDensity: VisualDensity.compact,
+                                          title: Text(
+                                            e.name.removeUnderscoreWithSpace(),
+                                            maxLines: 2,
+                                            softWrap: false,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          subtitle:
+                                              Text('${e.postCount} posts'),
+                                          trailing:
+                                              const Icon(Icons.arrow_right),
+                                          onTap: () =>
+                                              AppRouter.router.navigateTo(
+                                            context,
+                                            'pool/detail',
+                                            routeSettings:
+                                                RouteSettings(arguments: [e]),
+                                          ),
                                         ),
-                                        subtitle: Text('${e.postCount} posts'),
-                                        trailing: const Icon(Icons.arrow_right),
-                                        onTap: () =>
-                                            AppRouter.router.navigateTo(
-                                          context,
-                                          'pool/detail',
-                                          routeSettings:
-                                              RouteSettings(arguments: [e]),
-                                        ),
-                                      ),
-                                    ],
-                                  ))
-                              .toList(),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox.shrink();
-                    }
+                                      ]))
+                                  .toList(),
+                            ],
+                          )
+                        : const SizedBox.shrink();
                   },
                 ),
               ),
@@ -640,11 +653,13 @@ class _LargeLayoutContent extends StatelessWidget {
                       text: '',
                       children: [
                         TextSpan(
-                            text: 'More from ',
-                            style:
-                                TextStyle(color: Theme.of(context).hintColor)),
+                          text: 'More from ',
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                        ),
                         TextSpan(
-                            text: item, style: const TextStyle(fontSize: 16)),
+                          text: item,
+                          style: const TextStyle(fontSize: 16),
+                        ),
                       ],
                     ),
                   ),
@@ -663,10 +678,10 @@ class _LargeLayoutContent extends StatelessWidget {
                     maxTagWidth: _infoBarWidth,
                   ),
                 ),
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -768,7 +783,9 @@ class _SlideShowButtonState extends State<_SlideShowButton>
   void initState() {
     super.initState();
     spinningIconpanelAnimationController = AnimationController(
-        vsync: this, duration: const Duration(seconds: 200));
+      vsync: this,
+      duration: const Duration(seconds: 200),
+    );
     rotateAnimation = Tween<double>(begin: 0, end: 360)
         .animate(spinningIconpanelAnimationController);
   }

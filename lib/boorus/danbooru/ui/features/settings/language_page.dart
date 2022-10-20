@@ -40,23 +40,26 @@ class LanguagePage extends StatelessWidget {
                 )
               : null,
           body: SafeArea(
-              child: Column(
-                  children: languages.keys
-                      .map(
-                        (e) => RadioListTile<String>(
-                          activeColor: Theme.of(context).colorScheme.primary,
-                          groupValue: state.settings.language,
-                          value: e,
-                          title: Text(getLanguageText(e).tr()),
-                          onChanged: (value) {
-                            if (value == null) return;
-                            context.read<SettingsCubit>().update(
-                                state.settings.copyWith(language: value));
-                            context.setLocale(Locale(value));
-                          },
-                        ),
-                      )
-                      .toList())),
+            child: Column(
+              children: languages.keys
+                  .map(
+                    (e) => RadioListTile<String>(
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      groupValue: state.settings.language,
+                      value: e,
+                      title: Text(getLanguageText(e).tr()),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        context
+                            .read<SettingsCubit>()
+                            .update(state.settings.copyWith(language: value));
+                        context.setLocale(Locale(value));
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
         );
       },
     );

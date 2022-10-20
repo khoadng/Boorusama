@@ -267,7 +267,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
           .then((fav) {
         emit(state.copyWith(
-            currentPost: state.currentPost.copyWith(isFavorited: fav)));
+          currentPost: state.currentPost.copyWith(isFavorited: fav),
+        ));
       });
     });
 
@@ -376,12 +377,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         currentPost: newPost,
       ));
 
-      if (event.favorite) {
-        success = await favoritePostRepository.addToFavorites(post.post.id);
-      } else {
-        success =
-            await favoritePostRepository.removeFromFavorites(post.post.id);
-      }
+      success = event.favorite
+          ? await favoritePostRepository.addToFavorites(post.post.id)
+          : await favoritePostRepository.removeFromFavorites(post.post.id);
+
       if (!success) {
         emit(originalState);
         posts[state.currentIndex] = post;

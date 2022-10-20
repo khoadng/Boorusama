@@ -54,12 +54,9 @@ bool _shouldShowSearchButton(
   List<TagSearchItem> selectedTags,
 ) {
   if (displayState == DisplayState.options) {
-    if (selectedTags.isEmpty) {
-      return false;
-    } else {
-      return true;
-    }
+    return selectedTags.isNotEmpty;
   }
   if (displayState == DisplayState.suggestion) return false;
+
   return false;
 }

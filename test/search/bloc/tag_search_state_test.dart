@@ -26,7 +26,9 @@ void main() {
     when(autocompleteRepository.getAutocomplete('a_a_a'))
         .thenAnswer((_) => Future.value([autocompleteData('a_a_a')]));
     TagSearchBloc bloc() => TagSearchBloc(
-        autocompleteRepository: autocompleteRepository, tagInfo: tagInfo);
+          autocompleteRepository: autocompleteRepository,
+          tagInfo: tagInfo,
+        );
 
     TagSearchItem tagSearchItem(AutocompleteData data) =>
         TagSearchItem.fromString(
@@ -43,7 +45,7 @@ void main() {
           selectedTags: [
             tagSearchItem(autocompleteData()),
           ],
-        )
+        ),
       ],
     );
 
@@ -78,7 +80,7 @@ void main() {
             tagSearchItemFromString('foo'),
             tagSearchItemFromString('bar'),
           ],
-        )
+        ),
       ],
     );
 
@@ -91,7 +93,7 @@ void main() {
           selectedTags: [
             tagSearchItemFromString('foo'),
           ],
-        )
+        ),
       ],
     );
 
@@ -104,7 +106,7 @@ void main() {
           selectedTags: [
             tagSearchItemFromString('foo'),
           ],
-        )
+        ),
       ],
     );
 
@@ -133,7 +135,7 @@ void main() {
           suggestionTags: [
             autocompleteData('a'),
           ],
-        )
+        ),
       ],
     );
 
@@ -148,7 +150,7 @@ void main() {
           suggestionTags: [
             autocompleteData('a_a_a'),
           ],
-        )
+        ),
       ],
     );
 
@@ -163,7 +165,7 @@ void main() {
           suggestionTags: [
             autocompleteData('a'),
           ],
-        )
+        ),
       ],
     );
 

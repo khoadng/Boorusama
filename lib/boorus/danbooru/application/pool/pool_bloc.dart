@@ -166,7 +166,9 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
   }
 
   Future<List<PoolItem>> poolsToPoolItems(
-      List<Pool> pools, PostRepository postRepository) async {
+    List<Pool> pools,
+    PostRepository postRepository,
+  ) async {
     final poolFiltered =
         pools.where((element) => element.postIds.isNotEmpty).toList();
 
@@ -187,6 +189,7 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
           pool: _(pair).item2,
         ),
     ];
+
     return poolItems;
   }
 }
@@ -194,6 +197,7 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
 String? postToCoverUrl(Post post) {
   if (post.id == 0) return null;
   if (post.isAnimated) return post.previewImageUrl;
+
   return post.normalImageUrl;
 }
 

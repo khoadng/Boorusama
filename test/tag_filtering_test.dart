@@ -51,7 +51,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -65,7 +65,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -79,7 +79,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -93,7 +93,7 @@ void main() {
       const FilterItem(
         tag: '+a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -111,7 +111,7 @@ void main() {
       const FilterItem(
         tag: 'b',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -133,7 +133,7 @@ void main() {
       const FilterItem(
         tag: 'c',
         operator: FilterOperator.or,
-      )
+      ),
     ]);
   });
 
@@ -275,26 +275,28 @@ void main() {
     expect(expected, [3]);
   });
 
-  test('Filter blacklisted tags with non-existed operator should be ignored',
-      () {
-    final tags = [
-      ['a'],
-      ['b'],
-      ['b', 'a'],
-      ['c'],
-      ['c', 'a'],
-      ['c', 'b'],
-      ['c', 'b', 'a'],
-    ];
-    final originals = range(tags.length)
-        .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
-        .toList();
+  test(
+    'Filter blacklisted tags with non-existed operator should be ignored',
+    () {
+      final tags = [
+        ['a'],
+        ['b'],
+        ['b', 'a'],
+        ['c'],
+        ['c', 'a'],
+        ['c', 'b'],
+        ['c', 'b', 'a'],
+      ];
+      final originals = range(tags.length)
+          .map((e) => e.toInt())
+          .map((e) => createPost(e, tags[e]))
+          .toList();
 
-    final blacklisted = ['~c %b'];
+      final blacklisted = ['~c %b'];
 
-    final expected =
-        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
-    expect(expected, [0, 1, 2]);
-  });
+      final expected =
+          filterRawPost(originals, blacklisted).map((e) => e.id).toList();
+      expect(expected, [0, 1, 2]);
+    },
+  );
 }

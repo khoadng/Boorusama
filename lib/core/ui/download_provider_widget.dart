@@ -20,6 +20,7 @@ void _download(
   // Platform doesn't require permissions, just download it right away
   if (permission == null) {
     context.read<DownloadService>().download(downloadable);
+
     return;
   }
 
@@ -52,8 +53,8 @@ class DownloadProviderWidget extends StatelessWidget {
     return isAndroid() || isIOS()
         ? BlocProvider(
             create: (context) => DeviceStoragePermissionBloc(
-                initialStatus: PermissionStatus.denied)
-              ..add(DeviceStoragePermissionFetched()),
+              initialStatus: PermissionStatus.denied,
+            )..add(DeviceStoragePermissionFetched()),
             child: Builder(builder: (context) {
               return BlocConsumer<DeviceStoragePermissionBloc,
                   DeviceStoragePermissionState>(
@@ -64,16 +65,19 @@ class DownloadProviderWidget extends StatelessWidget {
                     showSimpleSnackBar(
                       context: context,
                       action: SnackBarAction(
-                          label: 'download.open_app_settings'.tr(),
-                          onPressed: () => openAppSettings()),
+                        label: 'download.open_app_settings'.tr(),
+                        onPressed: openAppSettings,
+                      ),
                       behavior: SnackBarBehavior.fixed,
                       content:
                           const Text('download.storage_permission_explanation')
                               .tr(),
                     );
                     context.read<DeviceStoragePermissionBloc>().add(
-                        const DeviceStorageNotificationDisplayStatusChanged(
-                            isDisplay: true));
+                          const DeviceStorageNotificationDisplayStatusChanged(
+                            isDisplay: true,
+                          ),
+                        );
                   }
                 },
                 builder: (context, state) => builder(

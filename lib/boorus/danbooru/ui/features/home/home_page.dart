@@ -39,6 +39,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     final screenSize = Screen.of(context).size;
+
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -64,109 +65,113 @@ class _HomePageState extends State<HomePage> {
                 if (screenSize != ScreenSize.small)
                   ValueListenableBuilder<int>(
                     valueListenable: viewIndex,
-                    builder: (context, index, _) => ValueListenableBuilder<
-                            bool>(
-                        valueListenable: expanded,
-                        builder: (context, value, _) => value
-                            ? SideBarMenu(
-                                initialContentBuilder: (context) => screenSize !=
-                                        ScreenSize.small
-                                    ?
-                                    //TODO: create a widget to manage this, also stop using index as a selected indicator
-                                    [
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(left: 6),
-                                          child: IconButton(
-                                            onPressed: () =>
-                                                _onMenuTap(screenSize),
-                                            icon: const Icon(Icons.menu),
-                                          ),
+                    builder: (context, index, _) =>
+                        ValueListenableBuilder<bool>(
+                      valueListenable: expanded,
+                      builder: (context, value, _) => value
+                          ? SideBarMenu(
+                              initialContentBuilder: (context) => screenSize !=
+                                      ScreenSize.small
+                                  ?
+                                  //TODO: create a widget to manage this, also stop using index as a selected indicator
+                                  [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 6),
+                                        child: IconButton(
+                                          onPressed: () =>
+                                              _onMenuTap(screenSize),
+                                          icon: const Icon(Icons.menu),
                                         ),
-                                        _NavigationTile(
-                                          value: 0,
-                                          index: index,
-                                          selectedIcon:
-                                              const Icon(Icons.dashboard),
-                                          icon: const Icon(
-                                              Icons.dashboard_outlined),
-                                          title: const Text('Home'),
-                                          onTap: (value) =>
-                                              viewIndex.value = value,
-                                        ),
-                                        _NavigationTile(
-                                          value: 1,
-                                          index: index,
-                                          selectedIcon:
-                                              const Icon(Icons.explore),
-                                          icon: const Icon(
-                                              Icons.explore_outlined),
-                                          title: const Text('Explore'),
-                                          onTap: (value) =>
-                                              viewIndex.value = value,
-                                        ),
-                                        _NavigationTile(
-                                          value: 2,
-                                          index: index,
-                                          selectedIcon:
-                                              const Icon(Icons.photo_album),
-                                          icon: const Icon(
-                                              Icons.photo_album_outlined),
-                                          title: const Text('Pool'),
-                                          onTap: (value) =>
-                                              viewIndex.value = value,
-                                        ),
-                                      ]
-                                    : null,
-                              )
-                            : Container(
-                                color: Theme.of(context).backgroundColor,
-                                child: Column(
-                                  children: [
-                                    SizedBox(
-                                        height: MediaQuery.of(context)
-                                            .viewPadding
-                                            .top),
-                                    IconButton(
-                                      onPressed: () => _onMenuTap(screenSize),
-                                      icon: const Icon(Icons.menu),
-                                    ),
-                                    Expanded(
-                                      child: NavigationRail(
-                                        minWidth: 60,
-                                        backgroundColor:
-                                            Theme.of(context).backgroundColor,
-                                        onDestinationSelected: (value) =>
-                                            viewIndex.value = value,
-                                        destinations: [
-                                          NavigationRailDestination(
-                                            icon: index == 0
-                                                ? const Icon(Icons.dashboard)
-                                                : const Icon(
-                                                    Icons.dashboard_outlined),
-                                            label: const Text('Home'),
-                                          ),
-                                          NavigationRailDestination(
-                                            icon: index == 1
-                                                ? const Icon(Icons.explore)
-                                                : const Icon(
-                                                    Icons.explore_outlined),
-                                            label: const Text('Explore'),
-                                          ),
-                                          NavigationRailDestination(
-                                            icon: index == 2
-                                                ? const Icon(Icons.photo_album)
-                                                : const Icon(
-                                                    Icons.photo_album_outlined),
-                                            label: const Text('Pool'),
-                                          ),
-                                        ],
-                                        selectedIndex: index,
                                       ),
+                                      _NavigationTile(
+                                        value: 0,
+                                        index: index,
+                                        selectedIcon:
+                                            const Icon(Icons.dashboard),
+                                        icon: const Icon(
+                                          Icons.dashboard_outlined,
+                                        ),
+                                        title: const Text('Home'),
+                                        onTap: (value) =>
+                                            viewIndex.value = value,
+                                      ),
+                                      _NavigationTile(
+                                        value: 1,
+                                        index: index,
+                                        selectedIcon: const Icon(Icons.explore),
+                                        icon:
+                                            const Icon(Icons.explore_outlined),
+                                        title: const Text('Explore'),
+                                        onTap: (value) =>
+                                            viewIndex.value = value,
+                                      ),
+                                      _NavigationTile(
+                                        value: 2,
+                                        index: index,
+                                        selectedIcon:
+                                            const Icon(Icons.photo_album),
+                                        icon: const Icon(
+                                          Icons.photo_album_outlined,
+                                        ),
+                                        title: const Text('Pool'),
+                                        onTap: (value) =>
+                                            viewIndex.value = value,
+                                      ),
+                                    ]
+                                  : null,
+                            )
+                          : Container(
+                              color: Theme.of(context).backgroundColor,
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    height:
+                                        MediaQuery.of(context).viewPadding.top,
+                                  ),
+                                  IconButton(
+                                    onPressed: () => _onMenuTap(screenSize),
+                                    icon: const Icon(Icons.menu),
+                                  ),
+                                  Expanded(
+                                    child: NavigationRail(
+                                      minWidth: 60,
+                                      backgroundColor:
+                                          Theme.of(context).backgroundColor,
+                                      onDestinationSelected: (value) =>
+                                          viewIndex.value = value,
+                                      destinations: [
+                                        NavigationRailDestination(
+                                          icon: index == 0
+                                              ? const Icon(Icons.dashboard)
+                                              : const Icon(
+                                                  Icons.dashboard_outlined,
+                                                ),
+                                          label: const Text('Home'),
+                                        ),
+                                        NavigationRailDestination(
+                                          icon: index == 1
+                                              ? const Icon(Icons.explore)
+                                              : const Icon(
+                                                  Icons.explore_outlined,
+                                                ),
+                                          label: const Text('Explore'),
+                                        ),
+                                        NavigationRailDestination(
+                                          icon: index == 2
+                                              ? const Icon(Icons.photo_album)
+                                              : const Icon(
+                                                  Icons.photo_album_outlined,
+                                                ),
+                                          label: const Text('Pool'),
+                                        ),
+                                      ],
+                                      selectedIndex: index,
                                     ),
-                                  ],
-                                ),
-                              )),
+                                  ),
+                                ],
+                              ),
+                            ),
+                    ),
                   ),
                 Expanded(
                   child: Column(
@@ -188,7 +193,8 @@ class _HomePageState extends State<HomePage> {
                               BlocProvider(
                                 create: (context) => PostBloc.of(context)
                                   ..add(const PostRefreshed(
-                                      fetcher: LatestPostFetcher())),
+                                    fetcher: LatestPostFetcher(),
+                                  )),
                                 child: LatestView(
                                   onMenuTap: screenSize == ScreenSize.small
                                       ? () => _onMenuTap(screenSize)
@@ -199,15 +205,16 @@ class _HomePageState extends State<HomePage> {
                               MultiBlocProvider(
                                 providers: [
                                   BlocProvider(
-                                      create: (context) => PoolBloc(
-                                            poolRepository:
-                                                context.read<PoolRepository>(),
-                                            postRepository:
-                                                context.read<PostRepository>(),
-                                          )..add(const PoolRefreshed(
-                                              category: PoolCategory.series,
-                                              order: PoolOrder.latest,
-                                            ))),
+                                    create: (context) => PoolBloc(
+                                      poolRepository:
+                                          context.read<PoolRepository>(),
+                                      postRepository:
+                                          context.read<PostRepository>(),
+                                    )..add(const PoolRefreshed(
+                                        category: PoolCategory.series,
+                                        order: PoolOrder.latest,
+                                      )),
+                                  ),
                                 ],
                                 child: const PoolPage(),
                               ),
@@ -237,11 +244,7 @@ class _HomePageState extends State<HomePage> {
       if (screenSize == ScreenSize.small) {
         scaffoldKey.currentState!.openDrawer();
       } else {
-        if (expanded.value) {
-          expanded.value = false;
-        } else {
-          expanded.value = true;
-        }
+        expanded.value = !expanded.value;
       }
     }
   }

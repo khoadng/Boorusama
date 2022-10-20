@@ -15,10 +15,11 @@ class Quote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Theme.of(context).cardColor,
-          border: Border.all(
-            color: Theme.of(context).hintColor,
-          )),
+        color: Theme.of(context).cardColor,
+        border: Border.all(
+          color: Theme.of(context).hintColor,
+        ),
+      ),
       padding: const EdgeInsets.symmetric(horizontal: 6),
       margin: const EdgeInsets.only(
         top: 3,

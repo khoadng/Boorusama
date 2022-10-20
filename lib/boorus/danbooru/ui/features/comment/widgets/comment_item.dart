@@ -70,7 +70,7 @@ class CommentItem extends StatelessWidget {
             onVote: onVoteChanged,
             onReply: onReply,
             moreBuilder: moreBuilder,
-          )
+          ),
       ],
     );
   }

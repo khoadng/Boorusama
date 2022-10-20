@@ -47,16 +47,20 @@ class _ResultViewState extends State<ResultView> {
             onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                   tags: tags.map((e) => e.toString()).join(' '),
                   fetcher: SearchedPostFetcher.fromTags(
-                      tags.map((e) => e.toString()).join(' ')),
+                    tags.map((e) => e.toString()).join(' '),
+                  ),
                 )),
             onRefresh: (controller) {
               context.read<PostBloc>().add(PostRefreshed(
                     tag: tags.map((e) => e.toString()).join(' '),
                     fetcher: SearchedPostFetcher.fromTags(
-                        tags.map((e) => e.toString()).join(' ')),
+                      tags.map((e) => e.toString()).join(' '),
+                    ),
                   ));
-              Future.delayed(const Duration(milliseconds: 500),
-                  () => controller.refreshCompleted());
+              Future.delayed(
+                const Duration(milliseconds: 500),
+                () => controller.refreshCompleted(),
+              );
             },
             builder: (context, controller) => CustomScrollView(
               controller: controller,
@@ -94,20 +98,14 @@ class _ResultViewState extends State<ResultView> {
                 ),
                 BlocBuilder<PostBloc, PostState>(
                   builder: (context, state) {
-                    if (state.status == LoadStatus.loading) {
-                      return const SliverPadding(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
-                        sliver: SliverToBoxAdapter(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      );
-                    } else {
-                      return const SliverToBoxAdapter(
-                        child: SizedBox.shrink(),
-                      );
-                    }
+                    return state.status == LoadStatus.loading
+                        ? const SliverPadding(
+                            padding: EdgeInsets.only(bottom: 20, top: 20),
+                            sliver: SliverToBoxAdapter(
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          )
+                        : const SliverToBoxAdapter(child: SizedBox.shrink());
                   },
                 ),
               ],

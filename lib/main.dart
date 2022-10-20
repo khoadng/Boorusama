@@ -230,21 +230,28 @@ void main() async {
                   final api = state.api;
 
                   final popularSearchRepo = PopularSearchRepositoryApi(
-                      accountRepository: accountRepo, api: api);
+                    accountRepository: accountRepo,
+                    api: api,
+                  );
 
                   final tagRepo = TagRepositoryApi(api, accountRepo);
 
                   final artistRepo = ArtistRepositoryApi(api: api);
 
                   final profileRepo = ProfileRepositoryApi(
-                      accountRepository: accountRepo, api: api);
+                    accountRepository: accountRepo,
+                    api: api,
+                  );
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
 
                   final commentRepo = CommentRepositoryApi(api, accountRepo);
 
                   final userRepo = UserRepositoryApi(
-                      api, accountRepo, tagInfo.defaultBlacklistedTags);
+                    api,
+                    accountRepo,
+                    tagInfo.defaultBlacklistedTags,
+                  );
 
                   final noteRepo = NoteRepositoryApi(api);
 
@@ -279,7 +286,9 @@ void main() async {
                   );
 
                   final postVoteRepo = PostVoteApiRepositoryApi(
-                      api: api, accountRepo: accountRepo);
+                    api: api,
+                    accountRepo: accountRepo,
+                  );
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
@@ -295,7 +304,8 @@ void main() async {
                     accountRepository: accountRepo,
                   );
                   final artistCommentaryBloc = ArtistCommentaryBloc(
-                      artistCommentaryRepository: artistCommentaryRepo);
+                    artistCommentaryRepository: artistCommentaryRepo,
+                  );
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
                         ..getCurrentAccount();
@@ -304,8 +314,9 @@ void main() async {
                     profileRepository: profileRepo,
                   )..logIn();
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
-                      accountRepository: accountRepo,
-                      blacklistedTagsRepository: blacklistedTagRepo);
+                    accountRepository: accountRepo,
+                    blacklistedTagsRepository: blacklistedTagRepo,
+                  );
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
                       category: PoolCategory.series,
@@ -328,47 +339,62 @@ void main() async {
 
                   final wikiBloc = WikiBloc(
                     wikiRepository: WikiCacher(
-                        cache: LruCacher(capacity: 200), repo: wikiRepo),
+                      cache: LruCacher(capacity: 200),
+                      repo: wikiRepo,
+                    ),
                   );
 
                   final noteBloc = NoteBloc(
-                      noteRepository: NoteCacher(
-                    cache: LruCacher(capacity: 100),
-                    repo: noteRepo,
-                  ));
+                    noteRepository: NoteCacher(
+                      cache: LruCacher(capacity: 100),
+                      repo: noteRepo,
+                    ),
+                  );
 
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
                       RepositoryProvider<ProfileRepository>.value(
-                          value: profileRepo),
+                        value: profileRepo,
+                      ),
                       RepositoryProvider<FavoritePostRepository>.value(
-                          value: favoriteRepo),
+                        value: favoriteRepo,
+                      ),
                       RepositoryProvider<AccountRepository>.value(
-                          value: accountRepo),
+                        value: accountRepo,
+                      ),
                       RepositoryProvider<SettingRepository>.value(
-                          value: settingRepository),
+                        value: settingRepository,
+                      ),
                       RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<SearchHistoryRepository>.value(
-                          value: searchHistoryRepo),
+                        value: searchHistoryRepo,
+                      ),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
                       RepositoryProvider<UserRepository>.value(value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
-                          value: blacklistedTagRepo),
+                        value: blacklistedTagRepo,
+                      ),
                       RepositoryProvider<ArtistRepository>.value(
-                          value: artistRepo),
+                        value: artistRepo,
+                      ),
                       RepositoryProvider<AutocompleteRepository>.value(
-                          value: autocompleteRepo),
+                        value: autocompleteRepo,
+                      ),
                       RepositoryProvider<RelatedTagRepository>.value(
-                          value: relatedTagRepo),
+                        value: relatedTagRepo,
+                      ),
                       RepositoryProvider<WikiRepository>.value(value: wikiRepo),
                       RepositoryProvider<ArtistCommentaryRepository>.value(
-                          value: artistCommentaryRepo),
+                        value: artistCommentaryRepo,
+                      ),
                       RepositoryProvider<PostVoteRepository>.value(
-                          value: postVoteRepo),
+                        value: postVoteRepo,
+                      ),
                       RepositoryProvider<PoolDescriptionRepository>.value(
-                          value: poolDescriptionRepo),
+                        value: poolDescriptionRepo,
+                      ),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -381,8 +407,9 @@ void main() async {
                         BlocProvider.value(value: authenticationCubit),
                         BlocProvider.value(value: blacklistedTagsBloc),
                         BlocProvider(
-                            create: (context) =>
-                                ThemeBloc(initialTheme: settings.themeMode)),
+                          create: (context) =>
+                              ThemeBloc(initialTheme: settings.themeMode),
+                        ),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: artistBloc),
@@ -409,7 +436,8 @@ void main() async {
                                 current.settings.themeMode,
                             listener: (context, state) {
                               context.read<ThemeBloc>().add(ThemeChanged(
-                                  theme: state.settings.themeMode));
+                                    theme: state.settings.themeMode,
+                                  ));
                             },
                           ),
                         ],

@@ -19,6 +19,9 @@ analyzer:
     missing_return: error
     todo: ignore
     parameter_assignments: error
+
+  plugins:
+    - dart_code_metrics
   # language:
   #   strict-inference: true
   #   strict-raw-types: true
@@ -192,8 +195,6 @@ linter:
 
 dart_code_metrics:
   anti-patterns:
-    - long-method
-    - long-parameter-list
   metrics:
     cyclomatic-complexity: 20
     maximum-nesting-level: 5

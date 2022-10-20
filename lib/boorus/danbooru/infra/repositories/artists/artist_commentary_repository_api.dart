@@ -21,8 +21,11 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
 
     try {
       final value = await _api.getArtistCommentary(
-          account.username, account.apiKey, postId,
-          cancelToken: cancelToken);
+        account.username,
+        account.apiKey,
+        postId,
+        cancelToken: cancelToken,
+      );
       final commentaries = <ArtistCommentaryDto>[];
 
       for (final item in value.response.data) {
@@ -70,9 +73,10 @@ ArtistCommentary artistCommentaryDtoToArtistCommentary(ArtistCommentaryDto d) =>
 extension ArtistCommentaryDtoX on ArtistCommentaryDto {
   ArtistCommentary toEntity() {
     return ArtistCommentary(
-        originalTitle: originalTitle ?? '',
-        originalDescription: originalDescription ?? '',
-        translatedTitle: translatedTitle ?? '',
-        translatedDescription: translatedDescription ?? '');
+      originalTitle: originalTitle ?? '',
+      originalDescription: originalDescription ?? '',
+      translatedTitle: translatedTitle ?? '',
+      translatedDescription: translatedDescription ?? '',
+    );
   }
 }

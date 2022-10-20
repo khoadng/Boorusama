@@ -62,17 +62,17 @@ class ArtistCommentaryBloc
     on<ArtistCommentaryFetched>(
       (event, emit) async {
         await tryAsync<ArtistCommentary>(
-            action: () =>
-                artistCommentaryRepository.getCommentary(event.postId),
-            onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-            onFailure: (stackTrace, error) =>
-                emit(state.copyWith(status: LoadStatus.failure)),
-            onSuccess: (commentary) async {
-              emit(state.copyWith(
-                commentary: commentary,
-                status: LoadStatus.success,
-              ));
-            });
+          action: () => artistCommentaryRepository.getCommentary(event.postId),
+          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+          onFailure: (stackTrace, error) =>
+              emit(state.copyWith(status: LoadStatus.failure)),
+          onSuccess: (commentary) async {
+            emit(state.copyWith(
+              commentary: commentary,
+              status: LoadStatus.success,
+            ));
+          },
+        );
       },
       transformer: restartable(),
     );

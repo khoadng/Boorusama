@@ -78,8 +78,10 @@ class _LatestViewState extends State<LatestView> {
               )),
           onRefresh: (controller) {
             _sendRefresh(_selectedTag.value);
-            Future.delayed(const Duration(seconds: 1),
-                () => controller.refreshCompleted());
+            Future.delayed(
+              const Duration(seconds: 1),
+              () => controller.refreshCompleted(),
+            );
           },
           scrollController: _autoScrollController,
           builder: (context, controller) => CustomScrollView(
@@ -95,20 +97,14 @@ class _LatestViewState extends State<LatestView> {
               ),
               BlocBuilder<PostBloc, PostState>(
                 builder: (context, state) {
-                  if (state.status == LoadStatus.loading) {
-                    return const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SliverToBoxAdapter(
-                      child: SizedBox.shrink(),
-                    );
-                  }
+                  return state.status == LoadStatus.loading
+                      ? const SliverPadding(
+                          padding: EdgeInsets.only(bottom: 20, top: 20),
+                          sliver: SliverToBoxAdapter(
+                            child: Center(child: CircularProgressIndicator()),
+                          ),
+                        )
+                      : const SliverToBoxAdapter(child: SizedBox.shrink());
                 },
               ),
             ],
@@ -134,8 +130,11 @@ class _LatestViewState extends State<LatestView> {
                       onPressed: () => widget.onMenuTap!(),
                     )
                   : null,
-              onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
-                  routeSettings: const RouteSettings(arguments: [''])),
+              onTap: () => AppRouter.router.navigateTo(
+                context,
+                '/posts/search',
+                routeSettings: const RouteSettings(arguments: ['']),
+              ),
             ),
           ),
           if (isDesktopPlatform())
@@ -190,6 +189,7 @@ class _LatestViewState extends State<LatestView> {
           itemCount: searches.length,
           itemBuilder: (context, index) {
             final selected = selectedTag == searches[index].keyword;
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
@@ -209,7 +209,8 @@ class _LatestViewState extends State<LatestView> {
                 ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.85),
+                    maxWidth: MediaQuery.of(context).size.width * 0.85,
+                  ),
                   child: Text(
                     searches[index].keyword.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,

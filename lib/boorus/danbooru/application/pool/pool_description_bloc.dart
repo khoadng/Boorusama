@@ -68,27 +68,29 @@ class PoolDescriptionBloc
   }) : super(PoolDescriptionState.initial()) {
     on<PoolDescriptionFetched>((event, emit) async {
       await tryAsync<String>(
-          action: () => poolDescriptionRepository.getDescription(event.poolId),
-          onFailure: (stackTrace, error) =>
-              emit(state.copyWith(status: LoadStatus.failure)),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onSuccess: (html) async {
-            final description = htmlStringToDescriptionHtmlString(html);
-            emit(description != null
-                ? state.copyWith(
-                    description: description,
-                    descriptionEndpointRefUrl: endpoint,
-                    status: LoadStatus.success,
-                  )
-                : state.copyWith(
-                    status: LoadStatus.failure,
-                  ));
-          });
+        action: () => poolDescriptionRepository.getDescription(event.poolId),
+        onFailure: (stackTrace, error) =>
+            emit(state.copyWith(status: LoadStatus.failure)),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+        onSuccess: (html) async {
+          final description = htmlStringToDescriptionHtmlString(html);
+          emit(description != null
+              ? state.copyWith(
+                  description: description,
+                  descriptionEndpointRefUrl: endpoint,
+                  status: LoadStatus.success,
+                )
+              : state.copyWith(
+                  status: LoadStatus.failure,
+                ));
+        },
+      );
     });
   }
 }
 
 String? htmlStringToDescriptionHtmlString(String htmlString) {
   final document = parse(htmlString);
+
   return document.getElementById('description')?.outerHtml;
 }
