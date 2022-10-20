@@ -335,6 +335,7 @@ void main() {
           currentPost: PostData(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
+            voteState: VoteState.upvoted,
           ),
         ),
       ],
@@ -408,6 +409,7 @@ void main() {
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
+        fireIndexChangedAtStart: false,
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
       expect: () => [
@@ -415,14 +417,8 @@ void main() {
           currentIndex: 0,
           currentPost: PostData(
             post: Post.empty().copyWith(id: 1),
-            isFavorited: false,
-          ),
-        ),
-        PostDetailState.initial().copyWith(
-          currentIndex: 0,
-          currentPost: PostData(
-            post: Post.empty().copyWith(id: 1),
             isFavorited: true,
+            voteState: VoteState.upvoted,
           ),
         ),
         PostDetailState.initial().copyWith(
