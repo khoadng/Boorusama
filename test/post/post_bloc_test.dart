@@ -221,6 +221,118 @@ void main() {
     );
 
     blocTest<PostBloc, PostState>(
+      '2 posts returned, non-anon user',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any()))
+            .thenAnswer((invocation) async => [
+                  Post.empty(),
+                  Post.empty(),
+                ]);
+        when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
+            const Account(id: 1, apiKey: '', username: ''));
+        when(() => mockBlacklistedRepo.getBlacklistedTags())
+            .thenAnswer((invocation) async => []);
+        when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
+            .thenAnswer((invocation) async => []);
+        when(() => mockPoolRepo.getPoolsByPostIds(any()))
+            .thenAnswer((invocation) async => []);
+        when(() => mockPostVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(mockPostRepo);
+        reset(mockAccountRepo);
+        reset(mockBlacklistedRepo);
+        reset(mockFavRepo);
+        reset(mockPoolRepo);
+        reset(mockPostVoteRepo);
+      },
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.success,
+          posts: [
+            PostData.empty(),
+            PostData.empty(),
+          ],
+        )
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
+      '2 posts returned with pools',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any()))
+            .thenAnswer((invocation) async => [
+                  Post.empty().copyWith(id: 1),
+                  Post.empty().copyWith(id: 2),
+                ]);
+        when(() => mockAccountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+        when(() => mockBlacklistedRepo.getBlacklistedTags())
+            .thenAnswer((invocation) async => []);
+        when(() => mockFavRepo.getFavorites(any(), any()))
+            .thenAnswer((invocation) async => []);
+        when(() => mockPoolRepo.getPoolsByPostIds(any()))
+            .thenAnswer((invocation) async => [
+                  Pool.empty().copyWith(id: 11, postIds: [1, 100]),
+                  Pool.empty().copyWith(id: 22, postIds: [2, 200]),
+                  Pool.empty().copyWith(id: 33, postIds: [2, 201]),
+                  Pool.empty().copyWith(id: 44, postIds: [2, 202]),
+                ]);
+      },
+      tearDown: () {
+        reset(mockPostRepo);
+        reset(mockAccountRepo);
+        reset(mockBlacklistedRepo);
+        reset(mockFavRepo);
+        reset(mockPoolRepo);
+      },
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.success,
+          posts: [
+            PostData.empty().copyWith(
+              post: Post.empty().copyWith(id: 1),
+              pools: [
+                Pool.empty().copyWith(id: 11, postIds: [1, 100]),
+              ],
+            ),
+            PostData.empty().copyWith(
+              post: Post.empty().copyWith(id: 2),
+              pools: [
+                Pool.empty().copyWith(id: 22, postIds: [2, 200]),
+                Pool.empty().copyWith(id: 33, postIds: [2, 201]),
+                Pool.empty().copyWith(id: 44, postIds: [2, 202]),
+              ],
+            ),
+          ],
+        )
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
       '2 posts initial + 1 posts returned',
       setUp: () {
         when(() => mockPostRepo.getPosts(any(), any()))

@@ -16,16 +16,33 @@ Future<List<PostData>> createPostData(
   List<Post> posts,
   AccountRepository accountRepository,
 ) async {
+  Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools) {
+    final postMap = {for (final p in posts) p.id: <Pool>{}};
+
+    for (final p in pools) {
+      // ignore: prefer_foreach
+      for (final i in p.postIds) {
+        if (postMap.containsKey(i)) {
+          postMap[i]!.add(p);
+        }
+      }
+    }
+
+    return postMap;
+  }
+
   final account = await accountRepository.get();
   final ids = posts.map((e) => e.id).toList();
 
   if (account == Account.empty) {
     final pools = await poolRepository.getPoolsByPostIds(ids);
+    final postMap = createPostPoolMap(pools);
+
     return posts
         .map((post) => PostData(
               post: post,
               isFavorited: false,
-              pools: pools,
+              pools: postMap[post.id]!.toList(),
             ))
         .toList();
   } else {
@@ -48,6 +65,8 @@ Future<List<PostData>> createPostData(
 
     final favSet = favs.map((e) => e.postId).toSet();
     final voteMap = {for (final v in votes) v.postId: v.score};
+    final postMap = createPostPoolMap(pools);
+
     return posts
         .map((post) => PostData(
               post: post,
@@ -55,7 +74,7 @@ Future<List<PostData>> createPostData(
               voteState: voteMap.containsKey(post.id)
                   ? voteStateFromScore(voteMap[post.id]!)
                   : VoteState.unvote,
-              pools: pools,
+              pools: postMap[post.id]!.toList(),
             ))
         .toList();
   }
