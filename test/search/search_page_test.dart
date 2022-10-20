@@ -63,6 +63,8 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockFavoriteReposiory extends Mock implements FavoritePostRepository {}
 
+class MockPostVoteRepository extends Mock implements PostVoteRepository {}
+
 Widget _buildSearchPage({
   required SearchBloc searchBloc,
   required TagSearchBloc tagSearchBloc,
@@ -115,6 +117,7 @@ void main() {
   final mockBlacklistedTagRepository = MockBlacklistedTagRepository();
   final mockAccountRepository = MockAccountRepository();
   final mockFavoriteReposiory = MockFavoriteReposiory();
+  final mockPostVoteRepo = MockPostVoteRepository();
 
   SearchBloc createSearchBloc() => SearchBloc(
       initial: const SearchState(displayState: DisplayState.options));
@@ -130,6 +133,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedTagRepository,
         favoritePostRepository: mockFavoriteReposiory,
         accountRepository: mockAccountRepository,
+        postVoteRepository: mockPostVoteRepo,
       );
 
   setUpAll(() {

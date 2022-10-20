@@ -156,6 +156,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required BlacklistedTagsRepository blacklistedTagsRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
+    required PostVoteRepository postVoteRepository,
     double Function()? stateIdGenerator,
   }) : super(PostState.initial()) {
     on<PostFetched>(
@@ -172,7 +173,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               final blacklisted =
                   await blacklistedTagsRepository.getBlacklistedTags();
               final postDatas = await createPostData(
-                  favoritePostRepository, posts, accountRepository);
+                favoritePostRepository,
+                postVoteRepository,
+                posts,
+                accountRepository,
+              );
               final filteredPosts = filterBlacklisted(postDatas, blacklisted);
 
               emit(
@@ -217,7 +222,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               final blacklisted =
                   await blacklistedTagsRepository.getBlacklistedTags();
               final postDatas = await createPostData(
-                  favoritePostRepository, posts, accountRepository);
+                favoritePostRepository,
+                postVoteRepository,
+                posts,
+                accountRepository,
+              );
               final filteredPosts = filterBlacklisted(postDatas, blacklisted);
               emit(
                 state.copyWith(
@@ -287,6 +296,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
         accountRepository: context.read<AccountRepository>(),
+        postVoteRepository: context.read<PostVoteRepository>(),
       );
 
   void _emitError(BooruError error, Emitter emit) {

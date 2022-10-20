@@ -23,7 +23,9 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -155,7 +157,12 @@ final postDetailHandler = Handler(handlerFunc: (
       BlocProvider.value(value: context.read<ThemeBloc>()),
       BlocProvider(
         create: (context) => PostDetailBloc(
+          posts: postDatas,
+          initialIndex: index,
           postRepository: context.read<PostRepository>(),
+          favoritePostRepository: context.read<FavoritePostRepository>(),
+          accountRepository: context.read<AccountRepository>(),
+          postVoteRepository: context.read<PostVoteRepository>(),
           tags: tags,
           onPostUpdated: (postId, tag, category) {
             if (postBloc == null) return;

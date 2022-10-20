@@ -15,7 +15,7 @@ import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
 
-const maxRetry = 7;
+const maxRetry = 4;
 
 List<Duration> exponentialBackoff(int retries) =>
     [for (var i = 0; i < retries; i += 1) i]
@@ -40,7 +40,7 @@ Dio dio(Directory dir, String baseUrl) {
     logPrint: print,
     retries: maxRetry,
     retryEvaluator: (error, attempt) =>
-        ![500, 422].contains(error.response?.statusCode),
+        ![500, 422, 302].contains(error.response?.statusCode),
     retryDelays: exponentialBackoff(maxRetry),
   ));
 

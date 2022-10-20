@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 Future<List<PostData>> createPostData(
   FavoritePostRepository favoritePostRepository,
+  PostVoteRepository voteRepository,
   List<Post> posts,
   AccountRepository accountRepository,
 ) async {
@@ -22,17 +23,32 @@ Future<List<PostData>> createPostData(
             ))
         .toList();
   } else {
+    List<Favorite> favs = [];
+    List<PostVote> votes = [];
+
+    final ids = posts.map((e) => e.id).toList();
+
     //TODO: shoudn't hardcode limit count
-    final favs = await favoritePostRepository.filterFavoritesFromUserId(
-      posts.map((e) => e.id).toList(),
-      account.id,
-      200,
-    );
+    await Future.wait([
+      favoritePostRepository
+          .filterFavoritesFromUserId(
+            ids,
+            account.id,
+            200,
+          )
+          .then((value) => favs = value),
+      voteRepository.getPostVotes(ids).then((value) => votes = value),
+    ]);
+
     final favSet = favs.map((e) => e.postId).toSet();
+    final voteMap = {for (final v in votes) v.postId: v.score};
     return posts
         .map((post) => PostData(
               post: post,
               isFavorited: favSet.contains(post.id),
+              voteState: voteMap.containsKey(post.id)
+                  ? voteStateFromScore(voteMap[post.id]!)
+                  : VoteState.unvote,
             ))
         .toList();
   }

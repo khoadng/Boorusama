@@ -184,6 +184,7 @@ class Post extends Equatable {
     String? fullImageUrl,
     int? upScore,
     int? downScore,
+    int? score,
     int? favCount,
     bool? hasParent,
     bool? hasChildren,
@@ -207,7 +208,7 @@ class Post extends Equatable {
         lastCommentAt: lastCommentAt ?? this.lastCommentAt,
         source: source ?? _source,
         createdAt: createdAt,
-        score: score,
+        score: score ?? this.score,
         upScore: upScore ?? this.upScore,
         downScore: downScore ?? this.downScore,
         favCount: favCount ?? this.favCount,
@@ -221,6 +222,7 @@ class Post extends Equatable {
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,
+        artistCommentary: artistCommentary,
       );
 
   double get aspectRatio => width / height;

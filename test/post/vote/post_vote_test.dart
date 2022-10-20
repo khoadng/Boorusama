@@ -20,7 +20,7 @@ void main() {
 
     test('unvoted', () {
       final votes =
-          [-2, 0, 2].map((e) => PostVote.empty().copyWith(score: e)).toList();
+          [0].map((e) => PostVote.empty().copyWith(score: e)).toList();
 
       expect(votes.every((vote) => vote.voteState == VoteState.unvote), isTrue);
     });
