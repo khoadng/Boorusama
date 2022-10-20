@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/routes.dart';
 
 @immutable
 class AppRouter {
-  static FluroRouter router = FluroRouter.appRouter;
+  static final FluroRouter router = FluroRouter.appRouter;
 
   void setupRoutes() {
     router

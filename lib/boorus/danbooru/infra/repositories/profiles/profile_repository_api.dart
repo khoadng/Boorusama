@@ -39,12 +39,15 @@ class ProfileRepositoryApi implements ProfileRepository {
       }
 
       return profileDtoToProfile(ProfileDto.fromJson(value.response.data));
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return null;
       } else {
-        throw InvalidUsernameOrPassword();
+        Error.throwWithStackTrace(
+          InvalidUsernameOrPassword(),
+          stackTrace,
+        );
       }
     }
   }

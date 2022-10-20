@@ -46,7 +46,7 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
               postId: -1,
               updatedAt: DateTime.now(),
             ).toEntity();
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return ArtistCommentaryDto(
@@ -56,7 +56,10 @@ class ArtistCommentaryRepositoryApi implements ArtistCommentaryRepository {
           updatedAt: DateTime.now(),
         ).toEntity();
       } else {
-        throw Exception("Failed to get artist's comment for $postId");
+        Error.throwWithStackTrace(
+          Exception("Failed to get artist's comment for $postId"),
+          stackTrace,
+        );
       }
     }
   }

@@ -7,7 +7,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-Post createPost(int id, List<String> tags) => Post(
+Post _createPost(int id, List<String> tags) => Post(
       id: id,
       previewImageUrl: '',
       normalImageUrl: '',
@@ -152,7 +152,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['b', 'c'];
@@ -171,7 +171,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['b c', 'b e'];
@@ -191,7 +191,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['a b -c -d'];
@@ -213,7 +213,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['~a ~b -c'];
@@ -243,7 +243,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['a b ~c -d'];
@@ -265,7 +265,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['~a ~b foobar'];
@@ -289,7 +289,7 @@ void main() {
       ];
       final originals = range(tags.length)
           .map((e) => e.toInt())
-          .map((e) => createPost(e, tags[e]))
+          .map((e) => _createPost(e, tags[e]))
           .toList();
 
       final blacklisted = ['~c %b'];

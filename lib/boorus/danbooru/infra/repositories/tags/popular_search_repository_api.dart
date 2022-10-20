@@ -39,12 +39,15 @@ class PopularSearchRepositoryApi implements PopularSearchRepository {
             ),
           )
           .then(parseSearch);
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception('Failed to get search stats for $date');
+        Error.throwWithStackTrace(
+          Exception('Failed to get search stats for $date'),
+          stackTrace,
+        );
       }
     }
   }

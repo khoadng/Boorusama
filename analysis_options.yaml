@@ -209,3 +209,22 @@ dart_code_metrics:
     - prefer-trailing-comma
     - prefer-conditional-expressions
     - no-equal-then-else
+    - avoid-cascade-after-if-null
+    - avoid-collection-methods-with-unrelated-types
+    - avoid-duplicate-exports
+    - avoid-global-state
+    # - avoid-ignoring-return-values
+    - avoid-missing-enum-constant-in-map
+    - avoid-nested-conditional-expressions:
+      acceptable-level: 3
+    # - avoid-non-ascii-symbols
+    # - avoid-non-null-assertion
+    # - avoid-passing-async-when-sync-expected
+    # - avoid-redundant-async # need it to implement async method with sync implementation
+    - avoid-throw-in-catch-block
+    # - avoid-top-level-members-in-tests # we need it for common test functions
+
+
+
+
+

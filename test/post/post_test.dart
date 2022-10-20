@@ -4,69 +4,69 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-const videoFormat = [
+const _videoFormat = [
   'mp4',
   'webm',
   'zip',
 ];
 
-const animatedFormat = [
-  ...videoFormat,
+const _animatedFormat = [
+  ..._videoFormat,
   'gif',
 ];
 
-const imageFormat = [
+const _imageFormat = [
   'png',
   'jpg',
 ];
 
-const randomFormat = [
+const _randomFormat = [
   'foo',
   'bar',
 ];
 
 void main() {
   group('[video test]', () {
-    test(videoFormat.join(', '), () {
+    test(_videoFormat.join(', '), () {
       final posts =
-          videoFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _videoFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isTrue);
     });
 
-    test(imageFormat.join(', '), () {
+    test(_imageFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isFalse);
     });
 
-    test(randomFormat.join(', '), () {
+    test(_randomFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isFalse);
     });
   });
 
   group('[animated test]', () {
-    test(animatedFormat.join(', '), () {
+    test(_animatedFormat.join(', '), () {
       final posts =
-          animatedFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _animatedFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isTrue);
     });
 
-    test(imageFormat.join(', '), () {
+    test(_imageFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isFalse);
     });
 
-    test(randomFormat.join(', '), () {
+    test(_randomFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isFalse);
     });
@@ -102,7 +102,7 @@ void main() {
 
   group('[download url]', () {
     test('video format should use normal image url', () {
-      final posts = [...videoFormat].map((e) => Post.empty().copyWith(
+      final posts = [..._videoFormat].map((e) => Post.empty().copyWith(
             format: e,
             normalImageUrl: 'foo',
             fullImageUrl: 'bar',
@@ -115,7 +115,7 @@ void main() {
     });
 
     test('non video format should use full image url', () {
-      final posts = [...imageFormat, 'gif'].map((e) => Post.empty().copyWith(
+      final posts = [..._imageFormat, 'gif'].map((e) => Post.empty().copyWith(
             format: e,
             normalImageUrl: 'foo',
             fullImageUrl: 'bar',

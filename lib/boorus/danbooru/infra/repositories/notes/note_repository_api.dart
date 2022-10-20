@@ -29,12 +29,15 @@ class NoteRepositoryApi implements NoteRepository {
             cancelToken: cancelToken,
           )
           .then(parseNote);
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception('Failed to get notes from $postId');
+        Error.throwWithStackTrace(
+          Exception('Failed to get notes from $postId'),
+          stackTrace,
+        );
       }
     }
   }

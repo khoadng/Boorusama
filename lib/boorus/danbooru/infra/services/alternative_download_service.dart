@@ -99,6 +99,6 @@ class AlternativeDownloadService implements DownloadService<Post> {
   }
 
   @override
-  // ignore: no-empty-block
+  // ignore: no-empty-block, avoid-redundant-async
   Future<void> init() async {}
 }
