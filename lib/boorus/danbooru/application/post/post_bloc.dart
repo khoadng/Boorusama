@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/account_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 
@@ -157,6 +158,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
     required PostVoteRepository postVoteRepository,
+    required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
   }) : super(PostState.initial()) {
     on<PostFetched>(
@@ -175,6 +177,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               final postDatas = await createPostData(
                 favoritePostRepository,
                 postVoteRepository,
+                poolRepository,
                 posts,
                 accountRepository,
               );
@@ -224,6 +227,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               final postDatas = await createPostData(
                 favoritePostRepository,
                 postVoteRepository,
+                poolRepository,
                 posts,
                 accountRepository,
               );
@@ -253,11 +257,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<PostFavoriteUpdated>((event, emit) {
       final index =
           state.posts.indexWhere((element) => element.post.id == event.postId);
-      //final old = state.posts[index].isFavorited;
       if (index > 0) {
         final posts = [...state.posts];
-        posts[index] = PostData(
-          post: state.posts[index].post,
+        posts[index] = state.posts[index].copyWith(
           isFavorited: event.favorite,
         );
 
@@ -266,8 +268,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             posts: posts,
           ),
         );
-
-        //print('${event.postId}: $old -> ${posts[index].isFavorited}');
       }
     });
 
@@ -276,9 +276,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.posts.indexWhere((element) => element.post.id == event.post.id);
       if (index > 0) {
         final posts = [...state.posts];
-        posts[index] = PostData(
+        posts[index] = state.posts[index].copyWith(
           post: event.post,
-          isFavorited: state.posts[index].isFavorited,
         );
 
         emit(
@@ -297,6 +296,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         favoritePostRepository: context.read<FavoritePostRepository>(),
         accountRepository: context.read<AccountRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
+        poolRepository: context.read<PoolRepository>(),
       );
 
   void _emitError(BooruError error, Emitter emit) {

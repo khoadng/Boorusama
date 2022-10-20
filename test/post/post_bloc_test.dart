@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 
@@ -20,6 +21,8 @@ class MockFavoritesRepository extends Mock implements FavoritePostRepository {}
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
+class MockPoolRepository extends Mock implements PoolRepository {}
+
 class MockBlacklistedTagsRepository extends Mock
     implements BlacklistedTagsRepository {}
 
@@ -29,6 +32,7 @@ void main() {
   final mockBlacklistedRepo = MockBlacklistedTagsRepository();
   final mockFavRepo = MockFavoritesRepository();
   final mockPostVoteRepo = MockPostVoteRepository();
+  final mockPoolRepo = MockPoolRepository();
   group('[post bloc failure test]', () {
     blocTest<PostBloc, PostState>(
       'tag limit',
@@ -43,6 +47,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -68,6 +73,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -93,6 +99,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -126,6 +133,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -151,6 +159,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -179,12 +188,15 @@ void main() {
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
+        when(() => mockPoolRepo.getPoolsByPostIds(any()))
+            .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(mockPostRepo);
         reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
+        reset(mockPoolRepo);
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
@@ -192,6 +204,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -200,8 +213,8 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
-            PostData(post: Post.empty(), isFavorited: false),
-            PostData(post: Post.empty(), isFavorited: false),
+            PostData.empty(),
+            PostData.empty(),
           ],
         )
       ],
@@ -220,12 +233,14 @@ void main() {
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.getFavorites(any(), any()))
             .thenAnswer((invocation) async => []);
+        when(() => mockPoolRepo.getPoolsByPostIds(any()))
+            .thenAnswer((invocation) async => []);
       },
       seed: () => PostState.initial().copyWith(
         page: 1,
         posts: [
-          PostData(post: Post.empty(), isFavorited: false),
-          PostData(post: Post.empty(), isFavorited: false),
+          PostData.empty(),
+          PostData.empty(),
         ],
       ),
       tearDown: () {
@@ -233,6 +248,7 @@ void main() {
         reset(mockAccountRepo);
         reset(mockBlacklistedRepo);
         reset(mockFavRepo);
+        reset(mockPoolRepo);
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
@@ -240,6 +256,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -247,17 +264,17 @@ void main() {
         PostState.initial().copyWith(
           status: LoadStatus.loading,
           posts: [
-            PostData(post: Post.empty(), isFavorited: false),
-            PostData(post: Post.empty(), isFavorited: false),
+            PostData.empty(),
+            PostData.empty(),
           ],
         ),
         PostState.initial().copyWith(
           page: 2,
           status: LoadStatus.success,
           posts: [
-            PostData(post: Post.empty(), isFavorited: false),
-            PostData(post: Post.empty(), isFavorited: false),
-            PostData(post: Post.empty(), isFavorited: false),
+            PostData.empty(),
+            PostData.empty(),
+            PostData.empty(),
           ],
         )
       ],
@@ -270,9 +287,9 @@ void main() {
       seed: () => PostState.initial().copyWith(
         page: 1,
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
-          PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
-          PostData(post: Post.empty().copyWith(id: 3), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
         ],
       ),
       build: () => PostBloc(
@@ -281,6 +298,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
@@ -292,12 +310,11 @@ void main() {
         PostState.initial().copyWith(
           id: 123,
           posts: [
-            PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
-            PostData(
+            PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+            PostData.empty().copyWith(
               post: Post.empty().copyWith(id: 2, tags: ['foo']),
-              isFavorited: false,
             ),
-            PostData(post: Post.empty().copyWith(id: 3), isFavorited: false),
+            PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
           ],
         ),
       ],
@@ -308,9 +325,9 @@ void main() {
       seed: () => PostState.initial().copyWith(
         page: 1,
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
-          PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
-          PostData(post: Post.empty().copyWith(id: 3), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
         ],
       ),
       build: () => PostBloc(
@@ -319,6 +336,7 @@ void main() {
         favoritePostRepository: mockFavRepo,
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(

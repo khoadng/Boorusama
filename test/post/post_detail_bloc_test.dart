@@ -52,7 +52,7 @@ void main() {
           )
         ],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -63,7 +63,7 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'foo',
@@ -76,7 +76,7 @@ void main() {
           id: 1,
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           tags: [
             PostDetailTag(
               name: 'bar',
@@ -113,8 +113,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
-          PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -124,12 +124,12 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         )
       ],
     );
@@ -159,8 +159,8 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
-          PostData(
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          PostData.empty().copyWith(
             post: Post.empty().copyWith(
               id: 2,
               artistTags: ['foo'],
@@ -177,22 +177,22 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData(post: Post.empty().copyWith(id: 3), isFavorited: false)
+                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
@@ -201,19 +201,19 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 2), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           recommends: [
             Recommend(
               title: 'foo',
               posts: [
-                PostData(post: Post.empty().copyWith(id: 3), isFavorited: false)
+                PostData.empty().copyWith(post: Post.empty().copyWith(id: 3)),
               ],
               type: RecommendType.artist,
             ),
             Recommend(
               title: 'bar',
               posts: [
-                PostData(post: Post.empty().copyWith(id: 4), isFavorited: false)
+                PostData.empty().copyWith(post: Post.empty().copyWith(id: 4)),
               ],
               type: RecommendType.character,
             ),
@@ -239,7 +239,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -250,13 +250,13 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           enableSlideShow: true,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         )
       ],
     );
@@ -278,7 +278,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -289,7 +289,7 @@ void main() {
         PostDetailState.initial().copyWith(
           currentIndex: 0,
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
@@ -297,7 +297,7 @@ void main() {
               .slideShowConfig
               .copyWith(skipAnimation: true),
           currentPost:
-              PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         )
       ],
     );
@@ -322,7 +322,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -332,7 +332,7 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
@@ -363,7 +363,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -372,7 +372,7 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: false,
           ),
@@ -405,7 +405,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: false),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -415,7 +415,7 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
             voteState: VoteState.upvoted,
@@ -423,7 +423,7 @@ void main() {
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: false,
           ),
@@ -456,7 +456,7 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -467,7 +467,7 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: false,
           ),
@@ -500,7 +500,10 @@ void main() {
         postVoteRepository: postVoteRepo,
         tags: [],
         posts: [
-          PostData(post: Post.empty().copyWith(id: 1), isFavorited: true),
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 1),
+            isFavorited: true,
+          ),
         ],
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
@@ -510,21 +513,21 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: false,
           ),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 0,
-          currentPost: PostData(
+          currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 1),
             isFavorited: true,
           ),

@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
@@ -64,6 +65,8 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 class MockFavoriteReposiory extends Mock implements FavoritePostRepository {}
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
+
+class MockPoolRepository extends Mock implements PoolRepository {}
 
 Widget _buildSearchPage({
   required SearchBloc searchBloc,
@@ -118,6 +121,7 @@ void main() {
   final mockAccountRepository = MockAccountRepository();
   final mockFavoriteReposiory = MockFavoriteReposiory();
   final mockPostVoteRepo = MockPostVoteRepository();
+  final mockPoolRepo = MockPoolRepository();
 
   SearchBloc createSearchBloc() => SearchBloc(
       initial: const SearchState(displayState: DisplayState.options));
@@ -134,6 +138,7 @@ void main() {
         favoritePostRepository: mockFavoriteReposiory,
         accountRepository: mockAccountRepository,
         postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
       );
 
   setUpAll(() {

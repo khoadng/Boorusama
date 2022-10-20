@@ -6,27 +6,32 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 Future<List<PostData>> createPostData(
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
+  PoolRepository poolRepository,
   List<Post> posts,
   AccountRepository accountRepository,
 ) async {
   final account = await accountRepository.get();
+  final ids = posts.map((e) => e.id).toList();
+
   if (account == Account.empty) {
+    final pools = await poolRepository.getPoolsByPostIds(ids);
     return posts
         .map((post) => PostData(
               post: post,
               isFavorited: false,
+              pools: pools,
             ))
         .toList();
   } else {
     List<Favorite> favs = [];
     List<PostVote> votes = [];
-
-    final ids = posts.map((e) => e.id).toList();
+    List<Pool> pools = [];
 
     //TODO: shoudn't hardcode limit count
     await Future.wait([
@@ -38,6 +43,7 @@ Future<List<PostData>> createPostData(
           )
           .then((value) => favs = value),
       voteRepository.getPostVotes(ids).then((value) => votes = value),
+      poolRepository.getPoolsByPostIds(ids).then((value) => pools = value),
     ]);
 
     final favSet = favs.map((e) => e.postId).toSet();
@@ -49,6 +55,7 @@ Future<List<PostData>> createPostData(
               voteState: voteMap.containsKey(post.id)
                   ? voteStateFromScore(voteMap[post.id]!)
                   : VoteState.unvote,
+              pools: pools,
             ))
         .toList();
   }

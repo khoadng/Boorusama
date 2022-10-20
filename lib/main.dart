@@ -256,10 +256,7 @@ void main() async {
                     repo: ArtistCommentaryRepositoryApi(api, accountRepo),
                   );
 
-                  final poolRepo = PoolRepositoryCacher(
-                    cache: LruCacher(capacity: 15),
-                    repo: PoolRepositoryApi(api, accountRepo),
-                  );
+                  final poolRepo = PoolRepositoryApi(api, accountRepo);
 
                   final blacklistedTagRepo =
                       BlacklistedTagsRepository(userRepo, accountRepo);

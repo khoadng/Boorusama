@@ -256,6 +256,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   preloadPost: widget.posts[index].post,
                                   key: ValueKey(state.currentIndex),
                                   recommends: state.recommends,
+                                  pools: widget.posts[index].pools,
                                 ),
                               if (settingsState
                                       .settings.actionBarDisplayBehavior ==
@@ -314,12 +315,14 @@ class _CarouselContent extends StatefulWidget {
     required this.post,
     required this.preloadPost,
     required this.recommends,
+    required this.pools,
   }) : super(key: key);
 
   final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
   final PostData post;
   final Post preloadPost;
+  final List<Pool> pools;
   final ActionBarDisplayBehavior actionBarDisplayBehavior;
   final List<Recommend> recommends;
 
@@ -344,13 +347,14 @@ class _CarouselContentState extends State<_CarouselContent> {
             [
               RepaintBoundary(child: widget.media),
               if (screenSize == ScreenSize.small) ...[
-                BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  builder: (context, state) {
-                    return state.status == LoadStatus.success
-                        ? PoolTiles(pools: state.data!)
-                        : const SizedBox.shrink();
-                  },
-                ),
+                PoolTiles(pools: widget.pools),
+                // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
+                //   builder: (context, state) {
+                //     return state.status == LoadStatus.success
+                //         ? PoolTiles(pools: state.data!)
+                //         : const SizedBox.shrink();
+                //   },
+                // ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
