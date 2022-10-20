@@ -32,7 +32,7 @@ class TagSuggestionItems extends StatelessWidget {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 4,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return ListView.builder(

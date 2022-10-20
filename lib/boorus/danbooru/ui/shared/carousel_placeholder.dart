@@ -18,7 +18,7 @@ class CarouselPlaceholder extends StatelessWidget {
       CarouselPlaceholder(
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: const BorderRadius.all(Radius.circular(16)),
             color: Theme.of(context).cardColor,
           ),
           child: const Center(
@@ -37,7 +37,7 @@ class CarouselPlaceholder extends StatelessWidget {
         return child ??
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
                 color: Theme.of(context).cardColor,
               ),
             );

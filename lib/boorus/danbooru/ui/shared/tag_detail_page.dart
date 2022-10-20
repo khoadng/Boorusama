@@ -141,10 +141,7 @@ class _PanelState extends State<_Panel> {
         borderRadius: const BorderRadius.all(Radius.circular(24)),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(
-          left: 8,
-          right: 8,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: BlocBuilder<PostBloc, PostState>(
           buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
@@ -208,7 +205,7 @@ class _PanelState extends State<_Panel> {
                     builder: (context, state) {
                       return state.status == LoadStatus.loading
                           ? const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              padding: EdgeInsets.symmetric(vertical: 20),
                               sliver: SliverToBoxAdapter(
                                 child:
                                     Center(child: CircularProgressIndicator()),

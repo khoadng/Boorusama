@@ -8,13 +8,11 @@ class EditorSpacer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Container(
-        width: double.infinity,
-        height: 1,
-        color: Theme.of(context).dividerColor,
-      ),
+      width: double.infinity,
+      height: 1,
+      color: Theme.of(context).dividerColor,
     );
   }
 }

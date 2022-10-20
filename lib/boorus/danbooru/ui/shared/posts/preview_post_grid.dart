@@ -40,7 +40,7 @@ class PreviewPostGrid extends StatelessWidget {
           physics: physics ?? const NeverScrollableScrollPhysics(),
           itemCount: posts.length,
           itemBuilder: (context, index) => ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
             child: GestureDetector(
               onTap: () => onTap(index),
               child: CachedNetworkImage(
@@ -52,7 +52,7 @@ class PreviewPostGrid extends StatelessWidget {
                 placeholder: (context, url) => Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
                 ),
               ),

@@ -54,7 +54,8 @@ Future<T?> showCommentPage<T>(
                         Material(
                           color: Colors.transparent,
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
                             onTap: Navigator.of(context).pop,
                             child: const Icon(Icons.close),
                           ),
@@ -99,12 +100,8 @@ class _CommentPageState extends State<CommentPage> {
     super.initState();
     context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
 
-    isEditing.addListener(() {
-      if (!isEditing.value) {
-        _commentReply.value = null;
-        FocusManager.instance.primaryFocus?.unfocus();
-      }
-    });
+    isEditing.addListener(_onEditing);
+
     _focus.addListener(() {
       if (_focus.hasPrimaryFocus) {
         isEditing.value = true;
@@ -112,9 +109,17 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
+  void _onEditing() {
+    if (!isEditing.value) {
+      _commentReply.value = null;
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
+    isEditing.removeListener(_onEditing);
     _focus.dispose();
   }
 

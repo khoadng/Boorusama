@@ -95,9 +95,9 @@ class NoteContainer extends StatelessWidget {
           child: Container(
             width: coordinate.width,
             height: coordinate.height,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white54,
-              border: Border.all(color: Colors.red),
+              border: Border.fromBorderSide(BorderSide(color: Colors.red)),
             ),
           ),
         ),

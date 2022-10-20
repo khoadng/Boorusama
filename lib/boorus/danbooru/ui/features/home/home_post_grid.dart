@@ -90,7 +90,7 @@ class HomePostGrid extends StatelessWidget {
 BorderRadius _gridSizeToBorderRadius(GridSize size) {
   switch (size) {
     case GridSize.small:
-      return BorderRadius.circular(3);
+      return const BorderRadius.all(Radius.circular(3));
     // case GridSize.large:
     //   return const BorderRadius.only(
     //     topLeft: Radius.circular(8),
@@ -98,6 +98,6 @@ BorderRadius _gridSizeToBorderRadius(GridSize size) {
     //   );
 
     default:
-      return BorderRadius.circular(8);
+      return const BorderRadius.all(Radius.circular(8));
   }
 }

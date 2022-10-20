@@ -28,14 +28,14 @@ class PoolImage extends StatelessWidget {
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
             ),
           )
         : Container(
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: const BorderRadius.all(Radius.circular(4)),
             ),
             child: Center(
               child: const Text('pool.mature_banned_content').tr(),

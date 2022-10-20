@@ -345,7 +345,7 @@ class _OverlayIcon extends StatelessWidget {
       height: 25,
       decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
       ),
       child: Icon(
         icon,

@@ -163,7 +163,7 @@ class ArtistCommentaryPlaceholder extends StatelessWidget {
             height: 20,
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
           ),
         ),
@@ -175,7 +175,7 @@ class ArtistCommentaryPlaceholder extends StatelessWidget {
             height: 20,
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: const BorderRadius.all(Radius.circular(8)),
             ),
           ),
         ),

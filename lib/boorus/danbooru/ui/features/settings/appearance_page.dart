@@ -255,41 +255,39 @@ class _AppearancePageState extends State<AppearancePage> {
   }
 
   Widget _buildPreview(BuildContext context, SettingsState state) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(horizontal: 100),
-      child: Container(
-        width: 150,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).backgroundColor,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ValueListenableBuilder<double>(
-            valueListenable: _spacingSliderValue,
-            builder: (context, value, _) => GridView.builder(
-              itemCount: 100,
-              gridDelegate: _gridSizeToGridDelegate(
-                Screen.of(context).size,
-                state.settings.gridSize,
-                spacing: value,
-              ),
-              itemBuilder: (context, index) {
-                return ValueListenableBuilder<double>(
-                  valueListenable: _borderRadiusSliderValue,
-                  builder: (context, value, _) => Container(
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).cardColor,
-                      borderRadius: BorderRadius.circular(value),
-                    ),
-                    child: const Center(
-                      child: SettingsIcon(FontAwesomeIcons.image),
-                    ),
-                  ),
-                );
-              },
+      width: 150,
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: ValueListenableBuilder<double>(
+          valueListenable: _spacingSliderValue,
+          builder: (context, value, _) => GridView.builder(
+            itemCount: 100,
+            gridDelegate: _gridSizeToGridDelegate(
+              Screen.of(context).size,
+              state.settings.gridSize,
+              spacing: value,
             ),
+            itemBuilder: (context, index) {
+              return ValueListenableBuilder<double>(
+                valueListenable: _borderRadiusSliderValue,
+                builder: (context, value, _) => Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(value),
+                  ),
+                  child: const Center(
+                    child: SettingsIcon(FontAwesomeIcons.image),
+                  ),
+                ),
+              );
+            },
           ),
         ),
       ),

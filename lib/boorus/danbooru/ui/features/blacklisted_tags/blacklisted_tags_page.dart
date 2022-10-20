@@ -102,8 +102,8 @@ class BlacklistedTagsPage extends StatelessWidget {
             title: Text(tag),
             trailing: PopupMenuButton(
               constraints: const BoxConstraints(minWidth: 150),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(4)),
               ),
               itemBuilder: (context) => [
                 PopupMenuItem(

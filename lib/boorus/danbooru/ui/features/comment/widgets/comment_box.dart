@@ -58,10 +58,7 @@ class _CommentBoxState extends State<CommentBox> {
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Colors.grey)),
         ),
-        padding: const EdgeInsets.only(
-          left: 12,
-          right: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -110,8 +107,8 @@ class _CommentBoxState extends State<CommentBox> {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
                         ),
                         onPressed: value.text.isEmpty

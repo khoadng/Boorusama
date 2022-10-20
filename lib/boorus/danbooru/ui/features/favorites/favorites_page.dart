@@ -89,7 +89,7 @@ class FavoritesPage extends StatelessWidget {
                     builder: (context, state) {
                       return state.status == LoadStatus.loading
                           ? const SliverPadding(
-                              padding: EdgeInsets.only(bottom: 20, top: 20),
+                              padding: EdgeInsets.symmetric(vertical: 20),
                               sliver: SliverToBoxAdapter(
                                 child:
                                     Center(child: CircularProgressIndicator()),

@@ -119,7 +119,7 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                     ),
                     if (state.status == LoadStatus.loading && state.hasMore)
                       const SliverPadding(
-                        padding: EdgeInsets.only(bottom: 20, top: 20),
+                        padding: EdgeInsets.symmetric(vertical: 20),
                         sliver: SliverToBoxAdapter(
                           child: Center(
                             child: CircularProgressIndicator(),

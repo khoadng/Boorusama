@@ -60,8 +60,8 @@ class CommentList extends StatelessWidget {
                       ? PopupMenuButton(
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(minWidth: 150),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(4)),
                           ),
                           onSelected: (value) {
                             if (value == 'edit') {

@@ -132,7 +132,7 @@ class _PoolPageState extends State<PoolPage> {
             builder: (context, state) {
               return state.status == LoadStatus.loading
                   ? const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
+                      padding: EdgeInsets.symmetric(vertical: 20),
                       sliver: SliverToBoxAdapter(
                         child: Center(child: CircularProgressIndicator()),
                       ),
@@ -222,8 +222,8 @@ class PoolOptionsHeader extends StatelessWidget {
                 style: TextButton.styleFrom(
                   foregroundColor: Theme.of(context).textTheme.headline6!.color,
                   backgroundColor: Theme.of(context).cardColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(18)),
                   ),
                 ),
                 onPressed: () {

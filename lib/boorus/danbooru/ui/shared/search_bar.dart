@@ -62,7 +62,9 @@ class _SearchBarState extends State<SearchBar> {
         child: Material(
           elevation: 4,
           color: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(6)),
+          ),
           child: Theme(
             data: Theme.of(context).copyWith(
               splashColor: Colors.transparent,

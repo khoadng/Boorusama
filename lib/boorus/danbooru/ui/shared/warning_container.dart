@@ -14,28 +14,26 @@ class WarningContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 8,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).colorScheme.error,
-        ),
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(right: 12),
-                child: FaIcon(FontAwesomeIcons.triangleExclamation),
-              ),
-              Expanded(child: contentBuilder(context)),
-            ],
-          ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        color: Theme.of(context).colorScheme.error,
+      ),
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: FaIcon(FontAwesomeIcons.triangleExclamation),
+            ),
+            Expanded(child: contentBuilder(context)),
+          ],
         ),
       ),
     );
@@ -52,31 +50,29 @@ class InfoContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return Container(
       padding: const EdgeInsets.symmetric(
         horizontal: 16,
         vertical: 8,
       ),
-      child: Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).cardColor,
-        ),
-        width: MediaQuery.of(context).size.width,
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: Row(
-            children: [
-              const Padding(
-                padding: EdgeInsets.only(right: 12),
-                child: FaIcon(
-                  FontAwesomeIcons.lightbulb,
-                  color: Colors.amber,
-                ),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        color: Theme.of(context).cardColor,
+      ),
+      width: MediaQuery.of(context).size.width,
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: Row(
+          children: [
+            const Padding(
+              padding: EdgeInsets.only(right: 12),
+              child: FaIcon(
+                FontAwesomeIcons.lightbulb,
+                color: Colors.amber,
               ),
-              Expanded(child: contentBuilder(context)),
-            ],
-          ),
+            ),
+            Expanded(child: contentBuilder(context)),
+          ],
         ),
       ),
     );

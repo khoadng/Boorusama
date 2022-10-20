@@ -57,7 +57,8 @@ class YoutubePreviewBox extends StatelessWidget {
                           alignment: Alignment.center,
                           children: [
                             ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(8)),
                               child: CachedNetworkImage(
                                 fit: BoxFit.contain,
                                 imageUrl: data.previewImage!,
@@ -66,8 +67,9 @@ class YoutubePreviewBox extends StatelessWidget {
                             if (data.isVideo)
                               Align(
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
+                                  decoration: const BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
                                     color: Colors.black87,
                                   ),
                                   child: IconButton(

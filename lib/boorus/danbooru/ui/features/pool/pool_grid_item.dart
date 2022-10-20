@@ -23,7 +23,7 @@ class PoolGridItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(3),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(4),
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
         child: GestureDetector(
           onTap: () => AppRouter.router.navigateTo(
             context,

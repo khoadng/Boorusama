@@ -154,8 +154,8 @@ class _RelatedTagActionSheet extends StatelessWidget {
           ),
           trailing: PopupMenuButton(
             padding: const EdgeInsets.all(1),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(4),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
             ),
             itemBuilder: (context) => [
               PopupMenuItem(
@@ -221,7 +221,9 @@ class _RelatedTagButton extends StatelessWidget {
           foregroundColor: backgroundColor,
           padding: const EdgeInsets.only(left: 6, right: 2),
           backgroundColor: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
           side: BorderSide(
             color: Theme.of(context).hintColor,
           ),

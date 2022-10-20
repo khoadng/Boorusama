@@ -222,13 +222,14 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
       );
     }
 
+    // ignore: avoid-wrapping-in-padding
     return Padding(
       padding: EdgeInsets.all(marginSize),
       child: Container(
         padding: const EdgeInsets.all(5),
-        decoration: BoxDecoration(
-          color: const Color(0x96000000),
-          borderRadius: BorderRadius.circular(10),
+        decoration: const BoxDecoration(
+          color: Color(0x96000000),
+          borderRadius: BorderRadius.all(Radius.circular(10)),
         ),
         child: Text(
           currentSubtitle.first!.text,
@@ -279,10 +280,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
               if (!chewieController.isLive)
                 Expanded(
                   child: Container(
-                    padding: const EdgeInsets.only(
-                      right: 20,
-                      left: 20,
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
                     child: Row(
                       children: [
                         _buildProgressBar(),
@@ -306,10 +304,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         child: Container(
           height: barHeight + (chewieController.isFullScreen ? 15.0 : 0),
           margin: const EdgeInsets.only(right: 12),
-          padding: const EdgeInsets.only(
-            left: 8,
-            right: 8,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Center(
             child: Icon(
               chewieController.isFullScreen
@@ -417,10 +412,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
         height: barHeight,
         color: Colors.transparent,
         margin: const EdgeInsets.only(left: 8, right: 4),
-        padding: const EdgeInsets.only(
-          left: 12,
-          right: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: AnimatedPlayPause(
           playing: controller.value.isPlaying,
           color: Colors.white,
