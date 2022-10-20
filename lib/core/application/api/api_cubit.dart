@@ -40,7 +40,7 @@ Dio dio(Directory dir, String baseUrl) {
     logPrint: print,
     retries: maxRetry,
     retryEvaluator: (error, attempt) =>
-        ![500, 422, 302].contains(error.response?.statusCode),
+        ![500, 422, 429, 302].contains(error.response?.statusCode),
     retryDelays: exponentialBackoff(maxRetry),
   ));
 

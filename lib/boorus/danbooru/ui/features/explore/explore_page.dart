@@ -50,26 +50,6 @@ class ExplorePage extends StatelessWidget {
       builder: (context, blacklistedTagsState) {
         return BlocBuilder<SettingsCubit, SettingsState>(
           builder: (context, settingsState) {
-            final popularBloc = PostBloc.of(context)
-              ..add(PostRefreshed(
-                  fetcher: ExplorePreviewFetcher.now(
-                      category: ExploreCategory.popular)));
-
-            final hotBloc = PostBloc.of(context)
-              ..add(PostRefreshed(
-                  fetcher: ExplorePreviewFetcher.now(
-                      category: ExploreCategory.hot)));
-
-            final curatedBloc = PostBloc.of(context)
-              ..add(PostRefreshed(
-                  fetcher: ExplorePreviewFetcher.now(
-                      category: ExploreCategory.curated)));
-
-            final mostViewedBloc = PostBloc.of(context)
-              ..add(PostRefreshed(
-                  fetcher: ExplorePreviewFetcher.now(
-                      category: ExploreCategory.mostViewed)));
-
             return Padding(
               padding: Screen.of(context).size == ScreenSize.small
                   ? EdgeInsets.zero
@@ -83,8 +63,11 @@ class ExplorePage extends StatelessWidget {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BlocProvider.value(
-                      value: popularBloc,
+                    child: BlocProvider(
+                      create: (context) => PostBloc.of(context)
+                        ..add(PostRefreshed(
+                            fetcher: ExplorePreviewFetcher.now(
+                                category: ExploreCategory.popular))),
                       child: ExploreSection(
                         title: 'explore.popular'.tr(),
                         category: ExploreCategory.popular,
@@ -95,8 +78,11 @@ class ExplorePage extends StatelessWidget {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BlocProvider.value(
-                      value: hotBloc,
+                    child: BlocProvider(
+                      create: (context) => PostBloc.of(context)
+                        ..add(PostRefreshed(
+                            fetcher: ExplorePreviewFetcher.now(
+                                category: ExploreCategory.hot))),
                       child: ExploreSection(
                         title: 'explore.hot'.tr(),
                         category: ExploreCategory.hot,
@@ -107,8 +93,11 @@ class ExplorePage extends StatelessWidget {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BlocProvider.value(
-                      value: curatedBloc,
+                    child: BlocProvider(
+                      create: (context) => PostBloc.of(context)
+                        ..add(PostRefreshed(
+                            fetcher: ExplorePreviewFetcher.now(
+                                category: ExploreCategory.curated))),
                       child: ExploreSection(
                         title: 'explore.curated'.tr(),
                         category: ExploreCategory.curated,
@@ -119,8 +108,11 @@ class ExplorePage extends StatelessWidget {
                     ),
                   ),
                   SliverToBoxAdapter(
-                    child: BlocProvider.value(
-                      value: mostViewedBloc,
+                    child: BlocProvider(
+                      create: (context) => PostBloc.of(context)
+                        ..add(PostRefreshed(
+                            fetcher: ExplorePreviewFetcher.now(
+                                category: ExploreCategory.mostViewed))),
                       child: ExploreSection(
                         title: 'explore.most_viewed'.tr(),
                         category: ExploreCategory.mostViewed,
