@@ -224,6 +224,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     )
         onPostUpdated,
     double Function()? idGenerator,
+    bool fireIndexChangedAtStart = true,
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
@@ -421,7 +422,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         emit(originalState);
       }
     });
-
-    add(PostDetailIndexChanged(index: initialIndex));
+    if (fireIndexChangedAtStart) {
+      add(PostDetailIndexChanged(index: initialIndex));
+    }
   }
 }
