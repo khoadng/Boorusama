@@ -351,10 +351,16 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       final post = state.currentPost;
       final newPost = state.currentPost.copyWith(
         post: post.post.copyWith(
-          favCount: post.post.favCount + (event.favorite ? 1 : -1),
-          score: post.post.score + (event.favorite ? 1 : -1),
+          favCount: post.post.favCount + (event.favorite ? 1 : 0),
+          score: post.post.score + (event.favorite ? 1 : 0),
+          upScore: post.post.upScore + (event.favorite ? 1 : 0),
         ),
         isFavorited: event.favorite,
+        voteState: event.favorite
+            ? VoteState.upvoted
+            : post.voteState == VoteState.upvoted
+                ? VoteState.unvote
+                : post.voteState,
       );
 
       posts[state.currentIndex] = newPost;
