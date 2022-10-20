@@ -138,8 +138,6 @@ PreviewUrlData parseHtml(String text) {
   );
 }
 
-Future<PreviewUrlData> parseHtmlAsync(String text, String sourceUrl) async {
-  final res = await compute(parseHtml, text);
-
-  return res;
+Future<PreviewUrlData> parseHtmlAsync(String text, String sourceUrl) {
+  return compute(parseHtml, text);
 }

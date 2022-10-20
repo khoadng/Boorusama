@@ -51,7 +51,7 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
           left: 26,
           right: 26,
           top: 14,
-          bottom: 14 + viewInsets + safeAreaBottom,
+          bottom: viewInsets + safeAreaBottom + 14,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

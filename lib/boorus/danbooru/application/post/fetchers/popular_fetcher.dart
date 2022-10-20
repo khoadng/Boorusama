@@ -15,9 +15,6 @@ class PopularPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getPopularPosts(date, page, scale);
-
-    return posts;
-  }
+  ) async =>
+      repo.getPopularPosts(date, page, scale);
 }

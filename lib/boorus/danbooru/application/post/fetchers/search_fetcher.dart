@@ -19,11 +19,8 @@ class SearchedPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getPosts(query, page);
-
-    return posts;
-  }
+  ) async =>
+      repo.getPosts(query, page);
 }
 
 String _postsOrderToString(PostsOrder? order) {

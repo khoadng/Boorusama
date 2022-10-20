@@ -57,7 +57,7 @@ extension ArtistDtoX on ArtistDto {
       groupName: groupName,
       isBanned: isBanned,
       isDeleted: isDeleted,
-      otherNames: List<String>.from(otherNames),
+      otherNames: List<String>.of(otherNames),
       updatedAt: updatedAt,
     );
   }

@@ -15,9 +15,6 @@ class CuratedPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getCuratedPosts(date, page, scale);
-
-    return posts;
-  }
+  ) async =>
+      repo.getCuratedPosts(date, page, scale);
 }

@@ -69,16 +69,16 @@ final artistHandler = Handler(handlerFunc: (
       BlocProvider(
         create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
-            tag: args[0],
-            fetcher: SearchedPostFetcher.fromTags(args[0]),
+            tag: args.first,
+            fetcher: SearchedPostFetcher.fromTags(args.first),
           )),
       ),
       BlocProvider.value(
-        value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0])),
+        value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
       ),
     ],
     child: ArtistPage(
-      artistName: args[0],
+      artistName: args.first,
       backgroundImageUrl: args[1],
     ),
   );
@@ -95,16 +95,16 @@ final characterHandler = Handler(handlerFunc: (
       BlocProvider(
         create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
-            tag: args[0],
-            fetcher: SearchedPostFetcher.fromTags(args[0]),
+            tag: args.first,
+            fetcher: SearchedPostFetcher.fromTags(args.first),
           )),
       ),
       BlocProvider.value(
-        value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0])),
+        value: context.read<WikiBloc>()..add(WikiFetched(tag: args.first)),
       ),
     ],
     child: CharacterPage(
-      characterName: args[0],
+      characterName: args.first,
       backgroundImageUrl: args[1],
     ),
   );
@@ -115,7 +115,7 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final postDatas = args[0] as List<PostData>;
+  final postDatas = args.first as List<PostData>;
   final index = args[1] as int;
 
   final AutoScrollController? controller = args[2];
@@ -249,7 +249,7 @@ final postSearchHandler = Handler(handlerFunc: (
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,
       metatagHighlightColor: Theme.of(context).colorScheme.primary,
-      initialQuery: args[0],
+      initialQuery: args.first,
     ),
   );
 });
@@ -265,14 +265,14 @@ final postDetailImageHandler = Handler(handlerFunc: (
       BlocProvider.value(
         value: context.read<NoteBloc>()
           ..add(const NoteReset())
-          ..add(NoteRequested(postId: args[0].id)),
+          ..add(NoteRequested(postId: args.first.id)),
       ),
     ],
     child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
       selector: (state) => state.settings.imageQualityInFullView,
       builder: (context, quality) {
         return PostImagePage(
-          post: args[0],
+          post: args.first,
           useOriginalSize: quality == ImageQuality.original,
         );
       },
@@ -311,7 +311,7 @@ final settingsHandler =
 final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
-  final pool = args[0] as Pool;
+  final pool = args.first as Pool;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {
@@ -332,6 +332,8 @@ final poolDetailHandler =
         ],
         child: PoolDetailPage(
           pool: pool,
+          // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
+          // ignore: prefer-iterable-of
           postIds: QueueList.from(pool.postIds),
         ),
       );
@@ -342,7 +344,7 @@ final poolDetailHandler =
 final favoritesHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
-  final String username = args[0];
+  final String username = args.first;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {

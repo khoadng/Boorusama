@@ -215,14 +215,32 @@ dart_code_metrics:
     - avoid-global-state
     # - avoid-ignoring-return-values
     - avoid-missing-enum-constant-in-map
-    - avoid-nested-conditional-expressions:
-      acceptable-level: 3
     # - avoid-non-ascii-symbols
     # - avoid-non-null-assertion
     # - avoid-passing-async-when-sync-expected
     # - avoid-redundant-async # need it to implement async method with sync implementation
     - avoid-throw-in-catch-block
     # - avoid-top-level-members-in-tests # we need it for common test functions
+    - avoid-unnecessary-type-assertions
+    - avoid-unnecessary-type-casts
+    - avoid-unrelated-type-assertions
+    - binary-expression-operand-order
+    - double-literal-format
+    - missing-test-assertion
+    - no-equal-then-else
+    # - no-magic-number
+    - no-object-declaration
+    - prefer-correct-test-file-name
+    - prefer-correct-type-name:
+        min-length: 3
+        max-length: 60
+    - prefer-first
+    - prefer-immediate-return
+    - prefer-iterable-of
+    - prefer-last
+
+
+
 
 
 

@@ -13,9 +13,6 @@ class PoolPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getPostsFromIds(postIds);
-
-    return posts;
-  }
+  ) async =>
+      repo.getPostsFromIds(postIds);
 }

@@ -39,6 +39,7 @@ class BooruError extends Error {
     required this.error,
   }) : super();
 
+  // ignore: no-object-declaration
   final Object error;
 
   void when({

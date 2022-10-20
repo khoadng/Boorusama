@@ -279,7 +279,7 @@ class _Chip extends StatelessWidget {
               label: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxWidth:
-                      maxTagWidth ?? MediaQuery.of(context).size.width * 0.70,
+                      maxTagWidth ?? MediaQuery.of(context).size.width * 0.7,
                 ),
                 child: Text(
                   _getTagStringDisplayName(tag),

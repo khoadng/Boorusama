@@ -182,15 +182,10 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
       poolCoveridsMap[p.id] = p;
     }
 
-    final poolItems = [
+    return [
       for (final pair in zip([poolCoveridsMap.values.toList(), poolFiltered]))
-        PoolItem(
-          coverUrl: postToCoverUrl(_(pair).item1),
-          pool: _(pair).item2,
-        ),
+        PoolItem(coverUrl: postToCoverUrl(_(pair).item1), pool: _(pair).item2),
     ];
-
-    return poolItems;
   }
 }
 
@@ -202,4 +197,4 @@ String? postToCoverUrl(Post post) {
 }
 
 Tuple2<Post, Pool> _(List<Object> pair) =>
-    Tuple2(pair[0] as Post, pair[1] as Pool);
+    Tuple2(pair.first as Post, pair[1] as Pool);

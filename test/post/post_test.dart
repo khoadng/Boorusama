@@ -145,7 +145,7 @@ void main() {
         [5, -10],
       ]
           .map((e) => Post.empty().copyWith(
-                upScore: e[0],
+                upScore: e.first,
                 downScore: e[1],
               ))
           .toList();
@@ -158,7 +158,7 @@ void main() {
         [0, 0],
       ]
           .map((e) => Post.empty().copyWith(
-                upScore: e[0],
+                upScore: e.first,
                 downScore: e[1],
               ))
           .toList();
@@ -223,7 +223,7 @@ void main() {
         [false, true],
       ]
           .map((e) => Post.empty().copyWith(
-                hasChildren: e[0],
+                hasChildren: e.first,
                 hasParent: e[1],
               ))
           .toList();
