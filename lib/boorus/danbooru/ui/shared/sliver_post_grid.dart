@@ -359,7 +359,7 @@ SliverGridDelegate gridSizeToGridDelegate({
       return SliverPostGridDelegate.large(spacing, displaySize);
     case GridSize.small:
       return SliverPostGridDelegate.small(spacing, displaySize);
-    default:
+    case GridSize.normal:
       return SliverPostGridDelegate.normal(spacing, displaySize);
   }
 }

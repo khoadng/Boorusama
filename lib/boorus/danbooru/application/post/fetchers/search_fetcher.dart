@@ -24,10 +24,12 @@ class SearchedPostFetcher implements PostFetcher {
 }
 
 String _postsOrderToString(PostsOrder? order) {
+  if (order == null) return '';
+
   switch (order) {
     case PostsOrder.popular:
       return 'order:favcount';
-    default:
+    case PostsOrder.newest:
       return '';
   }
 }

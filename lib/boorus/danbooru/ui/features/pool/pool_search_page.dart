@@ -204,7 +204,8 @@ Color _poolCategoryToColor(PoolCategory category) {
   switch (category) {
     case PoolCategory.series:
       return TagColors.dark().copyright;
-    default:
+    case PoolCategory.unknown:
+    case PoolCategory.collection:
       return TagColors.dark().general;
   }
 }

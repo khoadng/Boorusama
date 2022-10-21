@@ -67,7 +67,7 @@ String _timeScaleToString(TimeScale scale) {
       return 'dateRange.month';
     case TimeScale.week:
       return 'dateRange.week';
-    default:
+    case TimeScale.day:
       return 'dateRange.day';
   }
 }

@@ -47,7 +47,8 @@ SliverGridDelegate _gridSizeToGridDelegate({
         crossAxisCount: 3,
         childAspectRatio: 0.5,
       );
-    default:
+    case ScreenSize.large:
+    case ScreenSize.veryLarge:
       return const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
         childAspectRatio: 0.6,

@@ -96,8 +96,8 @@ BorderRadius _gridSizeToBorderRadius(GridSize size) {
     //     topLeft: Radius.circular(8),
     //     topRight: Radius.circular(8),
     //   );
-
-    default:
+    case GridSize.normal:
+    case GridSize.large:
       return const BorderRadius.all(Radius.circular(8));
   }
 }

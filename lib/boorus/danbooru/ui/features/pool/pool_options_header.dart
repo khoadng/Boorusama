@@ -123,7 +123,7 @@ String _poolOrderToString(PoolOrder order) {
       return 'pool.order.post_count';
     case PoolOrder.name:
       return 'pool.order.name';
-    default:
+    case PoolOrder.latest:
       return 'pool.order.recent';
   }
 }

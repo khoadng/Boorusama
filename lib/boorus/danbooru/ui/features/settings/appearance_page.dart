@@ -33,9 +33,10 @@ String _themeModeToString(ThemeMode theme) {
   switch (theme) {
     case ThemeMode.dark:
       return 'settings.theme.dark';
+    case ThemeMode.system:
     case ThemeMode.amoledDark:
       return 'settings.theme.amoled_dark';
-    default:
+    case ThemeMode.light:
       return 'settings.theme.light';
   }
 }
@@ -48,7 +49,7 @@ String _imageQualityToString(ImageQuality quality) {
       return 'settings.image_grid.image_quality.low';
     case ImageQuality.original:
       return 'settings.image_grid.image_quality.original';
-    default:
+    case ImageQuality.automatic:
       return 'settings.image_grid.image_quality.automatic';
   }
 }
@@ -59,7 +60,7 @@ String _gridSizeToString(GridSize size) {
       return 'settings.image_grid.grid_size.large';
     case GridSize.small:
       return 'settings.image_grid.grid_size.small';
-    default:
+    case GridSize.normal:
       return 'settings.image_grid.grid_size.medium';
   }
 }
@@ -68,7 +69,7 @@ String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
   switch (behavior) {
     case ActionBarDisplayBehavior.staticAtBottom:
       return 'settings.image_detail.action_bar_display_behavior.static_at_bottom';
-    default:
+    case ActionBarDisplayBehavior.scrolling:
       return 'settings.image_detail.action_bar_display_behavior.scrolling';
   }
 }

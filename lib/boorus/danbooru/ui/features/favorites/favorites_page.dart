@@ -42,7 +42,6 @@ class FavoritesPage extends StatelessWidget {
                         // ignore: avoid_function_literals_in_foreach_calls
                         state.posts.forEach((p) => download(p.post));
                         break;
-                      default:
                     }
                   },
                   itemBuilder: (context) => [

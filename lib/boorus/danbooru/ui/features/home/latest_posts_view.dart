@@ -172,7 +172,8 @@ class _LatestViewState extends State<LatestView> {
         );
       case LoadStatus.failure:
         return const SizedBox.shrink();
-      default:
+      case LoadStatus.initial:
+      case LoadStatus.loading:
         return const TagChipsPlaceholder();
     }
   }

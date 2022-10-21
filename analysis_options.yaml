@@ -89,6 +89,7 @@ linter:
     # - diagnostic_describe_all_properties # nice to have for libs but overkill for applications
     # - directives_ordering
     # - discarded_futures
+    - do_not_use_environment
     - eol_at_end_of_file
     - empty_catches
     - empty_constructor_bodies
@@ -110,6 +111,7 @@ linter:
     - literal_only_boolean_expressions
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
+    - no_default_cases
     - no_duplicate_case_values
     - no_leading_underscores_for_library_prefixes
     - no_leading_underscores_for_local_identifiers
@@ -171,6 +173,7 @@ linter:
     # - public_member_api_docs # do not use for an application, only a library
     - recursive_getters
     - secure_pubspec_urls
+    - sized_box_for_whitespace
     - sized_box_shrink_expand
     - slash_for_doc_comments
     - sort_child_properties_last
@@ -212,6 +215,7 @@ linter:
     - use_decorated_box
     - use_enums
     - use_if_null_to_convert_nulls_to_bools
+    - use_is_even_rather_than_modulo
     - use_late_for_private_fields_and_variables
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters

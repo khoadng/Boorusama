@@ -72,7 +72,7 @@ String stripFilterOperator(String value, FilterOperator operator) {
     case FilterOperator.not:
     case FilterOperator.or:
       return value.substring(1);
-    default:
+    case FilterOperator.none:
       return value;
   }
 }

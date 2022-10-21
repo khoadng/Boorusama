@@ -64,7 +64,7 @@ m.ThemeMode mapAppThemeModeToSystemThemeMode(ThemeMode theme) {
       return m.ThemeMode.dark;
     case ThemeMode.light:
       return m.ThemeMode.light;
-    default:
+    case ThemeMode.amoledDark:
       return m.ThemeMode.dark;
   }
 }

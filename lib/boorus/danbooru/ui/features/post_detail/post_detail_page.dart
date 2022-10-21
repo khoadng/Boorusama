@@ -700,6 +700,7 @@ class _MoreActionButton extends StatelessWidget {
             case PostAction.download:
               onDownload(download);
               break;
+            // ignore: no_default_cases
             default:
           }
         },

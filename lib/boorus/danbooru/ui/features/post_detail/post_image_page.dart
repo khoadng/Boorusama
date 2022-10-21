@@ -187,6 +187,7 @@ class _PostImagePageState extends State<PostImagePage>
                 case PostAction.viewNormalsize:
                   fullsize.value = false;
                   break;
+                // ignore: no_default_cases
                 default:
               }
             },
