@@ -44,6 +44,7 @@ linter:
     - avoid_equals_and_hash_code_on_mutable_classes
     - avoid_escaping_inner_quotes
     - avoid_field_initializers_in_const_classes
+    - avoid_final_parameters
     - avoid_function_literals_in_foreach_calls
     - avoid_implementing_value_types
     - avoid_init_to_null
@@ -80,6 +81,7 @@ linter:
     - close_sinks
     - comment_references
     # - constant_identifier_names # we are using those all around
+    - conditional_uri_does_not_exist
     - control_flow_in_finally
     # - curly_braces_in_flow_control_structures # we use this for oneline return statement
     - depend_on_referenced_packages
@@ -108,6 +110,8 @@ linter:
     - missing_whitespace_between_adjacent_strings
     - no_adjacent_strings_in_list
     - no_duplicate_case_values
+    - no_leading_underscores_for_library_prefixes
+    - no_leading_underscores_for_local_identifiers
     - no_logic_in_create_state
     - no_runtimeType_toString
     - noop_primitive_operations
@@ -165,6 +169,8 @@ linter:
     - provide_deprecation_message
     # - public_member_api_docs # do not use for an application, only a library
     - recursive_getters
+    - secure_pubspec_urls
+    - sized_box_shrink_expand
     - slash_for_doc_comments
     - sort_child_properties_last
     - sort_constructors_first
@@ -184,6 +190,7 @@ linter:
     # - unnecessary_final # having finals is the preferred approach
     - unnecessary_getters_setters
     - unnecessary_lambdas
+    - unnecessary_late
     - unnecessary_new
     - unnecessary_null_aware_assignments
     - unnecessary_null_checks
@@ -197,6 +204,7 @@ linter:
     - unnecessary_this
     - unrelated_type_equality_checks
     - unsafe_html
+    - use_decorated_box
     - use_if_null_to_convert_nulls_to_bools
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters

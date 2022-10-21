@@ -277,7 +277,7 @@ class _AppearancePageState extends State<AppearancePage> {
             itemBuilder: (context, index) {
               return ValueListenableBuilder<double>(
                 valueListenable: _borderRadiusSliderValue,
-                builder: (context, value, _) => Container(
+                builder: (context, value, _) => DecoratedBox(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(value),

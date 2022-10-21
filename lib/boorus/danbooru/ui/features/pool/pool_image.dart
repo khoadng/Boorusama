@@ -25,14 +25,14 @@ class PoolImage extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
             imageUrl: pool.coverUrl!,
-            placeholder: (context, url) => Container(
+            placeholder: (context, url) => DecoratedBox(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: const BorderRadius.all(Radius.circular(4)),
               ),
             ),
           )
-        : Container(
+        : DecoratedBox(
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: const BorderRadius.all(Radius.circular(4)),
