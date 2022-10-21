@@ -257,7 +257,7 @@ class _AppearancePageState extends State<AppearancePage> {
 
   Widget _buildPreview(BuildContext context, SettingsState state) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 100),
+      margin: const EdgeInsets.symmetric(horizontal: 100),
       width: 150,
       height: 200,
       decoration: BoxDecoration(
@@ -278,7 +278,7 @@ class _AppearancePageState extends State<AppearancePage> {
             itemBuilder: (context, index) {
               return ValueListenableBuilder<double>(
                 valueListenable: _borderRadiusSliderValue,
-                builder: (context, value, _) => DecoratedBox(
+                builder: (context, value, _) => Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: BorderRadius.circular(value),

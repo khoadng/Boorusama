@@ -48,7 +48,7 @@ class _PostImageState extends State<PostImage> {
     return CachedNetworkImage(
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) {
-        return DecoratedBox(
+        return Container(
           decoration: BoxDecoration(
             borderRadius: widget.borderRadius ??
                 const BorderRadius.all(Radius.circular(8)),
@@ -62,7 +62,7 @@ class _PostImageState extends State<PostImage> {
       placeholder: (context, url) => widget.placeholderUrl != null
           ? CachedNetworkImage(
               imageUrl: widget.placeholderUrl!,
-              imageBuilder: (context, imageProvider) => DecoratedBox(
+              imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
                   borderRadius: widget.borderRadius ??
                       const BorderRadius.all(Radius.circular(8)),
@@ -72,7 +72,7 @@ class _PostImageState extends State<PostImage> {
                   ),
                 ),
               ),
-              placeholder: (context, url) => DecoratedBox(
+              placeholder: (context, url) => Container(
                 decoration: BoxDecoration(
                   borderRadius: widget.borderRadius ??
                       const BorderRadius.all(Radius.circular(8)),
@@ -80,14 +80,14 @@ class _PostImageState extends State<PostImage> {
                 ),
               ),
             )
-          : DecoratedBox(
+          : Container(
               decoration: BoxDecoration(
                 borderRadius: widget.borderRadius ??
                     const BorderRadius.all(Radius.circular(8)),
                 color: Theme.of(context).cardColor,
               ),
             ),
-      errorWidget: (context, url, error) => DecoratedBox(
+      errorWidget: (context, url, error) => Container(
         decoration: BoxDecoration(
           borderRadius:
               widget.borderRadius ?? const BorderRadius.all(Radius.circular(8)),

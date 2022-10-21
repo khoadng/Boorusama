@@ -49,7 +49,7 @@ class PreviewPostGrid extends StatelessWidget {
                   posts[index].post,
                   imageQuality,
                 ),
-                placeholder: (context, url) => DecoratedBox(
+                placeholder: (context, url) => Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
                     borderRadius: const BorderRadius.all(Radius.circular(4)),

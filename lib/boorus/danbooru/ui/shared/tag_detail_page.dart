@@ -133,7 +133,7 @@ class _PanelState extends State<_Panel> {
 
   @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
+    return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: const BorderRadius.all(Radius.circular(24)),

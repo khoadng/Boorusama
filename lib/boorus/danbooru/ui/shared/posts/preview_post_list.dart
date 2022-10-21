@@ -33,7 +33,7 @@ class PreviewPostList extends StatelessWidget {
             width: MediaQuery.of(context).size.width * 0.3,
             fit: BoxFit.cover,
             imageUrl: posts[index].previewImageUrl,
-            placeholder: (context, url) => DecoratedBox(
+            placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
                 borderRadius: const BorderRadius.all(Radius.circular(8)),

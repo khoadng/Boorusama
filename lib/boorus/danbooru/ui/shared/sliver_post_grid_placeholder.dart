@@ -34,7 +34,7 @@ class SliverPostGridPlaceHolder extends StatelessWidget {
           ),
           delegate: SliverChildBuilderDelegate(
             (context, _) {
-              return DecoratedBox(
+              return Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
                   borderRadius:

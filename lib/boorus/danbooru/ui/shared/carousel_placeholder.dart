@@ -16,7 +16,7 @@ class CarouselPlaceholder extends StatelessWidget {
 
   factory CarouselPlaceholder.error(BuildContext context) =>
       CarouselPlaceholder(
-        child: DecoratedBox(
+        child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(16)),
             color: Theme.of(context).cardColor,
@@ -35,7 +35,7 @@ class CarouselPlaceholder extends StatelessWidget {
       itemCount: 20,
       itemBuilder: (context, index, realIndex) {
         return child ??
-            DecoratedBox(
+            Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(16)),
                 color: Theme.of(context).cardColor,
