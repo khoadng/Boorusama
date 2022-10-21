@@ -1,4 +1,5 @@
 // ignore_for_file: avoid_positional_boolean_parameters
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
