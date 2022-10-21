@@ -42,9 +42,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...tags
-              .take(10)
-              .map(
+          ...tags.take(10).map(
                 (item) => _RelatedTagButton(
                   backgroundColor: getTagColor(item.category, widget.theme),
                   onPressed: () => context
@@ -57,8 +55,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                     softWrap: false,
                   ),
                 ),
-              )
-              .toList(),
+              ),
           const VerticalDivider(
             indent: 12,
             endIndent: 12,

@@ -143,8 +143,7 @@ class _SearchOptionsState extends State<SearchOptions>
                                       }
                                     : null,
                               ),
-                            ))
-                        .toList(),
+                            )),
                     if (editMode)
                       IconButton(
                         iconSize: 28,

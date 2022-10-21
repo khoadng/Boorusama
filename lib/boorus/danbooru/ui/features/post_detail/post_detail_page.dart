@@ -601,31 +601,26 @@ class _LargeLayoutContent extends StatelessWidget {
                                     ),
                                   ),
                                 ),
-                              ...state.data!
-                                  .map((e) => Column(children: [
-                                        ListTile(
-                                          dense: true,
-                                          visualDensity: VisualDensity.compact,
-                                          title: Text(
-                                            e.name.removeUnderscoreWithSpace(),
-                                            maxLines: 2,
-                                            softWrap: false,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          subtitle:
-                                              Text('${e.postCount} posts'),
-                                          trailing:
-                                              const Icon(Icons.arrow_right),
-                                          onTap: () =>
-                                              AppRouter.router.navigateTo(
-                                            context,
-                                            'pool/detail',
-                                            routeSettings:
-                                                RouteSettings(arguments: [e]),
-                                          ),
-                                        ),
-                                      ]))
-                                  .toList(),
+                              ...state.data!.map((e) => Column(children: [
+                                    ListTile(
+                                      dense: true,
+                                      visualDensity: VisualDensity.compact,
+                                      title: Text(
+                                        e.name.removeUnderscoreWithSpace(),
+                                        maxLines: 2,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      subtitle: Text('${e.postCount} posts'),
+                                      trailing: const Icon(Icons.arrow_right),
+                                      onTap: () => AppRouter.router.navigateTo(
+                                        context,
+                                        'pool/detail',
+                                        routeSettings:
+                                            RouteSettings(arguments: [e]),
+                                      ),
+                                    ),
+                                  ])),
                             ],
                           )
                         : const SizedBox.shrink();

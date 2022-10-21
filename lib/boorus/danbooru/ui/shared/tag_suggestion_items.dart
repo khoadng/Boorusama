@@ -20,7 +20,7 @@ class TagSuggestionItems extends StatelessWidget {
     required List<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
-  })  : _tags = tags;
+  }) : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
@@ -123,26 +123,24 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                 ),
               ),
               if (histories.isNotEmpty) const Divider(),
-              ...tags
-                  .map(
-                    (tag) => ListTile(
-                      onTap: () => onItemTap(tag),
-                      trailing: tag.hasCount
-                          ? Text(
-                              NumberFormat.compact().format(tag.postCount),
-                              style: const TextStyle(color: Colors.grey),
-                            )
-                          : null,
-                      title: BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) => _getTitle(
-                          tag,
-                          state.theme,
-                          currentQuery.replaceAll('_', ' '),
-                        ),
-                      ),
+              ...tags.map(
+                (tag) => ListTile(
+                  onTap: () => onItemTap(tag),
+                  trailing: tag.hasCount
+                      ? Text(
+                          NumberFormat.compact().format(tag.postCount),
+                          style: const TextStyle(color: Colors.grey),
+                        )
+                      : null,
+                  title: BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) => _getTitle(
+                      tag,
+                      state.theme,
+                      currentQuery.replaceAll('_', ' '),
                     ),
-                  )
-                  .toList(),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
