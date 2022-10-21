@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'post_data.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PostState extends Equatable {
   const PostState({

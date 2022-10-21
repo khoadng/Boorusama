@@ -19,6 +19,25 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/error.dart';
 
+extension PostFetcherX on PostFetcher {
+  Future<List<PostData>> Function() fetchWith({
+    required PostRepository postRepository,
+    required BlacklistedTagsRepository blacklistedTagsRepository,
+    required FavoritePostRepository favoritePostRepository,
+    required AccountRepository accountRepository,
+    required PostVoteRepository postVoteRepository,
+    required PoolRepository poolRepository,
+  }) =>
+      () => fetch(postRepository, 1)
+          .then(createPostDataWith(
+            favoritePostRepository,
+            postVoteRepository,
+            poolRepository,
+            accountRepository,
+          ))
+          .then(filterWith(blacklistedTagsRepository));
+}
+
 class PostBloc extends Bloc<PostEvent, PostState> {
   PostBloc({
     required PostRepository postRepository,
@@ -31,48 +50,29 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   }) : super(PostState.initial()) {
     on<PostFetched>(
       (event, emit) async {
-        await tryAsync<List<Post>>(
-          action: () => event.fetcher.fetch(
-            postRepository,
-            state.page + 1,
+        await tryAsync<List<PostData>>(
+          action: event.fetcher.fetchWith(
+            postRepository: postRepository,
+            blacklistedTagsRepository: blacklistedTagsRepository,
+            favoritePostRepository: favoritePostRepository,
+            accountRepository: accountRepository,
+            postVoteRepository: postVoteRepository,
+            poolRepository: poolRepository,
           ),
           onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
-          onSuccess: (posts) async {
-            try {
-              final blacklisted =
-                  await blacklistedTagsRepository.getBlacklistedTags();
-              final postDatas = await createPostData(
-                favoritePostRepository,
-                postVoteRepository,
-                poolRepository,
-                posts,
-                accountRepository,
-              );
-              final filteredPosts = filterBlacklisted(postDatas, blacklisted);
-
-              emit(
-                state.copyWith(
-                  status: LoadStatus.success,
-                  posts: [
-                    ...state.posts,
-                    ...filter(postDatas, blacklisted),
-                  ],
-                  filteredPosts: [
-                    ...state.filteredPosts,
-                    ...filteredPosts,
-                  ],
-                  page: state.page + 1,
-                  hasMore: posts.isNotEmpty,
-                ),
-              );
-            } catch (e) {
-              if (e is BooruError) {
-                _emitError(e, emit);
-              } else {
-                _emitError(BooruError(error: e), emit);
-              }
-            }
+          onSuccess: (postDatas) async {
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: [
+                  ...state.posts,
+                  ...postDatas,
+                ],
+                page: state.page + 1,
+                hasMore: postDatas.isNotEmpty,
+              ),
+            );
           },
         );
       },
@@ -81,41 +81,28 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     on<PostRefreshed>(
       (event, emit) async {
-        await tryAsync<List<Post>>(
-          action: () => event.fetcher.fetch(
-            postRepository,
-            1,
+        await tryAsync<List<PostData>>(
+          action: event.fetcher.fetchWith(
+            postRepository: postRepository,
+            blacklistedTagsRepository: blacklistedTagsRepository,
+            favoritePostRepository: favoritePostRepository,
+            accountRepository: accountRepository,
+            postVoteRepository: postVoteRepository,
+            poolRepository: poolRepository,
           ),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onFailure: (stackTrace, error) => _emitError(error, emit),
-          onSuccess: (posts) async {
-            try {
-              final blacklisted =
-                  await blacklistedTagsRepository.getBlacklistedTags();
-              final postDatas = await createPostData(
-                favoritePostRepository,
-                postVoteRepository,
-                poolRepository,
-                posts,
-                accountRepository,
-              );
-              final filteredPosts = filterBlacklisted(postDatas, blacklisted);
-              emit(
-                state.copyWith(
-                  status: LoadStatus.success,
-                  posts: filter(postDatas, blacklisted),
-                  filteredPosts: filteredPosts,
-                  page: 1,
-                  hasMore: posts.isNotEmpty,
-                ),
-              );
-            } catch (e) {
-              if (e is BooruError) {
-                _emitError(e, emit);
-              } else {
-                _emitError(BooruError(error: e), emit);
-              }
-            }
+          onUnknownFailure: (stackTrace, error) =>
+              _emitError(BooruError(error: error), emit),
+          onSuccess: (postDatas) async {
+            emit(
+              state.copyWith(
+                status: LoadStatus.success,
+                posts: postDatas,
+                page: 1,
+                hasMore: postDatas.isNotEmpty,
+              ),
+            );
           },
         );
       },

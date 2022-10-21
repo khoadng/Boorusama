@@ -120,12 +120,24 @@ void main() {
                   Post.empty(),
                   Post.empty(),
                 ]);
-
-        when(() => mockFavRepo.getFavorites(any(), any())).thenThrow(Error());
+        when(() => mockAccountRepo.get()).thenAnswer((invocation) async =>
+            const Account(id: 1, apiKey: '', username: ''));
+        when(() => mockBlacklistedRepo.getBlacklistedTags())
+            .thenAnswer((invocation) async => []);
+        when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
+            .thenThrow(Error());
+        when(() => mockPoolRepo.getPoolsByPostIds(any()))
+            .thenAnswer((invocation) async => []);
+        when(() => mockPostVoteRepo.getPostVotes(any()))
+            .thenAnswer((invocation) async => []);
       },
       tearDown: () {
         reset(mockPostRepo);
+        reset(mockAccountRepo);
+        reset(mockBlacklistedRepo);
         reset(mockFavRepo);
+        reset(mockPoolRepo);
+        reset(mockPostVoteRepo);
       },
       build: () => PostBloc(
         postRepository: mockPostRepo,
