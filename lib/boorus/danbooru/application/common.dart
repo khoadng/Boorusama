@@ -130,7 +130,6 @@ mixin InfiniteLoadMixin<T, State> {
   }) async {
     try {
       loading = true;
-      page += 1;
       onFetchStart?.call();
       emitter.call(stateGetter().copyLoadState(
         refreshing: refreshing,
@@ -140,14 +139,15 @@ mixin InfiniteLoadMixin<T, State> {
         page: page,
       ));
 
-      final d = await fetch(page);
+      final d = await fetch(page + 1);
 
       onData?.call(d);
 
-      loading = false;
-      hasMore = d.isNotEmpty;
-
       data.addAll(d);
+
+      loading = false;
+      page += 1;
+      hasMore = d.isNotEmpty;
 
       onFetchEnd?.call(data);
       emitter.call(stateGetter().copyLoadState(
@@ -160,8 +160,6 @@ mixin InfiniteLoadMixin<T, State> {
 
       return true;
     } catch (e, stackTrace) {
-      page -= 1;
-
       onError?.call(e, stackTrace);
 
       return false;

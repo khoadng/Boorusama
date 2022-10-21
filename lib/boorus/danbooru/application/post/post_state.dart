@@ -5,7 +5,8 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'post_data.dart';
 
-class PostState extends Equatable {
+class PostState extends Equatable
+    implements InfiniteLoadState<PostData, PostState> {
   const PostState({
     required this.status,
     required this.posts,
@@ -28,8 +29,17 @@ class PostState extends Equatable {
   final List<PostData> posts;
   final List<PostData> filteredPosts;
   final LoadStatus status;
+  @override
+  List<PostData> get data => posts;
+  @override
   final int page;
+  @override
   final bool hasMore;
+  @override
+  bool get loading => status == LoadStatus.loading;
+  @override
+  bool get refreshing => status == LoadStatus.initial;
+
   final String? exceptionMessage;
 
   //TODO: quick hack to force rebuild...
@@ -57,4 +67,23 @@ class PostState extends Equatable {
   @override
   List<Object?> get props =>
       [status, posts, filteredPosts, page, hasMore, exceptionMessage, id];
+
+  @override
+  PostState copyLoadState({
+    required int page,
+    required bool hasMore,
+    required bool refreshing,
+    required bool loading,
+    required List<PostData> data,
+  }) =>
+      copyWith(
+        page: page,
+        hasMore: hasMore,
+        status: refreshing
+            ? LoadStatus.initial
+            : loading
+                ? LoadStatus.loading
+                : LoadStatus.success,
+        posts: [...data],
+      );
 }

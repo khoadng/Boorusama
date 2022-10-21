@@ -348,13 +348,6 @@ void main() {
         when(() => mockPoolRepo.getPoolsByPostIds(any()))
             .thenAnswer((invocation) async => []);
       },
-      seed: () => PostState.initial().copyWith(
-        page: 1,
-        posts: [
-          PostData.empty(),
-          PostData.empty(),
-        ],
-      ),
       tearDown: () {
         reset(mockPostRepo);
         reset(mockAccountRepo);
@@ -369,6 +362,10 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        initialData: [
+          PostData.empty(),
+          PostData.empty(),
+        ],
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
