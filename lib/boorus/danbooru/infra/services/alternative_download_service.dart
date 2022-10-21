@@ -22,6 +22,7 @@ class AlternativeDownloadService implements DownloadService<Post> {
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
 
   @override
+  // ignore: no-empty-block
   void dispose() {}
 
   @override
@@ -76,14 +77,15 @@ class AlternativeDownloadService implements DownloadService<Post> {
         'completed',
         payload: fileName,
         const NotificationDetails(
-            android: AndroidNotificationDetails(
-          'completed',
-          'completed',
-          importance: Importance.max,
-          priority: Priority.high,
-          playSound: false,
-          enableVibration: false,
-        )),
+          android: AndroidNotificationDetails(
+            'completed',
+            'completed',
+            importance: Importance.max,
+            priority: Priority.high,
+            playSound: false,
+            enableVibration: false,
+          ),
+        ),
       );
     } catch (e) {
       await _flutterLocalNotificationsPlugin.show(
@@ -97,5 +99,6 @@ class AlternativeDownloadService implements DownloadService<Post> {
   }
 
   @override
+  // ignore: no-empty-block, avoid-redundant-async
   Future<void> init() async {}
 }

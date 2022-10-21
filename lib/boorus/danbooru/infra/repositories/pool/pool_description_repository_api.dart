@@ -15,6 +15,6 @@ class PoolDescriptionRepositoryApi implements PoolDescriptionRepository {
   final String _endpoint;
 
   @override
-  Future<String> getDescription(int poolId) async =>
+  Future<String> getDescription(int poolId) =>
       _dio.get('${_endpoint}pools/$poolId').then((value) => value.data);
 }

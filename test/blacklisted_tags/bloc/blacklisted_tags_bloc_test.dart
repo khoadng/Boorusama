@@ -21,6 +21,7 @@ BlacklistedTagsRepository createBlacklistedTagRepo() {
 
   when(() => mockBlacklistedTagsRepository.setBlacklistedTags(any(), any()))
       .thenAnswer((_) async => true);
+
   return mockBlacklistedTagsRepository;
 }
 

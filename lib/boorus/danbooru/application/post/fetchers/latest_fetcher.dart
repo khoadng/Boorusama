@@ -9,9 +9,6 @@ class LatestPostFetcher implements PostFetcher {
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getPosts('', page);
-
-    return posts;
-  }
+  ) async =>
+      repo.getPosts('', page);
 }

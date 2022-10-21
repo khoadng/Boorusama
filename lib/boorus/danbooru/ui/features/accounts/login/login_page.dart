@@ -10,8 +10,8 @@ import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -32,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               WarningContainer(
-                  contentBuilder: (context) => const Text('login.notice').tr()),
+                contentBuilder: (context) => const Text('login.notice').tr(),
+              ),
               const Center(
                 child: LoginBox(),
               ),

@@ -5,10 +5,10 @@ import 'package:flutter/widgets.dart';
 /// If the condition is false, [SizeBox.shrink()] will be used.
 class ConditionalRenderWidget extends StatelessWidget {
   const ConditionalRenderWidget({
-    Key? key,
+    super.key,
     required this.condition,
     required this.childBuilder,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext context) childBuilder;
   final bool condition;

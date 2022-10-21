@@ -9,6 +9,7 @@ class AccountRepositoryDev implements AccountRepository {
   final Account account;
 
   @override
+  // ignore: no-empty-block
   Future<void> add(Account account) async {}
 
   @override

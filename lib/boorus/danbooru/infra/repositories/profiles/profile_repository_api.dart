@@ -31,16 +31,23 @@ class ProfileRepositoryApi implements ProfileRepository {
             await _api.getProfile(username, apiKey, cancelToken: cancelToken);
       } else {
         final account = await _accountRepository.get();
-        value = await _api.getProfile(account.username, account.apiKey,
-            cancelToken: cancelToken);
+        value = await _api.getProfile(
+          account.username,
+          account.apiKey,
+          cancelToken: cancelToken,
+        );
       }
+
       return profileDtoToProfile(ProfileDto.fromJson(value.response.data));
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return null;
       } else {
-        throw InvalidUsernameOrPassword();
+        Error.throwWithStackTrace(
+          InvalidUsernameOrPassword(),
+          stackTrace,
+        );
       }
     }
   }

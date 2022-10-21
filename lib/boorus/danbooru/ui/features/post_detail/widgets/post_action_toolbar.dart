@@ -18,13 +18,14 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart'
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'modal_share.dart';
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
-    Key? key,
+    super.key,
     required this.postData,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   final PostData postData;
   final String? imagePath;
@@ -96,6 +97,7 @@ class PostActionToolbar extends StatelessWidget {
         );
       },
     );
+
     return IconButton(
       onPressed: () => Screen.of(context).size == ScreenSize.small
           ? showMaterialModalBottomSheet(
@@ -128,7 +130,9 @@ class PostActionToolbar extends StatelessWidget {
   }
 
   Widget _buildFavoriteButton(
-      BuildContext context, AuthenticationState authState) {
+    BuildContext context,
+    AuthenticationState authState,
+  ) {
     return IconButton(
       onPressed: () async {
         if (authState is Unauthenticated) {
@@ -154,74 +158,5 @@ class PostActionToolbar extends StatelessWidget {
               FontAwesomeIcons.heart,
             ),
     );
-  }
-}
-
-enum ShareMode {
-  source,
-  booru,
-}
-
-String getShareContent(ShareMode mode, Post post, String endpoint) {
-  final booruLink = '${endpoint}posts/${post.id}';
-  if (mode == ShareMode.booru) return booruLink;
-  if (post.source == null) return booruLink;
-
-  return post.source.toString();
-}
-
-class ModalShare extends StatelessWidget {
-  const ModalShare({
-    Key? key,
-    required this.post,
-    required this.endpoint,
-    required this.onTap,
-    required this.onTapFile,
-    required this.imagePath,
-  }) : super(key: key);
-
-  final void Function(String value) onTap;
-  final void Function(String filePath) onTapFile;
-  final Post post;
-  final String endpoint;
-  final String? imagePath;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-        child: SafeArea(
-      top: false,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (post.source != null)
-            ListTile(
-              title: const Text('post.detail.share.source').tr(),
-              leading: const FaIcon(FontAwesomeIcons.link),
-              onTap: () {
-                Navigator.of(context).pop();
-                onTap.call(getShareContent(ShareMode.source, post, endpoint));
-              },
-            ),
-          ListTile(
-            title: const Text('post.detail.share.booru').tr(),
-            leading: const FaIcon(FontAwesomeIcons.box),
-            onTap: () {
-              Navigator.of(context).pop();
-              onTap.call(getShareContent(ShareMode.booru, post, endpoint));
-            },
-          ),
-          if (imagePath != null)
-            ListTile(
-              title: const Text('post.detail.share.image').tr(),
-              leading: const FaIcon(FontAwesomeIcons.fileImage),
-              onTap: () {
-                Navigator.of(context).pop();
-                onTapFile.call(imagePath!);
-              },
-            ),
-        ],
-      ),
-    ));
   }
 }

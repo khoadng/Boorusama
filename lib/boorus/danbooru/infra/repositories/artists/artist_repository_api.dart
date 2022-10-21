@@ -27,16 +27,22 @@ class ArtistRepositoryApi implements ArtistRepository {
           .getArtist(name, cancelToken: cancelToken)
           .then(parseArtist)
           .then((artists) => artists.isEmpty ? Artist.empty() : artists.first);
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return Artist.empty();
       } else if (e.response == null) {
-        throw Exception('Response is null');
+        Error.throwWithStackTrace(
+          Exception('Response is null'),
+          stackTrace,
+        );
       } else if (e.response!.statusCode == 422) {
         return Artist.empty();
       } else {
-        throw Exception('Failed to get artist $name');
+        Error.throwWithStackTrace(
+          Exception('Failed to get artist $name'),
+          stackTrace,
+        );
       }
     }
   }
@@ -51,7 +57,7 @@ extension ArtistDtoX on ArtistDto {
       groupName: groupName,
       isBanned: isBanned,
       isDeleted: isDeleted,
-      otherNames: List<String>.from(otherNames),
+      otherNames: List<String>.of(otherNames),
       updatedAt: updatedAt,
     );
   }

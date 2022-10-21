@@ -49,11 +49,12 @@ void main() {
             name: 'foo',
             category: TagAutocompleteCategory.general(),
             postId: 1,
-          )
+          ),
         ],
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -89,7 +90,7 @@ void main() {
               postId: 1,
             ),
           ],
-        )
+        ),
       ],
     );
 
@@ -116,6 +117,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -130,7 +132,7 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
-        )
+        ),
       ],
     );
 
@@ -169,6 +171,7 @@ void main() {
             isFavorited: false,
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -241,6 +244,7 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -257,7 +261,7 @@ void main() {
           enableSlideShow: true,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-        )
+        ),
       ],
     );
 
@@ -280,11 +284,13 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(PostDetailSlideShowConfigChanged(
-          config: bloc.state.slideShowConfig.copyWith(skipAnimation: true))),
+        config: bloc.state.slideShowConfig.copyWith(skipAnimation: true),
+      )),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
@@ -298,7 +304,7 @@ void main() {
               .copyWith(skipAnimation: true),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
-        )
+        ),
       ],
     );
 
@@ -324,6 +330,7 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -365,6 +372,7 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -407,6 +415,7 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -458,6 +467,7 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -505,6 +515,7 @@ void main() {
             isFavorited: true,
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
@@ -568,6 +579,7 @@ void main() {
             ),
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -620,6 +632,7 @@ void main() {
             ),
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -682,6 +695,7 @@ void main() {
             ),
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
@@ -734,6 +748,7 @@ void main() {
             ),
           ),
         ],
+        // ignore: no-empty-block
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,

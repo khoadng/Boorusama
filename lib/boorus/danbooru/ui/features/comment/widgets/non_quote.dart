@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/core/core.dart';
 
 class NonQuote extends StatelessWidget {
-  const NonQuote({Key? key, required this.text}) : super(key: key);
+  const NonQuote({super.key, required this.text});
   final String text;
 
   @override
@@ -16,7 +16,7 @@ class NonQuote extends StatelessWidget {
     return SelectableHtml(
       style: {
         'body': Style(
-          fontSize: const FontSize(14),
+          fontSize: FontSize.medium,
           margin: EdgeInsets.zero,
           padding: EdgeInsets.zero,
         ),

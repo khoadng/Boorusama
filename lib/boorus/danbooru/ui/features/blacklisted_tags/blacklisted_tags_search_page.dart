@@ -12,10 +12,10 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 
 class BlacklistedTagsSearchPage extends StatefulWidget {
   const BlacklistedTagsSearchPage({
-    Key? key,
+    super.key,
     required this.onSelectedDone,
     this.initialTags,
-  }) : super(key: key);
+  });
 
   final void Function(List<TagSearchItem> tags) onSelectedDone;
   final List<String>? initialTags;
@@ -42,7 +42,8 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
 
     queryEditingController.addListener(() {
       queryEditingController.selection = TextSelection.fromPosition(
-          TextPosition(offset: queryEditingController.text.length));
+        TextPosition(offset: queryEditingController.text.length),
+      );
     });
   }
 
@@ -120,7 +121,8 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
                             child: _buildSelectedTagChip(
-                                state.selectedTags[index]),
+                              state.selectedTags[index],
+                            ),
                           );
                         },
                       ),
@@ -153,28 +155,30 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
   Widget _buildSelectedTagChip(TagSearchItem tagSearchItem) {
     if (tagSearchItem.operator == FilterOperator.none) {
       return Chip(
-          visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-          backgroundColor: Colors.grey[800],
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+        visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+        backgroundColor: Colors.grey[800],
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+        ),
+        deleteIcon: const Icon(
+          FontAwesomeIcons.xmark,
+          color: Colors.red,
+          size: 15,
+        ),
+        labelPadding: const EdgeInsets.symmetric(horizontal: 2),
+        onDeleted: () => context
+            .read<TagSearchBloc>()
+            .add(TagSearchSelectedTagRemoved(tagSearchItem)),
+        label: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.85,
           ),
-          deleteIcon: const Icon(
-            FontAwesomeIcons.xmark,
-            color: Colors.red,
-            size: 15,
+          child: Text(
+            tagSearchItem.tag,
+            overflow: TextOverflow.fade,
           ),
-          labelPadding: const EdgeInsets.symmetric(horizontal: 2),
-          onDeleted: () => context
-              .read<TagSearchBloc>()
-              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
-          label: ConstrainedBox(
-            constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
-            child: Text(
-              tagSearchItem.tag,
-              overflow: TextOverflow.fade,
-            ),
-          ));
+        ),
+      );
     }
 
     return Row(
@@ -185,8 +189,11 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
           backgroundColor: Theme.of(context).colorScheme.secondary,
           labelPadding: const EdgeInsets.symmetric(horizontal: 1),
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8), bottomLeft: Radius.circular(8))),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
+          ),
           label: Text(
             filterOperatorToStringCharacter(tagSearchItem.operator),
           ),
@@ -195,9 +202,11 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
           visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
           backgroundColor: Colors.grey[800],
           shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.only(
-                  topRight: Radius.circular(8),
-                  bottomRight: Radius.circular(8))),
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(8),
+              bottomRight: Radius.circular(8),
+            ),
+          ),
           deleteIcon: const Icon(
             FontAwesomeIcons.xmark,
             color: Colors.red,
@@ -209,13 +218,14 @@ class _BlacklistedTagsSearchPageState extends State<BlacklistedTagsSearchPage> {
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
             child: Text(
               tagSearchItem.tag,
               overflow: TextOverflow.fade,
             ),
           ),
-        )
+        ),
       ],
     );
   }

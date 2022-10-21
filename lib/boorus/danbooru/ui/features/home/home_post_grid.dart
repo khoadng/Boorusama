@@ -15,12 +15,12 @@ import 'package:boorusama/core/core.dart';
 
 class HomePostGrid extends StatelessWidget {
   const HomePostGrid({
-    Key? key,
+    super.key,
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
@@ -50,6 +50,7 @@ class HomePostGrid extends StatelessWidget {
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(child: NoDataBox());
                 }
+
                 return SliverPostGrid(
                   posts: state.posts,
                   scrollController: controller,
@@ -68,7 +69,8 @@ class HomePostGrid extends StatelessWidget {
                   onFavoriteUpdated: (postId, value) => context
                       .read<PostBloc>()
                       .add(
-                          PostFavoriteUpdated(postId: postId, favorite: value)),
+                        PostFavoriteUpdated(postId: postId, favorite: value),
+                      ),
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(
@@ -88,14 +90,14 @@ class HomePostGrid extends StatelessWidget {
 BorderRadius _gridSizeToBorderRadius(GridSize size) {
   switch (size) {
     case GridSize.small:
-      return BorderRadius.circular(3);
+      return const BorderRadius.all(Radius.circular(3));
     // case GridSize.large:
     //   return const BorderRadius.only(
     //     topLeft: Radius.circular(8),
     //     topRight: Radius.circular(8),
     //   );
-
-    default:
-      return BorderRadius.circular(8);
+    case GridSize.normal:
+    case GridSize.large:
+      return const BorderRadius.all(Radius.circular(8));
   }
 }

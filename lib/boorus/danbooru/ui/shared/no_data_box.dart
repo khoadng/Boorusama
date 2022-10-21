@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 
 class NoDataBox extends StatelessWidget {
   const NoDataBox({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

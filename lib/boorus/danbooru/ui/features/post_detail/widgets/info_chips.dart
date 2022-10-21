@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 class InfoChips extends StatelessWidget {
   const InfoChips({
-    Key? key,
+    super.key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
@@ -22,19 +22,19 @@ class InfoChips extends StatelessWidget {
     return Wrap(
       spacing: 5,
       children: [
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.rating').tr(),
           rightLabel: Text(post.rating.toString().split('.').last.pascalCase),
           leftColor: Theme.of(context).cardColor,
           rightColor: Theme.of(context).backgroundColor,
         ),
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
           rightLabel: Text(filesize(post.fileSize, 1)),
           leftColor: Theme.of(context).cardColor,
           rightColor: Theme.of(context).backgroundColor,
         ),
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.resolution').tr(),
           rightLabel: Text('${post.width.toInt()}x${post.height.toInt()}'),
           leftColor: Theme.of(context).cardColor,
@@ -45,14 +45,13 @@ class InfoChips extends StatelessWidget {
   }
 }
 
-class InfoChip extends StatelessWidget {
-  const InfoChip({
-    Key? key,
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({
     required this.leftLabel,
     required this.rightLabel,
     required this.leftColor,
     required this.rightColor,
-  }) : super(key: key);
+  });
 
   final Color leftColor;
   final Color rightColor;
@@ -89,7 +88,7 @@ class InfoChip extends StatelessWidget {
           ),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: rightLabel,
-        )
+        ),
       ],
     );
   }

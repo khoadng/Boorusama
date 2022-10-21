@@ -42,10 +42,10 @@ const String _assetUrl = 'assets/boorus.json';
 Future<List<BooruData>> loadBooruList() async {
   try {
     final data = await rootBundle.loadString(_assetUrl);
-    final boorus =
-        (jsonDecode(data) as List).map((e) => BooruData.fromJson(e)).toList();
 
-    return boorus;
+    return (jsonDecode(data) as List)
+        .map((e) => BooruData.fromJson(e))
+        .toList();
   } catch (e) {
     return [];
   }

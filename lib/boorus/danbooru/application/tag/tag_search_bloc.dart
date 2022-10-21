@@ -152,6 +152,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         final query = event.query.trimLeft().replaceAll(' ', '_');
         if (query.isEmpty) {
           emit(state.copyWith(query: ''));
+
           return;
         }
 
@@ -238,7 +239,8 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
         )));
 
     on<TagSearchSelectedTagRemoved>((event, emit) => emit(state.copyWith(
-        selectedTags: [...state.selectedTags]..remove(event.tag))));
+          selectedTags: [...state.selectedTags]..remove(event.tag),
+        )));
 
     on<TagSearchDone>((event, emit) => emit(state.copyWith(isDone: true)));
 
@@ -261,5 +263,6 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
 String getQuery(String query, FilterOperator operator) {
   if (operator != FilterOperator.none) return query.substring(1);
+
   return query;
 }

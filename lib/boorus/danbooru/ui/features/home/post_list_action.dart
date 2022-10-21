@@ -1,1 +1,0 @@
-enum PostListAction { downloadAll }

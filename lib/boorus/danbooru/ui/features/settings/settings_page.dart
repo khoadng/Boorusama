@@ -20,127 +20,131 @@ import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (Screen.of(context).size == ScreenSize.small) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text('settings.settings'.tr()),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 8),
-          child: BlocBuilder<SettingsCubit, SettingsState>(
-            builder: (context, state) {
-              final settings = state.settings;
+    return Screen.of(context).size == ScreenSize.small
+        ? Scaffold(
+            appBar: AppBar(title: Text('settings.settings'.tr())),
+            body: Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, state) {
+                  final settings = state.settings;
 
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SettingsSection(
-                            label: 'settings.app_settings'.tr(),
-                          ),
-                          ListTile(
-                            leading: const Icon(Icons.admin_panel_settings),
-                            title: const Text('settings.safe_mode').tr(),
-                            trailing: Switch(
-                                activeColor:
-                                    Theme.of(context).colorScheme.primary,
-                                value: settings.safeMode,
-                                onChanged: (value) {
-                                  context.read<SettingsCubit>().update(
-                                      settings.copyWith(safeMode: value));
-                                }),
-                          ),
-                          ListTile(
-                            leading: const FaIcon(FontAwesomeIcons.paintRoller),
-                            title: const Text('settings.appearance').tr(),
-                            onTap: () => Navigator.of(context)
-                                .push(ParallaxSlideInPageRoute(
-                              enterWidget: const AppearancePage(),
-                              oldWidget: this,
-                            )),
-                          ),
-                          ListTile(
-                            title:
-                                const Text('settings.language.language').tr(),
-                            leading: const Icon(Icons.translate),
-                            onTap: () => Navigator.of(context)
-                                .push(ParallaxSlideInPageRoute(
-                              enterWidget: const LanguagePage(),
-                              oldWidget: this,
-                            )),
-                          ),
-                          ListTile(
-                            title: const Text('download.download').tr(),
-                            leading: const FaIcon(FontAwesomeIcons.download),
-                            onTap: () => Navigator.of(context)
-                                .push(ParallaxSlideInPageRoute(
-                              enterWidget: const DownloadPage(),
-                              oldWidget: this,
-                            )),
-                          ),
-                          ListTile(
-                            title: const Text('settings.privacy.privacy').tr(),
-                            leading:
-                                const FaIcon(FontAwesomeIcons.shieldHalved),
-                            onTap: () => Navigator.of(context)
-                                .push(ParallaxSlideInPageRoute(
-                              enterWidget: const PrivacyPage(),
-                              oldWidget: this,
-                            )),
-                          ),
-                          ListTile(
-                            title: const Text('settings.information').tr(),
-                            leading: const Icon(Icons.info),
-                            onTap: () => showAboutDialog(
-                              context: context,
-                              applicationIcon: Image.asset(
-                                'assets/icon/icon-512x512.png',
-                                width: 64,
-                                height: 64,
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _SettingsSection(
+                                label: 'settings.app_settings'.tr(),
                               ),
-                              applicationVersion: getVersion(
-                                  RepositoryProvider.of<PackageInfoProvider>(
-                                          context)
-                                      .getPackageInfo()),
-                              applicationLegalese:
-                                  '\u{a9} 2020-2022 Nguyen Duc Khoa',
-                              applicationName: context
-                                  .read<AppInfoProvider>()
-                                  .appInfo
-                                  .appName,
-                            ),
+                              ListTile(
+                                leading: const Icon(Icons.admin_panel_settings),
+                                title: const Text('settings.safe_mode').tr(),
+                                trailing: Switch(
+                                  activeColor:
+                                      Theme.of(context).colorScheme.primary,
+                                  value: settings.safeMode,
+                                  onChanged: (value) {
+                                    context.read<SettingsCubit>().update(
+                                          settings.copyWith(safeMode: value),
+                                        );
+                                  },
+                                ),
+                              ),
+                              ListTile(
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.paintRoller,
+                                ),
+                                title: const Text('settings.appearance').tr(),
+                                onTap: () => Navigator.of(context).push(
+                                  ParallaxSlideInPageRoute(
+                                    enterWidget: const AppearancePage(),
+                                    oldWidget: this,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('settings.language.language')
+                                    .tr(),
+                                leading: const Icon(Icons.translate),
+                                onTap: () => Navigator.of(context).push(
+                                  ParallaxSlideInPageRoute(
+                                    enterWidget: const LanguagePage(),
+                                    oldWidget: this,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('download.download').tr(),
+                                leading:
+                                    const FaIcon(FontAwesomeIcons.download),
+                                onTap: () => Navigator.of(context)
+                                    .push(ParallaxSlideInPageRoute(
+                                  enterWidget: const DownloadPage(),
+                                  oldWidget: this,
+                                )),
+                              ),
+                              ListTile(
+                                title:
+                                    const Text('settings.privacy.privacy').tr(),
+                                leading:
+                                    const FaIcon(FontAwesomeIcons.shieldHalved),
+                                onTap: () => Navigator.of(context).push(
+                                  ParallaxSlideInPageRoute(
+                                    enterWidget: const PrivacyPage(),
+                                    oldWidget: this,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('settings.information').tr(),
+                                leading: const Icon(Icons.info),
+                                onTap: () => showAboutDialog(
+                                  context: context,
+                                  applicationIcon: Image.asset(
+                                    'assets/icon/icon-512x512.png',
+                                    width: 64,
+                                    height: 64,
+                                  ),
+                                  applicationVersion: getVersion(
+                                    RepositoryProvider.of<PackageInfoProvider>(
+                                      context,
+                                    ).getPackageInfo(),
+                                  ),
+                                  applicationLegalese:
+                                      '\u{a9} 2020-2022 Nguyen Duc Khoa',
+                                  applicationName: context
+                                      .read<AppInfoProvider>()
+                                      .appInfo
+                                      .appName,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                  const _Divider(),
-                  const _Footer(),
-                ],
-              );
-            },
-          ),
-        ),
-      );
-    } else {
-      return const _LargeLayout();
-    }
+                      const _Divider(),
+                      const _Footer(),
+                    ],
+                  );
+                },
+              ),
+            ),
+          )
+        : const _LargeLayout();
   }
 }
 
 class _LargeLayout extends StatefulWidget {
-  const _LargeLayout({
-    Key? key,
-  }) : super(key: key);
+  const _LargeLayout();
 
   @override
   State<_LargeLayout> createState() => _LargeLayoutState();
@@ -174,7 +178,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SettingsSection(
+                        _SettingsSection(
                           label: 'settings.app_settings'.tr(),
                         ),
                         ListTile(
@@ -216,9 +220,10 @@ class _LargeLayoutState extends State<_LargeLayout> {
                               height: 64,
                             ),
                             applicationVersion: getVersion(
-                                RepositoryProvider.of<PackageInfoProvider>(
-                                        context)
-                                    .getPackageInfo()),
+                              RepositoryProvider.of<PackageInfoProvider>(
+                                context,
+                              ).getPackageInfo(),
+                            ),
                             applicationLegalese:
                                 '\u{a9} 2020-2022 Nguyen Duc Khoa',
                             applicationName:
@@ -246,13 +251,13 @@ class _LargeLayoutState extends State<_LargeLayout> {
                             ListTile(
                               title: const Text('Enable'),
                               trailing: Switch(
-                                  activeColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  value: settings.safeMode,
-                                  onChanged: (value) => context
-                                      .read<SettingsCubit>()
-                                      .update(
-                                          settings.copyWith(safeMode: value))),
+                                activeColor:
+                                    Theme.of(context).colorScheme.primary,
+                                value: settings.safeMode,
+                                onChanged: (value) => context
+                                    .read<SettingsCubit>()
+                                    .update(settings.copyWith(safeMode: value)),
+                              ),
                             ),
                           ],
                         ),
@@ -279,9 +284,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {
@@ -296,9 +299,8 @@ class _Divider extends StatelessWidget {
 
 class _Footer extends StatelessWidget {
   const _Footer({
-    Key? key,
     this.mainAxisAlignment,
-  }) : super(key: key);
+  });
 
   final MainAxisAlignment? mainAxisAlignment;
 
@@ -329,11 +331,10 @@ class _Footer extends StatelessWidget {
   }
 }
 
-class SettingsSection extends StatelessWidget {
-  const SettingsSection({
-    Key? key,
+class _SettingsSection extends StatelessWidget {
+  const _SettingsSection({
     required this.label,
-  }) : super(key: key);
+  });
 
   final String label;
 
@@ -353,4 +354,3 @@ class SettingsSection extends StatelessWidget {
 }
 
 String getVersion(PackageInfo info) => info.version;
-String getVersionText(PackageInfo info) => info.version;

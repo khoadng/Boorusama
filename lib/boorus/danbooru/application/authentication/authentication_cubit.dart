@@ -25,15 +25,19 @@ class AuthenticationCubit extends Cubit<AuthenticationState> {
       } else {
         emit(Unauthenticated());
       }
+      // ignore: no-empty-block
     } else if (state is Authenticated) {
       // Do nothing
+      // ignore: no-empty-block
     } else if (state is AuthenticationInProgress) {
       // Do nothing
     } else {
       try {
         emit(AuthenticationInProgress());
         final profile = await profileRepository.getProfile(
-            username: username, apiKey: password);
+          username: username,
+          apiKey: password,
+        );
         final account = Account.create(username, password, profile!.id);
 
         emit(Authenticated(account: account));

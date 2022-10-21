@@ -6,9 +6,6 @@ class HotPostFetcher implements PostFetcher {
   const HotPostFetcher();
 
   @override
-  Future<List<Post>> fetch(PostRepository repo, int page) async {
-    final posts = await repo.getPosts('order:rank', page);
-
-    return posts;
-  }
+  Future<List<Post>> fetch(PostRepository repo, int page) =>
+      repo.getPosts('order:rank', page);
 }

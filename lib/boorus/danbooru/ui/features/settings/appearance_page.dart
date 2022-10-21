@@ -19,9 +19,9 @@ import 'widgets/settings_icon.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 
@@ -33,9 +33,10 @@ String _themeModeToString(ThemeMode theme) {
   switch (theme) {
     case ThemeMode.dark:
       return 'settings.theme.dark';
+    case ThemeMode.system:
     case ThemeMode.amoledDark:
       return 'settings.theme.amoled_dark';
-    default:
+    case ThemeMode.light:
       return 'settings.theme.light';
   }
 }
@@ -48,7 +49,7 @@ String _imageQualityToString(ImageQuality quality) {
       return 'settings.image_grid.image_quality.low';
     case ImageQuality.original:
       return 'settings.image_grid.image_quality.original';
-    default:
+    case ImageQuality.automatic:
       return 'settings.image_grid.image_quality.automatic';
   }
 }
@@ -59,7 +60,7 @@ String _gridSizeToString(GridSize size) {
       return 'settings.image_grid.grid_size.large';
     case GridSize.small:
       return 'settings.image_grid.grid_size.small';
-    default:
+    case GridSize.normal:
       return 'settings.image_grid.grid_size.medium';
   }
 }
@@ -68,7 +69,7 @@ String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
   switch (behavior) {
     case ActionBarDisplayBehavior.staticAtBottom:
       return 'settings.image_detail.action_bar_display_behavior.static_at_bottom';
-    default:
+    case ActionBarDisplayBehavior.scrolling:
       return 'settings.image_detail.action_bar_display_behavior.scrolling';
   }
 }
@@ -127,8 +128,8 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 SettingsTile<ImageQuality>(
                   title: const Text(
-                          'settings.image_grid.image_quality.image_quality')
-                      .tr(),
+                    'settings.image_grid.image_quality.image_quality',
+                  ).tr(),
                   subtitle: state.settings.imageQuality == ImageQuality.high
                       ? Text(
                           'settings.image_grid.image_quality.high_quality_notice',
@@ -158,7 +159,8 @@ class _AppearancePageState extends State<AppearancePage> {
                 _buildBorderRadiusSlider(state),
                 const Divider(thickness: 1),
                 SettingsHeader(
-                    label: 'settings.image_viewer.image_viewer'.tr()),
+                  label: 'settings.image_viewer.image_viewer'.tr(),
+                ),
                 ListTile(
                   title: const Text('settings.image_viewer.full_res_as_default')
                       .tr(),
@@ -167,31 +169,37 @@ class _AppearancePageState extends State<AppearancePage> {
                       ? const Text('settings.image_viewer.full_res_notice').tr()
                       : null,
                   trailing: Switch(
-                      activeColor: Theme.of(context).colorScheme.primary,
-                      value: state.settings.imageQualityInFullView ==
-                          ImageQuality.original,
-                      onChanged: (value) {
-                        context.read<SettingsCubit>().update(state.settings
-                            .copyWith(
-                                imageQualityInFullView: value
-                                    ? ImageQuality.original
-                                    : ImageQuality.automatic));
-                      }),
+                    activeColor: Theme.of(context).colorScheme.primary,
+                    value: state.settings.imageQualityInFullView ==
+                        ImageQuality.original,
+                    onChanged: (value) {
+                      context
+                          .read<SettingsCubit>()
+                          .update(state.settings.copyWith(
+                            imageQualityInFullView: value
+                                ? ImageQuality.original
+                                : ImageQuality.automatic,
+                          ));
+                    },
+                  ),
                 ),
                 const Divider(thickness: 1),
                 SettingsHeader(
-                    label: 'settings.image_detail.image_detail'.tr()),
+                  label: 'settings.image_detail.image_detail'.tr(),
+                ),
                 SettingsTile<ActionBarDisplayBehavior>(
                   title: const Text(
-                          'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior')
-                      .tr(),
+                    'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior',
+                  ).tr(),
                   selectedOption: state.settings.actionBarDisplayBehavior,
                   onChanged: (value) => context.read<SettingsCubit>().update(
-                      state.settings.copyWith(actionBarDisplayBehavior: value)),
+                        state.settings
+                            .copyWith(actionBarDisplayBehavior: value),
+                      ),
                   items: ActionBarDisplayBehavior.values,
                   optionBuilder: (value) =>
                       Text(_actionBarDisplayBehaviorToString(value)).tr(),
-                )
+                ),
               ],
             ),
           );
@@ -243,44 +251,44 @@ class _AppearancePageState extends State<AppearancePage> {
   }) {
     if (size == GridSize.large) return _largeGrid(spacing / 2, screenSize);
     if (size == GridSize.small) return _smallGrid(spacing / 2, screenSize);
+
     return _normalGrid(spacing / 2, screenSize);
   }
 
   Widget _buildPreview(BuildContext context, SettingsState state) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 100),
-      child: Container(
-        width: 150,
-        height: 200,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: Theme.of(context).backgroundColor,
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ValueListenableBuilder<double>(
-            valueListenable: _spacingSliderValue,
-            builder: (context, value, _) => GridView.builder(
-                itemCount: 100,
-                gridDelegate: _gridSizeToGridDelegate(
-                  Screen.of(context).size,
-                  state.settings.gridSize,
-                  spacing: value,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 100),
+      width: 150,
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(4)),
+        color: Theme.of(context).backgroundColor,
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(8),
+        child: ValueListenableBuilder<double>(
+          valueListenable: _spacingSliderValue,
+          builder: (context, value, _) => GridView.builder(
+            itemCount: 100,
+            gridDelegate: _gridSizeToGridDelegate(
+              Screen.of(context).size,
+              state.settings.gridSize,
+              spacing: value,
+            ),
+            itemBuilder: (context, index) {
+              return ValueListenableBuilder<double>(
+                valueListenable: _borderRadiusSliderValue,
+                builder: (context, value, _) => Container(
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(value),
+                  ),
+                  child: const Center(
+                    child: SettingsIcon(FontAwesomeIcons.image),
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  return ValueListenableBuilder<double>(
-                    valueListenable: _borderRadiusSliderValue,
-                    builder: (context, value, _) => Container(
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).cardColor,
-                        borderRadius: BorderRadius.circular(value),
-                      ),
-                      child: const Center(
-                        child: SettingsIcon(FontAwesomeIcons.image),
-                      ),
-                    ),
-                  );
-                }),
+              );
+            },
           ),
         ),
       ),

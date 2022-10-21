@@ -11,11 +11,11 @@ import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
 
 class RecommendPostSection extends StatelessWidget {
   const RecommendPostSection({
-    Key? key,
+    super.key,
     required this.posts,
     required this.header,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final List<PostData> posts;
   final Widget header;

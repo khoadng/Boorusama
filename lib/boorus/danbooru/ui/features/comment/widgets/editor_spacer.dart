@@ -3,18 +3,16 @@ import 'package:flutter/material.dart';
 
 class EditorSpacer extends StatelessWidget {
   const EditorSpacer({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: Container(
-        width: double.infinity,
-        height: 1,
-        color: Theme.of(context).dividerColor,
-      ),
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 12),
+      width: double.infinity,
+      height: 1,
+      color: Theme.of(context).dividerColor,
     );
   }
 }

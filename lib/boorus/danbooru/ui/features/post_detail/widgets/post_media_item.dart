@@ -13,10 +13,10 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widget
 
 class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
-    Key? key,
+    super.key,
     required this.post,
     required this.onCached,
-  }) : super(key: key);
+  });
 
   final Post post;
   final void Function(String? path) onCached;
@@ -35,49 +35,51 @@ class _PostMediaItemState extends State<PostMediaItem> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.post.isVideo) {
-      return p.extension(widget.post.normalImageUrl) == '.webm'
-          ? EmbeddedWebViewWebm(videoHtml: videoHtml)
-          : PostVideo(post: widget.post);
-    } else {
-      return GestureDetector(
-        onTap: () {
-          AppRouter.router.navigateTo(context, '/posts/image',
-              routeSettings: RouteSettings(arguments: [widget.post]));
-        },
-        child: Hero(
-          tag: '${widget.post.id}_hero',
-          child: CachedNetworkImage(
-            imageUrl: widget.post.normalImageUrl,
-            imageBuilder: (context, imageProvider) {
-              DefaultCacheManager()
-                  .getFileFromCache(widget.post.normalImageUrl)
-                  .then((file) {
-                if (!mounted) return;
-                widget.onCached(file!.file.path);
-              });
-              return Image(image: imageProvider);
+    return widget.post.isVideo
+        ? p.extension(widget.post.normalImageUrl) == '.webm'
+            ? EmbeddedWebViewWebm(videoHtml: videoHtml)
+            : PostVideo(post: widget.post)
+        : GestureDetector(
+            onTap: () {
+              AppRouter.router.navigateTo(
+                context,
+                '/posts/image',
+                routeSettings: RouteSettings(arguments: [widget.post]),
+              );
             },
-            placeholderFadeInDuration: Duration.zero,
-            fadeOutDuration: Duration.zero,
-            progressIndicatorBuilder: (context, url, progress) => FittedBox(
-              fit: BoxFit.cover,
-              child: SizedBox(
-                height: widget.post.height,
-                width: widget.post.width,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: LinearProgressIndicator(value: progress.progress),
-                    ),
-                  ],
+            child: Hero(
+              tag: '${widget.post.id}_hero',
+              child: CachedNetworkImage(
+                imageUrl: widget.post.normalImageUrl,
+                imageBuilder: (context, imageProvider) {
+                  DefaultCacheManager()
+                      .getFileFromCache(widget.post.normalImageUrl)
+                      .then((file) {
+                    if (!mounted) return;
+                    widget.onCached(file!.file.path);
+                  });
+
+                  return Image(image: imageProvider);
+                },
+                placeholderFadeInDuration: Duration.zero,
+                fadeOutDuration: Duration.zero,
+                progressIndicatorBuilder: (context, url, progress) => FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    height: widget.post.height,
+                    width: widget.post.width,
+                    child: Stack(children: [
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: LinearProgressIndicator(
+                          value: progress.progress,
+                        ),
+                      ),
+                    ]),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-      );
-    }
+          );
   }
 }

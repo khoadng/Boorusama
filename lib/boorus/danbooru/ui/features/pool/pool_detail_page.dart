@@ -24,10 +24,10 @@ import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
   const PoolDetailPage({
-    Key? key,
+    super.key,
     required this.pool,
     required this.postIds,
-  }) : super(key: key);
+  });
 
   final Pool pool;
   final Queue<int> postIds;
@@ -76,29 +76,33 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       child: ListTile(
                         title: Text(
                           widget.pool.name.removeUnderscoreWithSpace(),
-                          style: Theme.of(context).textTheme.headline6!,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         subtitle: Text(
-                            '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                          widget.pool.updatedAt,
-                          locale: Localizations.localeOf(context).languageCode,
-                        )}'),
+                          '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                            widget.pool.updatedAt,
+                            locale:
+                                Localizations.localeOf(context).languageCode,
+                          )}',
+                        ),
                       ),
                     ),
                     SliverToBoxAdapter(
                       child: BlocBuilder<PoolDescriptionBloc,
                           PoolDescriptionState>(
                         builder: (context, state) {
-                          if (state.status == LoadStatus.success) {
-                            return Html(
-                              onLinkTap: (url, context, attributes, element) =>
-                                  _onHtmlLinkTapped(attributes, url,
-                                      state.descriptionEndpointRefUrl),
-                              data: state.description,
-                            );
-                          } else {
-                            return const SizedBox.shrink();
-                          }
+                          return state.status == LoadStatus.success
+                              ? Html(
+                                  onLinkTap:
+                                      (url, context, attributes, element) =>
+                                          _onHtmlLinkTapped(
+                                    attributes,
+                                    url,
+                                    state.descriptionEndpointRefUrl,
+                                  ),
+                                  data: state.description,
+                                )
+                              : const SizedBox.shrink();
                         },
                       ),
                     ),
@@ -108,20 +112,18 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                     ),
                     BlocBuilder<PostBloc, PostState>(
                       builder: (context, state) {
-                        if (state.status == LoadStatus.loading) {
-                          return const SliverPadding(
-                            padding: EdgeInsets.only(bottom: 20, top: 60),
-                            sliver: SliverToBoxAdapter(
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return const SliverToBoxAdapter(
-                            child: SizedBox.shrink(),
-                          );
-                        }
+                        return state.status == LoadStatus.loading
+                            ? const SliverPadding(
+                                padding: EdgeInsets.only(bottom: 20, top: 60),
+                                sliver: SliverToBoxAdapter(
+                                  child: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                              )
+                            : const SliverToBoxAdapter(
+                                child: SizedBox.shrink(),
+                              );
                       },
                     ),
                   ],
@@ -155,6 +157,7 @@ void _onHtmlLinkTapped(
       Uri.parse('$endpoint$url'),
       mode: LaunchMode.inAppWebView,
     );
+    // ignore: no-empty-block
   } else if (att.contains('dtext-post-search-link')) {
 // AppRouter.router.navigateTo(
 //             context,

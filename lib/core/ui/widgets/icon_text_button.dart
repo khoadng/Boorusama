@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class IconTextButton extends StatelessWidget {
   const IconTextButton({
-    Key? key,
+    super.key,
     this.width,
     required this.icon,
     required this.label,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   final double? width;
   final Widget icon;

@@ -12,15 +12,18 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/utils.dart';
+import 'login_field.dart';
 
 class LoginBox extends HookWidget {
-  const LoginBox({Key? key}) : super(key: key);
+  const LoginBox({super.key});
 
   @override
   Widget build(BuildContext context) {
     final tickerProvider = useSingleTickerProvider();
     final animationController = useAnimationController(
-        vsync: tickerProvider, duration: const Duration(milliseconds: 150));
+      vsync: tickerProvider,
+      duration: const Duration(milliseconds: 150),
+    );
     final formKey = useState(GlobalKey<FormState>());
     final isValidUsernameAndPassword = useState(true);
 
@@ -90,6 +93,7 @@ class LoginBox extends HookWidget {
                         if (!isValidUsernameAndPassword.value) {
                           return 'login.errors.invalidUsernameOrPassword'.tr();
                         }
+
                         return null;
                       },
                       onChanged: (text) => onTextChanged(),
@@ -101,12 +105,13 @@ class LoginBox extends HookWidget {
                                 curve: const Interval(0, 1),
                               ),
                               child: IconButton(
-                                  splashColor: Colors.transparent,
-                                  icon: const FaIcon(
-                                    FontAwesomeIcons.solidCircleXmark,
-                                    size: 18,
-                                  ),
-                                  onPressed: usernameTextController.clear),
+                                splashColor: Colors.transparent,
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.solidCircleXmark,
+                                  size: 18,
+                                ),
+                                onPressed: usernameTextController.clear,
+                              ),
                             )
                           : null,
                     ),
@@ -121,23 +126,25 @@ class LoginBox extends HookWidget {
                         if (!isValidUsernameAndPassword.value) {
                           return 'login.errors.invalidUsernameOrPassword'.tr();
                         }
+
                         return null;
                       },
                       onChanged: (text) => onTextChanged(),
                       controller: passwordTextController,
                       suffixIcon: IconButton(
-                          splashColor: Colors.transparent,
-                          icon: showPassword.value
-                              ? const FaIcon(
-                                  FontAwesomeIcons.solidEyeSlash,
-                                  size: 18,
-                                )
-                              : const FaIcon(
-                                  FontAwesomeIcons.solidEye,
-                                  size: 18,
-                                ),
-                          onPressed: () =>
-                              showPassword.value = !showPassword.value),
+                        splashColor: Colors.transparent,
+                        icon: showPassword.value
+                            ? const FaIcon(
+                                FontAwesomeIcons.solidEyeSlash,
+                                size: 18,
+                              )
+                            : const FaIcon(
+                                FontAwesomeIcons.solidEye,
+                                size: 18,
+                              ),
+                        onPressed: () =>
+                            showPassword.value = !showPassword.value,
+                      ),
                     ),
                   ],
                 ),
@@ -145,30 +152,29 @@ class LoginBox extends HookWidget {
             ),
             TextButton.icon(
               onPressed: () => showDialog(
-                  context: context,
-                  builder: (context) {
-                    return AlertDialog(
-                      title: const Text('API key?'),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('login.form.cancel').tr(),
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('API key?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('login.form.cancel').tr(),
+                      ),
+                      BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                        builder: (context, state) => TextButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            launchExternalUrl(Uri.parse(state.booru.url));
+                          },
+                          child: const Text('login.form.open_web_browser').tr(),
                         ),
-                        BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-                          builder: (context, state) => TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              launchExternalUrl(Uri.parse(state.booru.url));
-                            },
-                            child:
-                                const Text('login.form.open_web_browser').tr(),
-                          ),
-                        ),
-                      ],
-                      content:
-                          const Text('login.form.api_key_instruction').tr(),
-                    );
-                  }),
+                      ),
+                    ],
+                    content: const Text('login.form.api_key_instruction').tr(),
+                  );
+                },
+              ),
               icon: const FaIcon(FontAwesomeIcons.solidCircleQuestion),
               label: const Text('API key?'),
             ),
@@ -183,7 +189,7 @@ class LoginBox extends HookWidget {
                       passwordTextController,
                       isValidUsernameAndPassword,
                     ),
-            )
+            ),
           ],
         ),
       ),
@@ -191,11 +197,12 @@ class LoginBox extends HookWidget {
   }
 
   Widget _buildLoginButton(
-      BuildContext context,
-      ValueNotifier<GlobalKey<FormState>> formKey,
-      TextEditingController usernameTextController,
-      TextEditingController passwordTextController,
-      ValueNotifier<bool> isValidUsernameAndPassword) {
+    BuildContext context,
+    ValueNotifier<GlobalKey<FormState>> formKey,
+    TextEditingController usernameTextController,
+    TextEditingController passwordTextController,
+    ValueNotifier<bool> isValidUsernameAndPassword,
+  ) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(foregroundColor: Colors.white),
       child: Text('login.form.login'.tr()),
@@ -209,55 +216,6 @@ class LoginBox extends HookWidget {
           isValidUsernameAndPassword.value = true;
         }
       },
-    );
-  }
-}
-
-class LoginField extends StatelessWidget {
-  const LoginField({
-    Key? key,
-    required this.validator,
-    required this.controller,
-    required this.labelText,
-    this.obscureText = false,
-    this.suffixIcon,
-    this.onChanged,
-  }) : super(key: key);
-
-  final TextEditingController controller;
-  final String? Function(String?) validator;
-  final Widget? suffixIcon;
-  final String labelText;
-  final bool obscureText;
-  final ValueChanged<String>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      onChanged: onChanged,
-      obscureText: obscureText,
-      validator: validator,
-      controller: controller,
-      decoration: InputDecoration(
-        suffixIcon: suffixIcon,
-        filled: true,
-        fillColor: Theme.of(context).cardColor,
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide.none,
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-              color: Theme.of(context).colorScheme.secondary, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
-        ),
-        contentPadding: const EdgeInsets.all(12),
-        labelText: labelText,
-      ),
     );
   }
 }

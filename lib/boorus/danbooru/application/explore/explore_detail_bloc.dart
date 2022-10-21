@@ -87,8 +87,6 @@ extension DateTimeX on DateTime {
         return Jiffy(this).subtract(weeks: 1).dateTime;
       case TimeScale.month:
         return Jiffy(this).subtract(months: 1).dateTime;
-      default:
-        return this;
     }
   }
 
@@ -100,8 +98,6 @@ extension DateTimeX on DateTime {
         return Jiffy(this).add(weeks: 1).dateTime;
       case TimeScale.month:
         return Jiffy(this).add(months: 1).dateTime;
-      default:
-        return this;
     }
   }
 }

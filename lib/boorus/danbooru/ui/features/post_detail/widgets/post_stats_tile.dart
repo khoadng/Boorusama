@@ -17,10 +17,10 @@ import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PostStatsTile extends StatelessWidget {
   const PostStatsTile({
-    Key? key,
+    super.key,
     required this.post,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
-  }) : super(key: key);
+  });
 
   final Post post;
   final EdgeInsets padding;
@@ -44,7 +44,7 @@ class PostStatsTile extends StatelessWidget {
                     postId: post.id,
                     refresh: true,
                   )),
-                child: FavoriterView(
+                child: _FavoriterView(
                   post: post,
                 ),
               ),
@@ -81,7 +81,7 @@ class PostStatsTile extends StatelessWidget {
                     postId: post.id,
                     refresh: true,
                   )),
-                child: VoterView(
+                child: _VoterView(
                   post: post,
                 ),
               ),
@@ -137,11 +137,10 @@ class PostStatsTile extends StatelessWidget {
 
 class _StatButton extends StatelessWidget {
   const _StatButton({
-    Key? key,
     required this.child,
     required this.enable,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final bool enable;
@@ -164,26 +163,23 @@ class _StatButton extends StatelessWidget {
 }
 
 String _generatePercentText(Post post) {
-  if (post.totalVote > 0) {
-    return '(${(post.upvotePercent * 100).toInt()}% upvoted)';
-  } else {
-    return '';
-  }
+  return post.totalVote > 0
+      ? '(${(post.upvotePercent * 100).toInt()}% upvoted)'
+      : '';
 }
 
-class VoterView extends StatefulWidget {
-  const VoterView({
-    Key? key,
+class _VoterView extends StatefulWidget {
+  const _VoterView({
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
   @override
-  State<VoterView> createState() => _VoterViewState();
+  State<_VoterView> createState() => _VoterViewState();
 }
 
-class _VoterViewState extends State<VoterView> {
+class _VoterViewState extends State<_VoterView> {
   final scrollController = ScrollController();
 
   @override
@@ -208,6 +204,7 @@ class _VoterViewState extends State<VoterView> {
     if (!scrollController.hasClients) return false;
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.offset;
+
     return currentScroll >= (maxScroll * 0.9);
   }
 
@@ -220,7 +217,7 @@ class _VoterViewState extends State<VoterView> {
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
       body: BlocBuilder<PostVoteInfoBloc, PostVoteInfoState>(
@@ -230,21 +227,23 @@ class _VoterViewState extends State<VoterView> {
                 controller: scrollController,
                 slivers: [
                   SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final voter = state.upvoters[index];
-                      return InfoTile(
-                        title: voter.user.name,
-                        level: voter.user.level,
-                      );
-                    },
-                    childCount: state.upvoters.length,
-                  )),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final voter = state.upvoters[index];
+
+                        return _InfoTile(
+                          title: voter.user.name,
+                          level: voter.user.level,
+                        );
+                      },
+                      childCount: state.upvoters.length,
+                    ),
+                  ),
                   if (state.loading)
                     const SliverToBoxAdapter(
                       child:
                           Center(child: CircularProgressIndicator.adaptive()),
-                    )
+                    ),
                 ],
               ),
       ),
@@ -252,12 +251,11 @@ class _VoterViewState extends State<VoterView> {
   }
 }
 
-class InfoTile extends StatelessWidget {
-  const InfoTile({
-    Key? key,
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({
     required this.title,
     required this.level,
-  }) : super(key: key);
+  });
 
   final String title;
   final UserLevel level;
@@ -274,19 +272,18 @@ class InfoTile extends StatelessWidget {
   }
 }
 
-class FavoriterView extends StatefulWidget {
-  const FavoriterView({
-    Key? key,
+class _FavoriterView extends StatefulWidget {
+  const _FavoriterView({
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
   @override
-  State<FavoriterView> createState() => _FavoriterViewState();
+  State<_FavoriterView> createState() => _FavoriterViewState();
 }
 
-class _FavoriterViewState extends State<FavoriterView> {
+class _FavoriterViewState extends State<_FavoriterView> {
   final scrollController = ScrollController();
 
   @override
@@ -311,6 +308,7 @@ class _FavoriterViewState extends State<FavoriterView> {
     if (!scrollController.hasClients) return false;
     final maxScroll = scrollController.position.maxScrollExtent;
     final currentScroll = scrollController.offset;
+
     return currentScroll >= (maxScroll * 0.9);
   }
 
@@ -323,7 +321,7 @@ class _FavoriterViewState extends State<FavoriterView> {
           IconButton(
             onPressed: () => Navigator.of(context).pop(),
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
       ),
       body: BlocBuilder<PostFavoriteInfoBloc, PostFavoriteInfoState>(
@@ -333,23 +331,25 @@ class _FavoriterViewState extends State<FavoriterView> {
                 controller: scrollController,
                 slivers: [
                   SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final user = state.favoriters[index];
-                      return ListTile(
-                        title: Text(
-                          user.name,
-                          style: TextStyle(color: Color(user.level.hexColor)),
-                        ),
-                      );
-                    },
-                    childCount: state.favoriters.length,
-                  )),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final user = state.favoriters[index];
+
+                        return ListTile(
+                          title: Text(
+                            user.name,
+                            style: TextStyle(color: Color(user.level.hexColor)),
+                          ),
+                        );
+                      },
+                      childCount: state.favoriters.length,
+                    ),
+                  ),
                   if (state.loading)
                     const SliverToBoxAdapter(
                       child:
                           Center(child: CircularProgressIndicator.adaptive()),
-                    )
+                    ),
                 ],
               ),
       ),

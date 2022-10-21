@@ -18,7 +18,7 @@ import 'explore_carousel.dart';
 import 'explore_section.dart';
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({Key? key}) : super(key: key);
+  const ExplorePage({super.key});
 
   Widget mapStateToCarousel(
     BuildContext context,
@@ -26,6 +26,7 @@ class ExplorePage extends StatelessWidget {
   ) {
     if (state.status == LoadStatus.success) {
       if (state.posts.isEmpty) return const CarouselPlaceholder();
+
       return ExploreCarousel(
         posts: state.posts.map((e) => e.post).toList(),
         onTap: (index) {
@@ -66,8 +67,10 @@ class ExplorePage extends StatelessWidget {
                     child: BlocProvider(
                       create: (context) => PostBloc.of(context)
                         ..add(PostRefreshed(
-                            fetcher: ExplorePreviewFetcher.now(
-                                category: ExploreCategory.popular))),
+                          fetcher: ExplorePreviewFetcher.now(
+                            category: ExploreCategory.popular,
+                          ),
+                        )),
                       child: ExploreSection(
                         title: 'explore.popular'.tr(),
                         category: ExploreCategory.popular,
@@ -81,8 +84,10 @@ class ExplorePage extends StatelessWidget {
                     child: BlocProvider(
                       create: (context) => PostBloc.of(context)
                         ..add(PostRefreshed(
-                            fetcher: ExplorePreviewFetcher.now(
-                                category: ExploreCategory.hot))),
+                          fetcher: ExplorePreviewFetcher.now(
+                            category: ExploreCategory.hot,
+                          ),
+                        )),
                       child: ExploreSection(
                         title: 'explore.hot'.tr(),
                         category: ExploreCategory.hot,
@@ -96,8 +101,10 @@ class ExplorePage extends StatelessWidget {
                     child: BlocProvider(
                       create: (context) => PostBloc.of(context)
                         ..add(PostRefreshed(
-                            fetcher: ExplorePreviewFetcher.now(
-                                category: ExploreCategory.curated))),
+                          fetcher: ExplorePreviewFetcher.now(
+                            category: ExploreCategory.curated,
+                          ),
+                        )),
                       child: ExploreSection(
                         title: 'explore.curated'.tr(),
                         category: ExploreCategory.curated,
@@ -111,8 +118,10 @@ class ExplorePage extends StatelessWidget {
                     child: BlocProvider(
                       create: (context) => PostBloc.of(context)
                         ..add(PostRefreshed(
-                            fetcher: ExplorePreviewFetcher.now(
-                                category: ExploreCategory.mostViewed))),
+                          fetcher: ExplorePreviewFetcher.now(
+                            category: ExploreCategory.mostViewed,
+                          ),
+                        )),
                       child: ExploreSection(
                         title: 'explore.most_viewed'.tr(),
                         category: ExploreCategory.mostViewed,

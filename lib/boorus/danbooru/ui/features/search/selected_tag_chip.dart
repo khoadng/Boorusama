@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 
 class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({
-    Key? key,
+    super.key,
     required this.tagSearchItem,
-  }) : super(key: key);
+  });
 
   final TagSearchItem tagSearchItem;
 
@@ -21,6 +21,7 @@ class SelectedTagChip extends StatelessWidget {
     final hasOperator = tagSearchItem.operator != FilterOperator.none;
     final hasMeta = tagSearchItem.metatag != null;
     final hasAny = hasMeta || hasOperator;
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -30,9 +31,11 @@ class SelectedTagChip extends StatelessWidget {
             backgroundColor: Colors.purple,
             labelPadding: const EdgeInsets.symmetric(horizontal: 1),
             shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    bottomLeft: Radius.circular(8))),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(8),
+                bottomLeft: Radius.circular(8),
+              ),
+            ),
             label: Text(
               filterOperatorToStringCharacter(tagSearchItem.operator),
               style: const TextStyle(color: Colors.white70),
@@ -55,8 +58,10 @@ class SelectedTagChip extends StatelessWidget {
           shape: hasAny
               ? const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      bottomRight: Radius.circular(8)))
+                    topRight: Radius.circular(8),
+                    bottomRight: Radius.circular(8),
+                  ),
+                )
               : null,
           deleteIcon: const Icon(
             FontAwesomeIcons.xmark,
@@ -69,27 +74,27 @@ class SelectedTagChip extends StatelessWidget {
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: ConstrainedBox(
             constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.85),
+              maxWidth: MediaQuery.of(context).size.width * 0.85,
+            ),
             child: Text(
               tagSearchItem.tag,
               overflow: TextOverflow.fade,
               style: const TextStyle(color: Colors.white70),
             ),
           ),
-        )
+        ),
       ],
     );
   }
 
   OutlinedBorder? _getOutlineBorderForMetaChip(bool hasOperator) {
-    if (!hasOperator) {
-      return const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-        topLeft: Radius.circular(8),
-        bottomLeft: Radius.circular(8),
-      ));
-    } else {
-      return const RoundedRectangleBorder();
-    }
+    return !hasOperator
+        ? const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(8),
+              bottomLeft: Radius.circular(8),
+            ),
+          )
+        : const RoundedRectangleBorder();
   }
 }

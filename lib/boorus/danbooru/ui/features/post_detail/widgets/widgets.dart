@@ -1,6 +1,6 @@
 export 'embedded_webview_webm.dart';
 export 'floating_glassy_card.dart';
-export 'information_and_recommended.dart';
+export 'recommend_artist_list.dart';
 export 'information_section.dart';
 export 'parent_child_tile.dart';
 export 'pool_tiles.dart';

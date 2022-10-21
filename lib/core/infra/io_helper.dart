@@ -15,13 +15,16 @@ class IOHelper {
   static Future<String> getDownloadPath() async {
     if (isAndroid()) {
       final root = Directory.fromUri(Uri(path: '/storage/emulated/0/Download'));
+
       return root.path;
     } else if (isWindows()) {
       final root = (await getDownloadsDirectory()) ??
           (await getApplicationDocumentsDirectory());
+
       return root.path;
     } else {
       final root = await getApplicationDocumentsDirectory();
+
       return root.path;
     }
   }

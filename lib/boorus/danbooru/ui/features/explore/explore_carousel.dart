@@ -12,10 +12,10 @@ import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
 class ExploreCarousel extends StatelessWidget {
   const ExploreCarousel({
-    Key? key,
+    super.key,
     required this.posts,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final List<Post> posts;
   final void Function(int index) onTap;
@@ -24,6 +24,7 @@ class ExploreCarousel extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
+
     return Container(
       width: size.width,
       constraints: BoxConstraints(maxHeight: size.height * 0.5),
@@ -31,6 +32,7 @@ class ExploreCarousel extends StatelessWidget {
         itemCount: posts.length,
         itemBuilder: (context, index, realIndex) {
           final post = posts[index];
+
           return GestureDetector(
             onTap: () => onTap(index),
             child: Stack(
@@ -45,7 +47,7 @@ class ExploreCarousel extends StatelessWidget {
                   alignment: Alignment.bottomCenter,
                   colors: <Color>[
                     const Color(0xC2000000),
-                    Colors.black12.withOpacity(0)
+                    Colors.black12.withOpacity(0),
                   ],
                 ),
                 Align(
@@ -75,5 +77,6 @@ class ExploreCarousel extends StatelessWidget {
 double screenSizeToViewPortFraction(ScreenSize size) {
   if (size == ScreenSize.large) return 0.2;
   if (size == ScreenSize.medium) return 0.3;
+
   return 0.4;
 }

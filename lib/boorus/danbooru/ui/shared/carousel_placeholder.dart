@@ -10,15 +10,15 @@ import 'package:boorusama/core/core.dart';
 
 class CarouselPlaceholder extends StatelessWidget {
   const CarouselPlaceholder({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   factory CarouselPlaceholder.error(BuildContext context) =>
       CarouselPlaceholder(
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: const BorderRadius.all(Radius.circular(16)),
             color: Theme.of(context).cardColor,
           ),
           child: const Center(
@@ -37,7 +37,7 @@ class CarouselPlaceholder extends StatelessWidget {
         return child ??
             Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: const BorderRadius.all(Radius.circular(16)),
                 color: Theme.of(context).cardColor,
               ),
             );

@@ -12,10 +12,10 @@ import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class SlideShowConfigContainer extends StatefulWidget {
   const SlideShowConfigContainer({
-    Key? key,
+    super.key,
     required this.initialConfig,
     this.isModal = true,
-  }) : super(key: key);
+  });
 
   final SlideShowConfiguration initialConfig;
   final bool isModal;
@@ -51,7 +51,7 @@ class _SlideShowConfigContainerState extends State<SlideShowConfigContainer> {
           left: 26,
           right: 26,
           top: 14,
-          bottom: 14 + viewInsets + safeAreaBottom,
+          bottom: viewInsets + safeAreaBottom + 14,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,

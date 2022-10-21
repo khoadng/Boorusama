@@ -16,12 +16,11 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({
-    Key? key,
+    super.key,
     required List<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
-  })  : _tags = tags,
-        super(key: key);
+  }) : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
@@ -32,18 +31,21 @@ class TagSuggestionItems extends StatelessWidget {
     return Material(
       color: Theme.of(context).scaffoldBackgroundColor,
       elevation: 4,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return ListView.builder(
             itemCount: _tags.length,
             itemBuilder: (context, index) {
               final tag = _tags[index];
+
               return ListTile(
                 onTap: () => onItemTap(_tags[index]),
                 trailing: tag.hasCount
-                    ? Text(NumberFormat.compact().format(tag.postCount),
-                        style: const TextStyle(color: Colors.grey))
+                    ? Text(
+                        NumberFormat.compact().format(tag.postCount),
+                        style: const TextStyle(color: Colors.grey),
+                      )
                     : null,
                 title: _getTitle(tag, state.theme, currentQuery),
               );
@@ -55,15 +57,16 @@ class TagSuggestionItems extends StatelessWidget {
   }
 }
 
+// ignore: prefer-single-widget-per-file
 class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   const SliverTagSuggestionItemsWithHistory({
-    Key? key,
+    super.key,
     required this.tags,
     required this.histories,
     required this.onItemTap,
     required this.onHistoryTap,
     required this.currentQuery,
-  }) : super(key: key);
+  });
 
   final List<AutocompleteData> tags;
   final List<HistorySuggestion> histories;
@@ -120,74 +123,58 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                 ),
               ),
               if (histories.isNotEmpty) const Divider(),
-              ...tags
-                  .map(
-                    (tag) => ListTile(
-                      onTap: () => onItemTap(tag),
-                      trailing: tag.hasCount
-                          ? Text(NumberFormat.compact().format(tag.postCount),
-                              style: const TextStyle(color: Colors.grey))
-                          : null,
-                      title: BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) => _getTitle(tag, state.theme,
-                            currentQuery.replaceAll('_', ' ')),
-                      ),
+              ...tags.map(
+                (tag) => ListTile(
+                  onTap: () => onItemTap(tag),
+                  trailing: tag.hasCount
+                      ? Text(
+                          NumberFormat.compact().format(tag.postCount),
+                          style: const TextStyle(color: Colors.grey),
+                        )
+                      : null,
+                  title: BlocBuilder<ThemeBloc, ThemeState>(
+                    builder: (context, state) => _getTitle(
+                      tag,
+                      state.theme,
+                      currentQuery.replaceAll('_', ' '),
                     ),
-                  )
-                  .toList()
+                  ),
+                ),
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
 }
 
 Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
-  if (tag.hasAlias) {
-    return Html(
-      style: {
-        'p': Style(
-          fontSize: FontSize.medium,
-          color: _getTagColor(tag, theme),
-        ),
-        'body': Style(
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-        ),
-        'b': Style(
-          fontWeight: FontWeight.w900,
-        ),
-      },
-      data: '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(
-            currentQuery,
-            '<b>$currentQuery</b>',
-          )} ➞ ${tag.label.replaceAll(
-        currentQuery,
-        '<b>$currentQuery</b>',
-      )}</p>',
-    );
-  } else {
-    return Html(
-      style: {
-        'p': Style(
-          fontSize: FontSize.medium,
-          color: _getTagColor(tag, theme),
-        ),
-        'body': Style(
-          padding: EdgeInsets.zero,
-          margin: EdgeInsets.zero,
-        ),
-        'b': Style(
-          fontWeight: FontWeight.w900,
-        ),
-      },
-      data: '<p>${tag.label.replaceAll(
-        currentQuery,
-        '<b>$currentQuery</b>',
-      )}</p>',
-    );
-  }
+  return tag.hasAlias
+      ? Html(
+          style: {
+            'p': Style(
+              fontSize: FontSize.medium,
+              color: _getTagColor(tag, theme),
+            ),
+            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'b': Style(fontWeight: FontWeight.w900),
+          },
+          data:
+              '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(currentQuery, '<b>$currentQuery</b>')} ➞ ${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+        )
+      : Html(
+          style: {
+            'p': Style(
+              fontSize: FontSize.medium,
+              color: _getTagColor(tag, theme),
+            ),
+            'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
+            'b': Style(fontWeight: FontWeight.w900),
+          },
+          data:
+              '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
+        );
 }
 
 Color? _getTagColor(AutocompleteData tag, ThemeMode theme) {

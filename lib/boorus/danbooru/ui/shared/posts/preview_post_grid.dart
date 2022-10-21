@@ -11,12 +11,12 @@ import 'package:boorusama/core/core.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
-    Key? key,
+    super.key,
     required this.posts,
     required this.imageQuality,
     required this.onTap,
     this.physics,
-  }) : super(key: key);
+  });
 
   final List<PostData> posts;
   final ScrollPhysics? physics;
@@ -40,7 +40,7 @@ class PreviewPostGrid extends StatelessWidget {
           physics: physics ?? const NeverScrollableScrollPhysics(),
           itemCount: posts.length,
           itemBuilder: (context, index) => ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: const BorderRadius.all(Radius.circular(4)),
             child: GestureDetector(
               onTap: () => onTap(index),
               child: CachedNetworkImage(
@@ -52,7 +52,7 @@ class PreviewPostGrid extends StatelessWidget {
                 placeholder: (context, url) => Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: const BorderRadius.all(Radius.circular(4)),
                   ),
                 ),
               ),
@@ -67,5 +67,6 @@ class PreviewPostGrid extends StatelessWidget {
 String _getImageUrl(Post post, ImageQuality quality) {
   if (post.isAnimated) return post.previewImageUrl;
   if (quality == ImageQuality.high) return post.normalImageUrl;
+
   return post.previewImageUrl;
 }

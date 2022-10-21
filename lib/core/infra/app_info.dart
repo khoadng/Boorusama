@@ -33,6 +33,7 @@ class AppInfo {
 Future<AppInfo> getAppInfo() async {
   try {
     final data = await rootBundle.loadString(_assetUrl);
+
     return AppInfo.fromJson(json.decode(data));
   } catch (e) {
     return AppInfo.empty;

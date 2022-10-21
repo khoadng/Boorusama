@@ -79,8 +79,9 @@ class PoolSearchBloc extends Bloc<PoolSearchEvent, PoolSearchState> {
   PoolSearchBloc({
     required PoolRepository poolRepository,
   }) : super(PoolSearchState.initial()) {
-    on<PoolSearched>((event, emit) async {
-      await tryAsync<List<Pool>>(
+    on<PoolSearched>(
+      (event, emit) async {
+        await tryAsync<List<Pool>>(
           action: () => poolRepository.getPools(1, name: event.query),
           onSuccess: (pools) async {
             emit(state.copyWith(
@@ -88,11 +89,13 @@ class PoolSearchBloc extends Bloc<PoolSearchEvent, PoolSearchState> {
               pools: pools,
               isDone: false,
             ));
-          });
-    },
-        transformer: debounceRestartable(
-          const Duration(milliseconds: 80),
-        ));
+          },
+        );
+      },
+      transformer: debounceRestartable(
+        const Duration(milliseconds: 80),
+      ),
+    );
 
     on<PoolSearchItemSelect>((event, emit) {
       emit(state.copyWith(

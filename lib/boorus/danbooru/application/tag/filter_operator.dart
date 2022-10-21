@@ -21,7 +21,7 @@ String filterOperatorToString(FilterOperator operator) {
       return '-';
     case FilterOperator.or:
       return '~';
-    default:
+    case FilterOperator.none:
       return '';
   }
 }
@@ -32,7 +32,7 @@ String filterOperatorToStringCharacter(FilterOperator operator) {
       return 'not'.toUpperCase();
     case FilterOperator.or:
       return 'or'.toUpperCase();
-    default:
+    case FilterOperator.none:
       return '';
   }
 }

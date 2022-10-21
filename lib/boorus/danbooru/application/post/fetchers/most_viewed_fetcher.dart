@@ -15,8 +15,7 @@ class MostViewedPostFetcher implements PostFetcher {
     int page,
   ) async {
     if (page > 1) return [];
-    final posts = await repo.getMostViewedPosts(date);
 
-    return posts;
+    return repo.getMostViewedPosts(date);
   }
 }

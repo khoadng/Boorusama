@@ -79,7 +79,7 @@ extension LevelExtension on UserLevel {
         return 0xffff0000;
       case UserLevel.owner:
         return 0xffff0000;
-      default:
+      case UserLevel.restricted:
         return 0xff0073ff;
     }
   }

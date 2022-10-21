@@ -30,7 +30,7 @@ Wiki? wikiDtoToWiki(WikiDto d) {
       body: d.body!,
       id: d.id!,
       title: d.title!,
-      otherNames: List<String>.from(d.otherNames!),
+      otherNames: List<String>.of(d.otherNames!),
     );
   } catch (e) {
     return null;

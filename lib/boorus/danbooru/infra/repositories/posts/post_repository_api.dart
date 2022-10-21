@@ -35,7 +35,7 @@ class PostRepositoryApi implements PostRepository {
     DateTime date,
     int page,
     TimeScale scale,
-  ) async =>
+  ) =>
       _accountRepository
           .get()
           .then(
@@ -57,7 +57,7 @@ class PostRepositoryApi implements PostRepository {
   @override
   Future<List<Post>> getMostViewedPosts(
     DateTime date,
-  ) async =>
+  ) =>
       _accountRepository
           .get()
           .then(
@@ -78,7 +78,7 @@ class PostRepositoryApi implements PostRepository {
     DateTime date,
     int page,
     TimeScale scale,
-  ) async =>
+  ) =>
       _accountRepository
           .get()
           .then(

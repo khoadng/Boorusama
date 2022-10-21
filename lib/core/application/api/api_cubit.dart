@@ -28,11 +28,12 @@ Dio dio(Directory dir, String baseUrl) {
 
   dio.interceptors.add(
     DioCacheInterceptor(
-        options: CacheOptions(
-      store: HiveCacheStore(dir.path),
-      maxStale: const Duration(days: 7),
-      hitCacheOnErrorExcept: [],
-    )),
+      options: CacheOptions(
+        store: HiveCacheStore(dir.path),
+        maxStale: const Duration(days: 7),
+        hitCacheOnErrorExcept: [],
+      ),
+    ),
   );
 
   dio.interceptors.add(RetryInterceptor(

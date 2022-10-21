@@ -10,7 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class InfiniteLoadList extends StatefulWidget {
   const InfiniteLoadList({
-    Key? key,
+    super.key,
     this.limit = 0.95,
     this.scrollController,
     this.refreshController,
@@ -21,7 +21,7 @@ class InfiniteLoadList extends StatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final bool extendBody;
   final double? extendBodyHeight;
@@ -105,12 +105,14 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
     if (!_scrollController.hasClients) return false;
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.offset;
+
     return currentScroll >= (maxScroll * widget.limit);
   }
 
   bool get _isTop {
     if (!_scrollController.hasClients) return false;
     final currentScroll = _scrollController.offset;
+
     return currentScroll == 0;
   }
 
@@ -124,8 +126,9 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
           child: widget.extendBody
               ? Padding(
                   padding: EdgeInsets.only(
-                      bottom: widget.extendBodyHeight ??
-                          kBottomNavigationBarHeight),
+                    bottom:
+                        widget.extendBodyHeight ?? kBottomNavigationBarHeight,
+                  ),
                   child: FloatingActionButton(
                     heroTag: null,
                     child: const FaIcon(FontAwesomeIcons.angleUp),

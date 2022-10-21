@@ -37,17 +37,21 @@ Future<DownloadService<Post>> createDownloader(
       flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
     );
     await d.init();
+
     return d;
   }
 
   final d = DownloadServiceFlutterDownloader(
-      fileNameGenerator: fileNameGenerator, deviceInfo: deviceInfo);
+    fileNameGenerator: fileNameGenerator,
+    deviceInfo: deviceInfo,
+  );
 
   if (isAndroid() || isIOS()) {
     await FlutterDownloader.initialize();
   }
 
   await d.init();
+
   return d;
 }
 
@@ -83,10 +87,13 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
 
   void _bindBackgroundIsolate() {
     final bool isSuccess = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+      _port.sendPort,
+      'downloader_send_port',
+    );
     if (!isSuccess) {
       _unbindBackgroundIsolate();
       _bindBackgroundIsolate();
+
       return;
     }
   }
@@ -103,7 +110,10 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
   }
 
   static void downloadCallback(
-      String id, DownloadTaskStatus status, int progress) {
+    String id,
+    DownloadTaskStatus status,
+    int progress,
+  ) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
     send!.send([id, status, progress]);
   }

@@ -31,7 +31,7 @@ class Profile extends Equatable {
         inviterId,
         favoriteCount,
         levelString,
-        commentCount
+        commentCount,
       ];
 }
 

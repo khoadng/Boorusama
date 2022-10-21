@@ -115,7 +115,7 @@ String tagCategoryToString(TagCategory category) {
       return 'General';
     case TagCategory.meta:
       return 'Meta';
-    default:
+    case TagCategory.invalid_:
       return '';
   }
 }

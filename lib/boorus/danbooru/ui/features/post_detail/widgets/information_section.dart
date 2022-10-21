@@ -11,10 +11,10 @@ import 'package:boorusama/core/core.dart';
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
-    Key? key,
+    super.key,
     required this.post,
     this.padding,
-  }) : super(key: key);
+  });
 
   final Post post;
   final EdgeInsetsGeometry? padding;
@@ -46,13 +46,14 @@ class InformationSection extends StatelessWidget {
                     ),
                     const SizedBox(height: 5),
                     Text(
-                        post.copyrightTags.isEmpty
-                            ? 'Original'
-                            : generateCopyrightOnlyReadableName(post)
-                                .removeUnderscoreWithSpace()
-                                .titleCase,
-                        overflow: TextOverflow.fade,
-                        style: Theme.of(context).textTheme.bodyText2),
+                      post.copyrightTags.isEmpty
+                          ? 'Original'
+                          : generateCopyrightOnlyReadableName(post)
+                              .removeUnderscoreWithSpace()
+                              .titleCase,
+                      overflow: TextOverflow.fade,
+                      style: Theme.of(context).textTheme.bodyText2,
+                    ),
                     const SizedBox(height: 5),
                     Text(
                       dateTimeToStringTimeAgo(

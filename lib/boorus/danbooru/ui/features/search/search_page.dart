@@ -28,11 +28,11 @@ import 'search_button.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
-    Key? key,
+    super.key,
     this.initialQuery = '',
     required this.metatags,
     required this.metatagHighlightColor,
-  }) : super(key: key);
+  });
 
   final String initialQuery;
   final List<Metatag> metatags;
@@ -51,6 +51,7 @@ class _SearchPageState extends State<SearchPage> {
         color: widget.metatagHighlightColor,
       ),
     },
+    // ignore: no-empty-block
     onMatch: (List<String> match) {},
   );
   final compositeSubscription = CompositeSubscription();
@@ -80,13 +81,15 @@ class _SearchPageState extends State<SearchPage> {
 
     queryEditingController.addListener(() {
       queryEditingController.selection = TextSelection.fromPosition(
-          TextPosition(offset: queryEditingController.text.length));
+        TextPosition(offset: queryEditingController.text.length),
+      );
     });
 
     Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-            context.read<SearchBloc>().stream,
-            context.read<PostBloc>().stream,
-            (a, b) => Tuple2(a, b))
+      context.read<SearchBloc>().stream,
+      context.read<PostBloc>().stream,
+      Tuple2.new,
+    )
         .where((event) =>
             event.item2.status == LoadStatus.failure &&
             event.item1.displayState == DisplayState.result)
@@ -102,9 +105,10 @@ class _SearchPageState extends State<SearchPage> {
     }).addTo(compositeSubscription);
 
     Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-            context.read<SearchBloc>().stream,
-            context.read<PostBloc>().stream,
-            (a, b) => Tuple2(a, b))
+      context.read<SearchBloc>().stream,
+      context.read<PostBloc>().stream,
+      Tuple2.new,
+    )
         .where((event) =>
             event.item2.status == LoadStatus.success &&
             event.item2.posts.isEmpty &&
@@ -147,20 +151,20 @@ class _SearchPageState extends State<SearchPage> {
               context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
         ),
         BlocListener<TagSearchBloc, TagSearchState>(
-            listenWhen: (previous, current) =>
-                current.selectedTags != previous.selectedTags,
-            listener: (context, state) {
-              final tags =
-                  state.selectedTags.map((e) => e.toString()).join(' ');
+          listenWhen: (previous, current) =>
+              current.selectedTags != previous.selectedTags,
+          listener: (context, state) {
+            final tags = state.selectedTags.map((e) => e.toString()).join(' ');
 
-              context.read<PostBloc>().add(PostRefreshed(
-                    tag: tags,
-                    fetcher: SearchedPostFetcher.fromTags(tags),
-                  ));
-              context
-                  .read<RelatedTagBloc>()
-                  .add(RelatedTagRequested(query: tags));
-            }),
+            context.read<PostBloc>().add(PostRefreshed(
+                  tag: tags,
+                  fetcher: SearchedPostFetcher.fromTags(tags),
+                ));
+            context
+                .read<RelatedTagBloc>()
+                .add(RelatedTagRequested(query: tags));
+          },
+        ),
       ],
       child: Screen.of(context).size != ScreenSize.small
           ? _LargeLayout(
@@ -177,10 +181,9 @@ class _SearchPageState extends State<SearchPage> {
 
 class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -207,37 +210,35 @@ class _LargeLayout extends StatelessWidget {
                     child: BlocSelector<SearchBloc, SearchState, DisplayState>(
                       selector: (state) => state.displayState,
                       builder: (context, displayState) {
-                        if (displayState == DisplayState.suggestion) {
-                          return _TagSuggestionItems(
-                            queryEditingController: queryEditingController,
-                          );
-                        } else {
-                          return SearchOptions(
-                            metatags: context.read<TagInfo>().metatags,
-                            onOptionTap: (value) {
-                              final query = '$value:';
-                              queryEditingController.text = query;
-                              context
-                                  .read<TagSearchBloc>()
-                                  .add(TagSearchChanged(query));
-                            },
-                            onHistoryTap: (value) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              context
-                                  .read<TagSearchBloc>()
-                                  .add(TagSearchTagFromHistorySelected(value));
-                            },
-                            onTagTap: (value) {
-                              FocusManager.instance.primaryFocus?.unfocus();
-                              context
-                                  .read<TagSearchBloc>()
-                                  .add(TagSearchNewRawStringTagSelected(value));
-                            },
-                          );
-                        }
+                        return displayState == DisplayState.suggestion
+                            ? _TagSuggestionItems(
+                                queryEditingController: queryEditingController,
+                              )
+                            : SearchOptions(
+                                metatags: context.read<TagInfo>().metatags,
+                                onOptionTap: (value) {
+                                  final query = '$value:';
+                                  queryEditingController.text = query;
+                                  context
+                                      .read<TagSearchBloc>()
+                                      .add(TagSearchChanged(query));
+                                },
+                                onHistoryTap: (value) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  context.read<TagSearchBloc>().add(
+                                        TagSearchTagFromHistorySelected(value),
+                                      );
+                                },
+                                onTagTap: (value) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                  context.read<TagSearchBloc>().add(
+                                        TagSearchNewRawStringTagSelected(value),
+                                      );
+                                },
+                              );
                       },
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -274,10 +275,9 @@ class _LargeLayout extends StatelessWidget {
 // ignore: prefer_mixin
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -302,10 +302,9 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
 
 class _SmallLayout extends StatelessWidget {
   const _SmallLayout({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -368,7 +367,7 @@ class _SmallLayout extends StatelessWidget {
                   }
                 },
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -378,9 +377,8 @@ class _SmallLayout extends StatelessWidget {
 
 class _TagSuggestionItems extends StatelessWidget {
   const _TagSuggestionItems({
-    Key? key,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final TextEditingController queryEditingController;
 
@@ -414,9 +412,7 @@ class _TagSuggestionItems extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {
@@ -434,10 +430,9 @@ class _Divider extends StatelessWidget {
 
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -481,9 +476,7 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _SelectedTagChips extends StatelessWidget {
-  const _SelectedTagChips({
-    Key? key,
-  }) : super(key: key);
+  const _SelectedTagChips();
 
   @override
   Widget build(BuildContext context) {

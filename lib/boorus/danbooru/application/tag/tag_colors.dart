@@ -21,7 +21,7 @@ Color getTagColor(TagCategory category, ThemeMode themeMode) {
       return colors.general;
     case TagCategory.meta:
       return colors.meta;
-    default:
+    case TagCategory.invalid_:
       return colors.general;
   }
 }
@@ -84,7 +84,7 @@ TagCategoryOrder tagCategoryToOrder(TagCategory category) {
       return 3;
     case TagCategory.meta:
       return 4;
-    default:
+    case TagCategory.invalid_:
       return 5;
   }
 }

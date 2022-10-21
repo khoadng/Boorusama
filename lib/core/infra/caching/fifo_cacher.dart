@@ -27,6 +27,7 @@ class FifoCacher<K, V> implements Cacher<K, V> {
   @override
   V? get(K key) {
     if (exist(key)) return _map[key];
+
     return null;
   }
 
