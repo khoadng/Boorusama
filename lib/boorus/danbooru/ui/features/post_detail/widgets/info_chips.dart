@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 
 class InfoChips extends StatelessWidget {
   const InfoChips({
-    Key? key,
+    super.key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
@@ -47,12 +47,11 @@ class InfoChips extends StatelessWidget {
 
 class _InfoChip extends StatelessWidget {
   const _InfoChip({
-    Key? key,
     required this.leftLabel,
     required this.rightLabel,
     required this.leftColor,
     required this.rightColor,
-  }) : super(key: key);
+  });
 
   final Color leftColor;
   final Color rightColor;

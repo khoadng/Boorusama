@@ -15,8 +15,8 @@ import 'package:boorusama/core/core.dart';
 
 class PoolOptionsHeader extends StatelessWidget {
   const PoolOptionsHeader({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -86,9 +86,7 @@ class PoolOptionsHeader extends StatelessWidget {
 }
 
 class _OrderMenu extends StatelessWidget {
-  const _OrderMenu({
-    Key? key,
-  }) : super(key: key);
+  const _OrderMenu();
 
   @override
   Widget build(BuildContext context) {

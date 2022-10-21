@@ -28,11 +28,11 @@ typedef BlacklistedDelegate = void Function(Tag tag);
 
 class BlacklistedTagProviderWidget extends StatelessWidget {
   const BlacklistedTagProviderWidget({
-    Key? key,
+    super.key,
     required this.builder,
     required this.operation,
     this.onTagAdded,
-  }) : super(key: key);
+  });
 
   final Widget Function(
     BuildContext context,

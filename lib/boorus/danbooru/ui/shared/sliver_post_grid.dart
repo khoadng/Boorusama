@@ -26,18 +26,12 @@ import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
-    required int crossAxisCount,
-    required double mainAxisSpacing,
-    required double crossAxisSpacing,
-    required double childAspectRatio,
-    double? mainAxisExtent,
-  }) : super(
-          childAspectRatio: childAspectRatio,
-          crossAxisCount: crossAxisCount,
-          mainAxisExtent: mainAxisExtent,
-          crossAxisSpacing: crossAxisSpacing,
-          mainAxisSpacing: mainAxisSpacing,
-        );
+    required super.crossAxisCount,
+    required super.mainAxisSpacing,
+    required super.crossAxisSpacing,
+    required super.childAspectRatio,
+    super.mainAxisExtent,
+  });
   factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
@@ -71,7 +65,7 @@ int displaySizeToGridCountWeight(ScreenSize size) {
 
 class SliverPostGrid extends HookWidget {
   const SliverPostGrid({
-    Key? key,
+    super.key,
     required this.posts,
     required this.scrollController,
     required this.onFavoriteUpdated,
@@ -81,7 +75,7 @@ class SliverPostGrid extends HookWidget {
     this.gridSize = GridSize.normal,
     this.borderRadius,
     this.postAnnotationBuilder,
-  }) : super(key: key);
+  });
 
   final List<PostData> posts;
   final AutoScrollController scrollController;
@@ -166,7 +160,6 @@ class SliverPostGrid extends HookWidget {
 
 class _SliverPostGridItem extends StatelessWidget {
   const _SliverPostGridItem({
-    Key? key,
     required this.postData,
     required this.index,
     required this.borderRadius,
@@ -175,7 +168,7 @@ class _SliverPostGridItem extends StatelessWidget {
     required this.imageQuality,
     required this.scrollController,
     required this.onFavoriteUpdated,
-  }) : super(key: key);
+  });
 
   final PostData postData;
   final int index;
@@ -330,10 +323,9 @@ class _SliverPostGridItem extends StatelessWidget {
 
 class _OverlayIcon extends StatelessWidget {
   const _OverlayIcon({
-    Key? key,
     required this.icon,
     this.size,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final double? size;

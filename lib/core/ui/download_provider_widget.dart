@@ -39,9 +39,9 @@ typedef DownloadDelegate = void Function(
 
 class DownloadProviderWidget extends StatelessWidget {
   const DownloadProviderWidget({
-    Key? key,
+    super.key,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final Widget Function(
     BuildContext context,

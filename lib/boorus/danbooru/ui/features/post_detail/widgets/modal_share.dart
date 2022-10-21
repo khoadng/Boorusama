@@ -10,13 +10,13 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class ModalShare extends StatelessWidget {
   const ModalShare({
-    Key? key,
+    super.key,
     required this.post,
     required this.endpoint,
     required this.onTap,
     required this.onTapFile,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   final void Function(String value) onTap;
   final void Function(String filePath) onTapFile;

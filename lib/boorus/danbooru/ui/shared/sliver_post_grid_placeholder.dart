@@ -11,9 +11,9 @@ import 'package:boorusama/core/core.dart';
 
 class SliverPostGridPlaceHolder extends StatelessWidget {
   const SliverPostGridPlaceHolder({
-    Key? key,
+    super.key,
     this.gridSize = GridSize.normal,
-  }) : super(key: key);
+  });
 
   final GridSize gridSize;
 

@@ -11,12 +11,12 @@ import 'package:boorusama/core/core.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({
-    Key? key,
+    super.key,
     required this.title,
     required this.url,
     required this.actionBuilder,
     required this.name,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final String? url;

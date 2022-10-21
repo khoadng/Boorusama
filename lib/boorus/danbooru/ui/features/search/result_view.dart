@@ -18,8 +18,8 @@ import 'related_tag_header.dart';
 
 class ResultView extends StatefulWidget {
   const ResultView({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -119,10 +119,9 @@ class _ResultViewState extends State<ResultView> {
 
 class _RelatedTag extends StatelessWidget {
   const _RelatedTag({
-    Key? key,
     required this.relatedTag,
     required this.theme,
-  }) : super(key: key);
+  });
 
   final RelatedTag relatedTag;
   final ThemeMode theme;

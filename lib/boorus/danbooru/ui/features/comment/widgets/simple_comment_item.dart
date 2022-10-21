@@ -7,11 +7,11 @@ import 'dtext.dart';
 
 class SimpleCommentItem extends StatelessWidget {
   const SimpleCommentItem({
-    Key? key,
+    super.key,
     required this.authorName,
     required this.content,
     required this.createdAt,
-  }) : super(key: key);
+  });
   final String authorName;
   final String content;
   final DateTime createdAt;

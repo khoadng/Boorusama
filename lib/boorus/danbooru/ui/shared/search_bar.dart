@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar({
-    Key? key,
+    super.key,
     this.onTap,
     this.leading,
     this.trailing,
@@ -18,7 +18,7 @@ class SearchBar extends StatefulWidget {
     this.onSubmitted,
     this.constraints,
     this.focus,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onTap;
   final Widget? leading;

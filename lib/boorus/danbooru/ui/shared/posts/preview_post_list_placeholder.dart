@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class PreviewPostListPlaceHolder extends StatelessWidget {
   const PreviewPostListPlaceHolder({
-    Key? key,
+    super.key,
     required this.itemCount,
     this.physics,
-  }) : super(key: key);
+  });
 
   final ScrollPhysics? physics;
   final int itemCount;

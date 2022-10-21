@@ -19,9 +19,9 @@ import 'widgets/settings_icon.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 

@@ -19,12 +19,12 @@ import 'search_history.dart';
 
 class SearchOptions extends StatefulWidget {
   const SearchOptions({
-    Key? key,
+    super.key,
     this.onOptionTap,
     this.onHistoryTap,
     this.onTagTap,
     required this.metatags,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;

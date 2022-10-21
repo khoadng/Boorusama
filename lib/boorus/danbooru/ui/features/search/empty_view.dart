@@ -6,9 +6,9 @@ import 'package:lottie/lottie.dart';
 
 class EmptyView extends StatelessWidget {
   const EmptyView({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   final String text;
 

@@ -19,9 +19,9 @@ enum ArtistCommentaryTranlationState {
 
 class ArtistSection extends StatefulWidget {
   const ArtistSection({
-    Key? key,
+    super.key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 

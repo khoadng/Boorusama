@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 
 class PostNote extends StatefulWidget {
   const PostNote({
-    Key? key,
+    super.key,
     required this.coordinate,
     required this.content,
-  }) : super(key: key);
+  });
 
   final NoteCoordinate coordinate;
   final String content;
@@ -48,12 +48,11 @@ class _PostNoteState extends State<PostNote> {
 
 class _NoteContainer extends StatelessWidget {
   const _NoteContainer({
-    Key? key,
     required this.coordinate,
     required this.visible,
     required this.onTap,
     required this.content,
-  }) : super(key: key);
+  });
 
   final NoteCoordinate coordinate;
   final bool visible;

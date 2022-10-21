@@ -13,10 +13,10 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widget
 
 class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
-    Key? key,
+    super.key,
     required this.post,
     required this.onCached,
-  }) : super(key: key);
+  });
 
   final Post post;
   final void Function(String? path) onCached;

@@ -12,10 +12,10 @@ import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
 class ExploreCarousel extends StatelessWidget {
   const ExploreCarousel({
-    Key? key,
+    super.key,
     required this.posts,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final List<Post> posts;
   final void Function(int index) onTap;

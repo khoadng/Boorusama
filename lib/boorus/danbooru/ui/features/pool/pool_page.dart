@@ -19,8 +19,8 @@ import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatefulWidget {
   const PoolPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<PoolPage> createState() => _PoolPageState();

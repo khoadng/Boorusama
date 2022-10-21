@@ -28,11 +28,11 @@ import 'search_button.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
-    Key? key,
+    super.key,
     this.initialQuery = '',
     required this.metatags,
     required this.metatagHighlightColor,
-  }) : super(key: key);
+  });
 
   final String initialQuery;
   final List<Metatag> metatags;
@@ -181,10 +181,9 @@ class _SearchPageState extends State<SearchPage> {
 
 class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -276,10 +275,9 @@ class _LargeLayout extends StatelessWidget {
 // ignore: prefer_mixin
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -304,10 +302,9 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
 
 class _SmallLayout extends StatelessWidget {
   const _SmallLayout({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -380,9 +377,8 @@ class _SmallLayout extends StatelessWidget {
 
 class _TagSuggestionItems extends StatelessWidget {
   const _TagSuggestionItems({
-    Key? key,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final TextEditingController queryEditingController;
 
@@ -416,9 +412,7 @@ class _TagSuggestionItems extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {
@@ -436,10 +430,9 @@ class _Divider extends StatelessWidget {
 
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
-    Key? key,
     required this.focus,
     required this.queryEditingController,
-  }) : super(key: key);
+  });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
@@ -483,9 +476,7 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _SelectedTagChips extends StatelessWidget {
-  const _SelectedTagChips({
-    Key? key,
-  }) : super(key: key);
+  const _SelectedTagChips();
 
   @override
   Widget build(BuildContext context) {

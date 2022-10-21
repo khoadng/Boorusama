@@ -16,12 +16,11 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({
-    Key? key,
+    super.key,
     required List<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
-  })  : _tags = tags,
-        super(key: key);
+  })  : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
@@ -61,13 +60,13 @@ class TagSuggestionItems extends StatelessWidget {
 // ignore: prefer-single-widget-per-file
 class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   const SliverTagSuggestionItemsWithHistory({
-    Key? key,
+    super.key,
     required this.tags,
     required this.histories,
     required this.onItemTap,
     required this.onHistoryTap,
     required this.currentQuery,
-  }) : super(key: key);
+  });
 
   final List<AutocompleteData> tags;
   final List<HistorySuggestion> histories;

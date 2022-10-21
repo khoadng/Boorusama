@@ -11,12 +11,12 @@ import 'package:boorusama/core/core.dart';
 
 class PreviewPostGrid extends StatelessWidget {
   const PreviewPostGrid({
-    Key? key,
+    super.key,
     required this.posts,
     required this.imageQuality,
     required this.onTap,
     this.physics,
-  }) : super(key: key);
+  });
 
   final List<PostData> posts;
   final ScrollPhysics? physics;

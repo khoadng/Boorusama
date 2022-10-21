@@ -11,11 +11,11 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class DateTimeSelector extends StatelessWidget {
   const DateTimeSelector({
-    Key? key,
+    super.key,
     required this.onDateChanged,
     required this.date,
     required this.scale,
-  }) : super(key: key);
+  });
 
   final void Function(DateTime date) onDateChanged;
   final DateTime date;

@@ -9,9 +9,9 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 
 class ReplyHeader extends StatelessWidget {
   const ReplyHeader({
-    Key? key,
+    super.key,
     required this.comment,
-  }) : super(key: key);
+  });
 
   final CommentData comment;
 

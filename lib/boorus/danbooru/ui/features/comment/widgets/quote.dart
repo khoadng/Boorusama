@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/core/core.dart';
 
 class Quote extends StatelessWidget {
-  const Quote({Key? key, required this.text}) : super(key: key);
+  const Quote({super.key, required this.text});
   final String text;
 
   @override

@@ -12,12 +12,12 @@ import 'reply_header.dart';
 
 class CommentBox extends StatefulWidget {
   const CommentBox({
-    Key? key,
+    super.key,
     required this.commentReply,
     required this.isEditing,
     required this.postId,
     required this.focus,
-  }) : super(key: key);
+  });
 
   final ValueNotifier<CommentData?> commentReply;
   final ValueNotifier<bool> isEditing;

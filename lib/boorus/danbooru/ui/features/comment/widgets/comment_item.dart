@@ -15,13 +15,13 @@ import 'comment_header.dart';
 
 class CommentItem extends StatelessWidget {
   const CommentItem({
-    Key? key,
+    super.key,
     required this.comment,
     required this.onReply,
     required this.onVoteChanged,
     required this.hasVoteSection,
     this.moreBuilder,
-  }) : super(key: key);
+  });
   final CommentData comment;
   final VoidCallback onReply;
   final bool hasVoteSection;
@@ -84,13 +84,12 @@ enum VoteEvent {
 
 class _VoteSection extends StatelessWidget {
   const _VoteSection({
-    Key? key,
     required this.onReply,
     required this.moreBuilder,
     this.onVote,
     required this.score,
     required this.voteState,
-  }) : super(key: key);
+  });
 
   final VoidCallback onReply;
   final Widget Function(BuildContext context)? moreBuilder;
@@ -160,10 +159,9 @@ class _VoteSection extends StatelessWidget {
 
 class _VoteButton extends StatelessWidget {
   const _VoteButton({
-    Key? key,
     required this.onTap,
     required this.icon,
-  }) : super(key: key);
+  });
 
   final VoidCallback onTap;
   final Widget icon;

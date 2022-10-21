@@ -15,7 +15,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 
 class ExplorePostGrid extends StatelessWidget {
   const ExplorePostGrid({
-    Key? key,
+    super.key,
     required this.date,
     required this.scale,
     required this.status,
@@ -26,7 +26,7 @@ class ExplorePostGrid extends StatelessWidget {
     required this.scrollController,
     required this.hasMore,
     required this.headers,
-  }) : super(key: key);
+  });
 
   final DateTime date;
   final TimeScale scale;

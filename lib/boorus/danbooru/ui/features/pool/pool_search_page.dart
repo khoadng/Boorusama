@@ -16,7 +16,7 @@ import 'package:boorusama/core/utils.dart';
 import 'sliver_pool_grid.dart';
 
 class PoolSearchPage extends StatefulWidget {
-  const PoolSearchPage({Key? key}) : super(key: key);
+  const PoolSearchPage({super.key});
 
   @override
   State<PoolSearchPage> createState() => _PoolSearchPageState();

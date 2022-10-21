@@ -17,10 +17,10 @@ import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PostStatsTile extends StatelessWidget {
   const PostStatsTile({
-    Key? key,
+    super.key,
     required this.post,
     this.padding = const EdgeInsets.symmetric(horizontal: 16),
-  }) : super(key: key);
+  });
 
   final Post post;
   final EdgeInsets padding;
@@ -137,11 +137,10 @@ class PostStatsTile extends StatelessWidget {
 
 class _StatButton extends StatelessWidget {
   const _StatButton({
-    Key? key,
     required this.child,
     required this.enable,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final bool enable;
@@ -171,9 +170,8 @@ String _generatePercentText(Post post) {
 
 class _VoterView extends StatefulWidget {
   const _VoterView({
-    Key? key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
@@ -255,10 +253,9 @@ class _VoterViewState extends State<_VoterView> {
 
 class _InfoTile extends StatelessWidget {
   const _InfoTile({
-    Key? key,
     required this.title,
     required this.level,
-  }) : super(key: key);
+  });
 
   final String title;
   final UserLevel level;
@@ -277,9 +274,8 @@ class _InfoTile extends StatelessWidget {
 
 class _FavoriterView extends StatefulWidget {
   const _FavoriterView({
-    Key? key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 

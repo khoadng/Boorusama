@@ -9,10 +9,10 @@ import 'recommend_section.dart';
 
 class RecommendCharacterList extends StatelessWidget {
   const RecommendCharacterList({
-    Key? key,
+    super.key,
     required this.recommends,
     this.useSeperator = false,
-  }) : super(key: key);
+  });
 
   final bool useSeperator;
   final List<Recommend> recommends;

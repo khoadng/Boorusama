@@ -12,9 +12,9 @@ import 'pool_image.dart';
 
 class PoolGridItem extends StatelessWidget {
   const PoolGridItem({
-    Key? key,
+    super.key,
     required this.pool,
-  }) : super(key: key);
+  });
 
   final PoolItem pool;
 

@@ -42,10 +42,10 @@ const double _infoBarWidth = 360;
 
 class PostDetailPage extends StatefulWidget {
   const PostDetailPage({
-    Key? key,
+    super.key,
     required this.posts,
     required this.intitialIndex,
-  }) : super(key: key);
+  });
 
   final int intitialIndex;
   final List<PostData> posts;
@@ -319,7 +319,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
 class _CarouselContent extends StatefulWidget {
   const _CarouselContent({
-    Key? key,
+    super.key,
     required this.media,
     required this.imagePath,
     required this.actionBarDisplayBehavior,
@@ -327,7 +327,7 @@ class _CarouselContent extends StatefulWidget {
     required this.preloadPost,
     required this.recommends,
     required this.pools,
-  }) : super(key: key);
+  });
 
   final PostMediaItem media;
   final ValueNotifier<String?> imagePath;
@@ -504,12 +504,12 @@ class _CarouselContentState extends State<_CarouselContent> {
 
 class _LargeLayoutContent extends StatelessWidget {
   const _LargeLayoutContent({
-    Key? key,
+    super.key,
     required this.post,
     required this.imagePath,
     required this.size,
     required this.recommends,
-  }) : super(key: key);
+  });
 
   final PostData post;
   final ValueNotifier<String?> imagePath;
@@ -691,9 +691,8 @@ class _LargeLayoutContent extends StatelessWidget {
 
 class _MoreActionButton extends StatelessWidget {
   const _MoreActionButton({
-    Key? key,
     required this.onDownload,
-  }) : super(key: key);
+  });
 
   final void Function(Function(Post post) downloader) onDownload;
 
@@ -724,9 +723,7 @@ class _MoreActionButton extends StatelessWidget {
 }
 
 class _BackButton extends StatelessWidget {
-  const _BackButton({
-    Key? key,
-  }) : super(key: key);
+  const _BackButton();
 
   @override
   Widget build(BuildContext context) {
@@ -761,11 +758,10 @@ class _BackButton extends StatelessWidget {
 
 class _SlideShowButton extends StatefulWidget {
   const _SlideShowButton({
-    Key? key,
     required this.autoPlay,
     required this.onShow,
     required this.onStop,
-  }) : super(key: key);
+  });
 
   final bool autoPlay;
   final void Function(void Function() start) onShow;
@@ -830,10 +826,9 @@ class _SlideShowButtonState extends State<_SlideShowButton>
 
 class _ActionBar extends StatelessWidget {
   const _ActionBar({
-    Key? key,
     required this.imagePath,
     required this.postData,
-  }) : super(key: key);
+  });
 
   final ValueNotifier<String?> imagePath;
   final PostData postData;

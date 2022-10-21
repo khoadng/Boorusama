@@ -12,9 +12,9 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 
 class SimpleTagSearchView extends StatelessWidget {
   const SimpleTagSearchView({
-    Key? key,
+    super.key,
     required this.onSelected,
-  }) : super(key: key);
+  });
 
   final void Function(AutocompleteData tag) onSelected;
 

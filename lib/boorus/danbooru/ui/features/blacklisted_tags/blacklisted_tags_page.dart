@@ -20,8 +20,8 @@ import 'blacklisted_tags_search_page.dart';
 
 class BlacklistedTagsPage extends StatelessWidget {
   const BlacklistedTagsPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

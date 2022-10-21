@@ -78,10 +78,10 @@ Future<T?> showCommentPage<T>(
 
 class CommentPage extends StatefulWidget {
   const CommentPage({
-    Key? key,
+    super.key,
     required this.postId,
     this.useAppBar = true,
-  }) : super(key: key);
+  });
 
   final int postId;
   final bool useAppBar;

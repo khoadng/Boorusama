@@ -18,7 +18,7 @@ import 'explore_carousel.dart';
 import 'explore_section.dart';
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({Key? key}) : super(key: key);
+  const ExplorePage({super.key});
 
   Widget mapStateToCarousel(
     BuildContext context,

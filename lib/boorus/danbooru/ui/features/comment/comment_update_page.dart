@@ -11,11 +11,11 @@ import 'widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends StatefulWidget {
   const CommentUpdatePage({
-    Key? key,
+    super.key,
     required this.postId,
     required this.commentId,
     this.initialContent,
-  }) : super(key: key);
+  });
 
   final int commentId;
   final String? initialContent;

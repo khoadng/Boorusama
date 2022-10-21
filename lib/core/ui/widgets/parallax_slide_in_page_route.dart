@@ -35,10 +35,9 @@ class ParallaxSlideInPageRoute extends PageRouteBuilder {
   ParallaxSlideInPageRoute({
     required this.enterWidget,
     required this.oldWidget,
-    RouteSettings? settings,
+    super.settings,
   }) : super(
           transitionDuration: const Duration(milliseconds: 350),
-          settings: settings,
           pageBuilder: (context, animation, secondaryAnimation) => enterWidget,
           transitionsBuilder:
               parallaxSlideInTransitionBuilder(enterWidget, oldWidget),

@@ -19,10 +19,10 @@ import 'widgets/post_note.dart';
 
 class PostImagePage extends StatefulWidget {
   const PostImagePage({
-    Key? key,
+    super.key,
     required this.post,
     required this.useOriginalSize,
-  }) : super(key: key);
+  });
 
   final Post post;
   final bool useOriginalSize;

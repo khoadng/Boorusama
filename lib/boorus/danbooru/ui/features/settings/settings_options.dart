@@ -25,11 +25,11 @@ Future<T?> showRadioOptionsModalBottomSheet<T>({
 
 class SettingsOptions<T> extends StatelessWidget {
   const SettingsOptions({
-    Key? key,
+    super.key,
     required this.items,
     required this.itemBuilder,
     this.subtitleBuilder,
-  }) : super(key: key);
+  });
 
   factory SettingsOptions.radio({
     required List<T> items,

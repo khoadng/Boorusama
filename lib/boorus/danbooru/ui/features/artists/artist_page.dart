@@ -13,10 +13,10 @@ import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class ArtistPage extends StatelessWidget {
   const ArtistPage({
-    Key? key,
+    super.key,
     required this.artistName,
     required this.backgroundImageUrl,
-  }) : super(key: key);
+  });
 
   final String artistName;
   final String backgroundImageUrl;

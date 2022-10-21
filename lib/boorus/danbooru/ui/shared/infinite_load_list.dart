@@ -10,7 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 class InfiniteLoadList extends StatefulWidget {
   const InfiniteLoadList({
-    Key? key,
+    super.key,
     this.limit = 0.95,
     this.scrollController,
     this.refreshController,
@@ -21,7 +21,7 @@ class InfiniteLoadList extends StatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final bool extendBody;
   final double? extendBodyHeight;

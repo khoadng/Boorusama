@@ -17,9 +17,9 @@ import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class SimplePostTagList extends StatelessWidget {
   const SimplePostTagList({
-    Key? key,
+    super.key,
     required this.tags,
-  }) : super(key: key);
+  });
 
   final List<PostDetailTag> tags;
 
@@ -116,11 +116,10 @@ class _Tag {
 
 class _Badge extends StatelessWidget {
   const _Badge({
-    Key? key,
     required this.label,
     required this.backgroundColor,
     this.onTap,
-  }) : super(key: key);
+  });
 
   final String label;
   final Color backgroundColor;

@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class TimeScaleToggleSwitch extends StatefulWidget {
   const TimeScaleToggleSwitch({
-    Key? key,
+    super.key,
     required this.onToggle,
-  }) : super(key: key);
+  });
 
   final void Function(TimeScale category) onToggle;
 

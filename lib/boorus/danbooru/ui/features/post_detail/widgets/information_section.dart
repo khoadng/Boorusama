@@ -11,10 +11,10 @@ import 'package:boorusama/core/core.dart';
 
 class InformationSection extends StatelessWidget {
   const InformationSection({
-    Key? key,
+    super.key,
     required this.post,
     this.padding,
-  }) : super(key: key);
+  });
 
   final Post post;
   final EdgeInsetsGeometry? padding;

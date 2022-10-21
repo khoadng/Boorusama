@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class InfoContainer extends StatelessWidget {
   const InfoContainer({
-    Key? key,
+    super.key,
     required this.contentBuilder,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext context) contentBuilder;
 

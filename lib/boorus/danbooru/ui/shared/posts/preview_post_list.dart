@@ -9,10 +9,10 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PreviewPostList extends StatelessWidget {
   const PreviewPostList({
-    Key? key,
+    super.key,
     required this.posts,
     this.physics,
-  }) : super(key: key);
+  });
 
   final List<Post> posts;
   final ScrollPhysics? physics;

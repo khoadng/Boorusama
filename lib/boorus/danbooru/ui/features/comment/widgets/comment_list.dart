@@ -10,7 +10,7 @@ import 'comment_item.dart';
 
 class CommentList extends StatelessWidget {
   const CommentList({
-    Key? key,
+    super.key,
     required this.comments,
     required this.authenticated,
     required this.onEdit,
@@ -19,7 +19,7 @@ class CommentList extends StatelessWidget {
     required this.onUpvote,
     required this.onDownvote,
     required this.onClearVote,
-  }) : super(key: key);
+  });
 
   final List<CommentData> comments;
   final bool authenticated;

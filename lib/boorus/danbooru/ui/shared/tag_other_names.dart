@@ -9,9 +9,9 @@ import 'package:boorusama/core/core.dart';
 
 class TagOtherNames extends StatelessWidget {
   const TagOtherNames({
-    Key? key,
+    super.key,
     required this.otherNames,
-  }) : super(key: key);
+  });
 
   final List<String> otherNames;
 

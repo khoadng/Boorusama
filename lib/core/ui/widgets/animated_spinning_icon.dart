@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 
 class AnimatedSpinningIcon extends AnimatedWidget {
   const AnimatedSpinningIcon({
-    Key? key,
+    super.key,
     required Animation<double> animation,
     required this.icon,
     this.onPressed,
-  }) : super(key: key, listenable: animation);
+  }) : super(listenable: animation);
 
   final VoidCallback? onPressed;
   final Widget icon;

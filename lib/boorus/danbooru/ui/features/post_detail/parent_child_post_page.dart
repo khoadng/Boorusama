@@ -13,9 +13,9 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 
 class ParentChildPostPage extends StatefulWidget {
   const ParentChildPostPage({
-    Key? key,
+    super.key,
     required this.parentPostId,
-  }) : super(key: key);
+  });
 
   final int parentPostId;
 

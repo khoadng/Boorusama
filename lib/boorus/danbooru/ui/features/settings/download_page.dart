@@ -29,7 +29,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/warning_container.dart';
 // }
 
 class DownloadPage extends StatefulWidget {
-  const DownloadPage({Key? key}) : super(key: key);
+  const DownloadPage({super.key});
 
   @override
   State<DownloadPage> createState() => _DownloadPageState();

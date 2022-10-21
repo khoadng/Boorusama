@@ -21,9 +21,9 @@ String getLanguageText(String value) {
 
 class LanguagePage extends StatelessWidget {
   const LanguagePage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 

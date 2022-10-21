@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 
 class LoginField extends StatelessWidget {
   const LoginField({
-    Key? key,
+    super.key,
     required this.validator,
     required this.controller,
     required this.labelText,
     this.obscureText = false,
     this.suffixIcon,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   final TextEditingController controller;
   final String? Function(String?) validator;

@@ -20,8 +20,8 @@ import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +144,7 @@ class SettingsPage extends StatelessWidget {
 }
 
 class _LargeLayout extends StatefulWidget {
-  const _LargeLayout({
-    Key? key,
-  }) : super(key: key);
+  const _LargeLayout();
 
   @override
   State<_LargeLayout> createState() => _LargeLayoutState();
@@ -286,9 +284,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {
@@ -303,9 +299,8 @@ class _Divider extends StatelessWidget {
 
 class _Footer extends StatelessWidget {
   const _Footer({
-    Key? key,
     this.mainAxisAlignment,
-  }) : super(key: key);
+  });
 
   final MainAxisAlignment? mainAxisAlignment;
 
@@ -338,9 +333,8 @@ class _Footer extends StatelessWidget {
 
 class _SettingsSection extends StatelessWidget {
   const _SettingsSection({
-    Key? key,
     required this.label,
-  }) : super(key: key);
+  });
 
   final String label;
 

@@ -18,10 +18,10 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
 class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({
-    Key? key,
+    super.key,
     required this.relatedTag,
     required this.theme,
-  }) : super(key: key);
+  });
 
   final RelatedTag relatedTag;
   final ThemeMode theme;
@@ -117,12 +117,11 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
 
 class _RelatedTagActionSheet extends StatelessWidget {
   const _RelatedTagActionSheet({
-    Key? key,
     required this.relatedTag,
     required this.theme,
     required this.onAddToSearch,
     required this.onOpenWiki,
-  }) : super(key: key);
+  });
 
   final RelatedTag relatedTag;
   final ThemeMode theme;
@@ -202,11 +201,10 @@ class _RelatedTagActionSheet extends StatelessWidget {
 
 class _RelatedTagButton extends StatelessWidget {
   const _RelatedTagButton({
-    Key? key,
     required this.backgroundColor,
     required this.onPressed,
     required this.label,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final VoidCallback onPressed;

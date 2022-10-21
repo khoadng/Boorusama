@@ -10,9 +10,9 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 
 class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({
-    Key? key,
+    super.key,
     required this.tagSearchItem,
-  }) : super(key: key);
+  });
 
   final TagSearchItem tagSearchItem;
 

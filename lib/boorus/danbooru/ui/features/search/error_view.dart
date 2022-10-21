@@ -6,9 +6,9 @@ import 'package:lottie/lottie.dart';
 
 class ErrorView extends StatelessWidget {
   const ErrorView({
-    Key? key,
+    super.key,
     required this.text,
-  }) : super(key: key);
+  });
 
   final String text;
 

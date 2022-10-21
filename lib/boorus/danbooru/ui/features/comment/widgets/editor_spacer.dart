@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 class EditorSpacer extends StatelessWidget {
   const EditorSpacer({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -11,9 +11,9 @@ import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
 
 class PrivacyPage extends StatelessWidget {
   const PrivacyPage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 

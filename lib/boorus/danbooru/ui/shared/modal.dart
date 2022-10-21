@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class Modal extends StatelessWidget {
   const Modal({
-    Key? key,
+    super.key,
     this.title,
     required this.child,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final String? title;

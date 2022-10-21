@@ -24,8 +24,8 @@ import 'side_bar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -120,7 +120,7 @@ class _HomePageState extends State<HomePage> {
                                     ]
                                   : null,
                             )
-                          : Container(
+                          : ColoredBox(
                               color: Theme.of(context).backgroundColor,
                               child: Column(
                                 children: [
@@ -252,14 +252,13 @@ class _HomePageState extends State<HomePage> {
 
 class _NavigationTile extends StatelessWidget {
   const _NavigationTile({
-    Key? key,
     required this.value,
     required this.index,
     required this.selectedIcon,
     required this.icon,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final int index;
   final int value;

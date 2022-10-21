@@ -6,12 +6,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 
 class PostImage extends StatefulWidget {
   const PostImage({
-    Key? key,
+    super.key,
     required this.imageUrl,
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
-  }) : super(key: key);
+  });
 
   final String imageUrl;
   final String? placeholderUrl;

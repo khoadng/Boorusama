@@ -9,11 +9,11 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
-    Key? key,
+    super.key,
     required this.authorName,
     this.authorLevel,
     required this.createdAt,
-  }) : super(key: key);
+  });
 
   final String authorName;
   final UserLevel? authorLevel;

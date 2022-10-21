@@ -12,9 +12,9 @@ import 'package:boorusama/core/core.dart';
 
 class YoutubePreviewBox extends StatelessWidget {
   const YoutubePreviewBox({
-    Key? key,
+    super.key,
     required this.uri,
-  }) : super(key: key);
+  });
 
   final Uri uri;
 

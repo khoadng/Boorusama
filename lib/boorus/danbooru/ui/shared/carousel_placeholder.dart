@@ -10,9 +10,9 @@ import 'package:boorusama/core/core.dart';
 
 class CarouselPlaceholder extends StatelessWidget {
   const CarouselPlaceholder({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   factory CarouselPlaceholder.error(BuildContext context) =>
       CarouselPlaceholder(

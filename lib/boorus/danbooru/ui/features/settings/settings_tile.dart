@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class SettingsTile<T> extends StatelessWidget {
   const SettingsTile({
-    Key? key,
+    super.key,
     required this.title,
     this.subtitle,
     required this.selectedOption,
@@ -14,7 +14,7 @@ class SettingsTile<T> extends StatelessWidget {
     this.leading,
     required this.items,
     required this.optionBuilder,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final Widget? subtitle;

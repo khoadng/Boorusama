@@ -12,9 +12,9 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
-    Key? key,
+    super.key,
     required this.onHistoryTap,
-  }) : super(key: key);
+  });
 
   final ValueChanged<String> onHistoryTap;
 

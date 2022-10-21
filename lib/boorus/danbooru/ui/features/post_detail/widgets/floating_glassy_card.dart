@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 
 class FloatingGlassyCard extends StatelessWidget {
   const FloatingGlassyCard({
-    Key? key,
+    super.key,
     required this.child,
     this.width,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final double? width;

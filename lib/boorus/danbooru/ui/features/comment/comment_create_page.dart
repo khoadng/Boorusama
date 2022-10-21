@@ -11,10 +11,10 @@ import 'widgets/editor_spacer.dart';
 
 class CommentCreatePage extends StatefulWidget {
   const CommentCreatePage({
-    Key? key,
+    super.key,
     required this.postId,
     this.initialContent,
-  }) : super(key: key);
+  });
 
   final int postId;
   final String? initialContent;

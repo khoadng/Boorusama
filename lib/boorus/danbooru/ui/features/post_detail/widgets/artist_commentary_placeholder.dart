@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 
 class ArtistCommentaryPlaceholder extends StatelessWidget {
   const ArtistCommentaryPlaceholder({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

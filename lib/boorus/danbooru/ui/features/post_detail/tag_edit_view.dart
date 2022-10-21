@@ -16,11 +16,11 @@ import 'simple_tag_search_view.dart';
 
 class TagEditView extends StatelessWidget {
   const TagEditView({
-    Key? key,
+    super.key,
     required this.post,
     required this.tags,
     this.recommendedTotalOfTag = 20,
-  }) : super(key: key);
+  });
 
   final Post post;
   final List<PostDetailTag> tags;

@@ -8,10 +8,10 @@ import 'lazy_indexed_stack.dart';
 
 class AnimatedIndexedStack extends StatefulWidget {
   const AnimatedIndexedStack({
-    Key? key,
+    super.key,
     required this.index,
     required this.children,
-  }) : super(key: key);
+  });
   final int index;
   final List<Widget> children;
 

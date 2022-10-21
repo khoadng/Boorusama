@@ -15,12 +15,12 @@ import 'package:boorusama/core/core.dart';
 
 class HomePostGrid extends StatelessWidget {
   const HomePostGrid({
-    Key? key,
+    super.key,
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;

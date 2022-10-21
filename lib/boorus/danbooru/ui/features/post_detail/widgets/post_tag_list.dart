@@ -20,9 +20,9 @@ import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class PostTagList extends StatelessWidget {
   const PostTagList({
-    Key? key,
+    super.key,
     this.maxTagWidth,
-  }) : super(key: key);
+  });
 
   final double? maxTagWidth;
 
@@ -113,10 +113,9 @@ class PostTagList extends StatelessWidget {
 
 class _Chip extends StatelessWidget {
   const _Chip({
-    Key? key,
     required this.tag,
     required this.maxTagWidth,
-  }) : super(key: key);
+  });
 
   final Tag tag;
   final double? maxTagWidth;
@@ -180,9 +179,8 @@ String _getTagStringDisplayName(Tag tag) => tag.displayName.length > 30
 class _TagBlockTitle extends StatelessWidget {
   const _TagBlockTitle({
     required this.title,
-    Key? key,
     this.isFirstBlock = false,
-  }) : super(key: key);
+  });
 
   final bool isFirstBlock;
   final String title;
@@ -202,9 +200,8 @@ class _TagBlockTitle extends StatelessWidget {
 
 class _TagHeader extends StatelessWidget {
   const _TagHeader({
-    Key? key,
     required this.title,
-  }) : super(key: key);
+  });
 
   final String title;
 

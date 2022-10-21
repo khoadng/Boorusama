@@ -85,13 +85,10 @@ class BlacklistedTagsState extends Equatable {
 
 class BlacklistedTagsError extends BlacklistedTagsState {
   const BlacklistedTagsError({
-    required List<String> blacklistedTags,
-    required LoadStatus status,
+    required super.blacklistedTags,
+    required super.status,
     required this.errorMessage,
-  }) : super(
-          blacklistedTags: blacklistedTags,
-          status: status,
-        );
+  });
 
   final String errorMessage;
 

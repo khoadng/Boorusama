@@ -17,11 +17,11 @@ import 'package:boorusama/core/core.dart';
 
 class TagDetailPage extends StatefulWidget {
   const TagDetailPage({
-    Key? key,
+    super.key,
     required this.tagName,
     required this.otherNamesBuilder,
     required this.backgroundImageUrl,
-  }) : super(key: key);
+  });
 
   final String tagName;
   final String backgroundImageUrl;
@@ -107,12 +107,11 @@ class _TagDetailPageState extends State<TagDetailPage> {
 
 class _Panel extends StatefulWidget {
   const _Panel({
-    Key? key,
     required this.tagName,
     required this.scrollController,
     this.header,
     this.useSliverAppBar = true,
-  }) : super(key: key);
+  });
 
   final String tagName;
   final AutoScrollController scrollController;
@@ -236,9 +235,8 @@ PostsOrder _tagFilterCategoryToPostsOrder(TagFilterCategory category) {
 
 class _CategoryToggleSwitch extends StatefulWidget {
   const _CategoryToggleSwitch({
-    Key? key,
     required this.onToggle,
-  }) : super(key: key);
+  });
 
   final void Function(TagFilterCategory category) onToggle;
 

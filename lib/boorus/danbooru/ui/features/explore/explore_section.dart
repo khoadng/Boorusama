@@ -11,11 +11,11 @@ import 'explore_detail_page.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.category,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext context) builder;
   final String title;

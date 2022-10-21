@@ -12,9 +12,9 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 
 class PoolImage extends StatelessWidget {
   const PoolImage({
-    Key? key,
+    super.key,
     required this.pool,
-  }) : super(key: key);
+  });
 
   final PoolItem pool;
 

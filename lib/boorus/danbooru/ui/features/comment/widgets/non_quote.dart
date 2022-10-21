@@ -8,7 +8,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:boorusama/core/core.dart';
 
 class NonQuote extends StatelessWidget {
-  const NonQuote({Key? key, required this.text}) : super(key: key);
+  const NonQuote({super.key, required this.text});
   final String text;
 
   @override

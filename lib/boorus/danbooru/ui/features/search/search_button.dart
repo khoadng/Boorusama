@@ -13,8 +13,8 @@ import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

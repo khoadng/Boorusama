@@ -12,10 +12,10 @@ import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class CharacterPage extends StatelessWidget {
   const CharacterPage({
-    Key? key,
+    super.key,
     required this.characterName,
     required this.backgroundImageUrl,
-  }) : super(key: key);
+  });
 
   final String characterName;
   final String backgroundImageUrl;

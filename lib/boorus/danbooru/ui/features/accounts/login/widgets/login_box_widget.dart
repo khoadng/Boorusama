@@ -15,7 +15,7 @@ import 'package:boorusama/core/utils.dart';
 import 'login_field.dart';
 
 class LoginBox extends HookWidget {
-  const LoginBox({Key? key}) : super(key: key);
+  const LoginBox({super.key});
 
   @override
   Widget build(BuildContext context) {

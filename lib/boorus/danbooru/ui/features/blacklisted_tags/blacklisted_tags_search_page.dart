@@ -12,10 +12,10 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 
 class BlacklistedTagsSearchPage extends StatefulWidget {
   const BlacklistedTagsSearchPage({
-    Key? key,
+    super.key,
     required this.onSelectedDone,
     this.initialTags,
-  }) : super(key: key);
+  });
 
   final void Function(List<TagSearchItem> tags) onSelectedDone;
   final List<String>? initialTags;

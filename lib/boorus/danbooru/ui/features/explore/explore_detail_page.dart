@@ -16,10 +16,9 @@ import 'time_scale_toggle_switch.dart';
 
 class _ExploreDetail extends StatefulWidget {
   const _ExploreDetail({
-    Key? key,
     required this.title,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final Widget Function(
@@ -130,10 +129,10 @@ List<Widget> _categoryToListHeader(
 
 class ExploreDetailPage extends StatelessWidget {
   const ExploreDetailPage({
-    Key? key,
+    super.key,
     required this.title,
     required this.category,
-  }) : super(key: key);
+  });
 
   final Widget title;
   final ExploreCategory category;

@@ -9,11 +9,11 @@ import 'recommend_section.dart';
 
 class RecommendArtistList extends StatelessWidget {
   const RecommendArtistList({
-    Key? key,
+    super.key,
     required this.recommends,
     this.header,
     this.useSeperator = false,
-  }) : super(key: key);
+  });
 
   final List<Recommend> recommends;
   final Widget Function(String item)? header;

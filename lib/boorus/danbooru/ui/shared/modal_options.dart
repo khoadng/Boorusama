@@ -28,9 +28,9 @@ Future<T?> showActionListModalBottomSheet<T>({
 
 class ModalOptions extends StatelessWidget {
   const ModalOptions({
-    Key? key,
+    super.key,
     required this.children,
-  }) : super(key: key);
+  });
 
   final List<Widget> children;
 

@@ -16,12 +16,12 @@ import 'package:boorusama/core/core.dart';
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
-    Key? key,
+    super.key,
     this.width,
     this.popOnSelect = false,
     this.initialContentBuilder,
     this.padding,
-  }) : super(key: key);
+  });
 
   final double? width;
   final EdgeInsets? padding;

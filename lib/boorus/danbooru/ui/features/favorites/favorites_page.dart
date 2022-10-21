@@ -18,9 +18,9 @@ enum _Action {
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({
-    Key? key,
+    super.key,
     required this.username,
-  }) : super(key: key);
+  });
 
   final String username;
 

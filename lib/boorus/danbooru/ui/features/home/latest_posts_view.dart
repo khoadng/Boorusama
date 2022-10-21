@@ -22,9 +22,9 @@ import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({
-    Key? key,
+    super.key,
     this.onMenuTap,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onMenuTap;
 

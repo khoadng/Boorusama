@@ -24,10 +24,10 @@ import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
   const PoolDetailPage({
-    Key? key,
+    super.key,
     required this.pool,
     required this.postIds,
-  }) : super(key: key);
+  });
 
   final Pool pool;
   final Queue<int> postIds;

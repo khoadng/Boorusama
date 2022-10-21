@@ -6,9 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 class ErrorBox extends StatelessWidget {
   const ErrorBox({
-    Key? key,
+    super.key,
     this.child,
-  }) : super(key: key);
+  });
 
   factory ErrorBox.retryable({
     required void Function() onRetry,

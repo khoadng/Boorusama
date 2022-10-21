@@ -22,10 +22,10 @@ import 'modal_share.dart';
 
 class PostActionToolbar extends StatelessWidget {
   const PostActionToolbar({
-    Key? key,
+    super.key,
     required this.postData,
     required this.imagePath,
-  }) : super(key: key);
+  });
 
   final PostData postData;
   final String? imagePath;
