@@ -34,7 +34,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
   double? _latestVolume;
   Timer? _hideTimer;
   Timer? _initTimer;
-  late var _subtitlesPosition = const Duration();
+  late var _subtitlesPosition = Duration.zero;
   bool _subtitleOn = false;
   Timer? _showAfterExpandCollapseTimer;
   bool _dragging = false;
@@ -498,7 +498,7 @@ class _MaterialDesktopControlsState extends State<MaterialDesktopControls>
           });
         } else {
           if (isFinished) {
-            controller.seekTo(const Duration());
+            controller.seekTo(Duration.zero);
           }
           controller.play();
         }

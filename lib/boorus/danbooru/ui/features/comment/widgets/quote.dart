@@ -28,7 +28,7 @@ class Quote extends StatelessWidget {
       child: SelectableHtml(
         style: {
           'body': Style(
-            fontSize: const FontSize(14),
+            fontSize: FontSize.medium,
             margin: EdgeInsets.zero,
             padding: EdgeInsets.zero,
           ),

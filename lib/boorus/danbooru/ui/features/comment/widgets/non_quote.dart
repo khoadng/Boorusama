@@ -16,7 +16,7 @@ class NonQuote extends StatelessWidget {
     return SelectableHtml(
       style: {
         'body': Style(
-          fontSize: const FontSize(14),
+          fontSize: FontSize.medium,
           margin: EdgeInsets.zero,
           padding: EdgeInsets.zero,
         ),

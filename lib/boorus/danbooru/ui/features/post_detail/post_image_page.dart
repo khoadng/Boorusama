@@ -73,7 +73,7 @@ class _PostImagePageState extends State<PostImagePage>
                   onDoubleTapDown: (details) => _doubleTapDetails = details,
                   onDoubleTap: _handleDoubleTap,
                   onTap: () => hideOverlay.value = !hideOverlay.value,
-                  child: child!,
+                  child: child,
                 ),
                 if (!hide) ...[
                   ShadowGradientOverlay(

@@ -17,12 +17,12 @@ class ShadowGradientOverlay extends StatelessWidget {
     return alignment == Alignment.topCenter
         ? LinearGradient(
             end: const Alignment(0, 0.4),
-            begin: const Alignment(0, -1),
+            begin: Alignment.topCenter,
             colors: colors,
           )
         : LinearGradient(
             end: const Alignment(0, -0.4),
-            begin: const Alignment(0, 1),
+            begin: Alignment.bottomCenter,
             colors: colors,
           );
   }

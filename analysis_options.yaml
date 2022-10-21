@@ -64,6 +64,7 @@ linter:
     - avoid_shadowing_type_parameters
     - avoid_single_cascade_in_expression_statements
     - avoid_slow_async_io
+    - avoid_type_to_string
     - avoid_types_as_parameter_names
     # - avoid_types_on_closure_parameters # conflicts with always_specify_types
     - avoid_unnecessary_containers
@@ -75,6 +76,7 @@ linter:
     - camel_case_types
     - cancel_subscriptions
     - cascade_invocations
+    # - cast_nullable_to_non_nullable # renable when replacing fluro with other navigation package
     - close_sinks
     - comment_references
     # - constant_identifier_names # we are using those all around
@@ -82,6 +84,7 @@ linter:
     # - curly_braces_in_flow_control_structures # we use this for oneline return statement
     # - diagnostic_describe_all_properties # nice to have for libs but overkill for applications
     # - directives_ordering
+    # - discarded_futures
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
@@ -105,6 +108,7 @@ linter:
     - no_runtimeType_toString
     - non_constant_identifier_names
     - null_closures
+    - null_check_on_nullable_type_parameter
     # - omit_local_variable_types # opposite of always_specify_types
     # - one_member_abstracts
     - only_throw_errors
@@ -161,6 +165,7 @@ linter:
     - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally
+    - tighten_type_of_initializing_formals
     # - type_annotate_public_apis # subset of always_specify_types
     - type_init_formals
     - unawaited_futures
@@ -172,6 +177,7 @@ linter:
     - unnecessary_lambdas
     - unnecessary_new
     - unnecessary_null_aware_assignments
+    - unnecessary_null_checks
     - unnecessary_null_in_if_null_operators
     - unnecessary_overrides
     - unnecessary_parenthesis
@@ -182,9 +188,11 @@ linter:
     - unnecessary_this
     - unrelated_type_equality_checks
     - unsafe_html
+    - use_if_null_to_convert_nulls_to_bools
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
     - use_key_in_widget_constructors
+    - use_named_constants
     - use_raw_strings
     - use_rethrow_when_possible
     - use_setters_to_change_properties

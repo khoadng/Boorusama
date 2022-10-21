@@ -37,7 +37,7 @@ class _PostImageState extends State<PostImage> {
       image: CachedNetworkImageProvider(widget.imageUrl),
     );
     myImage.image
-        .resolve(const ImageConfiguration())
+        .resolve(ImageConfiguration.empty)
         // ignore: no-empty-block
         .addListener(ImageStreamListener((_, __) {}));
     super.initState();

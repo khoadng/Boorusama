@@ -33,7 +33,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             value: e.value!,
             category:
                 TagAutocompleteCategory(category: intToTagCategory(e.category)),
-            postCount: e.postCount!,
+            postCount: e.postCount,
             antecedent: e.antecedent,
           );
         } else if (e.type == 'pool') {
@@ -44,7 +44,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             category: PoolAutocompleteCategory(
               category: stringToPoolCategory(e.category),
             ),
-            postCount: e.postCount!,
+            postCount: e.postCount,
           );
         } else if (e.type == 'user') {
           return AutocompleteData(
@@ -60,7 +60,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
         // ignore: avoid_print
         print("can't parse ${e.label}");
 
-        return const AutocompleteData(label: '', value: '');
+        return AutocompleteData.empty;
       }
     })
     .where((e) => e != AutocompleteData.empty)

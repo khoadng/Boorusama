@@ -76,7 +76,7 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                       child: ListTile(
                         title: Text(
                           widget.pool.name.removeUnderscoreWithSpace(),
-                          style: Theme.of(context).textTheme.headline6!,
+                          style: Theme.of(context).textTheme.headline6,
                         ),
                         subtitle: Text(
                           '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
