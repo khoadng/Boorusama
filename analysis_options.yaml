@@ -196,6 +196,7 @@ linter:
     - unnecessary_null_aware_assignments
     - unnecessary_null_aware_operator_on_extension_on_nullable
     - unnecessary_null_checks
+    - unnecessary_nullable_for_final_variable_declarations
     - unnecessary_null_in_if_null_operators
     - unnecessary_overrides
     - unnecessary_parenthesis
@@ -211,6 +212,7 @@ linter:
     - use_decorated_box
     - use_enums
     - use_if_null_to_convert_nulls_to_bools
+    - use_late_for_private_fields_and_variables
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
     - use_key_in_widget_constructors
