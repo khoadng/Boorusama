@@ -98,6 +98,21 @@ void main() {
     );
 
     blocTest<TagSearchBloc, TagSearchState>(
+      'when raw tags are selected, it should be added to selected tags',
+      build: () => bloc(),
+      act: (bloc) =>
+          bloc.add(const TagSearchNewRawStringTagsSelected(['foo', 'bar'])),
+      expect: () => [
+        tagSearchStateEmpty().copyWith(
+          selectedTags: [
+            tagSearchItemFromString('foo'),
+            tagSearchItemFromString('bar'),
+          ],
+        ),
+      ],
+    );
+
+    blocTest<TagSearchBloc, TagSearchState>(
       'when user submit tag without using suggestion, it should be added to selected tags',
       build: () => bloc()..emit(tagSearchStateEmpty().copyWith(query: 'foo')),
       act: (bloc) => bloc.add(const TagSearchSubmitted()),
