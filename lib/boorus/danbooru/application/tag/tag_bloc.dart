@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/common/collection_utils.dart';
 
@@ -120,5 +119,24 @@ String tagCategoryToString(TagCategory category) {
       return 'Meta';
     case TagCategory.invalid_:
       return '';
+  }
+}
+
+typedef TagCategoryOrder = int;
+
+TagCategoryOrder tagCategoryToOrder(TagCategory category) {
+  switch (category) {
+    case TagCategory.artist:
+      return 0;
+    case TagCategory.copyright:
+      return 1;
+    case TagCategory.charater:
+      return 2;
+    case TagCategory.general:
+      return 3;
+    case TagCategory.meta:
+      return 4;
+    case TagCategory.invalid_:
+      return 5;
   }
 }

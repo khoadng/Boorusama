@@ -5,8 +5,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 
-typedef TagCategoryOrder = int;
-
 Color getTagColor(TagCategory category, ThemeMode themeMode) {
   final colors =
       themeMode == ThemeMode.light ? TagColors.light() : TagColors.dark();
@@ -70,21 +68,4 @@ class TagColors {
   final Color character;
   final Color copyright;
   final Color meta;
-}
-
-TagCategoryOrder tagCategoryToOrder(TagCategory category) {
-  switch (category) {
-    case TagCategory.artist:
-      return 0;
-    case TagCategory.copyright:
-      return 1;
-    case TagCategory.charater:
-      return 2;
-    case TagCategory.general:
-      return 3;
-    case TagCategory.meta:
-      return 4;
-    case TagCategory.invalid_:
-      return 5;
-  }
 }
