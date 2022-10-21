@@ -46,7 +46,7 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
             account.apiKey,
             page,
             postId.toString(),
-            '',
+            null,
             false,
             100,
           ))
