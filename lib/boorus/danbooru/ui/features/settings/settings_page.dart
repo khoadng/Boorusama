@@ -42,7 +42,7 @@ class SettingsPage extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SettingsSection(
+                              _SettingsSection(
                                 label: 'settings.app_settings'.tr(),
                               ),
                               ListTile(
@@ -180,7 +180,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SettingsSection(
+                        _SettingsSection(
                           label: 'settings.app_settings'.tr(),
                         ),
                         ListTile(
@@ -336,8 +336,8 @@ class _Footer extends StatelessWidget {
   }
 }
 
-class SettingsSection extends StatelessWidget {
-  const SettingsSection({
+class _SettingsSection extends StatelessWidget {
+  const _SettingsSection({
     Key? key,
     required this.label,
   }) : super(key: key);

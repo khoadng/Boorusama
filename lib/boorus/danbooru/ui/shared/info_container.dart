@@ -1,11 +1,8 @@
-// Flutter imports:
 import 'package:flutter/material.dart';
-
-// Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class WarningContainer extends StatelessWidget {
-  const WarningContainer({
+class InfoContainer extends StatelessWidget {
+  const InfoContainer({
     Key? key,
     required this.contentBuilder,
   }) : super(key: key);
@@ -21,7 +18,7 @@ class WarningContainer extends StatelessWidget {
       ),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
-        color: Theme.of(context).colorScheme.error,
+        color: Theme.of(context).cardColor,
       ),
       width: MediaQuery.of(context).size.width,
       child: Padding(
@@ -30,7 +27,10 @@ class WarningContainer extends StatelessWidget {
           children: [
             const Padding(
               padding: EdgeInsets.only(right: 12),
-              child: FaIcon(FontAwesomeIcons.triangleExclamation),
+              child: FaIcon(
+                FontAwesomeIcons.lightbulb,
+                color: Colors.amber,
+              ),
             ),
             Expanded(child: contentBuilder(context)),
           ],

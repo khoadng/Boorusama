@@ -35,7 +35,7 @@ class _PostNoteState extends State<PostNote> {
           behavior: HitTestBehavior.opaque,
           onTap: () => _visible.value = false,
         ),
-        child: NoteContainer(
+        child: _NoteContainer(
           coordinate: widget.coordinate,
           visible: visible,
           onTap: () => _visible.value = true,
@@ -46,8 +46,8 @@ class _PostNoteState extends State<PostNote> {
   }
 }
 
-class NoteContainer extends StatelessWidget {
-  const NoteContainer({
+class _NoteContainer extends StatelessWidget {
+  const _NoteContainer({
     Key? key,
     required this.coordinate,
     required this.visible,

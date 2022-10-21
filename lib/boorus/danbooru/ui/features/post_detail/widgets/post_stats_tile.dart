@@ -44,7 +44,7 @@ class PostStatsTile extends StatelessWidget {
                     postId: post.id,
                     refresh: true,
                   )),
-                child: FavoriterView(
+                child: _FavoriterView(
                   post: post,
                 ),
               ),
@@ -81,7 +81,7 @@ class PostStatsTile extends StatelessWidget {
                     postId: post.id,
                     refresh: true,
                   )),
-                child: VoterView(
+                child: _VoterView(
                   post: post,
                 ),
               ),
@@ -169,8 +169,8 @@ String _generatePercentText(Post post) {
       : '';
 }
 
-class VoterView extends StatefulWidget {
-  const VoterView({
+class _VoterView extends StatefulWidget {
+  const _VoterView({
     Key? key,
     required this.post,
   }) : super(key: key);
@@ -178,10 +178,10 @@ class VoterView extends StatefulWidget {
   final Post post;
 
   @override
-  State<VoterView> createState() => _VoterViewState();
+  State<_VoterView> createState() => _VoterViewState();
 }
 
-class _VoterViewState extends State<VoterView> {
+class _VoterViewState extends State<_VoterView> {
   final scrollController = ScrollController();
 
   @override
@@ -233,7 +233,7 @@ class _VoterViewState extends State<VoterView> {
                       (context, index) {
                         final voter = state.upvoters[index];
 
-                        return InfoTile(
+                        return _InfoTile(
                           title: voter.user.name,
                           level: voter.user.level,
                         );
@@ -253,8 +253,8 @@ class _VoterViewState extends State<VoterView> {
   }
 }
 
-class InfoTile extends StatelessWidget {
-  const InfoTile({
+class _InfoTile extends StatelessWidget {
+  const _InfoTile({
     Key? key,
     required this.title,
     required this.level,
@@ -275,8 +275,8 @@ class InfoTile extends StatelessWidget {
   }
 }
 
-class FavoriterView extends StatefulWidget {
-  const FavoriterView({
+class _FavoriterView extends StatefulWidget {
+  const _FavoriterView({
     Key? key,
     required this.post,
   }) : super(key: key);
@@ -284,10 +284,10 @@ class FavoriterView extends StatefulWidget {
   final Post post;
 
   @override
-  State<FavoriterView> createState() => _FavoriterViewState();
+  State<_FavoriterView> createState() => _FavoriterViewState();
 }
 
-class _FavoriterViewState extends State<FavoriterView> {
+class _FavoriterViewState extends State<_FavoriterView> {
   final scrollController = ScrollController();
 
   @override

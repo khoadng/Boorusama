@@ -32,6 +32,8 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
+import 'widgets/recommend_character_list.dart';
+import 'widgets/simple_post_tag_list.dart';
 import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
@@ -275,7 +277,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   left:
                                       MediaQuery.of(context).size.width * 0.05,
                                   child: FloatingGlassyCard(
-                                    child: ActionBar(
+                                    child: _ActionBar(
                                       imagePath: imagePath,
                                       postData: state.currentPost,
                                     ),
@@ -374,7 +376,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                       if (widget.actionBarDisplayBehavior ==
                           ActionBarDisplayBehavior.scrolling)
                         RepaintBoundary(
-                          child: ActionBar(
+                          child: _ActionBar(
                             imagePath: widget.imagePath,
                             postData: widget.post,
                           ),
@@ -530,7 +532,7 @@ class _LargeLayoutContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: ActionBar(
+                child: _ActionBar(
                   imagePath: imagePath,
                   postData: post,
                 ),
@@ -823,5 +825,27 @@ class _SlideShowButtonState extends State<_SlideShowButton>
               });
             }),
           );
+  }
+}
+
+class _ActionBar extends StatelessWidget {
+  const _ActionBar({
+    Key? key,
+    required this.imagePath,
+    required this.postData,
+  }) : super(key: key);
+
+  final ValueNotifier<String?> imagePath;
+  final PostData postData;
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<String?>(
+      valueListenable: imagePath,
+      builder: (context, value, child) => PostActionToolbar(
+        postData: postData,
+        imagePath: value,
+      ),
+    );
   }
 }

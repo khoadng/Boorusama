@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_tags_x/flutter_tags_x.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:toggle_switch/toggle_switch.dart';
@@ -186,7 +185,7 @@ class _PanelState extends State<_Panel> {
                   SliverPadding(
                     padding: const EdgeInsets.only(bottom: 10),
                     sliver: SliverToBoxAdapter(
-                      child: CategoryToggleSwitch(
+                      child: _CategoryToggleSwitch(
                         onToggle: (category) => context.read<PostBloc>().add(
                               PostRefreshed(
                                 tag: widget.tagName,
@@ -235,8 +234,8 @@ PostsOrder _tagFilterCategoryToPostsOrder(TagFilterCategory category) {
   return PostsOrder.newest;
 }
 
-class CategoryToggleSwitch extends StatefulWidget {
-  const CategoryToggleSwitch({
+class _CategoryToggleSwitch extends StatefulWidget {
+  const _CategoryToggleSwitch({
     Key? key,
     required this.onToggle,
   }) : super(key: key);
@@ -244,10 +243,10 @@ class CategoryToggleSwitch extends StatefulWidget {
   final void Function(TagFilterCategory category) onToggle;
 
   @override
-  State<CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
+  State<_CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
 }
 
-class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
+class _CategoryToggleSwitchState extends State<_CategoryToggleSwitch> {
   final ValueNotifier<int> selected = ValueNotifier(0);
 
   @override
@@ -286,79 +285,5 @@ class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
         ),
       ),
     );
-  }
-}
-
-class TagOtherNames extends StatelessWidget {
-  const TagOtherNames({
-    Key? key,
-    required this.otherNames,
-  }) : super(key: key);
-
-  final List<String> otherNames;
-
-  @override
-  Widget build(BuildContext context) {
-    return Screen.of(context).size == ScreenSize.small
-        ? Tags(
-            heightHorizontalScroll: 40,
-            spacing: 2,
-            horizontalScroll: true,
-            alignment: WrapAlignment.start,
-            runAlignment: WrapAlignment.start,
-            itemCount: otherNames.length,
-            itemBuilder: (index) {
-              return Chip(
-                shape:
-                    const StadiumBorder(side: BorderSide(color: Colors.grey)),
-                padding: const EdgeInsets.all(4),
-                labelPadding: const EdgeInsets.all(1),
-                visualDensity: VisualDensity.compact,
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.85,
-                  ),
-                  child: Text(
-                    otherNames[index].removeUnderscoreWithSpace(),
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                ),
-              );
-            },
-          )
-        : SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2),
-              child: Wrap(
-                spacing: 5,
-                alignment: WrapAlignment.center,
-                runAlignment: WrapAlignment.center,
-                children: otherNames
-                    .map((e) => Chip(
-                          shape: const StadiumBorder(
-                            side: BorderSide(color: Colors.grey),
-                          ),
-                          padding: const EdgeInsets.all(4),
-                          labelPadding: const EdgeInsets.all(1),
-                          visualDensity: VisualDensity.compact,
-                          label: ConstrainedBox(
-                            constraints: BoxConstraints(
-                              maxWidth:
-                                  MediaQuery.of(context).size.width * 0.85,
-                            ),
-                            child: Text(
-                              e.removeUnderscoreWithSpace(),
-                              overflow: TextOverflow.fade,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ),
-          );
   }
 }

@@ -138,7 +138,7 @@ class SliverPostGrid extends HookWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
-                    child: SliverPostGridItem(
+                    child: _SliverPostGridItem(
                       postData: post,
                       index: index,
                       borderRadius: BorderRadius.circular(
@@ -164,8 +164,8 @@ class SliverPostGrid extends HookWidget {
   }
 }
 
-class SliverPostGridItem extends StatelessWidget {
-  const SliverPostGridItem({
+class _SliverPostGridItem extends StatelessWidget {
+  const _SliverPostGridItem({
     Key? key,
     required this.postData,
     required this.index,

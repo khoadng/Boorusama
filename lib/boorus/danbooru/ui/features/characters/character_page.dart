@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:

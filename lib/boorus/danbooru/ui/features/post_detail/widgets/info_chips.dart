@@ -22,19 +22,19 @@ class InfoChips extends StatelessWidget {
     return Wrap(
       spacing: 5,
       children: [
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.rating').tr(),
           rightLabel: Text(post.rating.toString().split('.').last.pascalCase),
           leftColor: Theme.of(context).cardColor,
           rightColor: Theme.of(context).backgroundColor,
         ),
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
           rightLabel: Text(filesize(post.fileSize, 1)),
           leftColor: Theme.of(context).cardColor,
           rightColor: Theme.of(context).backgroundColor,
         ),
-        InfoChip(
+        _InfoChip(
           leftLabel: const Text('post.detail.resolution').tr(),
           rightLabel: Text('${post.width.toInt()}x${post.height.toInt()}'),
           leftColor: Theme.of(context).cardColor,
@@ -45,8 +45,8 @@ class InfoChips extends StatelessWidget {
   }
 }
 
-class InfoChip extends StatelessWidget {
-  const InfoChip({
+class _InfoChip extends StatelessWidget {
+  const _InfoChip({
     Key? key,
     required this.leftLabel,
     required this.rightLabel,

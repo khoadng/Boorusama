@@ -58,6 +58,7 @@ class TagSuggestionItems extends StatelessWidget {
   }
 }
 
+// ignore: prefer-single-widget-per-file
 class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   const SliverTagSuggestionItemsWithHistory({
     Key? key,
