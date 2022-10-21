@@ -81,8 +81,8 @@ linter:
     # - cast_nullable_to_non_nullable # renable when replacing fluro with other navigation package
     - close_sinks
     - comment_references
-    # - constant_identifier_names # we are using those all around
     - conditional_uri_does_not_exist
+    # - constant_identifier_names # we are using those all around
     - control_flow_in_finally
     # - curly_braces_in_flow_control_structures # we use this for oneline return statement
     - depend_on_referenced_packages
@@ -90,10 +90,10 @@ linter:
     # - directives_ordering
     # - discarded_futures
     - do_not_use_environment
-    - eol_at_end_of_file
     - empty_catches
     - empty_constructor_bodies
     - empty_statements
+    - eol_at_end_of_file
     - exhaustive_cases
     - file_names
     # - flutter_style_todos # don't need those for now
@@ -117,10 +117,10 @@ linter:
     - no_leading_underscores_for_local_identifiers
     - no_logic_in_create_state
     - no_runtimeType_toString
-    - noop_primitive_operations
     - non_constant_identifier_names
-    - null_closures
+    - noop_primitive_operations
     - null_check_on_nullable_type_parameter
+    - null_closures
     # - omit_local_variable_types # opposite of always_specify_types
     # - one_member_abstracts
     - only_throw_errors
@@ -172,6 +172,7 @@ linter:
     - provide_deprecation_message
     # - public_member_api_docs # do not use for an application, only a library
     - recursive_getters
+    # - require_trailing_commas # use dart_code_metric instead
     - secure_pubspec_urls
     - sized_box_for_whitespace
     - sized_box_shrink_expand
@@ -185,7 +186,6 @@ linter:
     - tighten_type_of_initializing_formals
     # - type_annotate_public_apis # subset of always_specify_types
     - type_init_formals
-    # - require_trailing_commas # use dart_code_metric instead
     - unawaited_futures
     - unnecessary_await_in_return
     - unnecessary_brace_in_string_interps
@@ -199,8 +199,8 @@ linter:
     - unnecessary_null_aware_assignments
     - unnecessary_null_aware_operator_on_extension_on_nullable
     - unnecessary_null_checks
-    - unnecessary_nullable_for_final_variable_declarations
     - unnecessary_null_in_if_null_operators
+    - unnecessary_nullable_for_final_variable_declarations
     - unnecessary_overrides
     - unnecessary_parenthesis
     - unnecessary_raw_strings
@@ -214,12 +214,12 @@ linter:
     - use_colored_box
     - use_decorated_box
     - use_enums
-    - use_if_null_to_convert_nulls_to_bools
-    - use_is_even_rather_than_modulo
-    - use_late_for_private_fields_and_variables
     - use_full_hex_values_for_flutter_colors
     - use_function_type_syntax_for_parameters
+    - use_if_null_to_convert_nulls_to_bools
+    - use_is_even_rather_than_modulo
     - use_key_in_widget_constructors
+    - use_late_for_private_fields_and_variables
     - use_named_constants
     - use_raw_strings
     - use_rethrow_when_possible
