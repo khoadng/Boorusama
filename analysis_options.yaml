@@ -12,7 +12,7 @@ include: package:flutter_lints/flutter.yaml
 analyzer:
   exclude:
     - "**/*.g.dart"
-    - "generated_plugin_registrant.dart"
+    - "**/generated_plugin_registrant.dart"
   errors:
     unnecessary_lambdas: ignore
     invalid_annotation_target: ignore
