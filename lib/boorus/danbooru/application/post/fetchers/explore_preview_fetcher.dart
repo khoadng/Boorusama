@@ -38,14 +38,15 @@ class ExplorePreviewFetcher implements PostFetcher {
   }
 
   PostFetcher _categoryToFetcher(DateTime d) {
-    if (category == ExploreCategory.popular) {
-      return PopularPostFetcher(date: d, scale: scale);
-    } else if (category == ExploreCategory.curated) {
-      return CuratedPostFetcher(date: d, scale: scale);
-    } else if (category == ExploreCategory.hot) {
-      return const HotPostFetcher();
-    } else {
-      return MostViewedPostFetcher(date: d);
+    switch (category) {
+      case ExploreCategory.popular:
+        return PopularPostFetcher(date: d, scale: scale);
+      case ExploreCategory.curated:
+        return CuratedPostFetcher(date: d, scale: scale);
+      case ExploreCategory.mostViewed:
+        return MostViewedPostFetcher(date: d);
+      case ExploreCategory.hot:
+        return const HotPostFetcher();
     }
   }
 }
