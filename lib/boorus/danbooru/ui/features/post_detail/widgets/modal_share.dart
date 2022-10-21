@@ -1,7 +1,12 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:easy_localization/easy_localization.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class ModalShare extends StatelessWidget {
   const ModalShare({

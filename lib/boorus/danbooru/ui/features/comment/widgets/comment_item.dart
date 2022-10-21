@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/comment/dtext_parser.dart'
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/core/core.dart';
-
 import 'comment_header.dart';
 
 class CommentItem extends StatelessWidget {

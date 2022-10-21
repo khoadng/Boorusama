@@ -1,8 +1,13 @@
-import 'package:boorusama/common/string_utils.dart';
-import 'package:boorusama/core/core.dart';
-import 'package:easy_localization/easy_localization.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
+
+// Project imports:
+import 'package:boorusama/common/string_utils.dart';
+import 'package:boorusama/core/core.dart';
 
 class SourceLink extends StatelessWidget {
   const SourceLink({

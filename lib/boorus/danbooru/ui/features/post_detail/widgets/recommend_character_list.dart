@@ -1,8 +1,10 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:flutter/material.dart';
-
 import 'recommend_section.dart';
 
 class RecommendCharacterList extends StatelessWidget {

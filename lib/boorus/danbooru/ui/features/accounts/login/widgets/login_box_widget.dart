@@ -12,7 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/utils.dart';
-
 import 'login_field.dart';
 
 class LoginBox extends HookWidget {

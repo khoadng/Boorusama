@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class ArtistPage extends StatelessWidget {

@@ -18,7 +18,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart'
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
-
 import 'modal_share.dart';
 
 class PostActionToolbar extends StatelessWidget {

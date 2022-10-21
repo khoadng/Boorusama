@@ -1,6 +1,11 @@
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:intl/intl.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
