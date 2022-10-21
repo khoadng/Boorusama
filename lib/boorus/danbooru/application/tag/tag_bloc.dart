@@ -91,8 +91,8 @@ class TagBloc extends Bloc<TagEvent, TagState> {
   }
 }
 
-class TagGroupItem {
-  TagGroupItem({
+class TagGroupItem extends Equatable {
+  const TagGroupItem({
     required this.groupName,
     required this.tags,
     required this.order,
@@ -101,6 +101,9 @@ class TagGroupItem {
   final String groupName;
   final List<Tag> tags;
   final TagCategoryOrder order;
+
+  @override
+  List<Object?> get props => [groupName, tags, order];
 }
 
 String tagCategoryToString(TagCategory category) {

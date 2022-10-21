@@ -161,7 +161,7 @@ class _Chip extends StatelessWidget {
                 ),
               ),
               label: Text(
-                tag.postCount.toString(),
+                NumberFormat.compact().format(tag.postCount),
                 style: const TextStyle(color: Colors.white60, fontSize: 12),
               ),
             ),
