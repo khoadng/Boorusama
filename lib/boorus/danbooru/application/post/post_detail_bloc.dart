@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'slide_show_configuration.dart';
 
 class PostDetailTag extends Equatable {
   const PostDetailTag({
