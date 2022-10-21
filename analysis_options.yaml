@@ -213,7 +213,7 @@ dart_code_metrics:
       deprecated-annotations-cost: 37
       file-nullsafety-migration-cost: 41
       unit-type: "USD"
-    weight-of-class: 0.33
+    # weight-of-class: 0.33
 
   metrics-exclude:
     - test/**

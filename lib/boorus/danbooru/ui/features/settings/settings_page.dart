@@ -360,4 +360,3 @@ class SettingsSection extends StatelessWidget {
 }
 
 String getVersion(PackageInfo info) => info.version;
-String getVersionText(PackageInfo info) => info.version;
