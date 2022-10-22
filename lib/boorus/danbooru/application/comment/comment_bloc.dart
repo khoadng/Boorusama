@@ -26,12 +26,10 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
 
           final account = await accountRepository.get();
           final commentData = commentList
-              .map((e) => commentDataFrom(
-                    e,
-                    e.creator,
-                    account,
-                    votes,
-                  ))
+              .map(createCommentDataWith(
+                account: account,
+                votes: votes,
+              ))
               .toList();
 
           emit(state.copyWith(

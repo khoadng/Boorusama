@@ -84,6 +84,12 @@ class CommentData extends Equatable {
       ];
 }
 
+CommentData Function(Comment comment) createCommentDataWith({
+  required Account account,
+  required List<CommentVote> votes,
+}) =>
+    (comment) => commentDataFrom(comment, comment.creator, account, votes);
+
 CommentData commentDataFrom(
   Comment comment,
   User? user,
