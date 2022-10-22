@@ -35,8 +35,10 @@ class PostBloc extends Bloc<PostEvent, PostState>
     on<PostRefreshed>(
       (event, emit) async {
         await refresh(
-          emitter: emit,
-          stateGetter: () => state,
+          emit: EmitConfig(
+            stateGetter: () => state,
+            emitter: emit,
+          ),
           refresh: (page) => event.fetcher
               .fetch(postRepository, page)
               .then(createPostDataWith(
@@ -55,8 +57,10 @@ class PostBloc extends Bloc<PostEvent, PostState>
     on<PostFetched>(
       (event, emit) async {
         await fetch(
-          emitter: emit,
-          stateGetter: () => state,
+          emit: EmitConfig(
+            stateGetter: () => state,
+            emitter: emit,
+          ),
           fetch: (page) => event.fetcher
               .fetch(postRepository, page)
               .then(createPostDataWith(

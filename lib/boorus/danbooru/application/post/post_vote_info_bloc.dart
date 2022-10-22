@@ -134,8 +134,10 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
 
         if (event.refresh) {
           await refresh(
-            emitter: emit,
-            stateGetter: () => state,
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
             refresh: (page) => postVoteRepository
                 .getAllVotes(event.postId, 1)
                 .then(createVoters(userRepository)),
@@ -144,8 +146,10 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
           );
         } else {
           await fetch(
-            emitter: emit,
-            stateGetter: () => state,
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
             fetch: (page) => postVoteRepository
                 .getAllVotes(event.postId, page)
                 .then(createVoters(userRepository)),

@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 abstract class InfiniteLoadState<T, State> {
@@ -20,6 +21,19 @@ abstract class InfiniteLoadState<T, State> {
   });
 }
 
+class EmitConfig<T, State> extends Equatable {
+  const EmitConfig({
+    required this.stateGetter,
+    required this.emitter,
+  });
+
+  final InfiniteLoadState<T, State> Function() stateGetter;
+  final Emitter<State> emitter;
+
+  @override
+  List<Object?> get props => [stateGetter, emitter];
+}
+
 mixin InfiniteLoadMixin<T, State> {
   int page = 1;
   bool hasMore = true;
@@ -28,8 +42,7 @@ mixin InfiniteLoadMixin<T, State> {
   List<T> data = [];
 
   FutureOr<void> refresh({
-    required Emitter<State> emitter,
-    required InfiniteLoadState<T, State> Function() stateGetter,
+    EmitConfig<T, State>? emit,
     required Future<List<T>> Function(int page) refresh,
     void Function()? onRefreshStart,
     void Function()? onRefreshEnd,
@@ -41,13 +54,6 @@ mixin InfiniteLoadMixin<T, State> {
       page = 1;
 
       onRefreshStart?.call();
-      emitter.call(stateGetter().copyLoadState(
-        refreshing: refreshing,
-        loading: loading,
-        hasMore: hasMore,
-        data: data,
-        page: page,
-      ));
 
       final d = await refresh(page);
 
@@ -61,21 +67,22 @@ mixin InfiniteLoadMixin<T, State> {
 
       onData?.call(data);
 
-      emitter.call(stateGetter().copyLoadState(
-        refreshing: refreshing,
-        loading: loading,
-        hasMore: hasMore,
-        data: data,
-        page: page,
-      ));
+      if (emit != null) {
+        emit.emitter(emit.stateGetter().copyLoadState(
+              refreshing: refreshing,
+              loading: loading,
+              hasMore: hasMore,
+              data: data,
+              page: page,
+            ));
+      }
     } catch (e, stackTrace) {
       onError?.call(e, stackTrace);
     }
   }
 
   FutureOr<void> fetch({
-    required Emitter<State> emitter,
-    required InfiniteLoadState<T, State> Function() stateGetter,
+    EmitConfig<T, State>? emit,
     required Future<List<T>> Function(int page) fetch,
     void Function()? onFetchStart,
     void Function(List<T> data)? onFetchEnd,
@@ -87,13 +94,15 @@ mixin InfiniteLoadMixin<T, State> {
     try {
       loading = true;
       onFetchStart?.call();
-      emitter.call(stateGetter().copyLoadState(
-        refreshing: refreshing,
-        loading: loading,
-        hasMore: hasMore,
-        data: data,
-        page: page,
-      ));
+      if (emit != null) {
+        emit.emitter(emit.stateGetter().copyLoadState(
+              refreshing: refreshing,
+              loading: loading,
+              hasMore: hasMore,
+              data: data,
+              page: page,
+            ));
+      }
 
       final d = await fetch(page + 1);
 
@@ -106,13 +115,15 @@ mixin InfiniteLoadMixin<T, State> {
       hasMore = d.isNotEmpty;
 
       onFetchEnd?.call(data);
-      emitter.call(stateGetter().copyLoadState(
-        refreshing: refreshing,
-        loading: loading,
-        hasMore: hasMore,
-        data: data,
-        page: page,
-      ));
+      if (emit != null) {
+        emit.emitter(emit.stateGetter().copyLoadState(
+              refreshing: refreshing,
+              loading: loading,
+              hasMore: hasMore,
+              data: data,
+              page: page,
+            ));
+      }
     } catch (e, stackTrace) {
       onError?.call(e, stackTrace);
     }
