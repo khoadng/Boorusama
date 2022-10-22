@@ -12,6 +12,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/core/core.dart';
@@ -32,8 +33,6 @@ class SettingsPage extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8),
               child: BlocBuilder<SettingsCubit, SettingsState>(
                 builder: (context, state) {
-                  final settings = state.settings;
-
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -45,19 +44,26 @@ class SettingsPage extends StatelessWidget {
                               _SettingsSection(
                                 label: 'settings.app_settings'.tr(),
                               ),
+                              // ListTile(
+                              //   leading: const Icon(Icons.admin_panel_settings),
+                              //   title: const Text('settings.safe_mode').tr(),
+                              //   trailing: Switch(
+                              //       activeColor:
+                              //           Theme.of(context).colorScheme.primary,
+                              //       value: settings.safeMode,
+                              //       onChanged: (value) {
+                              //         context.read<SettingsCubit>().update(
+                              //             settings.copyWith(safeMode: value));
+                              //       }),
+                              // ),
                               ListTile(
-                                leading: const Icon(Icons.admin_panel_settings),
-                                title: const Text('settings.safe_mode').tr(),
-                                trailing: Switch(
-                                  activeColor:
-                                      Theme.of(context).colorScheme.primary,
-                                  value: settings.safeMode,
-                                  onChanged: (value) {
-                                    context.read<SettingsCubit>().update(
-                                          settings.copyWith(safeMode: value),
-                                        );
-                                  },
-                                ),
+                                leading: const FaIcon(FontAwesomeIcons.gears),
+                                title: const Text('General'),
+                                onTap: () => Navigator.of(context)
+                                    .push(ParallaxSlideInPageRoute(
+                                  enterWidget: const GeneralPage(),
+                                  oldWidget: this,
+                                )),
                               ),
                               ListTile(
                                 leading: const FaIcon(

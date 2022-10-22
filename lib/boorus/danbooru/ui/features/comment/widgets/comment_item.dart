@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/dtext_parser.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/dtext.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/widgets/youtube_preview_box.dart';
 import 'package:boorusama/core/core.dart';

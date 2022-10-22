@@ -31,38 +31,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
     double Function()? stateIdGenerator,
     List<PostData>? initialData,
   }) : super(PostState.initial()) {
-    on<PostFetched>(
-      (event, emit) async {
-        await fetch(
-          emitter: emit,
-          stateGetter: () => state,
-          fetch: (page) => event.fetcher
-              .fetch(postRepository, page)
-              .then((posts) => createPostData(
-                    favoritePostRepository,
-                    postVoteRepository,
-                    poolRepository,
-                    posts,
-                    accountRepository,
-                  ))
-              .then((postDatas) async {
-            final blacklisted =
-                await blacklistedTagsRepository.getBlacklistedTags();
-
-            return filter(postDatas, blacklisted);
-          }),
-          onError: (e, stackTrace) {
-            if (e is BooruError) {
-              _emitError(e, emit);
-            } else {
-              _emitError(BooruError(error: e), emit);
-            }
-          },
-        );
-      },
-      transformer: droppable(),
-    );
-
     on<PostRefreshed>(
       (event, emit) async {
         await refresh(
@@ -70,29 +38,37 @@ class PostBloc extends Bloc<PostEvent, PostState>
           stateGetter: () => state,
           refresh: (page) => event.fetcher
               .fetch(postRepository, page)
-              .then((posts) => createPostData(
-                    favoritePostRepository,
-                    postVoteRepository,
-                    poolRepository,
-                    posts,
-                    accountRepository,
-                  ))
-              .then((postDatas) async {
-            final blacklisted =
-                await blacklistedTagsRepository.getBlacklistedTags();
-
-            return filter(postDatas, blacklisted);
-          }),
-          onError: (e, stackTrace) {
-            if (e is BooruError) {
-              _emitError(e, emit);
-            } else {
-              _emitError(BooruError(error: e), emit);
-            }
-          },
+              .then(createPostDataWith(
+                favoritePostRepository,
+                postVoteRepository,
+                poolRepository,
+                accountRepository,
+              ))
+              .then(filterWith(blacklistedTagsRepository)),
+          onError: handleErrorWith(emit),
         );
       },
       transformer: restartable(),
+    );
+
+    on<PostFetched>(
+      (event, emit) async {
+        await fetch(
+          emitter: emit,
+          stateGetter: () => state,
+          fetch: (page) => event.fetcher
+              .fetch(postRepository, page)
+              .then(createPostDataWith(
+                favoritePostRepository,
+                postVoteRepository,
+                poolRepository,
+                accountRepository,
+              ))
+              .then(filterWith(blacklistedTagsRepository)),
+          onError: handleErrorWith(emit),
+        );
+      },
+      transformer: droppable(),
     );
 
     on<PostFavoriteUpdated>((event, emit) {
@@ -141,6 +117,13 @@ class PostBloc extends Bloc<PostEvent, PostState>
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
       );
+
+  void Function(Object error, StackTrace stackTrace) handleErrorWith(
+    Emitter emit,
+  ) =>
+      (error, stackTrace) => error is BooruError
+          ? _emitError(error, emit)
+          : _emitError(BooruError(error: error), emit);
 
   void _emitError(BooruError error, Emitter emit) {
     final failureState = state.copyWith(status: LoadStatus.failure);
