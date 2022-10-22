@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post_favorite_info_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -36,11 +36,11 @@ class PostStatsTile extends StatelessWidget {
             onTap: () => showAdaptiveBottomSheet(
               context,
               builder: (context) => BlocProvider(
-                create: (context) => PostFavoriteInfoBloc(
+                create: (context) => PostFavoriteBloc(
                   favoritePostRepository:
                       context.read<FavoritePostRepository>(),
                   userRepository: context.read<UserRepository>(),
-                )..add(PostFavoriteInfoFetched(
+                )..add(PostFavoriteFetched(
                     postId: post.id,
                     refresh: true,
                   )),
@@ -291,8 +291,8 @@ class _FavoriterViewState extends State<_FavoriterView> {
     scrollController.addListener(() {
       if (_isBottom) {
         context
-            .read<PostFavoriteInfoBloc>()
-            .add(PostFavoriteInfoFetched(postId: widget.post.id));
+            .read<PostFavoriteBloc>()
+            .add(PostFavoriteFetched(postId: widget.post.id));
       }
     });
     super.initState();
@@ -324,7 +324,7 @@ class _FavoriterViewState extends State<_FavoriterView> {
           ),
         ],
       ),
-      body: BlocBuilder<PostFavoriteInfoBloc, PostFavoriteInfoState>(
+      body: BlocBuilder<PostFavoriteBloc, PostFavoriteState>(
         builder: (context, state) => state.refreshing
             ? const Center(child: CircularProgressIndicator.adaptive())
             : CustomScrollView(
