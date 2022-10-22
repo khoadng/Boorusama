@@ -22,7 +22,7 @@ class PostVoteInfoState extends Equatable
   factory PostVoteInfoState.initial() => const PostVoteInfoState(
         upvoters: [],
         page: 1,
-        hasMore: false,
+        hasMore: true,
         refreshing: false,
         loading: false,
       );
@@ -127,6 +127,7 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
   PostVoteInfoBloc({
     required PostVoteRepository postVoteRepository,
     required UserRepository userRepository,
+    List<Voter>? initialVoters,
   }) : super(PostVoteInfoState.initial()) {
     on<PostVoteInfoFetched>(
       (event, emit) async {
@@ -159,6 +160,8 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
         }
       },
     );
+
+    data = initialVoters ?? [];
   }
 }
 
@@ -166,7 +169,9 @@ Future<List<Voter>> Function(List<PostVote> votes) createVoters(
   UserRepository userRepository,
 ) =>
     (votes) async {
-      if (votes.isEmpty) return [];
+      if (votes.isEmpty) {
+        return [];
+      }
 
       final voteMap = {for (final vote in votes) vote.userId: vote};
 

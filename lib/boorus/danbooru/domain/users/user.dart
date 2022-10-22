@@ -32,6 +32,20 @@ class User extends Equatable {
   List<Object?> get props => [id, level, name, blacklistedTags];
 }
 
+extension UserX on User {
+  User copyWith({
+    UserId? id,
+    UserLevel? level,
+    Username? name,
+  }) =>
+      User(
+        id: id ?? this.id,
+        level: level ?? this.level,
+        name: name ?? this.name,
+        blacklistedTags: blacklistedTags,
+      );
+}
+
 typedef UserId = int;
 typedef Username = String;
 
