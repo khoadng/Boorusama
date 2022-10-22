@@ -138,18 +138,17 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
             stateGetter: () => state,
             refresh: (page) => postVoteRepository
                 .getAllVotes(event.postId, 1)
-                .then((votes) => _createVoters(userRepository, votes)),
+                .then(createVoters(userRepository)),
             onError: (error, stackTrace) =>
                 emit(state.copyWith(error: 'Something went wrong')),
           );
         } else {
-          if (!hasMore) return;
           await fetch(
             emitter: emit,
             stateGetter: () => state,
             fetch: (page) => postVoteRepository
                 .getAllVotes(event.postId, page)
-                .then((votes) => _createVoters(userRepository, votes)),
+                .then(createVoters(userRepository)),
             onError: (error, stackTrace) =>
                 emit(state.copyWith(error: 'Something went wrong')),
           );
@@ -159,16 +158,18 @@ class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
   }
 }
 
-Future<List<Voter>> _createVoters(
+Future<List<Voter>> Function(List<PostVote> votes) createVoters(
   UserRepository userRepository,
-  List<PostVote> votes,
-) async {
-  if (votes.isEmpty) return [];
+) =>
+    (votes) async {
+      if (votes.isEmpty) return [];
 
-  final voteMap = {for (final vote in votes) vote.userId: vote};
+      final voteMap = {for (final vote in votes) vote.userId: vote};
 
-  final users = await userRepository
-      .getUsersByIdStringComma(votes.map((e) => e.userId).join(','));
+      final users = await userRepository
+          .getUsersByIdStringComma(votes.map((e) => e.userId).join(','));
 
-  return users.map((user) => Voter.create(user, voteMap[user.id]!)).toList();
-}
+      return users
+          .map((user) => Voter.create(user, voteMap[user.id]!))
+          .toList();
+    };

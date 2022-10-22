@@ -71,7 +71,7 @@ mixin InfiniteLoadMixin<T, State> {
   bool loading = false;
   List<T> data = [];
 
-  Future<bool> refresh({
+  FutureOr<void> refresh({
     required Emitter<State> emitter,
     required InfiniteLoadState<T, State> Function() stateGetter,
     required Future<List<T>> Function(int page) refresh,
@@ -112,16 +112,12 @@ mixin InfiniteLoadMixin<T, State> {
         data: data,
         page: page,
       ));
-
-      return true;
     } catch (e, stackTrace) {
       onError?.call(e, stackTrace);
-
-      return false;
     }
   }
 
-  Future<bool> fetch({
+  FutureOr<void> fetch({
     required Emitter<State> emitter,
     required InfiniteLoadState<T, State> Function() stateGetter,
     required Future<List<T>> Function(int page) fetch,
@@ -130,6 +126,8 @@ mixin InfiniteLoadMixin<T, State> {
     void Function(List<T> data)? onData,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) async {
+    if (!hasMore) return;
+
     try {
       loading = true;
       onFetchStart?.call();
@@ -159,12 +157,8 @@ mixin InfiniteLoadMixin<T, State> {
         data: data,
         page: page,
       ));
-
-      return true;
     } catch (e, stackTrace) {
       onError?.call(e, stackTrace);
-
-      return false;
     }
   }
 }
