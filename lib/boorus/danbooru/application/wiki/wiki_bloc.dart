@@ -43,7 +43,7 @@ class WikiFetched extends WikiEvent {
 
 class WikiBloc extends Bloc<WikiEvent, WikiState> {
   WikiBloc({
-    required IWikiRepository wikiRepository,
+    required WikiRepository wikiRepository,
   }) : super(WikiState.initial()) {
     on<WikiFetched>((event, emit) async {
       await tryAsync<Wiki?>(

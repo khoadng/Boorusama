@@ -58,7 +58,7 @@ class SearchHistorySuggestionsFetched extends SearchHistorySuggestionsEvent {
 class SearchHistorySuggestionsBloc
     extends Bloc<SearchHistorySuggestionsEvent, SearchHistorySuggestionsState> {
   SearchHistorySuggestionsBloc({
-    required ISearchHistoryRepository searchHistoryRepository,
+    required SearchHistoryRepository searchHistoryRepository,
   }) : super(SearchHistorySuggestionsState.initial()) {
     on<SearchHistorySuggestionsFetched>((event, emit) async {
       await tryAsync<List<SearchHistory>>(

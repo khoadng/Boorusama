@@ -2,15 +2,15 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_suggestions.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocomplete/autocomplete.dart';
+import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -84,12 +84,12 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   dense: true,
                   title: Text(
-                    'Recent',
+                    'search.history.recent',
                     style: Theme.of(context).textTheme.subtitle2!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
                         ),
-                  ),
+                  ).tr(),
                 ),
               ...histories.map(
                 (history) => ListTile(

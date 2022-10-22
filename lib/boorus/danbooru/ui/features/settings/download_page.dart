@@ -88,10 +88,8 @@ class _DownloadPageState extends State<DownloadPage> {
               //       contentBuilder: (context) =>
               //           const Text('Download might fail if using this path.'))
               ListTile(
-                subtitle: const Text(
-                    'Use this if the default method does not work. This method also has better notification support.'),
-                title: const Text(
-                    'Use alternative download method (EXPERIMENTAL)'),
+                subtitle: const Text('download.alternative_method_reason').tr(),
+                title: const Text('download.alternative_method_title').tr(),
                 trailing: Switch(
                     activeColor: Theme.of(context).colorScheme.primary,
                     value: state.settings.downloadMethod !=
@@ -111,8 +109,8 @@ class _DownloadPageState extends State<DownloadPage> {
                 valueListenable: changed,
                 builder: (context, value, _) => value
                     ? WarningContainer(
-                        contentBuilder: (context) => const Text(
-                            'You need to restart the app for this change to take effect'),
+                        contentBuilder: (context) =>
+                            const Text('download.app_restart_request').tr(),
                       )
                     : const SizedBox.shrink(),
               )

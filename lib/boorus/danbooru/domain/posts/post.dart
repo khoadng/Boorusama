@@ -6,6 +6,8 @@ import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
+const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
+
 class Post extends Equatable {
   const Post({
     required this.id,
@@ -22,7 +24,7 @@ class Post extends Equatable {
     required this.height,
     required this.format,
     required this.lastCommentAt,
-    required this.source,
+    required String? source,
     required this.createdAt,
     required this.score,
     required this.upScore,
@@ -40,7 +42,7 @@ class Post extends Equatable {
     required this.comments,
     required this.totalComments,
     this.artistCommentary,
-  });
+  }) : _source = source;
 
   factory Post.empty() => Post(
         id: 0,
@@ -57,7 +59,7 @@ class Post extends Equatable {
         height: 1,
         format: 'png',
         lastCommentAt: null,
-        source: ImageSource('', null),
+        source: null,
         createdAt: DateTime.now(),
         score: 0,
         upScore: 0,
@@ -66,7 +68,7 @@ class Post extends Equatable {
         uploaderId: 0,
         rating: Rating.explicit,
         fileSize: 0,
-        pixivId: 0,
+        pixivId: null,
         isBanned: false,
         hasChildren: false,
         hasParent: false,
@@ -79,7 +81,7 @@ class Post extends Equatable {
     required DateTime createdAt,
     required int uploaderId,
     required int score,
-    required ImageSource source,
+    required String source,
     required DateTime? lastCommentAt,
     required Rating rating,
     required double imageWidth,
@@ -149,7 +151,7 @@ class Post extends Equatable {
   final double height;
   final String format;
   final DateTime? lastCommentAt;
-  final ImageSource source;
+  final String? _source;
   final DateTime createdAt;
   final int score;
   final int upScore;
@@ -169,6 +171,7 @@ class Post extends Equatable {
   final ArtistCommentary? artistCommentary;
 
   Post copyWith({
+    int? id,
     List<String>? copyrightTags,
     List<String>? characterTags,
     List<String>? artistTags,
@@ -181,12 +184,15 @@ class Post extends Equatable {
     String? fullImageUrl,
     int? upScore,
     int? downScore,
+    int? score,
     int? favCount,
     bool? hasParent,
     bool? hasChildren,
+    int? pixivId,
+    String? source,
   }) =>
       Post(
-        id: id,
+        id: id ?? this.id,
         previewImageUrl: previewImageUrl,
         normalImageUrl: normalImageUrl ?? this.normalImageUrl,
         fullImageUrl: fullImageUrl ?? this.fullImageUrl,
@@ -200,22 +206,23 @@ class Post extends Equatable {
         height: height,
         format: format ?? this.format,
         lastCommentAt: lastCommentAt ?? this.lastCommentAt,
-        source: source,
+        source: source ?? _source,
         createdAt: createdAt,
-        score: score,
+        score: score ?? this.score,
         upScore: upScore ?? this.upScore,
         downScore: downScore ?? this.downScore,
         favCount: favCount ?? this.favCount,
         uploaderId: uploaderId,
         rating: rating,
         fileSize: fileSize,
-        pixivId: pixivId,
+        pixivId: pixivId ?? this.pixivId,
         isBanned: isBanned,
         hasChildren: hasChildren ?? this.hasChildren,
         hasParent: hasParent ?? this.hasParent,
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,
+        artistCommentary: artistCommentary,
       );
 
   double get aspectRatio => width / height;
@@ -247,6 +254,8 @@ class Post extends Equatable {
   int get totalVote => upScore + -downScore;
   bool get hasVoter => upScore != 0 || downScore != 0;
   bool get hasFavorite => favCount > 0;
+
+  String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
 
   @override
   List<Object?> get props => [id];

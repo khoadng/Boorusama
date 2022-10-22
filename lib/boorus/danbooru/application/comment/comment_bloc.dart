@@ -9,8 +9,8 @@ import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 
 class CommentBloc extends Bloc<CommentEvent, CommentState> {
   CommentBloc({
-    required ICommentRepository commentRepository,
-    required IAccountRepository accountRepository,
+    required CommentRepository commentRepository,
+    required AccountRepository accountRepository,
     required CommentVoteRepository commentVoteRepository,
   }) : super(CommentState.initial()) {
     on<CommentFetched>((event, emit) async {
@@ -20,7 +20,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
               emit(state.copyWith(status: LoadStatus.failure)),
           onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
           onSuccess: (comments) async {
-            final commentList = comments.where(notDeleted);
+            final commentList = comments.where((c) => c.isDeleted == false);
             final votes = await commentVoteRepository
                 .getCommentVotes(commentList.map((e) => e.id).toList());
 
@@ -43,12 +43,7 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
     });
 
     on<CommentSent>((event, emit) async {
-      var content = event.content;
-      if (event.replyTo != null) {
-        content =
-            '[quote]\n${event.replyTo!.authorName} said:\n\n${event.replyTo!.body}\n[/quote]\n\n$content';
-      }
-
+      final content = buildCommentContent(event);
       await tryAsync<bool>(
         action: () => commentRepository.postComment(event.postId, content),
         onSuccess: (success) async {
@@ -122,6 +117,16 @@ class CommentBloc extends Bloc<CommentEvent, CommentState> {
       );
     });
   }
+}
+
+String buildCommentContent(CommentSent event) {
+  var content = event.content;
+  if (event.replyTo != null) {
+    content =
+        '[quote]\n${event.replyTo!.authorName} said:\n\n${event.replyTo!.body}\n[/quote]\n\n$content';
+  }
+
+  return content;
 }
 
 List<CommentData> _updateWith(

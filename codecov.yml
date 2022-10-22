@@ -1,3 +1,4 @@
 ignore:
   - '**/*.g.dart'
   - '**/*.mocks.dart'
+  - '**/*_dto.dart'

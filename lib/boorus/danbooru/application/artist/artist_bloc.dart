@@ -50,7 +50,7 @@ class ArtistFetched extends ArtistEvent {
 
 class ArtistBloc extends Bloc<ArtistEvent, ArtistState> {
   ArtistBloc({
-    required IArtistRepository artistRepository,
+    required ArtistRepository artistRepository,
   }) : super(ArtistState.initial()) {
     on<ArtistFetched>(
       (event, emit) async {

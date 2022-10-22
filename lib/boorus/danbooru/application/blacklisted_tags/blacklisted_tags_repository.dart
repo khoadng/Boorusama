@@ -9,8 +9,8 @@ class BlacklistedTagsRepository {
     this.accountRepository,
   );
 
-  final IUserRepository userRepository;
-  final IAccountRepository accountRepository;
+  final UserRepository userRepository;
+  final AccountRepository accountRepository;
   List<String>? _cache;
 
   Future<List<String>> getBlacklistedTags() async {

@@ -14,7 +14,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
@@ -214,7 +214,6 @@ class _LargeLayout extends StatelessWidget {
                         } else {
                           return SearchOptions(
                             metatags: context.read<TagInfo>().metatags,
-                            config: context.read<IConfig>(),
                             onOptionTap: (value) {
                               final query = '$value:';
                               queryEditingController.text = query;
@@ -346,7 +345,6 @@ class _SmallLayout extends StatelessWidget {
                   } else {
                     return SearchOptions(
                       metatags: context.read<TagInfo>().metatags,
-                      config: context.read<IConfig>(),
                       onOptionTap: (value) {
                         final query = '$value:';
                         queryEditingController.text = query;

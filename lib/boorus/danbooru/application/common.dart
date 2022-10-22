@@ -1,10 +1,14 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/core/domain/error.dart';
+
 Future<void> tryAsync<T extends Object?>({
   required Future<T> Function() action,
   required Future<void> Function(T data) onSuccess,
-  void Function(StackTrace stackTrace, Object error)? onFailure,
+  void Function(StackTrace stackTrace, BooruError error)? onFailure,
+  void Function(StackTrace stackTrace, Object error)? onUnknownFailure,
   void Function()? onLoading,
 }) async {
   try {
@@ -12,9 +16,11 @@ Future<void> tryAsync<T extends Object?>({
     final data = await action();
     await onSuccess(data);
   } catch (e, stacktrace) {
-    // ignore: avoid_print
-    print(e);
-    onFailure?.call(stacktrace, e);
+    if (e is BooruError) {
+      onFailure?.call(stacktrace, e);
+    } else {
+      onUnknownFailure?.call(stacktrace, e);
+    }
   }
 }
 

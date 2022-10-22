@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
+import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/settings/i_setting_repository.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit({
@@ -12,7 +12,7 @@ class SettingsCubit extends Cubit<SettingsState> {
     required Settings settings,
   }) : super(SettingsState(settings: settings));
 
-  final ISettingRepository settingRepository;
+  final SettingRepository settingRepository;
 
   Future<void> update(Settings settings) async {
     final success = await settingRepository.save(settings);

@@ -10,7 +10,7 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
     required this.searchHistoryRepository,
   }) : super(const AsyncLoadState.initial());
 
-  final ISearchHistoryRepository searchHistoryRepository;
+  final SearchHistoryRepository searchHistoryRepository;
 
   Future<void> clearHistory() async {
     await tryAsync<bool>(

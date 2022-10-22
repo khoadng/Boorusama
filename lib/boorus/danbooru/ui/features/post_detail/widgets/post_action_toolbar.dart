@@ -11,11 +11,8 @@ import 'package:share_plus/share_plus.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/i_account_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/core/application/api/api.dart';
@@ -36,74 +33,45 @@ class PostActionToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (context) => PostVoteBloc(
-            postVoteRepository: context.read<PostVoteRepository>(),
-          )..add(PostVoteInit.fromPost(post)),
-        ),
-        BlocProvider(
-          create: (context) => IsPostFavoritedBloc(
-            accountRepository: context.read<IAccountRepository>(),
-            favoritePostRepository: context.read<IFavoritePostRepository>(),
-          )..add(IsPostFavoritedRequested(postId: post.id)),
-        ),
-      ],
-      child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-        builder: (context, authState) => ButtonBar(
-          buttonPadding: EdgeInsets.zero,
-          alignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildFavoriteButton(authState),
-            if (authState is Authenticated) _buildUpvoteButton(),
-            if (authState is Authenticated) _buildDownvoteButton(),
-            _buildCommentButton(context),
-            _buildDownloadButton(),
-            _buildShareButton(context),
-          ],
-        ),
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) => ButtonBar(
+        buttonPadding: EdgeInsets.zero,
+        alignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildFavoriteButton(context, authState),
+          if (authState is Authenticated) _buildUpvoteButton(context),
+          if (authState is Authenticated) _buildDownvoteButton(context),
+          _buildCommentButton(context),
+          _buildDownloadButton(),
+          _buildShareButton(context),
+        ],
       ),
     );
   }
 
-  Widget _buildUpvoteButton() {
-    return BlocBuilder<PostVoteBloc, PostVoteState>(
-      builder: (context, state) => IconButton(
-        icon: Icon(
-          Icons.arrow_upward,
-          color: state.state == VoteState.upvoted ? Colors.redAccent : null,
-        ),
-        onPressed: () {
-          _onPressedWithLoadingToast(
-            context: context,
-            status: state.status,
-            success: () => context
-                .read<PostVoteBloc>()
-                .add(PostVoteUpvoted(postId: post.id)),
-          );
-        },
+  Widget _buildUpvoteButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.arrow_upward,
+        color:
+            postData.voteState == VoteState.upvoted ? Colors.redAccent : null,
       ),
+      onPressed: () {
+        context.read<PostDetailBloc>().add(const PostDetailUpvoted());
+      },
     );
   }
 
-  Widget _buildDownvoteButton() {
-    return BlocBuilder<PostVoteBloc, PostVoteState>(
-      builder: (context, state) => IconButton(
-        icon: Icon(
-          Icons.arrow_downward,
-          color: state.state == VoteState.downvoted ? Colors.redAccent : null,
-        ),
-        onPressed: () {
-          _onPressedWithLoadingToast(
-            context: context,
-            status: state.status,
-            success: () => context
-                .read<PostVoteBloc>()
-                .add(PostVoteDownvoted(postId: post.id)),
-          );
-        },
+  Widget _buildDownvoteButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.arrow_downward,
+        color:
+            postData.voteState == VoteState.downvoted ? Colors.redAccent : null,
       ),
+      onPressed: () {
+        context.read<PostDetailBloc>().add(const PostDetailDownvoted());
+      },
     );
   }
 
@@ -159,77 +127,35 @@ class PostActionToolbar extends StatelessWidget {
     );
   }
 
-  Widget _buildFavoriteButton(AuthenticationState authState) {
-    return BlocBuilder<IsPostFavoritedBloc, AsyncLoadState<bool>>(
-      builder: (context, state) => IconButton(
-        onPressed: () async {
-          _onPressedWithLoadingToast(
+  Widget _buildFavoriteButton(
+      BuildContext context, AuthenticationState authState) {
+    return IconButton(
+      onPressed: () async {
+        if (authState is Unauthenticated) {
+          showSimpleSnackBar(
             context: context,
-            status: state.status,
-            success: () async {
-              final favBloc = context.read<IsPostFavoritedBloc>();
-              if (authState is Unauthenticated) {
-                showSimpleSnackBar(
-                  context: context,
-                  content: const Text(
-                    'post.detail.login_required_notice',
-                  ).tr(),
-                  duration: const Duration(seconds: 1),
-                );
-              }
-
-              final result = state.data!
-                  ? RepositoryProvider.of<IFavoritePostRepository>(context)
-                      .removeFromFavorites(post.id)
-                  : RepositoryProvider.of<IFavoritePostRepository>(context)
-                      .addToFavorites(post.id);
-
-              await result;
-
-              favBloc.add(IsPostFavoritedRequested(postId: post.id));
-            },
+            content: const Text(
+              'post.detail.login_required_notice',
+            ).tr(),
+            duration: const Duration(seconds: 1),
           );
-        },
-        icon: state.status == LoadStatus.success && state.data!
-            ? const FaIcon(
-                FontAwesomeIcons.solidHeart,
-                color: Colors.red,
-              )
-            : const FaIcon(
-                FontAwesomeIcons.heart,
-              ),
-      ),
+        }
+
+        context
+            .read<PostDetailBloc>()
+            .add(PostDetailFavoritesChanged(favorite: !postData.isFavorited));
+      },
+      icon: postData.isFavorited
+          ? const FaIcon(
+              FontAwesomeIcons.solidHeart,
+              color: Colors.red,
+            )
+          : const FaIcon(
+              FontAwesomeIcons.heart,
+            ),
     );
   }
 }
-
-void _onPressed({
-  required BuildContext context,
-  required LoadStatus status,
-  required void Function() success,
-  required void Function() loading,
-}) {
-  if (status == LoadStatus.success) {
-    success();
-  } else if (status == LoadStatus.initial || status == LoadStatus.loading) {
-    loading();
-  }
-}
-
-void _onPressedWithLoadingToast({
-  required BuildContext context,
-  required LoadStatus status,
-  required void Function() success,
-}) =>
-    _onPressed(
-      context: context,
-      status: status,
-      success: success,
-      loading: () => showSimpleSnackBar(
-        context: context,
-        content: const Text('Please wait...'),
-      ),
-    );
 
 enum ShareMode {
   source,
@@ -239,9 +165,9 @@ enum ShareMode {
 String getShareContent(ShareMode mode, Post post, String endpoint) {
   final booruLink = '${endpoint}posts/${post.id}';
   if (mode == ShareMode.booru) return booruLink;
-  if (post.source.uri == null) return booruLink;
+  if (post.source == null) return booruLink;
 
-  return post.source.uri.toString();
+  return post.source.toString();
 }
 
 class ModalShare extends StatelessWidget {
@@ -268,7 +194,7 @@ class ModalShare extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          if (post.source.uri != null)
+          if (post.source != null)
             ListTile(
               title: const Text('post.detail.share.source').tr(),
               leading: const FaIcon(FontAwesomeIcons.link),

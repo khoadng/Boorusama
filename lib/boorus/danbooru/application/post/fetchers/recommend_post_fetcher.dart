@@ -18,12 +18,7 @@ class RecommendPostFetcher implements PostFetcher {
     PostRepository repo,
     int page,
   ) async {
-    final posts = await repo.getPosts(
-      tag,
-      1,
-      limit: 10,
-      skipFavoriteCheck: true,
-    );
+    final posts = await repo.getPosts(tag, 1);
 
     return posts.take(amount).toList();
   }

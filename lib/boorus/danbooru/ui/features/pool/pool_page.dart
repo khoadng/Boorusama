@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -104,8 +103,7 @@ class _PoolPageState extends State<PoolPage> {
                   );
                 } else if (state.status == LoadStatus.success) {
                   if (state.pools.isEmpty) {
-                    return const SliverToBoxAdapter(
-                        child: Center(child: Text('No data')));
+                    return const SliverToBoxAdapter(child: NoDataBox());
                   }
                   return BlocBuilder<SettingsCubit, SettingsState>(
                     builder: (context, settingsState) {
@@ -121,9 +119,7 @@ class _PoolPageState extends State<PoolPage> {
                   );
                 } else {
                   return const SliverToBoxAdapter(
-                    child: Center(
-                      child: Text('Something went wrong'),
-                    ),
+                    child: ErrorBox(),
                   );
                 }
               },
@@ -207,7 +203,10 @@ class PoolOptionsHeader extends StatelessWidget {
             borderWidth: 1,
             inactiveBgColor: Theme.of(context).chipTheme.backgroundColor,
             activeBgColor: [Theme.of(context).colorScheme.primary],
-            labels: [PoolCategory.series.name, PoolCategory.collection.name],
+            labels: [
+              _poolCategoryToString(PoolCategory.series).tr(),
+              _poolCategoryToString(PoolCategory.collection).tr(),
+            ],
             onToggle: (index) {
               context.read<PoolOverviewBloc>().add(PoolOverviewChanged(
                     category: index == 0
@@ -297,3 +296,6 @@ String _poolOrderToString(PoolOrder order) {
       return 'pool.order.recent';
   }
 }
+
+String _poolCategoryToString(PoolCategory category) =>
+    'pool.category.${category.name}';

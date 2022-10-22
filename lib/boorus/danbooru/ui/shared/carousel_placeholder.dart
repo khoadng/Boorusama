@@ -9,19 +9,38 @@ import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_carousel.d
 import 'package:boorusama/core/core.dart';
 
 class CarouselPlaceholder extends StatelessWidget {
-  const CarouselPlaceholder({Key? key}) : super(key: key);
+  const CarouselPlaceholder({
+    Key? key,
+    this.child,
+  }) : super(key: key);
+
+  factory CarouselPlaceholder.error(BuildContext context) =>
+      CarouselPlaceholder(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            color: Theme.of(context).cardColor,
+          ),
+          child: const Center(
+            child: Icon(Icons.broken_image_outlined),
+          ),
+        ),
+      );
+
+  final Widget? child;
 
   @override
   Widget build(BuildContext context) {
     return CarouselSlider.builder(
       itemCount: 20,
       itemBuilder: (context, index, realIndex) {
-        return Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Theme.of(context).cardColor,
-          ),
-        );
+        return child ??
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Theme.of(context).cardColor,
+              ),
+            );
       },
       options: CarouselOptions(
         aspectRatio: 1.5,

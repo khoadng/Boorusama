@@ -10,7 +10,7 @@ class SearchKeywordCubit extends Cubit<AsyncLoadState<List<Search>>> {
     this.popularSearchRepository,
     this.excludedTags,
   ) : super(const AsyncLoadState.initial());
-  final IPopularSearchRepository popularSearchRepository;
+  final PopularSearchRepository popularSearchRepository;
   final Set<String> excludedTags;
 
   Future<void> getTags() async => tryAsync<List<Search>>(

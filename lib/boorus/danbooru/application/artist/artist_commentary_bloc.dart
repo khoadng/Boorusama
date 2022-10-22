@@ -57,19 +57,19 @@ class ArtistCommentaryFetched extends ArtistCommentaryEvent {
 class ArtistCommentaryBloc
     extends Bloc<ArtistCommentaryEvent, ArtistCommentaryState> {
   ArtistCommentaryBloc({
-    required IArtistCommentaryRepository artistCommentaryRepository,
+    required ArtistCommentaryRepository artistCommentaryRepository,
   }) : super(ArtistCommentaryState.initial()) {
     on<ArtistCommentaryFetched>(
       (event, emit) async {
-        await tryAsync<ArtistCommentaryDto>(
+        await tryAsync<ArtistCommentary>(
             action: () =>
                 artistCommentaryRepository.getCommentary(event.postId),
             onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
             onFailure: (stackTrace, error) =>
                 emit(state.copyWith(status: LoadStatus.failure)),
-            onSuccess: (dto) async {
+            onSuccess: (commentary) async {
               emit(state.copyWith(
-                commentary: dto.toEntity(),
+                commentary: commentary,
                 status: LoadStatus.success,
               ));
             });

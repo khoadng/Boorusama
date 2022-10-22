@@ -10,8 +10,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post_favorite_info_bl
 import 'package:boorusama/boorus/danbooru/application/post/post_vote_info_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/i_user_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -38,8 +38,8 @@ class PostStatsTile extends StatelessWidget {
               builder: (context) => BlocProvider(
                 create: (context) => PostFavoriteInfoBloc(
                   favoritePostRepository:
-                      context.read<IFavoritePostRepository>(),
-                  userRepository: context.read<IUserRepository>(),
+                      context.read<FavoritePostRepository>(),
+                  userRepository: context.read<UserRepository>(),
                 )..add(PostFavoriteInfoFetched(
                     postId: post.id,
                     refresh: true,
@@ -58,7 +58,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Favorites',
+                    text: 'favorites.counter'.plural(post.favCount),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -76,7 +76,7 @@ class PostStatsTile extends StatelessWidget {
               builder: (context) => BlocProvider(
                 create: (context) => PostVoteInfoBloc(
                   postVoteRepository: context.read<PostVoteRepository>(),
-                  userRepository: context.read<IUserRepository>(),
+                  userRepository: context.read<UserRepository>(),
                 )..add(PostVoteInfoFetched(
                     postId: post.id,
                     refresh: true,
@@ -95,7 +95,8 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'Points ${_generatePercentText(post)}',
+                    text:
+                        '${'post.detail.score'.plural(post.score)} ${_generatePercentText(post)}',
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -117,7 +118,7 @@ class PostStatsTile extends StatelessWidget {
                 ),
                 children: [
                   TextSpan(
-                    text: 'comment.comments'.tr(),
+                    text: 'comment.counter'.plural(post.totalComments),
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
@@ -233,7 +234,7 @@ class _VoterViewState extends State<VoterView> {
                     (context, index) {
                       final voter = state.upvoters[index];
                       return InfoTile(
-                        title: voter.user.name.value,
+                        title: voter.user.name,
                         level: voter.user.level,
                       );
                     },
@@ -337,7 +338,7 @@ class _FavoriterViewState extends State<FavoriterView> {
                       final user = state.favoriters[index];
                       return ListTile(
                         title: Text(
-                          user.name.value,
+                          user.name,
                           style: TextStyle(color: Color(user.level.hexColor)),
                         ),
                       );

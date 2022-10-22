@@ -18,6 +18,16 @@ class CommentVote extends Equatable {
     required this.isDeleted,
   });
 
+  factory CommentVote.empty() => CommentVote(
+        id: -1,
+        commentId: -1,
+        userId: -1,
+        score: 0,
+        createdAt: DateTime(1),
+        updatedAt: DateTime(1),
+        isDeleted: false,
+      );
+
   final CommentVoteId id;
   final CommentId commentId;
   final UserId userId;
@@ -25,6 +35,22 @@ class CommentVote extends Equatable {
   final DateTime createdAt;
   final DateTime updatedAt;
   final bool isDeleted;
+
+  CommentVote copyWith({
+    CommentVoteId? id,
+    CommentId? commentId,
+    UserId? userId,
+    CommentScore? score,
+  }) =>
+      CommentVote(
+        id: id ?? this.id,
+        commentId: commentId ?? this.commentId,
+        userId: userId ?? this.userId,
+        score: score ?? this.score,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isDeleted: isDeleted,
+      );
 
   @override
   List<Object?> get props => [

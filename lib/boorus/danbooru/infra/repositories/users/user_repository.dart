@@ -3,9 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/api.dart';
+import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<User> parseUser(
@@ -17,14 +18,14 @@ List<User> parseUser(
       converter: (item) => UserDto.fromJson(item),
     ).map((u) => userDtoToUser(u, defaultBlacklistedTags)).toList();
 
-class UserRepository implements IUserRepository {
-  UserRepository(
+class UserRepositoryApi implements UserRepository {
+  UserRepositoryApi(
     this._api,
     this._accountRepository,
     this.defaultBlacklistedTags,
   );
 
-  final IAccountRepository _accountRepository;
+  final AccountRepository _accountRepository;
   final Api _api;
   final List<String> defaultBlacklistedTags;
 
@@ -75,4 +76,23 @@ class UserRepository implements IUserRepository {
               blacklistedTags,
             ),
           );
+}
+
+User userDtoToUser(
+  UserDto d,
+  List<String> defaultBlacklistedTags,
+) {
+  try {
+    return User(
+      id: d.id!,
+      level: intToUserLevel(d.level!),
+      name: d.name!,
+      //TODO: need to find a way to distinguish between other user and current user.
+      blacklistedTags: d.blacklistedTags == null
+          ? defaultBlacklistedTags
+          : tagStringToListTagString(d.blacklistedTags!),
+    );
+  } catch (e) {
+    throw Exception('fail to parse one of the required field\n $e');
+  }
 }

@@ -11,12 +11,11 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/api.dart';
+import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
-import 'package:boorusama/boorus/danbooru/infra/apis/danbooru/danbooru_api.dart';
 
-const maxRetry = 7;
+const maxRetry = 4;
 
 List<Duration> exponentialBackoff(int retries) =>
     [for (var i = 0; i < retries; i += 1) i]
@@ -40,6 +39,8 @@ Dio dio(Directory dir, String baseUrl) {
     dio: dio,
     logPrint: print,
     retries: maxRetry,
+    retryEvaluator: (error, attempt) =>
+        ![500, 422, 429, 302].contains(error.response?.statusCode),
     retryDelays: exponentialBackoff(maxRetry),
   ));
 

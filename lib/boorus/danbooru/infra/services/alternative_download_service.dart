@@ -8,10 +8,10 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/application/download/i_download_service.dart';
+import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 
-class AlternativeDownloadService implements IDownloadService<Post> {
+class AlternativeDownloadService implements DownloadService<Post> {
   AlternativeDownloadService({
     required FileNameGenerator fileNameGenerator,
     required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,

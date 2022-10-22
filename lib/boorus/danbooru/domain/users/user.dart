@@ -5,7 +5,6 @@ import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'user_dto.dart';
 import 'user_level.dart';
 
 @immutable
@@ -18,9 +17,9 @@ class User extends Equatable {
   });
 
   factory User.placeholder() => const User(
-        id: UserId(0),
+        id: 0,
         level: UserLevel.member,
-        name: Username('User'),
+        name: 'User',
         blacklistedTags: [],
       );
 
@@ -33,37 +32,7 @@ class User extends Equatable {
   List<Object?> get props => [id, level, name, blacklistedTags];
 }
 
-class Username extends Equatable {
-  const Username(this.value);
-  final String value;
-  @override
-  List<Object?> get props => [value];
-}
-
-class UserId extends Equatable {
-  const UserId(this.value);
-  final int value;
-  @override
-  List<Object?> get props => [value];
-}
-
-User userDtoToUser(
-  UserDto d,
-  List<String> defaultBlacklistedTags,
-) {
-  try {
-    return User(
-      id: UserId(d.id!),
-      level: intToUserLevel(d.level!),
-      name: Username(d.name!),
-      //TODO: need to find a way to distinguish between other user and current user.
-      blacklistedTags: d.blacklistedTags == null
-          ? defaultBlacklistedTags
-          : tagStringToListTagString(d.blacklistedTags!),
-    );
-  } catch (e) {
-    throw Exception('fail to parse one of the required field\n $e');
-  }
-}
+typedef UserId = int;
+typedef Username = String;
 
 List<String> tagStringToListTagString(String str) => str.split('\n');

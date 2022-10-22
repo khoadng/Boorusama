@@ -10,18 +10,16 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infra/configs/i_config.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/warning_container.dart';
 import 'package:boorusama/core/utils.dart';
+import 'package:boorusama/main.dart';
 import 'search_history.dart';
 
 class SearchOptions extends StatefulWidget {
   const SearchOptions({
     Key? key,
-    required this.config,
     this.onOptionTap,
     this.onHistoryTap,
     this.onTagTap,
@@ -32,7 +30,6 @@ class SearchOptions extends StatefulWidget {
   final ValueChanged<String>? onHistoryTap;
   final ValueChanged<String>? onTagTap;
 
-  final IConfig config;
   final List<Metatag> metatags;
 
   @override
@@ -106,7 +103,7 @@ class _SearchOptionsState extends State<SearchOptions>
                     IconButton(
                       onPressed: () {
                         launchExternalUrl(
-                          Uri.parse(widget.config.cheatSheetUrl),
+                          Uri.parse(cheatsheetUrl),
                           mode: LaunchMode.platformDefault,
                         );
                       },
@@ -209,10 +206,11 @@ class _SearchOptionsState extends State<SearchOptions>
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     ElevatedButton(
-                        onPressed: () => setState(() {
-                              editMode = false;
-                            }),
-                        child: const Text('Done')),
+                      onPressed: () => setState(() {
+                        editMode = false;
+                      }),
+                      child: const Text('generic.done').tr(),
+                    ),
                   ],
                 ),
               const Divider(thickness: 1),

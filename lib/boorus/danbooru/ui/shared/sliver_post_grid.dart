@@ -233,7 +233,7 @@ class SliverPostGridItem extends StatelessWidget {
           ),
         ),
         FutureBuilder<Account>(
-          future: gridContext.read<IAccountRepository>().get(),
+          future: gridContext.read<AccountRepository>().get(),
           builder: (context, snapshot) {
             if (snapshot.hasData && snapshot.data! != Account.empty) {
               return CupertinoContextMenuAction(
@@ -245,35 +245,39 @@ class SliverPostGridItem extends StatelessWidget {
 
                   final action = postData.isFavorited
                       ? context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .removeFromFavorites(post.id)
                       : context
-                          .read<IFavoritePostRepository>()
+                          .read<FavoritePostRepository>()
                           .addToFavorites(post.id);
 
                   final success = await action;
-                  final successMsg =
-                      postData.isFavorited ? 'Unfavorited' : 'Favorited';
+                  final successMsg = postData.isFavorited
+                      ? 'favorites.unfavorited'
+                      : 'favorites.favorited';
                   final failMsg = postData.isFavorited
-                      ? 'Fail to unfavorite this post'
-                      : 'Fail to favorite this post';
+                      ? 'favorites.fail_to_unfavorite'
+                      : 'favorites.fail_to_favorite';
 
                   if (success) {
                     onFavoriteUpdated.call(post.id, !postData.isFavorited);
                     showSimpleSnackBar(
                       context: gridContext,
-                      content: Text(successMsg),
+                      content: Text(successMsg).tr(),
                       duration: const Duration(seconds: 1),
                     );
                   } else {
                     showSimpleSnackBar(
                       context: gridContext,
-                      content: Text(failMsg),
+                      content: Text(failMsg).tr(),
                       duration: const Duration(seconds: 2),
                     );
                   }
                 },
-                child: Text(postData.isFavorited ? 'Unfavorite' : 'Favorite'),
+                child: Text(postData.isFavorited
+                        ? 'favorites.unfavorite'
+                        : 'favorites.favorite')
+                    .tr(),
               );
             } else {
               return const SizedBox.shrink();

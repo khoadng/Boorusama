@@ -6,33 +6,75 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 Future<List<PostData>> createPostData(
-  IFavoritePostRepository favoritePostRepository,
+  FavoritePostRepository favoritePostRepository,
+  PostVoteRepository voteRepository,
+  PoolRepository poolRepository,
   List<Post> posts,
-  IAccountRepository accountRepository,
+  AccountRepository accountRepository,
 ) async {
+  Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools) {
+    final postMap = {for (final p in posts) p.id: <Pool>{}};
+
+    for (final p in pools) {
+      // ignore: prefer_foreach
+      for (final i in p.postIds) {
+        if (postMap.containsKey(i)) {
+          postMap[i]!.add(p);
+        }
+      }
+    }
+
+    return postMap;
+  }
+
   final account = await accountRepository.get();
+  final ids = posts.map((e) => e.id).toList();
+
   if (account == Account.empty) {
+    final pools = await poolRepository.getPoolsByPostIds(ids);
+    final postMap = createPostPoolMap(pools);
+
     return posts
         .map((post) => PostData(
               post: post,
               isFavorited: false,
+              pools: postMap[post.id]!.toList(),
             ))
         .toList();
   } else {
+    List<Favorite> favs = [];
+    List<PostVote> votes = [];
+    List<Pool> pools = [];
+
     //TODO: shoudn't hardcode limit count
-    final favs = await favoritePostRepository.filterFavoritesFromUserId(
-      posts.map((e) => e.id).toList(),
-      account.id,
-      200,
-    );
+    await Future.wait([
+      favoritePostRepository
+          .filterFavoritesFromUserId(
+            ids,
+            account.id,
+            200,
+          )
+          .then((value) => favs = value),
+      voteRepository.getPostVotes(ids).then((value) => votes = value),
+      poolRepository.getPoolsByPostIds(ids).then((value) => pools = value),
+    ]);
+
     final favSet = favs.map((e) => e.postId).toSet();
+    final voteMap = {for (final v in votes) v.postId: v.score};
+    final postMap = createPostPoolMap(pools);
+
     return posts
         .map((post) => PostData(
               post: post,
               isFavorited: favSet.contains(post.id),
+              voteState: voteMap.containsKey(post.id)
+                  ? voteStateFromScore(voteMap[post.id]!)
+                  : VoteState.unvote,
+              pools: postMap[post.id]!.toList(),
             ))
         .toList();
   }

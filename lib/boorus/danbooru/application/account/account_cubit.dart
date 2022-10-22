@@ -10,7 +10,7 @@ class AccountCubit extends Cubit<AsyncLoadState<Account>> {
     required this.accountRepository,
   }) : super(const AsyncLoadState.initial());
 
-  final IAccountRepository accountRepository;
+  final AccountRepository accountRepository;
 
   void setAccount(Account account) {
     tryAsync<void>(

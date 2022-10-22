@@ -5,17 +5,17 @@ import 'package:dio/dio.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/core/infra/caching/cacher.dart';
 
-class ArtistCommentaryCacher implements IArtistCommentaryRepository {
+class ArtistCommentaryCacher implements ArtistCommentaryRepository {
   ArtistCommentaryCacher({
     required this.cache,
     required this.repo,
   });
 
   final Cacher cache;
-  final IArtistCommentaryRepository repo;
+  final ArtistCommentaryRepository repo;
 
   @override
-  Future<ArtistCommentaryDto> getCommentary(
+  Future<ArtistCommentary> getCommentary(
     int postId, {
     CancelToken? cancelToken,
   }) async {

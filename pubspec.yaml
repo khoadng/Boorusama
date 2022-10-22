@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none"
-version: 2.5.1+30
+version: 2.5.2+32
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -17,14 +17,14 @@ dependencies:
   collection: ^1.16.0
   connectivity_plus: ^2.3.7
   cross_file: ^0.3.3+2
-  device_info_plus: ^4.0.0
+  device_info_plus: ^6.0.0
   dio: ^4.0.6
   dio_cache_interceptor: ^3.3.1
   dio_cache_interceptor_hive_store: ^3.2.0
   dio_smart_retry: ^1.3.2
   easy_localization: ^3.0.1
   equatable: ^2.0.5
-  file_picker: ^5.2.0
+  file_picker: ^5.2.1
   filesize: ^2.0.1
   fluro: ^2.0.3
   flutter:
@@ -38,7 +38,7 @@ dependencies:
       url: https://github.com/khoadng/flutter_html.git
       ref: fix-rebuild
   flutter_improved_scrolling: ^0.0.3
-  flutter_local_notifications: ^11.0.0
+  flutter_local_notifications: ^12.0.2
   flutter_portal: ^1.1.1
   flutter_tags_x: ^1.1.0
   font_awesome_flutter: ^10.2.1
@@ -54,7 +54,7 @@ dependencies:
     git:
       url: https://github.com/hilalbaig/number_inc_dec.git
       ref: f66ee872727172ce2fe57f118d569339d54c384d
-  package_info_plus: ^1.4.2
+  package_info_plus: ^2.0.0
   path: ^1.8.2
   path_provider: ^2.0.11
   permission_handler: ^10.0.1
@@ -65,14 +65,14 @@ dependencies:
   quiver: ^3.1.0
   rate_my_app: ^1.1.3
   recase: ^4.0.0
-  retrofit: ^3.0.1+1
+  retrofit: ^3.3.1
   rich_text_controller:
     git:
       url: https://github.com/khoadng/rich_text_controller.git
       ref: flutter-3.0
   rxdart: ^0.27.4
   scroll_to_index: ^3.0.1
-  sentry_flutter: ^6.11.2
+  sentry_flutter: ^6.12.2
   share_plus: ^4.4.0
   timeago: ^3.3.0
   toggle_switch: ^2.0.1

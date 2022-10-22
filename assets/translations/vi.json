@@ -1,4 +1,12 @@
 {
+    "generic" : {
+        "done" : "Xong",
+        "errors" : {
+            "no_data" : "Không có dữ liệu",
+            "unknown" : "Xảy ra lỗi ngoài dự kiến"
+        }
+    },
+
     "profile": {
         "profile" : "Hồ sơ",
         "favorites" : "Yêu thích",
@@ -37,6 +45,10 @@
             "related" : "Liên quan",
             "add_to_current_search" : "Thêm vào thanh tìm kiếm",
             "open_wiki" : "Mở wiki"
+        },
+        "explore" : {
+            "new": "Mới",
+            "popular": "Phổ biến"
         }
     },
 
@@ -64,7 +76,11 @@
             "show_translated" : "Xem bản dịch",
             "login_required_notice" : "Bạn cần đăng nhập để thực hiện tác vụ này",
             "open_wiki" : "Mở wiki",
-            "add_to_blacklist" : "Thêm vào bộ lọc"
+            "add_to_blacklist" : "Thêm vào bộ lọc",
+            "score" : {
+                "one" : "Điểm",
+                "other": "Điểm"
+            }
         },
         "parent_child": {
             "children_of": "Ảnh chung bộ với"
@@ -93,6 +109,10 @@
             "noComments" : "Không có bình luận",
             "last_updated" : "Cập nhật lần cuối",
             "send" : "Gửi"
+        },
+        "counter" : {
+            "one" : "Bình luận",
+            "other" : "Bình luận"
         }
     },
 
@@ -100,8 +120,8 @@
         "latest": "Mới",
         "popular": "Phổ biến",
         "curated": "Tuyển chọn",
-        "most_viewed": "Xem nhiều",
         "hot": "Hot",
+        "most_viewed": "Xem nhiều",
         "see_more" : "Xem thêm"
     },
 
@@ -119,7 +139,8 @@
         "metatags_notice": "Free metatags không tính vào giới hạn tag search",
         "history" : {
             "history" : "Lịch sử",
-            "clear": "Xóa"
+            "clear": "Xóa",
+            "recent" : "Gần đây"
         },
         "trending" : "Xu hướng"
     },
@@ -133,6 +154,10 @@
             "new" : "Mới",
             "post_count": "Số lượng",
             "name" : "Tên"
+        },
+        "category" : {
+            "series" : "Series",
+            "collection" : "Collection"
         },
         "search" : {
             "hint": "Tìm ảnh"
@@ -215,7 +240,27 @@
     "download" : {
         "download" : "Tải ảnh",
         "open_app_settings" : "Mở cài đặt",
-        "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh."
+        "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
+        "alternative_method_reason": "Dùng cái này nếu cách tải chính không chạy được, cách này hỗ trợ thông báo tốt hơn",
+        "alternative_method_title" : "Dùng trình tải file khác (THỬ NGHIỆM)",
+        "app_restart_request" : "Cần thoát app để thay đổi được áp dụng",
+        "image_counter" : {
+            "one": "Tải {} ảnh",
+            "other": "Tải {} ảnh"
+        }
+    },
+
+    "favorites" : {
+        "counter" : {
+            "one" : "Lượt thích",
+            "other" : "Lượt thích"
+        },
+        "favorited" : "Đã yêu thích",
+        "favorite" : "Yêu thích",
+        "unfavorited"  : "Đã xoá yêu thích",
+        "unfavorite"  : "Xoá yêu thích",
+        "failed_to_unfavorite" : "Xảy ra lỗi khi thích ảnh này",
+        "failed_to_favorite" : "Xảy ra lỗi khi xoá yêu thích ảnh này"
     },
 
     "rating" : {

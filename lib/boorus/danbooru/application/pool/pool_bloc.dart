@@ -12,7 +12,6 @@ import 'package:tuple/tuple.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 
 @immutable
 class PoolState extends Equatable {
