@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_reposit
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/core/domain/error.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>

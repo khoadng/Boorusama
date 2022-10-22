@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 
 class PostState extends Equatable
     implements InfiniteLoadState<PostData, PostState> {
