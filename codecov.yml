@@ -1,3 +1,7 @@
+comment:
+  layout: "reach, diff, flags, files"
+  require_changes: true
+
 ignore:
   - '**/*.g.dart'
   - '**/*.mocks.dart'
