@@ -17,28 +17,11 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_reposit
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/core/domain/error.dart';
 
-extension PostFetcherX on PostFetcher {
-  Future<List<PostData>> Function() fetchWith({
-    required PostRepository postRepository,
-    required BlacklistedTagsRepository blacklistedTagsRepository,
-    required FavoritePostRepository favoritePostRepository,
-    required AccountRepository accountRepository,
-    required PostVoteRepository postVoteRepository,
-    required PoolRepository poolRepository,
-  }) =>
-      () => fetch(postRepository, 1)
-          .then(createPostDataWith(
-            favoritePostRepository,
-            postVoteRepository,
-            poolRepository,
-            accountRepository,
-          ))
-          .then(filterWith(blacklistedTagsRepository));
-}
-
-class PostBloc extends Bloc<PostEvent, PostState> {
+class PostBloc extends Bloc<PostEvent, PostState>
+    with InfiniteLoadMixin<PostData, PostState> {
   PostBloc({
     required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
@@ -47,66 +30,50 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     required PostVoteRepository postVoteRepository,
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
+    List<PostData>? initialData,
   }) : super(PostState.initial()) {
-    on<PostFetched>(
-      (event, emit) async {
-        await tryAsync<List<PostData>>(
-          action: event.fetcher.fetchWith(
-            postRepository: postRepository,
-            blacklistedTagsRepository: blacklistedTagsRepository,
-            favoritePostRepository: favoritePostRepository,
-            accountRepository: accountRepository,
-            postVoteRepository: postVoteRepository,
-            poolRepository: poolRepository,
-          ),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-          onFailure: (stackTrace, error) => _emitError(error, emit),
-          onSuccess: (postDatas) async {
-            emit(
-              state.copyWith(
-                status: LoadStatus.success,
-                posts: [
-                  ...state.posts,
-                  ...postDatas,
-                ],
-                page: state.page + 1,
-                hasMore: postDatas.isNotEmpty,
-              ),
-            );
-          },
-        );
-      },
-      transformer: droppable(),
-    );
-
     on<PostRefreshed>(
       (event, emit) async {
-        await tryAsync<List<PostData>>(
-          action: event.fetcher.fetchWith(
-            postRepository: postRepository,
-            blacklistedTagsRepository: blacklistedTagsRepository,
-            favoritePostRepository: favoritePostRepository,
-            accountRepository: accountRepository,
-            postVoteRepository: postVoteRepository,
-            poolRepository: poolRepository,
+        await refresh(
+          emit: EmitConfig(
+            stateGetter: () => state,
+            emitter: emit,
           ),
-          onLoading: () => emit(state.copyWith(status: LoadStatus.initial)),
-          onFailure: (stackTrace, error) => _emitError(error, emit),
-          onUnknownFailure: (stackTrace, error) =>
-              _emitError(BooruError(error: error), emit),
-          onSuccess: (postDatas) async {
-            emit(
-              state.copyWith(
-                status: LoadStatus.success,
-                posts: postDatas,
-                page: 1,
-                hasMore: postDatas.isNotEmpty,
-              ),
-            );
-          },
+          refresh: (page) => event.fetcher
+              .fetch(postRepository, page)
+              .then(createPostDataWith(
+                favoritePostRepository,
+                postVoteRepository,
+                poolRepository,
+                accountRepository,
+              ))
+              .then(filterWith(blacklistedTagsRepository)),
+          onError: handleErrorWith(emit),
         );
       },
       transformer: restartable(),
+    );
+
+    on<PostFetched>(
+      (event, emit) async {
+        await fetch(
+          emit: EmitConfig(
+            stateGetter: () => state,
+            emitter: emit,
+          ),
+          fetch: (page) => event.fetcher
+              .fetch(postRepository, page)
+              .then(createPostDataWith(
+                favoritePostRepository,
+                postVoteRepository,
+                poolRepository,
+                accountRepository,
+              ))
+              .then(filterWith(blacklistedTagsRepository)),
+          onError: handleErrorWith(emit),
+        );
+      },
+      transformer: droppable(),
     );
 
     on<PostFavoriteUpdated>((event, emit) {
@@ -143,6 +110,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         );
       }
     });
+
+    data = initialData ?? [];
   }
 
   factory PostBloc.of(BuildContext context) => PostBloc(
@@ -153,6 +122,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
       );
+
+  void Function(Object error, StackTrace stackTrace) handleErrorWith(
+    Emitter emit,
+  ) =>
+      (error, stackTrace) => error is BooruError
+          ? _emitError(error, emit)
+          : _emitError(BooruError(error: error), emit);
 
   void _emitError(BooruError error, Emitter emit) {
     final failureState = state.copyWith(status: LoadStatus.failure);

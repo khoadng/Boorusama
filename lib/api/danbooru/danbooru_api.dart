@@ -302,7 +302,7 @@ abstract class Api {
     @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('search[post_id]') String postIdsComma,
-    @Query('search[user_id]') String userId,
+    @Query('search[user_id]') String? userId,
     @Query('search[is_deleted]') bool isDeleted,
     @Query('limit') int limit,
   );
