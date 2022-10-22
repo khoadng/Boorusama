@@ -1,4 +1,6 @@
+export 'filter.dart';
 export 'post.dart';
+export 'post_data.dart';
 export 'post_repository.dart';
 export 'post_vote.dart';
 export 'post_vote_repository.dart';
