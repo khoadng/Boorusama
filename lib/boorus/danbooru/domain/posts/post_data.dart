@@ -59,76 +59,90 @@ Future<List<PostData>> Function(List<Post> posts) createPostDataWith(
           accountRepository,
         );
 
+Future<List<PostData>> Function(Account account) process(
+  List<Post> posts, {
+  required Future<List<PostData>> Function(List<Post> posts) forAnonymous,
+  required Future<List<PostData>> Function(List<Post> posts, Account account)
+      forUser,
+}) =>
+    (account) => account == Account.empty
+        ? forAnonymous(posts)
+        : forUser(posts, account);
+
+Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools, List<Post> posts) {
+  final postMap = {for (final p in posts) p.id: <Pool>{}};
+
+  for (final p in pools) {
+    // ignore: prefer_foreach
+    for (final i in p.postIds) {
+      if (postMap.containsKey(i)) {
+        postMap[i]!.add(p);
+      }
+    }
+  }
+
+  return postMap;
+}
+
 Future<List<PostData>> createPostData(
   FavoritePostRepository favoritePostRepository,
   PostVoteRepository voteRepository,
   PoolRepository poolRepository,
   List<Post> posts,
   AccountRepository accountRepository,
-) async {
-  Map<int, Set<Pool>> createPostPoolMap(List<Pool> pools) {
-    final postMap = {for (final p in posts) p.id: <Pool>{}};
+) =>
+    accountRepository.get().then(process(
+          posts,
+          forAnonymous: (posts) async {
+            final ids = posts.map((e) => e.id).toList();
+            final pools = await poolRepository.getPoolsByPostIds(ids);
+            final postMap = createPostPoolMap(pools, posts);
 
-    for (final p in pools) {
-      // ignore: prefer_foreach
-      for (final i in p.postIds) {
-        if (postMap.containsKey(i)) {
-          postMap[i]!.add(p);
-        }
-      }
-    }
+            return posts
+                .map((post) => PostData(
+                      post: post,
+                      isFavorited: false,
+                      pools: postMap[post.id]!.toList(),
+                    ))
+                .toList();
+          },
+          forUser: (posts, account) async {
+            List<Favorite> favs = [];
+            List<PostVote> votes = [];
+            List<Pool> pools = [];
+            final ids = posts.map((e) => e.id).toList();
 
-    return postMap;
-  }
+            //TODO: shoudn't hardcode limit count
+            await Future.wait([
+              favoritePostRepository
+                  .filterFavoritesFromUserId(
+                    ids,
+                    account.id,
+                    200,
+                  )
+                  .then((value) => favs = value),
+              voteRepository.getPostVotes(ids).then((value) => votes = value),
+              poolRepository
+                  .getPoolsByPostIds(ids)
+                  .then((value) => pools = value),
+            ]);
 
-  final account = await accountRepository.get();
-  final ids = posts.map((e) => e.id).toList();
+            final favSet = favs.map((e) => e.postId).toSet();
+            final voteMap = {for (final v in votes) v.postId: v.score};
+            final postMap = createPostPoolMap(pools, posts);
 
-  if (account == Account.empty) {
-    final pools = await poolRepository.getPoolsByPostIds(ids);
-    final postMap = createPostPoolMap(pools);
-
-    return posts
-        .map((post) => PostData(
-              post: post,
-              isFavorited: false,
-              pools: postMap[post.id]!.toList(),
-            ))
-        .toList();
-  } else {
-    List<Favorite> favs = [];
-    List<PostVote> votes = [];
-    List<Pool> pools = [];
-
-    //TODO: shoudn't hardcode limit count
-    await Future.wait([
-      favoritePostRepository
-          .filterFavoritesFromUserId(
-            ids,
-            account.id,
-            200,
-          )
-          .then((value) => favs = value),
-      voteRepository.getPostVotes(ids).then((value) => votes = value),
-      poolRepository.getPoolsByPostIds(ids).then((value) => pools = value),
-    ]);
-
-    final favSet = favs.map((e) => e.postId).toSet();
-    final voteMap = {for (final v in votes) v.postId: v.score};
-    final postMap = createPostPoolMap(pools);
-
-    return posts
-        .map((post) => PostData(
-              post: post,
-              isFavorited: favSet.contains(post.id),
-              voteState: voteMap.containsKey(post.id)
-                  ? voteStateFromScore(voteMap[post.id]!)
-                  : VoteState.unvote,
-              pools: postMap[post.id]!.toList(),
-            ))
-        .toList();
-  }
-}
+            return posts
+                .map((post) => PostData(
+                      post: post,
+                      isFavorited: favSet.contains(post.id),
+                      voteState: voteMap.containsKey(post.id)
+                          ? voteStateFromScore(voteMap[post.id]!)
+                          : VoteState.unvote,
+                      pools: postMap[post.id]!.toList(),
+                    ))
+                .toList();
+          },
+        ));
 
 Future<List<PostData>> Function(List<PostData> posts) filterWith(
   BlacklistedTagsRepository blacklistedTagsRepository,
