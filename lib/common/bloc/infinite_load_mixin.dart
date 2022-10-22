@@ -53,6 +53,16 @@ mixin InfiniteLoadMixin<T, State> {
       refreshing = true;
       page = 1;
 
+      if (emit != null) {
+        emit.emitter(emit.stateGetter().copyLoadState(
+              refreshing: refreshing,
+              loading: loading,
+              hasMore: hasMore,
+              data: data,
+              page: page,
+            ));
+      }
+
       onRefreshStart?.call();
 
       final d = await refresh(page);

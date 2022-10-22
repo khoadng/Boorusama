@@ -52,6 +52,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.tag_limit',
@@ -77,6 +78,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.database_timeout',
@@ -102,6 +104,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.unknown',
@@ -147,6 +150,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
           exceptionMessage: 'search.errors.unknown',
@@ -217,6 +221,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
@@ -265,6 +270,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
@@ -315,6 +321,7 @@ void main() {
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
       expect: () => [
+        PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.success,
           posts: [
