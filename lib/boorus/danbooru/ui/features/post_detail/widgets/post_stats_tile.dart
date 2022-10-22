@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_level.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
@@ -266,7 +267,7 @@ class _InfoTile extends StatelessWidget {
       visualDensity: VisualDensity.comfortable,
       title: Text(
         title,
-        style: TextStyle(color: Color(level.hexColor)),
+        style: TextStyle(color: Color(getUserHexColor(level))),
       ),
     );
   }
@@ -338,7 +339,9 @@ class _FavoriterViewState extends State<_FavoriterView> {
                         return ListTile(
                           title: Text(
                             user.name,
-                            style: TextStyle(color: Color(user.level.hexColor)),
+                            style: TextStyle(
+                              color: Color(getUserHexColor(user.level)),
+                            ),
                           ),
                         );
                       },

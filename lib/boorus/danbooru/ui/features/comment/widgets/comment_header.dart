@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/users/users.dart';
 
 class CommentHeader extends StatelessWidget {
   const CommentHeader({
@@ -28,7 +29,9 @@ class CommentHeader extends StatelessWidget {
         Text(
           authorName.replaceAll('_', ' '),
           style: TextStyle(
-            color: authorLevel != null ? Color(authorLevel!.hexColor) : null,
+            color: authorLevel != null
+                ? Color(getUserHexColor(authorLevel!))
+                : null,
             fontSize: 15,
             fontWeight: FontWeight.w500,
           ),

@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/application/search_history/search_hist
 import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({
@@ -184,7 +184,7 @@ Color? _getTagColor(AutocompleteData tag, ThemeMode theme) {
       theme,
     );
   } else if (tag.hasUserLevel) {
-    return Color(tag.level!.hexColor);
+    return Color(getUserHexColor(tag.level!));
   }
 
   return null;
