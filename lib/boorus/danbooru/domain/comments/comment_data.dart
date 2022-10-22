@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/accounts/account.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -84,11 +84,32 @@ class CommentData extends Equatable {
       ];
 }
 
-CommentData Function(Comment comment) createCommentDataWith({
+List<CommentData> Function(List<CommentData> comments) sortDescendedById() =>
+    (comments) => comments..sort((a, b) => a.id.compareTo(b.id));
+
+CommentData Function(Comment comment) createCommentData({
   required Account account,
   required List<CommentVote> votes,
 }) =>
     (comment) => commentDataFrom(comment, comment.creator, account, votes);
+
+Future<List<CommentData>> Function(List<Comment> comments)
+    createCommentDataWith(
+  AccountRepository accountRepository,
+  CommentVoteRepository commentVoteRepository,
+) =>
+        (comments) async {
+          final votes = await commentVoteRepository
+              .getCommentVotes(comments.map((e) => e.id).toList());
+          final account = await accountRepository.get();
+
+          return comments
+              .map(createCommentData(
+                account: account,
+                votes: votes,
+              ))
+              .toList();
+        };
 
 CommentData commentDataFrom(
   Comment comment,
