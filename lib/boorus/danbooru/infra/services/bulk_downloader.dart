@@ -1,21 +1,21 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/alternative_download_service.dart';
-import 'package:boorusama/core/application/download/download_service.dart';
+
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
+import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
     hasScopedStorage(deviceInfo);
@@ -25,61 +25,49 @@ Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
         ? defaultPath
         : await IOHelper.getDownloadPath();
 
-Future<DownloadService<Post>> createDownloader(
-  DownloadMethod method,
-  FileNameGenerator fileNameGenerator,
-  DeviceInfo deviceInfo,
-  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
-) async {
-  if (method == DownloadMethod.imageGallerySaver) {
-    final d = AlternativeDownloadService(
-      fileNameGenerator: fileNameGenerator,
-      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
-    );
-    await d.init();
-
-    return d;
-  }
-
-  final d = DownloadServiceFlutterDownloader(
-    fileNameGenerator: fileNameGenerator,
-    deviceInfo: deviceInfo,
-  );
-
-  if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize();
-  }
-
-  await d.init();
-
-  return d;
-}
-
-class DownloadServiceFlutterDownloader implements DownloadService<Post> {
-  DownloadServiceFlutterDownloader({
-    required FileNameGenerator fileNameGenerator,
+class BulkDownloader {
+  BulkDownloader({
+    required FileNameGenerator<Post> fileNameGenerator,
     required this.deviceInfo,
   }) : _fileNameGenerator = fileNameGenerator;
 
-  final FileNameGenerator _fileNameGenerator;
+  final FileNameGenerator<Post> _fileNameGenerator;
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   String _savedDir = '';
+  final Map<String, int> _taskIdToPostIdMap = {};
 
-  @override
-  Future<void> download(
-    downloadable, {
+  final _eventController = StreamController<dynamic>.broadcast();
+  final compositeSubscription = CompositeSubscription();
+
+  Future<void> enqueueDownload(
+    Post downloadable, {
     String? path,
     String? folderName,
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
-    await FlutterDownloader.enqueue(
+    final id = await FlutterDownloader.enqueue(
       saveInPublicStorage: _shouldUsePublicStorage(deviceInfo),
       url: downloadable.downloadUrl,
       fileName: fileName,
       savedDir: await _getSaveDir(deviceInfo, _savedDir),
     );
+
+    if (id != null) {
+      _taskIdToPostIdMap[id] = downloadable.id;
+    }
   }
+
+  Stream<int> get stream => _eventController.stream
+      .map((data) {
+        final String id = data[0];
+        final DownloadTaskStatus status = data[1];
+        // final int progress = data[2];
+
+        return Tuple2(id, status);
+      })
+      .where((event) => event.item2 == DownloadTaskStatus.complete)
+      .map((event) => _taskIdToPostIdMap[event.item1]!);
 
   Future<void> _prepare() async {
     // This won't be used.
@@ -103,11 +91,12 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     IsolateNameServer.removePortNameMapping('downloader_send_port');
   }
 
-  @override
   Future<void> init() async {
     _bindBackgroundIsolate();
     await FlutterDownloader.registerCallback(downloadCallback);
     await _prepare();
+
+    _port.listen(_eventController.add).addTo(compositeSubscription);
   }
 
   static void downloadCallback(
@@ -119,8 +108,9 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     send!.send([id, status, progress]);
   }
 
-  @override
   void dispose() {
     _unbindBackgroundIsolate();
+    _eventController.close();
+    compositeSubscription.dispose();
   }
 }

@@ -1,7 +1,8 @@
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PostDownloadDataState extends Equatable {
   const PostDownloadDataState({
@@ -70,11 +71,22 @@ class _DownloadRequested extends PostDownloadDataEvent {
   List<Object?> get props => [post, tagName];
 }
 
+class _DownloadDone extends PostDownloadDataEvent {
+  const _DownloadDone({
+    required this.postId,
+  });
+
+  final int postId;
+
+  @override
+  List<Object?> get props => [postId];
+}
+
 class PostDownloadDataBloc
     extends Bloc<PostDownloadDataEvent, PostDownloadDataState> {
   PostDownloadDataBloc({
     required PostRepository postRepository,
-    required DownloadService<Post> downloadService,
+    required BulkDownloader downloader,
   }) : super(PostDownloadDataState.initial()) {
     on<PostDownloadDataFetched>((event, emit) async {
       emit(state.copyWith(totalCount: event.postCount));
@@ -102,17 +114,44 @@ class PostDownloadDataBloc
 
     on<_DownloadRequested>(
       (event, emit) async {
-        await downloadService.download(event.post, folderName: event.tagName);
+        await downloader.enqueueDownload(event.post, folderName: event.tagName);
         final newset = {
           ...state.downloadItemIds,
           event.post.id,
         };
         emit(state.copyWith(
-          doneCount: newset.length,
           downloadItemIds: newset,
         ));
       },
     );
+
+    on<_DownloadDone>((event, emit) {
+      if (state.downloadItemIds.contains(event.postId)) {
+        final newset = {...state.downloadItemIds};
+        // ignore: cascade_invocations
+        newset.remove(event.postId);
+
+        emit(state.copyWith(
+          doneCount: state.totalCount - newset.length,
+          downloadItemIds: newset,
+        ));
+      }
+    });
+
+    downloader.stream
+        .listen(
+          (postId) => add(_DownloadDone(postId: postId)),
+        )
+        .addTo(compositeSubscription);
+  }
+
+  final CompositeSubscription compositeSubscription = CompositeSubscription();
+
+  @override
+  Future<void> close() {
+    compositeSubscription.dispose();
+
+    return super.close();
   }
 }
 
