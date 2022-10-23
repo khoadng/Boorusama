@@ -182,6 +182,7 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
+            RepositoryProvider<DownloadService<Post>>.value(value: downloader),
             RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(

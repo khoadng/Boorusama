@@ -1,7 +1,9 @@
+import 'package:boorusama/boorus/danbooru/application/post/post_download_data_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class BulkDownloadPage extends StatefulWidget {
@@ -32,26 +34,42 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                     child: ValueListenableBuilder<AutocompleteData?>(
                       valueListenable: selectedTag,
                       builder: (context, value, child) {
-                        return value == null
-                            ? Container(
+                        return value != null && value.postCount != null
+                            ? Column(
+                                children: [
+                                  Text(
+                                    '${value.label} (${value.postCount})',
+                                  ),
+                                  TextButton.icon(
+                                    onPressed: () => context
+                                        .read<PostDownloadDataBloc>()
+                                        .add(PostDownloadDataFetched(
+                                          tag: value.value,
+                                          postCount: value.postCount!,
+                                        )),
+                                    icon: const Icon(Icons.info),
+                                    label: const Text('download'),
+                                  ),
+                                ],
+                              )
+                            : Container(
                                 width: MediaQuery.of(context).size.width,
                                 height: 100,
                                 color: Theme.of(context).cardColor,
                                 child: const Text('Empty'),
-                              )
-                            : Column(
-                                children: [
-                                  Text('${value.label} (${value.postCount}) '),
-                                  TextButton.icon(
-                                    onPressed: () => print('fetch'),
-                                    icon: const Icon(Icons.info),
-                                    label: const Text('fetch metadata'),
-                                  ),
-                                ],
                               );
                       },
                     ),
                   ),
+                ),
+                BlocBuilder<PostDownloadDataBloc, PostDownloadDataState>(
+                  builder: (context, state) {
+                    return SliverToBoxAdapter(
+                      child: Text(
+                        "Queued ${state.doneCount} / ${state.totalCount} images (Some images might be hidden and won't be downloaded)",
+                      ),
+                    );
+                  },
                 ),
               ],
             ),

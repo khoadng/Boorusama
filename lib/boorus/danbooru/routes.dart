@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/post/post_download_data_bloc.dart';
+import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/ui/features/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
 
@@ -383,7 +385,13 @@ final blacklistedTagsHandler =
 
 final bulkDownloadHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
-  return const BulkDownloadPage();
+  return BlocProvider(
+    create: (context) => PostDownloadDataBloc(
+      postRepository: context.read<PostRepository>(),
+      downloadService: context.read<DownloadService<Post>>(),
+    ),
+    child: const BulkDownloadPage(),
+  );
 });
 
 Post _newPost(Post post, String tag, TagCategory category) {
