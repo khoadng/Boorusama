@@ -39,7 +39,16 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                                 color: Theme.of(context).cardColor,
                                 child: const Text('Empty'),
                               )
-                            : Text('${value.label} (${value.postCount}) ');
+                            : Column(
+                                children: [
+                                  Text('${value.label} (${value.postCount}) '),
+                                  TextButton.icon(
+                                    onPressed: () => print('fetch'),
+                                    icon: const Icon(Icons.info),
+                                    label: const Text('fetch metadata'),
+                                  ),
+                                ],
+                              );
                       },
                     ),
                   ),
