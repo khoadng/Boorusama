@@ -17,13 +17,17 @@ import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
-bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
-    hasScopedStorage(deviceInfo);
+class DownloadData {
+  const DownloadData(
+    this.postId,
+    this.path,
+    this.fileName,
+  );
 
-Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
-    hasScopedStorage(deviceInfo)
-        ? defaultPath
-        : await IOHelper.getDownloadPath();
+  final int postId;
+  final String path;
+  final String fileName;
+}
 
 class BulkDownloader {
   BulkDownloader({
@@ -35,7 +39,7 @@ class BulkDownloader {
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   String _savedDir = '';
-  final Map<String, int> _taskIdToPostIdMap = {};
+  final Map<String, DownloadData> _taskIdToPostIdMap = {};
 
   final _eventController = StreamController<dynamic>.broadcast();
   final compositeSubscription = CompositeSubscription();
@@ -43,22 +47,37 @@ class BulkDownloader {
   Future<void> enqueueDownload(
     Post downloadable, {
     String? path,
-    String? folderName,
+    required String folderName,
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
-    final id = await FlutterDownloader.enqueue(
-      saveInPublicStorage: _shouldUsePublicStorage(deviceInfo),
-      url: downloadable.downloadUrl,
-      fileName: fileName,
-      savedDir: await _getSaveDir(deviceInfo, _savedDir),
-    );
+
+    final usePublicStorage = hasScopedStorage(deviceInfo);
+
+    final downloadDir = await IOHelper.getDownloadPath();
+
+    final id = usePublicStorage
+        ? await FlutterDownloader.enqueue(
+            saveInPublicStorage: true,
+            url: downloadable.downloadUrl,
+            fileName: fileName,
+            savedDir: _savedDir, // won't be used
+          )
+        : await FlutterDownloader.enqueue(
+            url: downloadable.downloadUrl,
+            fileName: fileName,
+            savedDir: await IOHelper.getDownloadPath(),
+          );
 
     if (id != null) {
-      _taskIdToPostIdMap[id] = downloadable.id;
+      _taskIdToPostIdMap[id] = DownloadData(
+        downloadable.id,
+        '$downloadDir/$fileName',
+        fileName,
+      );
     }
   }
 
-  Stream<int> get stream => _eventController.stream
+  Stream<DownloadData> get stream => _eventController.stream
       .map((data) {
         final String id = data[0];
         final DownloadTaskStatus status = data[1];

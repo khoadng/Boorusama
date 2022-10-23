@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -10,6 +14,7 @@ class PostDownloadDataState extends Equatable {
     required this.doneCount,
     required this.downloadItemIds,
     required this.isDone,
+    required this.storagePath,
   });
 
   factory PostDownloadDataState.initial() => const PostDownloadDataState(
@@ -17,24 +22,28 @@ class PostDownloadDataState extends Equatable {
         doneCount: 0,
         downloadItemIds: {},
         isDone: false,
+        storagePath: '',
       );
 
   final int totalCount;
   final int doneCount;
   final Set<int> downloadItemIds;
   final bool isDone;
+  final String storagePath;
 
   PostDownloadDataState copyWith({
     int? totalCount,
     int? doneCount,
     Set<int>? downloadItemIds,
     bool? isDone,
+    String? storagePath,
   }) =>
       PostDownloadDataState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
         downloadItemIds: downloadItemIds ?? this.downloadItemIds,
         isDone: isDone ?? this.isDone,
+        storagePath: storagePath ?? this.storagePath,
       );
 
   @override
@@ -73,13 +82,13 @@ class _DownloadRequested extends PostDownloadDataEvent {
 
 class _DownloadDone extends PostDownloadDataEvent {
   const _DownloadDone({
-    required this.postId,
+    required this.data,
   });
 
-  final int postId;
+  final DownloadData data;
 
   @override
-  List<Object?> get props => [postId];
+  List<Object?> get props => [data];
 }
 
 class PostDownloadDataBloc
@@ -89,14 +98,15 @@ class PostDownloadDataBloc
     required BulkDownloader downloader,
   }) : super(PostDownloadDataState.initial()) {
     on<PostDownloadDataFetched>((event, emit) async {
-      emit(state.copyWith(totalCount: event.postCount));
+      final storagePath = await _createSubfolderIfNeeded(event.tag);
+      emit(state.copyWith(
+        totalCount: event.postCount,
+        storagePath: storagePath,
+      ));
       final pages = (event.postCount / 60).ceil();
       for (var i = 1; i <= pages; i += 1) {
         final posts = await postRepository.getPosts(event.tag, i);
-        // final metadatas = posts
-        //     .map((e) =>
-        //         PostDownloadMetadata(downloadUrl: e.downloadUrl, postId: e.id))
-        //     .toList();
+
         for (final p in posts) {
           if (state.downloadItemIds.contains(p.id)) continue;
 
@@ -125,12 +135,17 @@ class PostDownloadDataBloc
       },
     );
 
-    on<_DownloadDone>((event, emit) {
-      if (state.downloadItemIds.contains(event.postId)) {
+    on<_DownloadDone>((event, emit) async {
+      if (state.downloadItemIds.contains(event.data.postId)) {
         final newset = {...state.downloadItemIds};
         // ignore: cascade_invocations
-        newset.remove(event.postId);
-
+        newset.remove(event.data.postId);
+        final from = event.data.path;
+        final to = '${state.storagePath}/${event.data.fileName}';
+        if (kDebugMode) {
+          print('Moving $from to $to');
+        }
+        await moveFile(File(from), to);
         emit(state.copyWith(
           doneCount: state.totalCount - newset.length,
           downloadItemIds: newset,
@@ -140,7 +155,7 @@ class PostDownloadDataBloc
 
     downloader.stream
         .listen(
-          (postId) => add(_DownloadDone(postId: postId)),
+          (data) => add(_DownloadDone(data: data)),
         )
         .addTo(compositeSubscription);
   }
@@ -155,15 +170,28 @@ class PostDownloadDataBloc
   }
 }
 
-class PostDownloadMetadata extends Equatable {
-  const PostDownloadMetadata({
-    required this.downloadUrl,
-    required this.postId,
-  });
+Future<String> _createSubfolderIfNeeded(
+  String folderName,
+) async {
+  final downloadDir = await IOHelper.getDownloadPath();
+  final folder = '$downloadDir/$folderName';
 
-  final int postId;
-  final String downloadUrl;
+  if (!Directory(folder).existsSync()) {
+    Directory(folder).createSync();
+  }
 
-  @override
-  List<Object?> get props => [postId, downloadUrl];
+  return folder;
+}
+
+Future<File> moveFile(File sourceFile, String newPath) async {
+  try {
+    // prefer using rename as it is probably faster
+    return await sourceFile.rename(newPath);
+  } on FileSystemException catch (_) {
+    // if rename fails, copy the source file and then delete it
+    final newFile = await sourceFile.copy(newPath);
+    await sourceFile.delete();
+
+    return newFile;
+  }
 }
