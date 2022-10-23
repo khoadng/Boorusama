@@ -68,6 +68,11 @@ class AppRouter {
         transitionType: TransitionType.material,
       )
       ..define(
+        '/bulk_download',
+        handler: bulkDownloadHandler,
+        transitionType: TransitionType.material,
+      )
+      ..define(
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.material,

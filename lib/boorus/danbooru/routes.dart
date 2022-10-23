@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/ui/features/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -378,6 +379,11 @@ final blacklistedTagsHandler =
     ],
     child: const BlacklistedTagsPage(),
   );
+});
+
+final bulkDownloadHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return const BulkDownloadPage();
 });
 
 Post _newPost(Post post, String tag, TagCategory category) {
