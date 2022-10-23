@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/post/post_download_data_bloc.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/alternative_download_service.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/ui/features/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/api/api.dart';
-import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -388,7 +387,7 @@ final bulkDownloadHandler =
   return BlocProvider(
     create: (context) => PostDownloadDataBloc(
       postRepository: context.read<PostRepository>(),
-      downloadService: context.read<DownloadService<Post>>(),
+      downloadService: context.read<AlternativeDownloadService>(),
     ),
     child: const BulkDownloadPage(),
   );

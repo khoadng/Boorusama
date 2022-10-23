@@ -57,6 +57,17 @@ class PostDownloadDataFetched extends PostDownloadDataEvent {
   List<Object?> get props => [tag, postCount];
 }
 
+class _DownloadRequested extends PostDownloadDataEvent {
+  const _DownloadRequested({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  List<Object?> get props => [post];
+}
+
 class PostDownloadDataBloc
     extends Bloc<PostDownloadDataEvent, PostDownloadDataState> {
   PostDownloadDataBloc({
@@ -65,8 +76,8 @@ class PostDownloadDataBloc
   }) : super(PostDownloadDataState.initial()) {
     on<PostDownloadDataFetched>((event, emit) async {
       emit(state.copyWith(totalCount: event.postCount));
-      final pages = (event.postCount / 50).ceil();
-      for (var i = 1; i <= pages; i++) {
+      final pages = (event.postCount / 60).ceil();
+      for (var i = 1; i <= pages; i += 1) {
         final posts = await postRepository.getPosts(event.tag, i);
         // final metadatas = posts
         //     .map((e) =>
@@ -74,14 +85,32 @@ class PostDownloadDataBloc
         //     .toList();
         for (final p in posts) {
           if (state.downloadItemIds.contains(p.id)) continue;
-          await downloadService.download(p);
-          emit(state.copyWith(doneCount: state.doneCount + 1, downloadItemIds: {
-            ...state.downloadItemIds,
-            p.id,
-          }));
+
+          add(_DownloadRequested(post: p));
+
+          emit(state.copyWith(
+            downloadItemIds: {
+              ...state.downloadItemIds,
+              p.id,
+            },
+          ));
         }
       }
     });
+
+    on<_DownloadRequested>(
+      (event, emit) async {
+        await downloadService.download(event.post);
+        final newset = {
+          ...state.downloadItemIds,
+          event.post.id,
+        };
+        emit(state.copyWith(
+          doneCount: newset.length,
+          downloadItemIds: newset,
+        ));
+      },
+    );
   }
 }
 

@@ -2,6 +2,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post_download_data_bl
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
@@ -40,15 +41,17 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                                   Text(
                                     '${value.label} (${value.postCount})',
                                   ),
-                                  TextButton.icon(
-                                    onPressed: () => context
-                                        .read<PostDownloadDataBloc>()
-                                        .add(PostDownloadDataFetched(
-                                          tag: value.value,
-                                          postCount: value.postCount!,
-                                        )),
-                                    icon: const Icon(Icons.info),
-                                    label: const Text('download'),
+                                  DownloadProviderWidget(
+                                    builder: (context, _) => TextButton.icon(
+                                      onPressed: () => context
+                                          .read<PostDownloadDataBloc>()
+                                          .add(PostDownloadDataFetched(
+                                            tag: value.value,
+                                            postCount: value.postCount!,
+                                          )),
+                                      icon: const Icon(Icons.info),
+                                      label: const Text('download'),
+                                    ),
                                   ),
                                 ],
                               )
