@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/infra/services/alternative_download_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -162,11 +161,7 @@ void main() async {
     deviceInfo,
     flutterLocalNotificationsPlugin,
   );
-  final bulkDownloader = AlternativeDownloadService(
-    fileNameGenerator: fileNameGenerator,
-    flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
-    enableNotification: false,
-  );
+  final bulkDownloader = downloader;
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
@@ -188,7 +183,7 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
-            RepositoryProvider.value(
+            RepositoryProvider<DownloadService<Post>>.value(
               value: bulkDownloader,
             ),
             RepositoryProvider.value(value: userMetatagRepo),

@@ -60,12 +60,14 @@ class PostDownloadDataFetched extends PostDownloadDataEvent {
 class _DownloadRequested extends PostDownloadDataEvent {
   const _DownloadRequested({
     required this.post,
+    required this.tagName,
   });
 
   final Post post;
+  final String tagName;
 
   @override
-  List<Object?> get props => [post];
+  List<Object?> get props => [post, tagName];
 }
 
 class PostDownloadDataBloc
@@ -86,7 +88,7 @@ class PostDownloadDataBloc
         for (final p in posts) {
           if (state.downloadItemIds.contains(p.id)) continue;
 
-          add(_DownloadRequested(post: p));
+          add(_DownloadRequested(post: p, tagName: event.tag));
 
           emit(state.copyWith(
             downloadItemIds: {
@@ -100,7 +102,7 @@ class PostDownloadDataBloc
 
     on<_DownloadRequested>(
       (event, emit) async {
-        await downloadService.download(event.post);
+        await downloadService.download(event.post, folderName: event.tagName);
         final newset = {
           ...state.downloadItemIds,
           event.post.id,

@@ -28,7 +28,11 @@ class AlternativeDownloadService implements DownloadService<Post> {
   void dispose() {}
 
   @override
-  Future<void> download(item, {String? path}) async {
+  Future<void> download(
+    item, {
+    String? path,
+    String? folderName,
+  }) async {
     final dio = Dio();
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       item.id.toString(),
