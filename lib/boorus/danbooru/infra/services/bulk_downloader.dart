@@ -57,12 +57,14 @@ class BulkDownloader {
     final id = usePublicStorage
         ? await FlutterDownloader.enqueue(
             saveInPublicStorage: true,
+            showNotification: false,
             url: downloadable.downloadUrl,
             fileName: fileName,
             savedDir: _savedDir, // won't be used
           )
         : await FlutterDownloader.enqueue(
             url: downloadable.downloadUrl,
+            showNotification: false,
             fileName: fileName,
             savedDir: await IOHelper.getDownloadPath(),
           );
