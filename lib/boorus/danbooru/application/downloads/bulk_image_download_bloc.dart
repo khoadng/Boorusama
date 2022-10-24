@@ -289,7 +289,6 @@ class BulkImageDownloadBloc
         emit(state.copyWith(
           doneCount: state.doneCount + 1,
           downloadQueue: queue,
-          status: queue.isEmpty ? BulkImageDownloadStatus.done : null,
           downloaded: [
             ...state.downloaded,
             DownloadImageData(
@@ -301,6 +300,11 @@ class BulkImageDownloadBloc
             ),
           ],
         ));
+
+        if (queue.isEmpty) {
+          await Future.delayed(const Duration(seconds: 1));
+          emit(state.copyWith(status: BulkImageDownloadStatus.done));
+        }
       },
       transformer: sequential(),
     );

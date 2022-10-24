@@ -12,6 +12,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 
 class BulkDownloadPage extends StatefulWidget {
   const BulkDownloadPage({
@@ -118,6 +119,22 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                       title: const Text('Done'),
                       trailing: AnimatedFlipCounter(value: state.doneCount),
                     ),
+                    if (state.totalCount > 0)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: CircularPercentIndicator(
+                          radius: 75,
+                          lineWidth: 15,
+                          animation: true,
+                          animateFromLastPercent: true,
+                          circularStrokeCap: CircularStrokeCap.round,
+                          percent: state.doneCount / state.totalCount,
+                          center: Text(
+                            '${(state.doneCount / state.totalCount * 100).floor()}%',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        ),
+                      ),
                     InfoContainer(
                       contentBuilder: (context) => const Text(
                         "Some images might be hidden and won't be downloaded",
