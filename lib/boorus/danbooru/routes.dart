@@ -391,10 +391,9 @@ final bulkDownloadHandler =
     create: (context) => BulkImageDownloadBloc(
       postRepository: context.read<PostRepository>(),
       downloader: context.read<BulkDownloader>(),
+      initialSelected: initialSelectedTags,
     ),
-    child: BulkDownloadPage(
-      tags: initialSelectedTags,
-    ),
+    child: const BulkDownloadPage(),
   );
 });
 

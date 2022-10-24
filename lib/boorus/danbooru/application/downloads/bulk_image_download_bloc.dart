@@ -2,6 +2,7 @@
 import 'dart:io';
 
 // Flutter imports:
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -15,67 +16,104 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/infra/infra.dart';
 
+enum BulkImageDownloadStatus {
+  initial,
+  dataSelected,
+  downloadInProgress,
+  failure,
+  done,
+}
+
 class BulkImageDownloadState extends Equatable {
   const BulkImageDownloadState({
     required this.totalCount,
     required this.doneCount,
-    required this.downloadItemIds,
-    required this.isDone,
     required this.storagePath,
+    required this.status,
+    required this.selectedTags,
+    required this.didFetchAllPage,
+    required this.downloadQueue,
+    required this.downloaded,
   });
 
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
         totalCount: 0,
         doneCount: 0,
-        downloadItemIds: {},
-        isDone: false,
         storagePath: '',
+        status: BulkImageDownloadStatus.initial,
+        selectedTags: [],
+        didFetchAllPage: false,
+        downloadQueue: [],
+        downloaded: [],
       );
 
   final int totalCount;
   final int doneCount;
-  final Set<int> downloadItemIds;
-  final bool isDone;
   final String storagePath;
+  final BulkImageDownloadStatus status;
+  final List<String> selectedTags;
+  final bool didFetchAllPage;
+  final List<int> downloadQueue;
+  final List<DownloadImageData> downloaded;
 
   BulkImageDownloadState copyWith({
     int? totalCount,
     int? doneCount,
-    Set<int>? downloadItemIds,
-    bool? isDone,
     String? storagePath,
+    BulkImageDownloadStatus? status,
+    List<String>? selectedTags,
+    bool? didFetchAllPage,
+    List<int>? downloadQueue,
+    List<DownloadImageData>? downloaded,
   }) =>
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
-        downloadItemIds: downloadItemIds ?? this.downloadItemIds,
-        isDone: isDone ?? this.isDone,
         storagePath: storagePath ?? this.storagePath,
+        status: status ?? this.status,
+        selectedTags: selectedTags ?? this.selectedTags,
+        didFetchAllPage: didFetchAllPage ?? this.didFetchAllPage,
+        downloadQueue: downloadQueue ?? this.downloadQueue,
+        downloaded: downloaded ?? this.downloaded,
       );
 
   @override
-  List<Object?> get props => [totalCount, doneCount, downloadItemIds, isDone];
+  List<Object?> get props => [
+        totalCount,
+        doneCount,
+        storagePath,
+        downloadQueue,
+        status,
+        selectedTags,
+        didFetchAllPage,
+        downloaded,
+      ];
 }
 
 abstract class BulkImageDownloadEvent extends Equatable {
   const BulkImageDownloadEvent();
 }
 
-class BulkImageDownloadRequested extends BulkImageDownloadEvent {
-  const BulkImageDownloadRequested({
-    required this.tag,
-    required this.postCount,
-  });
-
-  final String tag;
-  final int postCount;
-
-  @override
-  List<Object?> get props => [tag, postCount];
-}
-
 class BulkImagesDownloadRequested extends BulkImageDownloadEvent {
   const BulkImagesDownloadRequested({
+    required this.tags,
+  });
+
+  final List<String> tags;
+
+  @override
+  List<Object?> get props => [tags];
+}
+
+class BulkImageDownloadReset extends BulkImageDownloadEvent {
+  const BulkImageDownloadReset();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BulkImageDownloadTagsAdded extends BulkImageDownloadEvent {
+  const BulkImageDownloadTagsAdded({
     required this.tags,
   });
 
@@ -114,43 +152,51 @@ class BulkImageDownloadBloc
   BulkImageDownloadBloc({
     required PostRepository postRepository,
     required BulkDownloader downloader,
-  }) : super(BulkImageDownloadState.initial()) {
-    on<BulkImageDownloadRequested>((event, emit) async {
-      final permission = await Permission.storage.status;
-      //TODO: ask permission here, set some state to notify user
-      if (permission != PermissionStatus.granted) {
-        final status = await Permission.storage.request();
-        if (status != PermissionStatus.granted) {
-          return;
-        }
-      }
+    List<String>? initialSelected,
+  }) : super(BulkImageDownloadState.initial().copyWith(
+          selectedTags: initialSelected,
+          status: initialSelected != null && initialSelected.isNotEmpty
+              ? BulkImageDownloadStatus.dataSelected
+              : null,
+        )) {
+    // on<BulkImageDownloadRequested>((event, emit) async {
+    //   final permission = await Permission.storage.status;
+    //   //TODO: ask permission here, set some state to notify user
+    //   if (permission != PermissionStatus.granted) {
+    //     final status = await Permission.storage.request();
+    //     if (status != PermissionStatus.granted) {
+    //       emit(state.copyWith(status: BulkImageDownloadStatus.failure));
 
-      final storagePath = await _createSubfolderIfNeeded(
-        fixInvalidCharacterForPathName(event.tag),
-      );
-      emit(state.copyWith(
-        totalCount: event.postCount,
-        storagePath: storagePath,
-      ));
+    //       return;
+    //     }
+    //   }
 
-      final pages = (event.postCount / 60).ceil();
-      for (var i = 1; i <= pages; i += 1) {
-        final posts = await postRepository.getPosts(event.tag, i);
+    //   final storagePath = await _createSubfolderIfNeeded(
+    //     fixInvalidCharacterForPathName(event.tag),
+    //   );
+    //   emit(state.copyWith(
+    //     totalCount: event.postCount,
+    //     storagePath: storagePath,
+    //   ));
 
-        for (final p in posts) {
-          if (state.downloadItemIds.contains(p.id)) continue;
+    //   final pages = (event.postCount / 60).ceil();
+    //   for (var i = 1; i <= pages; i += 1) {
+    //     final posts = await postRepository.getPosts(event.tag, i);
 
-          add(_DownloadRequested(post: p, tagName: event.tag));
+    //     for (final p in posts) {
+    //       if (state.downloadItemIds.contains(p.id)) continue;
 
-          emit(state.copyWith(
-            downloadItemIds: {
-              ...state.downloadItemIds,
-              p.id,
-            },
-          ));
-        }
-      }
-    });
+    //       add(_DownloadRequested(post: p, tagName: event.tag));
+
+    //       emit(state.copyWith(
+    //         downloadItemIds: {
+    //           ...state.downloadItemIds,
+    //           p.id,
+    //         },
+    //       ));
+    //     }
+    //   }
+    // });
 
     on<BulkImagesDownloadRequested>((event, emit) async {
       final permission = await Permission.storage.status;
@@ -158,6 +204,8 @@ class BulkImageDownloadBloc
       if (permission != PermissionStatus.granted) {
         final status = await Permission.storage.request();
         if (status != PermissionStatus.granted) {
+          emit(state.copyWith(status: BulkImageDownloadStatus.failure));
+
           return;
         }
       }
@@ -168,26 +216,22 @@ class BulkImageDownloadBloc
 
       emit(state.copyWith(
         storagePath: storagePath,
+        status: BulkImageDownloadStatus.downloadInProgress,
       ));
 
       var page = 1;
       final tags = event.tags.join(' ');
       final intPosts = await postRepository.getPosts(tags, page);
       final postStack = [intPosts];
+      var count = 0;
 
       while (postStack.isNotEmpty) {
         final posts = postStack.removeLast();
         for (final p in posts) {
-          if (state.downloadItemIds.contains(p.id)) continue;
+          if (state.downloadQueue.contains(p.id)) continue;
 
           add(_DownloadRequested(post: p, tagName: tags));
-
-          emit(state.copyWith(
-            downloadItemIds: {
-              ...state.downloadItemIds,
-              p.id,
-            },
-          ));
+          count += 1;
         }
         page += 1;
         final next = await postRepository.getPosts(tags, page);
@@ -195,39 +239,68 @@ class BulkImageDownloadBloc
           postStack.add(next);
         }
       }
+
+      emit(state.copyWith(
+        didFetchAllPage: true,
+        totalCount: count,
+      ));
+    });
+
+    on<BulkImageDownloadTagsAdded>((event, emit) {
+      emit(state.copyWith(
+        selectedTags: [...state.selectedTags, ...event.tags],
+        status: BulkImageDownloadStatus.dataSelected,
+      ));
+    });
+
+    on<BulkImageDownloadReset>((event, emit) {
+      emit(BulkImageDownloadState.initial());
     });
 
     on<_DownloadRequested>(
       (event, emit) async {
         await downloader.enqueueDownload(event.post, folderName: event.tagName);
-        final newset = {
-          ...state.downloadItemIds,
-          event.post.id,
-        };
         emit(state.copyWith(
-          downloadItemIds: newset,
-          totalCount: newset.length,
+          downloadQueue: [
+            ...state.downloadQueue,
+            event.post.id,
+          ],
         ));
       },
     );
 
-    on<_DownloadDone>((event, emit) async {
-      if (state.downloadItemIds.contains(event.data.postId)) {
-        final newset = {...state.downloadItemIds};
-        // ignore: cascade_invocations
-        newset.remove(event.data.postId);
+    on<_DownloadDone>(
+      (event, emit) async {
+        final queue = [...state.downloadQueue]..remove(event.data.postId);
+        print(queue);
+
         final from = event.data.path;
         final to = '${state.storagePath}/${event.data.fileName}';
         if (kDebugMode) {
           print('Moving $from to $to');
         }
         await moveFile(File(from), to);
+
+        final pathParts = to.split('/').toList();
+
         emit(state.copyWith(
-          doneCount: state.totalCount - newset.length,
-          downloadItemIds: newset,
+          doneCount: state.doneCount + 1,
+          downloadQueue: queue,
+          status: queue.isEmpty ? BulkImageDownloadStatus.done : null,
+          downloaded: [
+            ...state.downloaded,
+            DownloadImageData(
+              absolutePath: to,
+              relativeToPublicFolderPath: pathParts.length > 3
+                  ? pathParts.reversed.take(3).toList().reversed.join('/')
+                  : to,
+              fileName: event.data.fileName,
+            ),
+          ],
         ));
-      }
-    });
+      },
+      transformer: sequential(),
+    );
 
     downloader.stream
         .listen(
@@ -257,4 +330,20 @@ Future<String> _createSubfolderIfNeeded(
   }
 
   return folder;
+}
+
+class DownloadImageData extends Equatable {
+  const DownloadImageData({
+    required this.absolutePath,
+    required this.relativeToPublicFolderPath,
+    required this.fileName,
+  });
+
+  final String absolutePath;
+  final String relativeToPublicFolderPath;
+  final String fileName;
+
+  @override
+  List<Object?> get props =>
+      [absolutePath, relativeToPublicFolderPath, fileName];
 }
