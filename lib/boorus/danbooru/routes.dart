@@ -1,8 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/post/post_download_data_bloc.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/core/application/application.dart';
-import 'package:boorusama/core/ui/features/downloads/bulk_download_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -34,16 +31,19 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -385,7 +385,7 @@ final blacklistedTagsHandler =
 final bulkDownloadHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   return BlocProvider(
-    create: (context) => PostDownloadDataBloc(
+    create: (context) => BulkImageDownloadBloc(
       postRepository: context.read<PostRepository>(),
       downloader: context.read<BulkDownloader>(),
     ),

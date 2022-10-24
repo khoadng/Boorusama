@@ -1,16 +1,22 @@
+// Dart imports:
 import 'dart:io';
 
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/core/infra/infra.dart';
-import 'package:equatable/equatable.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Package imports:
+import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
-class PostDownloadDataState extends Equatable {
-  const PostDownloadDataState({
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
+import 'package:boorusama/core/infra/infra.dart';
+
+class BulkImageDownloadState extends Equatable {
+  const BulkImageDownloadState({
     required this.totalCount,
     required this.doneCount,
     required this.downloadItemIds,
@@ -18,7 +24,7 @@ class PostDownloadDataState extends Equatable {
     required this.storagePath,
   });
 
-  factory PostDownloadDataState.initial() => const PostDownloadDataState(
+  factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
         totalCount: 0,
         doneCount: 0,
         downloadItemIds: {},
@@ -32,14 +38,14 @@ class PostDownloadDataState extends Equatable {
   final bool isDone;
   final String storagePath;
 
-  PostDownloadDataState copyWith({
+  BulkImageDownloadState copyWith({
     int? totalCount,
     int? doneCount,
     Set<int>? downloadItemIds,
     bool? isDone,
     String? storagePath,
   }) =>
-      PostDownloadDataState(
+      BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
         downloadItemIds: downloadItemIds ?? this.downloadItemIds,
@@ -51,12 +57,12 @@ class PostDownloadDataState extends Equatable {
   List<Object?> get props => [totalCount, doneCount, downloadItemIds, isDone];
 }
 
-abstract class PostDownloadDataEvent extends Equatable {
-  const PostDownloadDataEvent();
+abstract class BulkImageDownloadEvent extends Equatable {
+  const BulkImageDownloadEvent();
 }
 
-class PostDownloadDataFetched extends PostDownloadDataEvent {
-  const PostDownloadDataFetched({
+class BulkImageDownloadRequested extends BulkImageDownloadEvent {
+  const BulkImageDownloadRequested({
     required this.tag,
     required this.postCount,
   });
@@ -68,7 +74,7 @@ class PostDownloadDataFetched extends PostDownloadDataEvent {
   List<Object?> get props => [tag, postCount];
 }
 
-class _DownloadRequested extends PostDownloadDataEvent {
+class _DownloadRequested extends BulkImageDownloadEvent {
   const _DownloadRequested({
     required this.post,
     required this.tagName,
@@ -81,7 +87,7 @@ class _DownloadRequested extends PostDownloadDataEvent {
   List<Object?> get props => [post, tagName];
 }
 
-class _DownloadDone extends PostDownloadDataEvent {
+class _DownloadDone extends BulkImageDownloadEvent {
   const _DownloadDone({
     required this.data,
   });
@@ -92,13 +98,13 @@ class _DownloadDone extends PostDownloadDataEvent {
   List<Object?> get props => [data];
 }
 
-class PostDownloadDataBloc
-    extends Bloc<PostDownloadDataEvent, PostDownloadDataState> {
-  PostDownloadDataBloc({
+class BulkImageDownloadBloc
+    extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
+  BulkImageDownloadBloc({
     required PostRepository postRepository,
     required BulkDownloader downloader,
-  }) : super(PostDownloadDataState.initial()) {
-    on<PostDownloadDataFetched>((event, emit) async {
+  }) : super(BulkImageDownloadState.initial()) {
+    on<BulkImageDownloadRequested>((event, emit) async {
       final permission = await Permission.storage.status;
       //TODO: ask permission here, set some state to notify user
       if (permission != PermissionStatus.granted) {
@@ -222,19 +228,3 @@ Future<String> _createSubfolderIfNeeded(
 
   return folder;
 }
-
-Future<File> moveFile(File sourceFile, String newPath) async {
-  try {
-    // prefer using rename as it is probably faster
-    return await sourceFile.rename(newPath);
-  } on FileSystemException catch (_) {
-    // if rename fails, copy the source file and then delete it
-    final newFile = await sourceFile.copy(newPath);
-    await sourceFile.delete();
-
-    return newFile;
-  }
-}
-
-String fixInvalidCharacterForPathName(String str) =>
-    str.replaceAll(RegExp(r'[\\/*?:"<>|]'), '_');
