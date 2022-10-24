@@ -81,156 +81,164 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 ],
               );
             case BulkImageDownloadStatus.dataSelected:
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                    child: Text(
-                      'The below tags will be downloaded',
-                      textAlign: TextAlign.center,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline5!
-                          .copyWith(fontWeight: FontWeight.w900),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 18,
-                      horizontal: 16,
-                    ),
-                    child: Wrap(
-                      spacing: 5,
-                      children: [
-                        ...state.selectedTags.map((e) => Chip(
-                              label: Text(e),
-                              deleteIcon: Icon(
-                                Icons.close,
-                                size: 16,
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                              onDeleted: () => context
-                                  .read<BulkImageDownloadBloc>()
-                                  .add(BulkImageDownloadTagRemoved(tag: e)),
-                            )),
-                        IconButton(
-                          iconSize: 28,
-                          splashRadius: 20,
-                          onPressed: () {
-                            final bloc = context.read<BulkImageDownloadBloc>();
-                            showBarModalBottomSheet(
-                              context: context,
-                              builder: (context) => SimpleTagSearchView(
-                                ensureValidTag: false,
-                                onSelected: (tag) {
-                                  bloc.add(
-                                    BulkImageDownloadTagsAdded(
-                                      tags: [tag.value],
-                                    ),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.add),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Divider(
-                    thickness: 2,
-                    endIndent: 16,
-                    indent: 16,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Save images in folder'.toUpperCase(),
-                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
-                            color: Theme.of(context).hintColor,
-                            fontWeight: FontWeight.w800,
-                          ),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: TextField(
-                      controller: textEditingController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        hintText: state.options.defaultNameIfEmpty,
-                        fillColor: Theme.of(context).cardColor,
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(width: 2),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 2,
-                          ),
-                        ),
-                        contentPadding: const EdgeInsets.all(12),
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
                       ),
-                      onChanged: (value) {
-                        context.read<BulkImageDownloadBloc>().add(
-                              BulkImageDownloadOptionsChanged(
-                                options:
-                                    state.options.copyWith(folderName: value),
-                              ),
-                            );
-                      },
+                      child: Text(
+                        'The below tags will be downloaded',
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline5!
+                            .copyWith(fontWeight: FontWeight.w900),
+                      ),
                     ),
-                  ),
-                  ListTile(
-                    title: const Text('Create new folder if exists'),
-                    subtitle: RichText(
-                      text: TextSpan(
-                        text: 'Enable this option will be saved files in ',
-                        style: TextStyle(color: Theme.of(context).hintColor),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 18,
+                        horizontal: 16,
+                      ),
+                      child: Wrap(
+                        spacing: 5,
                         children: [
-                          TextSpan(
-                            text: state.options.randomNameIfExists,
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.onBackground,
-                            ),
-                          ),
-                          TextSpan(
-                            text:
-                                ', otherwise new files will overwrite old files',
-                            style:
-                                TextStyle(color: Theme.of(context).hintColor),
+                          ...state.selectedTags.map((e) => Chip(
+                                label: Text(e),
+                                deleteIcon: Icon(
+                                  Icons.close,
+                                  size: 16,
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                                onDeleted: () => context
+                                    .read<BulkImageDownloadBloc>()
+                                    .add(BulkImageDownloadTagRemoved(tag: e)),
+                              )),
+                          IconButton(
+                            iconSize: 28,
+                            splashRadius: 20,
+                            onPressed: () {
+                              final bloc =
+                                  context.read<BulkImageDownloadBloc>();
+                              showBarModalBottomSheet(
+                                context: context,
+                                builder: (context) => SimpleTagSearchView(
+                                  ensureValidTag: false,
+                                  onSelected: (tag) {
+                                    bloc.add(
+                                      BulkImageDownloadTagsAdded(
+                                        tags: [tag.value],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.add),
                           ),
                         ],
                       ),
                     ),
-                    trailing: Switch.adaptive(
-                      value: state.options.createNewFolderIfExists,
-                      onChanged: (value) {
-                        context.read<BulkImageDownloadBloc>().add(
-                              BulkImageDownloadOptionsChanged(
-                                options: state.options
-                                    .copyWith(createNewFolderIfExists: value),
-                              ),
-                            );
-                      },
+                    const Divider(
+                      thickness: 2,
+                      endIndent: 16,
+                      indent: 16,
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: ElevatedButton(
-                      onPressed: () =>
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        'Save images in folder'.toUpperCase(),
+                        style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                              color: Theme.of(context).hintColor,
+                              fontWeight: FontWeight.w800,
+                            ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      child: TextField(
+                        controller: textEditingController,
+                        decoration: InputDecoration(
+                          filled: true,
+                          hintText: state.options.defaultNameIfEmpty,
+                          fillColor: Theme.of(context).cardColor,
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(width: 2),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.all(12),
+                        ),
+                        onChanged: (value) {
                           context.read<BulkImageDownloadBloc>().add(
-                                BulkImagesDownloadRequested(
-                                  tags: state.selectedTags,
+                                BulkImageDownloadOptionsChanged(
+                                  options:
+                                      state.options.copyWith(folderName: value),
                                 ),
-                              ),
-                      child: const Text('Download'),
+                              );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                    ListTile(
+                      title: const Text('Create new folder if exists'),
+                      subtitle: RichText(
+                        text: TextSpan(
+                          text: 'Enable this option will save files in ',
+                          style: TextStyle(color: Theme.of(context).hintColor),
+                          children: [
+                            TextSpan(
+                              text: state.options.randomNameIfExists,
+                              style: TextStyle(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
+                            ),
+                            TextSpan(
+                              text:
+                                  ', otherwise new files will overwrite old files',
+                              style:
+                                  TextStyle(color: Theme.of(context).hintColor),
+                            ),
+                          ],
+                        ),
+                      ),
+                      trailing: Switch.adaptive(
+                        value: state.options.createNewFolderIfExists,
+                        onChanged: (value) {
+                          context.read<BulkImageDownloadBloc>().add(
+                                BulkImageDownloadOptionsChanged(
+                                  options: state.options
+                                      .copyWith(createNewFolderIfExists: value),
+                                ),
+                              );
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: ElevatedButton(
+                        onPressed: () =>
+                            context.read<BulkImageDownloadBloc>().add(
+                                  BulkImagesDownloadRequested(
+                                    tags: state.selectedTags,
+                                  ),
+                                ),
+                        child: const Text('Download'),
+                      ),
+                    ),
+                  ],
+                ),
               );
             case BulkImageDownloadStatus.downloadInProgress:
               return SingleChildScrollView(

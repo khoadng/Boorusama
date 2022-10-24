@@ -472,14 +472,14 @@ class ModalSelectedTag extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            ListTile(
-              title: const Text('Clear'),
-              leading: const Icon(Icons.clear_all),
-              onTap: () {
-                Navigator.of(context).pop();
-                onClear?.call();
-              },
-            ),
+            // ListTile(
+            //   title: const Text('Clear'),
+            //   leading: const Icon(Icons.clear_all),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     onClear?.call();
+            //   },
+            // ),
             ListTile(
               title: const Text('Bulk download'),
               leading: const Icon(Icons.download),

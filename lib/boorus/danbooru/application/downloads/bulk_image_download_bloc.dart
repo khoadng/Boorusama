@@ -213,7 +213,7 @@ class BulkImageDownloadBloc
 
       var page = 1;
       final tags = event.tags.join(' ');
-      final intPosts = await postRepository.getPosts(tags, page);
+      final intPosts = await postRepository.getPosts(tags, page, limit: 100);
       final postStack = [intPosts];
       var count = 0;
 
@@ -229,7 +229,7 @@ class BulkImageDownloadBloc
           ));
         }
         page += 1;
-        final next = await postRepository.getPosts(tags, page);
+        final next = await postRepository.getPosts(tags, page, limit: 100);
         if (next.isNotEmpty) {
           postStack.add(next);
         }
