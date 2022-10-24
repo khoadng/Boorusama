@@ -154,32 +154,15 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             selector: (state) => state.options,
             builder: (context, options) {
               return ListTile(
-                title: const Text('Create new folder if exists'),
-                subtitle: RichText(
-                  text: TextSpan(
-                    text: 'Enable this option will save files in ',
-                    style: TextStyle(color: Theme.of(context).hintColor),
-                    children: [
-                      TextSpan(
-                        text: options.randomNameIfExists,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ', otherwise new files will overwrite old files',
-                        style: TextStyle(color: Theme.of(context).hintColor),
-                      ),
-                    ],
-                  ),
-                ),
+                title: const Text('Merge with existing folder'),
+                subtitle: const Text('Disable this will create a new folder'),
                 trailing: Switch.adaptive(
-                  value: options.createNewFolderIfExists,
+                  value: !options.createNewFolderIfExists,
                   onChanged: (value) {
                     context.read<BulkImageDownloadBloc>().add(
                           BulkImageDownloadOptionsChanged(
                             options: options.copyWith(
-                              createNewFolderIfExists: value,
+                              createNewFolderIfExists: !value,
                             ),
                           ),
                         );
