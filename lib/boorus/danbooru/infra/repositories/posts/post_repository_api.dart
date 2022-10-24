@@ -100,8 +100,9 @@ class PostRepositoryApi implements PostRepository {
   @override
   Future<List<Post>> getPosts(
     String tags,
-    int page,
-  ) {
+    int page, {
+    int? limit,
+  }) {
     return _accountRepository
         .get()
         .then(
@@ -111,7 +112,7 @@ class PostRepositoryApi implements PostRepository {
             page,
             tags,
             _postParams,
-            _limit,
+            limit ?? _limit,
           ),
         )
         .then(parsePost)
