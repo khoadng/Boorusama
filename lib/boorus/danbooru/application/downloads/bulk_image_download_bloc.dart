@@ -34,6 +34,7 @@ class BulkImageDownloadState extends Equatable {
     required this.didFetchAllPage,
     required this.downloadQueue,
     required this.downloaded,
+    required this.options,
   });
 
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
@@ -45,6 +46,11 @@ class BulkImageDownloadState extends Equatable {
         didFetchAllPage: false,
         downloadQueue: [],
         downloaded: [],
+        options: DownloadOptions(
+          createNewFolderIfExists: false,
+          folderName: 'Default Folder',
+          randomNameIfExists: 'Default Folder-123',
+        ),
       );
 
   final int totalCount;
@@ -55,6 +61,7 @@ class BulkImageDownloadState extends Equatable {
   final bool didFetchAllPage;
   final List<int> downloadQueue;
   final List<DownloadImageData> downloaded;
+  final DownloadOptions options;
 
   BulkImageDownloadState copyWith({
     int? totalCount,
@@ -65,6 +72,7 @@ class BulkImageDownloadState extends Equatable {
     bool? didFetchAllPage,
     List<int>? downloadQueue,
     List<DownloadImageData>? downloaded,
+    DownloadOptions? options,
   }) =>
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
@@ -75,6 +83,7 @@ class BulkImageDownloadState extends Equatable {
         didFetchAllPage: didFetchAllPage ?? this.didFetchAllPage,
         downloadQueue: downloadQueue ?? this.downloadQueue,
         downloaded: downloaded ?? this.downloaded,
+        options: options ?? this.options,
       );
 
   @override
@@ -87,6 +96,7 @@ class BulkImageDownloadState extends Equatable {
         selectedTags,
         didFetchAllPage,
         downloaded,
+        options,
       ];
 }
 
@@ -102,7 +112,9 @@ class BulkImagesDownloadRequested extends BulkImageDownloadEvent {
   final List<String> tags;
 
   @override
-  List<Object?> get props => [tags];
+  List<Object?> get props => [
+        tags,
+      ];
 }
 
 class BulkImageDownloadReset extends BulkImageDownloadEvent {
@@ -112,12 +124,23 @@ class BulkImageDownloadReset extends BulkImageDownloadEvent {
   List<Object?> get props => [];
 }
 
+class BulkImageDownloadOptionsChanged extends BulkImageDownloadEvent {
+  const BulkImageDownloadOptionsChanged({
+    required this.options,
+  });
+
+  final DownloadOptions options;
+
+  @override
+  List<Object?> get props => [options];
+}
+
 class BulkImageDownloadTagsAdded extends BulkImageDownloadEvent {
   const BulkImageDownloadTagsAdded({
     required this.tags,
   });
 
-  final List<String> tags;
+  final List<String>? tags;
 
   @override
   List<Object?> get props => [tags];
@@ -152,52 +175,8 @@ class BulkImageDownloadBloc
   BulkImageDownloadBloc({
     required PostRepository postRepository,
     required BulkDownloader downloader,
-    List<String>? initialSelected,
-  }) : super(BulkImageDownloadState.initial().copyWith(
-          selectedTags: initialSelected,
-          status: initialSelected != null && initialSelected.isNotEmpty
-              ? BulkImageDownloadStatus.dataSelected
-              : null,
-        )) {
-    // on<BulkImageDownloadRequested>((event, emit) async {
-    //   final permission = await Permission.storage.status;
-    //   //TODO: ask permission here, set some state to notify user
-    //   if (permission != PermissionStatus.granted) {
-    //     final status = await Permission.storage.request();
-    //     if (status != PermissionStatus.granted) {
-    //       emit(state.copyWith(status: BulkImageDownloadStatus.failure));
-
-    //       return;
-    //     }
-    //   }
-
-    //   final storagePath = await _createSubfolderIfNeeded(
-    //     fixInvalidCharacterForPathName(event.tag),
-    //   );
-    //   emit(state.copyWith(
-    //     totalCount: event.postCount,
-    //     storagePath: storagePath,
-    //   ));
-
-    //   final pages = (event.postCount / 60).ceil();
-    //   for (var i = 1; i <= pages; i += 1) {
-    //     final posts = await postRepository.getPosts(event.tag, i);
-
-    //     for (final p in posts) {
-    //       if (state.downloadItemIds.contains(p.id)) continue;
-
-    //       add(_DownloadRequested(post: p, tagName: event.tag));
-
-    //       emit(state.copyWith(
-    //         downloadItemIds: {
-    //           ...state.downloadItemIds,
-    //           p.id,
-    //         },
-    //       ));
-    //     }
-    //   }
-    // });
-
+    required String Function() randomGenerator,
+  }) : super(BulkImageDownloadState.initial()) {
     on<BulkImagesDownloadRequested>((event, emit) async {
       final permission = await Permission.storage.status;
       //TODO: ask permission here, set some state to notify user
@@ -210,8 +189,9 @@ class BulkImageDownloadBloc
         }
       }
 
-      final storagePath = await _createSubfolderIfNeeded(
-        fixInvalidCharacterForPathName(event.tags.join('_')),
+      // Create new folder to store downloaded images
+      final storagePath = await _createFolder(
+        state.options,
       );
 
       emit(state.copyWith(
@@ -250,14 +230,38 @@ class BulkImageDownloadBloc
     });
 
     on<BulkImageDownloadTagsAdded>((event, emit) {
+      if (event.tags == null) return;
+
+      final tags = [...state.selectedTags, ...event.tags!];
+      final folderName = generateFolderName(tags);
+      final randomFolderName = generateRandomFolderNameWith(
+        folderName,
+        randomGenerator,
+      );
+
       emit(state.copyWith(
-        selectedTags: [...state.selectedTags, ...event.tags],
+        selectedTags: tags,
+        options: state.options.copyWith(
+          folderName: generateFolderName(tags),
+          randomNameIfExists: randomFolderName,
+        ),
         status: BulkImageDownloadStatus.dataSelected,
       ));
     });
 
     on<BulkImageDownloadReset>((event, emit) {
       emit(BulkImageDownloadState.initial());
+    });
+
+    on<BulkImageDownloadOptionsChanged>((event, emit) {
+      emit(state.copyWith(
+        options: event.options.copyWith(
+          randomNameIfExists: generateRandomFolderNameWith(
+            state.options.folderName,
+            randomGenerator,
+          ),
+        ),
+      ));
     });
 
     on<_DownloadRequested>(
@@ -275,7 +279,6 @@ class BulkImageDownloadBloc
     on<_DownloadDone>(
       (event, emit) async {
         final queue = [...state.downloadQueue]..remove(event.data.postId);
-        print(queue);
 
         final from = event.data.path;
         final to = '${state.storagePath}/${event.data.fileName}';
@@ -326,17 +329,71 @@ class BulkImageDownloadBloc
   }
 }
 
-Future<String> _createSubfolderIfNeeded(
-  String folderName,
+String randomStringWithDatetime(DateTime time) =>
+    '${time.year}.${time.month}.${time.day} at ${time.hour}.${time.minute}.${time.second}';
+
+String generateRandomFolderNameWith(
+  String baseName,
+  String Function() generator,
+) {
+  final randomNum = generator.call();
+
+  return '${baseName}_$randomNum';
+}
+
+String generateFolderName(List<String>? tags) {
+  if (tags == null) return 'Default folder';
+
+  return fixInvalidCharacterForPathName(tags.join('_'));
+}
+
+class DownloadOptions extends Equatable {
+  const DownloadOptions({
+    required this.createNewFolderIfExists,
+    required this.folderName,
+    required this.randomNameIfExists,
+  });
+
+  DownloadOptions copyWith({
+    bool? createNewFolderIfExists,
+    String? folderName,
+    String? randomNameIfExists,
+  }) =>
+      DownloadOptions(
+        createNewFolderIfExists:
+            createNewFolderIfExists ?? this.createNewFolderIfExists,
+        folderName: folderName ?? this.folderName,
+        randomNameIfExists: randomNameIfExists ?? this.randomNameIfExists,
+      );
+
+  final bool createNewFolderIfExists;
+  final String folderName;
+  final String randomNameIfExists;
+
+  @override
+  List<Object?> get props =>
+      [createNewFolderIfExists, folderName, randomNameIfExists];
+}
+
+Future<String> _createFolder(
+  DownloadOptions options,
 ) async {
+  final folderName = options.folderName;
   final downloadDir = await IOHelper.getDownloadPath();
   final folder = '$downloadDir/$folderName';
 
-  if (!Directory(folder).existsSync()) {
-    Directory(folder).createSync();
+  var path = folder;
+
+  if (!Directory(path).existsSync()) {
+    Directory(path).createSync();
+  } else {
+    if (options.createNewFolderIfExists) {
+      path = '$downloadDir/${options.randomNameIfExists}';
+      Directory(path).createSync();
+    }
   }
 
-  return folder;
+  return path;
 }
 
 class DownloadImageData extends Equatable {

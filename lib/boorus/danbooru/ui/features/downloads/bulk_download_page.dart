@@ -24,6 +24,14 @@ class BulkDownloadPage extends StatefulWidget {
 }
 
 class _BulkDownloadPageState extends State<BulkDownloadPage> {
+  final textEditingController = TextEditingController();
+
+  @override
+  void dispose() {
+    textEditingController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,30 +80,99 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 ],
               );
             case BulkImageDownloadStatus.dataSelected:
-              return Padding(
-                padding: const EdgeInsets.all(12),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        'The below tags will be downloaded',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline5!
-                            .copyWith(fontWeight: FontWeight.w900),
-                      ),
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    child: Text(
+                      'The below tags will be downloaded',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline5!
+                          .copyWith(fontWeight: FontWeight.w900),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 18),
-                      child: Wrap(
-                        children: state.selectedTags
-                            .map((e) => Chip(label: Text(e)))
-                            .toList(),
-                      ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 18,
+                      horizontal: 16,
                     ),
-                    ElevatedButton(
+                    child: Wrap(
+                      children: state.selectedTags
+                          .map((e) => Chip(label: Text(e)))
+                          .toList(),
+                    ),
+                  ),
+                  const Divider(
+                    thickness: 2,
+                    endIndent: 16,
+                    indent: 16,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Save images in folder'.toUpperCase(),
+                      style: Theme.of(context).textTheme.titleSmall!.copyWith(
+                            color: Theme.of(context).hintColor,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: TextField(
+                      controller: textEditingController,
+                      decoration: InputDecoration(
+                        filled: true,
+                        hintText: state.options.folderName,
+                        fillColor: Theme.of(context).cardColor,
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(width: 2),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: 2,
+                          ),
+                        ),
+                        contentPadding: const EdgeInsets.all(12),
+                      ),
+                      onChanged: (value) {
+                        context.read<BulkImageDownloadBloc>().add(
+                              BulkImageDownloadOptionsChanged(
+                                options:
+                                    state.options.copyWith(folderName: value),
+                              ),
+                            );
+                      },
+                    ),
+                  ),
+                  ListTile(
+                    title: const Text('Create new folder if exists'),
+                    subtitle: state.options.createNewFolderIfExists
+                        ? Text(
+                            'Files will be saved in ${state.options.randomNameIfExists} instead',
+                          )
+                        : const Text('New files will overwrite old files'),
+                    trailing: Switch.adaptive(
+                      value: state.options.createNewFolderIfExists,
+                      onChanged: (value) {
+                        context.read<BulkImageDownloadBloc>().add(
+                              BulkImageDownloadOptionsChanged(
+                                options: state.options
+                                    .copyWith(createNewFolderIfExists: value),
+                              ),
+                            );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: ElevatedButton(
                       onPressed: () =>
                           context.read<BulkImageDownloadBloc>().add(
                                 BulkImagesDownloadRequested(
@@ -104,8 +181,8 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                               ),
                       child: const Text('Download'),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             case BulkImageDownloadStatus.downloadInProgress:
               return SingleChildScrollView(
