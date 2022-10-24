@@ -201,12 +201,14 @@ class Post extends Equatable {
     return censoredTags.any(tagSet.contains);
   }
 
+  bool get viewable => [
+        previewImageUrl,
+        normalImageUrl,
+        fullImageUrl,
+      ].every((e) => e != '');
+
   @override
   List<Object?> get props => [id];
 }
 
-bool isPostValid(Post post) =>
-    post.id != 0 &&
-    post.previewImageUrl != '' &&
-    post.normalImageUrl != '' &&
-    post.fullImageUrl != '';
+bool isPostValid(Post post) => post.id != 0 && post.viewable;

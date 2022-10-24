@@ -264,7 +264,7 @@ class BulkImageDownloadBloc
         for (final p in posts) {
           if (state.downloadQueue.contains(p.id)) continue;
 
-          if (isPostValid(p)) {
+          if (p.viewable) {
             add(_DownloadRequested(post: p, tagName: tags));
             count += 1;
             emit(state.copyWith(
