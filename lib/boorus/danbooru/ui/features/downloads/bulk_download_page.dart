@@ -108,7 +108,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                         spacing: 5,
                         children: [
                           ...state.selectedTags.map((e) => Chip(
-                                label: Text(e),
+                                label: Text(e.replaceAll('_', ' ')),
                                 deleteIcon: Icon(
                                   Icons.close,
                                   size: 16,
@@ -245,12 +245,40 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 child: Column(
                   children: [
                     ListTile(
+                      visualDensity: VisualDensity.compact,
                       title: const Text('Total'),
                       trailing: AnimatedFlipCounter(value: state.totalCount),
                     ),
                     ListTile(
+                      visualDensity: VisualDensity.compact,
                       title: const Text('Done'),
                       trailing: AnimatedFlipCounter(value: state.doneCount),
+                    ),
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      title: const Text('Hidden (censored tags)'),
+                      trailing: AnimatedFlipCounter(
+                        value: state.filteredPosts
+                            .where(
+                              (e) => e.reason == FilteredReason.censoredTag,
+                            )
+                            .toList()
+                            .length,
+                      ),
+                    ),
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      title: const Text(
+                        "Hidden (removed at the artist's request)",
+                      ),
+                      trailing: AnimatedFlipCounter(
+                        value: state.filteredPosts
+                            .where(
+                              (e) => e.reason == FilteredReason.bannedArtist,
+                            )
+                            .toList()
+                            .length,
+                      ),
                     ),
                     if (state.totalCount > 0)
                       Padding(
@@ -295,12 +323,25 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.all(16),
-                            child: Text(
-                              '${state.doneCount} images downloaded',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(fontWeight: FontWeight.w900),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${state.doneCount} images downloaded',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(fontWeight: FontWeight.w900),
+                                ),
+                                if (state.filteredPosts.isNotEmpty)
+                                  Text(
+                                    '${state.filteredPosts.length} images skipped',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headline5!
+                                        .copyWith(fontWeight: FontWeight.w900),
+                                  ),
+                              ],
                             ),
                           ),
                         ),

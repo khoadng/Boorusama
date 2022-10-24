@@ -24,10 +24,41 @@ enum BulkImageDownloadStatus {
   done,
 }
 
+enum FilteredReason {
+  bannedArtist,
+  censoredTag,
+  unknown,
+}
+
+class FilteredOutPost extends Equatable {
+  const FilteredOutPost({
+    required this.postId,
+    required this.reason,
+  });
+
+  factory FilteredOutPost.from(Post post) {
+    return FilteredOutPost(
+      postId: post.id,
+      reason: post.isBanned
+          ? FilteredReason.bannedArtist
+          : post.hasCensoredTags
+              ? FilteredReason.censoredTag
+              : FilteredReason.unknown,
+    );
+  }
+
+  final int postId;
+  final FilteredReason reason;
+
+  @override
+  List<Object?> get props => [postId, reason];
+}
+
 class BulkImageDownloadState extends Equatable {
   const BulkImageDownloadState({
     required this.totalCount,
     required this.doneCount,
+    required this.filteredPosts,
     required this.storagePath,
     required this.status,
     required this.selectedTags,
@@ -40,6 +71,7 @@ class BulkImageDownloadState extends Equatable {
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
         totalCount: 0,
         doneCount: 0,
+        filteredPosts: [],
         storagePath: '',
         status: BulkImageDownloadStatus.initial,
         selectedTags: [],
@@ -56,6 +88,7 @@ class BulkImageDownloadState extends Equatable {
 
   final int totalCount;
   final int doneCount;
+  final List<FilteredOutPost> filteredPosts;
   final String storagePath;
   final BulkImageDownloadStatus status;
   final List<String> selectedTags;
@@ -67,6 +100,7 @@ class BulkImageDownloadState extends Equatable {
   BulkImageDownloadState copyWith({
     int? totalCount,
     int? doneCount,
+    List<FilteredOutPost>? filteredPosts,
     String? storagePath,
     BulkImageDownloadStatus? status,
     List<String>? selectedTags,
@@ -78,6 +112,7 @@ class BulkImageDownloadState extends Equatable {
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
+        filteredPosts: filteredPosts ?? this.filteredPosts,
         storagePath: storagePath ?? this.storagePath,
         status: status ?? this.status,
         selectedTags: selectedTags ?? this.selectedTags,
@@ -91,6 +126,7 @@ class BulkImageDownloadState extends Equatable {
   List<Object?> get props => [
         totalCount,
         doneCount,
+        filteredPosts,
         storagePath,
         downloadQueue,
         status,
@@ -213,23 +249,37 @@ class BulkImageDownloadBloc
 
       var page = 1;
       final tags = event.tags.join(' ');
-      final intPosts = await postRepository.getPosts(tags, page, limit: 100);
+
+      // Local function to configure the equivalent repository's function
+      Future<List<Post>> getPosts(String tags, int page) =>
+          postRepository.getPosts(tags, page, limit: 100, includeInvalid: true);
+
+      final intPosts = await getPosts(tags, page);
       final postStack = [intPosts];
       var count = 0;
+      final filtedPosts = [];
 
       while (postStack.isNotEmpty) {
         final posts = postStack.removeLast();
         for (final p in posts) {
           if (state.downloadQueue.contains(p.id)) continue;
 
-          add(_DownloadRequested(post: p, tagName: tags));
-          count += 1;
-          emit(state.copyWith(
-            totalCount: count,
-          ));
+          if (isPostValid(p)) {
+            add(_DownloadRequested(post: p, tagName: tags));
+            count += 1;
+            emit(state.copyWith(
+              totalCount: count,
+            ));
+          } else {
+            filtedPosts.add(FilteredOutPost.from(p));
+
+            emit(state.copyWith(
+              filteredPosts: [...filtedPosts],
+            ));
+          }
         }
         page += 1;
-        final next = await postRepository.getPosts(tags, page, limit: 100);
+        final next = await getPosts(tags, page);
         if (next.isNotEmpty) {
           postStack.add(next);
         }
@@ -237,7 +287,6 @@ class BulkImageDownloadBloc
 
       emit(state.copyWith(
         didFetchAllPage: true,
-        totalCount: count,
       ));
     });
 

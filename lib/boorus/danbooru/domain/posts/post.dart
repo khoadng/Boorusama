@@ -7,6 +7,7 @@ import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
+const censoredTags = ['loli', 'shota'];
 
 class Post extends Equatable {
   const Post({
@@ -77,66 +78,6 @@ class Post extends Equatable {
         totalComments: 0,
       );
 
-  factory Post.banned({
-    required DateTime createdAt,
-    required int uploaderId,
-    required int score,
-    required String source,
-    required DateTime? lastCommentAt,
-    required Rating rating,
-    required double imageWidth,
-    required double imageHeight,
-    required List<String> tags,
-    required int favCount,
-    required String fileExt,
-    required int fileSize,
-    required int upScore,
-    required int downScore,
-    required bool isBanned,
-    required int? pixivId,
-    required List<String> generalTags,
-    required List<String> characterTags,
-    required List<String> copyrightTags,
-    required List<String> artistTags,
-    required List<String> metaTags,
-    required bool hasChildren,
-    required bool hasParent,
-    required bool hasLarge,
-    int? parentId,
-  }) =>
-      Post(
-        id: -1,
-        previewImageUrl: '',
-        normalImageUrl: '',
-        fullImageUrl: '',
-        copyrightTags: copyrightTags,
-        characterTags: characterTags,
-        artistTags: artistTags,
-        generalTags: generalTags,
-        metaTags: metaTags,
-        tags: tags,
-        width: imageWidth,
-        height: imageHeight,
-        format: fileExt,
-        lastCommentAt: lastCommentAt,
-        source: source,
-        createdAt: createdAt,
-        score: score,
-        upScore: upScore,
-        downScore: downScore,
-        favCount: favCount,
-        uploaderId: uploaderId,
-        rating: rating,
-        fileSize: fileSize,
-        pixivId: pixivId,
-        isBanned: isBanned,
-        hasChildren: hasChildren,
-        hasParent: hasParent,
-        parentId: parentId,
-        hasLarge: hasLarge,
-        comments: const [],
-        totalComments: 0,
-      );
   final int id;
   final String previewImageUrl;
   final String normalImageUrl;
@@ -254,9 +195,18 @@ class Post extends Equatable {
 
   String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
 
+  bool get hasCensoredTags {
+    final tagSet = tags.toSet();
+
+    return censoredTags.any(tagSet.contains);
+  }
+
   @override
   List<Object?> get props => [id];
 }
 
-bool isPostBanned(Post post) => post.id <= 0;
-bool isPostValid(Post post) => post.id > 0;
+bool isPostValid(Post post) =>
+    post.id != 0 &&
+    post.previewImageUrl != '' &&
+    post.normalImageUrl != '' &&
+    post.fullImageUrl != '';

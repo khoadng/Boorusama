@@ -150,36 +150,6 @@ List<String> splitTag(String tags) => tags.isEmpty ? [] : tags.split(' ');
 
 Post postDtoToPost(PostDto dto) {
   try {
-    if (dto.id == null) {
-      return Post.banned(
-        copyrightTags: splitTag(dto.copyrightTags),
-        characterTags: splitTag(dto.characterTags),
-        artistTags: splitTag(dto.artistTags),
-        generalTags: splitTag(dto.generalTags),
-        metaTags: splitTag(dto.tagsMeta),
-        tags: splitTag(dto.tags),
-        imageWidth: dto.imageWidth.toDouble(),
-        imageHeight: dto.imageHeight.toDouble(),
-        fileExt: dto.fileExt,
-        lastCommentAt: dto.lastCommentedAt,
-        source: dto.source,
-        createdAt: dto.createdAt,
-        score: dto.score,
-        upScore: dto.upScore,
-        downScore: dto.downScore,
-        favCount: dto.favCount,
-        uploaderId: dto.uploaderId,
-        rating: mapStringToRating(dto.rating),
-        fileSize: dto.fileSize,
-        pixivId: dto.pixivId,
-        isBanned: dto.isBanned,
-        hasChildren: dto.hasChildren,
-        hasParent: dto.parentId != null,
-        parentId: dto.parentId,
-        hasLarge: dto.hasLarge ?? false,
-      );
-    }
-
     final comments = dto.comments
         .map((e) => CommentDto.fromJson(e))
         .map((e) => commentDtoToComment(e))
@@ -192,9 +162,9 @@ Post postDtoToPost(PostDto dto) {
 
     return Post(
       id: dto.id!,
-      previewImageUrl: dto.previewFileUrl!,
-      normalImageUrl: dto.largeFileUrl!,
-      fullImageUrl: dto.fileUrl!,
+      previewImageUrl: dto.previewFileUrl ?? '',
+      normalImageUrl: dto.largeFileUrl ?? '',
+      fullImageUrl: dto.fileUrl ?? '',
       copyrightTags: splitTag(dto.copyrightTags),
       characterTags: splitTag(dto.characterTags),
       artistTags: splitTag(dto.artistTags),
