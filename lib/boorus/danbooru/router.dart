@@ -70,7 +70,7 @@ class AppRouter {
       ..define(
         '/bulk_download',
         handler: bulkDownloadHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromBottom,
       )
       ..define(
         '/users/blacklisted_tags',
