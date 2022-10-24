@@ -52,16 +52,17 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                       enabled: false,
                       hintText: 'Add tag',
                       onTap: () {
+                        final bloc = context.read<BulkImageDownloadBloc>();
                         showBarModalBottomSheet(
                           context: context,
                           builder: (context) => SimpleTagSearchView(
                             ensureValidTag: false,
                             onSelected: (tag) {
-                              context.read<BulkImageDownloadBloc>().add(
-                                    BulkImageDownloadTagsAdded(
-                                      tags: [tag.value],
-                                    ),
-                                  );
+                              bloc.add(
+                                BulkImageDownloadTagsAdded(
+                                  tags: [tag.value],
+                                ),
+                              );
                             },
                           ),
                         );
@@ -101,9 +102,41 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                       horizontal: 16,
                     ),
                     child: Wrap(
-                      children: state.selectedTags
-                          .map((e) => Chip(label: Text(e)))
-                          .toList(),
+                      spacing: 5,
+                      children: [
+                        ...state.selectedTags.map((e) => Chip(
+                              label: Text(e),
+                              deleteIcon: Icon(
+                                Icons.close,
+                                size: 16,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                              onDeleted: () => context
+                                  .read<BulkImageDownloadBloc>()
+                                  .add(BulkImageDownloadTagRemoved(tag: e)),
+                            )),
+                        IconButton(
+                          iconSize: 28,
+                          splashRadius: 20,
+                          onPressed: () {
+                            final bloc = context.read<BulkImageDownloadBloc>();
+                            showBarModalBottomSheet(
+                              context: context,
+                              builder: (context) => SimpleTagSearchView(
+                                ensureValidTag: false,
+                                onSelected: (tag) {
+                                  bloc.add(
+                                    BulkImageDownloadTagsAdded(
+                                      tags: [tag.value],
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.add),
+                        ),
+                      ],
                     ),
                   ),
                   const Divider(
@@ -128,7 +161,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                       controller: textEditingController,
                       decoration: InputDecoration(
                         filled: true,
-                        hintText: state.options.folderName,
+                        hintText: state.options.defaultNameIfEmpty,
                         fillColor: Theme.of(context).cardColor,
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(width: 2),
@@ -153,11 +186,26 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                   ),
                   ListTile(
                     title: const Text('Create new folder if exists'),
-                    subtitle: state.options.createNewFolderIfExists
-                        ? Text(
-                            'Files will be saved in ${state.options.randomNameIfExists} instead',
-                          )
-                        : const Text('New files will overwrite old files'),
+                    subtitle: RichText(
+                      text: TextSpan(
+                        text: 'Enable this option will be saved files in ',
+                        style: TextStyle(color: Theme.of(context).hintColor),
+                        children: [
+                          TextSpan(
+                            text: state.options.randomNameIfExists,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.onBackground,
+                            ),
+                          ),
+                          TextSpan(
+                            text:
+                                ', otherwise new files will overwrite old files',
+                            style:
+                                TextStyle(color: Theme.of(context).hintColor),
+                          ),
+                        ],
+                      ),
+                    ),
                     trailing: Switch.adaptive(
                       value: state.options.createNewFolderIfExists,
                       onChanged: (value) {
@@ -239,12 +287,21 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.all(16),
-                            child: Text(
-                              '${state.doneCount} images downloaded',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headline5!
-                                  .copyWith(fontWeight: FontWeight.w900),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${state.doneCount} images downloaded',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .headline5!
+                                      .copyWith(fontWeight: FontWeight.w900),
+                                ),
+                                IconButton(
+                                  onPressed: () => print('object'),
+                                  icon: const Icon(Icons.chevron_right),
+                                ),
+                              ],
                             ),
                           ),
                         ),
@@ -270,10 +327,6 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                                 leading: Text(
                                   (index + 1).toString(),
                                   style: Theme.of(context).textTheme.titleLarge,
-                                ),
-                                trailing: ElevatedButton(
-                                  onPressed: () => print('open'),
-                                  child: const Text('View'),
                                 ),
                               );
                             },

@@ -48,8 +48,9 @@ class BulkImageDownloadState extends Equatable {
         downloaded: [],
         options: DownloadOptions(
           createNewFolderIfExists: false,
-          folderName: 'Default Folder',
+          folderName: '',
           randomNameIfExists: 'Default Folder-123',
+          defaultNameIfEmpty: 'Default Folder',
         ),
       );
 
@@ -144,6 +145,17 @@ class BulkImageDownloadTagsAdded extends BulkImageDownloadEvent {
 
   @override
   List<Object?> get props => [tags];
+}
+
+class BulkImageDownloadTagRemoved extends BulkImageDownloadEvent {
+  const BulkImageDownloadTagRemoved({
+    required this.tag,
+  });
+
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
 }
 
 class _DownloadRequested extends BulkImageDownloadEvent {
@@ -242,8 +254,28 @@ class BulkImageDownloadBloc
       emit(state.copyWith(
         selectedTags: tags,
         options: state.options.copyWith(
-          folderName: generateFolderName(tags),
           randomNameIfExists: randomFolderName,
+          defaultNameIfEmpty: generateFolderName(tags),
+        ),
+        status: BulkImageDownloadStatus.dataSelected,
+      ));
+    });
+
+    on<BulkImageDownloadTagRemoved>((event, emit) {
+      final tags = [
+        ...state.selectedTags..remove(event.tag),
+      ];
+      final folderName = generateFolderName(tags);
+      final randomFolderName = generateRandomFolderNameWith(
+        folderName,
+        randomGenerator,
+      );
+
+      emit(state.copyWith(
+        selectedTags: tags,
+        options: state.options.copyWith(
+          randomNameIfExists: randomFolderName,
+          defaultNameIfEmpty: generateFolderName(tags),
         ),
         status: BulkImageDownloadStatus.dataSelected,
       ));
@@ -254,10 +286,13 @@ class BulkImageDownloadBloc
     });
 
     on<BulkImageDownloadOptionsChanged>((event, emit) {
+      final folderName = event.options.folderName;
       emit(state.copyWith(
         options: event.options.copyWith(
           randomNameIfExists: generateRandomFolderNameWith(
-            state.options.folderName,
+            folderName.isEmpty
+                ? generateFolderName(state.selectedTags)
+                : folderName,
             randomGenerator,
           ),
         ),
@@ -352,33 +387,43 @@ class DownloadOptions extends Equatable {
     required this.createNewFolderIfExists,
     required this.folderName,
     required this.randomNameIfExists,
+    required this.defaultNameIfEmpty,
   });
 
   DownloadOptions copyWith({
     bool? createNewFolderIfExists,
     String? folderName,
     String? randomNameIfExists,
+    String? defaultNameIfEmpty,
   }) =>
       DownloadOptions(
         createNewFolderIfExists:
             createNewFolderIfExists ?? this.createNewFolderIfExists,
         folderName: folderName ?? this.folderName,
         randomNameIfExists: randomNameIfExists ?? this.randomNameIfExists,
+        defaultNameIfEmpty: defaultNameIfEmpty ?? this.defaultNameIfEmpty,
       );
 
   final bool createNewFolderIfExists;
   final String folderName;
   final String randomNameIfExists;
+  final String defaultNameIfEmpty;
 
   @override
-  List<Object?> get props =>
-      [createNewFolderIfExists, folderName, randomNameIfExists];
+  List<Object?> get props => [
+        createNewFolderIfExists,
+        folderName,
+        randomNameIfExists,
+        defaultNameIfEmpty,
+      ];
 }
 
 Future<String> _createFolder(
   DownloadOptions options,
 ) async {
-  final folderName = options.folderName;
+  final folderName = options.folderName.isEmpty
+      ? options.defaultNameIfEmpty
+      : options.folderName;
   final downloadDir = await IOHelper.getDownloadPath();
   final folder = '$downloadDir/$folderName';
 

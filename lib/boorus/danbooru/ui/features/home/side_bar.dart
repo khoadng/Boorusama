@@ -121,6 +121,9 @@ class SideBarMenu extends StatelessWidget {
                           AppRouter.router.navigateTo(
                             context,
                             '/bulk_download',
+                            routeSettings: const RouteSettings(
+                              arguments: [],
+                            ),
                             transition:
                                 Screen.of(context).size == ScreenSize.small
                                     ? TransitionType.inFromRight
