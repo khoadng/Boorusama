@@ -35,11 +35,11 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                     child: ValueListenableBuilder<AutocompleteData?>(
                       valueListenable: selectedTag,
                       builder: (context, value, child) {
-                        return value != null && value.postCount != null
+                        return value != null
                             ? Column(
                                 children: [
                                   Text(
-                                    '${value.label} (${value.postCount})',
+                                    value.value,
                                   ),
                                   DownloadProviderWidget(
                                     builder: (context, _) => TextButton.icon(
@@ -47,7 +47,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                                           .read<PostDownloadDataBloc>()
                                           .add(PostDownloadDataFetched(
                                             tag: value.value,
-                                            postCount: value.postCount!,
+                                            postCount: value.postCount,
                                           )),
                                       icon: const Icon(Icons.info),
                                       label: const Text('download'),
@@ -86,6 +86,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 showBarModalBottomSheet(
                   context: context,
                   builder: (context) => SimpleTagSearchView(
+                    ensureValidTag: false,
                     onSelected: (tag) {
                       selectedTag.value = tag;
                     },

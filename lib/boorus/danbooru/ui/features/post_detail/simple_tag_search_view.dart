@@ -14,9 +14,11 @@ class SimpleTagSearchView extends StatelessWidget {
   const SimpleTagSearchView({
     super.key,
     required this.onSelected,
+    this.ensureValidTag = true,
   });
 
   final void Function(AutocompleteData tag) onSelected;
+  final bool ensureValidTag;
 
   @override
   Widget build(BuildContext context) {
@@ -27,8 +29,9 @@ class SimpleTagSearchView extends StatelessWidget {
       ),
       child: BlocBuilder<TagSearchBloc, TagSearchState>(
         builder: (context, state) {
-          final tags =
-              state.suggestionTags.where((e) => e.category != null).toList();
+          final tags = ensureValidTag
+              ? state.suggestionTags.where((e) => e.category != null).toList()
+              : state.suggestionTags;
 
           return Scaffold(
             body: Column(

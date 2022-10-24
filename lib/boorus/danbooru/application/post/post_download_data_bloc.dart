@@ -6,6 +6,7 @@ import 'package:boorusama/core/infra/infra.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 class PostDownloadDataState extends Equatable {
@@ -61,7 +62,7 @@ class PostDownloadDataFetched extends PostDownloadDataEvent {
   });
 
   final String tag;
-  final int postCount;
+  final int? postCount;
 
   @override
   List<Object?> get props => [tag, postCount];
@@ -98,26 +99,64 @@ class PostDownloadDataBloc
     required BulkDownloader downloader,
   }) : super(PostDownloadDataState.initial()) {
     on<PostDownloadDataFetched>((event, emit) async {
-      final storagePath = await _createSubfolderIfNeeded(event.tag);
+      final permission = await Permission.storage.status;
+      //TODO: ask permission here, set some state to notify user
+      if (permission != PermissionStatus.granted) {
+        final status = await Permission.storage.request();
+        if (status != PermissionStatus.granted) {
+          return;
+        }
+      }
+
+      final storagePath = await _createSubfolderIfNeeded(
+        fixInvalidCharacterForPathName(event.tag),
+      );
       emit(state.copyWith(
         totalCount: event.postCount,
         storagePath: storagePath,
       ));
-      final pages = (event.postCount / 60).ceil();
-      for (var i = 1; i <= pages; i += 1) {
-        final posts = await postRepository.getPosts(event.tag, i);
+      if (event.postCount != null) {
+        final pages = (event.postCount! / 60).ceil();
+        for (var i = 1; i <= pages; i += 1) {
+          final posts = await postRepository.getPosts(event.tag, i);
 
-        for (final p in posts) {
-          if (state.downloadItemIds.contains(p.id)) continue;
+          for (final p in posts) {
+            if (state.downloadItemIds.contains(p.id)) continue;
 
-          add(_DownloadRequested(post: p, tagName: event.tag));
+            add(_DownloadRequested(post: p, tagName: event.tag));
 
-          emit(state.copyWith(
-            downloadItemIds: {
-              ...state.downloadItemIds,
-              p.id,
-            },
-          ));
+            emit(state.copyWith(
+              downloadItemIds: {
+                ...state.downloadItemIds,
+                p.id,
+              },
+            ));
+          }
+        }
+      } else {
+        var page = 1;
+        final intPosts = await postRepository.getPosts(event.tag, page);
+        final postStack = [intPosts];
+
+        while (postStack.isNotEmpty) {
+          final posts = postStack.removeLast();
+          for (final p in posts) {
+            if (state.downloadItemIds.contains(p.id)) continue;
+
+            add(_DownloadRequested(post: p, tagName: event.tag));
+
+            emit(state.copyWith(
+              downloadItemIds: {
+                ...state.downloadItemIds,
+                p.id,
+              },
+            ));
+          }
+          page += 1;
+          final next = await postRepository.getPosts(event.tag, page);
+          if (next.isNotEmpty) {
+            postStack.add(next);
+          }
         }
       }
     });
@@ -131,6 +170,7 @@ class PostDownloadDataBloc
         };
         emit(state.copyWith(
           downloadItemIds: newset,
+          totalCount: newset.length,
         ));
       },
     );
@@ -195,3 +235,6 @@ Future<File> moveFile(File sourceFile, String newPath) async {
     return newFile;
   }
 }
+
+String fixInvalidCharacterForPathName(String str) =>
+    str.replaceAll(RegExp(r'[\\/*?:"<>|]'), '_');
