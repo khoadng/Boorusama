@@ -232,6 +232,9 @@ class BulkImageDownloadBloc
 
           add(_DownloadRequested(post: p, tagName: tags));
           count += 1;
+          emit(state.copyWith(
+            totalCount: count,
+          ));
         }
         page += 1;
         final next = await postRepository.getPosts(tags, page);

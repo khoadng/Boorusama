@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/info_container.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -111,11 +112,11 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                   children: [
                     ListTile(
                       title: const Text('Total'),
-                      trailing: Text(state.totalCount.toString()),
+                      trailing: AnimatedFlipCounter(value: state.totalCount),
                     ),
                     ListTile(
                       title: const Text('Done'),
-                      trailing: Text(state.doneCount.toString()),
+                      trailing: AnimatedFlipCounter(value: state.doneCount),
                     ),
                     InfoContainer(
                       contentBuilder: (context) => const Text(
