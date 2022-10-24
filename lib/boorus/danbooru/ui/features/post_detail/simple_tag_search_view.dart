@@ -15,10 +15,12 @@ class SimpleTagSearchView extends StatelessWidget {
     super.key,
     required this.onSelected,
     this.ensureValidTag = true,
+    this.closeOnSelected = true,
   });
 
   final void Function(AutocompleteData tag) onSelected;
   final bool ensureValidTag;
+  final bool closeOnSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +54,10 @@ class SimpleTagSearchView extends StatelessWidget {
                     child: TagSuggestionItems(
                       tags: tags,
                       onItemTap: (tag) {
+                        if (closeOnSelected) {
+                          Navigator.of(context).pop();
+                        }
                         onSelected(tag);
-                        Navigator.of(context).pop();
                       },
                       currentQuery: state.query,
                     ),

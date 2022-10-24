@@ -105,7 +105,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Save images in folder'.toUpperCase(),
+              'Save to folder'.toUpperCase(),
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w800,
@@ -154,8 +154,10 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             selector: (state) => state.options,
             builder: (context, options) {
               return ListTile(
-                title: const Text('Merge with existing folder'),
-                subtitle: const Text('Disable this will create a new folder'),
+                title: const Text('Merge images into existing folder'),
+                subtitle: const Text(
+                  'Disable this option will create a new folder instead',
+                ),
                 trailing: Switch.adaptive(
                   value: !options.createNewFolderIfExists,
                   onChanged: (value) {
@@ -172,7 +174,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             },
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
                 List<String>>(
               selector: (state) => state.selectedTags,

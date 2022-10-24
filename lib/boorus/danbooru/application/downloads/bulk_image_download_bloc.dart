@@ -420,15 +420,15 @@ String generateRandomFolderNameWith(
   String baseName,
   String Function() generator,
 ) {
-  final randomNum = generator.call();
+  final randomString = generator.call();
 
-  return '${baseName}_$randomNum';
+  return '$baseName $randomString';
 }
 
 String generateFolderName(List<String>? tags) {
   if (tags == null) return 'Default folder';
 
-  return fixInvalidCharacterForPathName(tags.join('_'));
+  return fixInvalidCharacterForPathName(tags.join(' '));
 }
 
 class DownloadOptions extends Equatable {
