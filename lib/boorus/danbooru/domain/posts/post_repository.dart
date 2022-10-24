@@ -7,6 +7,7 @@ abstract class PostRepository {
     String tags,
     int page, {
     int? limit,
+    bool? includeInvalid,
   });
   Future<List<Post>> getPopularPosts(DateTime date, int page, TimeScale scale);
   Future<List<Post>> getCuratedPosts(DateTime date, int page, TimeScale scale);
