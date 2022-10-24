@@ -68,10 +68,21 @@ class BulkImageDownloadRequested extends BulkImageDownloadEvent {
   });
 
   final String tag;
-  final int? postCount;
+  final int postCount;
 
   @override
   List<Object?> get props => [tag, postCount];
+}
+
+class BulkImagesDownloadRequested extends BulkImageDownloadEvent {
+  const BulkImagesDownloadRequested({
+    required this.tags,
+  });
+
+  final List<String> tags;
+
+  @override
+  List<Object?> get props => [tags];
 }
 
 class _DownloadRequested extends BulkImageDownloadEvent {
@@ -121,48 +132,67 @@ class BulkImageDownloadBloc
         totalCount: event.postCount,
         storagePath: storagePath,
       ));
-      if (event.postCount != null) {
-        final pages = (event.postCount! / 60).ceil();
-        for (var i = 1; i <= pages; i += 1) {
-          final posts = await postRepository.getPosts(event.tag, i);
 
-          for (final p in posts) {
-            if (state.downloadItemIds.contains(p.id)) continue;
+      final pages = (event.postCount / 60).ceil();
+      for (var i = 1; i <= pages; i += 1) {
+        final posts = await postRepository.getPosts(event.tag, i);
 
-            add(_DownloadRequested(post: p, tagName: event.tag));
+        for (final p in posts) {
+          if (state.downloadItemIds.contains(p.id)) continue;
 
-            emit(state.copyWith(
-              downloadItemIds: {
-                ...state.downloadItemIds,
-                p.id,
-              },
-            ));
-          }
+          add(_DownloadRequested(post: p, tagName: event.tag));
+
+          emit(state.copyWith(
+            downloadItemIds: {
+              ...state.downloadItemIds,
+              p.id,
+            },
+          ));
         }
-      } else {
-        var page = 1;
-        final intPosts = await postRepository.getPosts(event.tag, page);
-        final postStack = [intPosts];
+      }
+    });
 
-        while (postStack.isNotEmpty) {
-          final posts = postStack.removeLast();
-          for (final p in posts) {
-            if (state.downloadItemIds.contains(p.id)) continue;
+    on<BulkImagesDownloadRequested>((event, emit) async {
+      final permission = await Permission.storage.status;
+      //TODO: ask permission here, set some state to notify user
+      if (permission != PermissionStatus.granted) {
+        final status = await Permission.storage.request();
+        if (status != PermissionStatus.granted) {
+          return;
+        }
+      }
 
-            add(_DownloadRequested(post: p, tagName: event.tag));
+      final storagePath = await _createSubfolderIfNeeded(
+        fixInvalidCharacterForPathName(event.tags.join('_')),
+      );
 
-            emit(state.copyWith(
-              downloadItemIds: {
-                ...state.downloadItemIds,
-                p.id,
-              },
-            ));
-          }
-          page += 1;
-          final next = await postRepository.getPosts(event.tag, page);
-          if (next.isNotEmpty) {
-            postStack.add(next);
-          }
+      emit(state.copyWith(
+        storagePath: storagePath,
+      ));
+
+      var page = 1;
+      final tags = event.tags.join(' ');
+      final intPosts = await postRepository.getPosts(tags, page);
+      final postStack = [intPosts];
+
+      while (postStack.isNotEmpty) {
+        final posts = postStack.removeLast();
+        for (final p in posts) {
+          if (state.downloadItemIds.contains(p.id)) continue;
+
+          add(_DownloadRequested(post: p, tagName: tags));
+
+          emit(state.copyWith(
+            downloadItemIds: {
+              ...state.downloadItemIds,
+              p.id,
+            },
+          ));
+        }
+        page += 1;
+        final next = await postRepository.getPosts(tags, page);
+        if (next.isNotEmpty) {
+          postStack.add(next);
         }
       }
     });

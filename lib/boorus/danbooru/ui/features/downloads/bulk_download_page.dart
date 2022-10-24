@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/info_container.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,22 +8,23 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/ui/download_provider_widget.dart';
 
 class BulkDownloadPage extends StatefulWidget {
   const BulkDownloadPage({
     super.key,
+    this.tags,
   });
+
+  final List<String>? tags;
 
   @override
   State<BulkDownloadPage> createState() => _BulkDownloadPageState();
 }
 
 class _BulkDownloadPageState extends State<BulkDownloadPage> {
-  final selectedTag = ValueNotifier<AutocompleteData?>(null);
+  late final selectedTags = ValueNotifier<List<String>>(widget.tags ?? []);
 
   @override
   Widget build(BuildContext context) {
@@ -37,35 +39,18 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
               slivers: [
                 SliverToBoxAdapter(
                   child: Center(
-                    child: ValueListenableBuilder<AutocompleteData?>(
-                      valueListenable: selectedTag,
-                      builder: (context, value, child) {
-                        return value != null
+                    child: ValueListenableBuilder<List<String>>(
+                      valueListenable: selectedTags,
+                      builder: (context, tags, child) {
+                        return tags.isNotEmpty
                             ? Column(
                                 children: [
                                   Text(
-                                    value.value,
-                                  ),
-                                  DownloadProviderWidget(
-                                    builder: (context, _) => TextButton.icon(
-                                      onPressed: () => context
-                                          .read<BulkImageDownloadBloc>()
-                                          .add(BulkImageDownloadRequested(
-                                            tag: value.value,
-                                            postCount: value.postCount,
-                                          )),
-                                      icon: const Icon(Icons.info),
-                                      label: const Text('download'),
-                                    ),
+                                    tags.join(', '),
                                   ),
                                 ],
                               )
-                            : Container(
-                                width: MediaQuery.of(context).size.width,
-                                height: 100,
-                                color: Theme.of(context).cardColor,
-                                child: const Text('Empty'),
-                              );
+                            : const SizedBox.shrink();
                       },
                     ),
                   ),
@@ -73,8 +58,50 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                 BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
                   builder: (context, state) {
                     return SliverToBoxAdapter(
-                      child: Text(
-                        "Queued ${state.doneCount} / ${state.totalCount} images (Some images might be hidden and won't be downloaded)",
+                      child: Column(
+                        children: [
+                          ListTile(
+                            title: const Text('Total'),
+                            trailing: Text(state.totalCount.toString()),
+                          ),
+                          ListTile(
+                            title: const Text('Done'),
+                            trailing: Text(state.doneCount.toString()),
+                          ),
+                          InfoContainer(
+                            contentBuilder: (context) => const Text(
+                              "Some images might be hidden and won't be downloaded",
+                            ),
+                          ),
+                          WarningContainer(
+                            contentBuilder: (context) => const Text(
+                              'Please stay on this screen until all files are downloaded',
+                            ),
+                          ),
+                          ValueListenableBuilder<List<String>>(
+                            valueListenable: selectedTags,
+                            builder: (context, tags, child) {
+                              return ButtonBar(
+                                children: [
+                                  ElevatedButton.icon(
+                                    onPressed: () => context
+                                        .read<BulkImageDownloadBloc>()
+                                        .add(BulkImagesDownloadRequested(
+                                          tags: tags,
+                                        )),
+                                    icon: const Icon(Icons.download),
+                                    label: const Text('Download'),
+                                  ),
+                                  ElevatedButton.icon(
+                                    onPressed: () => selectedTags.value = [],
+                                    icon: const Icon(Icons.restart_alt),
+                                    label: const Text('Clear'),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     );
                   },
@@ -93,7 +120,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                   builder: (context) => SimpleTagSearchView(
                     ensureValidTag: false,
                     onSelected: (tag) {
-                      selectedTag.value = tag;
+                      selectedTags.value = [...selectedTags.value, tag.value];
                     },
                   ),
                 );

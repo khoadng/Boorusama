@@ -384,12 +384,17 @@ final blacklistedTagsHandler =
 
 final bulkDownloadHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+  final List<String>? initialSelectedTags = args.isNotEmpty ? args.first : null;
+
   return BlocProvider(
     create: (context) => BulkImageDownloadBloc(
       postRepository: context.read<PostRepository>(),
       downloader: context.read<BulkDownloader>(),
     ),
-    child: const BulkDownloadPage(),
+    child: BulkDownloadPage(
+      tags: initialSelectedTags,
+    ),
   );
 });
 
