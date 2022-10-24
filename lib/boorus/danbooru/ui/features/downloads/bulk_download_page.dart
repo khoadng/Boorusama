@@ -287,21 +287,12 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.all(16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${state.doneCount} images downloaded',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .headline5!
-                                      .copyWith(fontWeight: FontWeight.w900),
-                                ),
-                                IconButton(
-                                  onPressed: () => print('object'),
-                                  icon: const Icon(Icons.chevron_right),
-                                ),
-                              ],
+                            child: Text(
+                              '${state.doneCount} images downloaded',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headline5!
+                                  .copyWith(fontWeight: FontWeight.w900),
                             ),
                           ),
                         ),
@@ -352,108 +343,5 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
         },
       ),
     );
-
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: const Text('Bulk downloads'),
-    //   ),
-    //   body: Column(
-    //     children: [
-    //       Expanded(
-    //         child: CustomScrollView(
-    //           slivers: [
-    //             SliverToBoxAdapter(
-    //               child: Center(
-    //                 child: ValueListenableBuilder<List<String>>(
-    //                   valueListenable: selectedTags,
-    //                   builder: (context, tags, child) {
-    //                     return tags.isNotEmpty
-    //                         ? Column(
-    //                             children: [
-    //                               Text(
-    //                                 tags.join(', '),
-    //                               ),
-    //                             ],
-    //                           )
-    //                         : const SizedBox.shrink();
-    //                   },
-    //                 ),
-    //               ),
-    //             ),
-    //             BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
-    //               builder: (context, state) {
-    //                 return SliverToBoxAdapter(
-    //                   child: Column(
-    //                     children: [
-    //                       ListTile(
-    //                         title: const Text('Total'),
-    //                         trailing: Text(state.totalCount.toString()),
-    //                       ),
-    //                       ListTile(
-    //                         title: const Text('Done'),
-    //                         trailing: Text(state.doneCount.toString()),
-    //                       ),
-    //                       InfoContainer(
-    //                         contentBuilder: (context) => const Text(
-    //                           "Some images might be hidden and won't be downloaded",
-    //                         ),
-    //                       ),
-    //                       WarningContainer(
-    //                         contentBuilder: (context) => const Text(
-    //                           'Please stay on this screen until all files are downloaded',
-    //                         ),
-    //                       ),
-    //                       ValueListenableBuilder<List<String>>(
-    //                         valueListenable: selectedTags,
-    //                         builder: (context, tags, child) {
-    //                           return ButtonBar(
-    //                             children: [
-    //                               ElevatedButton.icon(
-    //                                 onPressed: () => context
-    //                                     .read<BulkImageDownloadBloc>()
-    //                                     .add(BulkImagesDownloadRequested(
-    //                                       tags: tags,
-    //                                     )),
-    //                                 icon: const Icon(Icons.download),
-    //                                 label: const Text('Download'),
-    //                               ),
-    //                               ElevatedButton.icon(
-    //                                 onPressed: () => selectedTags.value = [],
-    //                                 icon: const Icon(Icons.restart_alt),
-    //                                 label: const Text('Clear'),
-    //                               ),
-    //                             ],
-    //                           );
-    //                         },
-    //                       ),
-    //                     ],
-    //                   ),
-    //                 );
-    //               },
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //       Padding(
-    //         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
-    //         child: SearchBar(
-    //           enabled: false,
-    //           hintText: 'Add tag',
-    //           onTap: () {
-    //             showBarModalBottomSheet(
-    //               context: context,
-    //               builder: (context) => SimpleTagSearchView(
-    //                 ensureValidTag: false,
-    //                 onSelected: (tag) {
-    //                   selectedTags.value = [...selectedTags.value, tag.value];
-    //                 },
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 }
