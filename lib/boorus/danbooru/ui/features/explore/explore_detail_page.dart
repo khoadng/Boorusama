@@ -75,15 +75,29 @@ PostFetcher _categoryToFetcher(
   ExploreCategory category,
   DateTime date,
   TimeScale scale,
+  BuildContext context,
 ) {
   if (category == ExploreCategory.curated) {
-    return CuratedPostFetcher(date: date, scale: scale);
+    return CuratedPostFetcher(
+      date: date,
+      scale: scale,
+      exploreRepository: context.read<ExploreRepository>(),
+    );
   } else if (category == ExploreCategory.popular) {
-    return PopularPostFetcher(date: date, scale: scale);
+    return PopularPostFetcher(
+      date: date,
+      scale: scale,
+      exploreRepository: context.read<ExploreRepository>(),
+    );
   } else if (category == ExploreCategory.hot) {
-    return const HotPostFetcher();
+    return HotPostFetcher(
+      exploreRepository: context.read<ExploreRepository>(),
+    );
   } else {
-    return MostViewedPostFetcher(date: date);
+    return MostViewedPostFetcher(
+      date: date,
+      exploreRepository: context.read<ExploreRepository>(),
+    );
   }
 }
 
@@ -148,8 +162,12 @@ class ExploreDetailPage extends StatelessWidget {
               create: (context) => PostBloc.of(context)
                 ..add(
                   PostRefreshed(
-                    fetcher:
-                        _categoryToFetcher(category, state.date, state.scale),
+                    fetcher: _categoryToFetcher(
+                      category,
+                      state.date,
+                      state.scale,
+                      context,
+                    ),
                   ),
                 ),
               child: BlocBuilder<PostBloc, PostState>(
@@ -168,14 +186,21 @@ class ExploreDetailPage extends StatelessWidget {
                   scale: state.scale,
                   status: ppstate.status,
                   posts: ppstate.posts,
-                  onLoadMore: (date, scale) =>
-                      context.read<PostBloc>().add(PostFetched(
-                            tags: '',
-                            fetcher: _categoryToFetcher(category, date, scale),
-                          )),
+                  onLoadMore: (date, scale) => context
+                      .read<PostBloc>()
+                      .add(PostFetched(
+                        tags: '',
+                        fetcher:
+                            _categoryToFetcher(category, date, scale, context),
+                      )),
                   onRefresh: (date, scale) => context.read<PostBloc>().add(
                         PostRefreshed(
-                          fetcher: _categoryToFetcher(category, date, scale),
+                          fetcher: _categoryToFetcher(
+                            category,
+                            date,
+                            scale,
+                            context,
+                          ),
                         ),
                       ),
                 ),

@@ -5,9 +5,11 @@ import 'fetcher.dart';
 class MostViewedPostFetcher implements PostFetcher {
   const MostViewedPostFetcher({
     required this.date,
+    required this.exploreRepository,
   });
 
   final DateTime date;
+  final ExploreRepository exploreRepository;
 
   @override
   Future<List<Post>> fetch(
@@ -16,6 +18,6 @@ class MostViewedPostFetcher implements PostFetcher {
   ) async {
     if (page > 1) return [];
 
-    return repo.getMostViewedPosts(date);
+    return exploreRepository.getMostViewedPosts(date);
   }
 }

@@ -255,6 +255,12 @@ void main() async {
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
 
+                  final exploreRepo = ExploreRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                    postRepository: postRepo,
+                  );
+
                   final commentRepo = CommentRepositoryApi(api, accountRepo);
 
                   final userRepo = UserRepositoryApi(
@@ -404,6 +410,9 @@ void main() async {
                       ),
                       RepositoryProvider<PoolDescriptionRepository>.value(
                         value: poolDescriptionRepo,
+                      ),
+                      RepositoryProvider<ExploreRepository>.value(
+                        value: exploreRepo,
                       ),
                     ],
                     child: MultiBlocProvider(

@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/explore_repository.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -69,6 +70,8 @@ class ExplorePage extends StatelessWidget {
                         ..add(PostRefreshed(
                           fetcher: ExplorePreviewFetcher.now(
                             category: ExploreCategory.popular,
+                            exploreRepository:
+                                context.read<ExploreRepository>(),
                           ),
                         )),
                       child: ExploreSection(
@@ -86,6 +89,8 @@ class ExplorePage extends StatelessWidget {
                         ..add(PostRefreshed(
                           fetcher: ExplorePreviewFetcher.now(
                             category: ExploreCategory.hot,
+                            exploreRepository:
+                                context.read<ExploreRepository>(),
                           ),
                         )),
                       child: ExploreSection(
@@ -103,6 +108,8 @@ class ExplorePage extends StatelessWidget {
                         ..add(PostRefreshed(
                           fetcher: ExplorePreviewFetcher.now(
                             category: ExploreCategory.curated,
+                            exploreRepository:
+                                context.read<ExploreRepository>(),
                           ),
                         )),
                       child: ExploreSection(
@@ -120,6 +127,8 @@ class ExplorePage extends StatelessWidget {
                         ..add(PostRefreshed(
                           fetcher: ExplorePreviewFetcher.now(
                             category: ExploreCategory.mostViewed,
+                            exploreRepository:
+                                context.read<ExploreRepository>(),
                           ),
                         )),
                       child: ExploreSection(
