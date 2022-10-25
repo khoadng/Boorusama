@@ -2,7 +2,6 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
@@ -24,7 +23,7 @@ class AutocompleteData extends Equatable {
   final String? type;
   final AutocompleteLabel label;
   final AutocompleteValue value;
-  final AutocompleteCategory? category; // int or String
+  final String? category;
   final PostCount? postCount;
   final AutocompleteAntecedent? antecedent;
   final UserLevel? level;
@@ -39,52 +38,4 @@ class AutocompleteData extends Equatable {
   @override
   List<Object?> get props =>
       [label, value, type, category, postCount, level, antecedent];
-}
-
-abstract class AutocompleteCategory extends Equatable {
-  String getName();
-  int getIndex();
-}
-
-class PoolAutocompleteCategory extends AutocompleteCategory {
-  PoolAutocompleteCategory({
-    required this.category,
-  });
-  final PoolCategory category;
-
-  @override
-  String getName() => category.name;
-
-  @override
-  int getIndex() => category.index;
-
-  @override
-  List<Object?> get props => [category];
-}
-
-class TagAutocompleteCategory extends AutocompleteCategory {
-  TagAutocompleteCategory({
-    required this.category,
-  });
-
-  factory TagAutocompleteCategory.artist() =>
-      TagAutocompleteCategory(category: TagCategory.artist);
-  factory TagAutocompleteCategory.character() =>
-      TagAutocompleteCategory(category: TagCategory.charater);
-  factory TagAutocompleteCategory.copyright() =>
-      TagAutocompleteCategory(category: TagCategory.copyright);
-  factory TagAutocompleteCategory.general() =>
-      TagAutocompleteCategory(category: TagCategory.general);
-  factory TagAutocompleteCategory.meta() =>
-      TagAutocompleteCategory(category: TagCategory.meta);
-
-  final TagCategory category;
-
-  @override
-  String getName() => category.name;
-  @override
-  int getIndex() => category.index;
-
-  @override
-  List<Object?> get props => [category];
 }

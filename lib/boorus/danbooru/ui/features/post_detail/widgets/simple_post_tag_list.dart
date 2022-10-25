@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
@@ -31,24 +30,23 @@ class SimplePostTagList extends StatelessWidget {
           builder: (context, themeState) {
             final tags_ = [
               ...tags
-                  .where((e) => e.category == TagAutocompleteCategory.artist()),
+                  .where((e) => e.category == TagCategory.artist.stringify()),
               ...tags.where(
-                (e) => e.category == TagAutocompleteCategory.copyright(),
+                (e) => e.category == TagCategory.copyright.stringify(),
               ),
               ...tags.where(
-                (e) => e.category == TagAutocompleteCategory.character(),
+                (e) => e.category == TagCategory.charater.stringify(),
               ),
               ...tags.where(
-                (e) => e.category == TagAutocompleteCategory.general(),
+                (e) => e.category == TagCategory.general.stringify(),
               ),
-              ...tags
-                  .where((e) => e.category == TagAutocompleteCategory.meta()),
+              ...tags.where((e) => e.category == TagCategory.meta.stringify()),
             ].map((e) => _Tag(
                   rawName: e.name,
                   displayName: e.name.replaceAll('_', ' '),
                   category: TagCategory.meta,
                   color: getTagColor(
-                    TagCategory.values[e.category.getIndex()],
+                    stringToTagCategory(e.category),
                     themeState.theme,
                   ),
                 ));

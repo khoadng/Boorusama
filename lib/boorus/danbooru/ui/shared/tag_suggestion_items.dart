@@ -180,7 +180,7 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
 Color? _getTagColor(AutocompleteData tag, ThemeMode theme) {
   if (tag.hasCategory) {
     return getTagColor(
-      intToTagCategory(tag.category!.getIndex()),
+      stringToTagCategory(tag.category!),
       theme,
     );
   } else if (tag.hasUserLevel) {

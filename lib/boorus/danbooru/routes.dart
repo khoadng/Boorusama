@@ -125,27 +125,27 @@ final postDetailHandler = Handler(handlerFunc: (
       .map((p) => [
             ...p.artistTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.artist(),
+                  category: TagCategory.artist.stringify(),
                   postId: p.id,
                 )),
             ...p.characterTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.character(),
+                  category: TagCategory.charater.stringify(),
                   postId: p.id,
                 )),
             ...p.copyrightTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.copyright(),
+                  category: TagCategory.copyright.stringify(),
                   postId: p.id,
                 )),
             ...p.generalTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.general(),
+                  category: TagCategory.general.stringify(),
                   postId: p.id,
                 )),
             ...p.metaTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.meta(),
+                  category: TagCategory.meta.stringify(),
                   postId: p.id,
                 )),
           ])
