@@ -250,6 +250,14 @@
         "bulk_download_hidden_censored_count" : "Hidden (censored tags)",
         "bulk_download_hidden_banned_count" : "Hidden (removed at the artist's request)",
         "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
+        "bulk_download_skipped_counter" : {
+            "one": "{} image downloaded",
+            "other": "{} images downloaded"
+        },
+        "bulk_download_downloaded_counter" : {
+            "one": "{} image skipped",
+            "other": "{} images skipped"
+        },
         "open_app_settings" : "Адкрыць настройкі",
         "storage_permission_explanation" : "Дазвол на доступ да сховішча неабходна для захавання загружаных файлаў.",
         "alternative_method_reason": "Выкарыстоўвайце гэта, калі метад загрузкі па змаўчанні не працуе. Альтэрнатыўны таксама мае лепшую падтрымку апавяшчэнняў.",

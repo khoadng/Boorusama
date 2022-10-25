@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -34,7 +35,8 @@ class DownloadCompletedView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        '$doneCount images downloaded',
+                        'download.bulk_download_downloaded_counter'
+                            .plural(doneCount),
                         style: Theme.of(context)
                             .textTheme
                             .headline5!
@@ -42,7 +44,8 @@ class DownloadCompletedView extends StatelessWidget {
                       ),
                       if (filteredPosts.isNotEmpty)
                         Text(
-                          '${filteredPosts.length} images skipped',
+                          'download.bulk_download_skipped_counter'
+                              .plural(filteredPosts.length),
                           style: Theme.of(context)
                               .textTheme
                               .headline5!
