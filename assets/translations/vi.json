@@ -239,25 +239,25 @@
 
     "download" : {
         "download" : "Tải ảnh",
-        "bulk_download" : "Bulk download",
-        "bulk_download_tag_confirmation" : "The below tags will be downloaded",
-        "bulk_download_save_to_folder" : "Save to folder",
-        "bulk_download_merge_images_to_folder" : "Merge images into existing folder",
-        "bulk_download_merge_explanation" : "Disable this option will create a new folder instead",
-        "bulk_download_total_count" : "Total",
-        "bulk_download_done_count" : "Done",
-        "bulk_download_hidden_censored_count" : "Hidden (censored tags)",
-        "bulk_download_hidden_banned_count" : "Hidden (removed at the artist's request)",
-        "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
+        "bulk_download" : "Tải ảnh số lượng lớn",
+        "bulk_download_tag_confirmation" : "Tag dưới đây sẽ được tải",
+        "bulk_download_save_to_folder" : "Lưu vào thư mục",
+        "bulk_download_merge_images_to_folder" : "Gộp ảnh với thư mục trùng tên",
+        "bulk_download_merge_explanation" : "Nếu tắt sẽ tạo thư mục mới",
+        "bulk_download_total_count" : "Tổng",
+        "bulk_download_done_count" : "Đã tải",
+        "bulk_download_hidden_censored_count" : "Ẩn (chứa tag bị kiểm duyện)",
+        "bulk_download_hidden_banned_count" : "Ẩn (bị xoá theo yêu cầu của tác giả)",
+        "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
         "bulk_download_downloaded_counter" : {
-            "one": "{} image downloaded",
-            "other": "{} images downloaded"
+            "one": "Đã tải {} ảnh",
+            "other": "Đã tải {} ảnh"
         },
         "bulk_download_skipped_counter" : {
-            "one": "{} image skipped",
-            "other": "{} images skipped"
+            "one": "{} ảnh bị lượt bỏ",
+            "other": "{} ảnh bị lượt bỏ"
         },
-        "bulk_download_download_more" : "Download more",
+        "bulk_download_download_more" : "Tải thêm",
         "open_app_settings" : "Mở cài đặt",
         "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
         "alternative_method_reason": "Dùng cái này nếu cách tải chính không chạy được, cách này hỗ trợ thông báo tốt hơn",
