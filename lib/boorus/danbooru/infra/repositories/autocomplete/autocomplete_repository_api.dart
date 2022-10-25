@@ -4,9 +4,8 @@ import 'package:retrofit/dio.dart';
 // Project imports:
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 bool _isTagType(String? type) => [
@@ -46,7 +45,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             type: e.type,
             label: e.label!,
             value: e.value!,
-            level: stringToUserLevel(e.level!),
+            level: e.level,
           );
         } else {
           return AutocompleteData(label: e.label!, value: e.value!);

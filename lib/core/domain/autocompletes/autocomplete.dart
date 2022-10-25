@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 
 typedef AutocompleteValue = String;
 typedef AutocompleteLabel = String;
@@ -26,7 +25,7 @@ class AutocompleteData extends Equatable {
   final String? category;
   final PostCount? postCount;
   final AutocompleteAntecedent? antecedent;
-  final UserLevel? level;
+  final String? level;
 
   bool get hasAlias => antecedent != null;
   bool get hasCount => postCount != null;
