@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {

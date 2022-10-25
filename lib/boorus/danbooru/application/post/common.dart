@@ -2,8 +2,8 @@
 import 'package:collection/collection.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/search/filter_operator.dart';
 
 List<PostData> filter(
   List<PostData> posts,

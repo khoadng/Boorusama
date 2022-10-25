@@ -6,12 +6,12 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'filter_operator.dart';
+import 'tag_search_item.dart';
 
 @immutable
 class TagSearchState extends Equatable {
@@ -168,13 +168,12 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
               .toList(),
         ));
 
-        await tryAsync<List<AutocompleteData>>(
-          action: () =>
-              autocompleteRepository.getAutocomplete(getQuery(query, operator)),
-          onSuccess: (tags) async => emit(state.copyWith(
-            suggestionTags: tags,
-          )),
-        );
+        final tags = await autocompleteRepository
+            .getAutocomplete(getQuery(query, operator));
+
+        emit(state.copyWith(
+          suggestionTags: tags,
+        ));
       },
     );
 
