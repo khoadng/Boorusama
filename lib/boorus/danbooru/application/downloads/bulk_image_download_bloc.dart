@@ -12,8 +12,10 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/infra/infra.dart';
 
 enum BulkImageDownloadStatus {
@@ -66,6 +68,7 @@ class BulkImageDownloadState extends Equatable {
     required this.downloadQueue,
     required this.downloaded,
     required this.options,
+    required this.message,
   });
 
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
@@ -84,6 +87,7 @@ class BulkImageDownloadState extends Equatable {
           randomNameIfExists: 'Default Folder-123',
           defaultNameIfEmpty: 'Default Folder',
         ),
+        message: '',
       );
 
   final int totalCount;
@@ -96,6 +100,7 @@ class BulkImageDownloadState extends Equatable {
   final List<int> downloadQueue;
   final List<DownloadImageData> downloaded;
   final DownloadOptions options;
+  final String message;
 
   BulkImageDownloadState copyWith({
     int? totalCount,
@@ -108,6 +113,7 @@ class BulkImageDownloadState extends Equatable {
     List<int>? downloadQueue,
     List<DownloadImageData>? downloaded,
     DownloadOptions? options,
+    String? message,
   }) =>
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
@@ -120,6 +126,7 @@ class BulkImageDownloadState extends Equatable {
         downloadQueue: downloadQueue ?? this.downloadQueue,
         downloaded: downloaded ?? this.downloaded,
         options: options ?? this.options,
+        message: message ?? this.message,
       );
 
   @override
@@ -134,6 +141,7 @@ class BulkImageDownloadState extends Equatable {
         didFetchAllPage,
         downloaded,
         options,
+        message,
       ];
 }
 
@@ -219,7 +227,8 @@ class _DownloadDone extends BulkImageDownloadEvent {
 }
 
 class BulkImageDownloadBloc
-    extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
+    extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState>
+    with PostErrorMixin {
   BulkImageDownloadBloc({
     required PostRepository postRepository,
     required BulkDownloader downloader,
@@ -251,8 +260,22 @@ class BulkImageDownloadBloc
       final tags = event.tags.join(' ');
 
       // Local function to configure the equivalent repository's function
-      Future<List<Post>> getPosts(String tags, int page) =>
-          postRepository.getPosts(tags, page, limit: 100, includeInvalid: true);
+      Future<List<Post>> getPosts(String tags, int page) async {
+        try {
+          return await postRepository.getPosts(
+            tags,
+            page,
+            limit: 100,
+            includeInvalid: true,
+          );
+        } catch (e) {
+          if (e is BooruError) {
+            emit(state.copyWith(message: getErrorMessage(e)));
+          }
+
+          return [];
+        }
+      }
 
       final intPosts = await getPosts(tags, page);
       final postStack = [intPosts];

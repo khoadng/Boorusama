@@ -114,6 +114,31 @@ class DownloadProgressView extends StatelessWidget {
               'download.bulk_download_stay_on_screen_request',
             ).tr(),
           ),
+          BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
+            selector: (state) => state.message,
+            builder: (context, state) {
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    Text(
+                      state,
+                      style: Theme.of(context)
+                          .textTheme
+                          .subtitle1!
+                          .copyWith(color: Theme.of(context).colorScheme.error),
+                    ).tr(),
+                    ElevatedButton(
+                      onPressed: () => context
+                          .read<BulkImageDownloadBloc>()
+                          .add(const BulkImageDownloadReset()),
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

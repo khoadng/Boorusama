@@ -16,7 +16,7 @@ class DownloadEmptyTagView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.all(4),
       child: SimpleTagSearchView(
         closeOnSelected: false,
         ensureValidTag: false,

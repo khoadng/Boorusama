@@ -40,7 +40,7 @@ class SimpleTagSearchView extends StatelessWidget {
             body: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   child: SearchBar(
                     autofocus: true,
                     onChanged: (value) {
