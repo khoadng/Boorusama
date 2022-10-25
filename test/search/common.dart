@@ -1,7 +1,7 @@
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 
 TagSearchState tagSearchStateEmpty() => const TagSearchState(
       query: '',

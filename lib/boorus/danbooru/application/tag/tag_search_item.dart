@@ -7,8 +7,8 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/common/string_utils.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 
 bool _hasMetatag(String query) => query.contains(':');
 
