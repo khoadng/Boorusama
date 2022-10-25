@@ -3,8 +3,8 @@ import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/common/string_utils.dart';
+import 'package:boorusama/core/application/search/filter_operator.dart';
 
 enum FilterGroupType {
   single,
@@ -65,16 +65,6 @@ class FilterItem extends Equatable {
 
   @override
   String toString() => '${operator.toString().split('.').last}.$tag';
-}
-
-String stripFilterOperator(String value, FilterOperator operator) {
-  switch (operator) {
-    case FilterOperator.not:
-    case FilterOperator.or:
-      return value.substring(1);
-    case FilterOperator.none:
-      return value;
-  }
 }
 
 FilterItem? _stringToFilterItem(String value, FilterGroupType groupType) {

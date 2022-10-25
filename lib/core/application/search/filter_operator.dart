@@ -4,6 +4,16 @@ enum FilterOperator {
   or,
 }
 
+String stripFilterOperator(String value, FilterOperator operator) {
+  switch (operator) {
+    case FilterOperator.not:
+    case FilterOperator.or:
+      return value.substring(1);
+    case FilterOperator.none:
+      return value;
+  }
+}
+
 FilterOperator stringToFilterOperator(String value) {
   switch (value) {
     case '-':
