@@ -118,7 +118,7 @@ class SideBarMenu extends StatelessWidget {
                         ),
                       ListTile(
                         leading: const Icon(Icons.download),
-                        title: const Text('Bulk downloads'),
+                        title: const Text('download.bulk_download').tr(),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
                           AppRouter.router.navigateTo(

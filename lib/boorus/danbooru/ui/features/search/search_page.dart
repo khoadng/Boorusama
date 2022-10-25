@@ -483,7 +483,7 @@ class ModalSelectedTag extends StatelessWidget {
             //   },
             // ),
             ListTile(
-              title: const Text('Bulk download'),
+              title: const Text('download.bulk_download').tr(),
               leading: const Icon(Icons.download),
               onTap: () {
                 Navigator.of(context).pop();

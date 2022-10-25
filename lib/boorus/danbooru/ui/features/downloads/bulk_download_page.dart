@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -26,7 +27,7 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Bulk downloads'),
+        title: const Text('download.bulk_download').tr(),
       ),
       body: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
           BulkImageDownloadStatus>(
