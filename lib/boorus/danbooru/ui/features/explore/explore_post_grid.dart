@@ -29,6 +29,7 @@ class ExplorePostGrid extends StatelessWidget {
     required this.scrollController,
     required this.hasMore,
     required this.headers,
+    required this.isLoading,
   });
 
   final DateTime date;
@@ -40,11 +41,13 @@ class ExplorePostGrid extends StatelessWidget {
   final RefreshController controller;
   final AutoScrollController scrollController;
   final bool hasMore;
+  final bool isLoading;
   final List<Widget> headers;
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteLoadList(
+    return InfiniteLoadListScrollView(
+      isLoading: isLoading,
       enableLoadMore: hasMore,
       scrollController: scrollController,
       refreshController: controller,
@@ -56,25 +59,13 @@ class ExplorePostGrid extends StatelessWidget {
           () => controller.refreshCompleted(),
         );
       },
-      builder: (context, controller) => CustomScrollView(
-        controller: controller,
-        slivers: [
-          ...headers.map((header) => SliverToBoxAdapter(child: header)),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            sliver: mapLoadStatusToWidget(context, status, controller),
-          ),
-          if (status == LoadStatus.loading)
-            const SliverPadding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            ),
-        ],
-      ),
+      sliverBuilder: (controller) => [
+        ...headers.map((header) => SliverToBoxAdapter(child: header)),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          sliver: mapLoadStatusToWidget(context, status, controller),
+        ),
+      ],
     );
   }
 
