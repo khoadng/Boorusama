@@ -20,6 +20,7 @@ class DownloadProgressView extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, int>(
             selector: (state) => state.totalCount,
@@ -109,6 +110,15 @@ class DownloadProgressView extends StatelessWidget {
                   : const SizedBox.shrink();
             },
           ),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: ElevatedButton(
+              onPressed: () => context
+                  .read<BulkImageDownloadBloc>()
+                  .add(const BulkImagesDownloadCancel()),
+              child: const Text('Cancel'),
+            ),
+          ),
           WarningContainer(
             contentBuilder: (context) => const Text(
               'download.bulk_download_stay_on_screen_request',
@@ -117,26 +127,30 @@ class DownloadProgressView extends StatelessWidget {
           BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
             selector: (state) => state.message,
             builder: (context, state) {
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    Text(
-                      state,
-                      style: Theme.of(context)
-                          .textTheme
-                          .subtitle1!
-                          .copyWith(color: Theme.of(context).colorScheme.error),
-                    ).tr(),
-                    ElevatedButton(
-                      onPressed: () => context
-                          .read<BulkImageDownloadBloc>()
-                          .add(const BulkImageDownloadReset()),
-                      child: const Text('OK'),
-                    ),
-                  ],
-                ),
-              );
+              return state.isNotEmpty
+                  ? Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Column(
+                        children: [
+                          Text(
+                            state,
+                            style: Theme.of(context)
+                                .textTheme
+                                .subtitle1!
+                                .copyWith(
+                                  color: Theme.of(context).colorScheme.error,
+                                ),
+                          ).tr(),
+                          ElevatedButton(
+                            onPressed: () => context
+                                .read<BulkImageDownloadBloc>()
+                                .add(const BulkImageDownloadReset()),
+                            child: const Text('OK'),
+                          ),
+                        ],
+                      ),
+                    )
+                  : const SizedBox.shrink();
             },
           ),
         ],

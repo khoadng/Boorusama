@@ -78,6 +78,8 @@ class BulkDownloader {
     }
   }
 
+  Future<void> cancelAll() => FlutterDownloader.cancelAll();
+
   Stream<DownloadData> get stream => _eventController.stream
       .map((data) {
         final String id = data[0];

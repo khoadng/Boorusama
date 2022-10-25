@@ -162,6 +162,13 @@ class BulkImagesDownloadRequested extends BulkImageDownloadEvent {
       ];
 }
 
+class BulkImagesDownloadCancel extends BulkImageDownloadEvent {
+  const BulkImagesDownloadCancel();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class BulkImageDownloadReset extends BulkImageDownloadEvent {
   const BulkImageDownloadReset();
 
@@ -286,6 +293,9 @@ class BulkImageDownloadBloc
         final posts = postStack.removeLast();
         for (final p in posts) {
           if (state.downloadQueue.contains(p.id)) continue;
+          if (state.status == BulkImageDownloadStatus.done) break;
+
+          await Future.delayed(const Duration(milliseconds: 200));
 
           if (p.viewable) {
             add(_DownloadRequested(post: p, tagName: tags));
@@ -301,6 +311,7 @@ class BulkImageDownloadBloc
             ));
           }
         }
+
         page += 1;
         final next = await getPosts(tags, page);
         if (next.isNotEmpty) {
@@ -311,6 +322,12 @@ class BulkImageDownloadBloc
       emit(state.copyWith(
         didFetchAllPage: true,
       ));
+    });
+
+    on<BulkImagesDownloadCancel>((event, emit) async {
+      emit(state.copyWith(downloadQueue: []));
+      await downloader.cancelAll();
+      emit(state.copyWith(status: BulkImageDownloadStatus.done));
     });
 
     on<BulkImageDownloadTagsAdded>((event, emit) {
