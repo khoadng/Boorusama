@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 import 'simple_tag_search_view.dart';
 
 class TagEditView extends StatelessWidget {
