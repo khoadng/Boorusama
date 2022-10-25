@@ -13,8 +13,9 @@ import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/no_data_box.dart';
 import 'pool_options_header.dart';
 import 'sliver_pool_grid.dart';
 

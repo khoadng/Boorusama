@@ -1,9 +1,6 @@
 export 'carousel_placeholder.dart';
-export 'error_box.dart';
 export 'modal.dart';
 export 'modal_options.dart';
-export 'no_data_box.dart';
-export 'search_bar.dart';
 export 'sliver_post_grid.dart';
 export 'sliver_post_grid_bloc.dart';
 export 'sliver_post_grid_placeholder.dart';
