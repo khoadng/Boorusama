@@ -170,14 +170,16 @@ class InfiniteLoadListScrollView extends StatelessWidget {
     this.onRefresh,
     required this.sliverBuilder,
     this.loadingBuilder,
-    this.isLoading = false,
+    required this.isLoading,
     this.scrollController,
     this.refreshController,
     this.extendBody,
+    this.enableRefresh = true,
   });
 
   final bool? extendBody;
   final bool enableLoadMore;
+  final bool enableRefresh;
   final VoidCallback? onLoadMore;
   final void Function(RefreshController controller)? onRefresh;
   final List<Widget> Function(AutoScrollController controller) sliverBuilder;
@@ -193,6 +195,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
       scrollController: scrollController,
       refreshController: refreshController,
       enableLoadMore: enableLoadMore,
+      enableRefresh: enableRefresh,
       onLoadMore: onLoadMore,
       onRefresh: onRefresh,
       builder: (context, controller) => CustomScrollView(
