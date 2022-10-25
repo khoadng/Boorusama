@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
