@@ -6,9 +6,9 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 
 class MockPostRepository extends Mock implements PostRepository {}
 
@@ -46,7 +46,7 @@ void main() {
         tags: [
           PostDetailTag(
             name: 'foo',
-            category: TagAutocompleteCategory.general(),
+            category: TagCategory.general.stringify(),
             postId: 1,
           ),
         ],
@@ -57,8 +57,11 @@ void main() {
         onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
-      act: (bloc) => bloc
-          .add(const PostDetailTagUpdated(tag: 'bar', category: 1, postId: 1)),
+      act: (bloc) => bloc.add(PostDetailTagUpdated(
+        tag: 'bar',
+        category: TagCategory.artist.stringify(),
+        postId: 1,
+      )),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
@@ -67,7 +70,7 @@ void main() {
           tags: [
             PostDetailTag(
               name: 'foo',
-              category: TagAutocompleteCategory.general(),
+              category: TagCategory.general.stringify(),
               postId: 1,
             ),
           ],
@@ -80,12 +83,12 @@ void main() {
           tags: [
             PostDetailTag(
               name: 'bar',
-              category: TagAutocompleteCategory.artist(),
+              category: TagCategory.artist.stringify(),
               postId: 1,
             ),
             PostDetailTag(
               name: 'foo',
-              category: TagAutocompleteCategory.general(),
+              category: TagCategory.general.stringify(),
               postId: 1,
             ),
           ],

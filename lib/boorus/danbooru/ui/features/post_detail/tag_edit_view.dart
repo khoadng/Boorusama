@@ -82,8 +82,7 @@ class TagEditView extends StatelessWidget {
                               tags[index].name.replaceAll('_', ' '),
                               style: TextStyle(
                                 color: getTagColor(
-                                  TagCategory
-                                      .values[tags[index].category.getIndex()],
+                                  stringToTagCategory(tags[index].category),
                                   themeState.theme,
                                 ),
                               ),
@@ -115,7 +114,7 @@ class TagEditView extends StatelessWidget {
                     onSelected: (tag) {
                       bloc.add(PostDetailTagUpdated(
                         tag: tag.value,
-                        category: tag.category?.getIndex(),
+                        category: tag.category,
                         postId: post.id,
                       ));
                     },

@@ -5,10 +5,8 @@ import 'package:retrofit/dio.dart';
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
-import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 bool _isTagType(String? type) => [
@@ -31,8 +29,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             type: e.type,
             label: e.label!,
             value: e.value!,
-            category:
-                TagAutocompleteCategory(category: intToTagCategory(e.category)),
+            category: e.category?.toString(),
             postCount: e.postCount,
             antecedent: e.antecedent,
           );
@@ -41,9 +38,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             type: e.type,
             label: e.label!,
             value: e.value!,
-            category: PoolAutocompleteCategory(
-              category: stringToPoolCategory(e.category),
-            ),
+            category: e.category,
             postCount: e.postCount,
           );
         } else if (e.type == 'user') {

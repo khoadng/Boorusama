@@ -10,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
@@ -23,7 +22,7 @@ class PostDetailTag extends Equatable {
   });
 
   final String name;
-  final TagAutocompleteCategory category;
+  final String category;
   final int postId;
 
   @override
@@ -169,7 +168,7 @@ class PostDetailTagUpdated extends PostDetailEvent {
     required this.postId,
   });
 
-  final int? category;
+  final String? category;
   final String tag;
   final int postId;
 
@@ -243,9 +242,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
               ...state.tags,
               PostDetailTag(
                 name: event.tag,
-                category: TagAutocompleteCategory(
-                  category: TagCategory.values[event.category!],
-                ),
+                category: event.category!,
                 postId: event.postId,
               ),
             ]..sort((a, b) => a.name.compareTo(b.name)),
@@ -255,7 +252,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           onPostUpdated(
             event.postId,
             event.tag,
-            TagCategory.values[event.category!],
+            stringToTagCategory(event.category!),
           );
         },
       );
