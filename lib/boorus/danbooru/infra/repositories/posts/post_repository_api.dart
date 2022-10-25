@@ -8,6 +8,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/handle_error.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/repositories.dart';
+import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
 List<Post> parsePost(HttpResponse<dynamic> value) => parse(
