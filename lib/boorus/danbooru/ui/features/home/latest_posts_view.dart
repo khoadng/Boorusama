@@ -69,9 +69,9 @@ class _LatestViewState extends State<LatestView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) => !current.hasMore,
       builder: (context, state) {
-        return InfiniteLoadList(
+        return InfiniteLoadListScrollView(
+          isLoading: state.loading,
           extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context.read<PostBloc>().add(PostFetched(
@@ -86,31 +86,16 @@ class _LatestViewState extends State<LatestView> {
             );
           },
           scrollController: _autoScrollController,
-          builder: (context, controller) => CustomScrollView(
-            controller: controller,
-            slivers: [
-              _buildAppBar(context),
-              SliverPadding(
-                padding: const EdgeInsets.only(bottom: 2),
-                sliver: _buildMostSearchTagList(),
-              ),
-              HomePostGrid(
-                controller: controller,
-              ),
-              BlocBuilder<PostBloc, PostState>(
-                builder: (context, state) {
-                  return state.status == LoadStatus.loading
-                      ? const SliverPadding(
-                          padding: EdgeInsets.symmetric(vertical: 20),
-                          sliver: SliverToBoxAdapter(
-                            child: Center(child: CircularProgressIndicator()),
-                          ),
-                        )
-                      : const SliverToBoxAdapter(child: SizedBox.shrink());
-                },
-              ),
-            ],
-          ),
+          sliverBuilder: (controller) => [
+            _buildAppBar(context),
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 2),
+              sliver: _buildMostSearchTagList(),
+            ),
+            HomePostGrid(
+              controller: controller,
+            ),
+          ],
         );
       },
     );

@@ -161,6 +161,7 @@ class ExploreDetailPage extends StatelessWidget {
                     state.scale,
                   ),
                   hasMore: ppstate.hasMore,
+                  isLoading: ppstate.loading,
                   scrollController: scrollController,
                   controller: refreshController,
                   date: state.date,

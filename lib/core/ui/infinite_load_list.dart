@@ -160,3 +160,59 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
     );
   }
 }
+
+// ignore: prefer-single-widget-per-file
+class InfiniteLoadListScrollView extends StatelessWidget {
+  const InfiniteLoadListScrollView({
+    super.key,
+    required this.enableLoadMore,
+    this.onLoadMore,
+    this.onRefresh,
+    required this.sliverBuilder,
+    this.loadingBuilder,
+    required this.isLoading,
+    this.scrollController,
+    this.refreshController,
+    this.extendBody,
+    this.enableRefresh = true,
+  });
+
+  final bool? extendBody;
+  final bool enableLoadMore;
+  final bool enableRefresh;
+  final VoidCallback? onLoadMore;
+  final void Function(RefreshController controller)? onRefresh;
+  final List<Widget> Function(AutoScrollController controller) sliverBuilder;
+  final Widget Function(BuildContext context, Widget child)? loadingBuilder;
+  final bool isLoading;
+  final AutoScrollController? scrollController;
+  final RefreshController? refreshController;
+
+  @override
+  Widget build(BuildContext context) {
+    return InfiniteLoadList(
+      extendBody: extendBody ?? false,
+      scrollController: scrollController,
+      refreshController: refreshController,
+      enableLoadMore: enableLoadMore,
+      enableRefresh: enableRefresh,
+      onLoadMore: onLoadMore,
+      onRefresh: onRefresh,
+      builder: (context, controller) => CustomScrollView(
+        controller: controller,
+        slivers: [
+          ...sliverBuilder(controller),
+          if (isLoading)
+            const SliverPadding(
+              padding: EdgeInsets.symmetric(vertical: 20),
+              sliver: SliverToBoxAdapter(
+                child: Center(child: CircularProgressIndicator()),
+              ),
+            )
+          else
+            const SliverToBoxAdapter(child: SizedBox.shrink()),
+        ],
+      ),
+    );
+  }
+}

@@ -6,7 +6,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -62,9 +61,9 @@ class FavoritesPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
-            return InfiniteLoadList(
+            return InfiniteLoadListScrollView(
+              isLoading: state.loading,
               enableLoadMore: state.hasMore,
               onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                     tags: 'ordfav:$username',
@@ -80,25 +79,9 @@ class FavoritesPage extends StatelessWidget {
                   () => controller.refreshCompleted(),
                 );
               },
-              builder: (context, controller) => CustomScrollView(
-                controller: controller,
-                slivers: [
-                  HomePostGrid(controller: controller),
-                  BlocBuilder<PostBloc, PostState>(
-                    builder: (context, state) {
-                      return state.status == LoadStatus.loading
-                          ? const SliverPadding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              sliver: SliverToBoxAdapter(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              ),
-                            )
-                          : const SliverToBoxAdapter(child: SizedBox.shrink());
-                    },
-                  ),
-                ],
-              ),
+              sliverBuilder: (controller) => [
+                HomePostGrid(controller: controller),
+              ],
             );
           },
         ),
