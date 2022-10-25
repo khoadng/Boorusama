@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 
 class RecommendPostSection extends StatelessWidget {
   const RecommendPostSection({

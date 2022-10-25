@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 // const String _basePath = '/storage/emulated/0/';

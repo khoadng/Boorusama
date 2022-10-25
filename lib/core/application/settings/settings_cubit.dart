@@ -2,9 +2,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings_state.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/core/application/settings/settings_state.dart';
+import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 
 class SettingsCubit extends Cubit<SettingsState> {
   SettingsCubit({
