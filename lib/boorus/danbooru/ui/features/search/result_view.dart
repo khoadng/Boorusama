@@ -40,9 +40,9 @@ class _ResultViewState extends State<ResultView> {
     return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) => BlocBuilder<PostBloc, PostState>(
-        buildWhen: (previous, current) => !current.hasMore,
         builder: (context, state) {
-          return InfiniteLoadList(
+          return InfiniteLoadListScrollView(
+            isLoading: state.loading,
             refreshController: refreshController,
             enableLoadMore: state.hasMore,
             onLoadMore: () => context.read<PostBloc>().add(PostFetched(
@@ -63,54 +63,38 @@ class _ResultViewState extends State<ResultView> {
                 () => controller.refreshCompleted(),
               );
             },
-            builder: (context, controller) => CustomScrollView(
-              controller: controller,
-              slivers: [
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).viewPadding.top,
-                  ),
+            sliverBuilder: (controller) => [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
                 ),
-                SliverToBoxAdapter(
-                  child:
-                      BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
-                    builder: (context, state) {
-                      if (state.status == LoadStatus.success) {
-                        return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
-                          selector: (state) => state.theme,
-                          builder: (context, theme) {
-                            return _RelatedTag(
-                              relatedTag: state.data!,
-                              theme: theme,
-                            );
-                          },
-                        );
-                      } else if (state.status == LoadStatus.failure) {
-                        return const SizedBox.shrink();
-                      } else {
-                        return const TagChipsPlaceholder();
-                      }
-                    },
-                  ),
-                ),
-                HomePostGrid(
-                  controller: controller,
-                  onTap: () => FocusScope.of(context).unfocus(),
-                ),
-                BlocBuilder<PostBloc, PostState>(
+              ),
+              SliverToBoxAdapter(
+                child: BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
                   builder: (context, state) {
-                    return state.status == LoadStatus.loading
-                        ? const SliverPadding(
-                            padding: EdgeInsets.symmetric(vertical: 20),
-                            sliver: SliverToBoxAdapter(
-                              child: Center(child: CircularProgressIndicator()),
-                            ),
-                          )
-                        : const SliverToBoxAdapter(child: SizedBox.shrink());
+                    if (state.status == LoadStatus.success) {
+                      return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
+                        selector: (state) => state.theme,
+                        builder: (context, theme) {
+                          return _RelatedTag(
+                            relatedTag: state.data!,
+                            theme: theme,
+                          );
+                        },
+                      );
+                    } else if (state.status == LoadStatus.failure) {
+                      return const SizedBox.shrink();
+                    } else {
+                      return const TagChipsPlaceholder();
+                    }
                   },
                 ),
-              ],
-            ),
+              ),
+              HomePostGrid(
+                controller: controller,
+                onTap: () => FocusScope.of(context).unfocus(),
+              ),
+            ],
           );
         },
       ),
