@@ -4,11 +4,16 @@ import 'package:equatable/equatable.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/posts/media_info_mixin.dart';
+import 'package:boorusama/core/domain/posts/post.dart' as base;
+import 'package:boorusama/core/domain/posts/rating.dart';
+import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
 
-class Post extends Equatable {
+class Post extends Equatable
+    with MediaInfoMixin, TranslatedMixin
+    implements base.Post {
   const Post({
     required this.id,
     required this.previewImageUrl,
@@ -138,17 +143,24 @@ class Post extends Equatable {
         totalComments: 0,
       );
   final int id;
+  @override
   final String previewImageUrl;
+  @override
   final String normalImageUrl;
+  @override
   final String fullImageUrl;
   final List<String> copyrightTags;
   final List<String> characterTags;
   final List<String> artistTags;
   final List<String> generalTags;
   final List<String> metaTags;
+  @override
   final List<String> tags;
+  @override
   final double width;
+  @override
   final double height;
+  @override
   final String format;
   final DateTime? lastCommentAt;
   final String? _source;
@@ -158,6 +170,7 @@ class Post extends Equatable {
   final int downScore;
   final int favCount;
   final int uploaderId;
+  @override
   final Rating rating;
   final int fileSize;
   final int? pixivId;
@@ -225,21 +238,6 @@ class Post extends Equatable {
         artistCommentary: artistCommentary,
       );
 
-  double get aspectRatio => width / height;
-
-  bool get isVideo {
-    //TODO: handle other kind of video format
-    final supportVideoFormat = {'mp4', 'webm', 'zip'};
-
-    return supportVideoFormat.contains(format);
-  }
-
-  bool get isAnimated {
-    return isVideo || (format == 'gif');
-  }
-
-  bool get isTranslated => tags.contains('translated');
-
   bool get hasComment => lastCommentAt != null;
 
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
@@ -252,6 +250,7 @@ class Post extends Equatable {
   bool get hasVoter => upScore != 0 || downScore != 0;
   bool get hasFavorite => favCount > 0;
 
+  @override
   String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
 
   @override
