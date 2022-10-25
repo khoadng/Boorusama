@@ -48,7 +48,7 @@ class DownloadProgressView extends StatelessWidget {
               return ListTile(
                 visualDensity: VisualDensity.compact,
                 title:
-                    const Text('download_bulk_download_hidden_censored_count')
+                    const Text('download.bulk_download_hidden_censored_count')
                         .tr(),
                 trailing: AnimatedFlipCounter(
                   value: filteredPosts
