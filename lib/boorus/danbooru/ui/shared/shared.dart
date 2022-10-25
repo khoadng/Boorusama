@@ -1,6 +1,5 @@
 export 'carousel_placeholder.dart';
 export 'error_box.dart';
-export 'infinite_load_list.dart';
 export 'modal.dart';
 export 'modal_options.dart';
 export 'no_data_box.dart';

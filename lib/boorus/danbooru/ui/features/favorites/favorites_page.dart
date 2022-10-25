@@ -9,8 +9,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 enum _Action {
   downloadAll,

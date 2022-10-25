@@ -17,8 +17,8 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
