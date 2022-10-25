@@ -49,7 +49,6 @@ class _PoolPageState extends State<PoolPage> {
           child: BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
             builder: (context, poState) {
               return BlocBuilder<PoolBloc, PoolState>(
-                buildWhen: (previous, current) => !current.hasMore,
                 builder: (context, pState) =>
                     _buildList(pState, context, poState),
               );
@@ -65,7 +64,8 @@ class _PoolPageState extends State<PoolPage> {
     BuildContext context,
     PoolOverviewState poState,
   ) {
-    return InfiniteLoadList(
+    return InfiniteLoadListScrollView(
+      isLoading: pState.status == LoadStatus.loading,
       extendBody: true,
       enableRefresh: false,
       enableLoadMore: pState.hasMore,
@@ -83,64 +83,49 @@ class _PoolPageState extends State<PoolPage> {
           () => controller.refreshCompleted(),
         );
       },
-      builder: (context, controller) => CustomScrollView(
-        controller: controller,
-        slivers: <Widget>[
-          const SliverToBoxAdapter(
-            child: PoolOptionsHeader(),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-            sliver: BlocBuilder<PoolBloc, PoolState>(
-              buildWhen: (previous, current) =>
-                  current.status != LoadStatus.loading,
-              builder: (context, state) {
-                if (state.status == LoadStatus.initial) {
-                  return const SliverToBoxAdapter(
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 50),
-                      child: Center(child: CircularProgressIndicator()),
-                    ),
-                  );
-                } else if (state.status == LoadStatus.success) {
-                  if (state.pools.isEmpty) {
-                    return const SliverToBoxAdapter(child: NoDataBox());
-                  }
-
-                  return BlocBuilder<SettingsCubit, SettingsState>(
-                    builder: (context, settingsState) {
-                      return SliverPoolGrid(
-                        pools: state.pools,
-                        spacing: settingsState.settings.imageGridSpacing,
-                      );
-                    },
-                  );
-                } else if (state.status == LoadStatus.loading) {
-                  return const SliverToBoxAdapter(
-                    child: SizedBox.shrink(),
-                  );
-                } else {
-                  return const SliverToBoxAdapter(
-                    child: ErrorBox(),
-                  );
-                }
-              },
-            ),
-          ),
-          BlocBuilder<PoolBloc, PoolState>(
+      sliverBuilder: (controller) => [
+        const SliverToBoxAdapter(
+          child: PoolOptionsHeader(),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+          sliver: BlocBuilder<PoolBloc, PoolState>(
+            buildWhen: (previous, current) =>
+                current.status != LoadStatus.loading,
             builder: (context, state) {
-              return state.status == LoadStatus.loading
-                  ? const SliverPadding(
-                      padding: EdgeInsets.symmetric(vertical: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    )
-                  : const SliverToBoxAdapter(child: SizedBox.shrink());
+              if (state.status == LoadStatus.initial) {
+                return const SliverToBoxAdapter(
+                  child: Padding(
+                    padding: EdgeInsets.only(top: 50),
+                    child: Center(child: CircularProgressIndicator()),
+                  ),
+                );
+              } else if (state.status == LoadStatus.success) {
+                if (state.pools.isEmpty) {
+                  return const SliverToBoxAdapter(child: NoDataBox());
+                }
+
+                return BlocBuilder<SettingsCubit, SettingsState>(
+                  builder: (context, settingsState) {
+                    return SliverPoolGrid(
+                      pools: state.pools,
+                      spacing: settingsState.settings.imageGridSpacing,
+                    );
+                  },
+                );
+              } else if (state.status == LoadStatus.loading) {
+                return const SliverToBoxAdapter(
+                  child: SizedBox.shrink(),
+                );
+              } else {
+                return const SliverToBoxAdapter(
+                  child: ErrorBox(),
+                );
+              }
             },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

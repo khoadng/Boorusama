@@ -56,7 +56,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
             ),
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
-              return InfiniteLoadList(
+              return InfiniteLoadListScrollView(
+                isLoading: state.loading,
                 refreshController: refreshController,
                 enableRefresh: false,
                 enableLoadMore: state.hasMore,
@@ -68,65 +69,45 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                         ),
                       ),
                     ),
-                builder: (context, controller) => CustomScrollView(
-                  controller: controller,
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: ListTile(
-                        title: Text(
-                          widget.pool.name.removeUnderscoreWithSpace(),
-                          style: Theme.of(context).textTheme.headline6,
-                        ),
-                        subtitle: Text(
-                          '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                            widget.pool.updatedAt,
-                            locale:
-                                Localizations.localeOf(context).languageCode,
-                          )}',
-                        ),
+                sliverBuilder: (controller) => [
+                  SliverToBoxAdapter(
+                    child: ListTile(
+                      title: Text(
+                        widget.pool.name.removeUnderscoreWithSpace(),
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      subtitle: Text(
+                        '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                          widget.pool.updatedAt,
+                          locale: Localizations.localeOf(context).languageCode,
+                        )}',
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: BlocBuilder<PoolDescriptionBloc,
-                          PoolDescriptionState>(
-                        builder: (context, state) {
-                          return state.status == LoadStatus.success
-                              ? Html(
-                                  onLinkTap:
-                                      (url, context, attributes, element) =>
-                                          _onHtmlLinkTapped(
-                                    attributes,
-                                    url,
-                                    state.descriptionEndpointRefUrl,
-                                  ),
-                                  data: state.description,
-                                )
-                              : const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                    HomePostGrid(
-                      controller: controller,
-                      usePlaceholder: false,
-                    ),
-                    BlocBuilder<PostBloc, PostState>(
+                  ),
+                  SliverToBoxAdapter(
+                    child:
+                        BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
                       builder: (context, state) {
-                        return state.status == LoadStatus.loading
-                            ? const SliverPadding(
-                                padding: EdgeInsets.only(bottom: 20, top: 60),
-                                sliver: SliverToBoxAdapter(
-                                  child: Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
+                        return state.status == LoadStatus.success
+                            ? Html(
+                                onLinkTap:
+                                    (url, context, attributes, element) =>
+                                        _onHtmlLinkTapped(
+                                  attributes,
+                                  url,
+                                  state.descriptionEndpointRefUrl,
                                 ),
+                                data: state.description,
                               )
-                            : const SliverToBoxAdapter(
-                                child: SizedBox.shrink(),
-                              );
+                            : const SizedBox.shrink();
                       },
                     ),
-                  ],
-                ),
+                  ),
+                  HomePostGrid(
+                    controller: controller,
+                    usePlaceholder: false,
+                  ),
+                ],
               );
             },
           ),

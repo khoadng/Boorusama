@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/core.dart';
@@ -141,9 +140,9 @@ class _PanelState extends State<_Panel> {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
         child: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
-            return InfiniteLoadList(
+            return InfiniteLoadListScrollView(
+              isLoading: state.loading,
               scrollController: widget.scrollController,
               refreshController: refreshController,
               enableLoadMore: state.hasMore,
@@ -161,59 +160,42 @@ class _PanelState extends State<_Panel> {
                   () => controller.refreshCompleted(),
                 );
               },
-              builder: (context, controller) => CustomScrollView(
-                controller: controller,
-                slivers: [
-                  if (widget.useSliverAppBar)
-                    const SliverAppBar(
-                      elevation: 0,
-                      backgroundColor: Colors.transparent,
-                      toolbarHeight: kToolbarHeight * 0.8,
-                    ),
+              sliverBuilder: (controller) => [
+                if (widget.useSliverAppBar)
+                  const SliverAppBar(
+                    elevation: 0,
+                    backgroundColor: Colors.transparent,
+                    toolbarHeight: kToolbarHeight * 0.8,
+                  ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: MediaQuery.of(context).viewPadding.top,
+                  ),
+                ),
+                if (widget.header != null)
                   SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).viewPadding.top,
+                    child: Column(
+                      children: widget.header!,
                     ),
                   ),
-                  if (widget.header != null)
-                    SliverToBoxAdapter(
-                      child: Column(
-                        children: widget.header!,
-                      ),
-                    ),
-                  SliverPadding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    sliver: SliverToBoxAdapter(
-                      child: _CategoryToggleSwitch(
-                        onToggle: (category) => context.read<PostBloc>().add(
-                              PostRefreshed(
-                                tag: widget.tagName,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                  widget.tagName,
-                                  order:
-                                      _tagFilterCategoryToPostsOrder(category),
-                                ),
+                SliverPadding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  sliver: SliverToBoxAdapter(
+                    child: _CategoryToggleSwitch(
+                      onToggle: (category) => context.read<PostBloc>().add(
+                            PostRefreshed(
+                              tag: widget.tagName,
+                              fetcher: SearchedPostFetcher.fromTags(
+                                widget.tagName,
+                                order: _tagFilterCategoryToPostsOrder(category),
                               ),
                             ),
-                      ),
+                          ),
                     ),
                   ),
-                  HomePostGrid(controller: controller),
-                  BlocBuilder<PostBloc, PostState>(
-                    builder: (context, state) {
-                      return state.status == LoadStatus.loading
-                          ? const SliverPadding(
-                              padding: EdgeInsets.symmetric(vertical: 20),
-                              sliver: SliverToBoxAdapter(
-                                child:
-                                    Center(child: CircularProgressIndicator()),
-                              ),
-                            )
-                          : const SliverToBoxAdapter(child: SizedBox.shrink());
-                    },
-                  ),
-                ],
-              ),
+                ),
+                HomePostGrid(controller: controller),
+              ],
             );
           },
         ),
