@@ -92,7 +92,7 @@ class DownloadCompletedView extends StatelessWidget {
             onPressed: () => context
                 .read<BulkImageDownloadBloc>()
                 .add(const BulkImageDownloadReset()),
-            child: const Text('Download more'),
+            child: const Text('download.bulk_download_download_more').tr(),
           ),
         ),
       ],

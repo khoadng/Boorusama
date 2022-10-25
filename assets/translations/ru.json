@@ -258,6 +258,7 @@
             "one": "{} image skipped",
             "other": "{} images skipped"
         },
+        "bulk_download_download_more" : "Download more",
         "open_app_settings" : "Открыть настройки",
         "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
         "alternative_method_reason": "Используйте это, если стандартный способ загрузки не работает. Альтернативный способ также лучше работает с уведомлениями.",

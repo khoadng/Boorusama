@@ -257,6 +257,7 @@
             "one": "{} image skipped",
             "other": "{} images skipped"
         },
+        "bulk_download_download_more" : "Download more",
         "open_app_settings" : "Mở cài đặt",
         "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
         "alternative_method_reason": "Dùng cái này nếu cách tải chính không chạy được, cách này hỗ trợ thông báo tốt hơn",
