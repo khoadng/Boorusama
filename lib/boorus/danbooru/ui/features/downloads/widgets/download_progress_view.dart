@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animated_flip_counter/animated_flip_counter.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
-import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 class DownloadProgressView extends StatelessWidget {
@@ -26,7 +26,7 @@ class DownloadProgressView extends StatelessWidget {
             builder: (context, count) {
               return ListTile(
                 visualDensity: VisualDensity.compact,
-                title: const Text('Total'),
+                title: const Text('download.bulk_download_total_count').tr(),
                 trailing: AnimatedFlipCounter(value: count),
               );
             },
@@ -36,7 +36,7 @@ class DownloadProgressView extends StatelessWidget {
             builder: (context, count) {
               return ListTile(
                 visualDensity: VisualDensity.compact,
-                title: const Text('Done'),
+                title: const Text('download.bulk_download_done_count').tr(),
                 trailing: AnimatedFlipCounter(value: count),
               );
             },
@@ -47,7 +47,9 @@ class DownloadProgressView extends StatelessWidget {
             builder: (context, filteredPosts) {
               return ListTile(
                 visualDensity: VisualDensity.compact,
-                title: const Text('Hidden (censored tags)'),
+                title:
+                    const Text('download_bulk_download_hidden_censored_count')
+                        .tr(),
                 trailing: AnimatedFlipCounter(
                   value: filteredPosts
                       .where(
@@ -66,8 +68,8 @@ class DownloadProgressView extends StatelessWidget {
               return ListTile(
                 visualDensity: VisualDensity.compact,
                 title: const Text(
-                  "Hidden (removed at the artist's request)",
-                ),
+                  'download.bulk_download_hidden_banned_count',
+                ).tr(),
                 trailing: AnimatedFlipCounter(
                   value: filteredPosts
                       .where(
@@ -107,15 +109,10 @@ class DownloadProgressView extends StatelessWidget {
                   : const SizedBox.shrink();
             },
           ),
-          InfoContainer(
-            contentBuilder: (context) => const Text(
-              "Some images might be hidden and won't be downloaded",
-            ),
-          ),
           WarningContainer(
             contentBuilder: (context) => const Text(
-              'Please stay on this screen until all files are downloaded',
-            ),
+              'download.bulk_download_stay_on_screen_request',
+            ).tr(),
           ),
         ],
       ),
