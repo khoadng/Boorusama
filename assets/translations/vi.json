@@ -243,6 +243,7 @@
         "bulk_download_tag_confirmation" : "The below tags will be downloaded",
         "bulk_download_save_to_folder" : "Save to folder",
         "bulk_download_merge_images_to_folder" : "Merge images into existing folder",
+        "bulk_download_merge_explanation" : "Disable this option will create a new folder instead",
         "open_app_settings" : "Mở cài đặt",
         "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
         "alternative_method_reason": "Dùng cái này nếu cách tải chính không chạy được, cách này hỗ trợ thông báo tốt hơn",

@@ -156,10 +156,11 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             builder: (context, options) {
               return ListTile(
                 title:
-                    const Text('download.bulk_download_merge_images_to_folder'),
+                    const Text('download.bulk_download_merge_images_to_folder')
+                        .tr(),
                 subtitle: const Text(
-                  'Disable this option will create a new folder instead',
-                ),
+                  'download.bulk_download_merge_explanation',
+                ).tr(),
                 trailing: Switch.adaptive(
                   value: !options.createNewFolderIfExists,
                   onChanged: (value) {
@@ -187,7 +188,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                           tags: selectedTags,
                         ),
                       ),
-                  child: const Text('Download'),
+                  child: const Text('download.download').tr(),
                 );
               },
             ),
