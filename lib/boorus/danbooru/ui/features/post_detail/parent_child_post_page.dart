@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 class ParentChildPostPage extends StatefulWidget {
   const ParentChildPostPage({

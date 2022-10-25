@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/side_bar.dart';
 
 class SideBarMenu extends StatelessWidget {
   const SideBarMenu({
@@ -30,17 +31,18 @@ class SideBarMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).backgroundColor,
-      constraints: BoxConstraints.expand(width: width ?? 230),
-      child: SingleChildScrollView(
+    return SideBar(
+      width: width,
+      content: SingleChildScrollView(
         child: BlocBuilder<AccountCubit, AsyncLoadState<Account>>(
           builder: (context, state) {
             return state.status == LoadStatus.success
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: MediaQuery.of(context).viewPadding.top),
+                      SizedBox(
+                        height: MediaQuery.of(context).viewPadding.top,
+                      ),
                       if (initialContentBuilder != null) ...[
                         ...initialContentBuilder!(context)!,
                         const Divider(),
@@ -99,8 +101,9 @@ class SideBarMenu extends StatelessWidget {
                       if (state.data! != Account.empty)
                         ListTile(
                           leading: const FaIcon(FontAwesomeIcons.ban, size: 20),
-                          title: const Text('blacklisted_tags.blacklisted_tags')
-                              .tr(),
+                          title: const Text(
+                            'blacklisted_tags.blacklisted_tags',
+                          ).tr(),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
                             AppRouter.router.navigateTo(

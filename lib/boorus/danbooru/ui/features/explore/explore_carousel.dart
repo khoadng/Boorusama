@@ -6,8 +6,8 @@ import 'package:carousel_slider/carousel_slider.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
 class ExploreCarousel extends StatelessWidget {
@@ -37,7 +37,7 @@ class ExploreCarousel extends StatelessWidget {
             onTap: () => onTap(index),
             child: Stack(
               children: [
-                PostImage(
+                BooruImage(
                   imageUrl: post.isAnimated
                       ? post.previewImageUrl
                       : post.normalImageUrl,
