@@ -6,13 +6,9 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
-import 'package:boorusama/core/ui/no_data_box.dart';
 
 class ParentChildPostPage extends StatefulWidget {
   const ParentChildPostPage({
@@ -44,11 +40,11 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
       ),
       body: SafeArea(
         child: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
             return Padding(
               padding: const EdgeInsets.only(top: 10),
-              child: InfiniteLoadList(
+              child: InfiniteLoadListScrollView(
+                isLoading: state.loading,
                 enableRefresh: false,
                 enableLoadMore: state.hasMore,
                 onLoadMore: () => context.read<PostBloc>().add(
@@ -71,66 +67,9 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
                     () => controller.refreshCompleted(),
                   );
                 },
-                builder: (context, controller) => CustomScrollView(
-                  controller: controller,
-                  slivers: <Widget>[
-                    SliverPadding(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      sliver: BlocBuilder<PostBloc, PostState>(
-                        buildWhen: (previous, current) =>
-                            current.status != LoadStatus.loading,
-                        builder: (context, state) {
-                          if (state.status == LoadStatus.initial) {
-                            return const SliverPostGridPlaceHolder();
-                          } else if (state.status == LoadStatus.success) {
-                            if (state.posts.isEmpty) {
-                              return const SliverToBoxAdapter(
-                                child: NoDataBox(),
-                              );
-                            }
-
-                            return SliverPostGrid(
-                              posts: state.posts,
-                              scrollController: controller,
-                              onTap: (post, index) {
-                                goToDetailPage(
-                                  context: context,
-                                  posts: state.posts,
-                                  initialIndex: index,
-                                  scrollController: controller,
-                                  postBloc: context.read<PostBloc>(),
-                                );
-                              },
-                              onFavoriteUpdated: (postId, value) => context
-                                  .read<PostBloc>()
-                                  .add(PostFavoriteUpdated(
-                                    postId: postId,
-                                    favorite: value,
-                                  )),
-                            );
-                          } else if (state.status == LoadStatus.loading) {
-                            return const SliverToBoxAdapter(
-                              child: SizedBox.shrink(),
-                            );
-                          } else {
-                            return const SliverToBoxAdapter(
-                              child: ErrorBox(),
-                            );
-                          }
-                        },
-                      ),
-                    ),
-                    if (state.status == LoadStatus.loading && state.hasMore)
-                      const SliverPadding(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        sliver: SliverToBoxAdapter(
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+                sliverBuilder: (controller) => [
+                  HomePostGrid(controller: controller),
+                ],
               ),
             );
           },
