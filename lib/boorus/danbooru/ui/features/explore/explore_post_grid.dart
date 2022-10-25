@@ -12,7 +12,9 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/no_data_box.dart';
 
 class ExplorePostGrid extends StatelessWidget {
   const ExplorePostGrid({

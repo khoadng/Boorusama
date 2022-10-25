@@ -2,7 +2,7 @@
 import 'package:equatable/equatable.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 
 enum DataCollectingStatus {

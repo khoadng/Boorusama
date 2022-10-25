@@ -7,7 +7,7 @@ import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'settings_tile.dart';
 
 class GeneralPage extends StatefulWidget {

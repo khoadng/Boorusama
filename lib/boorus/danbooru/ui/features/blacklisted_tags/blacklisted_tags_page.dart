@@ -13,8 +13,8 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'blacklisted_tags_search_page.dart';
 

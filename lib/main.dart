@@ -27,9 +27,7 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
@@ -41,7 +39,6 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
@@ -52,16 +49,19 @@ import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/sentry.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
-import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
+import 'core/domain/settings/settings.dart';
 
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [

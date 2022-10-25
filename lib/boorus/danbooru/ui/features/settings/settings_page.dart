@@ -9,12 +9,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';

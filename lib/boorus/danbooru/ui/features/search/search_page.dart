@@ -22,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart
 import 'package:boorusama/boorus/danbooru/ui/features/search/selected_tag_chip.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
 import 'result_view.dart';

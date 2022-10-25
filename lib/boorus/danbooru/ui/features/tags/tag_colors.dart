@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 
 Color getTagColor(TagCategory category, ThemeMode themeMode) {
   final colors =

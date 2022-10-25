@@ -8,11 +8,11 @@ import 'package:flutter_html/flutter_html.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history_suggestions.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocomplete.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({

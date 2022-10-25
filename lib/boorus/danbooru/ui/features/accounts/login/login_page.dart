@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
