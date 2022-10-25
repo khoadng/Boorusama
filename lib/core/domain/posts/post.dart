@@ -2,6 +2,7 @@
 import 'rating.dart';
 
 abstract class Post {
+  int get id;
   String get previewImageUrl;
   String get normalImageUrl;
   String get fullImageUrl;
@@ -11,4 +12,6 @@ abstract class Post {
   String get format;
   double get width;
   double get height;
+
+  String get downloadUrl;
 }

@@ -83,6 +83,7 @@ class Post extends Equatable
         totalComments: 0,
       );
 
+  @override
   final int id;
   @override
   final String previewImageUrl;
@@ -181,6 +182,7 @@ class Post extends Equatable
 
   bool get hasComment => lastCommentAt != null;
 
+  @override
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
   bool get hasBothParentAndChildren => hasChildren && hasParent;
