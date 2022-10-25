@@ -66,7 +66,7 @@ class SimpleTagSearchView extends StatelessWidget {
                 else
                   const Expanded(
                     child: Center(
-                      child: Text('Type something in search bar'),
+                      child: SizedBox.shrink(),
                     ),
                   ),
               ],

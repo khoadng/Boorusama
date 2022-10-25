@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -40,13 +41,13 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               vertical: 8,
             ),
             child: Text(
-              'The below tags will be downloaded',
+              'download.bulk_download_tag_confirmation',
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
                   .headline5!
                   .copyWith(fontWeight: FontWeight.w900),
-            ),
+            ).tr(),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(
