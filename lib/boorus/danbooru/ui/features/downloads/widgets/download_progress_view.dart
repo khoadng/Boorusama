@@ -8,8 +8,8 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/info_container.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/info_container.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 
 class DownloadProgressView extends StatelessWidget {
   const DownloadProgressView({
