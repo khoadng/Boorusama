@@ -243,6 +243,7 @@
         "bulk_download" : "Bulk download",
         "bulk_download_tag_confirmation" : "The below tags will be downloaded",
         "bulk_download_save_to_folder" : "Save to folder",
+        "bulk_download_merge_images_to_folder" : "Merge images into existing folder",
         "open_app_settings" : "Open settings",
         "storage_permission_explanation" : "Storage permission is needed to store download files.",
         "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",

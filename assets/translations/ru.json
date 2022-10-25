@@ -243,6 +243,7 @@
         "bulk_download" : "Bulk download",
         "bulk_download_tag_confirmation" : "The below tags will be downloaded",
         "bulk_download_save_to_folder" : "Save to folder",
+        "bulk_download_merge_images_to_folder" : "Merge images into existing folder",
         "open_app_settings" : "Открыть настройки",
         "storage_permission_explanation" : "Разрешение на доступ к хранилищу необхдимо для сохранения загруженных файлов.",
         "alternative_method_reason": "Используйте это, если стандартный способ загрузки не работает. Альтернативный способ также лучше работает с уведомлениями.",

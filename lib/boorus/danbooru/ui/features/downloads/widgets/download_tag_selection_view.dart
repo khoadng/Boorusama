@@ -155,7 +155,8 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             selector: (state) => state.options,
             builder: (context, options) {
               return ListTile(
-                title: const Text('Merge images into existing folder'),
+                title:
+                    const Text('download.bulk_download_merge_images_to_folder'),
                 subtitle: const Text(
                   'Disable this option will create a new folder instead',
                 ),
