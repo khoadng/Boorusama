@@ -6,15 +6,17 @@ class PopularPostFetcher implements PostFetcher {
   const PopularPostFetcher({
     required this.date,
     required this.scale,
+    required this.exploreRepository,
   });
 
   final DateTime date;
   final TimeScale scale;
+  final ExploreRepository exploreRepository;
 
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
   ) async =>
-      repo.getPopularPosts(date, page, scale);
+      exploreRepository.getPopularPosts(date, page, scale);
 }
