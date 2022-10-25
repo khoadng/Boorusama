@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 
-class PostImage extends StatefulWidget {
-  const PostImage({
+class BooruImage extends StatefulWidget {
+  const BooruImage({
     super.key,
     required this.imageUrl,
     this.placeholderUrl,
@@ -19,10 +19,10 @@ class PostImage extends StatefulWidget {
   final BoxFit? fit;
 
   @override
-  State<PostImage> createState() => _PostImageState();
+  State<BooruImage> createState() => _BooruImageState();
 }
 
-class _PostImageState extends State<PostImage> {
+class _BooruImageState extends State<BooruImage> {
   late Image myImage;
 
   @override

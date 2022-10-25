@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -210,7 +211,7 @@ class _SliverPostGridItem extends StatelessWidget {
 
   Widget _buildImage(BuildContext gridContext) {
     return CupertinoContextMenu(
-      previewBuilder: (context, animation, child) => PostImage(
+      previewBuilder: (context, animation, child) => BooruImage(
         imageUrl: getImageUrlForDisplay(
           post,
           getImageQuality(
@@ -298,7 +299,7 @@ class _SliverPostGridItem extends StatelessWidget {
         onTap: () => onTap?.call(post, index),
         child: Stack(
           children: [
-            PostImage(
+            BooruImage(
               imageUrl: getImageUrlForDisplay(
                 post,
                 getImageQuality(

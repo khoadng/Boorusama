@@ -4,7 +4,6 @@ export 'infinite_load_list.dart';
 export 'modal.dart';
 export 'modal_options.dart';
 export 'no_data_box.dart';
-export 'post_image.dart';
 export 'search_bar.dart';
 export 'sliver_post_grid.dart';
 export 'sliver_post_grid_bloc.dart';

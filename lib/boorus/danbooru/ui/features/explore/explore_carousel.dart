@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -37,7 +38,7 @@ class ExploreCarousel extends StatelessWidget {
             onTap: () => onTap(index),
             child: Stack(
               children: [
-                PostImage(
+                BooruImage(
                   imageUrl: post.isAnimated
                       ? post.previewImageUrl
                       : post.normalImageUrl,
