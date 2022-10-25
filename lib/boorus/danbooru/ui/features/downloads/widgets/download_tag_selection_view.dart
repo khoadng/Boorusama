@@ -106,7 +106,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Save to folder'.toUpperCase(),
+              'download.bulk_download_save_to_folder'.tr().toUpperCase(),
               style: Theme.of(context).textTheme.titleSmall!.copyWith(
                     color: Theme.of(context).hintColor,
                     fontWeight: FontWeight.w800,
