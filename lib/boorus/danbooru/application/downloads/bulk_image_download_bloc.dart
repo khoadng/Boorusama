@@ -13,6 +13,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/domain/error.dart';
@@ -56,10 +57,23 @@ class FilteredOutPost extends Equatable {
   List<Object?> get props => [postId, reason];
 }
 
+class QueueData extends Equatable {
+  const QueueData(this.postId, this.size);
+
+  final int postId;
+  final int size;
+
+  @override
+  List<Object?> get props => [postId, size];
+}
+
 class BulkImageDownloadState extends Equatable {
   const BulkImageDownloadState({
     required this.totalCount,
     required this.doneCount,
+    required this.queueCount,
+    required this.estimateDownloadSize,
+    required this.downloadedSize,
     required this.filteredPosts,
     required this.storagePath,
     required this.status,
@@ -74,6 +88,9 @@ class BulkImageDownloadState extends Equatable {
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
         totalCount: 0,
         doneCount: 0,
+        queueCount: 0,
+        estimateDownloadSize: 0,
+        downloadedSize: 0,
         filteredPosts: [],
         storagePath: '',
         status: BulkImageDownloadStatus.initial,
@@ -92,12 +109,15 @@ class BulkImageDownloadState extends Equatable {
 
   final int totalCount;
   final int doneCount;
+  final int queueCount;
+  final int estimateDownloadSize;
+  final int downloadedSize;
   final List<FilteredOutPost> filteredPosts;
   final String storagePath;
   final BulkImageDownloadStatus status;
   final List<String> selectedTags;
   final bool didFetchAllPage;
-  final List<int> downloadQueue;
+  final List<QueueData> downloadQueue;
   final List<DownloadImageData> downloaded;
   final DownloadOptions options;
   final String message;
@@ -105,12 +125,15 @@ class BulkImageDownloadState extends Equatable {
   BulkImageDownloadState copyWith({
     int? totalCount,
     int? doneCount,
+    int? queueCount,
+    int? estimateDownloadSize,
+    int? downloadedSize,
     List<FilteredOutPost>? filteredPosts,
     String? storagePath,
     BulkImageDownloadStatus? status,
     List<String>? selectedTags,
     bool? didFetchAllPage,
-    List<int>? downloadQueue,
+    List<QueueData>? downloadQueue,
     List<DownloadImageData>? downloaded,
     DownloadOptions? options,
     String? message,
@@ -118,6 +141,9 @@ class BulkImageDownloadState extends Equatable {
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
+        queueCount: queueCount ?? this.queueCount,
+        estimateDownloadSize: estimateDownloadSize ?? this.estimateDownloadSize,
+        downloadedSize: downloadedSize ?? this.downloadedSize,
         filteredPosts: filteredPosts ?? this.filteredPosts,
         storagePath: storagePath ?? this.storagePath,
         status: status ?? this.status,
@@ -133,6 +159,9 @@ class BulkImageDownloadState extends Equatable {
   List<Object?> get props => [
         totalCount,
         doneCount,
+        queueCount,
+        estimateDownloadSize,
+        downloadedSize,
         filteredPosts,
         storagePath,
         downloadQueue,
@@ -238,6 +267,7 @@ class BulkImageDownloadBloc
     with PostErrorMixin {
   BulkImageDownloadBloc({
     required PostRepository postRepository,
+    required PostCountRepository postCountRepository,
     required BulkDownloader downloader,
     required String Function() randomGenerator,
   }) : super(BulkImageDownloadState.initial()) {
@@ -266,6 +296,10 @@ class BulkImageDownloadBloc
       var page = 1;
       final tags = event.tags.join(' ');
 
+      emit(state.copyWith(
+        totalCount: await postCountRepository.count(event.tags),
+      ));
+
       // Local function to configure the equivalent repository's function
       Future<List<Post>> getPosts(String tags, int page) async {
         try {
@@ -287,21 +321,26 @@ class BulkImageDownloadBloc
       final intPosts = await getPosts(tags, page);
       final postStack = [intPosts];
       var count = 0;
+      var downloadSize = 0;
       final filtedPosts = [];
 
       while (postStack.isNotEmpty) {
         final posts = postStack.removeLast();
         for (final p in posts) {
-          if (state.downloadQueue.contains(p.id)) continue;
+          if (state.downloadQueue.contains(QueueData(p.id, p.fileSize))) {
+            continue;
+          }
           if (state.status == BulkImageDownloadStatus.done) break;
 
-          await Future.delayed(const Duration(milliseconds: 200));
+          await Future.delayed(const Duration(milliseconds: 500));
 
           if (p.viewable) {
             add(_DownloadRequested(post: p, tagName: tags));
             count += 1;
+            downloadSize += p.fileSize;
             emit(state.copyWith(
-              totalCount: count,
+              queueCount: count,
+              estimateDownloadSize: downloadSize,
             ));
           } else {
             filtedPosts.add(FilteredOutPost.from(p));
@@ -394,7 +433,7 @@ class BulkImageDownloadBloc
         emit(state.copyWith(
           downloadQueue: [
             ...state.downloadQueue,
-            event.post.id,
+            QueueData(event.post.id, event.post.fileSize),
           ],
         ));
       },
@@ -402,7 +441,9 @@ class BulkImageDownloadBloc
 
     on<_DownloadDone>(
       (event, emit) async {
-        final queue = [...state.downloadQueue]..remove(event.data.postId);
+        final item = state.downloadQueue
+            .firstWhere((e) => e.postId == event.data.postId);
+        final queue = [...state.downloadQueue]..remove(item);
 
         final from = event.data.path;
         final to = '${state.storagePath}/${event.data.fileName}';
@@ -414,8 +455,10 @@ class BulkImageDownloadBloc
         final pathParts = to.split('/').toList();
 
         emit(state.copyWith(
+          queueCount: state.queueCount - 1,
           doneCount: state.doneCount + 1,
           downloadQueue: queue,
+          downloadedSize: state.downloadedSize + item.size,
           downloaded: [
             ...state.downloaded,
             DownloadImageData(

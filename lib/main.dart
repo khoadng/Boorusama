@@ -35,6 +35,7 @@ import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_genera
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
@@ -42,6 +43,7 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
@@ -306,6 +308,11 @@ void main() async {
                     accountRepo: accountRepo,
                   );
 
+                  final postCountRepo = PostCountRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit = SearchKeywordCubit(
@@ -413,6 +420,9 @@ void main() async {
                       ),
                       RepositoryProvider<ExploreRepository>.value(
                         value: exploreRepo,
+                      ),
+                      RepositoryProvider<PostCountRepository>.value(
+                        value: postCountRepo,
                       ),
                     ],
                     child: MultiBlocProvider(

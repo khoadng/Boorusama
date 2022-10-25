@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
@@ -28,7 +29,10 @@ class DownloadProgressView extends StatelessWidget {
               return ListTile(
                 visualDensity: VisualDensity.compact,
                 title: const Text('download.bulk_download_total_count').tr(),
-                trailing: AnimatedFlipCounter(value: count),
+                trailing: AnimatedFlipCounter(
+                  value: count,
+                  duration: const Duration(milliseconds: 1000),
+                ),
               );
             },
           ),
@@ -39,6 +43,20 @@ class DownloadProgressView extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 title: const Text('download.bulk_download_done_count').tr(),
                 trailing: AnimatedFlipCounter(value: count),
+              );
+            },
+          ),
+          BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+            buildWhen: (previous, current) =>
+                previous.downloadedSize != current.downloadedSize ||
+                previous.estimateDownloadSize != current.estimateDownloadSize,
+            builder: (context, state) {
+              return ListTile(
+                visualDensity: VisualDensity.compact,
+                title: const Text('Downloaded size / Total size'),
+                trailing: Text(
+                  '${filesize(state.downloadedSize, 1)} / ${filesize(state.estimateDownloadSize, 1)}',
+                ),
               );
             },
           ),

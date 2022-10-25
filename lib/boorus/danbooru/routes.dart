@@ -25,6 +25,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
@@ -391,6 +392,7 @@ final bulkDownloadHandler =
 
   return BlocProvider(
     create: (context) => BulkImageDownloadBloc(
+      postCountRepository: context.read<PostCountRepository>(),
       postRepository: context.read<PostRepository>(),
       downloader: context.read<BulkDownloader>(),
       randomGenerator: () => randomStringWithDatetime(DateTime.now()),
