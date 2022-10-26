@@ -183,11 +183,13 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               selector: (state) => state.selectedTags,
               builder: (context, selectedTags) {
                 return ElevatedButton(
-                  onPressed: () => context.read<BulkImageDownloadBloc>().add(
-                        BulkImagesDownloadRequested(
-                          tags: selectedTags,
-                        ),
-                      ),
+                  onPressed: selectedTags.isNotEmpty
+                      ? () => context.read<BulkImageDownloadBloc>().add(
+                            BulkImagesDownloadRequested(
+                              tags: selectedTags,
+                            ),
+                          )
+                      : null,
                   child: const Text('download.download').tr(),
                 );
               },
