@@ -10,6 +10,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
@@ -43,6 +44,42 @@ class _TagDetailPageState extends State<TagDetailPage> {
   Widget build(BuildContext context) {
     return Screen.of(context).size == ScreenSize.small
         ? Scaffold(
+            floatingActionButton: FloatingActionButton(onPressed: () {
+              AppRouter.router.navigateTo(
+                context,
+                '/bulk_download',
+                routeSettings: RouteSettings(
+                  arguments: [
+                    [
+                      widget.tagName,
+                    ],
+                  ],
+                ),
+              );
+            }),
+            appBar: AppBar(
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              backgroundColor: Colors.transparent,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    AppRouter.router.navigateTo(
+                      context,
+                      '/bulk_download',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          [
+                            widget.tagName,
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.download),
+                ),
+              ],
+            ),
             body: Stack(children: [
               _Panel(
                 tagName: widget.tagName,
@@ -161,12 +198,6 @@ class _PanelState extends State<_Panel> {
                 );
               },
               sliverBuilder: (controller) => [
-                if (widget.useSliverAppBar)
-                  const SliverAppBar(
-                    elevation: 0,
-                    backgroundColor: Colors.transparent,
-                    toolbarHeight: kToolbarHeight * 0.8,
-                  ),
                 SliverToBoxAdapter(
                   child: SizedBox(
                     height: MediaQuery.of(context).viewPadding.top,
