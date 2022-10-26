@@ -21,6 +21,15 @@ class SearchHistoryCubit extends Cubit<AsyncLoadState<List<SearchHistory>>> {
     );
   }
 
+  Future<void> removeHistory(String history) async {
+    await tryAsync<List<SearchHistory>>(
+      action: () => searchHistoryRepository.removeHistory(history),
+      onFailure: (stackTrace, error) => emit(const AsyncLoadState.failure()),
+      onLoading: () => emit(const AsyncLoadState.loading()),
+      onSuccess: (sh) async => emit(AsyncLoadState.success(sh)),
+    );
+  }
+
   void addHistory(String history) {
     tryAsync<List<SearchHistory>>(
       action: () => searchHistoryRepository.addHistory(history),

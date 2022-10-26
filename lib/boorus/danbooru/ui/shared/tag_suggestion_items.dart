@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/users/user_level_colors.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocomplete.dart';
+import 'package:boorusama/core/ui/widgets/context_menu.dart';
 
 class TagSuggestionItems extends StatelessWidget {
   const TagSuggestionItems({
@@ -66,6 +67,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
     required this.histories,
     required this.onItemTap,
     required this.onHistoryTap,
+    required this.onHistoryDeleted,
     required this.currentQuery,
   });
 
@@ -73,6 +75,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
   final List<HistorySuggestion> histories;
   final void Function(AutocompleteData tag) onItemTap;
   final void Function(HistorySuggestion history) onHistoryTap;
+  final void Function(HistorySuggestion history) onHistoryDeleted;
   final String currentQuery;
 
   @override
@@ -96,31 +99,44 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                   ).tr(),
                 ),
               ...histories.map(
-                (history) => ListTile(
-                  visualDensity: VisualDensity.compact,
-                  trailing: const Icon(
-                    Icons.history,
-                    color: Colors.grey,
+                (history) => ContextMenu<String>(
+                  items: const [
+                    PopupMenuItem(
+                      value: 'delete',
+                      child: Text('Remove'),
+                    ),
+                  ],
+                  onSelected: (value) {
+                    if (value == 'delete') {
+                      onHistoryDeleted.call(history);
+                    }
+                  },
+                  child: ListTile(
+                    visualDensity: VisualDensity.compact,
+                    trailing: const Icon(
+                      Icons.history,
+                      color: Colors.grey,
+                    ),
+                    title: Html(
+                      style: {
+                        'p': Style(
+                          fontSize: FontSize.medium,
+                        ),
+                        'body': Style(
+                          padding: EdgeInsets.zero,
+                          margin: EdgeInsets.zero,
+                        ),
+                        'b': Style(
+                          color: Colors.redAccent,
+                        ),
+                      },
+                      data: '<p>${history.tag.replaceAll(
+                            history.term,
+                            '<b>${history.term}</b>',
+                          ).replaceAll('_', ' ')}</p>',
+                    ),
+                    onTap: () => onHistoryTap(history),
                   ),
-                  title: Html(
-                    style: {
-                      'p': Style(
-                        fontSize: FontSize.medium,
-                      ),
-                      'body': Style(
-                        padding: EdgeInsets.zero,
-                        margin: EdgeInsets.zero,
-                      ),
-                      'b': Style(
-                        color: Colors.redAccent,
-                      ),
-                    },
-                    data: '<p>${history.tag.replaceAll(
-                          history.term,
-                          '<b>${history.term}</b>',
-                        ).replaceAll('_', ' ')}</p>',
-                  ),
-                  onTap: () => onHistoryTap(history),
                 ),
               ),
               if (histories.isNotEmpty) const Divider(),

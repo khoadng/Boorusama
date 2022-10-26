@@ -47,4 +47,11 @@ class SearchHistoryRepositoryHive implements SearchHistoryRepository {
 
     return count > 0;
   }
+
+  @override
+  Future<List<SearchHistory>> removeHistory(String query) async {
+    await db.delete(query);
+
+    return getHistories();
+  }
 }

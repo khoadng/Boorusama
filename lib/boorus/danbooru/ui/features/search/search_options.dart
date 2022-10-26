@@ -24,11 +24,13 @@ class SearchOptions extends StatefulWidget {
     this.onOptionTap,
     this.onHistoryTap,
     this.onTagTap,
+    this.onHistoryRemoved,
     required this.metatags,
   });
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
+  final ValueChanged<String>? onHistoryRemoved;
   final ValueChanged<String>? onTagTap;
 
   final List<Metatag> metatags;
@@ -257,6 +259,8 @@ class _SearchOptionsState extends State<SearchOptions>
               ),
               SearchHistorySection(
                 onHistoryTap: (history) => widget.onHistoryTap?.call(history),
+                onHistoryRemoved: (history) =>
+                    widget.onHistoryRemoved?.call(history),
               ),
             ],
           ),
