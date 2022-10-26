@@ -1,9 +1,6 @@
 // Dart imports:
 import 'dart:io';
 
-// Flutter imports:
-import 'package:flutter/foundation.dart';
-
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -62,6 +59,12 @@ class QueueData extends Equatable {
 
   final int postId;
   final int size;
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => '$postId';
 
   @override
   List<Object?> get props => [postId, size];
@@ -262,6 +265,13 @@ class _DownloadDone extends BulkImageDownloadEvent {
   List<Object?> get props => [data];
 }
 
+class _DownloadDoneAll extends BulkImageDownloadEvent {
+  const _DownloadDoneAll();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class BulkImageDownloadBloc
     extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState>
     with PostErrorMixin {
@@ -332,7 +342,7 @@ class BulkImageDownloadBloc
           }
           if (state.status == BulkImageDownloadStatus.done) break;
 
-          await Future.delayed(const Duration(milliseconds: 500));
+          await Future.delayed(const Duration(milliseconds: 200));
 
           if (p.viewable) {
             add(_DownloadRequested(post: p, tagName: tags));
@@ -441,21 +451,29 @@ class BulkImageDownloadBloc
 
     on<_DownloadDone>(
       (event, emit) async {
-        final item = state.downloadQueue
-            .firstWhere((e) => e.postId == event.data.postId);
-        final queue = [...state.downloadQueue]..remove(item);
+        var queue = <QueueData>[];
+        QueueData item;
+
+        // Sometime download queue doesn't contains the data for some reason...
+        try {
+          item = state.downloadQueue
+              .firstWhere((e) => e.postId == event.data.postId);
+          queue = <QueueData>[...state.downloadQueue]..remove(item);
+        } catch (e) {
+          queue = state.downloadQueue;
+          item = QueueData(event.data.postId, 0);
+        }
 
         final from = event.data.path;
         final to = '${state.storagePath}/${event.data.fileName}';
-        if (kDebugMode) {
-          print('Moving $from to $to');
-        }
+        // if (kDebugMode) {
+        //   print('Moving $from to $to');
+        // }
         await moveFile(File(from), to);
 
         final pathParts = to.split('/').toList();
 
         emit(state.copyWith(
-          queueCount: state.queueCount - 1,
           doneCount: state.doneCount + 1,
           downloadQueue: queue,
           downloadedSize: state.downloadedSize + item.size,
@@ -470,19 +488,24 @@ class BulkImageDownloadBloc
             ),
           ],
         ));
-
-        if (queue.isEmpty) {
-          await Future.delayed(const Duration(seconds: 1));
-          emit(state.copyWith(status: BulkImageDownloadStatus.done));
-        }
       },
       transformer: sequential(),
     );
+
+    on<_DownloadDoneAll>((event, emit) async {
+      await Future.delayed(const Duration(seconds: 1));
+      emit(state.copyWith(status: BulkImageDownloadStatus.done));
+    });
 
     downloader.stream
         .listen(
           (data) => add(_DownloadDone(data: data)),
         )
+        .addTo(compositeSubscription);
+
+    stream
+        .where((s) => s.didFetchAllPage && s.queueCount == s.doneCount)
+        .listen((event) => add(const _DownloadDoneAll()))
         .addTo(compositeSubscription);
   }
 

@@ -25,36 +25,49 @@ class BulkDownloadPage extends StatefulWidget {
 class _BulkDownloadPageState extends State<BulkDownloadPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('download.bulk_download').tr(),
-      ),
-      body: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-          BulkImageDownloadStatus>(
-        selector: (state) => state.status,
-        builder: (context, status) {
-          switch (status) {
-            case BulkImageDownloadStatus.initial:
-              return const DownloadEmptyTagView();
-            case BulkImageDownloadStatus.dataSelected:
-              return const DownloadTagSelectionView();
-            case BulkImageDownloadStatus.downloadInProgress:
-              return const DownloadProgressView();
-            case BulkImageDownloadStatus.failure:
-              return const DownloadErrorView();
-            case BulkImageDownloadStatus.done:
-              return BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
-                builder: (context, state) {
-                  return DownloadCompletedView(
-                    doneCount: state.doneCount,
-                    filteredPosts: state.filteredPosts,
-                    downloaded: state.downloaded,
-                  );
-                },
-              );
-          }
-        },
-      ),
+    return BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+        BulkImageDownloadStatus>(
+      selector: (state) => state.status,
+      builder: (context, status) {
+        return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('download.bulk_download').tr(),
+              automaticallyImplyLeading:
+                  status != BulkImageDownloadStatus.downloadInProgress,
+            ),
+            body: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                BulkImageDownloadStatus>(
+              selector: (state) => state.status,
+              builder: (context, status) => _buildBody(status),
+            ),
+          ),
+        );
+      },
     );
+  }
+
+  Widget _buildBody(BulkImageDownloadStatus status) {
+    switch (status) {
+      case BulkImageDownloadStatus.initial:
+        return const DownloadEmptyTagView();
+      case BulkImageDownloadStatus.dataSelected:
+        return const DownloadTagSelectionView();
+      case BulkImageDownloadStatus.downloadInProgress:
+        return const DownloadProgressView();
+      case BulkImageDownloadStatus.failure:
+        return const DownloadErrorView();
+      case BulkImageDownloadStatus.done:
+        return BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+          builder: (context, state) {
+            return DownloadCompletedView(
+              doneCount: state.doneCount,
+              filteredPosts: state.filteredPosts,
+              downloaded: state.downloaded,
+            );
+          },
+        );
+    }
   }
 }
