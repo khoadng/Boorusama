@@ -11,10 +11,8 @@ import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
-import 'package:boorusama/core/infra/io_helper.dart';
 
 class DownloadData {
   const DownloadData(
@@ -37,7 +35,6 @@ class BulkDownloader {
   final FileNameGenerator<Post> _fileNameGenerator;
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
-  String _savedDir = '';
   final Map<String, DownloadData> _taskIdToPostIdMap = {};
 
   final _eventController = StreamController<dynamic>.broadcast();
@@ -49,30 +46,19 @@ class BulkDownloader {
     required String folderName,
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
+    final tempDir = await getApplicationSupportDirectory();
 
-    final usePublicStorage = hasScopedStorage(deviceInfo);
-
-    final downloadDir = await IOHelper.getDownloadPath();
-
-    final id = usePublicStorage
-        ? await FlutterDownloader.enqueue(
-            saveInPublicStorage: true,
-            showNotification: false,
-            url: downloadable.downloadUrl,
-            fileName: fileName,
-            savedDir: _savedDir, // won't be used
-          )
-        : await FlutterDownloader.enqueue(
-            url: downloadable.downloadUrl,
-            showNotification: false,
-            fileName: fileName,
-            savedDir: await IOHelper.getDownloadPath(),
-          );
+    final id = await FlutterDownloader.enqueue(
+      showNotification: false,
+      url: downloadable.downloadUrl,
+      fileName: fileName,
+      savedDir: tempDir.path,
+    );
 
     if (id != null) {
       _taskIdToPostIdMap[id] = DownloadData(
         downloadable.id,
-        '$downloadDir/$fileName',
+        '${tempDir.path}/$fileName',
         fileName,
       );
     }
@@ -91,9 +77,10 @@ class BulkDownloader {
       .where((event) => event.item2 == DownloadTaskStatus.complete)
       .map((event) => _taskIdToPostIdMap[event.item1]!);
 
+  // ignore: no-empty-block
   Future<void> _prepare() async {
     // This won't be used.
-    _savedDir = (await getTemporaryDirectory()).path;
+    // _savedDir = (await getTemporaryDirectory()).path;
   }
 
   void _bindBackgroundIsolate() {
