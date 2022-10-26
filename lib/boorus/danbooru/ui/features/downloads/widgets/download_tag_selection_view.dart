@@ -9,6 +9,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/common/constant.dart';
 
 class DownloadTagSelectionView extends StatefulWidget {
   const DownloadTagSelectionView({
@@ -126,7 +127,9 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                   controller: textEditingController,
                   autovalidateMode: AutovalidateMode.onUserInteraction,
                   validator: (value) => !options.hasValidFolderName()
-                      ? r'A folder cannot contain any of the following characters: \/*?:"<>|'
+                      ? 'download.bulk_download_invalid_folder_name_error'
+                              .tr() +
+                          illegalCharactersForFolderName.join()
                       : null,
                   decoration: InputDecoration(
                     filled: true,

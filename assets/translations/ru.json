@@ -253,6 +253,7 @@
         "bulk_download_hidden" : "Hidden",
         "bulk_download_cancel" : "Cancel",
         "bulk_download_duplicate" : "Duplicate",
+        "bulk_download_invalid_folder_name_error" : "A folder cannot contain any of the following characters: ",
         "bulk_download_only_download_new_images" : "Only download new images",
         "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
         "bulk_download_downloaded_counter" : {

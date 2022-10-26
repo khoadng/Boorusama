@@ -252,6 +252,7 @@
         "bulk_download_hidden" : "Ẩn",
         "bulk_download_cancel" : "Hủy",
         "bulk_download_duplicate" : "Duplicate",
+        "bulk_download_invalid_folder_name_error" : "A folder cannot contain any of the following characters: ",
         "bulk_download_only_download_new_images" : "Only download new images",
         "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
         "bulk_download_downloaded_counter" : {
