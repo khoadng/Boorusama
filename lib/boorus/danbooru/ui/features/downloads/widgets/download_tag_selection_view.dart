@@ -80,6 +80,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                         final bloc = context.read<BulkImageDownloadBloc>();
                         showBarModalBottomSheet(
                           context: context,
+                          duration: const Duration(milliseconds: 200),
                           builder: (context) => SimpleTagSearchView(
                             ensureValidTag: false,
                             onSelected: (tag) {
