@@ -78,19 +78,6 @@ class DownloadProgressView extends StatelessWidget {
                       );
                     },
                   ),
-                  BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
-                    buildWhen: (previous, current) =>
-                        previous.options != current.options ||
-                        previous.duplicate != current.duplicate,
-                    builder: (context, state) {
-                      return state.options.onlyDownloadNewFile
-                          ? _DownloadIndicator(
-                              title: state.duplicate.toString(),
-                              subtitle: 'download.bulk_download_duplicate'.tr(),
-                            )
-                          : const SizedBox.shrink();
-                    },
-                  ),
                   BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
                       int>(
                     selector: (state) => state.totalCount,
@@ -196,6 +183,32 @@ class DownloadProgressView extends StatelessWidget {
                     ),
                   ],
                 );
+              },
+            ),
+            BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+              buildWhen: (previous, current) =>
+                  previous.options != current.options ||
+                  previous.duplicate != current.duplicate,
+              builder: (context, state) {
+                return state.options.onlyDownloadNewFile
+                    ? ExpansionTile(
+                        controlAffinity: ListTileControlAffinity.leading,
+                        title: const Text(
+                          'download.bulk_download_duplicate',
+                        ).tr(),
+                        trailing: Text(
+                          state.duplicate.toString(),
+                        ),
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Text(
+                              'Found ${state.duplicate} images with the same name',
+                            ),
+                          ),
+                        ],
+                      )
+                    : const SizedBox.shrink();
               },
             ),
             BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, bool>(
