@@ -208,7 +208,9 @@ class DownloadProgressView extends StatelessWidget {
                           onPressed: () => context
                               .read<BulkImageDownloadBloc>()
                               .add(const BulkImageDownloadSwitchToResutlView()),
-                          child: const Text('Done'),
+                          child:
+                              const Text('download.bulk_download_done_confirm')
+                                  .tr(),
                         ),
                       )
                     : Padding(

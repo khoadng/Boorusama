@@ -246,6 +246,7 @@
         "bulk_download_merge_explanation" : "Nếu tắt sẽ tạo thư mục mới",
         "bulk_download_total_count" : "Tổng",
         "bulk_download_done_count" : "Đã tải",
+        "bulk_download_done_confirm" : "Done",
         "bulk_download_hidden_censored" : "Chứa tag bị kiểm duyện",
         "bulk_download_hidden_banned" : "Bị xoá theo yêu cầu của tác giả",
         "bulk_download_hidden" : "Ẩn",

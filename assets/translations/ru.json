@@ -247,6 +247,7 @@
         "bulk_download_merge_explanation" : "Disable this option will create a new folder instead",
         "bulk_download_total_count" : "Total",
         "bulk_download_done_count" : "Done",
+        "bulk_download_done_confirm" : "Done",
         "bulk_download_hidden_censored" : "Censored tags",
         "bulk_download_hidden_banned" : "Removed at the artist's request",
         "bulk_download_hidden" : "Hidden",
