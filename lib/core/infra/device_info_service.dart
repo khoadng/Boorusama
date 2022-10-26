@@ -16,8 +16,8 @@ class DeviceInfoService {
   Future<DeviceInfo> getDeviceInfo() async {
     if (isAndroid()) {
       return _plugin.androidInfo.then((value) => DeviceInfo(
-            versionCode: value.version.sdkInt ?? 0,
-            release: value.version.release ?? '',
+            versionCode: value.version.sdkInt,
+            release: value.version.release,
           ));
     } else if (isWeb()) {
       return _plugin.webBrowserInfo.then((value) => DeviceInfo(

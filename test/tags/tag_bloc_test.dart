@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:tuple/tuple.dart';
 
 class MockTagRepository extends Mock implements TagRepository {}
 
@@ -59,8 +60,8 @@ void main() {
 
       expect(
         input.keys
-            .map((e) => [tagCategoryToString(e), e])
-            .every((e) => e.first == input[e[1]]),
+            .map((e) => Tuple2(tagCategoryToString(e), e))
+            .every((e) => e.item1 == input[e.item2]),
         isTrue,
       );
     });
