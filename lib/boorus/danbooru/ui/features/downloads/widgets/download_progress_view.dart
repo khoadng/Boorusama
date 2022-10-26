@@ -138,13 +138,12 @@ class DownloadProgressView extends StatelessWidget {
                     progressColor: Theme.of(context).colorScheme.primary,
                     lineWidth: 10,
                     animation: true,
-                    percent: (state.doneCount + state.duplicate) /
-                        (state.totalCount == 0 ? 1 : state.totalCount),
+                    percent: state.percentCompletion,
                     animateFromLastPercent: true,
                     radius: 75,
                     center: Text(
                       state.totalCount != 0
-                          ? '${((state.doneCount + state.duplicate) / state.totalCount * 100).floor()}%'
+                          ? '${(state.percentCompletion * 100).floor()}%'
                           : '...',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Theme.of(context).hintColor,

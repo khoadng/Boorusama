@@ -588,6 +588,10 @@ extension DownloadOptionsX on DownloadOptions {
 extension BulkImageDownloadStateX on BulkImageDownloadState {
   bool isValidToStartDownload() =>
       selectedTags.isNotEmpty && options.hasValidFolderName();
+
+  double get percentCompletion => options.onlyDownloadNewFile
+      ? (doneCount + duplicate) / (totalCount == 0 ? 1 : totalCount)
+      : doneCount / (totalCount == 0 ? 1 : totalCount);
 }
 
 class DownloadOptions extends Equatable {
