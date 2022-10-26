@@ -246,8 +246,10 @@
         "bulk_download_merge_explanation" : "Nếu tắt sẽ tạo thư mục mới",
         "bulk_download_total_count" : "Tổng",
         "bulk_download_done_count" : "Đã tải",
-        "bulk_download_hidden_censored_count" : "Ẩn (chứa tag bị kiểm duyện)",
-        "bulk_download_hidden_banned_count" : "Ẩn (bị xoá theo yêu cầu của tác giả)",
+        "bulk_download_hidden_censored" : "Chứa tag bị kiểm duyện",
+        "bulk_download_hidden_banned" : "Bị xoá theo yêu cầu của tác giả",
+        "bulk_download_hidden" : "Ẩn",
+        "bulk_download_cancel" : "Hủy",
         "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
         "bulk_download_downloaded_counter" : {
             "one": "Đã tải {} ảnh",

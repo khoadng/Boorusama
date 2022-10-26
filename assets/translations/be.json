@@ -247,8 +247,10 @@
         "bulk_download_merge_explanation" : "Disable this option will create a new folder instead",
         "bulk_download_total_count" : "Total",
         "bulk_download_done_count" : "Done",
-        "bulk_download_hidden_censored_count" : "Hidden (censored tags)",
-        "bulk_download_hidden_banned_count" : "Hidden (removed at the artist's request)",
+        "bulk_download_hidden_censored" : "Censored tags",
+        "bulk_download_hidden_banned" : "Removed at the artist's request",
+        "bulk_download_hidden" : "Hidden",
+        "bulk_download_cancel" : "Cancel",
         "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
         "bulk_download_downloaded_counter" : {
             "one": "{} image downloaded",

@@ -147,7 +147,7 @@ class DownloadProgressView extends StatelessWidget {
               builder: (context, filteredPosts) {
                 return ExpansionTile(
                   controlAffinity: ListTileControlAffinity.leading,
-                  title: Text('Hidden'),
+                  title: const Text('download.bulk_download_hidden').tr(),
                   trailing: Text(
                     filteredPosts.length.toString(),
                   ),
@@ -155,7 +155,7 @@ class DownloadProgressView extends StatelessWidget {
                     ListTile(
                       visualDensity: VisualDensity.compact,
                       title: const Text(
-                        'download.bulk_download_hidden_censored_count',
+                        'download.bulk_download_hidden_censored',
                       ).tr(),
                       trailing: Text(
                         filteredPosts
@@ -170,7 +170,7 @@ class DownloadProgressView extends StatelessWidget {
                     ListTile(
                       visualDensity: VisualDensity.compact,
                       title: const Text(
-                        'download.bulk_download_hidden_banned_count',
+                        'download.bulk_download_hidden_banned',
                       ).tr(),
                       trailing: Text(
                         filteredPosts
@@ -193,7 +193,7 @@ class DownloadProgressView extends StatelessWidget {
                 onPressed: () => context
                     .read<BulkImageDownloadBloc>()
                     .add(const BulkImagesDownloadCancel()),
-                child: const Text('Cancel'),
+                child: const Text('download.bulk_download_cancel').tr(),
               ),
             ),
             BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
