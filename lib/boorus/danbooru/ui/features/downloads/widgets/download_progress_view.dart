@@ -184,7 +184,6 @@ class DownloadProgressView extends StatelessWidget {
                     ),
                   ],
                 );
-                ;
               },
             ),
             Padding(
