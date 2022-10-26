@@ -2,10 +2,10 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:animated_flip_counter/animated_flip_counter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
@@ -30,81 +30,161 @@ class DownloadProgressView extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, int>(
-              selector: (state) => state.totalCount,
-              builder: (context, count) {
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  title: const Text('download.bulk_download_total_count').tr(),
-                  trailing: AnimatedFlipCounter(
-                    value: count,
-                    duration: const Duration(milliseconds: 1000),
+            Container(
+              height: 50,
+              margin: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
+                color: Theme.of(context).cardColor,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                      int>(
+                    selector: (state) => state.downloadedSize,
+                    builder: (context, state) {
+                      return _DownloadIndicator(
+                        title: filesize(state, 1),
+                        subtitle: 'download.bulk_download_done_count'.tr(),
+                      );
+                    },
                   ),
-                );
-              },
+                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                      int>(
+                    selector: (state) => state.estimateDownloadSize,
+                    builder: (context, state) {
+                      return _DownloadIndicator(
+                        title: filesize(state, 1),
+                        subtitle: 'download.bulk_download_total_count'.tr(),
+                      );
+                    },
+                  ),
+                  const SizedBox(
+                    child: VerticalDivider(
+                      indent: 5,
+                      endIndent: 5,
+                      thickness: 2,
+                    ),
+                  ),
+                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                      int>(
+                    selector: (state) => state.doneCount,
+                    builder: (context, state) {
+                      return _DownloadIndicator(
+                        title: state.toString(),
+                        subtitle: 'download.bulk_download_done_count'.tr(),
+                      );
+                    },
+                  ),
+                  BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                      int>(
+                    selector: (state) => state.totalCount,
+                    builder: (context, state) {
+                      return _DownloadIndicator(
+                        title: state.toString(),
+                        subtitle: 'download.bulk_download_total_count'.tr(),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, int>(
-              selector: (state) => state.doneCount,
-              builder: (context, count) {
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  title: const Text('download.bulk_download_done_count').tr(),
-                  trailing: AnimatedFlipCounter(value: count),
+            WarningContainer(
+              contentBuilder: (context) => const Text(
+                'download.bulk_download_stay_on_screen_request',
+              ).tr(),
+            ),
+            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                List<String>>(
+              selector: (state) => state.selectedTags,
+              builder: (context, selectedTags) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    spacing: 4,
+                    children: selectedTags
+                        .map(
+                          (e) => Chip(label: Text(e.replaceAll('_', ' '))),
+                        )
+                        .toList(),
+                  ),
                 );
               },
             ),
             BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
               buildWhen: (previous, current) =>
-                  previous.downloadedSize != current.downloadedSize ||
-                  previous.estimateDownloadSize != current.estimateDownloadSize,
+                  previous.doneCount != current.doneCount ||
+                  previous.totalCount != current.totalCount,
               builder: (context, state) {
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  title: const Text('Downloaded size / Total size'),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  child: CircularPercentIndicator(
+                    progressColor: Theme.of(context).colorScheme.primary,
+                    lineWidth: 10,
+                    animation: true,
+                    percent: state.doneCount /
+                        (state.totalCount == 0 ? 1 : state.totalCount),
+                    animateFromLastPercent: true,
+                    radius: 75,
+                    center: Text(
+                      state.totalCount != 0
+                          ? '${(state.doneCount / state.totalCount * 100).floor()}%'
+                          : '...',
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            color: Theme.of(context).hintColor,
+                          ),
+                    ),
+                  ),
+                );
+              },
+            ),
+            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+                List<FilteredOutPost>>(
+              selector: (state) => state.filteredPosts,
+              builder: (context, filteredPosts) {
+                return ExpansionTile(
+                  controlAffinity: ListTileControlAffinity.leading,
+                  title: Text('Hidden'),
                   trailing: Text(
-                    '${filesize(state.downloadedSize, 1)} / ${filesize(state.estimateDownloadSize, 1)}',
+                    filteredPosts.length.toString(),
                   ),
+                  children: [
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      title: const Text(
+                        'download.bulk_download_hidden_censored_count',
+                      ).tr(),
+                      trailing: Text(
+                        filteredPosts
+                            .where(
+                              (e) => e.reason == FilteredReason.censoredTag,
+                            )
+                            .toList()
+                            .length
+                            .toString(),
+                      ),
+                    ),
+                    ListTile(
+                      visualDensity: VisualDensity.compact,
+                      title: const Text(
+                        'download.bulk_download_hidden_banned_count',
+                      ).tr(),
+                      trailing: Text(
+                        filteredPosts
+                            .where(
+                              (e) => e.reason == FilteredReason.bannedArtist,
+                            )
+                            .toList()
+                            .length
+                            .toString(),
+                      ),
+                    ),
+                  ],
                 );
-              },
-            ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                List<FilteredOutPost>>(
-              selector: (state) => state.filteredPosts,
-              builder: (context, filteredPosts) {
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  title:
-                      const Text('download.bulk_download_hidden_censored_count')
-                          .tr(),
-                  trailing: AnimatedFlipCounter(
-                    value: filteredPosts
-                        .where(
-                          (e) => e.reason == FilteredReason.censoredTag,
-                        )
-                        .toList()
-                        .length,
-                  ),
-                );
-              },
-            ),
-            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                List<FilteredOutPost>>(
-              selector: (state) => state.filteredPosts,
-              builder: (context, filteredPosts) {
-                return ListTile(
-                  visualDensity: VisualDensity.compact,
-                  title: const Text(
-                    'download.bulk_download_hidden_banned_count',
-                  ).tr(),
-                  trailing: AnimatedFlipCounter(
-                    value: filteredPosts
-                        .where(
-                          (e) => e.reason == FilteredReason.bannedArtist,
-                        )
-                        .toList()
-                        .length,
-                  ),
-                );
+                ;
               },
             ),
             Padding(
@@ -115,11 +195,6 @@ class DownloadProgressView extends StatelessWidget {
                     .add(const BulkImagesDownloadCancel()),
                 child: const Text('Cancel'),
               ),
-            ),
-            WarningContainer(
-              contentBuilder: (context) => const Text(
-                'download.bulk_download_stay_on_screen_request',
-              ).tr(),
             ),
             BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
               selector: (state) => state.message,
@@ -153,6 +228,39 @@ class DownloadProgressView extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class _DownloadIndicator extends StatelessWidget {
+  const _DownloadIndicator({
+    required this.title,
+    required this.subtitle,
+  });
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w900,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          subtitle.toUpperCase(),
+          style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                color: Theme.of(context).hintColor,
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+      ],
     );
   }
 }
