@@ -44,19 +44,6 @@ class _TagDetailPageState extends State<TagDetailPage> {
   Widget build(BuildContext context) {
     return Screen.of(context).size == ScreenSize.small
         ? Scaffold(
-            floatingActionButton: FloatingActionButton(onPressed: () {
-              AppRouter.router.navigateTo(
-                context,
-                '/bulk_download',
-                routeSettings: RouteSettings(
-                  arguments: [
-                    [
-                      widget.tagName,
-                    ],
-                  ],
-                ),
-              );
-            }),
             appBar: AppBar(
               elevation: 0,
               shadowColor: Colors.transparent,
@@ -69,9 +56,7 @@ class _TagDetailPageState extends State<TagDetailPage> {
                       '/bulk_download',
                       routeSettings: RouteSettings(
                         arguments: [
-                          [
-                            widget.tagName,
-                          ],
+                          [widget.tagName],
                         ],
                       ),
                     );
