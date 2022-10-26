@@ -354,6 +354,9 @@ class _SmallLayout extends StatelessWidget {
                             .read<TagSearchBloc>()
                             .add(TagSearchChanged(query));
                       },
+                      onHistoryRemoved: (value) {
+                        context.read<SearchHistoryCubit>().removeHistory(value);
+                      },
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         context
@@ -437,6 +440,14 @@ class _TagSuggestionItems extends StatelessWidget {
               tags: tagState.suggestionTags,
               histories: state.histories,
               currentQuery: tagState.query,
+              onHistoryDeleted: (history) async {
+                final bloc = context.read<SearchHistorySuggestionsBloc>();
+                await context
+                    .read<SearchHistoryCubit>()
+                    .removeHistory(history.tag);
+                // TODO: Quick hack to force refresh
+                bloc.add(SearchHistorySuggestionsFetched(text: tagState.query));
+              },
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context

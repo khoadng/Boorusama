@@ -14,9 +14,11 @@ class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
     super.key,
     required this.onHistoryTap,
+    required this.onHistoryRemoved,
   });
 
   final ValueChanged<String> onHistoryTap;
+  final void Function(String item) onHistoryRemoved;
 
   @override
   Widget build(BuildContext context) {
@@ -44,6 +46,10 @@ class SearchHistorySection extends StatelessWidget {
           (item) => ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(item.query),
+            trailing: IconButton(
+              onPressed: () => onHistoryRemoved(item.query),
+              icon: const Icon(Icons.close),
+            ),
             onTap: () => onHistoryTap(item.query),
           ),
         )
@@ -63,9 +69,8 @@ class SearchHistorySection extends StatelessWidget {
                   ),
             ),
             TextButton(
-              onPressed: () => ReadContext(context)
-                  .read<SearchHistoryCubit>()
-                  .clearHistory(),
+              onPressed: () =>
+                  context.read<SearchHistoryCubit>().clearHistory(),
               child: const Text('search.history.clear').tr(),
             ),
           ],
