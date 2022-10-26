@@ -163,6 +163,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                   'download.bulk_download_merge_explanation',
                 ).tr(),
                 trailing: Switch.adaptive(
+                  activeColor: Theme.of(context).colorScheme.primary,
                   value: !options.createNewFolderIfExists,
                   onChanged: (value) {
                     context.read<BulkImageDownloadBloc>().add(
@@ -186,6 +187,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                   'download.bulk_download_only_download_new_images',
                 ).tr(),
                 trailing: Switch.adaptive(
+                  activeColor: Theme.of(context).colorScheme.primary,
                   value: options.onlyDownloadNewFile,
                   onChanged: (value) {
                     context.read<BulkImageDownloadBloc>().add(
