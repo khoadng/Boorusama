@@ -108,6 +108,7 @@ Post postDtoToPost(PostDto dto) {
       width: dto.imageWidth.toDouble(),
       height: dto.imageHeight.toDouble(),
       format: dto.fileExt,
+      md5: dto.md5 ?? '',
       lastCommentAt: dto.lastCommentedAt,
       source: dto.source,
       createdAt: dto.createdAt,

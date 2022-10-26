@@ -122,20 +122,18 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                 DownloadOptions>(
               selector: (state) => state.options,
               builder: (context, options) {
-                return TextField(
+                return TextFormField(
                   controller: textEditingController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  validator: (value) => !options.hasValidFolderName()
+                      ? r'A folder cannot contain any of the following characters: \/*?:"<>|'
+                      : null,
                   decoration: InputDecoration(
                     filled: true,
                     hintText: options.defaultNameIfEmpty,
                     fillColor: Theme.of(context).cardColor,
-                    enabledBorder: const OutlineInputBorder(
+                    border: const OutlineInputBorder(
                       borderSide: BorderSide(width: 2),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 2,
-                      ),
                     ),
                     contentPadding: const EdgeInsets.all(12),
                   ),
@@ -178,15 +176,13 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-                List<String>>(
-              selector: (state) => state.selectedTags,
-              builder: (context, selectedTags) {
+            child: BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+              builder: (context, state) {
                 return ElevatedButton(
-                  onPressed: selectedTags.isNotEmpty
+                  onPressed: state.isValidToStartDownload()
                       ? () => context.read<BulkImageDownloadBloc>().add(
                             BulkImagesDownloadRequested(
-                              tags: selectedTags,
+                              tags: state.selectedTags,
                             ),
                           )
                       : null,

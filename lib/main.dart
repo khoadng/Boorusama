@@ -165,7 +165,7 @@ void main() async {
     flutterLocalNotificationsPlugin,
   );
   final bulkDownloader = BulkDownloader(
-    fileNameGenerator: fileNameGenerator,
+    fileNameGenerator: Md5OnlyFileNameGenerator(),
     deviceInfo: deviceInfo,
   );
 

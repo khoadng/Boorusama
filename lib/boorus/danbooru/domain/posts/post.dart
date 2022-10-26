@@ -29,6 +29,7 @@ class Post extends Equatable
     required this.width,
     required this.height,
     required this.format,
+    required this.md5,
     required this.lastCommentAt,
     required String? source,
     required this.createdAt,
@@ -64,6 +65,7 @@ class Post extends Equatable
         width: 1,
         height: 1,
         format: 'png',
+        md5: '',
         lastCommentAt: null,
         source: null,
         createdAt: DateTime.now(),
@@ -104,6 +106,8 @@ class Post extends Equatable
   final double height;
   @override
   final String format;
+  @override
+  final String md5;
   final DateTime? lastCommentAt;
   final String? _source;
   final DateTime createdAt;
@@ -134,6 +138,7 @@ class Post extends Equatable
     List<String>? metaTags,
     List<String>? tags,
     String? format,
+    String? md5,
     DateTime? lastCommentAt,
     String? normalImageUrl,
     String? fullImageUrl,
@@ -160,6 +165,7 @@ class Post extends Equatable
         width: width,
         height: height,
         format: format ?? this.format,
+        md5: md5 ?? this.md5,
         lastCommentAt: lastCommentAt ?? this.lastCommentAt,
         source: source ?? _source,
         createdAt: createdAt,
@@ -206,6 +212,7 @@ class Post extends Equatable
         previewImageUrl,
         normalImageUrl,
         fullImageUrl,
+        md5,
       ].every((e) => e != '');
 
   @override

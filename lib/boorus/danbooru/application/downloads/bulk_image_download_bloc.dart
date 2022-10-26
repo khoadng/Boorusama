@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -106,6 +107,7 @@ class BulkImageDownloadState extends Equatable {
           folderName: '',
           randomNameIfExists: 'Default Folder-123',
           defaultNameIfEmpty: 'Default Folder',
+          onlyDownloadNewFile: false,
         ),
         message: '',
       );
@@ -298,6 +300,13 @@ class BulkImageDownloadBloc
         state.options,
       );
 
+      final files = Directory(storagePath)
+          .listSync()
+          .whereType<File>()
+          .map((e) => e.path)
+          .map(basenameWithoutExtension)
+          .toList();
+
       emit(state.copyWith(
         storagePath: storagePath,
         status: BulkImageDownloadStatus.downloadInProgress,
@@ -337,6 +346,9 @@ class BulkImageDownloadBloc
       while (postStack.isNotEmpty) {
         final posts = postStack.removeLast();
         for (final p in posts) {
+          if (state.options.onlyDownloadNewFile && files.contains(p.md5)) {
+            continue;
+          }
           if (state.downloadQueue.contains(QueueData(p.id, p.fileSize))) {
             continue;
           }
@@ -430,7 +442,7 @@ class BulkImageDownloadBloc
           randomNameIfExists: generateRandomFolderNameWith(
             folderName.isEmpty
                 ? generateFolderName(state.selectedTags)
-                : folderName,
+                : fixInvalidCharacterForPathName(folderName),
             randomGenerator,
           ),
         ),
@@ -537,12 +549,22 @@ String generateFolderName(List<String>? tags) {
   return fixInvalidCharacterForPathName(tags.join(' '));
 }
 
+extension DownloadOptionsX on DownloadOptions {
+  bool hasValidFolderName() => !RegExp(r'[\\/*?:"<>|]').hasMatch(folderName);
+}
+
+extension BulkImageDownloadStateX on BulkImageDownloadState {
+  bool isValidToStartDownload() =>
+      selectedTags.isNotEmpty && options.hasValidFolderName();
+}
+
 class DownloadOptions extends Equatable {
   const DownloadOptions({
     required this.createNewFolderIfExists,
     required this.folderName,
     required this.randomNameIfExists,
     required this.defaultNameIfEmpty,
+    required this.onlyDownloadNewFile,
   });
 
   DownloadOptions copyWith({
@@ -550,6 +572,7 @@ class DownloadOptions extends Equatable {
     String? folderName,
     String? randomNameIfExists,
     String? defaultNameIfEmpty,
+    bool? onlyDownloadNewFile,
   }) =>
       DownloadOptions(
         createNewFolderIfExists:
@@ -557,12 +580,14 @@ class DownloadOptions extends Equatable {
         folderName: folderName ?? this.folderName,
         randomNameIfExists: randomNameIfExists ?? this.randomNameIfExists,
         defaultNameIfEmpty: defaultNameIfEmpty ?? this.defaultNameIfEmpty,
+        onlyDownloadNewFile: onlyDownloadNewFile ?? this.onlyDownloadNewFile,
       );
 
   final bool createNewFolderIfExists;
   final String folderName;
   final String randomNameIfExists;
   final String defaultNameIfEmpty;
+  final bool onlyDownloadNewFile;
 
   @override
   List<Object?> get props => [
@@ -570,6 +595,7 @@ class DownloadOptions extends Equatable {
         folderName,
         randomNameIfExists,
         defaultNameIfEmpty,
+        onlyDownloadNewFile,
       ];
 }
 
