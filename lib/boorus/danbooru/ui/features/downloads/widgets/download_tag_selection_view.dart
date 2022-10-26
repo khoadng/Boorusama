@@ -174,6 +174,29 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               );
             },
           ),
+          BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
+              DownloadOptions>(
+            selector: (state) => state.options,
+            builder: (context, options) {
+              return ListTile(
+                title: const Text(
+                  'download.bulk_download_only_download_new_images',
+                ).tr(),
+                trailing: Switch.adaptive(
+                  value: options.onlyDownloadNewFile,
+                  onChanged: (value) {
+                    context.read<BulkImageDownloadBloc>().add(
+                          BulkImageDownloadOptionsChanged(
+                            options: options.copyWith(
+                              onlyDownloadNewFile: value,
+                            ),
+                          ),
+                        );
+                  },
+                ),
+              );
+            },
+          ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(

@@ -251,6 +251,8 @@
         "bulk_download_hidden_banned" : "Removed at the artist's request",
         "bulk_download_hidden" : "Hidden",
         "bulk_download_cancel" : "Cancel",
+        "bulk_download_duplicate" : "Duplicate",
+        "bulk_download_only_download_new_images" : "Only download new images",
         "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
         "bulk_download_downloaded_counter" : {
             "one": "{} image downloaded",

@@ -250,6 +250,8 @@
         "bulk_download_hidden_banned" : "Bị xoá theo yêu cầu của tác giả",
         "bulk_download_hidden" : "Ẩn",
         "bulk_download_cancel" : "Hủy",
+        "bulk_download_duplicate" : "Duplicate",
+        "bulk_download_only_download_new_images" : "Only download new images",
         "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
         "bulk_download_downloaded_counter" : {
             "one": "Đã tải {} ảnh",

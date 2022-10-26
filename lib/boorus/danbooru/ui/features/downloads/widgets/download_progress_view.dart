@@ -78,6 +78,19 @@ class DownloadProgressView extends StatelessWidget {
                       );
                     },
                   ),
+                  BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+                    buildWhen: (previous, current) =>
+                        previous.options != current.options ||
+                        previous.duplicate != current.duplicate,
+                    builder: (context, state) {
+                      return state.options.onlyDownloadNewFile
+                          ? _DownloadIndicator(
+                              title: state.duplicate.toString(),
+                              subtitle: 'download.bulk_download_duplicate'.tr(),
+                            )
+                          : const SizedBox.shrink();
+                    },
+                  ),
                   BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
                       int>(
                     selector: (state) => state.totalCount,
@@ -125,13 +138,13 @@ class DownloadProgressView extends StatelessWidget {
                     progressColor: Theme.of(context).colorScheme.primary,
                     lineWidth: 10,
                     animation: true,
-                    percent: state.doneCount /
+                    percent: (state.doneCount + state.duplicate) /
                         (state.totalCount == 0 ? 1 : state.totalCount),
                     animateFromLastPercent: true,
                     radius: 75,
                     center: Text(
                       state.totalCount != 0
-                          ? '${(state.doneCount / state.totalCount * 100).floor()}%'
+                          ? '${((state.doneCount + state.duplicate) / state.totalCount * 100).floor()}%'
                           : '...',
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             color: Theme.of(context).hintColor,
@@ -186,14 +199,30 @@ class DownloadProgressView extends StatelessWidget {
                 );
               },
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: ElevatedButton(
-                onPressed: () => context
-                    .read<BulkImageDownloadBloc>()
-                    .add(const BulkImagesDownloadCancel()),
-                child: const Text('download.bulk_download_cancel').tr(),
-              ),
+            BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, bool>(
+              selector: (state) => state.allDownloadCompleted,
+              builder: (context, allDone) {
+                return allDone
+                    ? Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ElevatedButton(
+                          onPressed: () => context
+                              .read<BulkImageDownloadBloc>()
+                              .add(const BulkImageDownloadSwitchToResutlView()),
+                          child: const Text('Done'),
+                        ),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: ElevatedButton(
+                          onPressed: () => context
+                              .read<BulkImageDownloadBloc>()
+                              .add(const BulkImagesDownloadCancel()),
+                          child:
+                              const Text('download.bulk_download_cancel').tr(),
+                        ),
+                      );
+              },
             ),
             BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState, String>(
               selector: (state) => state.message,

@@ -76,6 +76,7 @@ class BulkImageDownloadState extends Equatable {
     required this.totalCount,
     required this.doneCount,
     required this.queueCount,
+    required this.duplicate,
     required this.estimateDownloadSize,
     required this.downloadedSize,
     required this.filteredPosts,
@@ -87,12 +88,14 @@ class BulkImageDownloadState extends Equatable {
     required this.downloaded,
     required this.options,
     required this.message,
+    required this.allDownloadCompleted,
   });
 
   factory BulkImageDownloadState.initial() => const BulkImageDownloadState(
         totalCount: 0,
         doneCount: 0,
         queueCount: 0,
+        duplicate: 0,
         estimateDownloadSize: 0,
         downloadedSize: 0,
         filteredPosts: [],
@@ -110,11 +113,13 @@ class BulkImageDownloadState extends Equatable {
           onlyDownloadNewFile: false,
         ),
         message: '',
+        allDownloadCompleted: false,
       );
 
   final int totalCount;
   final int doneCount;
   final int queueCount;
+  final int duplicate;
   final int estimateDownloadSize;
   final int downloadedSize;
   final List<FilteredOutPost> filteredPosts;
@@ -126,11 +131,13 @@ class BulkImageDownloadState extends Equatable {
   final List<DownloadImageData> downloaded;
   final DownloadOptions options;
   final String message;
+  final bool allDownloadCompleted;
 
   BulkImageDownloadState copyWith({
     int? totalCount,
     int? doneCount,
     int? queueCount,
+    int? duplicate,
     int? estimateDownloadSize,
     int? downloadedSize,
     List<FilteredOutPost>? filteredPosts,
@@ -142,11 +149,13 @@ class BulkImageDownloadState extends Equatable {
     List<DownloadImageData>? downloaded,
     DownloadOptions? options,
     String? message,
+    bool? allDownloadCompleted,
   }) =>
       BulkImageDownloadState(
         totalCount: totalCount ?? this.totalCount,
         doneCount: doneCount ?? this.doneCount,
         queueCount: queueCount ?? this.queueCount,
+        duplicate: duplicate ?? this.duplicate,
         estimateDownloadSize: estimateDownloadSize ?? this.estimateDownloadSize,
         downloadedSize: downloadedSize ?? this.downloadedSize,
         filteredPosts: filteredPosts ?? this.filteredPosts,
@@ -158,6 +167,7 @@ class BulkImageDownloadState extends Equatable {
         downloaded: downloaded ?? this.downloaded,
         options: options ?? this.options,
         message: message ?? this.message,
+        allDownloadCompleted: allDownloadCompleted ?? this.allDownloadCompleted,
       );
 
   @override
@@ -165,6 +175,7 @@ class BulkImageDownloadState extends Equatable {
         totalCount,
         doneCount,
         queueCount,
+        duplicate,
         estimateDownloadSize,
         downloadedSize,
         filteredPosts,
@@ -176,6 +187,7 @@ class BulkImageDownloadState extends Equatable {
         downloaded,
         options,
         message,
+        allDownloadCompleted,
       ];
 }
 
@@ -205,6 +217,13 @@ class BulkImagesDownloadCancel extends BulkImageDownloadEvent {
 
 class BulkImageDownloadReset extends BulkImageDownloadEvent {
   const BulkImageDownloadReset();
+
+  @override
+  List<Object?> get props => [];
+}
+
+class BulkImageDownloadSwitchToResutlView extends BulkImageDownloadEvent {
+  const BulkImageDownloadSwitchToResutlView();
 
   @override
   List<Object?> get props => [];
@@ -341,13 +360,20 @@ class BulkImageDownloadBloc
       final postStack = [intPosts];
       var count = 0;
       var downloadSize = 0;
+      var duplicateCount = 0;
       final filtedPosts = [];
 
       while (postStack.isNotEmpty) {
         final posts = postStack.removeLast();
         for (final p in posts) {
-          if (state.options.onlyDownloadNewFile && files.contains(p.md5)) {
-            continue;
+          if (files.contains(p.md5)) {
+            duplicateCount += 1;
+            emit(state.copyWith(
+              duplicate: duplicateCount,
+            ));
+            if (state.options.onlyDownloadNewFile) {
+              continue;
+            }
           }
           if (state.downloadQueue.contains(QueueData(p.id, p.fileSize))) {
             continue;
@@ -362,6 +388,7 @@ class BulkImageDownloadBloc
             downloadSize += p.fileSize;
             emit(state.copyWith(
               queueCount: count,
+              duplicate: duplicateCount,
               estimateDownloadSize: downloadSize,
             ));
           } else {
@@ -449,6 +476,12 @@ class BulkImageDownloadBloc
       ));
     });
 
+    on<BulkImageDownloadSwitchToResutlView>((event, emit) {
+      if (state.status == BulkImageDownloadStatus.downloadInProgress) {
+        emit(state.copyWith(status: BulkImageDownloadStatus.done));
+      }
+    });
+
     on<_DownloadRequested>(
       (event, emit) async {
         await downloader.enqueueDownload(event.post, folderName: event.tagName);
@@ -505,8 +538,7 @@ class BulkImageDownloadBloc
     );
 
     on<_DownloadDoneAll>((event, emit) async {
-      await Future.delayed(const Duration(seconds: 1));
-      emit(state.copyWith(status: BulkImageDownloadStatus.done));
+      emit(state.copyWith(allDownloadCompleted: true));
     });
 
     downloader.stream
