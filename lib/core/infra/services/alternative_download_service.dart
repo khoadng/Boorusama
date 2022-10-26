@@ -15,18 +15,24 @@ class AlternativeDownloadService implements DownloadService<Post> {
   AlternativeDownloadService({
     required FileNameGenerator fileNameGenerator,
     required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    this.enableNotification = true,
   })  : _fileNameGenerator = fileNameGenerator,
         _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin;
 
   final FileNameGenerator _fileNameGenerator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
+  final bool enableNotification;
 
   @override
   // ignore: no-empty-block
   void dispose() {}
 
   @override
-  Future<void> download(Post item, {String? path}) async {
+  Future<void> download(
+    item, {
+    String? path,
+    String? folderName,
+  }) async {
     final dio = Dio();
     final androidPlatformChannelSpecifics = AndroidNotificationDetails(
       item.id.toString(),
@@ -43,12 +49,14 @@ class AlternativeDownloadService implements DownloadService<Post> {
     final fileName = _fileNameGenerator.generateFor(item);
 
     try {
-      await _flutterLocalNotificationsPlugin.show(
-        item.id,
-        fileName,
-        'in progress',
-        platformChannelSpecifics,
-      );
+      if (enableNotification) {
+        await _flutterLocalNotificationsPlugin.show(
+          item.id,
+          fileName,
+          'in progress',
+          platformChannelSpecifics,
+        );
+      }
 
       final response = await dio.get(
         item.downloadUrl,
@@ -64,29 +72,15 @@ class AlternativeDownloadService implements DownloadService<Post> {
         name: fileName,
       );
 
-      await _flutterLocalNotificationsPlugin.show(
-        item.id,
-        fileName,
-        'completed',
-        platformChannelSpecifics,
-        payload: fileName,
-      );
-      await _flutterLocalNotificationsPlugin.show(
-        item.id,
-        fileName,
-        'completed',
-        payload: fileName,
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'completed',
-            'completed',
-            importance: Importance.max,
-            priority: Priority.high,
-            playSound: false,
-            enableVibration: false,
-          ),
-        ),
-      );
+      if (enableNotification) {
+        await _flutterLocalNotificationsPlugin.show(
+          item.id,
+          fileName,
+          'completed',
+          platformChannelSpecifics,
+          payload: fileName,
+        );
+      }
     } catch (e) {
       await _flutterLocalNotificationsPlugin.show(
         item.id,

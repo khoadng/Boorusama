@@ -239,6 +239,31 @@
 
     "download" : {
         "download" : "Tải ảnh",
+        "bulk_download" : "Tải ảnh số lượng lớn",
+        "bulk_download_tag_confirmation" : "Tag dưới đây sẽ được tải",
+        "bulk_download_save_to_folder" : "Lưu vào thư mục",
+        "bulk_download_merge_images_to_folder" : "Gộp ảnh với thư mục trùng tên",
+        "bulk_download_merge_explanation" : "Nếu tắt sẽ tạo thư mục mới",
+        "bulk_download_total_count" : "Tổng",
+        "bulk_download_done_count" : "Đã tải",
+        "bulk_download_done_confirm" : "Done",
+        "bulk_download_hidden_censored" : "Chứa tag bị kiểm duyện",
+        "bulk_download_hidden_banned" : "Bị xoá theo yêu cầu của tác giả",
+        "bulk_download_hidden" : "Ẩn",
+        "bulk_download_cancel" : "Hủy",
+        "bulk_download_duplicate" : "Trùng",
+        "bulk_download_invalid_folder_name_error" : "Tên thư mục không được chứa các kí tự sau: ",
+        "bulk_download_only_download_new_images" : "Chỉ tải ảnh mới",
+        "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
+        "bulk_download_downloaded_counter" : {
+            "one": "Đã tải {} ảnh",
+            "other": "Đã tải {} ảnh"
+        },
+        "bulk_download_skipped_counter" : {
+            "one": "{} ảnh bị lượt bỏ",
+            "other": "{} ảnh bị lượt bỏ"
+        },
+        "bulk_download_download_more" : "Tải thêm",
         "open_app_settings" : "Mở cài đặt",
         "storage_permission_explanation" : "App cần quyền truy cập bộ nhớ ngoài để lưu ảnh.",
         "alternative_method_reason": "Dùng cái này nếu cách tải chính không chạy được, cách này hỗ trợ thông báo tốt hơn",

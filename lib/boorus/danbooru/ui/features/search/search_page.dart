@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
@@ -206,7 +207,7 @@ class _LargeLayout extends StatelessWidget {
               ),
               body: Column(
                 children: [
-                  const _SelectedTagChips(),
+                  const _TagRow(),
                   const _Divider(),
                   Expanded(
                     child: BlocSelector<SearchBloc, SearchState, DisplayState>(
@@ -323,7 +324,7 @@ class _SmallLayout extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            const _SelectedTagChips(),
+            const _TagRow(),
             const _Divider(),
             Expanded(
               child: BlocSelector<SearchBloc, SearchState, DisplayState>(
@@ -377,6 +378,47 @@ class _SmallLayout extends StatelessWidget {
   }
 }
 
+class _TagRow extends StatelessWidget {
+  const _TagRow();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+      selector: (state) => state.selectedTags,
+      builder: (context, tags) {
+        // final bloc = context.read<TagSearchBloc>();
+
+        return tags.isNotEmpty
+            ? Row(children: [
+                const SizedBox(width: 10),
+                InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => showCupertinoModalBottomSheet(
+                    context: context,
+                    builder: (context) => ModalSelectedTag(
+                      onBulkDownload: () {
+                        AppRouter.router.navigateTo(
+                          context,
+                          '/bulk_download',
+                          routeSettings: RouteSettings(
+                            arguments: [
+                              tags.map((e) => e.toString()).toList(),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  child: const Icon(Icons.more_vert),
+                ),
+                Expanded(child: _SelectedTagChips(tags: tags)),
+              ])
+            : const SizedBox.shrink();
+      },
+    );
+  }
+}
+
 class _TagSuggestionItems extends StatelessWidget {
   const _TagSuggestionItems({
     required this.queryEditingController,
@@ -409,6 +451,48 @@ class _TagSuggestionItems extends StatelessWidget {
           },
         );
       },
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class ModalSelectedTag extends StatelessWidget {
+  const ModalSelectedTag({
+    super.key,
+    this.onClear,
+    this.onBulkDownload,
+  });
+
+  final void Function()? onClear;
+  final void Function()? onBulkDownload;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // ListTile(
+            //   title: const Text('Clear'),
+            //   leading: const Icon(Icons.clear_all),
+            //   onTap: () {
+            //     Navigator.of(context).pop();
+            //     onClear?.call();
+            //   },
+            // ),
+            ListTile(
+              title: const Text('download.bulk_download').tr(),
+              leading: const Icon(Icons.download),
+              onTap: () {
+                Navigator.of(context).pop();
+                onBulkDownload?.call();
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -478,31 +562,30 @@ class _SearchBar extends StatelessWidget {
 }
 
 class _SelectedTagChips extends StatelessWidget {
-  const _SelectedTagChips();
+  const _SelectedTagChips({
+    required this.tags,
+  });
+
+  final List<TagSearchItem> tags;
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
-      selector: (state) => state.selectedTags,
-      builder: (context, tags) => tags.isNotEmpty
-          ? Container(
-              margin: const EdgeInsets.only(left: 8),
-              height: 35,
-              child: ListView.builder(
-                shrinkWrap: true,
-                scrollDirection: Axis.horizontal,
-                itemCount: tags.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: SelectedTagChip(
-                      tagSearchItem: tags[index],
-                    ),
-                  );
-                },
-              ),
-            )
-          : const SizedBox.shrink(),
+    return Container(
+      margin: const EdgeInsets.only(left: 8),
+      height: 35,
+      child: ListView.builder(
+        shrinkWrap: true,
+        scrollDirection: Axis.horizontal,
+        itemCount: tags.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: SelectedTagChip(
+              tagSearchItem: tags[index],
+            ),
+          );
+        },
+      ),
     );
   }
 }

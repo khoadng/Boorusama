@@ -137,6 +137,13 @@ abstract class Api {
     @Path() int postId,
   );
 
+  @GET('/counts/posts.json')
+  Future<HttpResponse> countPosts(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Query('tags') String tags,
+  );
+
   @GET('/artist_commentaries.json')
   Future<HttpResponse> getArtistCommentary(
     @Query('login') String? login,

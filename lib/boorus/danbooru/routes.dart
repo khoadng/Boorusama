@@ -11,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -24,13 +25,16 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -378,6 +382,22 @@ final blacklistedTagsHandler =
       ),
     ],
     child: const BlacklistedTagsPage(),
+  );
+});
+
+final bulkDownloadHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+  final List<String>? initialSelectedTags = args.isNotEmpty ? args.first : null;
+
+  return BlocProvider(
+    create: (context) => BulkImageDownloadBloc(
+      postCountRepository: context.read<PostCountRepository>(),
+      postRepository: context.read<PostRepository>(),
+      downloader: context.read<BulkDownloader>(),
+      randomGenerator: () => randomStringWithDatetime(DateTime.now()),
+    )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
+    child: const BulkDownloadPage(),
   );
 });
 

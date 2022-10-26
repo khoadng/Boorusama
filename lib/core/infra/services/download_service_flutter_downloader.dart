@@ -68,8 +68,9 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
 
   @override
   Future<void> download(
-    Post downloadable, {
+    downloadable, {
     String? path,
+    String? folderName,
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
     await FlutterDownloader.enqueue(

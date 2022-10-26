@@ -10,6 +10,7 @@ import 'package:boorusama/core/domain/posts/rating.dart';
 import 'package:boorusama/core/domain/posts/translatable_mixin.dart';
 
 const pixivLinkUrl = 'https://www.pixiv.net/en/artworks/';
+const censoredTags = ['loli', 'shota'];
 
 class Post extends Equatable
     with MediaInfoMixin, TranslatedMixin
@@ -28,6 +29,7 @@ class Post extends Equatable
     required this.width,
     required this.height,
     required this.format,
+    required this.md5,
     required this.lastCommentAt,
     required String? source,
     required this.createdAt,
@@ -63,6 +65,7 @@ class Post extends Equatable
         width: 1,
         height: 1,
         format: 'png',
+        md5: '',
         lastCommentAt: null,
         source: null,
         createdAt: DateTime.now(),
@@ -82,66 +85,6 @@ class Post extends Equatable
         totalComments: 0,
       );
 
-  factory Post.banned({
-    required DateTime createdAt,
-    required int uploaderId,
-    required int score,
-    required String source,
-    required DateTime? lastCommentAt,
-    required Rating rating,
-    required double imageWidth,
-    required double imageHeight,
-    required List<String> tags,
-    required int favCount,
-    required String fileExt,
-    required int fileSize,
-    required int upScore,
-    required int downScore,
-    required bool isBanned,
-    required int? pixivId,
-    required List<String> generalTags,
-    required List<String> characterTags,
-    required List<String> copyrightTags,
-    required List<String> artistTags,
-    required List<String> metaTags,
-    required bool hasChildren,
-    required bool hasParent,
-    required bool hasLarge,
-    int? parentId,
-  }) =>
-      Post(
-        id: -1,
-        previewImageUrl: '',
-        normalImageUrl: '',
-        fullImageUrl: '',
-        copyrightTags: copyrightTags,
-        characterTags: characterTags,
-        artistTags: artistTags,
-        generalTags: generalTags,
-        metaTags: metaTags,
-        tags: tags,
-        width: imageWidth,
-        height: imageHeight,
-        format: fileExt,
-        lastCommentAt: lastCommentAt,
-        source: source,
-        createdAt: createdAt,
-        score: score,
-        upScore: upScore,
-        downScore: downScore,
-        favCount: favCount,
-        uploaderId: uploaderId,
-        rating: rating,
-        fileSize: fileSize,
-        pixivId: pixivId,
-        isBanned: isBanned,
-        hasChildren: hasChildren,
-        hasParent: hasParent,
-        parentId: parentId,
-        hasLarge: hasLarge,
-        comments: const [],
-        totalComments: 0,
-      );
   @override
   final int id;
   @override
@@ -163,6 +106,8 @@ class Post extends Equatable
   final double height;
   @override
   final String format;
+  @override
+  final String md5;
   final DateTime? lastCommentAt;
   final String? _source;
   final DateTime createdAt;
@@ -193,6 +138,7 @@ class Post extends Equatable
     List<String>? metaTags,
     List<String>? tags,
     String? format,
+    String? md5,
     DateTime? lastCommentAt,
     String? normalImageUrl,
     String? fullImageUrl,
@@ -219,6 +165,7 @@ class Post extends Equatable
         width: width,
         height: height,
         format: format ?? this.format,
+        md5: md5 ?? this.md5,
         lastCommentAt: lastCommentAt ?? this.lastCommentAt,
         source: source ?? _source,
         createdAt: createdAt,
@@ -255,9 +202,21 @@ class Post extends Equatable
   @override
   String? get source => pixivId == null ? _source : '$pixivLinkUrl$pixivId';
 
+  bool get hasCensoredTags {
+    final tagSet = tags.toSet();
+
+    return censoredTags.any(tagSet.contains);
+  }
+
+  bool get viewable => [
+        previewImageUrl,
+        normalImageUrl,
+        fullImageUrl,
+        md5,
+      ].every((e) => e != '');
+
   @override
   List<Object?> get props => [id];
 }
 
-bool isPostBanned(Post post) => post.id <= 0;
-bool isPostValid(Post post) => post.id > 0;
+bool isPostValid(Post post) => post.id != 0 && post.viewable;

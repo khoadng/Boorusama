@@ -117,6 +117,24 @@ class SideBarMenu extends StatelessWidget {
                           },
                         ),
                       ListTile(
+                        leading: const Icon(Icons.download),
+                        title: const Text('download.bulk_download').tr(),
+                        onTap: () {
+                          if (popOnSelect) Navigator.of(context).pop();
+                          AppRouter.router.navigateTo(
+                            context,
+                            '/bulk_download',
+                            routeSettings: const RouteSettings(
+                              arguments: [],
+                            ),
+                            transition:
+                                Screen.of(context).size == ScreenSize.small
+                                    ? TransitionType.inFromRight
+                                    : null,
+                          );
+                        },
+                      ),
+                      ListTile(
                         leading: const Icon(Icons.settings_outlined),
                         title: Text('sideMenu.settings'.tr()),
                         onTap: () {

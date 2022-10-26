@@ -22,6 +22,7 @@ Post _createPost(int id, List<String> tags) => Post(
       width: 1,
       height: 1,
       format: '',
+      md5: '',
       lastCommentAt: null,
       source: null,
       createdAt: DateTime.now(),

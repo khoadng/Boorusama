@@ -15,9 +15,13 @@ class SimpleTagSearchView extends StatelessWidget {
   const SimpleTagSearchView({
     super.key,
     required this.onSelected,
+    this.ensureValidTag = true,
+    this.closeOnSelected = true,
   });
 
   final void Function(AutocompleteData tag) onSelected;
+  final bool ensureValidTag;
+  final bool closeOnSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +32,15 @@ class SimpleTagSearchView extends StatelessWidget {
       ),
       child: BlocBuilder<TagSearchBloc, TagSearchState>(
         builder: (context, state) {
-          final tags =
-              state.suggestionTags.where((e) => e.category != null).toList();
+          final tags = ensureValidTag
+              ? state.suggestionTags.where((e) => e.category != null).toList()
+              : state.suggestionTags;
 
           return Scaffold(
             body: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(16),
                   child: SearchBar(
                     autofocus: true,
                     onChanged: (value) {
@@ -50,8 +55,10 @@ class SimpleTagSearchView extends StatelessWidget {
                     child: TagSuggestionItems(
                       tags: tags,
                       onItemTap: (tag) {
+                        if (closeOnSelected) {
+                          Navigator.of(context).pop();
+                        }
                         onSelected(tag);
-                        Navigator.of(context).pop();
                       },
                       currentQuery: state.query,
                     ),
@@ -59,7 +66,7 @@ class SimpleTagSearchView extends StatelessWidget {
                 else
                   const Expanded(
                     child: Center(
-                      child: Text('Type something in search bar'),
+                      child: SizedBox.shrink(),
                     ),
                   ),
               ],
