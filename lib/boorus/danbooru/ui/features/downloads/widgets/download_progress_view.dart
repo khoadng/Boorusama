@@ -270,24 +270,27 @@ class _DownloadIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 16,
+    return SizedBox(
+      width: 80,
+      child: Column(
+        children: [
+          Text(
+            title,
+            style: const TextStyle(
+              fontWeight: FontWeight.w900,
+              fontSize: 15,
+            ),
           ),
-        ),
-        Text(
-          subtitle.toUpperCase(),
-          style: Theme.of(context).textTheme.subtitle1?.copyWith(
-                color: Theme.of(context).hintColor,
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-              ),
-        ),
-      ],
+          Text(
+            subtitle.toUpperCase(),
+            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+                  color: Theme.of(context).hintColor,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
+          ),
+        ],
+      ),
     );
   }
 }
