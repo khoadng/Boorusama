@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
@@ -43,6 +44,22 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('pool.pool').tr(),
+        actions: [
+          IconButton(
+            onPressed: () {
+              AppRouter.router.navigateTo(
+                context,
+                '/bulk_download',
+                routeSettings: RouteSettings(
+                  arguments: [
+                    ['pool:${widget.pool.id}'],
+                  ],
+                ),
+              );
+            },
+            icon: const Icon(Icons.download),
+          ),
+        ],
       ),
       body: SafeArea(
         child: BlocProvider(

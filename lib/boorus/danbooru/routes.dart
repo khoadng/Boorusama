@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -390,13 +391,22 @@ final bulkDownloadHandler =
   final args = context!.settings!.arguments as List;
   final List<String>? initialSelectedTags = args.isNotEmpty ? args.first : null;
 
-  return BlocProvider(
-    create: (context) => BulkImageDownloadBloc(
-      postCountRepository: context.read<PostCountRepository>(),
-      postRepository: context.read<PostRepository>(),
-      downloader: context.read<BulkDownloader>(),
-      randomGenerator: () => randomStringWithDatetime(DateTime.now()),
-    )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
+  final bulkPostDownloadBloc = BulkPostDownloadBloc(
+    downloader: context.read<BulkDownloader<Post>>(),
+    postCountRepository: context.read<PostCountRepository>(),
+    postRepository: context.read<PostRepository>(),
+    errorTranslator: getErrorMessage,
+  );
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => BulkImageDownloadBloc(
+          bulkPostDownloadBloc: bulkPostDownloadBloc,
+          randomGenerator: () => randomStringWithDatetime(DateTime.now()),
+        )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
+      ),
+    ],
     child: const BulkDownloadPage(),
   );
 });

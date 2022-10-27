@@ -2,12 +2,12 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
+import 'package:tuple/tuple.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:tuple/tuple.dart';
 
 class MockTagRepository extends Mock implements TagRepository {}
 

@@ -10,38 +10,42 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 
 class DownloadData {
   const DownloadData(
-    this.postId,
+    this.itemId,
     this.path,
     this.fileName,
   );
 
-  final int postId;
+  final int itemId;
   final String path;
   final String fileName;
 }
 
-class BulkDownloader {
+class BulkDownloader<T> {
   BulkDownloader({
-    required FileNameGenerator<Post> fileNameGenerator,
+    required FileNameGenerator<T> fileNameGenerator,
     required this.deviceInfo,
+    required this.idSelector,
+    required this.downloadUrlSelector,
   }) : _fileNameGenerator = fileNameGenerator;
 
-  final FileNameGenerator<Post> _fileNameGenerator;
+  final FileNameGenerator<T> _fileNameGenerator;
   final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   final Map<String, DownloadData> _taskIdToPostIdMap = {};
+
+  final int Function(T item) idSelector;
+  final String Function(T item) downloadUrlSelector;
 
   final _eventController = StreamController<dynamic>.broadcast();
   final compositeSubscription = CompositeSubscription();
 
   Future<void> enqueueDownload(
-    Post downloadable, {
+    T downloadable, {
     String? path,
     required String folderName,
   }) async {
@@ -50,14 +54,14 @@ class BulkDownloader {
 
     final id = await FlutterDownloader.enqueue(
       showNotification: false,
-      url: downloadable.downloadUrl,
+      url: downloadUrlSelector(downloadable),
       fileName: fileName,
       savedDir: tempDir.path,
     );
 
     if (id != null) {
       _taskIdToPostIdMap[id] = DownloadData(
-        downloadable.id,
+        idSelector(downloadable),
         '${tempDir.path}/$fileName',
         fileName,
       );

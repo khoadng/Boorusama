@@ -164,7 +164,9 @@ void main() async {
     deviceInfo,
     flutterLocalNotificationsPlugin,
   );
-  final bulkDownloader = BulkDownloader(
+  final bulkDownloader = BulkDownloader<Post>(
+    idSelector: (item) => item.id,
+    downloadUrlSelector: (item) => item.downloadUrl,
     fileNameGenerator: Md5OnlyFileNameGenerator(),
     deviceInfo: deviceInfo,
   );
@@ -191,7 +193,7 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
-            RepositoryProvider<BulkDownloader>.value(
+            RepositoryProvider<BulkDownloader<Post>>.value(
               value: bulkDownloader,
             ),
             RepositoryProvider.value(value: userMetatagRepo),
