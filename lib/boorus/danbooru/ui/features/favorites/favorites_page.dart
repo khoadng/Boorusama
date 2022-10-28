@@ -80,6 +80,11 @@ class FavoritesPage extends StatelessWidget {
                 );
               },
               sliverBuilder: (controller) => [
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 5,
+                  ),
+                ),
                 HomePostGrid(controller: controller),
               ],
             );

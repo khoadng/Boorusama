@@ -46,6 +46,7 @@ class SearchHistorySection extends StatelessWidget {
           (item) => ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(item.query),
+            contentPadding: const EdgeInsets.only(left: 16),
             trailing: IconButton(
               onPressed: () => onHistoryRemoved(item.query),
               icon: const Icon(Icons.close),
