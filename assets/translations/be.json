@@ -178,8 +178,8 @@
         "appearance" :  "Пастава",
         "general" :  "Генеральныя",
         "information" : "Інфармацыя",
-        "changelog" : "Changelog",
-        "general_data_source": "Data source",
+        "changelog" : "Гісторыя змен",
+        "general_data_source": "Гісточнік",
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
             "grid_size" : {
