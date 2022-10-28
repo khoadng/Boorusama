@@ -60,7 +60,7 @@ class SettingsPage extends StatelessWidget {
                               // ),
                               ListTile(
                                 leading: const FaIcon(FontAwesomeIcons.gears),
-                                title: const Text('General'),
+                                title: const Text('settings.general').tr(),
                                 onTap: () => Navigator.of(context)
                                     .push(ParallaxSlideInPageRoute(
                                   enterWidget: const GeneralPage(),

@@ -178,6 +178,7 @@
         "general" :  "Chung",
         "information" : "Thông tin",
         "changelog" : "Changelog",
+        "general_data_source": "Nguồn ảnh",
         "image_grid" : {
             "image_grid" : "Lưới ảnh",
             "grid_size" : {

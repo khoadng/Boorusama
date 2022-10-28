@@ -179,6 +179,7 @@
         "general" :  "General",
         "information" : "Information",
         "changelog" : "Changelog",
+        "general_data_source": "Data source",
         "image_grid" : {
             "image_grid" : "Image grid",
             "grid_size" : {

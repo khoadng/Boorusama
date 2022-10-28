@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recase/recase.dart';
 
@@ -28,7 +29,7 @@ class _GeneralPageState extends State<GeneralPage> {
     return Scaffold(
       appBar: widget.hasAppBar
           ? AppBar(
-              title: const Text('General'),
+              title: const Text('settings.general').tr(),
             )
           : null,
       body: BlocBuilder<SettingsCubit, SettingsState>(
@@ -38,7 +39,7 @@ class _GeneralPageState extends State<GeneralPage> {
               primary: false,
               children: [
                 SettingsTile<BooruType>(
-                  title: const Text('Data source'),
+                  title: const Text('settings.general_data_source').tr(),
                   selectedOption: state.settings.safeMode
                       ? BooruType.safebooru
                       : BooruType.danbooru,

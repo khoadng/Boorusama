@@ -179,6 +179,7 @@
         "general" :  "Генеральныя",
         "information" : "Інфармацыя",
         "changelog" : "Changelog",
+        "general_data_source": "Data source",
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
             "grid_size" : {
