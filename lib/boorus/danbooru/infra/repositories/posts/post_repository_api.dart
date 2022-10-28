@@ -122,7 +122,6 @@ Post postDtoToPost(PostDto dto) {
       pixivId: dto.pixivId,
       isBanned: dto.isBanned,
       hasChildren: dto.hasChildren,
-      hasParent: dto.parentId != null,
       parentId: dto.parentId,
       hasLarge: dto.hasLarge ?? false,
       comments: comments.take(3).toList(),

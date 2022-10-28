@@ -43,8 +43,7 @@ class Post extends Equatable
     required this.pixivId,
     required this.isBanned,
     required this.hasChildren,
-    required this.hasParent,
-    this.parentId,
+    required this.parentId,
     required this.hasLarge,
     required this.comments,
     required this.totalComments,
@@ -79,10 +78,10 @@ class Post extends Equatable
         pixivId: null,
         isBanned: false,
         hasChildren: false,
-        hasParent: false,
         hasLarge: false,
         comments: const [],
         totalComments: 0,
+        parentId: null,
       );
 
   @override
@@ -122,7 +121,6 @@ class Post extends Equatable
   final int? pixivId;
   final bool isBanned;
   final bool hasChildren;
-  final bool hasParent;
   final int? parentId;
   final bool hasLarge;
   final List<Comment> comments;
@@ -150,6 +148,7 @@ class Post extends Equatable
     bool? hasChildren,
     int? pixivId,
     String? source,
+    int? parentId,
   }) =>
       Post(
         id: id ?? this.id,
@@ -179,11 +178,11 @@ class Post extends Equatable
         pixivId: pixivId ?? this.pixivId,
         isBanned: isBanned,
         hasChildren: hasChildren ?? this.hasChildren,
-        hasParent: hasParent ?? this.hasParent,
         hasLarge: hasLarge,
         comments: comments,
         totalComments: totalComments,
         artistCommentary: artistCommentary,
+        parentId: parentId ?? this.parentId,
       );
 
   bool get hasComment => lastCommentAt != null;
@@ -191,6 +190,7 @@ class Post extends Equatable
   @override
   String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
 
+  bool get hasParent => parentId != null;
   bool get hasBothParentAndChildren => hasChildren && hasParent;
   bool get hasParentOrChildren => hasChildren || hasParent;
 

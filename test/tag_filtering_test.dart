@@ -36,7 +36,7 @@ Post _createPost(int id, List<String> tags) => Post(
       pixivId: null,
       isBanned: false,
       hasChildren: false,
-      hasParent: false,
+      parentId: null,
       hasLarge: false,
       comments: const [],
       totalComments: 0,
