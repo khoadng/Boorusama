@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -60,6 +59,19 @@ class _PostImagePageState extends State<PostImagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        actions: [
+          ValueListenableBuilder<bool>(
+            valueListenable: fullsize,
+            builder: (context, useFullsize, child) =>
+                _buildMoreButton(useFullsize, widget.post.hasLarge),
+          ),
+        ],
+      ),
       body: InteractiveViewer(
         minScale: 0.6,
         maxScale: 5,
@@ -82,12 +94,6 @@ class _PostImagePageState extends State<PostImagePage>
                       const Color.fromARGB(16, 0, 0, 0),
                       Colors.black12.withOpacity(0),
                     ],
-                  ),
-                  _buildBackButton(),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: fullsize,
-                    builder: (context, useFullsize, child) =>
-                        _buildMoreButton(useFullsize, widget.post.hasLarge),
                   ),
                   if (state.status == LoadStatus.success)
                     ...buildNotes(state.data!, widget.post)
@@ -151,19 +157,6 @@ class _PostImagePageState extends State<PostImagePage>
           ),
         ),
         errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
-    );
-  }
-
-  Widget _buildBackButton() {
-    return Align(
-      alignment: Alignment(-0.9, getTopActionIconAlignValue()),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => AppRouter.router.pop(context),
-        ),
       ),
     );
   }

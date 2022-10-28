@@ -36,6 +36,7 @@ class ImageGridItem extends StatelessWidget {
     required this.previewPlaceholderUrl,
     required this.contextMenuAction,
     this.autoScrollOptions,
+    required this.aspectRatio,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -43,6 +44,7 @@ class ImageGridItem extends StatelessWidget {
   final GridSize gridSize;
   final BorderRadius? borderRadius;
   final ImageQuality imageQuality;
+  final double aspectRatio;
 
   final bool? isAnimated;
   final bool? hasComments;
@@ -87,6 +89,7 @@ class ImageGridItem extends StatelessWidget {
   Widget _buildImage(BuildContext context) {
     return CupertinoContextMenu(
       previewBuilder: (context, animation, child) => BooruImage(
+        aspectRatio: aspectRatio,
         imageUrl: previewUrl,
         placeholderUrl: previewPlaceholderUrl,
         fit: BoxFit.contain,
@@ -97,6 +100,7 @@ class ImageGridItem extends StatelessWidget {
         child: Stack(
           children: [
             BooruImage(
+              aspectRatio: aspectRatio,
               imageUrl: previewUrl,
               placeholderUrl: previewPlaceholderUrl,
               borderRadius: borderRadius,

@@ -1,4 +1,3 @@
-export 'carousel_placeholder.dart';
 export 'modal.dart';
 export 'modal_options.dart';
 export 'sliver_post_grid.dart';

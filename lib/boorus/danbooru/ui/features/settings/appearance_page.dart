@@ -4,10 +4,8 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
@@ -15,7 +13,6 @@ import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
-import 'widgets/settings_icon.dart';
 
 class AppearancePage extends StatefulWidget {
   const AppearancePage({
@@ -115,7 +112,6 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 const Divider(thickness: 1),
                 SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-                _buildPreview(context, state),
                 SettingsTile<GridSize>(
                   title: const Text('settings.image_grid.grid_size.grid_size')
                       .tr(),
@@ -243,87 +239,4 @@ class _AppearancePageState extends State<AppearancePage> {
       },
     );
   }
-
-  SliverGridDelegate _gridSizeToGridDelegate(
-    ScreenSize screenSize,
-    GridSize size, {
-    double spacing = 2,
-  }) {
-    if (size == GridSize.large) return _largeGrid(spacing / 2, screenSize);
-    if (size == GridSize.small) return _smallGrid(spacing / 2, screenSize);
-
-    return _normalGrid(spacing / 2, screenSize);
-  }
-
-  Widget _buildPreview(BuildContext context, SettingsState state) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 100),
-      width: 150,
-      height: 200,
-      decoration: BoxDecoration(
-        borderRadius: const BorderRadius.all(Radius.circular(4)),
-        color: Theme.of(context).backgroundColor,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: ValueListenableBuilder<double>(
-          valueListenable: _spacingSliderValue,
-          builder: (context, value, _) => GridView.builder(
-            itemCount: 100,
-            gridDelegate: _gridSizeToGridDelegate(
-              Screen.of(context).size,
-              state.settings.gridSize,
-              spacing: value,
-            ),
-            itemBuilder: (context, index) {
-              return ValueListenableBuilder<double>(
-                valueListenable: _borderRadiusSliderValue,
-                builder: (context, value, _) => Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(value),
-                  ),
-                  child: const Center(
-                    child: SettingsIcon(FontAwesomeIcons.image),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
 }
-
-SliverGridDelegate _normalGrid(
-  double spacing,
-  ScreenSize size,
-) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: displaySizeToGridCountWeight(size) * 2,
-      childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
-    );
-
-SliverGridDelegate _smallGrid(
-  double spacing,
-  ScreenSize size,
-) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: displaySizeToGridCountWeight(size) * 3,
-    );
-
-SliverGridDelegate _largeGrid(
-  double spacing,
-  ScreenSize size,
-) =>
-    SliverGridDelegateWithFixedCrossAxisCount(
-      mainAxisSpacing: spacing,
-      crossAxisSpacing: spacing,
-      crossAxisCount: displaySizeToGridCountWeight(size),
-      childAspectRatio: 0.65,
-    );

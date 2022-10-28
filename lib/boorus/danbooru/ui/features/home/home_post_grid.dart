@@ -33,7 +33,7 @@ class HomePostGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 4,
       ),
       sliver: BlocSelector<SettingsCubit, SettingsState, GridSize>(
         selector: (state) => state.settings.gridSize,

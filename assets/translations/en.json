@@ -178,6 +178,7 @@
         "appearance" :  "Appearance",
         "general" :  "General",
         "information" : "Information",
+        "changelog" : "Changelog",
         "image_grid" : {
             "image_grid" : "Image grid",
             "grid_size" : {

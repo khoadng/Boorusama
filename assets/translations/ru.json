@@ -178,6 +178,7 @@
         "appearance" :  "Внешний вид",
         "general" :  "Генеральные",
         "information" : "Информация",
+        "changelog" : "Changelog",
         "image_grid" : {
             "image_grid" : "Сетка изображений",
             "grid_size" : {

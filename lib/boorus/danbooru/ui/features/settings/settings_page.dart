@@ -1,9 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -107,6 +109,49 @@ class SettingsPage extends StatelessWidget {
                                   ParallaxSlideInPageRoute(
                                     enterWidget: const PrivacyPage(),
                                     oldWidget: this,
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                title: const Text('settings.changelog').tr(),
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.solidNoteSticky,
+                                ),
+                                onTap: () => showGeneralDialog(
+                                  context: context,
+                                  pageBuilder: (context, __, ___) => Scaffold(
+                                    appBar: AppBar(
+                                      title:
+                                          const Text('settings.changelog').tr(),
+                                      automaticallyImplyLeading: false,
+                                      shadowColor: Colors.transparent,
+                                      backgroundColor: Colors.transparent,
+                                      elevation: 0,
+                                      actions: [
+                                        IconButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          icon: const Icon(
+                                            Icons.close,
+                                            size: 24,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    body: FutureBuilder<String>(
+                                      future:
+                                          rootBundle.loadString('CHANGELOG.md'),
+                                      builder: (context, snapshot) {
+                                        return snapshot.hasData
+                                            ? Markdown(
+                                                data: snapshot.data!,
+                                              )
+                                            : const Center(
+                                                child: CircularProgressIndicator
+                                                    .adaptive(),
+                                              );
+                                      },
+                                    ),
                                   ),
                                 ),
                               ),

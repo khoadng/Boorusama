@@ -177,6 +177,7 @@
         "appearance" :  "Hiển thị",
         "general" :  "Chung",
         "information" : "Thông tin",
+        "changelog" : "Changelog",
         "image_grid" : {
             "image_grid" : "Lưới ảnh",
             "grid_size" : {

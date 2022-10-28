@@ -178,6 +178,7 @@
         "appearance" :  "Пастава",
         "general" :  "Генеральныя",
         "information" : "Інфармацыя",
+        "changelog" : "Changelog",
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
             "grid_size" : {
