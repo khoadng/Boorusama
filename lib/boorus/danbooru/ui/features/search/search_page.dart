@@ -389,16 +389,18 @@ class _TagRow extends StatelessWidget {
     return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) {
-        // final bloc = context.read<TagSearchBloc>();
+        final bloc = context.read<TagSearchBloc>();
 
         return tags.isNotEmpty
             ? Row(children: [
                 const SizedBox(width: 10),
                 InkWell(
                   customBorder: const CircleBorder(),
-                  onTap: () => showCupertinoModalBottomSheet(
+                  onTap: () => showMaterialModalBottomSheet(
                     context: context,
                     builder: (context) => ModalSelectedTag(
+                      onClear: () =>
+                          bloc.add(const TagSearchSelectedTagCleared()),
                       onBulkDownload: () {
                         AppRouter.router.navigateTo(
                           context,
@@ -485,14 +487,14 @@ class ModalSelectedTag extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // ListTile(
-            //   title: const Text('Clear'),
-            //   leading: const Icon(Icons.clear_all),
-            //   onTap: () {
-            //     Navigator.of(context).pop();
-            //     onClear?.call();
-            //   },
-            // ),
+            ListTile(
+              title: const Text('search.remove_all_selected').tr(),
+              leading: const Icon(Icons.clear_all),
+              onTap: () {
+                Navigator.of(context).pop();
+                onClear?.call();
+              },
+            ),
             ListTile(
               title: const Text('download.bulk_download').tr(),
               leading: const Icon(Icons.download),

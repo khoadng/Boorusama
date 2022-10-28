@@ -142,7 +142,8 @@
             "clear": "Xóa",
             "recent" : "Gần đây"
         },
-        "trending" : "Xu hướng"
+        "trending" : "Xu hướng",
+        "remove_all_selected" : "Xoá tất cả các tag đang chọn"
     },
 
     "pool" : {

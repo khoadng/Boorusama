@@ -142,7 +142,8 @@
             "clear": "Ачысціць",
             "recent" : "Нядаўняе"
         },
-        "trending" : "Папулярнае"
+        "trending" : "Папулярнае",
+        "remove_all_selected" : "Remove all selected tags"
     },
 
     "pool" : {
