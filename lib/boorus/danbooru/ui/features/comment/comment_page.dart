@@ -21,8 +21,9 @@ Future<T?> showCommentPage<T>(
   required int postId,
 }) =>
     Screen.of(context).size == ScreenSize.small
-        ? showBarModalBottomSheet<T>(
+        ? showMaterialModalBottomSheet<T>(
             context: context,
+            duration: const Duration(milliseconds: 250),
             builder: (context) => CommentPage(
               postId: postId,
             ),

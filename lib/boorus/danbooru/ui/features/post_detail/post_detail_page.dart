@@ -290,6 +290,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
             );
           },
           options: CarouselOptions(
+            scrollPhysics: const DetailPageViewScrollPhysics(),
             onPageChanged: (index, reason) {
               context
                   .read<SliverPostGridBloc>()
@@ -314,6 +315,22 @@ class _PostDetailPageState extends State<PostDetailPage> {
       },
     );
   }
+}
+
+class DetailPageViewScrollPhysics extends ScrollPhysics {
+  const DetailPageViewScrollPhysics({super.parent});
+
+  @override
+  DetailPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return DetailPageViewScrollPhysics(parent: buildParent(ancestor));
+  }
+
+  @override
+  SpringDescription get spring => const SpringDescription(
+        mass: 80,
+        stiffness: 100,
+        damping: 1,
+      );
 }
 
 class _CarouselContent extends StatefulWidget {
