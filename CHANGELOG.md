@@ -4,6 +4,7 @@
 - Allow deleting individual history tags
 - Add a button to open up quick action menu for selected tags in search page.
 - Buttons in character/artist page will stay in place when the body is scrolling up
+- Increase animation speed when swiping between posts
 - Add a "Changelog" section in Settings.
 - Remove grid preview in Settings because it's a pain to maintain :(
 - Fix an issue where zooming the image will also zoom all the buttons
