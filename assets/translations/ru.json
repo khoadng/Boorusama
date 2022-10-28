@@ -143,7 +143,7 @@
             "recent" : "Последнее"
         },
         "trending" : "Популярное",
-        "remove_all_selected" : "Remove all selected tags"
+        "remove_all_selected" : "Удалить все выбранные теги"
     },
 
     "pool" : {
