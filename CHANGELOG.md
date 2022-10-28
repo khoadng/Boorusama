@@ -1,9 +1,11 @@
 # 2.6.0
 - Introduce bulk download images.
+- The app now use masonary grid to display images.
 - Allow deleting individual history tags
 - Add a button to open up quick action menu for selected tags in search page.
 - Buttons in character/artist page will stay in place when the body is scrolling up
-- Add a "What's New" section in settings.
+- Add a "Changelog" section in Settings.
+- Remove grid preview in Settings because it's a pain to maintain :(
 - Fix an issue where zooming the image will also zoom all the buttons
 - Fix a bug where favoriting a post that has a parent will cause blank screen
 
