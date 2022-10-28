@@ -178,8 +178,8 @@
         "appearance" :  "Внешний вид",
         "general" :  "Генеральные",
         "information" : "Информация",
-        "changelog" : "Changelog",
-        "general_data_source": "Data source",
+        "changelog" : "История изменений",
+        "general_data_source": "Источник",
         "image_grid" : {
             "image_grid" : "Сетка изображений",
             "grid_size" : {
