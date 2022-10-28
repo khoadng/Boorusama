@@ -211,7 +211,7 @@ void main() {
     test('has both parent and child', () {
       final post = Post.empty().copyWith(
         hasChildren: true,
-        hasParent: true,
+        parentId: 0,
       );
 
       expect(post.hasBothParentAndChildren, isTrue);
@@ -219,12 +219,12 @@ void main() {
 
     test('has parent or child', () {
       final posts = [
-        [true, false],
-        [false, true],
+        [true, null],
+        [false, 0],
       ]
           .map((e) => Post.empty().copyWith(
-                hasChildren: e.first,
-                hasParent: e[1],
+                hasChildren: e.first as bool,
+                parentId: e[1] as int?,
               ))
           .toList();
 
@@ -234,7 +234,6 @@ void main() {
     test('have no parent and child', () {
       final post = Post.empty().copyWith(
         hasChildren: false,
-        hasParent: false,
       );
 
       expect(post.hasParentOrChildren, isFalse);

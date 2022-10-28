@@ -144,7 +144,6 @@ class Post extends Equatable
     int? downScore,
     int? score,
     int? favCount,
-    bool? hasParent,
     bool? hasChildren,
     int? pixivId,
     String? source,
