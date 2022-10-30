@@ -32,8 +32,6 @@ void main() {
         when(() => downloader.enqueueDownload(
               any(),
               folder: '',
-              // folderName: any(named: 'folderName'),
-              // ifExistName: any(named: 'ifExistName'),
             )).thenAnswer((invocation) async => true);
         when(() => downloader.stream)
             .thenAnswer((_) => _downloadStream(times: 2));
@@ -175,9 +173,6 @@ void main() {
         when(() => downloader.enqueueDownload(
               any(),
               folder: '',
-
-              // folderName: any(named: 'folderName'),
-              // ifExistName: any(named: 'ifExistName'),
             )).thenAnswer((invocation) async => true);
         when(() => downloader.stream)
             .thenAnswer((_) => _downloadStream(times: 2));
@@ -290,9 +285,6 @@ void main() {
         when(() => downloader.enqueueDownload(
               any(),
               folder: '',
-
-              // folderName: any(named: 'folderName'),
-              // ifExistName: any(named: 'ifExistName'),
             )).thenAnswer((invocation) async => true);
         when(() => downloader.stream)
             .thenAnswer((_) => _downloadStream(times: 2));
@@ -406,9 +398,6 @@ void main() {
         when(() => downloader.enqueueDownload(
               any(),
               folder: '',
-
-              // folderName: any(named: 'folderName'),
-              // ifExistName: any(named: 'ifExistName'),
             )).thenAnswer((invocation) async => true);
         when(() => downloader.stream).thenAnswer((_) => const Stream.empty());
       },
@@ -442,6 +431,57 @@ void main() {
       act: (bloc) => bloc.add(const DownloadReset()),
       expect: () => [
         DownloadState.initial(),
+      ],
+    );
+
+    blocTest<DownloadBloc, DownloadState>(
+      'download cancel',
+      setUp: () {
+        when(() => downloader.cancelAll()).thenAnswer((invocation) async => '');
+
+        when(() => downloader.stream)
+            .thenAnswer((_) => _downloadStream(times: 1000));
+      },
+      tearDown: () {
+        reset(downloader);
+      },
+      seed: () => DownloadState.initial().copyWith(
+        totalCount: 3,
+        queueCount: 3,
+        doneCount: 1,
+        downloaded: [
+          const DownloadImageData(
+            absolutePath: '1',
+            relativeToPublicFolderPath: '1',
+            fileName: '1',
+          ),
+        ],
+        status: DownloadStatus.inProgress,
+      ),
+      build: () => DownloadBloc(
+        downloader: downloader,
+        duplicateChecker: (item, storagePath) => false,
+        fileSizeSelector: (item) => 0,
+        filterSelector: (item) => false,
+        idSelector: (item) => item,
+        itemFetcher: (page, arg, emit, state) async => [],
+        totalFetcher: (arg) async => 2,
+      ),
+      act: (bloc) => bloc.add(const DownloadCancel()),
+      expect: () => [
+        DownloadState.initial().copyWith(
+          totalCount: 3,
+          queueCount: 3,
+          doneCount: 1,
+          downloaded: [
+            const DownloadImageData(
+              absolutePath: '1',
+              relativeToPublicFolderPath: '1',
+              fileName: '1',
+            ),
+          ],
+          status: DownloadStatus.cancel,
+        ),
       ],
     );
   });

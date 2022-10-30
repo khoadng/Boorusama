@@ -165,13 +165,14 @@ class BulkImageDownloadBloc
     extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
   BulkImageDownloadBloc({
     required BulkPostDownloadBloc bulkPostDownloadBloc,
-    // required String Function() randomGenerator,
+    required Future<PermissionStatus> Function() permissionChecker,
+    required Future<PermissionStatus> Function() permissionRequester,
   }) : super(BulkImageDownloadState.initial()) {
     on<BulkImagesDownloadRequested>((event, emit) async {
-      final permission = await Permission.storage.status;
+      final permission = await permissionChecker();
       //TODO: ask permission here, set some state to notify user
       if (permission != PermissionStatus.granted) {
-        final status = await Permission.storage.request();
+        final status = await permissionRequester();
         if (status != PermissionStatus.granted) {
           emit(state.copyWith(status: BulkImageDownloadStatus.failure));
 

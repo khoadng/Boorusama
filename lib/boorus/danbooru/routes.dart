@@ -6,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -404,6 +405,8 @@ final bulkDownloadHandler =
     providers: [
       BlocProvider(
         create: (context) => BulkImageDownloadBloc(
+          permissionChecker: () => Permission.storage.status,
+          permissionRequester: () => Permission.storage.request(),
           bulkPostDownloadBloc: bulkPostDownloadBloc,
         )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
       ),
