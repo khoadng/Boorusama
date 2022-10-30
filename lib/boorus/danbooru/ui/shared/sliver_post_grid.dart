@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 
@@ -116,128 +117,165 @@ class SliverPostGrid extends HookWidget {
               current.settings.imageBorderRadius ||
           previous.settings.imageGridSpacing !=
               current.settings.imageGridSpacing ||
-          previous.settings.imageQuality != current.settings.imageQuality,
+          previous.settings.imageQuality != current.settings.imageQuality ||
+          previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
-        final data = gridSizeToGridData(
-          size: gridSize,
-          spacing: state.settings.imageGridSpacing,
-          screenWidth: MediaQuery.of(context).size.width,
-        );
-        final crossAxisCount = data.first;
-        final mainAxisSpacing = data[1];
-        final crossAxisSpacing = data[2];
+        Widget buildItem(
+          int index, {
+          required bool legacy,
+        }) {
+          final post = posts[index];
 
-        return SliverMasonryGrid.count(
-          crossAxisCount: crossAxisCount,
-          mainAxisSpacing: mainAxisSpacing,
-          crossAxisSpacing: crossAxisSpacing,
-          childCount: posts.length,
-          itemBuilder: (context, index) {
-            final post = posts[index];
-
-            return ImageGridItem(
-              autoScrollOptions: AutoScrollOptions(
-                controller: scrollController,
-                index: index,
+          return ImageGridItem(
+            autoScrollOptions: AutoScrollOptions(
+              controller: scrollController,
+              index: index,
+            ),
+            borderRadius: BorderRadius.circular(
+              state.settings.imageBorderRadius,
+            ),
+            aspectRatio: post.post.aspectRatio,
+            gridSize: gridSize,
+            imageQuality: state.settings.imageQuality,
+            image: legacy
+                ? BooruImageLegacy(
+                    imageUrl: getImageUrlForDisplay(
+                      post.post,
+                      getImageQuality(
+                        size: gridSize,
+                        presetImageQuality: state.settings.imageQuality,
+                      ),
+                    ),
+                    placeholderUrl: post.post.previewImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      state.settings.imageBorderRadius,
+                    ),
+                  )
+                : null,
+            onTap: () => onTap?.call(post.post, index),
+            isAnimated: post.post.isAnimated,
+            isTranslated: post.post.isTranslated,
+            hasComments: post.post.hasComment,
+            hasParentOrChildren: post.post.hasBothParentAndChildren,
+            previewUrl: getImageUrlForDisplay(
+              post.post,
+              getImageQuality(
+                size: gridSize,
+                presetImageQuality: state.settings.imageQuality,
               ),
-              borderRadius: BorderRadius.circular(
-                state.settings.imageBorderRadius,
-              ),
-              aspectRatio: post.post.aspectRatio,
-              gridSize: gridSize,
-              imageQuality: state.settings.imageQuality,
-              onTap: () => onTap?.call(post.post, index),
-              isAnimated: post.post.isAnimated,
-              isTranslated: post.post.isTranslated,
-              hasComments: post.post.hasComment,
-              hasParentOrChildren: post.post.hasBothParentAndChildren,
-              previewUrl: getImageUrlForDisplay(
-                post.post,
-                getImageQuality(
-                  size: gridSize,
-                  presetImageQuality: state.settings.imageQuality,
-                ),
-              ),
-              previewPlaceholderUrl: post.post.previewImageUrl,
-              contextMenuAction: [
-                DownloadProviderWidget(
-                  builder: (context, download) => CupertinoContextMenuAction(
-                    trailingIcon: Icons.download,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      download(post.post);
-                    },
-                    child: const Text('download.download').tr(),
-                  ),
-                ),
-                FutureBuilder<Account>(
-                  future: context.read<AccountRepository>().get(),
-                  builder: (context, snapshot) {
-                    return snapshot.hasData && snapshot.data! != Account.empty
-                        ? CupertinoContextMenuAction(
-                            trailingIcon: post.isFavorited
-                                ? Icons.favorite
-                                : Icons.favorite_outline,
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              final action = post.isFavorited
-                                  ? context
-                                      .read<FavoritePostRepository>()
-                                      .removeFromFavorites(post.post.id)
-                                  : context
-                                      .read<FavoritePostRepository>()
-                                      .addToFavorites(post.post.id);
-                              final success = await action;
-                              final successMsg = post.isFavorited
-                                  ? 'favorites.unfavorited'
-                                  : 'favorites.favorited';
-                              final failMsg = post.isFavorited
-                                  ? 'favorites.fail_to_unfavorite'
-                                  : 'favorites.fail_to_favorite';
-                              if (success) {
-                                onFavoriteUpdated.call(
-                                  post.post.id,
-                                  !post.isFavorited,
-                                );
-                                showSimpleSnackBar(
-                                  context: context,
-                                  content: Text(successMsg).tr(),
-                                  duration: const Duration(seconds: 1),
-                                );
-                              } else {
-                                showSimpleSnackBar(
-                                  context: context,
-                                  content: Text(failMsg).tr(),
-                                  duration: const Duration(seconds: 2),
-                                );
-                              }
-                            },
-                            child: Text(post.isFavorited
-                                    ? 'favorites.unfavorite'
-                                    : 'favorites.favorite')
-                                .tr(),
-                          )
-                        : const SizedBox.shrink();
+            ),
+            previewPlaceholderUrl: post.post.previewImageUrl,
+            contextMenuAction: [
+              DownloadProviderWidget(
+                builder: (context, download) => CupertinoContextMenuAction(
+                  trailingIcon: Icons.download,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    download(post.post);
                   },
+                  child: const Text('download.download').tr(),
                 ),
-                if (post.post.isTranslated)
-                  CupertinoContextMenuAction(
-                    trailingIcon: Icons.translate,
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      AppRouter.router.navigateTo(
-                        context,
-                        '/posts/image',
-                        routeSettings: RouteSettings(arguments: [post]),
-                        transition: TransitionType.material,
-                      );
-                    },
-                    child: const Text('post.quick_preview.view_notes').tr(),
-                  ),
-              ],
+              ),
+              FutureBuilder<Account>(
+                future: context.read<AccountRepository>().get(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData && snapshot.data! != Account.empty
+                      ? CupertinoContextMenuAction(
+                          trailingIcon: post.isFavorited
+                              ? Icons.favorite
+                              : Icons.favorite_outline,
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            final action = post.isFavorited
+                                ? context
+                                    .read<FavoritePostRepository>()
+                                    .removeFromFavorites(post.post.id)
+                                : context
+                                    .read<FavoritePostRepository>()
+                                    .addToFavorites(post.post.id);
+                            final success = await action;
+                            final successMsg = post.isFavorited
+                                ? 'favorites.unfavorited'
+                                : 'favorites.favorited';
+                            final failMsg = post.isFavorited
+                                ? 'favorites.fail_to_unfavorite'
+                                : 'favorites.fail_to_favorite';
+                            if (success) {
+                              onFavoriteUpdated.call(
+                                post.post.id,
+                                !post.isFavorited,
+                              );
+                              showSimpleSnackBar(
+                                context: context,
+                                content: Text(successMsg).tr(),
+                                duration: const Duration(seconds: 1),
+                              );
+                            } else {
+                              showSimpleSnackBar(
+                                context: context,
+                                content: Text(failMsg).tr(),
+                                duration: const Duration(seconds: 2),
+                              );
+                            }
+                          },
+                          child: Text(post.isFavorited
+                                  ? 'favorites.unfavorite'
+                                  : 'favorites.favorite')
+                              .tr(),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+              if (post.post.isTranslated)
+                CupertinoContextMenuAction(
+                  trailingIcon: Icons.translate,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    AppRouter.router.navigateTo(
+                      context,
+                      '/posts/image',
+                      routeSettings: RouteSettings(arguments: [post]),
+                      transition: TransitionType.material,
+                    );
+                  },
+                  child: const Text('post.quick_preview.view_notes').tr(),
+                ),
+            ],
+          );
+        }
+
+        switch (state.settings.imageListType) {
+          case ImageListType.standard:
+            return SliverGrid(
+              gridDelegate: gridSizeToGridDelegate(
+                size: gridSize,
+                spacing: state.settings.imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildItem(index, legacy: true),
+                childCount: posts.length,
+              ),
             );
-          },
-        );
+
+          case ImageListType.masonry:
+            final data = gridSizeToGridData(
+              size: gridSize,
+              spacing: state.settings.imageGridSpacing,
+              screenWidth: MediaQuery.of(context).size.width,
+            );
+            final crossAxisCount = data.first;
+            final mainAxisSpacing = data[1];
+            final crossAxisSpacing = data[2];
+
+            return SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
+              childCount: posts.length,
+              itemBuilder: (context, index) => buildItem(index, legacy: false),
+            );
+        }
       },
     );
   }

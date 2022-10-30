@@ -3,13 +3,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
-import 'package:boorusama/common/constant.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 
 class DownloadTagSelectionView extends StatefulWidget {
   const DownloadTagSelectionView({
@@ -124,91 +128,64 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                 DownloadOptions>(
               selector: (state) => state.options,
               builder: (context, options) {
-                return TextFormField(
-                  controller: textEditingController,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
-                  validator: (value) => !options.hasValidFolderName()
-                      ? 'download.bulk_download_invalid_folder_name_error'
-                              .tr() +
-                          illegalCharactersForFolderName.join()
-                      : null,
-                  decoration: InputDecoration(
-                    filled: true,
-                    hintText: options.defaultNameIfEmpty,
-                    fillColor: Theme.of(context).cardColor,
-                    border: const OutlineInputBorder(
-                      borderSide: BorderSide(width: 2),
+                return Material(
+                  child: Ink(
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).cardColor,
+                      border: Border.fromBorderSide(
+                        BorderSide(color: Theme.of(context).hintColor),
+                      ),
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
                     ),
-                    contentPadding: const EdgeInsets.all(12),
+                    child: ListTile(
+                      visualDensity: VisualDensity.compact,
+                      minVerticalPadding: 0,
+                      onTap: () => _pickFolder(context, options),
+                      title: options.storagePath.isNotEmpty
+                          ? Text(
+                              options.storagePath,
+                              overflow: TextOverflow.fade,
+                            )
+                          : Text(
+                              'download.bulk_download_select_a_folder'.tr(),
+                              overflow: TextOverflow.fade,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .subtitle1!
+                                  .copyWith(color: Theme.of(context).hintColor),
+                            ),
+                      trailing: IconButton(
+                        onPressed: () => _pickFolder(context, options),
+                        icon: const Icon(Icons.folder),
+                      ),
+                    ),
                   ),
-                  onChanged: (value) {
-                    context.read<BulkImageDownloadBloc>().add(
-                          BulkImageDownloadOptionsChanged(
-                            options: options.copyWith(folderName: value),
-                          ),
-                        );
-                  },
                 );
               },
             ),
           ),
-          BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-              DownloadOptions>(
-            selector: (state) => state.options,
-            builder: (context, options) {
-              return ListTile(
-                title:
-                    const Text('download.bulk_download_merge_images_to_folder')
-                        .tr(),
-                subtitle: const Text(
-                  'download.bulk_download_merge_explanation',
-                ).tr(),
-                trailing: Switch.adaptive(
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  value: !options.createNewFolderIfExists,
-                  onChanged: (value) {
-                    context.read<BulkImageDownloadBloc>().add(
-                          BulkImageDownloadOptionsChanged(
-                            options: options.copyWith(
-                              createNewFolderIfExists: !value,
-                            ),
-                          ),
-                        );
-                  },
-                ),
-              );
-            },
-          ),
-          BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
-              DownloadOptions>(
-            selector: (state) => state.options,
-            builder: (context, options) {
-              return ListTile(
-                title: const Text(
-                  'download.bulk_download_only_download_new_images',
-                ).tr(),
-                trailing: Switch.adaptive(
-                  activeColor: Theme.of(context).colorScheme.primary,
-                  value: options.onlyDownloadNewFile,
-                  onChanged: (value) {
-                    context.read<BulkImageDownloadBloc>().add(
-                          BulkImageDownloadOptionsChanged(
-                            options: options.copyWith(
-                              onlyDownloadNewFile: value,
-                            ),
-                          ),
-                        );
-                  },
-                ),
-              );
-            },
-          ),
+          if (isAndroid())
+            BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
+              builder: (context, state) {
+                return state.shouldDisplayWarning(
+                  hasScopeStorage: hasScopedStorage(context.read<DeviceInfo>()),
+                )
+                    ? _DownloadPathWarning(
+                        releaseName: context.read<DeviceInfo>().release,
+                        allowedFolders: state.allowedFolders,
+                      )
+                    : const SizedBox.shrink();
+              },
+            ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             child: BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
               builder: (context, state) {
                 return ElevatedButton(
-                  onPressed: state.isValidToStartDownload()
+                  onPressed: state.isValidToStartDownload(
+                    hasScopeStorage:
+                        hasScopedStorage(context.read<DeviceInfo>()),
+                  )
                       ? () => context.read<BulkImageDownloadBloc>().add(
                             BulkImagesDownloadRequested(
                               tags: state.selectedTags,
@@ -221,6 +198,46 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _pickFolder(
+    BuildContext context,
+    DownloadOptions options,
+  ) async {
+    final bloc = context.read<BulkImageDownloadBloc>();
+    final selectedDirectory = await FilePicker.platform.getDirectoryPath();
+
+    if (selectedDirectory != null) {
+      bloc.add(
+        BulkImageDownloadOptionsChanged(
+          options: options.copyWith(
+            storagePath: selectedDirectory,
+          ),
+        ),
+      );
+    }
+  }
+}
+
+class _DownloadPathWarning extends StatelessWidget {
+  const _DownloadPathWarning({
+    required this.releaseName,
+    required this.allowedFolders,
+  });
+
+  final String releaseName;
+  final List<String> allowedFolders;
+
+  @override
+  Widget build(BuildContext context) {
+    return WarningContainer(
+      contentBuilder: (context) => Html(
+        data: 'download.bulk_download_folder_select_warning'
+            .tr()
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
       ),
     );
   }

@@ -1,6 +1,6 @@
 # 2.6.0
-- Introduce bulk download images.
-- The app now use masonary grid to display images.
+- Introduce bulk download images (BETA).
+- The app now use masonry layout to display images.
 - Allow deleting individual history tags
 - Add a button to open up quick action menu for selected tags in search page.
 - Buttons in character/artist page will stay in place when the body is scrolling up

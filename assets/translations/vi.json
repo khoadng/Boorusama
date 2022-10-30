@@ -249,7 +249,7 @@
         "bulk_download_merge_explanation" : "Nếu tắt sẽ tạo thư mục mới",
         "bulk_download_total_count" : "Tổng",
         "bulk_download_done_count" : "Đã tải",
-        "bulk_download_done_confirm" : "Done",
+        "bulk_download_done_confirm" : "Xong",
         "bulk_download_hidden_censored" : "Chứa tag bị kiểm duyện",
         "bulk_download_hidden_banned" : "Bị xoá theo yêu cầu của tác giả",
         "bulk_download_hidden" : "Ẩn",
@@ -258,6 +258,9 @@
         "bulk_download_invalid_folder_name_error" : "Tên thư mục không được chứa các kí tự sau: ",
         "bulk_download_only_download_new_images" : "Chỉ tải ảnh mới",
         "bulk_download_stay_on_screen_request" : "Đừng rời khỏi màn hình này cho tới khi tải xong hết ảnh",
+        "bulk_download_folder_select_warning" : "Đối với Android 11+, app chỉ có thể lưu files ở thư mục chung <b>({0})</b> . <div>Không hỗ trợ lưu ở thẻ nhớ.</div> <div>Xin hãy chọn thư mục khác.</div> <div>Phiên bản Android của thiết bị này là {1}.</div>",
+        "bulk_download_select_a_folder" : "Chọn một thư mục",
+        "bulk_download_found_duplicate" : "Tìm thấy {} ảnh trùng tên, sẽ không tải những ảnh này",
         "bulk_download_downloaded_counter" : {
             "one": "Đã tải {} ảnh",
             "other": "Đã tải {} ảnh"

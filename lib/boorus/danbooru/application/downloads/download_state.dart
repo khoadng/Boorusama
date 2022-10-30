@@ -18,24 +18,24 @@ class DownloadState<T> extends Equatable {
     required this.allDownloadCompleted,
     required this.didFetchAllPage,
     required this.errorMessage,
-    required this.storagePath,
     required this.status,
   });
 
-  factory DownloadState.initial() => const DownloadState(
+  // ignore: prefer_const_constructors
+  factory DownloadState.initial() => DownloadState(
         totalCount: 0,
         doneCount: 0,
         queueCount: 0,
         duplicate: 0,
         estimateDownloadSize: 0,
         downloadedSize: 0,
-        filtered: [],
-        downloadQueue: [],
-        downloaded: [],
+        // ignore: prefer_const_literals_to_create_immutables
+        filtered: <T>[],
+        downloadQueue: const [],
+        downloaded: const [],
         allDownloadCompleted: false,
         didFetchAllPage: false,
         errorMessage: '',
-        storagePath: '',
         status: DownloadStatus.notStarted,
       );
 
@@ -51,7 +51,6 @@ class DownloadState<T> extends Equatable {
   final bool allDownloadCompleted;
   final bool didFetchAllPage;
   final String errorMessage;
-  final String storagePath;
   final DownloadStatus status;
 
   DownloadState<T> copyWith({
@@ -67,7 +66,6 @@ class DownloadState<T> extends Equatable {
     bool? allDownloadCompleted,
     bool? didFetchAllPage,
     String? errorMessage,
-    String? storagePath,
     DownloadStatus? status,
   }) =>
       DownloadState(
@@ -83,7 +81,6 @@ class DownloadState<T> extends Equatable {
         allDownloadCompleted: allDownloadCompleted ?? this.allDownloadCompleted,
         didFetchAllPage: didFetchAllPage ?? this.didFetchAllPage,
         errorMessage: errorMessage ?? this.errorMessage,
-        storagePath: storagePath ?? this.storagePath,
         status: status ?? this.status,
       );
 
@@ -101,7 +98,6 @@ class DownloadState<T> extends Equatable {
         allDownloadCompleted,
         didFetchAllPage,
         errorMessage,
-        storagePath,
         status,
       ];
 }
@@ -119,7 +115,7 @@ class QueueData extends Equatable {
   String toString() => '$itemId';
 
   @override
-  List<Object?> get props => [itemId, size];
+  List<Object?> get props => [itemId];
 }
 
 class DownloadImageData extends Equatable {

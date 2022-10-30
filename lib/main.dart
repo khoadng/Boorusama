@@ -83,7 +83,9 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   if (!isWeb()) {
-    final dbDirectory = await getApplicationDocumentsDirectory();
+    final dbDirectory = isAndroid()
+        ? await getApplicationDocumentsDirectory()
+        : await getApplicationSupportDirectory();
 
     Hive
       ..init(dbDirectory.path)

@@ -29,13 +29,25 @@ class BooruImage extends StatelessWidget {
         child: CachedNetworkImage(
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
-          placeholder: (context, url) => Container(
-            decoration: BoxDecoration(
-              borderRadius:
-                  borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-              color: Theme.of(context).cardColor,
-            ),
-          ),
+          placeholder: (context, url) => placeholderUrl != null
+              ? CachedNetworkImage(
+                  fit: fit ?? BoxFit.fill,
+                  imageUrl: placeholderUrl!,
+                  placeholder: (context, url) => Container(
+                    decoration: BoxDecoration(
+                      borderRadius: borderRadius ??
+                          const BorderRadius.all(Radius.circular(8)),
+                      color: Theme.of(context).cardColor,
+                    ),
+                  ),
+                )
+              : Container(
+                  decoration: BoxDecoration(
+                    borderRadius: borderRadius ??
+                        const BorderRadius.all(Radius.circular(8)),
+                    color: Theme.of(context).cardColor,
+                  ),
+                ),
           errorWidget: (context, url, error) => Container(
             decoration: BoxDecoration(
               borderRadius:

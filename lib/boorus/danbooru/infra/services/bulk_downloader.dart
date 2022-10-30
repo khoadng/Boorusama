@@ -10,8 +10,9 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
+import 'package:boorusama/core/infra/infra.dart';
 
 class DownloadData {
   const DownloadData(
@@ -25,6 +26,7 @@ class DownloadData {
   final String fileName;
 }
 
+@pragma('vm:entry-point')
 class BulkDownloader<T> {
   BulkDownloader({
     required FileNameGenerator<T> fileNameGenerator,
@@ -44,25 +46,28 @@ class BulkDownloader<T> {
   final _eventController = StreamController<dynamic>.broadcast();
   final compositeSubscription = CompositeSubscription();
 
+  Future<String> getDownloadDirPath() async => isAndroid()
+      ? (await IOHelper.getDownloadPath())
+      : (await getApplicationDocumentsDirectory()).path;
+
   Future<void> enqueueDownload(
     T downloadable, {
-    String? path,
-    required String folderName,
+    String? folder,
   }) async {
     final fileName = _fileNameGenerator.generateFor(downloadable);
-    final tempDir = await getApplicationSupportDirectory();
 
     final id = await FlutterDownloader.enqueue(
+      saveInPublicStorage: folder == null,
       showNotification: false,
       url: downloadUrlSelector(downloadable),
       fileName: fileName,
-      savedDir: tempDir.path,
+      savedDir: folder ?? '',
     );
 
     if (id != null) {
       _taskIdToPostIdMap[id] = DownloadData(
         idSelector(downloadable),
-        '${tempDir.path}/$fileName',
+        '$folder/$fileName',
         fileName,
       );
     }
@@ -112,6 +117,7 @@ class BulkDownloader<T> {
     _port.listen(_eventController.add).addTo(compositeSubscription);
   }
 
+  @pragma('vm:entry-point')
   static void downloadCallback(
     String id,
     DownloadTaskStatus status,

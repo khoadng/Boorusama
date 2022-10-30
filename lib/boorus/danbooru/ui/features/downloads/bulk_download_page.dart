@@ -33,7 +33,27 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
           onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
           child: Scaffold(
             appBar: AppBar(
-              title: const Text('download.bulk_download').tr(),
+              title: Row(
+                children: [
+                  const Text('download.bulk_download').tr(),
+                  const SizedBox(
+                    width: 6,
+                  ),
+                  Chip(
+                    visualDensity: const VisualDensity(
+                      horizontal: -4,
+                      vertical: -4,
+                    ),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    label: const Text(
+                      'BETA',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               automaticallyImplyLeading:
                   status != BulkImageDownloadStatus.downloadInProgress,
             ),

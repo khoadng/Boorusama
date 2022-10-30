@@ -10,3 +10,8 @@ enum GridSize {
   normal,
   large,
 }
+
+enum ImageListType {
+  standard,
+  masonry,
+}

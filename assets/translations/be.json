@@ -259,6 +259,9 @@
         "bulk_download_invalid_folder_name_error" : "Назва папкі не можа ўтрымліваць наступныя сімвалы: ",
         "bulk_download_only_download_new_images" : "Скачаць толькі новыя малюнкі",
         "bulk_download_stay_on_screen_request" : "Калі ласка, не зварочвайце прылажэне, пакуль усе малюнкі не будуць скачаны",
+        "bulk_download_folder_select_warning" : "The app can only store files inside public directories <b>({0})</b> in Android 11+. <div>SD cards are also not supported.</div> <div>Please choose another location.</div> <div>This device's version is {1}.</div>",
+        "bulk_download_select_a_folder" : "Select a folder",
+        "bulk_download_found_duplicate" : "Found {} images with the same name. They will be skipped.",
         "bulk_download_downloaded_counter" : {
             "one": "{} малюнак скачан",
             "other": "{} малюнкаў скачана"

@@ -203,7 +203,9 @@ class DownloadProgressView extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 8),
                             child: Text(
-                              'Found ${state.duplicate} images with the same name',
+                              'download.bulk_download_found_duplicate'
+                                  .tr()
+                                  .replaceAll('{}', state.duplicate.toString()),
                             ),
                           ),
                         ],

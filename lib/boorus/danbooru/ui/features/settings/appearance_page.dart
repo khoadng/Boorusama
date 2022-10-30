@@ -62,6 +62,15 @@ String _gridSizeToString(GridSize size) {
   }
 }
 
+String _imageListToString(ImageListType imageListType) {
+  switch (imageListType) {
+    case ImageListType.standard:
+      return 'Standard';
+    case ImageListType.masonry:
+      return 'Masonry';
+  }
+}
+
 String _actionBarDisplayBehaviorToString(ActionBarDisplayBehavior behavior) {
   switch (behavior) {
     case ActionBarDisplayBehavior.staticAtBottom:
@@ -122,6 +131,15 @@ class _AppearancePageState extends State<AppearancePage> {
                       .update(state.settings.copyWith(gridSize: value)),
                   optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
                 ),
+                SettingsTile<ImageListType>(
+                  title: const Text('Image list'),
+                  selectedOption: state.settings.imageListType,
+                  items: ImageListType.values,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(imageListType: value)),
+                  optionBuilder: (value) => Text(_imageListToString(value)),
+                ),
                 SettingsTile<ImageQuality>(
                   title: const Text(
                     'settings.image_grid.image_quality.image_quality',
@@ -143,9 +161,15 @@ class _AppearancePageState extends State<AppearancePage> {
                   optionBuilder: (value) =>
                       Text(_imageQualityToString(value)).tr(),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: const Text('settings.image_grid.spacing').tr(),
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 _buildSpacingSlider(state),
                 Padding(

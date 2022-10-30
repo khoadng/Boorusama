@@ -485,9 +485,11 @@ packages:
   flutter_downloader:
     dependency: "direct main"
     description:
-      name: flutter_downloader
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: master
+      resolved-ref: "9a3a6bb7568d5c1143b578787ae1b14df1876f5f"
+      url: "https://github.com/khoadng/flutter_downloader.git"
+    source: git
     version: "1.8.4"
   flutter_hooks:
     dependency: "direct main"
@@ -772,6 +774,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.5"
+  media_scanner:
+    dependency: "direct main"
+    description:
+      name: media_scanner
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.0"
   meta:
     dependency: transitive
     description:
