@@ -1,6 +1,4 @@
 // Package imports:
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -9,6 +7,8 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
 import 'download_bloc.dart';
 import 'download_options.dart';
 import 'download_state.dart';

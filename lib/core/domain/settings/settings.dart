@@ -35,6 +35,7 @@ class Settings extends Equatable {
     required this.actionBarDisplayBehavior,
     required this.imageQuality,
     required this.imageQualityInFullView,
+    required this.imageListType,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -63,6 +64,9 @@ class Settings extends Equatable {
         imageQualityInFullView = json['imageQualityInFullView'] != null
             ? ImageQuality.values[json['imageQualityInFullView']]
             : ImageQuality.automatic,
+        imageListType = json['imageListType'] != null
+            ? ImageListType.values[json['imageListType']]
+            : ImageListType.masonry,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -80,6 +84,7 @@ class Settings extends Equatable {
     actionBarDisplayBehavior: ActionBarDisplayBehavior.scrolling,
     imageQuality: ImageQuality.automatic,
     imageQualityInFullView: ImageQuality.automatic,
+    imageListType: ImageListType.masonry,
   );
 
   final String blacklistedTags;
@@ -101,6 +106,8 @@ class Settings extends Equatable {
 
   final ImageQuality imageQualityInFullView;
 
+  final ImageListType imageListType;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -115,6 +122,7 @@ class Settings extends Equatable {
     ActionBarDisplayBehavior? actionBarDisplayBehavior,
     ImageQuality? imageQuality,
     ImageQuality? imageQualityInFullView,
+    ImageListType? imageListType,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -132,6 +140,7 @@ class Settings extends Equatable {
         imageQuality: imageQuality ?? this.imageQuality,
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
+        imageListType: imageListType ?? this.imageListType,
       );
 
   Map<String, dynamic> toJson() => {
@@ -148,6 +157,7 @@ class Settings extends Equatable {
         'actionBarDisplayBehavior': actionBarDisplayBehavior.index,
         'imageQuality': imageQuality.index,
         'imageQualityInFullView': imageQualityInFullView.index,
+        'imageListType': imageListType.index,
       };
 
   @override
@@ -165,5 +175,6 @@ class Settings extends Equatable {
         actionBarDisplayBehavior,
         imageQuality,
         imageQualityInFullView,
+        imageListType,
       ];
 }

@@ -37,6 +37,7 @@ class ImageGridItem extends StatelessWidget {
     required this.contextMenuAction,
     this.autoScrollOptions,
     required this.aspectRatio,
+    this.image,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -45,6 +46,7 @@ class ImageGridItem extends StatelessWidget {
   final BorderRadius? borderRadius;
   final ImageQuality imageQuality;
   final double aspectRatio;
+  final Widget? image;
 
   final bool? isAnimated;
   final bool? hasComments;
@@ -99,12 +101,13 @@ class ImageGridItem extends StatelessWidget {
         onTap: () => onTap?.call(),
         child: Stack(
           children: [
-            BooruImage(
-              aspectRatio: aspectRatio,
-              imageUrl: previewUrl,
-              placeholderUrl: previewPlaceholderUrl,
-              borderRadius: borderRadius,
-            ),
+            image ??
+                BooruImage(
+                  aspectRatio: aspectRatio,
+                  imageUrl: previewUrl,
+                  placeholderUrl: previewPlaceholderUrl,
+                  borderRadius: borderRadius,
+                ),
             Padding(
               padding: const EdgeInsets.only(top: 1, left: 1),
               child: _buildOverlayIcon(),
