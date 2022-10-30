@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -232,26 +233,11 @@ class _DownloadPathWarning extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WarningContainer(
-      contentBuilder: (context) => RichText(
-        text: TextSpan(
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-          children: [
-            const TextSpan(
-              text: 'Only subfolders created inside public directories ',
-            ),
-            TextSpan(
-              text: '(${allowedFolders.join(', ')}) ',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-            const TextSpan(
-              text:
-                  "are allowed in Android 11+. Picking anything else won't work.",
-            ),
-            TextSpan(text: "\n\nThis device's version is $releaseName"),
-          ],
-        ),
+      contentBuilder: (context) => Html(
+        data: 'download.bulk_download_folder_select_warning'
+            .tr()
+            .replaceAll('{0}', allowedFolders.join(', '))
+            .replaceAll('{1}', releaseName),
       ),
     );
   }
