@@ -25,6 +25,7 @@ class DownloadData {
   final String fileName;
 }
 
+@pragma('vm:entry-point')
 class BulkDownloader<T> {
   BulkDownloader({
     required FileNameGenerator<T> fileNameGenerator,
@@ -112,6 +113,7 @@ class BulkDownloader<T> {
     _port.listen(_eventController.add).addTo(compositeSubscription);
   }
 
+  @pragma('vm:entry-point')
   static void downloadCallback(
     String id,
     DownloadTaskStatus status,

@@ -55,6 +55,7 @@ Future<DownloadService<Post>> createDownloader(
   return d;
 }
 
+@pragma('vm:entry-point')
 class DownloadServiceFlutterDownloader implements DownloadService<Post> {
   DownloadServiceFlutterDownloader({
     required FileNameGenerator fileNameGenerator,
@@ -110,6 +111,7 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
     await _prepare();
   }
 
+  @pragma('vm:entry-point')
   static void downloadCallback(
     String id,
     DownloadTaskStatus status,
