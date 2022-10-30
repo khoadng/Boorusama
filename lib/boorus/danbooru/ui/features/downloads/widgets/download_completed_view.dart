@@ -71,7 +71,7 @@ class DownloadCompletedView extends StatelessWidget {
                       subtitle: Text(
                         data.relativeToPublicFolderPath,
                         maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
+                        overflow: TextOverflow.fade,
                         softWrap: false,
                       ),
                       leading: Text(

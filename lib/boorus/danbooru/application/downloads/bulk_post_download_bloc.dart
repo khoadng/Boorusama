@@ -1,3 +1,9 @@
+// Dart imports:
+import 'dart:io';
+
+// Package imports:
+import 'package:path/path.dart';
+
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -10,6 +16,7 @@ class BulkPostDownloadBloc extends DownloadBloc<String, Post> {
     required PostRepository postRepository,
     required PostCountRepository postCountRepository,
     required String? Function(BooruError e) errorTranslator,
+    super.onDownloadDone,
   }) : super(
           itemFetcher: (page, tag, emit, state) async {
             try {
@@ -28,10 +35,19 @@ class BulkPostDownloadBloc extends DownloadBloc<String, Post> {
             }
           },
           totalFetcher: (tag) => postCountRepository.count(tag.split(' ')),
-          duplicateChecker: (post, files) => files.contains(post.md5),
-          folderNameSelector: (tag) => tag,
+          duplicateChecker: (post, storagePath) {
+            final fileExt = extension(post.downloadUrl);
+            final path = join(
+              storagePath,
+              '${post.md5}$fileExt',
+            );
+
+            return File(path).existsSync();
+          },
           fileSizeSelector: (post) => post.fileSize,
           idSelector: (post) => post.id,
-          filterSelector: (post) => post.viewable,
+          filterSelector: (post) => !post.viewable,
+          waitBetweenDownloadRequest: () =>
+              Future.delayed(const Duration(milliseconds: 200)),
         );
 }

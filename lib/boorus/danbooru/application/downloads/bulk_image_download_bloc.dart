@@ -1,4 +1,6 @@
 // Package imports:
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -7,7 +9,6 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/infra/infra.dart';
 import 'download_bloc.dart';
 import 'download_options.dart';
 import 'download_state.dart';
@@ -33,11 +34,8 @@ class BulkImageDownloadState extends Equatable {
         status: BulkImageDownloadStatus.initial,
         selectedTags: const [],
         options: const DownloadOptions(
-          createNewFolderIfExists: false,
-          folderName: '',
-          randomNameIfExists: 'Default Folder-123',
-          defaultNameIfEmpty: 'Default Folder',
-          onlyDownloadNewFile: false,
+          onlyDownloadNewFile: true,
+          storagePath: '',
         ),
         downloadState: DownloadState<Post>.initial(),
       );
@@ -169,7 +167,7 @@ class BulkImageDownloadBloc
     extends Bloc<BulkImageDownloadEvent, BulkImageDownloadState> {
   BulkImageDownloadBloc({
     required BulkPostDownloadBloc bulkPostDownloadBloc,
-    required String Function() randomGenerator,
+    // required String Function() randomGenerator,
   }) : super(BulkImageDownloadState.initial()) {
     on<BulkImagesDownloadRequested>((event, emit) async {
       final permission = await Permission.storage.status;
@@ -201,57 +199,32 @@ class BulkImageDownloadBloc
       if (event.tags == null) return;
 
       final tags = [...state.selectedTags, ...event.tags!];
-      final folderName = generateFolderName(tags);
-      final randomFolderName = generateRandomFolderNameWith(
-        folderName,
-        randomGenerator,
-      );
 
       emit(state.copyWith(
         selectedTags: tags,
-        options: state.options.copyWith(
-          randomNameIfExists: randomFolderName,
-          defaultNameIfEmpty: generateFolderName(tags),
-        ),
         status: BulkImageDownloadStatus.dataSelected,
       ));
     });
 
     on<BulkImageDownloadTagRemoved>((event, emit) {
       final tags = [
-        ...state.selectedTags..remove(event.tag),
-      ];
-      final folderName = generateFolderName(tags);
-      final randomFolderName = generateRandomFolderNameWith(
-        folderName,
-        randomGenerator,
-      );
+        ...state.selectedTags,
+      ]..remove(event.tag);
 
       emit(state.copyWith(
         selectedTags: tags,
-        options: state.options.copyWith(
-          randomNameIfExists: randomFolderName,
-          defaultNameIfEmpty: generateFolderName(tags),
-        ),
         status: BulkImageDownloadStatus.dataSelected,
       ));
     });
 
     on<BulkImageDownloadReset>((event, emit) {
+      bulkPostDownloadBloc.add(const DownloadReset());
       emit(BulkImageDownloadState.initial());
     });
 
     on<BulkImageDownloadOptionsChanged>((event, emit) {
-      final folderName = event.options.folderName;
       emit(state.copyWith(
-        options: event.options.copyWith(
-          randomNameIfExists: generateRandomFolderNameWith(
-            folderName.isEmpty
-                ? generateFolderName(state.selectedTags)
-                : fixInvalidCharacterForPathName(folderName),
-            randomGenerator,
-          ),
-        ),
+        options: event.options,
       ));
     });
 
@@ -285,10 +258,56 @@ String randomStringWithDatetime(DateTime time) =>
     '${time.year}.${time.month}.${time.day} at ${time.hour}.${time.minute}.${time.second}';
 
 extension BulkImageDownloadStateX on BulkImageDownloadState {
-  bool isValidToStartDownload() =>
-      selectedTags.isNotEmpty && options.hasValidFolderName();
+  bool isValidToStartDownload(DeviceInfo info) =>
+      selectedTags.isNotEmpty &&
+      options.storagePath.isNotEmpty &&
+      hasValidStoragePath(info);
 
-  double get percentCompletion => options.onlyDownloadNewFile
-      ? (doneCount + duplicate) / (totalCount == 0 ? 1 : totalCount)
-      : doneCount / (totalCount == 0 ? 1 : totalCount);
+  bool hasValidStoragePath(DeviceInfo info) {
+    if (options.storagePath.isEmpty) return false;
+
+    // ignore: avoid_bool_literals_in_conditional_expressions
+    return hasScopedStorage(info)
+        ? !isInvalidDownloadPath(options.storagePath)
+        : isInternalStorage(options.storagePath);
+  }
+
+  List<String> get allowedFolders => _allowedFolders;
+
+  double get percentCompletion {
+    if (estimateDownloadSize == 0) return 0;
+
+    return downloadedSize / estimateDownloadSize;
+  }
+}
+
+const String _basePath = '/storage/emulated/0';
+const List<String> _allowedFolders = [
+  'Download',
+  'Downloads',
+  'Documents',
+  'Pictures',
+];
+
+bool isInternalStorage(String? path) {
+  if (path == null) return false;
+
+  return path.startsWith(_basePath);
+}
+
+bool isInvalidDownloadPath(String? path) {
+  try {
+    if (path == null) return false;
+    if (!isInternalStorage(path)) return false;
+
+    final nonBasePath = path.replaceAll('$_basePath/', '');
+    final paths = nonBasePath.split('/');
+
+    if (paths.isEmpty) return true;
+    if (!_allowedFolders.contains(paths.first)) return true;
+
+    return false;
+  } catch (e) {
+    return false;
+  }
 }

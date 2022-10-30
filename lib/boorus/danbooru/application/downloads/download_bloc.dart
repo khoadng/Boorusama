@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:io';
-
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
@@ -10,7 +7,6 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
-import 'package:boorusama/core/infra/infra.dart';
 
 enum DownloadStatus {
   notStarted,
@@ -43,19 +39,29 @@ class DownloadCancel<E, T> extends DownloadEvent<E, T> {
   List<Object?> get props => [];
 }
 
+class DownloadReset<E, T> extends DownloadEvent<E, T> {
+  const DownloadReset();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class _DownloadRequested<E, T> extends DownloadEvent<E, T> {
   const _DownloadRequested({
     required this.item,
     required this.arg,
+    required this.options,
   });
 
   final T item;
   final E arg;
+  final DownloadOptions options;
 
   @override
   List<Object?> get props => [
         item,
         arg,
+        options,
       ];
 }
 
@@ -88,83 +94,87 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
     )
         itemFetcher,
     required Future<int> Function(E arg) totalFetcher,
-    required bool Function(T item, List<String> files) duplicateChecker,
+    required bool Function(T item, String storagePath) duplicateChecker,
     required bool Function(T item) filterSelector,
     required int Function(T item) idSelector,
     required int Function(T item) fileSizeSelector,
-    required String Function(E arg) folderNameSelector,
+    Future<void> Function()? waitBetweenDownloadRequest,
+    void Function(String storagePath)? onDownloadDone,
   }) : super(DownloadState.initial()) {
-    on<DownloadRequested<E, T>>((event, emit) async {
-      // Create new folder to store downloaded images
-      final storagePath = await createFolder(event.options);
-      final files = getAllFileWithoutExtension(Directory(storagePath));
+    on<DownloadRequested<E, T>>(
+      (event, emit) async {
+        final path = await downloader.getDownloadDirPath();
+        final storagePath = event.options.storagePath.isEmpty
+            ? path
+            : event.options.storagePath;
 
-      emit(state.copyWith(
-        totalCount: await totalFetcher(event.arg),
-        storagePath: storagePath,
-        status: DownloadStatus.inProgress,
-      ));
+        emit(state.copyWith(
+          totalCount: await totalFetcher(event.arg),
+          status: DownloadStatus.inProgress,
+        ));
 
-      var page = 1;
-      final initialItems = await itemFetcher(page, event.arg, emit, state);
-      final itemStack = [initialItems];
-      var count = 0;
-      var downloadSize = 0;
-      var duplicateCount = 0;
-      final filtered = <T>[];
+        var page = 1;
+        final initialItems = await itemFetcher(page, event.arg, emit, state);
+        final itemStack = [initialItems];
 
-      while (itemStack.isNotEmpty) {
-        final items = itemStack.removeLast();
-        for (final it in items) {
-          if (duplicateChecker(it, files)) {
-            duplicateCount += 1;
-            emit(state.copyWith(
-              duplicate: duplicateCount,
-            ));
-            if (event.options.onlyDownloadNewFile) {
+        while (itemStack.isNotEmpty) {
+          final items = itemStack.removeLast();
+          for (final it in items) {
+            if (duplicateChecker(it, storagePath)) {
+              emit(state.copyWith(
+                duplicate: state.duplicate + 1,
+              ));
+              if (event.options.onlyDownloadNewFile) {
+                continue;
+              }
+            }
+
+            final id = idSelector(it);
+            final fileSize = fileSizeSelector(it);
+
+            if (state.downloadQueue.contains(QueueData(id, fileSize))) {
               continue;
+            }
+            if (state.status == DownloadStatus.cancel) break;
+
+            if (waitBetweenDownloadRequest != null) {
+              await waitBetweenDownloadRequest();
+            }
+
+            if (filterSelector(it)) {
+              emit(state.copyWith(
+                filtered: [
+                  ...state.filtered,
+                  it,
+                ],
+              ));
+            } else {
+              add(_DownloadRequested(
+                item: it,
+                arg: event.arg,
+                options: event.options,
+              ));
+
+              emit(state.copyWith(
+                queueCount: state.queueCount + 1,
+                estimateDownloadSize: state.estimateDownloadSize + fileSize,
+              ));
             }
           }
 
-          final id = idSelector(it);
-          final fileSize = fileSizeSelector(it);
-
-          if (state.downloadQueue.contains(QueueData(id, fileSize))) {
-            continue;
-          }
-          if (state.status == DownloadStatus.cancel) break;
-
-          await Future.delayed(const Duration(milliseconds: 200));
-
-          if (filterSelector(it)) {
-            add(_DownloadRequested(item: it, arg: event.arg));
-            count += 1;
-            downloadSize += fileSize;
-            emit(state.copyWith(
-              queueCount: count,
-              duplicate: duplicateCount,
-              estimateDownloadSize: downloadSize,
-            ));
-          } else {
-            filtered.add(it);
-
-            emit(state.copyWith(
-              filtered: [...filtered],
-            ));
+          page += 1;
+          final next = await itemFetcher(page, event.arg, emit, state);
+          if (next.isNotEmpty) {
+            itemStack.add(next);
           }
         }
 
-        page += 1;
-        final next = await itemFetcher(page, event.arg, emit, state);
-        if (next.isNotEmpty) {
-          itemStack.add(next);
-        }
-      }
-
-      emit(state.copyWith(
-        didFetchAllPage: true,
-      ));
-    });
+        emit(state.copyWith(
+          didFetchAllPage: true,
+        ));
+      },
+      transformer: droppable(),
+    );
 
     on<DownloadCancel<E, T>>((event, emit) async {
       emit(state.copyWith(
@@ -174,12 +184,17 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
       await downloader.cancelAll();
     });
 
+    on<DownloadReset<E, T>>((event, emit) {
+      emit(DownloadState.initial());
+    });
+
     on<_DownloadRequested<E, T>>(
       (event, emit) async {
         await downloader.enqueueDownload(
           event.item,
-          folderName: folderNameSelector(event.arg),
+          folder: event.options.storagePath,
         );
+
         emit(state.copyWith(
           downloadQueue: [
             ...state.downloadQueue,
@@ -194,6 +209,11 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
         var queue = <QueueData>[];
         QueueData item;
 
+        // Size doesn't matter here so just leave at 0 for easier comparison
+        if (!state.downloadQueue.contains(QueueData(event.data.itemId, 0))) {
+          return;
+        }
+
         // Sometime download queue doesn't contains the data for some reason...
         try {
           item = state.downloadQueue
@@ -204,14 +224,11 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
           item = QueueData(event.data.itemId, 0);
         }
 
-        final from = event.data.path;
-        final to = '${state.storagePath}/${event.data.fileName}';
-        // if (kDebugMode) {
-        //   print('Moving $from to $to');
-        // }
-        await moveFile(File(from), to);
+        final to = event.data.path;
 
         final pathParts = to.split('/').toList();
+
+        onDownloadDone?.call(to);
 
         emit(state.copyWith(
           doneCount: state.doneCount + 1,
@@ -246,6 +263,7 @@ class DownloadBloc<E, T> extends Bloc<DownloadEvent<E, T>, DownloadState<T>> {
         .addTo(compositeSubscription);
 
     stream
+        .where((s) => s.status == DownloadStatus.inProgress)
         .where((s) => s.didFetchAllPage && s.queueCount == s.doneCount)
         .listen((event) => add(const _DownloadDoneAll()))
         .addTo(compositeSubscription);

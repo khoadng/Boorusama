@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_scanner/media_scanner.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -396,6 +397,7 @@ final bulkDownloadHandler =
     postCountRepository: context.read<PostCountRepository>(),
     postRepository: context.read<PostRepository>(),
     errorTranslator: getErrorMessage,
+    onDownloadDone: (path) => MediaScanner.loadMedia(path: path),
   );
 
   return MultiBlocProvider(
@@ -403,7 +405,6 @@ final bulkDownloadHandler =
       BlocProvider(
         create: (context) => BulkImageDownloadBloc(
           bulkPostDownloadBloc: bulkPostDownloadBloc,
-          randomGenerator: () => randomStringWithDatetime(DateTime.now()),
         )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
       ),
     ],
