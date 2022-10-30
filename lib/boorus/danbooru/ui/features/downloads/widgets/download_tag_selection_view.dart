@@ -147,7 +147,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                               overflow: TextOverflow.fade,
                             )
                           : Text(
-                              'Choose a folder',
+                              'download.bulk_download_select_a_folder'.tr(),
                               overflow: TextOverflow.fade,
                               style: Theme.of(context)
                                   .textTheme
