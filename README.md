@@ -20,6 +20,9 @@
 
 Boorusama is one of the most feature-rich unofficial clients for [Danbooru](https://github.com/danbooru/danbooru). Built with Flutter.
 
+![Banner_1](./images/banner_2.png)
+![Banner_2](./images/banner_1.png)
+
 ## Features
 - Fully supported tag search with autocomplete and metatags highlighting
 - Quick and easy image saving
