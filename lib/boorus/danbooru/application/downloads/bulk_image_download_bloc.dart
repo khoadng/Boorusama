@@ -7,8 +7,6 @@ import 'package:rxdart/rxdart.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
 import 'download_bloc.dart';
 import 'download_options.dart';
 import 'download_state.dart';
@@ -254,22 +252,32 @@ class BulkImageDownloadBloc
   }
 }
 
-String randomStringWithDatetime(DateTime time) =>
-    '${time.year}.${time.month}.${time.day} at ${time.hour}.${time.minute}.${time.second}';
-
 extension BulkImageDownloadStateX on BulkImageDownloadState {
-  bool isValidToStartDownload(DeviceInfo info) =>
+  bool isValidToStartDownload({
+    required bool hasScopeStorage,
+  }) =>
       selectedTags.isNotEmpty &&
       options.storagePath.isNotEmpty &&
-      hasValidStoragePath(info);
+      hasValidStoragePath(hasScopeStorage: hasScopeStorage);
 
-  bool hasValidStoragePath(DeviceInfo info) {
+  bool shouldDisplayWarning({
+    required bool hasScopeStorage,
+  }) {
     if (options.storagePath.isEmpty) return false;
 
+    return !hasValidStoragePath(hasScopeStorage: hasScopeStorage);
+  }
+
+  bool hasValidStoragePath({
+    required bool hasScopeStorage,
+  }) {
+    if (options.storagePath.isEmpty) return false;
+    if (!isInternalStorage(options.storagePath)) return false;
+
     // ignore: avoid_bool_literals_in_conditional_expressions
-    return hasScopedStorage(info)
-        ? !isInvalidDownloadPath(options.storagePath)
-        : isInternalStorage(options.storagePath);
+    return hasScopeStorage
+        ? !isNonPublicDirectories(options.storagePath)
+        : true;
   }
 
   List<String> get allowedFolders => _allowedFolders;
@@ -295,7 +303,7 @@ bool isInternalStorage(String? path) {
   return path.startsWith(_basePath);
 }
 
-bool isInvalidDownloadPath(String? path) {
+bool isNonPublicDirectories(String? path) {
   try {
     if (path == null) return false;
     if (!isInternalStorage(path)) return false;

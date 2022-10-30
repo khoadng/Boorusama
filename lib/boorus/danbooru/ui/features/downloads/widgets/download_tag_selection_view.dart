@@ -166,11 +166,9 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
           if (isAndroid())
             BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
               builder: (context, state) {
-                final info = context.read<DeviceInfo>();
-
-                return hasScopedStorage(info) &&
-                        state.options.storagePath.isNotEmpty &&
-                        state.hasValidStoragePath(info)
+                return state.shouldDisplayWarning(
+                  hasScopeStorage: hasScopedStorage(context.read<DeviceInfo>()),
+                )
                     ? _DownloadPathWarning(
                         releaseName: context.read<DeviceInfo>().release,
                         allowedFolders: state.allowedFolders,
@@ -183,14 +181,16 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
             child: BlocBuilder<BulkImageDownloadBloc, BulkImageDownloadState>(
               builder: (context, state) {
                 return ElevatedButton(
-                  onPressed:
-                      state.isValidToStartDownload(context.read<DeviceInfo>())
-                          ? () => context.read<BulkImageDownloadBloc>().add(
-                                BulkImagesDownloadRequested(
-                                  tags: state.selectedTags,
-                                ),
-                              )
-                          : null,
+                  onPressed: state.isValidToStartDownload(
+                    hasScopeStorage:
+                        hasScopedStorage(context.read<DeviceInfo>()),
+                  )
+                      ? () => context.read<BulkImageDownloadBloc>().add(
+                            BulkImagesDownloadRequested(
+                              tags: state.selectedTags,
+                            ),
+                          )
+                      : null,
                   child: const Text('download.download').tr(),
                 );
               },
