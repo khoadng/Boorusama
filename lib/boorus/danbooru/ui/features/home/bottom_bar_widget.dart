@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({
-    Key? key,
+    super.key,
     required this.onTabChanged,
     this.initialValue = 0,
-  }) : super(key: key);
+  });
 
   final ValueChanged<int> onTabChanged;
   final int initialValue;

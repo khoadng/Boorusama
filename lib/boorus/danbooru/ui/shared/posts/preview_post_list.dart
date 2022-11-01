@@ -9,10 +9,10 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class PreviewPostList extends StatelessWidget {
   const PreviewPostList({
-    Key? key,
+    super.key,
     required this.posts,
     this.physics,
-  }) : super(key: key);
+  });
 
   final List<Post> posts;
   final ScrollPhysics? physics;
@@ -27,7 +27,7 @@ class PreviewPostList extends StatelessWidget {
       itemBuilder: (context, index) => Padding(
         padding: const EdgeInsets.all(3),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: CachedNetworkImage(
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.width * 0.3,
@@ -36,7 +36,7 @@ class PreviewPostList extends StatelessWidget {
             placeholder: (context, url) => Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: const BorderRadius.all(Radius.circular(8)),
               ),
             ),
           ),

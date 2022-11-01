@@ -40,12 +40,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
           case DioError:
             final response = (obj as DioError).response;
             if (response == null) return false;
-            if (response.statusCode == 302) {
-              // It's okay to be redirected here.
-              return true;
-            } else {
-              return false;
-            }
+            return response.statusCode == 302;
           default:
         }
       });
@@ -69,12 +64,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
         case DioError:
           final response = (obj as DioError).response;
           if (response == null) return false;
-          if (response.statusCode == 302) {
-            // It's okay to be redirected here.
-            return true;
-          } else {
-            return false;
-          }
+          return response.statusCode == 302;
         default:
       }
     });

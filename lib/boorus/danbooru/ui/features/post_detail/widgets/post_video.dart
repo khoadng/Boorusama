@@ -11,7 +11,7 @@ import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 
 //TODO: implement caching video
 class PostVideo extends StatefulWidget {
-  const PostVideo({Key? key, required this.post}) : super(key: key);
+  const PostVideo({super.key, required this.post});
 
   final Post post;
 

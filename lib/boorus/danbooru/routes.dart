@@ -5,37 +5,39 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:media_scanner/media_scanner.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post_detail_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -43,7 +45,12 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dar
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
+import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
@@ -67,16 +74,18 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(PostRefreshed(
-              tag: args[0],
-              fetcher: SearchedPostFetcher.fromTags(args[0]),
-            ))),
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            tag: args.first,
+            fetcher: SearchedPostFetcher.fromTags(args.first),
+          )),
+      ),
       BlocProvider.value(
-          value: context.read<ArtistBloc>()..add(ArtistFetched(name: args[0]))),
+        value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
+      ),
     ],
     child: ArtistPage(
-      artistName: args[0],
+      artistName: args.first,
       backgroundImageUrl: args[1],
     ),
   );
@@ -91,16 +100,18 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(PostRefreshed(
-              tag: args[0],
-              fetcher: SearchedPostFetcher.fromTags(args[0]),
-            ))),
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            tag: args.first,
+            fetcher: SearchedPostFetcher.fromTags(args.first),
+          )),
+      ),
       BlocProvider.value(
-          value: context.read<WikiBloc>()..add(WikiFetched(tag: args[0]))),
+        value: context.read<WikiBloc>()..add(WikiFetched(tag: args.first)),
+      ),
     ],
     child: CharacterPage(
-      characterName: args[0],
+      characterName: args.first,
       backgroundImageUrl: args[1],
     ),
   );
@@ -111,7 +122,7 @@ final postDetailHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
-  final postDatas = args[0] as List<PostData>;
+  final postDatas = args.first as List<PostData>;
   final index = args[1] as int;
 
   final AutoScrollController? controller = args[2];
@@ -122,27 +133,27 @@ final postDetailHandler = Handler(handlerFunc: (
       .map((p) => [
             ...p.artistTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.artist(),
+                  category: TagCategory.artist.stringify(),
                   postId: p.id,
                 )),
             ...p.characterTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.character(),
+                  category: TagCategory.charater.stringify(),
                   postId: p.id,
                 )),
             ...p.copyrightTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.copyright(),
+                  category: TagCategory.copyright.stringify(),
                   postId: p.id,
                 )),
             ...p.generalTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.general(),
+                  category: TagCategory.general.stringify(),
                   postId: p.id,
                 )),
             ...p.metaTags.map((e) => PostDetailTag(
                   name: e,
-                  category: TagAutocompleteCategory.meta(),
+                  category: TagCategory.meta.stringify(),
                   postId: p.id,
                 )),
           ])
@@ -171,14 +182,15 @@ final postDetailHandler = Handler(handlerFunc: (
             if (posts.isEmpty) return;
 
             postBloc.add(PostUpdated(
-                post: _newPost(
-              posts.first.post,
-              tag,
-              category,
-            )));
+              post: _newPost(
+                posts.first.post,
+                tag,
+                category,
+              ),
+            ));
           },
         ),
-      )
+      ),
     ],
     child: RepositoryProvider.value(
       value: context.read<TagRepository>(),
@@ -213,31 +225,38 @@ final postSearchHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-          create: (context) => SearchHistoryCubit(
-              searchHistoryRepository:
-                  context.read<SearchHistoryRepository>())),
+        create: (context) => SearchHistoryCubit(
+          searchHistoryRepository: context.read<SearchHistoryRepository>(),
+        ),
+      ),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider(
-          create: (context) => TagSearchBloc(
-                tagInfo: context.read<TagInfo>(),
-                autocompleteRepository: context.read<AutocompleteRepository>(),
-              )),
+        create: (context) => TagSearchBloc(
+          tagInfo: context.read<TagInfo>(),
+          autocompleteRepository: context.read<AutocompleteRepository>(),
+        ),
+      ),
       BlocProvider(
-          create: (context) => SearchHistorySuggestionsBloc(
-              searchHistoryRepository:
-                  context.read<SearchHistoryRepository>())),
+        create: (context) => SearchHistorySuggestionsBloc(
+          searchHistoryRepository: context.read<SearchHistoryRepository>(),
+        ),
+      ),
       BlocProvider(
-          create: (context) => SearchBloc(
-              initial: const SearchState(displayState: DisplayState.options))),
+        create: (context) => SearchBloc(
+          initial: const SearchState(displayState: DisplayState.options),
+        ),
+      ),
       BlocProvider(
-          create: (context) => RelatedTagBloc(
-              relatedTagRepository: context.read<RelatedTagRepository>())),
+        create: (context) => RelatedTagBloc(
+          relatedTagRepository: context.read<RelatedTagRepository>(),
+        ),
+      ),
     ],
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,
       metatagHighlightColor: Theme.of(context).colorScheme.primary,
-      initialQuery: args[0],
+      initialQuery: args.first,
     ),
   );
 });
@@ -251,15 +270,16 @@ final postDetailImageHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: context.read<NoteBloc>()
-            ..add(const NoteReset())
-            ..add(NoteRequested(postId: args[0].id))),
+        value: context.read<NoteBloc>()
+          ..add(const NoteReset())
+          ..add(NoteRequested(postId: args.first.id)),
+      ),
     ],
     child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
       selector: (state) => state.settings.imageQualityInFullView,
       builder: (context, quality) {
         return PostImagePage(
-          post: args[0],
+          post: args.first,
           useOriginalSize: quality == ImageQuality.original,
         );
       },
@@ -298,25 +318,29 @@ final settingsHandler =
 final poolDetailHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
-  final pool = args[0] as Pool;
+  final pool = args.first as Pool;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {
       return MultiBlocProvider(
         providers: [
           BlocProvider.value(
-              value: PoolDescriptionBloc(
-            endpoint: state.booru.url,
-            poolDescriptionRepository:
-                context.read<PoolDescriptionRepository>(),
-          )..add(PoolDescriptionFetched(poolId: pool.id))),
+            value: PoolDescriptionBloc(
+              endpoint: state.booru.url,
+              poolDescriptionRepository:
+                  context.read<PoolDescriptionRepository>(),
+            )..add(PoolDescriptionFetched(poolId: pool.id)),
+          ),
           BlocProvider(
-              create: (context) => NoteBloc(
-                  noteRepository:
-                      RepositoryProvider.of<NoteRepository>(context))),
+            create: (context) => NoteBloc(
+              noteRepository: RepositoryProvider.of<NoteRepository>(context),
+            ),
+          ),
         ],
         child: PoolDetailPage(
           pool: pool,
+          // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
+          // ignore: prefer-iterable-of
           postIds: QueueList.from(pool.postIds),
         ),
       );
@@ -327,19 +351,21 @@ final poolDetailHandler =
 final favoritesHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
-  final String username = args[0];
+  final String username = args.first;
 
   return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
     builder: (context, state) {
       return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: (context) => PostBloc.of(context)
-                ..add(PostRefreshed(
-                    tag: 'ordfav:$username',
-                    fetcher: SearchedPostFetcher.fromTags(
-                      'ordfav:$username',
-                    )))),
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                tag: 'ordfav:$username',
+                fetcher: SearchedPostFetcher.fromTags(
+                  'ordfav:$username',
+                ),
+              )),
+          ),
         ],
         child: FavoritesPage(
           username: username,
@@ -354,10 +380,38 @@ final blacklistedTagsHandler =
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-          value: BlocProvider.of<BlacklistedTagsBloc>(context!)
-            ..add(const BlacklistedTagRequested())),
+        value: BlocProvider.of<BlacklistedTagsBloc>(context!)
+          ..add(const BlacklistedTagRequested()),
+      ),
     ],
     child: const BlacklistedTagsPage(),
+  );
+});
+
+final bulkDownloadHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+  final List<String>? initialSelectedTags = args.isNotEmpty ? args.first : null;
+
+  final bulkPostDownloadBloc = BulkPostDownloadBloc(
+    downloader: context.read<BulkDownloader<Post>>(),
+    postCountRepository: context.read<PostCountRepository>(),
+    postRepository: context.read<PostRepository>(),
+    errorTranslator: getErrorMessage,
+    onDownloadDone: (path) => MediaScanner.loadMedia(path: path),
+  );
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => BulkImageDownloadBloc(
+          permissionChecker: () => Permission.storage.status,
+          permissionRequester: () => Permission.storage.request(),
+          bulkPostDownloadBloc: bulkPostDownloadBloc,
+        )..add(BulkImageDownloadTagsAdded(tags: initialSelectedTags)),
+      ),
+    ],
+    child: const BulkDownloadPage(),
   );
 });
 

@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 
 class PoolSearchState extends Equatable {
   const PoolSearchState({
@@ -79,8 +79,9 @@ class PoolSearchBloc extends Bloc<PoolSearchEvent, PoolSearchState> {
   PoolSearchBloc({
     required PoolRepository poolRepository,
   }) : super(PoolSearchState.initial()) {
-    on<PoolSearched>((event, emit) async {
-      await tryAsync<List<Pool>>(
+    on<PoolSearched>(
+      (event, emit) async {
+        await tryAsync<List<Pool>>(
           action: () => poolRepository.getPools(1, name: event.query),
           onSuccess: (pools) async {
             emit(state.copyWith(
@@ -88,11 +89,13 @@ class PoolSearchBloc extends Bloc<PoolSearchEvent, PoolSearchState> {
               pools: pools,
               isDone: false,
             ));
-          });
-    },
-        transformer: debounceRestartable(
-          const Duration(milliseconds: 80),
-        ));
+          },
+        );
+      },
+      transformer: debounceRestartable(
+        const Duration(milliseconds: 80),
+      ),
+    );
 
     on<PoolSearchItemSelect>((event, emit) {
       emit(state.copyWith(

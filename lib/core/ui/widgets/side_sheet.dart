@@ -78,7 +78,7 @@ Future<T?> _showSheetSide<T>({
         return SlideTransition(
           position: Tween(
             begin: Offset(rightSide ? 1 : -1, 0),
-            end: const Offset(0, 0),
+            end: Offset.zero,
           ).animate(animation1),
           child: child,
         );

@@ -9,10 +9,10 @@ import '../models/parent_child_data.dart';
 
 class ParentChildTile extends StatelessWidget {
   const ParentChildTile({
-    Key? key,
+    super.key,
     required this.data,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final ParentChildData data;
   final void Function(ParentChildData data) onTap;
@@ -24,7 +24,7 @@ class ParentChildTile extends StatelessWidget {
       children: [
         const _Divider(),
         //WORKAROUND: for some reason, using tileColor in ListTile won't render properly.
-        Container(
+        ColoredBox(
           color: Theme.of(context).cardColor,
           child: ListTile(
             dense: true,
@@ -48,9 +48,7 @@ class ParentChildTile extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider({
-    Key? key,
-  }) : super(key: key);
+  const _Divider();
 
   @override
   Widget build(BuildContext context) {

@@ -6,10 +6,10 @@ import 'package:flutter/material.dart';
 
 class FloatingGlassyCard extends StatelessWidget {
   const FloatingGlassyCard({
-    Key? key,
+    super.key,
     required this.child,
     this.width,
-  }) : super(key: key);
+  });
 
   final Widget child;
   final double? width;
@@ -17,7 +17,7 @@ class FloatingGlassyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(6),
+      borderRadius: const BorderRadius.all(Radius.circular(6)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Material(

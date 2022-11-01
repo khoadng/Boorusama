@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_positional_boolean_parameters
+
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
@@ -133,6 +135,13 @@ abstract class Api {
     @Query('login') String? login,
     @Query('api_key') String? apiKey,
     @Path() int postId,
+  );
+
+  @GET('/counts/posts.json')
+  Future<HttpResponse> countPosts(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Query('tags') String tags,
   );
 
   @GET('/artist_commentaries.json')
@@ -300,7 +309,7 @@ abstract class Api {
     @Query('api_key') String? apiKey,
     @Query('page') int page,
     @Query('search[post_id]') String postIdsComma,
-    @Query('search[user_id]') String userId,
+    @Query('search[user_id]') String? userId,
     @Query('search[is_deleted]') bool isDeleted,
     @Query('limit') int limit,
   );

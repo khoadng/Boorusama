@@ -9,9 +9,8 @@ const linkPattern = r'"(.*?)":\[(.*?)\]';
 String parseTextToHtml(String text) {
   final t0 = _removePixivBoldTag(text);
   final t1 = parseLink(t0);
-  final t2 = parsePixivLink(t1);
 
-  return t2;
+  return parsePixivLink(t1);
 }
 
 String _removePixivBoldTag(String text) => parse(

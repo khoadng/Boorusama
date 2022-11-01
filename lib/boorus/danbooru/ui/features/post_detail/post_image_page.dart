@@ -11,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -19,10 +18,10 @@ import 'widgets/post_note.dart';
 
 class PostImagePage extends StatefulWidget {
   const PostImagePage({
-    Key? key,
+    super.key,
     required this.post,
     required this.useOriginalSize,
-  }) : super(key: key);
+  });
 
   final Post post;
   final bool useOriginalSize;
@@ -60,6 +59,19 @@ class _PostImagePageState extends State<PostImagePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
+        actions: [
+          ValueListenableBuilder<bool>(
+            valueListenable: fullsize,
+            builder: (context, useFullsize, child) =>
+                _buildMoreButton(useFullsize, widget.post.hasLarge),
+          ),
+        ],
+      ),
       body: InteractiveViewer(
         minScale: 0.6,
         maxScale: 5,
@@ -73,25 +85,20 @@ class _PostImagePageState extends State<PostImagePage>
                   onDoubleTapDown: (details) => _doubleTapDetails = details,
                   onDoubleTap: _handleDoubleTap,
                   onTap: () => hideOverlay.value = !hideOverlay.value,
-                  child: child!,
+                  child: child,
                 ),
                 if (!hide) ...[
                   ShadowGradientOverlay(
-                      alignment: Alignment.topCenter,
-                      colors: <Color>[
-                        const Color.fromARGB(16, 0, 0, 0),
-                        Colors.black12.withOpacity(0)
-                      ]),
-                  _buildBackButton(),
-                  ValueListenableBuilder<bool>(
-                    valueListenable: fullsize,
-                    builder: (context, useFullsize, child) =>
-                        _buildMoreButton(useFullsize, widget.post.hasLarge),
+                    alignment: Alignment.topCenter,
+                    colors: <Color>[
+                      const Color.fromARGB(16, 0, 0, 0),
+                      Colors.black12.withOpacity(0),
+                    ],
                   ),
                   if (state.status == LoadStatus.success)
                     ...buildNotes(state.data!, widget.post)
                   else
-                    const SizedBox.shrink()
+                    const SizedBox.shrink(),
                 ],
               ],
             ),
@@ -120,6 +127,7 @@ class _PostImagePageState extends State<PostImagePage>
     Matrix4 endMatrix;
     final position = _doubleTapDetails!.localPosition;
 
+    // ignore: prefer-conditional-expressions
     if (_transformationController.value != Matrix4.identity()) {
       endMatrix = Matrix4.identity();
     } else {
@@ -153,19 +161,6 @@ class _PostImagePageState extends State<PostImagePage>
     );
   }
 
-  Widget _buildBackButton() {
-    return Align(
-      alignment: Alignment(-0.9, getTopActionIconAlignValue()),
-      child: Padding(
-        padding: const EdgeInsets.all(8),
-        child: IconButton(
-          icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => AppRouter.router.pop(context),
-        ),
-      ),
-    );
-  }
-
   Widget _buildMoreButton(bool useFullsize, bool hasLarge) {
     return Align(
       alignment: Alignment(0.9, getTopActionIconAlignValue()),
@@ -185,6 +180,7 @@ class _PostImagePageState extends State<PostImagePage>
                 case PostAction.viewNormalsize:
                   fullsize.value = false;
                   break;
+                // ignore: no_default_cases
                 default:
               }
             },
@@ -229,6 +225,7 @@ class _PostImagePageState extends State<PostImagePage>
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenAspectRatio = screenWidth / screenHeight;
+
     return notes
         .map(
           (note) => PostNote(

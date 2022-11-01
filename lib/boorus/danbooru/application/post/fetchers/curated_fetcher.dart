@@ -6,18 +6,17 @@ class CuratedPostFetcher implements PostFetcher {
   const CuratedPostFetcher({
     required this.date,
     required this.scale,
+    required this.exploreRepository,
   });
 
   final DateTime date;
   final TimeScale scale;
+  final ExploreRepository exploreRepository;
 
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
     int page,
-  ) async {
-    final posts = await repo.getCuratedPosts(date, page, scale);
-
-    return posts;
-  }
+  ) async =>
+      exploreRepository.getCuratedPosts(date, page, scale);
 }

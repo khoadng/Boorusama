@@ -1,9 +1,5 @@
-// Dart imports:
-import 'dart:math';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
@@ -12,9 +8,9 @@ import 'package:flutter_html/flutter_html.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/common/string_utils.dart';
 import 'package:boorusama/core/application/comment_parser.dart';
 import 'package:boorusama/core/utils.dart';
+import 'source_link.dart';
 
 enum ArtistCommentaryTranlationState {
   original,
@@ -23,9 +19,9 @@ enum ArtistCommentaryTranlationState {
 
 class ArtistSection extends StatefulWidget {
   const ArtistSection({
-    Key? key,
+    super.key,
     required this.post,
-  }) : super(key: key);
+  });
 
   final Post post;
 
@@ -95,108 +91,18 @@ class _ArtistSectionState extends State<ArtistSection> {
   }
 }
 
-class SourceLink extends StatelessWidget {
-  const SourceLink({
-    Key? key,
-    required this.title,
-    required this.url,
-    required this.actionBuilder,
-    required this.name,
-  }) : super(key: key);
-
-  final Widget title;
-  final String? url;
-  final Widget Function() actionBuilder;
-  final String name;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      visualDensity: VisualDensity.compact,
-      title: title,
-      subtitle: InkWell(
-        onLongPress: () =>
-            Clipboard.setData(ClipboardData(text: url.toString()))
-                .then((_) => showSimpleSnackBar(
-                      duration: const Duration(seconds: 1),
-                      context: context,
-                      content: const Text('post.detail.copied').tr(),
-                    )),
-        onTap: () {
-          if (url == null) return;
-          launchExternalUrl(Uri.parse(url!));
-        },
-        child: Text(
-          url.toString(),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: Theme.of(context).textTheme.caption,
-        ),
-      ),
-      leading: CircleAvatar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        child: Center(
-          child: Text(name.getFirstCharacter().toUpperCase()),
-        ),
-      ),
-      trailing: actionBuilder(),
-    );
-  }
-}
-
-class ArtistCommentaryPlaceholder extends StatelessWidget {
-  const ArtistCommentaryPlaceholder({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ListTile(
-          leading: const CircleAvatar(),
-          title: Container(
-            margin: EdgeInsets.only(right: width * 0.4),
-            height: 20,
-            decoration: BoxDecoration(
-                color: Theme.of(context).cardColor,
-                borderRadius: BorderRadius.circular(8)),
-          ),
-        ),
-        ...List.generate(
-          4,
-          (index) => Container(
-            margin: const EdgeInsets.only(bottom: 10),
-            width: width * 0.1 + Random().nextDouble() * width * 0.9,
-            height: 20,
-            decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
 ArtistCommentaryTranlationState getTranslationNextState(
-    ArtistCommentaryTranlationState currentState) {
-  if (currentState == ArtistCommentaryTranlationState.translated) {
-    return ArtistCommentaryTranlationState.original;
-  } else {
-    return ArtistCommentaryTranlationState.translated;
-  }
+  ArtistCommentaryTranlationState currentState,
+) {
+  return currentState == ArtistCommentaryTranlationState.translated
+      ? ArtistCommentaryTranlationState.original
+      : ArtistCommentaryTranlationState.translated;
 }
 
 String getTranslationText(ArtistCommentaryTranlationState currentState) {
-  if (currentState == ArtistCommentaryTranlationState.translated) {
-    return 'post.detail.show_original';
-  } else {
-    return 'post.detail.show_translated';
-  }
+  return currentState == ArtistCommentaryTranlationState.translated
+      ? 'post.detail.show_original'
+      : 'post.detail.show_translated';
 }
 
 String getDescriptionText(
@@ -209,8 +115,10 @@ String getDescriptionText(
   final titleOriginal = artistCommentary.originalTitle != ''
       ? '<h2>${artistCommentary.originalTitle}</h2>'
       : '';
+
   return parseTextToHtml(
-      currentState == ArtistCommentaryTranlationState.translated
-          ? '$titleTranslated${artistCommentary.translatedDescription}'
-          : '$titleOriginal${artistCommentary.originalDescription}');
+    currentState == ArtistCommentaryTranlationState.translated
+        ? '$titleTranslated${artistCommentary.translatedDescription}'
+        : '$titleOriginal${artistCommentary.originalDescription}',
+  );
 }

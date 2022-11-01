@@ -12,11 +12,13 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
-    Key? key,
+    super.key,
     required this.onHistoryTap,
-  }) : super(key: key);
+    required this.onHistoryRemoved,
+  });
 
   final ValueChanged<String> onHistoryTap;
+  final void Function(String item) onHistoryRemoved;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +29,16 @@ class SearchHistorySection extends StatelessWidget {
           if (state.status == LoadStatus.success)
             ..._buildHistories(context, state.data!)
           else
-            const SizedBox.shrink()
+            const SizedBox.shrink(),
         ],
       ),
     );
   }
 
   List<Widget> _buildHistories(
-      BuildContext context, List<SearchHistory> histories) {
+    BuildContext context,
+    List<SearchHistory> histories,
+  ) {
     final widgets = <Widget>[];
 
     final historyTiles = histories
@@ -42,6 +46,11 @@ class SearchHistorySection extends StatelessWidget {
           (item) => ListTile(
             visualDensity: VisualDensity.compact,
             title: Text(item.query),
+            contentPadding: const EdgeInsets.only(left: 16),
+            trailing: IconButton(
+              onPressed: () => onHistoryRemoved(item.query),
+              icon: const Icon(Icons.close),
+            ),
             onTap: () => onHistoryTap(item.query),
           ),
         )
@@ -61,9 +70,8 @@ class SearchHistorySection extends StatelessWidget {
                   ),
             ),
             TextButton(
-              onPressed: () => ReadContext(context)
-                  .read<SearchHistoryCubit>()
-                  .clearHistory(),
+              onPressed: () =>
+                  context.read<SearchHistoryCubit>().clearHistory(),
               child: const Text('search.history.clear').tr(),
             ),
           ],
@@ -72,12 +80,13 @@ class SearchHistorySection extends StatelessWidget {
       widgets
         ..insert(0, header)
         ..insert(
-            0,
-            const Divider(
-              thickness: 1,
-              indent: 10,
-              endIndent: 10,
-            ));
+          0,
+          const Divider(
+            thickness: 1,
+            indent: 10,
+            endIndent: 10,
+          ),
+        );
     }
 
     return widgets;

@@ -29,9 +29,10 @@ void main() {
     const str = 'bar';
     expect(
       str.replaceAtIndexWhen(
-          condition: (value) => value.getLastCharacter() == 'r',
-          indexSelector: (value) => value.length - 1,
-          newChar: 'T'),
+        condition: (value) => value.getLastCharacter() == 'r',
+        indexSelector: (value) => value.length - 1,
+        newChar: 'T',
+      ),
       'baT',
     );
   });

@@ -12,9 +12,9 @@ import 'package:boorusama/core/core.dart';
 
 class EmbeddedWebViewWebm extends StatefulWidget {
   const EmbeddedWebViewWebm({
-    Key? key,
+    super.key,
     required this.videoHtml,
-  }) : super(key: key);
+  });
 
   final String videoHtml;
 

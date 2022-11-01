@@ -7,17 +7,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_page.dart';
 import 'reply_header.dart';
 
 class CommentBox extends StatefulWidget {
   const CommentBox({
-    Key? key,
+    super.key,
     required this.commentReply,
     required this.isEditing,
     required this.postId,
     required this.focus,
-  }) : super(key: key);
+  });
 
   final ValueNotifier<CommentData?> commentReply;
   final ValueNotifier<bool> isEditing;
@@ -58,10 +59,7 @@ class _CommentBoxState extends State<CommentBox> {
         decoration: const BoxDecoration(
           border: Border(top: BorderSide(color: Colors.grey)),
         ),
-        padding: const EdgeInsets.only(
-          left: 12,
-          right: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,10 +83,11 @@ class _CommentBoxState extends State<CommentBox> {
                     }
 
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => CommentCreatePage(
-                              postId: widget.postId,
-                              initialContent: initialContent,
-                            )));
+                      builder: (context) => CommentCreatePage(
+                        postId: widget.postId,
+                        initialContent: initialContent,
+                      ),
+                    ));
                     widget.isEditing.value = false;
                   },
                 ),
@@ -109,8 +108,8 @@ class _CommentBoxState extends State<CommentBox> {
                       padding: const EdgeInsets.symmetric(vertical: 6),
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(50),
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(50)),
                           ),
                         ),
                         onPressed: value.text.isEmpty

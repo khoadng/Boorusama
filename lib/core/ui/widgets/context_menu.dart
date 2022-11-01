@@ -6,8 +6,8 @@ class ContextMenu<T> extends StatefulWidget {
     required this.items,
     required this.onSelected,
     required this.child,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   final List<PopupMenuEntry<T>> items;
   final void Function(T value) onSelected;

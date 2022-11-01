@@ -10,7 +10,10 @@ void rethrowError(Object error) {
       throw BooruError(error: AppError(type: AppErrorType.cannotReachServer));
     } else {
       throw BooruError(
-          error: ServerError(httpStatusCode: error.response?.statusCode));
+        error: ServerError(
+          httpStatusCode: error.response?.statusCode,
+        ),
+      );
     }
   } else {
     throw BooruError(error: AppError(type: AppErrorType.failedToParseJSON));

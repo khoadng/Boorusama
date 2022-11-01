@@ -14,20 +14,20 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/application/post/fetchers/pool_post_fetcher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
   const PoolDetailPage({
-    Key? key,
+    super.key,
     required this.pool,
     required this.postIds,
-  }) : super(key: key);
+  });
 
   final Pool pool;
   final Queue<int> postIds;
@@ -44,6 +44,22 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('pool.pool').tr(),
+        actions: [
+          IconButton(
+            onPressed: () {
+              AppRouter.router.navigateTo(
+                context,
+                '/bulk_download',
+                routeSettings: RouteSettings(
+                  arguments: [
+                    ['pool:${widget.pool.id}'],
+                  ],
+                ),
+              );
+            },
+            icon: const Icon(Icons.download),
+          ),
+        ],
       ),
       body: SafeArea(
         child: BlocProvider(
@@ -57,7 +73,8 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
             ),
           child: BlocBuilder<PostBloc, PostState>(
             builder: (context, state) {
-              return InfiniteLoadList(
+              return InfiniteLoadListScrollView(
+                isLoading: state.loading,
                 refreshController: refreshController,
                 enableRefresh: false,
                 enableLoadMore: state.hasMore,
@@ -69,63 +86,45 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
                         ),
                       ),
                     ),
-                builder: (context, controller) => CustomScrollView(
-                  controller: controller,
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: ListTile(
-                        title: Text(
-                          widget.pool.name.removeUnderscoreWithSpace(),
-                          style: Theme.of(context).textTheme.headline6!,
-                        ),
-                        subtitle: Text(
-                            '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                sliverBuilder: (controller) => [
+                  SliverToBoxAdapter(
+                    child: ListTile(
+                      title: Text(
+                        widget.pool.name.removeUnderscoreWithSpace(),
+                        style: Theme.of(context).textTheme.headline6,
+                      ),
+                      subtitle: Text(
+                        '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
                           widget.pool.updatedAt,
                           locale: Localizations.localeOf(context).languageCode,
-                        )}'),
+                        )}',
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: BlocBuilder<PoolDescriptionBloc,
-                          PoolDescriptionState>(
-                        builder: (context, state) {
-                          if (state.status == LoadStatus.success) {
-                            return Html(
-                              onLinkTap: (url, context, attributes, element) =>
-                                  _onHtmlLinkTapped(attributes, url,
-                                      state.descriptionEndpointRefUrl),
-                              data: state.description,
-                            );
-                          } else {
-                            return const SizedBox.shrink();
-                          }
-                        },
-                      ),
-                    ),
-                    HomePostGrid(
-                      controller: controller,
-                      usePlaceholder: false,
-                    ),
-                    BlocBuilder<PostBloc, PostState>(
+                  ),
+                  SliverToBoxAdapter(
+                    child:
+                        BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
                       builder: (context, state) {
-                        if (state.status == LoadStatus.loading) {
-                          return const SliverPadding(
-                            padding: EdgeInsets.only(bottom: 20, top: 60),
-                            sliver: SliverToBoxAdapter(
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          );
-                        } else {
-                          return const SliverToBoxAdapter(
-                            child: SizedBox.shrink(),
-                          );
-                        }
+                        return state.status == LoadStatus.success
+                            ? Html(
+                                onLinkTap:
+                                    (url, context, attributes, element) =>
+                                        _onHtmlLinkTapped(
+                                  attributes,
+                                  url,
+                                  state.descriptionEndpointRefUrl,
+                                ),
+                                data: state.description,
+                              )
+                            : const SizedBox.shrink();
                       },
                     ),
-                  ],
-                ),
+                  ),
+                  HomePostGrid(
+                    controller: controller,
+                    usePlaceholder: false,
+                  ),
+                ],
               );
             },
           ),
@@ -155,6 +154,7 @@ void _onHtmlLinkTapped(
       Uri.parse('$endpoint$url'),
       mode: LaunchMode.inAppWebView,
     );
+    // ignore: no-empty-block
   } else if (att.contains('dtext-post-search-link')) {
 // AppRouter.router.navigateTo(
 //             context,

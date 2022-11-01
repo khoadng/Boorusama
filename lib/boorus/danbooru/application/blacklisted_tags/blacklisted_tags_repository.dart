@@ -24,7 +24,7 @@ class BlacklistedTagsRepository {
 
     if (cache.isEmpty) return [];
 
-    if (cache.length == 1 && cache[0] == '') return [];
+    if (cache.length == 1 && cache.first == '') return [];
 
     _cache = cache;
 
@@ -41,9 +41,11 @@ class BlacklistedTagsRepository {
         tagsToTagString(tags),
       );
       _cache = tags;
+
       return true;
     } catch (e) {
       _cache = null;
+
       return false;
     }
   }

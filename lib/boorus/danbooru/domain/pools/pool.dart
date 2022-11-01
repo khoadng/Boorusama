@@ -64,7 +64,7 @@ class Pool extends Equatable {
         postCount,
         name,
         createdAt,
-        updatedAt
+        updatedAt,
       ];
 }
 

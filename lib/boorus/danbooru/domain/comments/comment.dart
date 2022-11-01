@@ -70,3 +70,6 @@ class Comment extends Equatable {
         isDeleted,
       ];
 }
+
+List<Comment> Function(List<Comment> comments) filterDeleted() =>
+    (comments) => comments.where((e) => !e.isDeleted).toList();

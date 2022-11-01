@@ -10,30 +10,34 @@ void main() {
     test('italic', () => expect(italic('[i]foo[/i]'), '<em>foo</em>'));
     test('underline', () => expect(underline('[u]foo[/u]'), '<u>foo</u>'));
     test(
-        'strikethrough',
-        () => expect(
-              strikethrough('[s]foo[/s]'),
-              '<s>foo</s>',
-            ));
+      'strikethrough',
+      () => expect(
+        strikethrough('[s]foo[/s]'),
+        '<s>foo</s>',
+      ),
+    );
     test(
-        'link with custom text',
-        () => expect(
-              linkCustomText('"Foo":[https://foo.com]'),
-              '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
-            ));
+      'link with custom text',
+      () => expect(
+        linkCustomText('"Foo":[https://foo.com]'),
+        '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
+      ),
+    );
     test(
-        'link with custom text, no brackets variant',
-        () => expect(
-              linkCustomTextNoBrackets('"Foo":https://foo.com'),
-              '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
-            ));
+      'link with custom text, no brackets variant',
+      () => expect(
+        linkCustomTextNoBrackets('"Foo":https://foo.com'),
+        '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
+      ),
+    );
 
     test(
-        'link with markdown text',
-        () => expect(
-              linkMarkdownStyle('[https://foo.com](Foo)'),
-              '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
-            ));
+      'link with markdown text',
+      () => expect(
+        linkMarkdownStyle('[https://foo.com](Foo)'),
+        '<a href="https://foo.com" style="text-decoration:none">Foo</a>',
+      ),
+    );
 
     test('multiple items', () {
       const text = '''

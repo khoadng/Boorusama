@@ -23,6 +23,7 @@ extension StringX on String {
     for (final f in funcs) {
       t = f(t);
     }
+
     return t;
   }
 }

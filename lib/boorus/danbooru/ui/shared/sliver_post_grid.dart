@@ -10,34 +10,29 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/image_grid_item.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
-    required int crossAxisCount,
-    required double mainAxisSpacing,
-    required double crossAxisSpacing,
-    required double childAspectRatio,
-    double? mainAxisExtent,
-  }) : super(
-          childAspectRatio: childAspectRatio,
-          crossAxisCount: crossAxisCount,
-          mainAxisExtent: mainAxisExtent,
-          crossAxisSpacing: crossAxisSpacing,
-          mainAxisSpacing: mainAxisSpacing,
-        );
+    required super.crossAxisCount,
+    required super.mainAxisSpacing,
+    required super.crossAxisSpacing,
+    required super.childAspectRatio,
+    super.mainAxisExtent,
+  });
   factory SliverPostGridDelegate.normal(double spacing, ScreenSize size) =>
       SliverPostGridDelegate(
         childAspectRatio: size != ScreenSize.small ? 0.9 : 0.65,
@@ -65,12 +60,13 @@ class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
 int displaySizeToGridCountWeight(ScreenSize size) {
   if (size == ScreenSize.small) return 1;
   if (size == ScreenSize.medium) return 2;
+
   return 3;
 }
 
 class SliverPostGrid extends HookWidget {
   const SliverPostGrid({
-    Key? key,
+    super.key,
     required this.posts,
     required this.scrollController,
     required this.onFavoriteUpdated,
@@ -80,7 +76,7 @@ class SliverPostGrid extends HookWidget {
     this.gridSize = GridSize.normal,
     this.borderRadius,
     this.postAnnotationBuilder,
-  }) : super(key: key);
+  });
 
   final List<PostData> posts;
   final AutoScrollController scrollController;
@@ -100,14 +96,18 @@ class SliverPostGrid extends HookWidget {
       PaintingBinding.instance.imageCache.clearLiveImages();
     }));
 
-    useEffect(() {
-      return () => timer.value.cancel();
-    }, []);
+    useEffect(
+      () {
+        return () => timer.value.cancel();
+      },
+      [],
+    );
 
     // Clear live image cache everytime this widget built
     useEffect(() {
       PaintingBinding.instance.imageCache.clearLiveImages();
 
+      // ignore: no-empty-block
       return () {};
     });
 
@@ -117,237 +117,166 @@ class SliverPostGrid extends HookWidget {
               current.settings.imageBorderRadius ||
           previous.settings.imageGridSpacing !=
               current.settings.imageGridSpacing ||
-          previous.settings.imageQuality != current.settings.imageQuality,
+          previous.settings.imageQuality != current.settings.imageQuality ||
+          previous.settings.imageListType != current.settings.imageListType,
       builder: (context, state) {
-        return SliverGrid(
-          gridDelegate: gridSizeToGridDelegate(
-            size: gridSize,
-            spacing: state.settings.imageGridSpacing,
-            screenWidth: MediaQuery.of(context).size.width,
-          ),
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final post = posts[index];
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Expanded(
-                    child: SliverPostGridItem(
-                      postData: post,
-                      index: index,
-                      borderRadius: BorderRadius.circular(
-                          state.settings.imageBorderRadius),
-                      gridSize: gridSize,
-                      scrollController: scrollController,
-                      imageQuality: state.settings.imageQuality,
-                      onTap: onTap,
-                      onFavoriteUpdated: onFavoriteUpdated,
-                    ),
-                  ),
-                  postAnnotationBuilder?.call(context, post.post, index) ??
-                      const SizedBox.shrink(),
-                ],
-              );
-            },
-            childCount: posts.length,
-          ),
-        );
-      },
-    );
-  }
-}
+        Widget buildItem(
+          int index, {
+          required bool legacy,
+        }) {
+          final post = posts[index];
 
-class SliverPostGridItem extends StatelessWidget {
-  const SliverPostGridItem({
-    Key? key,
-    required this.postData,
-    required this.index,
-    required this.borderRadius,
-    required this.gridSize,
-    this.onTap,
-    required this.imageQuality,
-    required this.scrollController,
-    required this.onFavoriteUpdated,
-  }) : super(key: key);
-
-  final PostData postData;
-  final int index;
-  final AutoScrollController scrollController;
-  final void Function(Post post, int index)? onTap;
-  final GridSize gridSize;
-  final BorderRadius? borderRadius;
-  final ImageQuality imageQuality;
-  final void Function(int postId, bool value) onFavoriteUpdated;
-
-  Post get post => postData.post;
-
-  @override
-  Widget build(BuildContext context) {
-    return AutoScrollTag(
-      index: index,
-      controller: scrollController,
-      key: ValueKey(index),
-      child: _buildImage(context),
-    );
-  }
-
-  Widget _buildOverlayIcon() {
-    return IgnorePointer(
-      child: Wrap(
-        spacing: 1,
-        children: [
-          if (post.isAnimated)
-            const _OverlayIcon(icon: Icons.play_circle_outline, size: 20),
-          if (post.isTranslated)
-            const _OverlayIcon(icon: Icons.g_translate_outlined, size: 20),
-          if (post.hasComment)
-            const _OverlayIcon(icon: Icons.comment, size: 20),
-          if (post.hasParentOrChildren)
-            const _OverlayIcon(icon: FontAwesomeIcons.images, size: 16),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImage(BuildContext gridContext) {
-    return CupertinoContextMenu(
-      previewBuilder: (context, animation, child) => PostImage(
-        imageUrl: getImageUrlForDisplay(
-            post,
-            getImageQuality(
-              size: gridSize,
-              presetImageQuality: imageQuality,
-            )),
-        placeholderUrl: post.previewImageUrl,
-        fit: BoxFit.contain,
-      ),
-      actions: [
-        DownloadProviderWidget(
-          builder: (context, download) => CupertinoContextMenuAction(
-            trailingIcon: Icons.download,
-            onPressed: () {
-              Navigator.of(context).pop();
-              download(post);
-            },
-            child: const Text('download.download').tr(),
-          ),
-        ),
-        FutureBuilder<Account>(
-          future: gridContext.read<AccountRepository>().get(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData && snapshot.data! != Account.empty) {
-              return CupertinoContextMenuAction(
-                trailingIcon: postData.isFavorited
-                    ? Icons.favorite
-                    : Icons.favorite_outline,
-                onPressed: () async {
-                  Navigator.of(context).pop();
-
-                  final action = postData.isFavorited
-                      ? context
-                          .read<FavoritePostRepository>()
-                          .removeFromFavorites(post.id)
-                      : context
-                          .read<FavoritePostRepository>()
-                          .addToFavorites(post.id);
-
-                  final success = await action;
-                  final successMsg = postData.isFavorited
-                      ? 'favorites.unfavorited'
-                      : 'favorites.favorited';
-                  final failMsg = postData.isFavorited
-                      ? 'favorites.fail_to_unfavorite'
-                      : 'favorites.fail_to_favorite';
-
-                  if (success) {
-                    onFavoriteUpdated.call(post.id, !postData.isFavorited);
-                    showSimpleSnackBar(
-                      context: gridContext,
-                      content: Text(successMsg).tr(),
-                      duration: const Duration(seconds: 1),
-                    );
-                  } else {
-                    showSimpleSnackBar(
-                      context: gridContext,
-                      content: Text(failMsg).tr(),
-                      duration: const Duration(seconds: 2),
-                    );
-                  }
-                },
-                child: Text(postData.isFavorited
-                        ? 'favorites.unfavorite'
-                        : 'favorites.favorite')
-                    .tr(),
-              );
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
-        if (post.isTranslated)
-          CupertinoContextMenuAction(
-            trailingIcon: Icons.translate,
-            onPressed: () {
-              Navigator.of(gridContext).pop();
-              AppRouter.router.navigateTo(
-                gridContext,
-                '/posts/image',
-                routeSettings: RouteSettings(arguments: [post]),
-                transition: TransitionType.material,
-              );
-            },
-            child: const Text('post.quick_preview.view_notes').tr(),
-          ),
-      ],
-      child: GestureDetector(
-        onTap: () => onTap?.call(post, index),
-        child: Stack(
-          children: [
-            PostImage(
-              imageUrl: getImageUrlForDisplay(
-                  post,
-                  getImageQuality(
-                    size: gridSize,
-                    presetImageQuality: imageQuality,
-                  )),
-              placeholderUrl: post.previewImageUrl,
-              borderRadius: borderRadius,
+          return ImageGridItem(
+            autoScrollOptions: AutoScrollOptions(
+              controller: scrollController,
+              index: index,
             ),
-            Padding(
-              padding: const EdgeInsets.only(top: 1, left: 1),
-              child: _buildOverlayIcon(),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
+            borderRadius: BorderRadius.circular(
+              state.settings.imageBorderRadius,
+            ),
+            aspectRatio: post.post.aspectRatio,
+            gridSize: gridSize,
+            imageQuality: state.settings.imageQuality,
+            image: legacy
+                ? BooruImageLegacy(
+                    imageUrl: getImageUrlForDisplay(
+                      post.post,
+                      getImageQuality(
+                        size: gridSize,
+                        presetImageQuality: state.settings.imageQuality,
+                      ),
+                    ),
+                    placeholderUrl: post.post.previewImageUrl,
+                    borderRadius: BorderRadius.circular(
+                      state.settings.imageBorderRadius,
+                    ),
+                  )
+                : null,
+            onTap: () => onTap?.call(post.post, index),
+            isAnimated: post.post.isAnimated,
+            isTranslated: post.post.isTranslated,
+            hasComments: post.post.hasComment,
+            hasParentOrChildren: post.post.hasBothParentAndChildren,
+            previewUrl: getImageUrlForDisplay(
+              post.post,
+              getImageQuality(
+                size: gridSize,
+                presetImageQuality: state.settings.imageQuality,
+              ),
+            ),
+            previewPlaceholderUrl: post.post.previewImageUrl,
+            contextMenuAction: [
+              DownloadProviderWidget(
+                builder: (context, download) => CupertinoContextMenuAction(
+                  trailingIcon: Icons.download,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    download(post.post);
+                  },
+                  child: const Text('download.download').tr(),
+                ),
+              ),
+              FutureBuilder<Account>(
+                future: context.read<AccountRepository>().get(),
+                builder: (context, snapshot) {
+                  return snapshot.hasData && snapshot.data! != Account.empty
+                      ? CupertinoContextMenuAction(
+                          trailingIcon: post.isFavorited
+                              ? Icons.favorite
+                              : Icons.favorite_outline,
+                          onPressed: () async {
+                            Navigator.of(context).pop();
+                            final action = post.isFavorited
+                                ? context
+                                    .read<FavoritePostRepository>()
+                                    .removeFromFavorites(post.post.id)
+                                : context
+                                    .read<FavoritePostRepository>()
+                                    .addToFavorites(post.post.id);
+                            final success = await action;
+                            final successMsg = post.isFavorited
+                                ? 'favorites.unfavorited'
+                                : 'favorites.favorited';
+                            final failMsg = post.isFavorited
+                                ? 'favorites.fail_to_unfavorite'
+                                : 'favorites.fail_to_favorite';
+                            if (success) {
+                              onFavoriteUpdated.call(
+                                post.post.id,
+                                !post.isFavorited,
+                              );
+                              showSimpleSnackBar(
+                                context: context,
+                                content: Text(successMsg).tr(),
+                                duration: const Duration(seconds: 1),
+                              );
+                            } else {
+                              showSimpleSnackBar(
+                                context: context,
+                                content: Text(failMsg).tr(),
+                                duration: const Duration(seconds: 2),
+                              );
+                            }
+                          },
+                          child: Text(post.isFavorited
+                                  ? 'favorites.unfavorite'
+                                  : 'favorites.favorite')
+                              .tr(),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+              if (post.post.isTranslated)
+                CupertinoContextMenuAction(
+                  trailingIcon: Icons.translate,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    AppRouter.router.navigateTo(
+                      context,
+                      '/posts/image',
+                      routeSettings: RouteSettings(arguments: [post]),
+                      transition: TransitionType.material,
+                    );
+                  },
+                  child: const Text('post.quick_preview.view_notes').tr(),
+                ),
+            ],
+          );
+        }
 
-class _OverlayIcon extends StatelessWidget {
-  const _OverlayIcon({
-    Key? key,
-    required this.icon,
-    this.size,
-  }) : super(key: key);
+        switch (state.settings.imageListType) {
+          case ImageListType.standard:
+            return SliverGrid(
+              gridDelegate: gridSizeToGridDelegate(
+                size: gridSize,
+                spacing: state.settings.imageGridSpacing,
+                screenWidth: MediaQuery.of(context).size.width,
+              ),
+              delegate: SliverChildBuilderDelegate(
+                (context, index) => buildItem(index, legacy: true),
+                childCount: posts.length,
+              ),
+            );
 
-  final IconData icon;
-  final double? size;
+          case ImageListType.masonry:
+            final data = gridSizeToGridData(
+              size: gridSize,
+              spacing: state.settings.imageGridSpacing,
+              screenWidth: MediaQuery.of(context).size.width,
+            );
+            final crossAxisCount = data.first;
+            final mainAxisSpacing = data[1];
+            final crossAxisSpacing = data[2];
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 25,
-      height: 25,
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.7),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Icon(
-        icon,
-        color: Colors.white70,
-        size: size,
-      ),
+            return SliverMasonryGrid.count(
+              crossAxisCount: crossAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+              crossAxisSpacing: crossAxisSpacing,
+              childCount: posts.length,
+              itemBuilder: (context, index) => buildItem(index, legacy: false),
+            );
+        }
+      },
     );
   }
 }
@@ -363,7 +292,23 @@ SliverGridDelegate gridSizeToGridDelegate({
       return SliverPostGridDelegate.large(spacing, displaySize);
     case GridSize.small:
       return SliverPostGridDelegate.small(spacing, displaySize);
-    default:
+    case GridSize.normal:
       return SliverPostGridDelegate.normal(spacing, displaySize);
+  }
+}
+
+List<dynamic> gridSizeToGridData({
+  required GridSize size,
+  required double spacing,
+  required double screenWidth,
+}) {
+  final displaySize = screenWidthToDisplaySize(screenWidth);
+  switch (size) {
+    case GridSize.large:
+      return [displaySizeToGridCountWeight(displaySize), spacing, spacing];
+    case GridSize.normal:
+      return [displaySizeToGridCountWeight(displaySize) * 2, spacing, spacing];
+    case GridSize.small:
+      return [displaySizeToGridCountWeight(displaySize) * 3, spacing, spacing];
   }
 }

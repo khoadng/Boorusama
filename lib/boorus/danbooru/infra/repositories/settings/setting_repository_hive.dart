@@ -5,8 +5,8 @@ import 'dart:convert';
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 
 class SettingRepositoryHive implements SettingRepository {
   SettingRepositoryHive(
@@ -27,8 +27,7 @@ class SettingRepositoryHive implements SettingRepository {
 
     final json = jsonDecode(jsonString);
     try {
-      final settings = Settings.fromJson(json);
-      return settings;
+      return Settings.fromJson(json);
     } catch (e) {
       return Settings.defaultSettings;
     }

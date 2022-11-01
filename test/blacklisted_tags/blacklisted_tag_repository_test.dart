@@ -19,15 +19,17 @@ void main() {
     expect(listEquals(expected, tags), isTrue);
   });
 
-  test('get blacklisted tags should return empty if account is empty',
-      () async {
-    final repo =
-        BlacklistedTagsRepository(mockUserRepo(['a']), emptyAccountRepo());
+  test(
+    'get blacklisted tags should return empty if account is empty',
+    () async {
+      final repo =
+          BlacklistedTagsRepository(mockUserRepo(['a']), emptyAccountRepo());
 
-    final expected = await repo.getBlacklistedTags();
+      final expected = await repo.getBlacklistedTags();
 
-    expect(listEquals(expected, []), isTrue);
-  });
+      expect(listEquals(expected, []), isTrue);
+    },
+  );
 
   test('set tags should update blacklisted tag correctly', () async {
     final tags = ['foo', 'bar'];

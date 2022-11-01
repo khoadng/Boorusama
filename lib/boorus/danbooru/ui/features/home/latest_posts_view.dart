@@ -18,13 +18,15 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({
-    Key? key,
+    super.key,
     this.onMenuTap,
-  }) : super(key: key);
+  });
 
   final VoidCallback? onMenuTap;
 
@@ -67,9 +69,9 @@ class _LatestViewState extends State<LatestView> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<PostBloc, PostState>(
-      buildWhen: (previous, current) => !current.hasMore,
       builder: (context, state) {
-        return InfiniteLoadList(
+        return InfiniteLoadListScrollView(
+          isLoading: state.loading,
           extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context.read<PostBloc>().add(PostFetched(
@@ -78,41 +80,22 @@ class _LatestViewState extends State<LatestView> {
               )),
           onRefresh: (controller) {
             _sendRefresh(_selectedTag.value);
-            Future.delayed(const Duration(seconds: 1),
-                () => controller.refreshCompleted());
+            Future.delayed(
+              const Duration(seconds: 1),
+              () => controller.refreshCompleted(),
+            );
           },
           scrollController: _autoScrollController,
-          builder: (context, controller) => CustomScrollView(
-            controller: controller,
-            slivers: [
-              _buildAppBar(context),
-              SliverPadding(
-                padding: const EdgeInsets.only(bottom: 2),
-                sliver: _buildMostSearchTagList(),
-              ),
-              HomePostGrid(
-                controller: controller,
-              ),
-              BlocBuilder<PostBloc, PostState>(
-                builder: (context, state) {
-                  if (state.status == LoadStatus.loading) {
-                    return const SliverPadding(
-                      padding: EdgeInsets.only(bottom: 20, top: 20),
-                      sliver: SliverToBoxAdapter(
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                      ),
-                    );
-                  } else {
-                    return const SliverToBoxAdapter(
-                      child: SizedBox.shrink(),
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+          sliverBuilder: (controller) => [
+            _buildAppBar(context),
+            SliverPadding(
+              padding: const EdgeInsets.only(bottom: 2),
+              sliver: _buildMostSearchTagList(),
+            ),
+            HomePostGrid(
+              controller: controller,
+            ),
+          ],
         );
       },
     );
@@ -134,8 +117,11 @@ class _LatestViewState extends State<LatestView> {
                       onPressed: () => widget.onMenuTap!(),
                     )
                   : null,
-              onTap: () => AppRouter.router.navigateTo(context, '/posts/search',
-                  routeSettings: const RouteSettings(arguments: [''])),
+              onTap: () => AppRouter.router.navigateTo(
+                context,
+                '/posts/search',
+                routeSettings: const RouteSettings(arguments: ['']),
+              ),
             ),
           ),
           if (isDesktopPlatform())
@@ -173,7 +159,8 @@ class _LatestViewState extends State<LatestView> {
         );
       case LoadStatus.failure:
         return const SizedBox.shrink();
-      default:
+      case LoadStatus.initial:
+      case LoadStatus.loading:
         return const TagChipsPlaceholder();
     }
   }
@@ -190,6 +177,7 @@ class _LatestViewState extends State<LatestView> {
           itemCount: searches.length,
           itemBuilder: (context, index) {
             final selected = selectedTag == searches[index].keyword;
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
@@ -209,7 +197,8 @@ class _LatestViewState extends State<LatestView> {
                 ),
                 label: ConstrainedBox(
                   constraints: BoxConstraints(
-                      maxWidth: MediaQuery.of(context).size.width * 0.85),
+                    maxWidth: MediaQuery.of(context).size.width * 0.85,
+                  ),
                   child: Text(
                     searches[index].keyword.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,

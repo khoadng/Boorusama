@@ -6,7 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 
 final languages = {
   'en': 'english',
@@ -21,9 +21,9 @@ String getLanguageText(String value) {
 
 class LanguagePage extends StatelessWidget {
   const LanguagePage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 
@@ -40,23 +40,26 @@ class LanguagePage extends StatelessWidget {
                 )
               : null,
           body: SafeArea(
-              child: Column(
-                  children: languages.keys
-                      .map(
-                        (e) => RadioListTile<String>(
-                          activeColor: Theme.of(context).colorScheme.primary,
-                          groupValue: state.settings.language,
-                          value: e,
-                          title: Text(getLanguageText(e).tr()),
-                          onChanged: (value) {
-                            if (value == null) return;
-                            context.read<SettingsCubit>().update(
-                                state.settings.copyWith(language: value));
-                            context.setLocale(Locale(value));
-                          },
-                        ),
-                      )
-                      .toList())),
+            child: Column(
+              children: languages.keys
+                  .map(
+                    (e) => RadioListTile<String>(
+                      activeColor: Theme.of(context).colorScheme.primary,
+                      groupValue: state.settings.language,
+                      value: e,
+                      title: Text(getLanguageText(e).tr()),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        context
+                            .read<SettingsCubit>()
+                            .update(state.settings.copyWith(language: value));
+                        context.setLocale(Locale(value));
+                      },
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
         );
       },
     );

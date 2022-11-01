@@ -10,10 +10,10 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 
 class PostNote extends StatefulWidget {
   const PostNote({
-    Key? key,
+    super.key,
     required this.coordinate,
     required this.content,
-  }) : super(key: key);
+  });
 
   final NoteCoordinate coordinate;
   final String content;
@@ -35,7 +35,7 @@ class _PostNoteState extends State<PostNote> {
           behavior: HitTestBehavior.opaque,
           onTap: () => _visible.value = false,
         ),
-        child: NoteContainer(
+        child: _NoteContainer(
           coordinate: widget.coordinate,
           visible: visible,
           onTap: () => _visible.value = true,
@@ -46,14 +46,13 @@ class _PostNoteState extends State<PostNote> {
   }
 }
 
-class NoteContainer extends StatelessWidget {
-  const NoteContainer({
-    Key? key,
+class _NoteContainer extends StatelessWidget {
+  const _NoteContainer({
     required this.coordinate,
     required this.visible,
     required this.onTap,
     required this.content,
-  }) : super(key: key);
+  });
 
   final NoteCoordinate coordinate;
   final bool visible;
@@ -95,9 +94,9 @@ class NoteContainer extends StatelessWidget {
           child: Container(
             width: coordinate.width,
             height: coordinate.height,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white54,
-              border: Border.all(color: Colors.red),
+              border: Border.fromBorderSide(BorderSide(color: Colors.red)),
             ),
           ),
         ),

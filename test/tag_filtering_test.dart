@@ -4,10 +4,11 @@ import 'package:test/test.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/search/filter_operator.dart';
+import 'package:boorusama/core/domain/posts/rating.dart';
 
-Post createPost(int id, List<String> tags) => Post(
+Post _createPost(int id, List<String> tags) => Post(
       id: id,
       previewImageUrl: '',
       normalImageUrl: '',
@@ -21,6 +22,7 @@ Post createPost(int id, List<String> tags) => Post(
       width: 1,
       height: 1,
       format: '',
+      md5: '',
       lastCommentAt: null,
       source: null,
       createdAt: DateTime.now(),
@@ -34,7 +36,7 @@ Post createPost(int id, List<String> tags) => Post(
       pixivId: null,
       isBanned: false,
       hasChildren: false,
-      hasParent: false,
+      parentId: null,
       hasLarge: false,
       comments: const [],
       totalComments: 0,
@@ -51,7 +53,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -65,7 +67,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -79,7 +81,7 @@ void main() {
       const FilterItem(
         tag: 'a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -93,7 +95,7 @@ void main() {
       const FilterItem(
         tag: '+a',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -111,7 +113,7 @@ void main() {
       const FilterItem(
         tag: 'b',
         operator: FilterOperator.none,
-      )
+      ),
     ]);
   });
 
@@ -133,7 +135,7 @@ void main() {
       const FilterItem(
         tag: 'c',
         operator: FilterOperator.or,
-      )
+      ),
     ]);
   });
 
@@ -152,7 +154,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['b', 'c'];
@@ -171,7 +173,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['b c', 'b e'];
@@ -191,7 +193,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['a b -c -d'];
@@ -213,7 +215,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['~a ~b -c'];
@@ -243,7 +245,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['a b ~c -d'];
@@ -265,7 +267,7 @@ void main() {
     ];
     final originals = range(tags.length)
         .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
+        .map((e) => _createPost(e, tags[e]))
         .toList();
 
     final blacklisted = ['~a ~b foobar'];
@@ -275,26 +277,28 @@ void main() {
     expect(expected, [3]);
   });
 
-  test('Filter blacklisted tags with non-existed operator should be ignored',
-      () {
-    final tags = [
-      ['a'],
-      ['b'],
-      ['b', 'a'],
-      ['c'],
-      ['c', 'a'],
-      ['c', 'b'],
-      ['c', 'b', 'a'],
-    ];
-    final originals = range(tags.length)
-        .map((e) => e.toInt())
-        .map((e) => createPost(e, tags[e]))
-        .toList();
+  test(
+    'Filter blacklisted tags with non-existed operator should be ignored',
+    () {
+      final tags = [
+        ['a'],
+        ['b'],
+        ['b', 'a'],
+        ['c'],
+        ['c', 'a'],
+        ['c', 'b'],
+        ['c', 'b', 'a'],
+      ];
+      final originals = range(tags.length)
+          .map((e) => e.toInt())
+          .map((e) => _createPost(e, tags[e]))
+          .toList();
 
-    final blacklisted = ['~c %b'];
+      final blacklisted = ['~c %b'];
 
-    final expected =
-        filterRawPost(originals, blacklisted).map((e) => e.id).toList();
-    expect(expected, [0, 1, 2]);
-  });
+      final expected =
+          filterRawPost(originals, blacklisted).map((e) => e.id).toList();
+      expect(expected, [0, 1, 2]);
+    },
+  );
 }

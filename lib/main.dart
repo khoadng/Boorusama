@@ -27,40 +27,43 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
-import 'package:boorusama/boorus/danbooru/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
-import 'package:boorusama/boorus/danbooru/domain/settings/setting_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/download_service_flutter_downloader.dart';
-import 'package:boorusama/boorus/danbooru/infra/services/tag_info_service.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/sentry.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
-import 'boorus/danbooru/domain/settings/settings.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
+import 'core/domain/settings/settings.dart';
 
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [
@@ -80,7 +83,9 @@ void main() async {
   await EasyLocalization.ensureInitialized();
 
   if (!isWeb()) {
-    final dbDirectory = await getApplicationDocumentsDirectory();
+    final dbDirectory = isAndroid()
+        ? await getApplicationDocumentsDirectory()
+        : await getApplicationSupportDirectory();
 
     Hive
       ..init(dbDirectory.path)
@@ -161,6 +166,14 @@ void main() async {
     deviceInfo,
     flutterLocalNotificationsPlugin,
   );
+  final bulkDownloader = BulkDownloader<Post>(
+    idSelector: (item) => item.id,
+    downloadUrlSelector: (item) => item.downloadUrl,
+    fileNameGenerator: Md5OnlyFileNameGenerator(),
+    deviceInfo: deviceInfo,
+  );
+
+  await bulkDownloader.init();
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
@@ -182,6 +195,9 @@ void main() async {
             RepositoryProvider.value(value: deviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
+            RepositoryProvider<BulkDownloader<Post>>.value(
+              value: bulkDownloader,
+            ),
             RepositoryProvider.value(value: userMetatagRepo),
           ],
           child: MultiBlocProvider(
@@ -230,21 +246,34 @@ void main() async {
                   final api = state.api;
 
                   final popularSearchRepo = PopularSearchRepositoryApi(
-                      accountRepository: accountRepo, api: api);
+                    accountRepository: accountRepo,
+                    api: api,
+                  );
 
                   final tagRepo = TagRepositoryApi(api, accountRepo);
 
                   final artistRepo = ArtistRepositoryApi(api: api);
 
                   final profileRepo = ProfileRepositoryApi(
-                      accountRepository: accountRepo, api: api);
+                    accountRepository: accountRepo,
+                    api: api,
+                  );
 
                   final postRepo = PostRepositoryApi(api, accountRepo);
+
+                  final exploreRepo = ExploreRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                    postRepository: postRepo,
+                  );
 
                   final commentRepo = CommentRepositoryApi(api, accountRepo);
 
                   final userRepo = UserRepositoryApi(
-                      api, accountRepo, tagInfo.defaultBlacklistedTags);
+                    api,
+                    accountRepo,
+                    tagInfo.defaultBlacklistedTags,
+                  );
 
                   final noteRepo = NoteRepositoryApi(api);
 
@@ -279,7 +308,14 @@ void main() async {
                   );
 
                   final postVoteRepo = PostVoteApiRepositoryApi(
-                      api: api, accountRepo: accountRepo);
+                    api: api,
+                    accountRepo: accountRepo,
+                  );
+
+                  final postCountRepo = PostCountRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                  );
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
@@ -295,7 +331,8 @@ void main() async {
                     accountRepository: accountRepo,
                   );
                   final artistCommentaryBloc = ArtistCommentaryBloc(
-                      artistCommentaryRepository: artistCommentaryRepo);
+                    artistCommentaryRepository: artistCommentaryRepo,
+                  );
                   final accountCubit =
                       AccountCubit(accountRepository: accountRepo)
                         ..getCurrentAccount();
@@ -304,8 +341,9 @@ void main() async {
                     profileRepository: profileRepo,
                   )..logIn();
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
-                      accountRepository: accountRepo,
-                      blacklistedTagsRepository: blacklistedTagRepo);
+                    accountRepository: accountRepo,
+                    blacklistedTagsRepository: blacklistedTagRepo,
+                  );
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
                       category: PoolCategory.series,
@@ -328,47 +366,68 @@ void main() async {
 
                   final wikiBloc = WikiBloc(
                     wikiRepository: WikiCacher(
-                        cache: LruCacher(capacity: 200), repo: wikiRepo),
+                      cache: LruCacher(capacity: 200),
+                      repo: wikiRepo,
+                    ),
                   );
 
                   final noteBloc = NoteBloc(
-                      noteRepository: NoteCacher(
-                    cache: LruCacher(capacity: 100),
-                    repo: noteRepo,
-                  ));
+                    noteRepository: NoteCacher(
+                      cache: LruCacher(capacity: 100),
+                      repo: noteRepo,
+                    ),
+                  );
 
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
                       RepositoryProvider<ProfileRepository>.value(
-                          value: profileRepo),
+                        value: profileRepo,
+                      ),
                       RepositoryProvider<FavoritePostRepository>.value(
-                          value: favoriteRepo),
+                        value: favoriteRepo,
+                      ),
                       RepositoryProvider<AccountRepository>.value(
-                          value: accountRepo),
+                        value: accountRepo,
+                      ),
                       RepositoryProvider<SettingRepository>.value(
-                          value: settingRepository),
+                        value: settingRepository,
+                      ),
                       RepositoryProvider<NoteRepository>.value(value: noteRepo),
                       RepositoryProvider<PostRepository>.value(value: postRepo),
                       RepositoryProvider<SearchHistoryRepository>.value(
-                          value: searchHistoryRepo),
+                        value: searchHistoryRepo,
+                      ),
                       RepositoryProvider<PoolRepository>.value(value: poolRepo),
                       RepositoryProvider<UserRepository>.value(value: userRepo),
                       RepositoryProvider<BlacklistedTagsRepository>.value(
-                          value: blacklistedTagRepo),
+                        value: blacklistedTagRepo,
+                      ),
                       RepositoryProvider<ArtistRepository>.value(
-                          value: artistRepo),
+                        value: artistRepo,
+                      ),
                       RepositoryProvider<AutocompleteRepository>.value(
-                          value: autocompleteRepo),
+                        value: autocompleteRepo,
+                      ),
                       RepositoryProvider<RelatedTagRepository>.value(
-                          value: relatedTagRepo),
+                        value: relatedTagRepo,
+                      ),
                       RepositoryProvider<WikiRepository>.value(value: wikiRepo),
                       RepositoryProvider<ArtistCommentaryRepository>.value(
-                          value: artistCommentaryRepo),
+                        value: artistCommentaryRepo,
+                      ),
                       RepositoryProvider<PostVoteRepository>.value(
-                          value: postVoteRepo),
+                        value: postVoteRepo,
+                      ),
                       RepositoryProvider<PoolDescriptionRepository>.value(
-                          value: poolDescriptionRepo),
+                        value: poolDescriptionRepo,
+                      ),
+                      RepositoryProvider<ExploreRepository>.value(
+                        value: exploreRepo,
+                      ),
+                      RepositoryProvider<PostCountRepository>.value(
+                        value: postCountRepo,
+                      ),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -381,8 +440,9 @@ void main() async {
                         BlocProvider.value(value: authenticationCubit),
                         BlocProvider.value(value: blacklistedTagsBloc),
                         BlocProvider(
-                            create: (context) =>
-                                ThemeBloc(initialTheme: settings.themeMode)),
+                          create: (context) =>
+                              ThemeBloc(initialTheme: settings.themeMode),
+                        ),
                         BlocProvider.value(value: poolOverviewBloc),
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: artistBloc),
@@ -409,7 +469,8 @@ void main() async {
                                 current.settings.themeMode,
                             listener: (context, state) {
                               context.read<ThemeBloc>().add(ThemeChanged(
-                                  theme: state.settings.themeMode));
+                                    theme: state.settings.themeMode,
+                                  ));
                             },
                           ),
                         ],

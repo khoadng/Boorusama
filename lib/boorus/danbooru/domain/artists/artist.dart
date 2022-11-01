@@ -1,5 +1,8 @@
-class Artist {
-  Artist({
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+class Artist extends Equatable {
+  const Artist({
     required this.id,
     required this.createdAt,
     required this.updatedAt,
@@ -11,15 +14,32 @@ class Artist {
   });
 
   factory Artist.empty() => Artist(
-        createdAt: DateTime.now(),
+        createdAt: DateTime(1),
         id: 0,
         name: '',
         groupName: '',
         isBanned: false,
         isDeleted: false,
-        otherNames: [],
-        updatedAt: DateTime.now(),
+        otherNames: const [],
+        updatedAt: DateTime(1),
       );
+
+  Artist copyWith({
+    int? id,
+    String? name,
+    List<String>? otherNames,
+  }) =>
+      Artist(
+        id: id ?? this.id,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        isBanned: isBanned,
+        groupName: groupName,
+        isDeleted: isDeleted,
+        otherNames: otherNames ?? this.otherNames,
+        name: name ?? this.name,
+      );
+
   final int id;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -28,4 +48,16 @@ class Artist {
   final bool isBanned;
   final List<String> otherNames;
   final String name;
+
+  @override
+  List<Object?> get props => [
+        id,
+        createdAt,
+        updatedAt,
+        isDeleted,
+        groupName,
+        isBanned,
+        otherNames,
+        name,
+      ];
 }

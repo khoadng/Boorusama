@@ -6,11 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 enum _Action {
   downloadAll,
@@ -18,9 +17,9 @@ enum _Action {
 
 class FavoritesPage extends StatelessWidget {
   const FavoritesPage({
-    Key? key,
+    super.key,
     required this.username,
-  }) : super(key: key);
+  });
 
   final String username;
 
@@ -42,7 +41,6 @@ class FavoritesPage extends StatelessWidget {
                         // ignore: avoid_function_literals_in_foreach_calls
                         state.posts.forEach((p) => download(p.post));
                         break;
-                      default:
                     }
                   },
                   itemBuilder: (context) => [
@@ -63,9 +61,9 @@ class FavoritesPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: BlocBuilder<PostBloc, PostState>(
-          buildWhen: (previous, current) => !current.hasMore,
           builder: (context, state) {
-            return InfiniteLoadList(
+            return InfiniteLoadListScrollView(
+              isLoading: state.loading,
               enableLoadMore: state.hasMore,
               onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                     tags: 'ordfav:$username',
@@ -76,33 +74,19 @@ class FavoritesPage extends StatelessWidget {
                       tag: 'ordfav:$username',
                       fetcher: SearchedPostFetcher.fromTags('ordfav:$username'),
                     ));
-                Future.delayed(const Duration(milliseconds: 500),
-                    () => controller.refreshCompleted());
+                Future.delayed(
+                  const Duration(milliseconds: 500),
+                  () => controller.refreshCompleted(),
+                );
               },
-              builder: (context, controller) => CustomScrollView(
-                controller: controller,
-                slivers: [
-                  HomePostGrid(controller: controller),
-                  BlocBuilder<PostBloc, PostState>(
-                    builder: (context, state) {
-                      if (state.status == LoadStatus.loading) {
-                        return const SliverPadding(
-                          padding: EdgeInsets.only(bottom: 20, top: 20),
-                          sliver: SliverToBoxAdapter(
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const SliverToBoxAdapter(
-                          child: SizedBox.shrink(),
-                        );
-                      }
-                    },
+              sliverBuilder: (controller) => [
+                const SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 5,
                   ),
-                ],
-              ),
+                ),
+                HomePostGrid(controller: controller),
+              ],
             );
           },
         ),

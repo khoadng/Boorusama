@@ -8,13 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {
   const SearchButton({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,12 +54,9 @@ bool _shouldShowSearchButton(
   List<TagSearchItem> selectedTags,
 ) {
   if (displayState == DisplayState.options) {
-    if (selectedTags.isEmpty) {
-      return false;
-    } else {
-      return true;
-    }
+    return selectedTags.isNotEmpty;
   }
   if (displayState == DisplayState.suggestion) return false;
+
   return false;
 }

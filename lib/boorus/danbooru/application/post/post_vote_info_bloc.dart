@@ -6,8 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/user_repository.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 
-class PostVoteInfoState extends Equatable {
+class PostVoteInfoState extends Equatable
+    implements InfiniteLoadState<Voter, PostVoteInfoState> {
   const PostVoteInfoState({
     required this.upvoters,
     required this.page,
@@ -20,15 +22,21 @@ class PostVoteInfoState extends Equatable {
   factory PostVoteInfoState.initial() => const PostVoteInfoState(
         upvoters: [],
         page: 1,
-        hasMore: false,
+        hasMore: true,
         refreshing: false,
         loading: false,
       );
 
   final List<Voter> upvoters;
+  @override
+  List<Voter> get data => upvoters;
+  @override
   final int page;
+  @override
   final bool hasMore;
+  @override
   final bool refreshing;
+  @override
   final bool loading;
   final String? error;
 
@@ -58,6 +66,22 @@ class PostVoteInfoState extends Equatable {
         loading,
         error,
       ];
+
+  @override
+  PostVoteInfoState copyLoadState({
+    required int page,
+    required bool hasMore,
+    required bool refreshing,
+    required bool loading,
+    required List<Voter> data,
+  }) =>
+      copyWith(
+        page: page,
+        hasMore: hasMore,
+        refreshing: refreshing,
+        loading: loading,
+        upvoters: [...data],
+      );
 }
 
 abstract class PostVoteInfoEvent extends Equatable {
@@ -98,76 +122,63 @@ class Voter extends Equatable {
   List<Object?> get props => [user, voteTime];
 }
 
-class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState> {
+class PostVoteInfoBloc extends Bloc<PostVoteInfoEvent, PostVoteInfoState>
+    with InfiniteLoadMixin<Voter, PostVoteInfoState> {
   PostVoteInfoBloc({
     required PostVoteRepository postVoteRepository,
     required UserRepository userRepository,
+    List<Voter>? initialVoters,
   }) : super(PostVoteInfoState.initial()) {
     on<PostVoteInfoFetched>(
       (event, emit) async {
-        try {
-          if (state.loading || state.refreshing) return;
+        if (loading || refreshing) return;
 
-          if (event.refresh) {
-            emit(state.copyWith(
-              refreshing: true,
-            ));
-
-            final votes = await postVoteRepository.getAllVotes(event.postId, 1);
-            final voters = await _createVoters(userRepository, votes);
-
-            emit(state.copyWith(
-              refreshing: false,
-              upvoters: voters,
-              page: 1,
-              hasMore: true,
-            ));
-          } else {
-            if (!state.hasMore) return;
-            emit(state.copyWith(loading: true));
-
-            final page = state.page + 1;
-
-            // Fetch votes with post ID
-            final votes =
-                await postVoteRepository.getAllVotes(event.postId, page);
-
-            // Prevent fetching more if next page is empty
-            if (votes.isEmpty) {
-              emit(state.copyWith(
-                loading: false,
-                hasMore: false,
-              ));
-            } else {
-              final voters = await _createVoters(userRepository, votes);
-              emit(state.copyWith(
-                loading: false,
-                upvoters: [...state.upvoters, ...voters],
-                hasMore: true,
-              ));
-            }
-
-            emit(state.copyWith(page: page));
-          }
-        } catch (e) {
-          emit(state.copyWith(error: 'Something went wrong'));
+        if (event.refresh) {
+          await refresh(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            refresh: (page) => postVoteRepository
+                .getAllVotes(event.postId, 1)
+                .then(createVoters(userRepository)),
+            onError: (error, stackTrace) =>
+                emit(state.copyWith(error: 'Something went wrong')),
+          );
+        } else {
+          await fetch(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            fetch: (page) => postVoteRepository
+                .getAllVotes(event.postId, page)
+                .then(createVoters(userRepository)),
+            onError: (error, stackTrace) =>
+                emit(state.copyWith(error: 'Something went wrong')),
+          );
         }
       },
     );
+
+    data = initialVoters ?? [];
   }
 }
 
-Future<List<Voter>> _createVoters(
+Future<List<Voter>> Function(List<PostVote> votes) createVoters(
   UserRepository userRepository,
-  List<PostVote> votes,
-) async {
-  final voteMap = {for (final vote in votes) vote.userId: vote};
+) =>
+    (votes) async {
+      if (votes.isEmpty) {
+        return [];
+      }
 
-  final users = await userRepository
-      .getUsersByIdStringComma(votes.map((e) => e.userId).join(','));
+      final voteMap = {for (final vote in votes) vote.userId: vote};
 
-  final voters =
-      users.map((user) => Voter.create(user, voteMap[user.id]!)).toList();
+      final users = await userRepository
+          .getUsersByIdStringComma(votes.map((e) => e.userId).join(','));
 
-  return voters;
-}
+      return users
+          .map((user) => Voter.create(user, voteMap[user.id]!))
+          .toList();
+    };

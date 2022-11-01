@@ -2,19 +2,20 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'settings_tile.dart';
 
 class GeneralPage extends StatefulWidget {
   const GeneralPage({
-    Key? key,
+    super.key,
     this.hasAppBar = true,
-  }) : super(key: key);
+  });
 
   final bool hasAppBar;
 
@@ -28,7 +29,7 @@ class _GeneralPageState extends State<GeneralPage> {
     return Scaffold(
       appBar: widget.hasAppBar
           ? AppBar(
-              title: const Text('General'),
+              title: const Text('settings.general').tr(),
             )
           : null,
       body: BlocBuilder<SettingsCubit, SettingsState>(
@@ -38,7 +39,7 @@ class _GeneralPageState extends State<GeneralPage> {
               primary: false,
               children: [
                 SettingsTile<BooruType>(
-                  title: const Text('Data source'),
+                  title: const Text('settings.general_data_source').tr(),
                   selectedOption: state.settings.safeMode
                       ? BooruType.safebooru
                       : BooruType.danbooru,
@@ -46,8 +47,9 @@ class _GeneralPageState extends State<GeneralPage> {
                     ..remove(BooruType.testbooru)
                     ..remove(BooruType.unknown),
                   onChanged: (value) => context.read<SettingsCubit>().update(
-                      state.settings
-                          .copyWith(safeMode: value == BooruType.safebooru)),
+                        state.settings
+                            .copyWith(safeMode: value == BooruType.safebooru),
+                      ),
                   optionBuilder: (value) => Text(value.name.sentenceCase),
                 ),
               ],

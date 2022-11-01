@@ -166,7 +166,9 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
   }
 
   Future<List<PoolItem>> poolsToPoolItems(
-      List<Pool> pools, PostRepository postRepository) async {
+    List<Pool> pools,
+    PostRepository postRepository,
+  ) async {
     final poolFiltered =
         pools.where((element) => element.postIds.isNotEmpty).toList();
 
@@ -180,22 +182,19 @@ class PoolBloc extends Bloc<PoolEvent, PoolState> {
       poolCoveridsMap[p.id] = p;
     }
 
-    final poolItems = [
+    return [
       for (final pair in zip([poolCoveridsMap.values.toList(), poolFiltered]))
-        PoolItem(
-          coverUrl: postToCoverUrl(_(pair).item1),
-          pool: _(pair).item2,
-        ),
+        PoolItem(coverUrl: postToCoverUrl(_(pair).item1), pool: _(pair).item2),
     ];
-    return poolItems;
   }
 }
 
 String? postToCoverUrl(Post post) {
   if (post.id == 0) return null;
   if (post.isAnimated) return post.previewImageUrl;
+
   return post.normalImageUrl;
 }
 
 Tuple2<Post, Pool> _(List<Object> pair) =>
-    Tuple2(pair[0] as Post, pair[1] as Pool);
+    Tuple2(pair.first as Post, pair[1] as Pool);

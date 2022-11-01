@@ -8,20 +8,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
-import 'package:boorusama/boorus/danbooru/application/theme/theme.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 
 class RelatedTagHeader extends StatefulWidget {
   const RelatedTagHeader({
-    Key? key,
+    super.key,
     required this.relatedTag,
     required this.theme,
-  }) : super(key: key);
+  });
 
   final RelatedTag relatedTag;
   final ThemeMode theme;
@@ -42,9 +43,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         children: [
-          ...tags
-              .take(10)
-              .map(
+          ...tags.take(10).map(
                 (item) => _RelatedTagButton(
                   backgroundColor: getTagColor(item.category, widget.theme),
                   onPressed: () => context
@@ -57,8 +56,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                     softWrap: false,
                   ),
                 ),
-              )
-              .toList(),
+              ),
           const VerticalDivider(
             indent: 12,
             endIndent: 12,
@@ -71,7 +69,8 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
             ),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).iconTheme.color, backgroundColor: Theme.of(context).cardColor,
+                foregroundColor: Theme.of(context).iconTheme.color,
+                backgroundColor: Theme.of(context).cardColor,
                 side: BorderSide(
                   color: Theme.of(context).hintColor,
                 ),
@@ -116,12 +115,11 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
 
 class _RelatedTagActionSheet extends StatelessWidget {
   const _RelatedTagActionSheet({
-    Key? key,
     required this.relatedTag,
     required this.theme,
     required this.onAddToSearch,
     required this.onOpenWiki,
-  }) : super(key: key);
+  });
 
   final RelatedTag relatedTag;
   final ThemeMode theme;
@@ -136,7 +134,7 @@ class _RelatedTagActionSheet extends StatelessWidget {
           IconButton(
             onPressed: Navigator.of(context).pop,
             icon: const Icon(Icons.close),
-          )
+          ),
         ],
         toolbarHeight: kToolbarHeight * 0.75,
         automaticallyImplyLeading: false,
@@ -148,48 +146,50 @@ class _RelatedTagActionSheet extends StatelessWidget {
           title: Text(
             relatedTag.tags[index].tag.removeUnderscoreWithSpace(),
             style: TextStyle(
-                color: getTagColor(relatedTag.tags[index].category, theme)),
+              color: getTagColor(relatedTag.tags[index].category, theme),
+            ),
           ),
           trailing: PopupMenuButton(
-              padding: const EdgeInsets.all(1),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-              itemBuilder: (context) => [
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      child: ListTile(
-                        visualDensity:
-                            const VisualDensity(horizontal: -4, vertical: -4),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.of(context).pop();
-                          onAddToSearch(relatedTag.tags[index].tag);
-                        },
-                        title: const Text('tag.related.add_to_current_search')
-                            .tr(),
-                        trailing: const FaIcon(
-                          FontAwesomeIcons.plus,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    PopupMenuItem(
-                      padding: EdgeInsets.zero,
-                      child: ListTile(
-                        visualDensity:
-                            const VisualDensity(horizontal: -4, vertical: -4),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          onOpenWiki(relatedTag.tags[index].tag);
-                        },
-                        title: const Text('tag.related.open_wiki').tr(),
-                        trailing: const FaIcon(
-                          FontAwesomeIcons.arrowUpRightFromSquare,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                  ]),
+            padding: const EdgeInsets.all(1),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.of(context).pop();
+                    onAddToSearch(relatedTag.tags[index].tag);
+                  },
+                  title: const Text('tag.related.add_to_current_search').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.plus,
+                    size: 20,
+                  ),
+                ),
+              ),
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  visualDensity:
+                      const VisualDensity(horizontal: -4, vertical: -4),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onOpenWiki(relatedTag.tags[index].tag);
+                  },
+                  title: const Text('tag.related.open_wiki').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.arrowUpRightFromSquare,
+                    size: 20,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         itemCount: relatedTag.tags.length,
       ),
@@ -199,11 +199,10 @@ class _RelatedTagActionSheet extends StatelessWidget {
 
 class _RelatedTagButton extends StatelessWidget {
   const _RelatedTagButton({
-    Key? key,
     required this.backgroundColor,
     required this.onPressed,
     required this.label,
-  }) : super(key: key);
+  });
 
   final Color backgroundColor;
   final VoidCallback onPressed;
@@ -215,8 +214,12 @@ class _RelatedTagButton extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 4),
       child: ElevatedButton.icon(
         style: ElevatedButton.styleFrom(
-          foregroundColor: backgroundColor, padding: const EdgeInsets.only(left: 6, right: 2), backgroundColor: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          foregroundColor: backgroundColor,
+          padding: const EdgeInsets.only(left: 6, right: 2),
+          backgroundColor: Theme.of(context).cardColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
           side: BorderSide(
             color: Theme.of(context).hintColor,
           ),

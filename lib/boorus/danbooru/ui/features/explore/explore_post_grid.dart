@@ -12,10 +12,13 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/core/ui/no_data_box.dart';
 
 class ExplorePostGrid extends StatelessWidget {
   const ExplorePostGrid({
-    Key? key,
+    super.key,
     required this.date,
     required this.scale,
     required this.status,
@@ -26,7 +29,8 @@ class ExplorePostGrid extends StatelessWidget {
     required this.scrollController,
     required this.hasMore,
     required this.headers,
-  }) : super(key: key);
+    required this.isLoading,
+  });
 
   final DateTime date;
   final TimeScale scale;
@@ -37,39 +41,31 @@ class ExplorePostGrid extends StatelessWidget {
   final RefreshController controller;
   final AutoScrollController scrollController;
   final bool hasMore;
+  final bool isLoading;
   final List<Widget> headers;
 
   @override
   Widget build(BuildContext context) {
-    return InfiniteLoadList(
+    return InfiniteLoadListScrollView(
+      isLoading: isLoading,
       enableLoadMore: hasMore,
       scrollController: scrollController,
       refreshController: controller,
       onLoadMore: () => onLoadMore(date, scale),
       onRefresh: (controller) {
         onRefresh(date, scale);
-        Future.delayed(const Duration(milliseconds: 500),
-            () => controller.refreshCompleted());
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () => controller.refreshCompleted(),
+        );
       },
-      builder: (context, controller) => CustomScrollView(
-        controller: controller,
-        slivers: [
-          ...headers.map((header) => SliverToBoxAdapter(child: header)),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
-            sliver: mapLoadStatusToWidget(context, status, controller),
-          ),
-          if (status == LoadStatus.loading)
-            const SliverPadding(
-              padding: EdgeInsets.only(bottom: 20, top: 20),
-              sliver: SliverToBoxAdapter(
-                child: Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ),
-            )
-        ],
-      ),
+      sliverBuilder: (controller) => [
+        ...headers.map((header) => SliverToBoxAdapter(child: header)),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 14),
+          sliver: mapLoadStatusToWidget(context, status, controller),
+        ),
+      ],
     );
   }
 
@@ -84,6 +80,7 @@ class ExplorePostGrid extends StatelessWidget {
       if (posts.isEmpty) {
         return const SliverToBoxAdapter(child: NoDataBox());
       }
+
       return SliverPostGrid(
         posts: posts,
         scrollController: controller,
@@ -101,26 +98,24 @@ class ExplorePostGrid extends StatelessWidget {
             .add(PostFavoriteUpdated(postId: postId, favorite: value)),
       );
     } else if (status == LoadStatus.loading) {
-      if (posts.isEmpty) {
-        return const SliverPostGridPlaceHolder();
-      } else {
-        return SliverPostGrid(
-          posts: posts,
-          scrollController: controller,
-          onTap: (post, index) {
-            goToDetailPage(
-              context: context,
+      return posts.isEmpty
+          ? const SliverPostGridPlaceHolder()
+          : SliverPostGrid(
               posts: posts,
-              initialIndex: index,
               scrollController: controller,
-              postBloc: context.read<PostBloc>(),
+              onTap: (post, index) {
+                goToDetailPage(
+                  context: context,
+                  posts: posts,
+                  initialIndex: index,
+                  scrollController: controller,
+                  postBloc: context.read<PostBloc>(),
+                );
+              },
+              onFavoriteUpdated: (postId, value) => context
+                  .read<PostBloc>()
+                  .add(PostFavoriteUpdated(postId: postId, favorite: value)),
             );
-          },
-          onFavoriteUpdated: (postId, value) => context
-              .read<PostBloc>()
-              .add(PostFavoriteUpdated(postId: postId, favorite: value)),
-        );
-      }
     } else {
       return const SliverToBoxAdapter(
         child: ErrorBox(),

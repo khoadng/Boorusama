@@ -4,69 +4,69 @@ import 'package:test/test.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
-const videoFormat = [
+const _videoFormat = [
   'mp4',
   'webm',
   'zip',
 ];
 
-const animatedFormat = [
-  ...videoFormat,
+const _animatedFormat = [
+  ..._videoFormat,
   'gif',
 ];
 
-const imageFormat = [
+const _imageFormat = [
   'png',
   'jpg',
 ];
 
-const randomFormat = [
+const _randomFormat = [
   'foo',
   'bar',
 ];
 
 void main() {
   group('[video test]', () {
-    test(videoFormat.join(', '), () {
+    test(_videoFormat.join(', '), () {
       final posts =
-          videoFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _videoFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isTrue);
     });
 
-    test(imageFormat.join(', '), () {
+    test(_imageFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isFalse);
     });
 
-    test(randomFormat.join(', '), () {
+    test(_randomFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isVideo), isFalse);
     });
   });
 
   group('[animated test]', () {
-    test(animatedFormat.join(', '), () {
+    test(_animatedFormat.join(', '), () {
       final posts =
-          animatedFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _animatedFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isTrue);
     });
 
-    test(imageFormat.join(', '), () {
+    test(_imageFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isFalse);
     });
 
-    test(randomFormat.join(', '), () {
+    test(_randomFormat.join(', '), () {
       final posts =
-          imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
+          _imageFormat.map((e) => Post.empty().copyWith(format: e)).toList();
 
       expect(posts.every((post) => post.isAnimated), isFalse);
     });
@@ -102,7 +102,7 @@ void main() {
 
   group('[download url]', () {
     test('video format should use normal image url', () {
-      final posts = [...videoFormat].map((e) => Post.empty().copyWith(
+      final posts = [..._videoFormat].map((e) => Post.empty().copyWith(
             format: e,
             normalImageUrl: 'foo',
             fullImageUrl: 'bar',
@@ -115,7 +115,7 @@ void main() {
     });
 
     test('non video format should use full image url', () {
-      final posts = [...imageFormat, 'gif'].map((e) => Post.empty().copyWith(
+      final posts = [..._imageFormat, 'gif'].map((e) => Post.empty().copyWith(
             format: e,
             normalImageUrl: 'foo',
             fullImageUrl: 'bar',
@@ -145,7 +145,7 @@ void main() {
         [5, -10],
       ]
           .map((e) => Post.empty().copyWith(
-                upScore: e[0],
+                upScore: e.first,
                 downScore: e[1],
               ))
           .toList();
@@ -158,7 +158,7 @@ void main() {
         [0, 0],
       ]
           .map((e) => Post.empty().copyWith(
-                upScore: e[0],
+                upScore: e.first,
                 downScore: e[1],
               ))
           .toList();
@@ -211,7 +211,7 @@ void main() {
     test('has both parent and child', () {
       final post = Post.empty().copyWith(
         hasChildren: true,
-        hasParent: true,
+        parentId: 0,
       );
 
       expect(post.hasBothParentAndChildren, isTrue);
@@ -219,12 +219,12 @@ void main() {
 
     test('has parent or child', () {
       final posts = [
-        [true, false],
-        [false, true]
+        [true, null],
+        [false, 0],
       ]
           .map((e) => Post.empty().copyWith(
-                hasChildren: e[0],
-                hasParent: e[1],
+                hasChildren: e.first as bool,
+                parentId: e[1] as int?,
               ))
           .toList();
 
@@ -234,7 +234,6 @@ void main() {
     test('have no parent and child', () {
       final post = Post.empty().copyWith(
         hasChildren: false,
-        hasParent: false,
       );
 
       expect(post.hasParentOrChildren, isFalse);

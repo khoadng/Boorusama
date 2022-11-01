@@ -6,9 +6,9 @@ import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
 
 class RecommendSectionPlaceHolder extends StatelessWidget {
   const RecommendSectionPlaceHolder({
-    Key? key,
+    super.key,
     required this.header,
-  }) : super(key: key);
+  });
 
   final Widget header;
 

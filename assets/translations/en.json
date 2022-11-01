@@ -142,7 +142,8 @@
             "clear": "Clear",
             "recent" : "Recent"
         },
-        "trending" : "Trending"
+        "trending" : "Trending",
+        "remove_all_selected" : "Remove all selected tags"
     },
 
     "pool" : {
@@ -177,6 +178,8 @@
         "appearance" :  "Appearance",
         "general" :  "General",
         "information" : "Information",
+        "changelog" : "Changelog",
+        "general_data_source": "Data source",
         "image_grid" : {
             "image_grid" : "Image grid",
             "grid_size" : {
@@ -240,6 +243,34 @@
 
     "download" : {
         "download" : "Download",
+        "bulk_download" : "Bulk download",
+        "bulk_download_tag_confirmation" : "The below tags will be downloaded",
+        "bulk_download_save_to_folder" : "Save to folder",
+        "bulk_download_merge_images_to_folder" : "Merge images into existing folder",
+        "bulk_download_merge_explanation" : "Disable this option will create a new folder instead",
+        "bulk_download_total_count" : "Total",
+        "bulk_download_done_count" : "Done",
+        "bulk_download_done_confirm" : "Done",
+        "bulk_download_hidden_censored" : "Censored tags",
+        "bulk_download_hidden_banned" : "Removed at the artist's request",
+        "bulk_download_hidden" : "Hidden",
+        "bulk_download_cancel" : "Cancel",
+        "bulk_download_duplicate" : "Duplicate",
+        "bulk_download_invalid_folder_name_error" : "A folder cannot contain any of the following characters: ",
+        "bulk_download_only_download_new_images" : "Only download new images",
+        "bulk_download_stay_on_screen_request" : "Please stay on this screen until all files are downloaded",
+        "bulk_download_folder_select_warning" : "The app can only store files inside public directories <b>({0})</b> in Android 11+. <div>SD cards are also not supported.</div> <div>Please choose another location.</div> <div>This device's version is {1}.</div>",
+        "bulk_download_select_a_folder" : "Select a folder",
+        "bulk_download_found_duplicate" : "Found {} images with the same name. They will be skipped.",
+        "bulk_download_downloaded_counter" : {
+            "one": "{} image downloaded",
+            "other": "{} images downloaded"
+        },
+        "bulk_download_skipped_counter" : {
+            "one": "{} image skipped",
+            "other": "{} images skipped"
+        },
+        "bulk_download_download_more" : "Download more",
         "open_app_settings" : "Open settings",
         "storage_permission_explanation" : "Storage permission is needed to store download files.",
         "alternative_method_reason": "Use this if the default method does not work. This method also has better notification support.",

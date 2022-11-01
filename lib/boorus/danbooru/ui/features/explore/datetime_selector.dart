@@ -11,11 +11,11 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class DateTimeSelector extends StatelessWidget {
   const DateTimeSelector({
-    Key? key,
+    super.key,
     required this.onDateChanged,
     required this.date,
     required this.scale,
-  }) : super(key: key);
+  });
 
   final void Function(DateTime date) onDateChanged;
   final DateTime date;
@@ -33,9 +33,10 @@ class DateTimeSelector extends StatelessWidget {
         ),
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: Theme.of(context).textTheme.headline6!.color, backgroundColor: Theme.of(context).cardColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18),
+            foregroundColor: Theme.of(context).textTheme.headline6!.color,
+            backgroundColor: Theme.of(context).cardColor,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(18)),
             ),
           ),
           onPressed: () async {
@@ -52,7 +53,7 @@ class DateTimeSelector extends StatelessWidget {
           child: Row(
             children: <Widget>[
               Text(DateFormat('MMM d, yyyy').format(date)),
-              const Icon(Icons.arrow_drop_down)
+              const Icon(Icons.arrow_drop_down),
             ],
           ),
         ),

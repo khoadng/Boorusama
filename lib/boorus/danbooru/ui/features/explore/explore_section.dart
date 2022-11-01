@@ -11,11 +11,11 @@ import 'explore_detail_page.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
-    Key? key,
+    super.key,
     required this.title,
     required this.category,
     required this.builder,
-  }) : super(key: key);
+  });
 
   final Widget Function(BuildContext context) builder;
   final String title;
@@ -34,27 +34,28 @@ class ExploreSection extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
-              onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => BlocProvider(
-                        create: (context) => ExploreDetailBloc(),
-                        child: ExploreDetailPage(
-                          title: Text(
-                            title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .headline6!
-                                .copyWith(fontWeight: FontWeight.w700),
-                          ),
-                          category: category,
-                        ),
-                      ),
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => ExploreDetailBloc(),
+                  child: ExploreDetailPage(
+                    title: Text(
+                      title,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline6!
+                          .copyWith(fontWeight: FontWeight.w700),
                     ),
+                    category: category,
                   ),
-              child: Text(
-                'explore.see_more',
-                style: Theme.of(context).textTheme.button,
-              ).tr()),
+                ),
+              ),
+            ),
+            child: Text(
+              'explore.see_more',
+              style: Theme.of(context).textTheme.button,
+            ).tr(),
+          ),
         ),
         builder(context),
       ],

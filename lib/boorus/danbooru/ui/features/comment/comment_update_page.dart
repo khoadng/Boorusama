@@ -11,11 +11,11 @@ import 'widgets/editor_spacer.dart';
 
 class CommentUpdatePage extends StatefulWidget {
   const CommentUpdatePage({
-    Key? key,
+    super.key,
     required this.postId,
     required this.commentId,
     this.initialContent,
-  }) : super(key: key);
+  });
 
   final int commentId;
   final String? initialContent;
@@ -62,11 +62,12 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
                           child: Center(),
                         ),
                         IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              _handleSave(textEditingController.text);
-                            },
-                            icon: const Icon(Icons.save)),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            _handleSave(textEditingController.text);
+                          },
+                          icon: const Icon(Icons.save),
+                        ),
                       ],
                     ),
                   ),
@@ -77,7 +78,8 @@ class _CommentUpdatePageState extends State<CommentUpdatePage> {
                     child: TextField(
                       controller: textEditingController,
                       decoration: InputDecoration.collapsed(
-                          hintText: 'comment.create.hint'.tr()),
+                        hintText: 'comment.create.hint'.tr(),
+                      ),
                       autofocus: true,
                       keyboardType: TextInputType.multiline,
                       maxLines: null,

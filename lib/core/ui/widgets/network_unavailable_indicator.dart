@@ -9,8 +9,8 @@ import 'package:boorusama/core/core.dart';
 
 class NetworkUnavailableIndicator extends StatelessWidget {
   const NetworkUnavailableIndicator({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {

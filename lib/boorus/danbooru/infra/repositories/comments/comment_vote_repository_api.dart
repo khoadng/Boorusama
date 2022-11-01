@@ -34,7 +34,8 @@ class CommentVoteApiRepository implements CommentVoteRepository {
           .then(parseCommentVote)
           .catchError((Object error) {
         throw Exception(
-            'Failed to get comment votes for ${commentIds.join(',')}');
+          'Failed to get comment votes for ${commentIds.join(',')}',
+        );
       });
 
   @override
@@ -50,7 +51,8 @@ class CommentVoteApiRepository implements CommentVoteRepository {
       .then(CommentVoteDto.fromJson)
       .then(commentVoteDtoToCommentVote)
       .catchError(
-          (Object error) => throw Exception('Failed to downvote $commentId'));
+        (Object error) => throw Exception('Failed to downvote $commentId'),
+      );
 
   @override
   Future<CommentVote> upvote(int commentId) => _accountRepository

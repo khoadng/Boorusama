@@ -22,8 +22,8 @@ class PostVote extends Equatable {
         id: -1,
         postId: -1,
         userId: -1,
-        createdAt: DateTime.now(),
-        updatedAt: DateTime.now(),
+        createdAt: DateTime(1),
+        updatedAt: DateTime(1),
         score: 0,
         isDeleted: false,
       );

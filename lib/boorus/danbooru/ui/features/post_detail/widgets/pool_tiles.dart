@@ -12,9 +12,9 @@ import 'package:boorusama/core/utils.dart';
 
 class PoolTiles extends StatelessWidget {
   const PoolTiles({
-    Key? key,
+    super.key,
     required this.pools,
-  }) : super(key: key);
+  });
 
   final List<Pool> pools;
 
@@ -45,7 +45,7 @@ class PoolTiles extends StatelessWidget {
                 size: 12,
               ),
             ),
-          )
+          ),
         ],
       ),
     );

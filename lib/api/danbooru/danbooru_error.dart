@@ -29,5 +29,6 @@ DanbooruError mapHttpStatusCodeToDanbooruError(int? code) {
   if (code == 500) return DanbooruError.internalErrorOrDatabaseTimeout;
   if (code == 502) return DanbooruError.heavyLoadCannotHandleRequest;
   if (code == 503) return DanbooruError.down;
+
   return DanbooruError.unknown;
 }

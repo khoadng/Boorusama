@@ -10,6 +10,7 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
@@ -20,8 +21,9 @@ Future<T?> showCommentPage<T>(
   required int postId,
 }) =>
     Screen.of(context).size == ScreenSize.small
-        ? showBarModalBottomSheet<T>(
+        ? showMaterialModalBottomSheet<T>(
             context: context,
+            duration: const Duration(milliseconds: 250),
             builder: (context) => CommentPage(
               postId: postId,
             ),
@@ -29,57 +31,59 @@ Future<T?> showCommentPage<T>(
         : showSideSheetFromRight(
             width: MediaQuery.of(context).size.width * 0.41,
             body: Container(
-                color: Colors.transparent,
-                padding: EdgeInsets.only(
-                    top: MediaQuery.of(context).viewPadding.top),
-                child: Column(
-                  children: [
-                    Container(
-                      height: kToolbarHeight * 0.8,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).backgroundColor,
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(6),
-                        ),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          const SizedBox(width: 8),
-                          Text(
-                            'comment.comments',
-                            style: Theme.of(context).textTheme.headline6,
-                          ).tr(),
-                          const Spacer(),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              borderRadius: BorderRadius.circular(20),
-                              onTap: Navigator.of(context).pop,
-                              child: const Icon(Icons.close),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                        ],
+              color: Colors.transparent,
+              padding:
+                  EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
+              child: Column(
+                children: [
+                  Container(
+                    height: kToolbarHeight * 0.8,
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).backgroundColor,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(6),
                       ),
                     ),
-                    Expanded(
-                      child: CommentPage(
-                        useAppBar: false,
-                        postId: postId,
-                      ),
-                    )
-                  ],
-                )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        const SizedBox(width: 8),
+                        Text(
+                          'comment.comments',
+                          style: Theme.of(context).textTheme.headline6,
+                        ).tr(),
+                        const Spacer(),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(20)),
+                            onTap: Navigator.of(context).pop,
+                            child: const Icon(Icons.close),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: CommentPage(
+                      useAppBar: false,
+                      postId: postId,
+                    ),
+                  ),
+                ],
+              ),
+            ),
             context: context,
           );
 
 class CommentPage extends StatefulWidget {
   const CommentPage({
-    Key? key,
+    super.key,
     required this.postId,
     this.useAppBar = true,
-  }) : super(key: key);
+  });
 
   final int postId;
   final bool useAppBar;
@@ -98,12 +102,8 @@ class _CommentPageState extends State<CommentPage> {
     super.initState();
     context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
 
-    isEditing.addListener(() {
-      if (!isEditing.value) {
-        _commentReply.value = null;
-        FocusManager.instance.primaryFocus?.unfocus();
-      }
-    });
+    isEditing.addListener(_onEditing);
+
     _focus.addListener(() {
       if (_focus.hasPrimaryFocus) {
         isEditing.value = true;
@@ -111,9 +111,17 @@ class _CommentPageState extends State<CommentPage> {
     });
   }
 
+  void _onEditing() {
+    if (!isEditing.value) {
+      _commentReply.value = null;
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+
   @override
   void dispose() {
     super.dispose();
+    isEditing.removeListener(_onEditing);
     _focus.dispose();
   }
 
@@ -123,6 +131,7 @@ class _CommentPageState extends State<CommentPage> {
       onWillPop: () async {
         if (isEditing.value) {
           isEditing.value = false;
+
           return false;
         } else {
           return true;

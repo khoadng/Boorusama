@@ -20,6 +20,7 @@ Future<bool> launchExternalUrl(
     mode: mode ?? LaunchMode.externalApplication,
   )) {
     onError?.call();
+
     return false;
   }
 
@@ -75,24 +76,23 @@ Future<T?> showAdaptiveBottomSheet<T>(
   required Widget Function(BuildContext context) builder,
   bool expand = false,
 }) {
-  if (Screen.of(context).size != ScreenSize.small) {
-    return showGeneralDialog<T>(
-      context: context,
-      pageBuilder: (context, animation, secondaryAnimation) => builder(context),
-    );
-  } else {
-    return showBarModalBottomSheet<T>(
-      context: context,
-      barrierColor: Colors.black45,
-      backgroundColor: Colors.transparent,
-      builder: (context) => ConditionalParentWidget(
-        condition: !expand,
-        child: builder(context),
-        conditionalBuilder: (child) => SizedBox(
-          height: MediaQuery.of(context).size.height * 0.65,
-          child: child,
-        ),
-      ),
-    );
-  }
+  return Screen.of(context).size != ScreenSize.small
+      ? showGeneralDialog<T>(
+          context: context,
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              builder(context),
+        )
+      : showBarModalBottomSheet<T>(
+          context: context,
+          barrierColor: Colors.black45,
+          backgroundColor: Colors.transparent,
+          builder: (context) => ConditionalParentWidget(
+            condition: !expand,
+            child: builder(context),
+            conditionalBuilder: (child) => SizedBox(
+              height: MediaQuery.of(context).size.height * 0.65,
+              child: child,
+            ),
+          ),
+        );
 }

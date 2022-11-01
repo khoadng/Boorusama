@@ -8,19 +8,21 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/settings/settings.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/core/ui/no_data_box.dart';
 
 class HomePostGrid extends StatelessWidget {
   const HomePostGrid({
-    Key? key,
+    super.key,
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
-  }) : super(key: key);
+  });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
@@ -31,7 +33,7 @@ class HomePostGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 18,
       ),
       sliver: BlocSelector<SettingsCubit, SettingsState, GridSize>(
         selector: (state) => state.settings.gridSize,
@@ -50,6 +52,7 @@ class HomePostGrid extends StatelessWidget {
                 if (state.posts.isEmpty) {
                   return const SliverToBoxAdapter(child: NoDataBox());
                 }
+
                 return SliverPostGrid(
                   posts: state.posts,
                   scrollController: controller,
@@ -68,7 +71,8 @@ class HomePostGrid extends StatelessWidget {
                   onFavoriteUpdated: (postId, value) => context
                       .read<PostBloc>()
                       .add(
-                          PostFavoriteUpdated(postId: postId, favorite: value)),
+                        PostFavoriteUpdated(postId: postId, favorite: value),
+                      ),
                 );
               } else if (state.status == LoadStatus.loading) {
                 return const SliverToBoxAdapter(
@@ -88,14 +92,14 @@ class HomePostGrid extends StatelessWidget {
 BorderRadius _gridSizeToBorderRadius(GridSize size) {
   switch (size) {
     case GridSize.small:
-      return BorderRadius.circular(3);
+      return const BorderRadius.all(Radius.circular(3));
     // case GridSize.large:
     //   return const BorderRadius.only(
     //     topLeft: Radius.circular(8),
     //     topRight: Radius.circular(8),
     //   );
-
-    default:
-      return BorderRadius.circular(8);
+    case GridSize.normal:
+    case GridSize.large:
+      return const BorderRadius.all(Radius.circular(8));
   }
 }

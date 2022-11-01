@@ -5,7 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 class TagChipsPlaceholder extends StatelessWidget {
-  const TagChipsPlaceholder({Key? key}) : super(key: key);
+  const TagChipsPlaceholder({super.key});
 
   @override
   Widget build(BuildContext context) {

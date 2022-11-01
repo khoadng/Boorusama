@@ -32,7 +32,7 @@ class Booru extends Equatable {
   final BooruType booruType;
   final String name;
 
-  static Booru empty = const Booru(
+  static const Booru empty = Booru(
     url: '',
     booruType: BooruType.unknown,
     name: '',

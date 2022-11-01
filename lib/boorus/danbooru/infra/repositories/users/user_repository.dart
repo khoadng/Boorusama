@@ -42,12 +42,15 @@ class UserRepositoryApi implements UserRepository {
             cancelToken: cancelToken,
           )
           .then((u) => parseUser(u, defaultBlacklistedTags));
-    } on DioError catch (e) {
+    } on DioError catch (e, stackTrace) {
       if (e.type == DioErrorType.cancel) {
         // Cancel token triggered, skip this request
         return [];
       } else {
-        throw Exception('Failed to get users for $idComma');
+        Error.throwWithStackTrace(
+          Exception('Failed to get users for $idComma'),
+          stackTrace,
+        );
       }
     }
   }
@@ -92,7 +95,10 @@ User userDtoToUser(
           ? defaultBlacklistedTags
           : tagStringToListTagString(d.blacklistedTags!),
     );
-  } catch (e) {
-    throw Exception('fail to parse one of the required field\n $e');
+  } catch (e, stackTrace) {
+    Error.throwWithStackTrace(
+      Exception('fail to parse one of the required field\n $e'),
+      stackTrace,
+    );
   }
 }

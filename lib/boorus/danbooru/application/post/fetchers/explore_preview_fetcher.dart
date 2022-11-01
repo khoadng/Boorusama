@@ -8,22 +8,24 @@ class ExplorePreviewFetcher implements PostFetcher {
     required this.category,
     required this.date,
     required this.scale,
-    this.limit = 20,
+    required this.exploreRepository,
   });
 
   factory ExplorePreviewFetcher.now({
     required ExploreCategory category,
+    required ExploreRepository exploreRepository,
   }) =>
       ExplorePreviewFetcher(
         category: category,
         date: DateTime.now(),
         scale: TimeScale.day,
+        exploreRepository: exploreRepository,
       );
 
   final ExploreCategory category;
+  final ExploreRepository exploreRepository;
   final DateTime date;
   final TimeScale scale;
-  final int limit;
 
   @override
   Future<List<Post>> fetch(PostRepository repo, int page) async {
@@ -34,18 +36,32 @@ class ExplorePreviewFetcher implements PostFetcher {
           .fetch(repo, page);
     }
 
-    return posts.take(limit).toList();
+    return posts.toList();
   }
 
   PostFetcher _categoryToFetcher(DateTime d) {
-    if (category == ExploreCategory.popular) {
-      return PopularPostFetcher(date: d, scale: scale);
-    } else if (category == ExploreCategory.curated) {
-      return CuratedPostFetcher(date: d, scale: scale);
-    } else if (category == ExploreCategory.hot) {
-      return const HotPostFetcher();
-    } else {
-      return MostViewedPostFetcher(date: d);
+    switch (category) {
+      case ExploreCategory.popular:
+        return PopularPostFetcher(
+          date: d,
+          scale: scale,
+          exploreRepository: exploreRepository,
+        );
+      case ExploreCategory.curated:
+        return CuratedPostFetcher(
+          date: d,
+          scale: scale,
+          exploreRepository: exploreRepository,
+        );
+      case ExploreCategory.mostViewed:
+        return MostViewedPostFetcher(
+          date: d,
+          exploreRepository: exploreRepository,
+        );
+      case ExploreCategory.hot:
+        return HotPostFetcher(
+          exploreRepository: exploreRepository,
+        );
     }
   }
 }

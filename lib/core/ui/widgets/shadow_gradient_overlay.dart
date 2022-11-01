@@ -3,30 +3,27 @@ import 'package:flutter/material.dart';
 
 class ShadowGradientOverlay extends StatelessWidget {
   const ShadowGradientOverlay({
-    Key? key,
+    super.key,
     required this.alignment,
     required this.colors,
   })  : assert(alignment == Alignment.bottomCenter ||
-            alignment == Alignment.topCenter),
-        super(key: key);
+            alignment == Alignment.topCenter);
 
   final List<Color> colors;
   final Alignment alignment;
 
   Gradient _buildGradient(Alignment alignment, List<Color> colors) {
-    if (alignment == Alignment.topCenter) {
-      return LinearGradient(
-        end: const Alignment(0, 0.4),
-        begin: const Alignment(0, -1),
-        colors: colors,
-      );
-    } else {
-      return LinearGradient(
-        end: const Alignment(0, -0.4),
-        begin: const Alignment(0, 1),
-        colors: colors,
-      );
-    }
+    return alignment == Alignment.topCenter
+        ? LinearGradient(
+            end: const Alignment(0, 0.4),
+            begin: Alignment.topCenter,
+            colors: colors,
+          )
+        : LinearGradient(
+            end: const Alignment(0, -0.4),
+            begin: Alignment.bottomCenter,
+            colors: colors,
+          );
   }
 
   @override

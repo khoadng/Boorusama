@@ -20,28 +20,32 @@
 
 Boorusama is one of the most feature-rich unofficial clients for [Danbooru](https://github.com/danbooru/danbooru). Built with Flutter.
 
+![Banner_1](./images/banner_2.png)
+![Banner_2](./images/banner_1.png)
+
 ## Features
-* Fully supported tag search with autocomplete and metatags highlighting
-* Quick and easy image saving
-* Explore the newest, curated and popular posts with ease
-* View, vote, and add comments
-* View translation notes
-* Search, filter, and view images pool
-* Easily blacklist any tags
+- Fully supported tag search with autocomplete and metatags highlighting
+- Quick and easy image saving
+- Support download multiple images in bulk
+- Explore the newest, curated and popular posts with ease
+- View, vote, and add comments
+- View translation notes
+- Search, filter, and view images pool
+- Easily blacklist any tags
 
 ## Installation
-* Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
-* Clone or download the repo. Make sure you have [Git](https://git-scm.com/downloads) installed first.
+- Install [Flutter SDK](https://docs.flutter.dev/get-started/install).
+- Clone or download the repo. Make sure you have [Git](https://git-scm.com/downloads) installed first.
 ```bash
 git clone https://github.com/khoadng/Boorusama.git
 cd Boorusama
 ```
-* Install dependencies and generate boilerplates code.
+- Install dependencies and generate boilerplates code.
 ```bash
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
-* Connect to an Android device/emulator and run the app.
+- Connect to an Android device/emulator and run the app.
 ```bash
 flutter run --release
 ```

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 import 'widgets/login_box_widget.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -32,7 +32,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               WarningContainer(
-                  contentBuilder: (context) => const Text('login.notice').tr()),
+                contentBuilder: (context) => const Text('login.notice').tr(),
+              ),
               const Center(
                 child: LoginBox(),
               ),

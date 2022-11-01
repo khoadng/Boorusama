@@ -8,7 +8,7 @@ import 'package:jiffy/jiffy.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/common/bloc_stream_transformer.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 
 enum ExploreCategory {
   popular,
@@ -87,8 +87,6 @@ extension DateTimeX on DateTime {
         return Jiffy(this).subtract(weeks: 1).dateTime;
       case TimeScale.month:
         return Jiffy(this).subtract(months: 1).dateTime;
-      default:
-        return this;
     }
   }
 
@@ -100,8 +98,6 @@ extension DateTimeX on DateTime {
         return Jiffy(this).add(weeks: 1).dateTime;
       case TimeScale.month:
         return Jiffy(this).add(months: 1).dateTime;
-      default:
-        return this;
     }
   }
 }

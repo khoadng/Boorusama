@@ -8,10 +8,10 @@ import 'pool_grid_item.dart';
 
 class SliverPoolGrid extends StatelessWidget {
   const SliverPoolGrid({
-    Key? key,
+    super.key,
     required this.pools,
     required this.spacing,
-  }) : super(key: key);
+  });
 
   final List<PoolItem> pools;
   final double spacing;
@@ -47,7 +47,8 @@ SliverGridDelegate _gridSizeToGridDelegate({
         crossAxisCount: 3,
         childAspectRatio: 0.5,
       );
-    default:
+    case ScreenSize.large:
+    case ScreenSize.veryLarge:
       return const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 5,
         childAspectRatio: 0.6,
