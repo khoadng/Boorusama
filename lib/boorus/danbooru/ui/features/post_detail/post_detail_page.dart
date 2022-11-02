@@ -390,14 +390,15 @@ class _CarouselContentState extends State<_CarouselContent> {
                       InformationSection(post: widget.preloadPost),
                       const Divider(height: 8, thickness: 1),
                       if (widget.actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.scrolling)
+                          ActionBarDisplayBehavior.scrolling) ...[
                         RepaintBoundary(
                           child: _ActionBar(
                             imagePath: widget.imagePath,
                             postData: widget.post,
                           ),
                         ),
-                      const Divider(height: 8, thickness: 1),
+                        const Divider(height: 8, thickness: 1),
+                      ],
                       ArtistSection(post: widget.preloadPost),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
