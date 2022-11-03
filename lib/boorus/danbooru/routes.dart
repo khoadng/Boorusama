@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -30,6 +31,7 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
@@ -41,6 +43,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_pa
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
@@ -412,6 +415,20 @@ final bulkDownloadHandler =
       ),
     ],
     child: const BulkDownloadPage(),
+  );
+});
+
+final savedSearchHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => SavedSearchBloc(
+          savedSearchRepository: context.read<SavedSearchRepository>(),
+        )..add(const SavedSearchFetched()),
+      ),
+    ],
+    child: const SavedSearchPage(),
   );
 });
 

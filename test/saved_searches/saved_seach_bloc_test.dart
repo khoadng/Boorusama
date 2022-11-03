@@ -260,7 +260,7 @@ void main() {
               query: any(named: 'query'),
               label: any(named: 'label'),
             )).thenAnswer(
-          (_) async => SavedSearch.empty().copyWith(id: 1, query: 'newfoo'),
+          (_) async => true,
         );
       },
       tearDown: () {
@@ -303,7 +303,7 @@ void main() {
               any(),
               query: any(named: 'query'),
               label: any(named: 'label'),
-            )).thenAnswer((_) async => null);
+            )).thenAnswer((_) async => false);
       },
       tearDown: () {
         reset(savedSearchRepo);
