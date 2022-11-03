@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
+import 'package:boorusama/core/ui/generic_no_data_box.dart';
 
 class SavedSearchPage extends StatelessWidget {
   const SavedSearchPage({
@@ -57,98 +58,98 @@ class SavedSearchPage extends StatelessWidget {
                   child: CircularProgressIndicator.adaptive(),
                 );
               case LoadStatus.success:
-                return CustomScrollView(
-                  slivers: [
-                    const SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 15,
-                      ),
-                    ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              '${state.data.length} saved searches'
-                                  .toUpperCase(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium!
-                                  .copyWith(
-                                    color: Theme.of(context).hintColor,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                            ),
-                            IconButton(
-                              onPressed: () =>
-                                  _goToSearchPage(context, query: 'search:all'),
-                              icon: const Icon(Icons.chevron_right),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (context, index) {
-                          final savedSearch = state.data[index];
-
-                          return ListTile(
-                            title: Text(savedSearch.labels.join(' ')),
-                            subtitle: Text(savedSearch.query),
-                            onTap: savedSearch.labels.isNotEmpty
-                                ? () => _goToSearchPage(
-                                      context,
-                                      query:
-                                          'search:${savedSearch.labels.first}',
-                                    )
-                                : null,
-                            onLongPress: () {
-                              final bloc = context.read<SavedSearchBloc>();
-
-                              showAdaptiveBottomSheet(
-                                context,
-                                builder: (_) => ModalSavedSearchAction(
-                                  onDelete: () => bloc.add(SavedSearchDeleted(
-                                    savedSearch: savedSearch,
-                                  )),
-                                  onEdit: () => showAdaptiveBottomSheet(
+                return state.data.isNotEmpty
+                    ? CustomScrollView(slivers: [
+                        const SliverToBoxAdapter(child: SizedBox(height: 15)),
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${state.data.length} saved searches'
+                                      .toUpperCase(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium!
+                                      .copyWith(
+                                        color: Theme.of(context).hintColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                ),
+                                IconButton(
+                                  onPressed: () => _goToSearchPage(
                                     context,
-                                    backgroundColor:
-                                        Theme.of(context).backgroundColor,
-                                    builder: (_) => EditSavedSearchSheet(
-                                      title: 'Update saved search',
-                                      initialValue: savedSearch,
-                                      onSubmit: (query, label) => bloc.add(
-                                        SavedSearchUpdated(
-                                          id: savedSearch.id,
-                                          label: label,
-                                          query: query,
-                                          onUpdated: (data) =>
-                                              showSimpleSnackBar(
-                                            context: context,
-                                            duration:
-                                                const Duration(seconds: 1),
-                                            content: const Text(
-                                              'Saved search has been updated',
+                                    query: 'search:all',
+                                  ),
+                                  icon: const Icon(Icons.chevron_right),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              final savedSearch = state.data[index];
+
+                              return ListTile(
+                                title: Text(savedSearch.labels.join(' ')),
+                                subtitle: Text(savedSearch.query),
+                                onTap: savedSearch.labels.isNotEmpty
+                                    ? () => _goToSearchPage(
+                                          context,
+                                          query:
+                                              'search:${savedSearch.labels.first}',
+                                        )
+                                    : null,
+                                onLongPress: () {
+                                  final bloc = context.read<SavedSearchBloc>();
+                                  showAdaptiveBottomSheet(
+                                    context,
+                                    builder: (_) => ModalSavedSearchAction(
+                                      onDelete: () =>
+                                          bloc.add(SavedSearchDeleted(
+                                        savedSearch: savedSearch,
+                                      )),
+                                      onEdit: () => showAdaptiveBottomSheet(
+                                        context,
+                                        backgroundColor:
+                                            Theme.of(context).backgroundColor,
+                                        builder: (_) => EditSavedSearchSheet(
+                                          title: 'Update saved search',
+                                          initialValue: savedSearch,
+                                          onSubmit: (query, label) =>
+                                              bloc.add(SavedSearchUpdated(
+                                            id: savedSearch.id,
+                                            label: label,
+                                            query: query,
+                                            onUpdated: (data) =>
+                                                showSimpleSnackBar(
+                                              context: context,
+                                              duration:
+                                                  const Duration(seconds: 1),
+                                              content: const Text(
+                                                'Saved search has been updated',
+                                              ),
                                             ),
-                                          ),
+                                          )),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                        childCount: state.data.length,
-                      ),
-                    ),
-                  ],
-                );
+                            childCount: state.data.length,
+                          ),
+                        ),
+                      ])
+                    : const GenericNoDataBox(
+                        text: "You haven't add any search yet",
+                      );
+
               case LoadStatus.failure:
                 return const ErrorBox();
             }
