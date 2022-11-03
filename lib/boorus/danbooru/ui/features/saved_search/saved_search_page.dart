@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
+import 'package:boorusama/core/ui/info_container.dart';
 
 class SavedSearchPage extends StatelessWidget {
   const SavedSearchPage({
@@ -61,6 +62,13 @@ class SavedSearchPage extends StatelessWidget {
                 return state.data.isNotEmpty
                     ? CustomScrollView(slivers: [
                         const SliverToBoxAdapter(child: SizedBox(height: 15)),
+                        SliverToBoxAdapter(
+                          child: InfoContainer(
+                            contentBuilder: (context) => const Text(
+                              "If you don't see any images, check if your query is correct or not. Also it might take a while for data to be populated.",
+                            ),
+                          ),
+                        ),
                         SliverToBoxAdapter(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 4),
