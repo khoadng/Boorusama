@@ -32,6 +32,8 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
                 account.username,
                 account.apiKey,
                 page,
+                //TODO: shouldn't hardcode it
+                1000,
               ))
           .then(parseSavedSearch);
 

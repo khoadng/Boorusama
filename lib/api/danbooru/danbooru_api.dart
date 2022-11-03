@@ -328,6 +328,7 @@ abstract class Api {
     @Query('login') String? login,
     @Query('api_key') String? apiKey,
     @Query('page') int page,
+    @Query('limit') int limit,
   );
 
   @POST('/saved_searches.json')
