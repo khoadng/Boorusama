@@ -108,7 +108,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             maxLines: null,
             decoration: _getDecoration(
               context: context,
-              hint: 'Label',
+              hint: 'Label*',
               suffixIcon: ValueListenableBuilder<bool>(
                 valueListenable: apiKeyHasText,
                 builder: (context, hasText, _) => hasText
@@ -117,6 +117,18 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                       )
                     : const SizedBox.shrink(),
               ),
+            ),
+          ),
+          Container(
+            margin: const EdgeInsets.all(8),
+            child: Text(
+              '*A list of tags to help categorize this search. Space delimited.',
+              style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                    color: Theme.of(context).hintColor,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                  ),
             ),
           ),
           Container(
