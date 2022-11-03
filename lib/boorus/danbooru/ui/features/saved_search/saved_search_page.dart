@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
@@ -58,6 +59,37 @@ class SavedSearchPage extends StatelessWidget {
               case LoadStatus.success:
                 return CustomScrollView(
                   slivers: [
+                    const SliverToBoxAdapter(
+                      child: SizedBox(
+                        height: 15,
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '${state.data.length} saved searches'
+                                  .toUpperCase(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleMedium!
+                                  .copyWith(
+                                    color: Theme.of(context).hintColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
+                            IconButton(
+                              onPressed: () =>
+                                  _goToSearchPage(context, query: 'search:all'),
+                              icon: const Icon(Icons.chevron_right),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (context, index) {
@@ -66,32 +98,43 @@ class SavedSearchPage extends StatelessWidget {
                           return ListTile(
                             title: Text(savedSearch.labels.join(' ')),
                             subtitle: Text(savedSearch.query),
-                            trailing: IconButton(
-                              onPressed: () => context
-                                  .read<SavedSearchBloc>()
-                                  .add(SavedSearchDeleted(
-                                    savedSearch: savedSearch,
-                                  )),
-                              icon: const Icon(Icons.close),
-                            ),
-                            onTap: () {
+                            onTap: savedSearch.labels.isNotEmpty
+                                ? () => _goToSearchPage(
+                                      context,
+                                      query:
+                                          'search:${savedSearch.labels.first}',
+                                    )
+                                : null,
+                            onLongPress: () {
                               final bloc = context.read<SavedSearchBloc>();
 
                               showAdaptiveBottomSheet(
                                 context,
-                                builder: (_) => EditSavedSearchSheet(
-                                  title: 'Update saved search',
-                                  initialValue: savedSearch,
-                                  onSubmit: (query, label) => bloc.add(
-                                    SavedSearchUpdated(
-                                      id: savedSearch.id,
-                                      label: label,
-                                      query: query,
-                                      onUpdated: (data) => showSimpleSnackBar(
-                                        context: context,
-                                        duration: const Duration(seconds: 1),
-                                        content: const Text(
-                                          'Saved search has been updated',
+                                builder: (_) => ModalSavedSearchAction(
+                                  onDelete: () => bloc.add(SavedSearchDeleted(
+                                    savedSearch: savedSearch,
+                                  )),
+                                  onEdit: () => showAdaptiveBottomSheet(
+                                    context,
+                                    backgroundColor:
+                                        Theme.of(context).backgroundColor,
+                                    builder: (_) => EditSavedSearchSheet(
+                                      title: 'Update saved search',
+                                      initialValue: savedSearch,
+                                      onSubmit: (query, label) => bloc.add(
+                                        SavedSearchUpdated(
+                                          id: savedSearch.id,
+                                          label: label,
+                                          query: query,
+                                          onUpdated: (data) =>
+                                              showSimpleSnackBar(
+                                            context: context,
+                                            duration:
+                                                const Duration(seconds: 1),
+                                            content: const Text(
+                                              'Saved search has been updated',
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -110,6 +153,61 @@ class SavedSearchPage extends StatelessWidget {
                 return const ErrorBox();
             }
           },
+        ),
+      ),
+    );
+  }
+
+  void _goToSearchPage(
+    BuildContext context, {
+    required String query,
+  }) {
+    AppRouter.router.navigateTo(
+      context,
+      '/posts/search',
+      routeSettings: RouteSettings(arguments: [
+        query,
+      ]),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class ModalSavedSearchAction extends StatelessWidget {
+  const ModalSavedSearchAction({
+    super.key,
+    this.onEdit,
+    this.onDelete,
+  });
+
+  final void Function()? onEdit;
+  final void Function()? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              title: const Text('Edit'),
+              leading: const Icon(Icons.edit),
+              onTap: () {
+                Navigator.of(context).pop();
+                onEdit?.call();
+              },
+            ),
+            ListTile(
+              title: const Text('Delete'),
+              leading: const Icon(Icons.clear),
+              onTap: () {
+                Navigator.of(context).pop();
+                onDelete?.call();
+              },
+            ),
+          ],
         ),
       ),
     );
