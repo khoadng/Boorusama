@@ -65,7 +65,7 @@ class SavedSearchPage extends StatelessWidget {
                         SliverToBoxAdapter(
                           child: InfoContainer(
                             contentBuilder: (context) => const Text(
-                              "If you don't see any images, check if your query is correct or not. Also it might take a while for data to be populated.",
+                              "If you don't see any images, check if your query is correct. Also it might take a while for data to be populated.",
                             ),
                           ),
                         ),
