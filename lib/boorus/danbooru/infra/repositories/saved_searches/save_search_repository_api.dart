@@ -38,7 +38,7 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
           .then(parseSavedSearch);
 
   @override
-  Future<bool> createSavedSearch({
+  Future<SavedSearch?> createSavedSearch({
     required String query,
     String? label,
   }) =>
@@ -52,15 +52,17 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
                   'saved_search[label_string]': label ?? '',
                 },
               ))
-          .then((value) => value.response.statusCode == 201);
+          .then((value) => value.response.statusCode == 201
+              ? _parseSingleSavedSearch(value)
+              : null);
 
   @override
-  Future<bool> updateSavedSearch(
+  Future<SavedSearch?> updateSavedSearch(
     int id, {
     String? query,
     String? label,
   }) {
-    if ([query, label].every((e) => e == null)) return Future.value(false);
+    if ([query, label].every((e) => e == null)) return Future.value();
     final map = <String, dynamic>{};
 
     if (query != null) {
@@ -79,7 +81,9 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
               id,
               map,
             ))
-        .then((value) => value.response.statusCode == 204);
+        .then((value) => value.response.statusCode == 204
+            ? _parseSingleSavedSearch(value)
+            : null);
   }
 
   @override
@@ -99,4 +103,9 @@ SavedSearch savedSearchDtoToSaveSearch(SavedSearchDto dto) => SavedSearch(
       labels: dto.labels ?? [],
       createdAt: dto.createdAt ?? DateTime(1),
       updatedAt: dto.updatedAt ?? DateTime(1),
+    );
+
+SavedSearch _parseSingleSavedSearch(HttpResponse<dynamic> value) =>
+    savedSearchDtoToSaveSearch(
+      SavedSearchDto.fromJson(value.response.data),
     );

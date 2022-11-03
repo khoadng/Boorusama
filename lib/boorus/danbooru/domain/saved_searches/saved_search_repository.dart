@@ -6,12 +6,12 @@ abstract class SavedSearchRepository {
     required int page,
   });
 
-  Future<bool> createSavedSearch({
+  Future<SavedSearch?> createSavedSearch({
     required String query,
     String? label,
   });
 
-  Future<bool> updateSavedSearch(
+  Future<SavedSearch?> updateSavedSearch(
     int id, {
     String? query,
     String? label,
