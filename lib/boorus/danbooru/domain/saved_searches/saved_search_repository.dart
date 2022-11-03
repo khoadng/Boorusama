@@ -11,7 +11,7 @@ abstract class SavedSearchRepository {
     String? label,
   });
 
-  Future<SavedSearch?> updateSavedSearch(
+  Future<bool> updateSavedSearch(
     int id, {
     String? query,
     String? label,

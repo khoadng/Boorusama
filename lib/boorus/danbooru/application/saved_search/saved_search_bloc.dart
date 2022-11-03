@@ -120,7 +120,7 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
           emit(state.copyWith(
             status: LoadStatus.success,
             refreshing: false,
-            data: data,
+            data: [...data]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
           ));
         },
       );
@@ -141,7 +141,7 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
               data: [
                 ...state.data,
                 data,
-              ],
+              ]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
             ));
 
             event.onCreated?.call(data);
@@ -174,7 +174,7 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
     });
 
     on<SavedSearchUpdated>((event, emit) async {
-      await tryAsync<SavedSearch?>(
+      await tryAsync<bool>(
         action: () => savedSearchRepository.updateSavedSearch(
           event.id,
           label: event.label,
@@ -183,16 +183,23 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
         onUnknownFailure: (stackTrace, error) {
           event.onFailure?.call(event);
         },
-        onSuccess: (data) async {
-          if (data != null) {
+        onSuccess: (success) async {
+          if (success) {
             final index = state.data.indexWhere((e) => e.id == event.id);
-            final newData = [...state.data].replaceAt(index, data);
+            final newSearch = state.data[index];
+            final newData = [...state.data].replaceAt(
+              index,
+              newSearch.copyWith(
+                query: event.query,
+                labels: event.label != null ? [event.label!] : null,
+              ),
+            );
 
             emit(state.copyWith(
               data: newData,
             ));
 
-            event.onUpdated?.call(data);
+            event.onUpdated?.call(newSearch);
           } else {
             event.onFailure?.call(event);
           }

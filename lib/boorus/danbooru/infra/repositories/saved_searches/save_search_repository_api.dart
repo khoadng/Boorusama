@@ -57,12 +57,12 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
               : null);
 
   @override
-  Future<SavedSearch?> updateSavedSearch(
+  Future<bool> updateSavedSearch(
     int id, {
     String? query,
     String? label,
   }) {
-    if ([query, label].every((e) => e == null)) return Future.value();
+    if ([query, label].every((e) => e == null)) return Future.value(false);
     final map = <String, dynamic>{};
 
     if (query != null) {
@@ -81,9 +81,7 @@ class SavedSearchRepositoryApi implements SavedSearchRepository {
               id,
               map,
             ))
-        .then((value) => value.response.statusCode == 204
-            ? _parseSingleSavedSearch(value)
-            : null);
+        .then((value) => value.response.statusCode == 204);
   }
 
   @override
