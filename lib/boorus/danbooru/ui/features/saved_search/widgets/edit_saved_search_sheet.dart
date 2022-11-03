@@ -108,7 +108,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             maxLines: null,
             decoration: _getDecoration(
               context: context,
-              hint: 'Label*',
+              hint: 'Labels*',
               suffixIcon: ValueListenableBuilder<bool>(
                 valueListenable: apiKeyHasText,
                 builder: (context, hasText, _) => hasText
