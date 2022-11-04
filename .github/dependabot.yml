@@ -6,10 +6,9 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "dev"
     assignees:
       - "dependabot"
-    reviewers:
-      - "khoadn"
     commit-message:
       prefix: "chore: "
 
@@ -18,3 +17,5 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    target-branch: "dev"
+
