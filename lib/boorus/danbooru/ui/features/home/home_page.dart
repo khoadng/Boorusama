@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/feed/tag_subscription_page.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -9,9 +8,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/feed/saved_search_feed_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
@@ -223,14 +225,19 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const ExplorePage(),
-                              BlocProvider(
-                                create: (context) => PostBloc.of(context)
-                                  ..add(PostRefreshed(
-                                    fetcher: SearchedPostFetcher.fromTags(
-                                      'search:artists',
-                                    ),
-                                  )),
-                                child: const TagSubscriptionPage(),
+                              MultiBlocProvider(
+                                providers: [
+                                  BlocProvider(
+                                    create: (context) => PostBloc.of(context),
+                                  ),
+                                  BlocProvider(
+                                    create: (context) => SavedSearchFeedBloc(
+                                      savedSearchRepository:
+                                          context.read<SavedSearchRepository>(),
+                                    )..add(const SavedSearchFeedRefreshed()),
+                                  ),
+                                ],
+                                child: const SavedSearchFeedPage(),
                               ),
                               MultiBlocProvider(
                                 providers: [

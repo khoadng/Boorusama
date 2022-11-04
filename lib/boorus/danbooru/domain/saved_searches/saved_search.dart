@@ -43,4 +43,6 @@ extension SavedSearchX on SavedSearch {
         createdAt: createdAt ?? this.createdAt,
         updatedAt: updatedAt ?? this.updatedAt,
       );
+
+  String toQuery() => labels.isEmpty ? 'search:all' : 'search:${labels.first}';
 }
