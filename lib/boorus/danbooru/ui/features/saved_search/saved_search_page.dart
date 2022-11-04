@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -30,8 +31,8 @@ class SavedSearchPage extends StatelessWidget {
             onPressed: () {
               final bloc = context.read<SavedSearchBloc>();
 
-              showAdaptiveBottomSheet(
-                context,
+              showMaterialModalBottomSheet(
+                context: context,
                 backgroundColor: Theme.of(context).backgroundColor,
                 builder: (_) => EditSavedSearchSheet(
                   onSubmit: (query, label) => bloc.add(SavedSearchCreated(
@@ -87,13 +88,13 @@ class SavedSearchPage extends StatelessWidget {
                                         fontWeight: FontWeight.bold,
                                       ),
                                 ),
-                                IconButton(
-                                  onPressed: () => _goToSearchPage(
-                                    context,
-                                    query: 'search:all',
-                                  ),
-                                  icon: const Icon(Icons.chevron_right),
-                                ),
+                                // IconButton(
+                                //   onPressed: () => _goToSearchPage(
+                                //     context,
+                                //     query: 'search:all',
+                                //   ),
+                                //   icon: const Icon(Icons.chevron_right),
+                                // ),
                               ],
                             ),
                           ),
@@ -106,6 +107,15 @@ class SavedSearchPage extends StatelessWidget {
                               return ListTile(
                                 title: Text(savedSearch.labels.join(' ')),
                                 subtitle: Text(savedSearch.query),
+                                trailing: savedSearch.readOnly
+                                    ? null
+                                    : IconButton(
+                                        onPressed: () => _showEditSheet(
+                                          context,
+                                          savedSearch,
+                                        ),
+                                        icon: const Icon(Icons.more_vert),
+                                      ),
                                 onTap: savedSearch.labels.isNotEmpty
                                     ? () => _goToSearchPage(
                                           context,
@@ -115,47 +125,8 @@ class SavedSearchPage extends StatelessWidget {
                                     : null,
                                 onLongPress: savedSearch.readOnly
                                     ? null
-                                    : () {
-                                        final bloc =
-                                            context.read<SavedSearchBloc>();
-                                        showAdaptiveBottomSheet(
-                                          context,
-                                          builder: (_) =>
-                                              ModalSavedSearchAction(
-                                            onDelete: () =>
-                                                bloc.add(SavedSearchDeleted(
-                                              savedSearch: savedSearch,
-                                            )),
-                                            onEdit: () =>
-                                                showAdaptiveBottomSheet(
-                                              context,
-                                              backgroundColor: Theme.of(context)
-                                                  .backgroundColor,
-                                              builder: (_) =>
-                                                  EditSavedSearchSheet(
-                                                title: 'Update saved search',
-                                                initialValue: savedSearch,
-                                                onSubmit: (query, label) =>
-                                                    bloc.add(SavedSearchUpdated(
-                                                  id: savedSearch.id,
-                                                  label: label,
-                                                  query: query,
-                                                  onUpdated: (data) =>
-                                                      showSimpleSnackBar(
-                                                    context: context,
-                                                    duration: const Duration(
-                                                      seconds: 1,
-                                                    ),
-                                                    content: const Text(
-                                                      'Saved search has been updated',
-                                                    ),
-                                                  ),
-                                                )),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                    : () =>
+                                        _showEditSheet(context, savedSearch),
                               );
                             },
                             childCount: state.data.length,
@@ -170,6 +141,40 @@ class SavedSearchPage extends StatelessWidget {
                 return const ErrorBox();
             }
           },
+        ),
+      ),
+    );
+  }
+
+  void _showEditSheet(BuildContext context, SavedSearch savedSearch) {
+    final bloc = context.read<SavedSearchBloc>();
+    showMaterialModalBottomSheet(
+      context: context,
+      builder: (_) => ModalSavedSearchAction(
+        onDelete: () => bloc.add(SavedSearchDeleted(
+          savedSearch: savedSearch,
+        )),
+        onEdit: () => showMaterialModalBottomSheet(
+          context: context,
+          backgroundColor: Theme.of(context).backgroundColor,
+          builder: (_) => EditSavedSearchSheet(
+            title: 'Update saved search',
+            initialValue: savedSearch,
+            onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
+              id: savedSearch.id,
+              label: label,
+              query: query,
+              onUpdated: (data) => showSimpleSnackBar(
+                context: context,
+                duration: const Duration(
+                  seconds: 1,
+                ),
+                content: const Text(
+                  'Saved search has been updated',
+                ),
+              ),
+            )),
+          ),
         ),
       ),
     );
