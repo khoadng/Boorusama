@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/feed/tag_subscription_page.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/services.dart';
 
@@ -109,6 +110,18 @@ class _HomePageState extends State<HomePage> {
                                         value: 2,
                                         index: index,
                                         selectedIcon:
+                                            const Icon(Icons.amp_stories),
+                                        icon: const Icon(
+                                          Icons.amp_stories_outlined,
+                                        ),
+                                        title: const Text('Followed'),
+                                        onTap: (value) =>
+                                            viewIndex.value = value,
+                                      ),
+                                      _NavigationTile(
+                                        value: 3,
+                                        index: index,
+                                        selectedIcon:
                                             const Icon(Icons.photo_album),
                                         icon: const Icon(
                                           Icons.photo_album_outlined,
@@ -158,6 +171,14 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         NavigationRailDestination(
                                           icon: index == 2
+                                              ? const Icon(Icons.amp_stories)
+                                              : const Icon(
+                                                  Icons.amp_stories_outlined,
+                                                ),
+                                          label: const Text('Explore'),
+                                        ),
+                                        NavigationRailDestination(
+                                          icon: index == 3
                                               ? const Icon(Icons.photo_album)
                                               : const Icon(
                                                   Icons.photo_album_outlined,
@@ -202,6 +223,15 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const ExplorePage(),
+                              BlocProvider(
+                                create: (context) => PostBloc.of(context)
+                                  ..add(PostRefreshed(
+                                    fetcher: SearchedPostFetcher.fromTags(
+                                      'search:artists',
+                                    ),
+                                  )),
+                                child: const TagSubscriptionPage(),
+                              ),
                               MultiBlocProvider(
                                 providers: [
                                   BlocProvider(

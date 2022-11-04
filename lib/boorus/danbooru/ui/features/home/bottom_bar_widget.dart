@@ -18,13 +18,6 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   late int currentIndex;
 
-  final labels = [
-    'Home',
-    'Explore',
-    'Pool',
-    // "Favorites",
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -41,6 +34,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: false,
       landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
@@ -59,8 +53,14 @@ class _BottomBarState extends State<BottomBar> {
               : const Icon(Icons.explore_outlined),
         ),
         BottomNavigationBarItem(
-          label: 'Pool',
+          label: 'Feed',
           icon: currentIndex == 2
+              ? const Icon(Icons.amp_stories)
+              : const Icon(Icons.amp_stories_outlined),
+        ),
+        BottomNavigationBarItem(
+          label: 'Pool',
+          icon: currentIndex == 3
               ? const Icon(Icons.photo_album)
               : const Icon(Icons.photo_album_outlined),
         ),
