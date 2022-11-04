@@ -2,10 +2,12 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends StatefulWidget {
@@ -25,39 +27,39 @@ class EditSavedSearchSheet extends StatefulWidget {
 }
 
 class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
-  final accountTextController = TextEditingController();
-  final keyTextController = TextEditingController();
+  final queryTextController = TextEditingController();
+  final labelTextController = TextEditingController();
 
-  final accountNameHasText = ValueNotifier(false);
-  final apiKeyHasText = ValueNotifier(false);
+  final queryHasText = ValueNotifier(false);
+  final labelsHasText = ValueNotifier(false);
 
   final compositeSubscription = CompositeSubscription();
 
   @override
   void initState() {
     super.initState();
-    accountTextController
+    queryTextController
         .textAsStream()
         .distinct()
-        .listen((event) => accountNameHasText.value = event.isNotEmpty)
+        .listen((event) => queryHasText.value = event.isNotEmpty)
         .addTo(compositeSubscription);
 
-    keyTextController
+    labelTextController
         .textAsStream()
         .distinct()
-        .listen((event) => apiKeyHasText.value = event.isNotEmpty)
+        .listen((event) => labelsHasText.value = event.isNotEmpty)
         .addTo(compositeSubscription);
 
     if (widget.initialValue != null) {
-      accountTextController.text = widget.initialValue!.query;
-      keyTextController.text = widget.initialValue!.labels.join(' ');
+      queryTextController.text = widget.initialValue!.query;
+      labelTextController.text = widget.initialValue!.labels.join(' ');
     }
   }
 
   @override
   void dispose() {
-    accountTextController.dispose();
-    keyTextController.dispose();
+    queryTextController.dispose();
+    labelTextController.dispose();
     compositeSubscription.dispose();
     super.dispose();
   }
@@ -85,18 +87,36 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             height: 16,
           ),
           TextField(
-            controller: accountTextController,
+            controller: queryTextController,
             maxLines: null,
             decoration: _getDecoration(
               context: context,
               hint: 'Query',
-              suffixIcon: ValueListenableBuilder<bool>(
-                valueListenable: accountNameHasText,
-                builder: (context, hasText, _) => hasText
-                    ? _ClearTextButton(
-                        onTap: () => accountTextController.clear(),
-                      )
-                    : const SizedBox.shrink(),
+              suffixIcon: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  customBorder: const CircleBorder(),
+                  onTap: () => showBarModalBottomSheet(
+                    context: context,
+                    duration: const Duration(milliseconds: 200),
+                    builder: (context) => SimpleTagSearchView(
+                      ensureValidTag: false,
+                      floatingActionButton: (text) => FloatingActionButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          queryTextController.text =
+                              '${queryTextController.text} $text';
+                        },
+                        child: const Icon(Icons.add),
+                      ),
+                      onSelected: (tag) {
+                        queryTextController.text =
+                            '${queryTextController.text} ${tag.value}';
+                      },
+                    ),
+                  ),
+                  child: const Icon(Icons.add),
+                ),
               ),
             ),
           ),
@@ -104,16 +124,16 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             height: 16,
           ),
           TextField(
-            controller: keyTextController,
+            controller: labelTextController,
             maxLines: null,
             decoration: _getDecoration(
               context: context,
               hint: 'Labels*',
               suffixIcon: ValueListenableBuilder<bool>(
-                valueListenable: apiKeyHasText,
+                valueListenable: labelsHasText,
                 builder: (context, hasText, _) => hasText
                     ? _ClearTextButton(
-                        onTap: () => keyTextController.clear(),
+                        onTap: () => labelTextController.clear(),
                       )
                     : const SizedBox.shrink(),
               ),
@@ -150,7 +170,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                   child: const Text('Cancel'),
                 ),
                 ValueListenableBuilder<bool>(
-                  valueListenable: accountNameHasText,
+                  valueListenable: queryHasText,
                   builder: (context, enable, _) => ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).iconTheme.color,
@@ -161,8 +181,8 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                     onPressed: enable
                         ? () {
                             widget.onSubmit(
-                              accountTextController.text,
-                              keyTextController.text,
+                              queryTextController.text,
+                              labelTextController.text,
                             );
                             Navigator.of(context).pop();
                           }
