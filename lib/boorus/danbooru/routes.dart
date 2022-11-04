@@ -31,7 +31,6 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
@@ -422,10 +421,9 @@ final savedSearchHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   return MultiBlocProvider(
     providers: [
-      BlocProvider(
-        create: (context) => SavedSearchBloc(
-          savedSearchRepository: context.read<SavedSearchRepository>(),
-        )..add(const SavedSearchFetched()),
+      BlocProvider.value(
+        value: context!.read<SavedSearchBloc>()
+          ..add(const SavedSearchFetched()),
       ),
     ],
     child: const SavedSearchPage(),

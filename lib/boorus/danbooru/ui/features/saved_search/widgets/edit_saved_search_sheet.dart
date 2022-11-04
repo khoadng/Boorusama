@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -68,6 +71,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
   @override
   Widget build(BuildContext context) {
     return Material(
+      color: Colors.transparent,
       child: Container(
         margin: EdgeInsets.only(
           left: 30,
@@ -114,7 +118,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                         ),
                         onSelected: (tag) {
                           final baseOffset =
-                              queryTextController.selection.baseOffset;
+                              max(0, queryTextController.selection.baseOffset);
                           queryTextController
                             ..text = StringUtils.addCharAtPosition(
                               queryTextController.text,

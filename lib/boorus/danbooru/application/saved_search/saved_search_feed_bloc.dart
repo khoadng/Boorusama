@@ -1,9 +1,11 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 
 enum SavedSearchFeedStatus {
@@ -16,39 +18,45 @@ enum SavedSearchFeedStatus {
 class SavedSearchFeedState extends Equatable {
   const SavedSearchFeedState({
     required this.savedSearches,
-    required this.refreshing,
+    // required this.refreshing,
     required this.status,
     required this.selectedSearch,
+    required this.savedSearchState,
   });
 
   factory SavedSearchFeedState.initial() => SavedSearchFeedState(
         savedSearches: const [],
-        refreshing: false,
+        // refreshing: false,
         status: SavedSearchFeedStatus.initial,
         selectedSearch: SavedSearch.empty(),
+        savedSearchState: SavedSearchState.initial(),
       );
+
+  bool get refreshing => savedSearchState.refreshing;
 
   final List<SavedSearch> savedSearches;
   final SavedSearchFeedStatus status;
-  final bool refreshing;
   final SavedSearch selectedSearch;
+  final SavedSearchState savedSearchState;
 
   SavedSearchFeedState copyWith({
     List<SavedSearch>? savedSearches,
-    bool? refreshing,
+    // bool? refreshing,
     SavedSearchFeedStatus? status,
     SavedSearch? selectedSearch,
+    SavedSearchState? savedSearchState,
   }) =>
       SavedSearchFeedState(
         savedSearches: savedSearches ?? this.savedSearches,
-        refreshing: refreshing ?? this.refreshing,
+        // refreshing: refreshing ?? this.refreshing,
         status: status ?? this.status,
         selectedSearch: selectedSearch ?? this.selectedSearch,
+        savedSearchState: savedSearchState ?? this.savedSearchState,
       );
 
   @override
   List<Object?> get props =>
-      [savedSearches, refreshing, status, selectedSearch];
+      [savedSearches, status, selectedSearch, savedSearchState];
 }
 
 abstract class SavedSearchFeedEvent extends Equatable {
@@ -73,47 +81,35 @@ class SavedSearchFeedSelectedTagChanged extends SavedSearchFeedEvent {
   List<Object?> get props => [savedSearch];
 }
 
+class _RefreshDone extends SavedSearchFeedEvent {
+  const _RefreshDone({
+    required this.data,
+  });
+
+  final List<SavedSearch> data;
+
+  @override
+  List<Object?> get props => [data];
+}
+
+class _SavedSearchStateChanged extends SavedSearchFeedEvent {
+  const _SavedSearchStateChanged({
+    required this.state,
+  });
+
+  final SavedSearchState state;
+
+  @override
+  List<Object?> get props => [state];
+}
+
 class SavedSearchFeedBloc
     extends Bloc<SavedSearchFeedEvent, SavedSearchFeedState> {
   SavedSearchFeedBloc({
-    required SavedSearchRepository savedSearchRepository,
+    required SavedSearchBloc savedSearchBloc,
   }) : super(SavedSearchFeedState.initial()) {
     on<SavedSearchFeedRefreshed>((event, emit) async {
-      await tryAsync<List<SavedSearch>>(
-        action: () => savedSearchRepository.getSavedSearches(page: 1),
-        onLoading: () {
-          emit(state.copyWith(
-            refreshing: true,
-            status: SavedSearchFeedStatus.initial,
-          ));
-        },
-        onUnknownFailure: (stackTrace, error) => emit(state.copyWith(
-          refreshing: false,
-          status: SavedSearchFeedStatus.failure,
-        )),
-        onSuccess: (data) async {
-          if (data.isNotEmpty) {
-            final searches = [
-              ...data,
-            ]
-              ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
-              ..insert(0, SavedSearch.all());
-
-            emit(state.copyWith(
-              status: SavedSearchFeedStatus.loaded,
-              refreshing: false,
-              selectedSearch: searches.first,
-              savedSearches: searches,
-            ));
-          } else {
-            emit(state.copyWith(
-              status: SavedSearchFeedStatus.noData,
-              refreshing: false,
-              savedSearches: [],
-            ));
-          }
-        },
-      );
+      savedSearchBloc.add(const SavedSearchFetched());
     });
 
     on<SavedSearchFeedSelectedTagChanged>((event, emit) {
@@ -121,5 +117,58 @@ class SavedSearchFeedBloc
         selectedSearch: event.savedSearch,
       ));
     });
+
+    on<_RefreshDone>((event, emit) {
+      final data = event.data;
+
+      if (data.isNotEmpty) {
+        final searches = [
+          ...data,
+        ]
+          ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
+          ..insert(0, SavedSearch.all());
+
+        emit(state.copyWith(
+          status: SavedSearchFeedStatus.loaded,
+          selectedSearch: searches.first,
+          savedSearches: searches,
+        ));
+      } else {
+        emit(state.copyWith(
+          status: SavedSearchFeedStatus.noData,
+          savedSearches: [],
+        ));
+      }
+    });
+
+    on<_SavedSearchStateChanged>((event, emit) {
+      emit(state.copyWith(savedSearchState: event.state, savedSearches: [
+        SavedSearch.all(),
+        ...event.state.data,
+      ]));
+    });
+
+    savedSearchBloc.stream
+        .distinct()
+        .listen((event) => add(_SavedSearchStateChanged(state: event)))
+        .addTo(compositeSubscription);
+
+    savedSearchBloc.stream
+        .pairwise()
+        .where((event) =>
+            event.first.status == LoadStatus.initial &&
+            event[1].status == LoadStatus.success)
+        .map((event) => event[1].data)
+        .listen((data) => add(_RefreshDone(data: data)))
+        .addTo(compositeSubscription);
+  }
+
+  final compositeSubscription = CompositeSubscription();
+
+  @override
+  Future<void> close() {
+    compositeSubscription.dispose();
+
+    return super.close();
   }
 }
