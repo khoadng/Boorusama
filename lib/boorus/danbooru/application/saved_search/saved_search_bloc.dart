@@ -153,6 +153,8 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
     });
 
     on<SavedSearchDeleted>((event, emit) async {
+      if (!event.savedSearch.canDelete) return;
+
       await tryAsync<bool>(
         action: () =>
             savedSearchRepository.deleteSavedSearch(event.savedSearch.id),

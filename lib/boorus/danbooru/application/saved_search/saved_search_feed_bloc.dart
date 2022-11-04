@@ -93,12 +93,17 @@ class SavedSearchFeedBloc
         )),
         onSuccess: (data) async {
           if (data.isNotEmpty) {
+            final searches = [
+              ...data,
+            ]
+              ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
+              ..insert(0, SavedSearch.all());
+
             emit(state.copyWith(
               status: SavedSearchFeedStatus.loaded,
               refreshing: false,
-              selectedSearch: data.first,
-              savedSearches: [...data]
-                ..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+              selectedSearch: searches.first,
+              savedSearches: searches,
             ));
           } else {
             emit(state.copyWith(

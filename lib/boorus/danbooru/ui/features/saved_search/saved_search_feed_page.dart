@@ -94,7 +94,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                     SliverToBoxAdapter(
                       child: Container(
                         margin: const EdgeInsets.symmetric(
-                          horizontal: 24,
+                          horizontal: 12,
                           vertical: 16,
                         ),
                         height: 50,
@@ -129,6 +129,9 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
             final isSelected = savedSearchState.selectedSearch ==
                 savedSearchState.savedSearches[index];
 
+            final text = savedSearchState.savedSearches[index].labels.first
+                .removeUnderscoreWithSpace();
+
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: ChoiceChip(
@@ -142,22 +145,19 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                         savedSearchState.savedSearches[index];
                   }
                 },
-                padding: const EdgeInsets.all(4),
+                padding: EdgeInsets.symmetric(
+                  vertical: 4,
+                  horizontal: text.length < 4 ? 12 : 4,
+                ),
                 labelPadding: const EdgeInsets.all(1),
                 visualDensity: VisualDensity.compact,
                 side: BorderSide(
                   width: 0.5,
                   color: Theme.of(context).hintColor,
                 ),
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.85,
-                  ),
-                  child: Text(
-                    savedSearchState.savedSearches[index].labels.first
-                        .removeUnderscoreWithSpace(),
-                    overflow: TextOverflow.fade,
-                  ),
+                label: Text(
+                  text,
+                  overflow: TextOverflow.fade,
                 ),
               ),
             );

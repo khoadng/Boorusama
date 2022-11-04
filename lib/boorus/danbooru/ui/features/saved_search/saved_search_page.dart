@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/core/core.dart';
@@ -112,42 +113,49 @@ class SavedSearchPage extends StatelessWidget {
                                               'search:${savedSearch.labels.first}',
                                         )
                                     : null,
-                                onLongPress: () {
-                                  final bloc = context.read<SavedSearchBloc>();
-                                  showAdaptiveBottomSheet(
-                                    context,
-                                    builder: (_) => ModalSavedSearchAction(
-                                      onDelete: () =>
-                                          bloc.add(SavedSearchDeleted(
-                                        savedSearch: savedSearch,
-                                      )),
-                                      onEdit: () => showAdaptiveBottomSheet(
-                                        context,
-                                        backgroundColor:
-                                            Theme.of(context).backgroundColor,
-                                        builder: (_) => EditSavedSearchSheet(
-                                          title: 'Update saved search',
-                                          initialValue: savedSearch,
-                                          onSubmit: (query, label) =>
-                                              bloc.add(SavedSearchUpdated(
-                                            id: savedSearch.id,
-                                            label: label,
-                                            query: query,
-                                            onUpdated: (data) =>
-                                                showSimpleSnackBar(
-                                              context: context,
-                                              duration:
-                                                  const Duration(seconds: 1),
-                                              content: const Text(
-                                                'Saved search has been updated',
+                                onLongPress: savedSearch.readOnly
+                                    ? null
+                                    : () {
+                                        final bloc =
+                                            context.read<SavedSearchBloc>();
+                                        showAdaptiveBottomSheet(
+                                          context,
+                                          builder: (_) =>
+                                              ModalSavedSearchAction(
+                                            onDelete: () =>
+                                                bloc.add(SavedSearchDeleted(
+                                              savedSearch: savedSearch,
+                                            )),
+                                            onEdit: () =>
+                                                showAdaptiveBottomSheet(
+                                              context,
+                                              backgroundColor: Theme.of(context)
+                                                  .backgroundColor,
+                                              builder: (_) =>
+                                                  EditSavedSearchSheet(
+                                                title: 'Update saved search',
+                                                initialValue: savedSearch,
+                                                onSubmit: (query, label) =>
+                                                    bloc.add(SavedSearchUpdated(
+                                                  id: savedSearch.id,
+                                                  label: label,
+                                                  query: query,
+                                                  onUpdated: (data) =>
+                                                      showSimpleSnackBar(
+                                                    context: context,
+                                                    duration: const Duration(
+                                                      seconds: 1,
+                                                    ),
+                                                    content: const Text(
+                                                      'Saved search has been updated',
+                                                    ),
+                                                  ),
+                                                )),
                                               ),
                                             ),
-                                          )),
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
+                                          ),
+                                        );
+                                      },
                               );
                             },
                             childCount: state.data.length,
