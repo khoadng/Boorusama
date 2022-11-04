@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:basic_utils/basic_utils.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -105,14 +106,26 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                         floatingActionButton: (text) => FloatingActionButton(
                           onPressed: () {
                             Navigator.of(context).pop();
+
                             queryTextController.text =
                                 '${queryTextController.text} $text';
                           },
                           child: const Icon(Icons.add),
                         ),
                         onSelected: (tag) {
-                          queryTextController.text =
-                              '${queryTextController.text} ${tag.value}';
+                          final baseOffset =
+                              queryTextController.selection.baseOffset;
+                          queryTextController
+                            ..text = StringUtils.addCharAtPosition(
+                              queryTextController.text,
+                              tag.value,
+                              baseOffset,
+                            )
+                            ..selection = TextSelection.fromPosition(
+                              TextPosition(
+                                offset: baseOffset + tag.value.length,
+                              ),
+                            );
                         },
                       ),
                     ),
