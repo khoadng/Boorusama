@@ -44,13 +44,9 @@ class BooruImage extends StatelessWidget {
                   borderRadius: borderRadius ??
                       const BorderRadius.all(Radius.circular(8)),
                 ),
-          errorWidget: (context, url, error) => Container(
-            decoration: BoxDecoration(
-              borderRadius:
-                  borderRadius ?? const BorderRadius.all(Radius.circular(8)),
-              color: Theme.of(context).cardColor,
-            ),
-            child: const Center(child: Icon(Icons.broken_image_rounded)),
+          errorWidget: (context, url, error) => ErrorPlaceholder(
+            borderRadius:
+                borderRadius ?? const BorderRadius.all(Radius.circular(8)),
           ),
           fadeInDuration: const Duration(microseconds: 200),
           fadeOutDuration: const Duration(microseconds: 500),
@@ -86,6 +82,39 @@ class ImagePlaceHolder extends StatelessWidget {
           child: Image.asset(
             'assets/images/placeholder.png',
             color: Theme.of(context).backgroundColor.withOpacity(0.5),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class ErrorPlaceholder extends StatelessWidget {
+  const ErrorPlaceholder({
+    super.key,
+    this.borderRadius,
+  });
+
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius:
+            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
+      ),
+      child: LayoutBuilder(
+        builder: (context, constraints) => Container(
+          margin: EdgeInsets.symmetric(
+            horizontal: constraints.maxWidth * 0.25,
+            vertical: constraints.maxHeight * 0.25,
+          ),
+          child: Image.asset(
+            'assets/images/error.png',
+            color: Theme.of(context).backgroundColor.withOpacity(0.7),
           ),
         ),
       ),
