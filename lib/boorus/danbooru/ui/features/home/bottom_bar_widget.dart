@@ -53,12 +53,6 @@ class _BottomBarState extends State<BottomBar> {
               : const Icon(Icons.explore_outlined),
         ),
         BottomNavigationBarItem(
-          label: 'Feed',
-          icon: currentIndex == 2
-              ? const Icon(Icons.amp_stories)
-              : const Icon(Icons.amp_stories_outlined),
-        ),
-        BottomNavigationBarItem(
           label: 'Pool',
           icon: currentIndex == 3
               ? const Icon(Icons.photo_album)

@@ -8,14 +8,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/latest_posts_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_feed_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/display.dart';
@@ -112,18 +109,6 @@ class _HomePageState extends State<HomePage> {
                                         value: 2,
                                         index: index,
                                         selectedIcon:
-                                            const Icon(Icons.amp_stories),
-                                        icon: const Icon(
-                                          Icons.amp_stories_outlined,
-                                        ),
-                                        title: const Text('Followed'),
-                                        onTap: (value) =>
-                                            viewIndex.value = value,
-                                      ),
-                                      _NavigationTile(
-                                        value: 3,
-                                        index: index,
-                                        selectedIcon:
                                             const Icon(Icons.photo_album),
                                         icon: const Icon(
                                           Icons.photo_album_outlined,
@@ -173,14 +158,6 @@ class _HomePageState extends State<HomePage> {
                                         ),
                                         NavigationRailDestination(
                                           icon: index == 2
-                                              ? const Icon(Icons.amp_stories)
-                                              : const Icon(
-                                                  Icons.amp_stories_outlined,
-                                                ),
-                                          label: const Text('Explore'),
-                                        ),
-                                        NavigationRailDestination(
-                                          icon: index == 3
                                               ? const Icon(Icons.photo_album)
                                               : const Icon(
                                                   Icons.photo_album_outlined,
@@ -225,20 +202,6 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               const ExplorePage(),
-                              MultiBlocProvider(
-                                providers: [
-                                  BlocProvider(
-                                    create: (context) => PostBloc.of(context),
-                                  ),
-                                  BlocProvider(
-                                    create: (context) => SavedSearchFeedBloc(
-                                      savedSearchBloc:
-                                          context.read<SavedSearchBloc>(),
-                                    )..add(const SavedSearchFeedRefreshed()),
-                                  ),
-                                ],
-                                child: const SavedSearchFeedPage(),
-                              ),
                               MultiBlocProvider(
                                 providers: [
                                   BlocProvider(

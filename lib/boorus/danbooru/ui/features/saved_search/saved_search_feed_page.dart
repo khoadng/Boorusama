@@ -3,15 +3,17 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/fetchers/saved_search_post_fetcher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
@@ -62,9 +64,14 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
           title: const Text('Following'),
           actions: [
             IconButton(
-              onPressed: () =>
-                  AppRouter.router.navigateTo(context, '/saved_search'),
-              icon: const Icon(Icons.edit),
+              onPressed: () => showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) => BlocProvider.value(
+                  value: context.read<SavedSearchBloc>(),
+                  child: const SavedSearchPage(),
+                ),
+              ),
+              icon: const Icon(Icons.settings),
             ),
           ],
         ),
@@ -73,7 +80,6 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
             return BlocBuilder<PostBloc, PostState>(
               builder: (context, state) {
                 return InfiniteLoadListScrollView(
-                  extendBody: Screen.of(context).size == ScreenSize.small,
                   enableLoadMore: state.hasMore,
                   onRefresh: (controller) {
                     _sendRefresh(savedSearchState.selectedSearch);
