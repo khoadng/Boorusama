@@ -100,6 +100,25 @@ class SideBarMenu extends StatelessWidget {
                         ),
                       if (state.data! != Account.empty)
                         ListTile(
+                          leading: const Icon(Icons.search),
+                          title: const Text('Saved search'),
+                          onTap: () {
+                            if (popOnSelect) Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(
+                              context,
+                              '/saved_search',
+                              routeSettings: RouteSettings(
+                                arguments: [state.data!.username],
+                              ),
+                              transition:
+                                  Screen.of(context).size == ScreenSize.small
+                                      ? TransitionType.inFromRight
+                                      : null,
+                            );
+                          },
+                        ),
+                      if (state.data! != Account.empty)
+                        ListTile(
                           leading: const FaIcon(FontAwesomeIcons.ban, size: 20),
                           title: const Text(
                             'blacklisted_tags.blacklisted_tags',

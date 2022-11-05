@@ -73,6 +73,11 @@ class AppRouter {
         transitionType: TransitionType.inFromBottom,
       )
       ..define(
+        '/saved_search',
+        handler: savedSearchHandler,
+        transitionType: TransitionType.material,
+      )
+      ..define(
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.material,

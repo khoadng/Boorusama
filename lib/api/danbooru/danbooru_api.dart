@@ -322,4 +322,36 @@ abstract class Api {
     @Path() int postId,
     @Body() Map<String, dynamic> map,
   );
+
+  @GET('/saved_searches.json')
+  Future<HttpResponse> getSavedSearches(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
+  @POST('/saved_searches.json')
+  @FormUrlEncoded()
+  Future<HttpResponse> postSavedSearch(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Body() Map<String, dynamic> map,
+  );
+
+  @PATCH('/saved_searches/{id}.json')
+  @FormUrlEncoded()
+  Future<HttpResponse> patchSavedSearch(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Path() int id,
+    @Body() Map<String, dynamic> map,
+  );
+
+  @DELETE('/saved_searches/{id}.json')
+  Future<HttpResponse> deleteSavedSearch(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Path() int id,
+  );
 }

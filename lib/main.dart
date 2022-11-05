@@ -38,12 +38,14 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
@@ -317,6 +319,9 @@ void main() async {
                     accountRepository: accountRepo,
                   );
 
+                  final savedSearchRepo =
+                      SavedSearchRepositoryApi(api, accountRepo);
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit = SearchKeywordCubit(
@@ -427,6 +432,9 @@ void main() async {
                       ),
                       RepositoryProvider<PostCountRepository>.value(
                         value: postCountRepo,
+                      ),
+                      RepositoryProvider<SavedSearchRepository>.value(
+                        value: savedSearchRepo,
                       ),
                     ],
                     child: MultiBlocProvider(
