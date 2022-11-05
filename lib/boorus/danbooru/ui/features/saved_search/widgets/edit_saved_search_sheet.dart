@@ -93,6 +93,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
               height: 16,
             ),
             TextField(
+              autofocus: true,
               controller: queryTextController,
               maxLines: null,
               decoration: _getDecoration(

@@ -77,6 +77,8 @@ const supportedLocales = [
 ];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
+const savedSearchHelpUrl =
+    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

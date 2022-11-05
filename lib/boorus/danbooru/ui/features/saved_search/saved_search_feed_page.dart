@@ -16,7 +16,10 @@ import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/generic_no_data_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
+import 'package:boorusama/main.dart';
+import 'widgets/edit_saved_search_sheet.dart';
 
 class SavedSearchFeedPage extends StatefulWidget {
   const SavedSearchFeedPage({
@@ -61,7 +64,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Following'),
+          title: const Text('Feed'),
           actions: [
             IconButton(
               onPressed: () => showMaterialModalBottomSheet(
@@ -77,6 +80,74 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
         ),
         body: BlocBuilder<SavedSearchFeedBloc, SavedSearchFeedState>(
           builder: (context, savedSearchState) {
+            if (savedSearchState.savedSearches.isEmpty) {
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 48,
+                        horizontal: 8,
+                      ),
+                      child: Column(
+                        children: [
+                          const GenericNoDataBox(
+                            text: "You haven't add any search yet",
+                          ),
+                          TextButton(
+                            onPressed: () => launchExternalUrl(
+                              Uri.parse(savedSearchHelpUrl),
+                            ),
+                            child: const Text('What is it?'),
+                          ),
+                          ElevatedButton(
+                            onPressed: () => _onAddSearch(context),
+                            child: const Text('Add'),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                      thickness: 2,
+                    ),
+                    const ListTile(
+                      title: Text('Examples'),
+                    ),
+                    _ExampleContainer(
+                      title: 'Follow artists',
+                      query: 'artistA or artistB or artistC or artistD',
+                      explain:
+                          'Follow posts from artistA, artistB, artistC, artistD.',
+                      onTry: (query) => _onAddSearch(context, query: query),
+                    ),
+                    _ExampleContainer(
+                      title: 'Follow specific characters from an artist',
+                      query: 'artistA (characterA or characterB or characterC)',
+                      explain:
+                          'Follow posts that feature characterA or characterB or characterC from artistA.',
+                      onTry: (query) => _onAddSearch(context, query: query),
+                    ),
+                    _ExampleContainer(
+                      title: 'Follow a specific thing',
+                      query:
+                          'artistA ((characterA 1girl -ocean) or (characterB swimsuit))',
+                      explain:
+                          'Follow posts that feature characterA with 1girl tag but without the ocean tag or characterB with swimsuit tag from artistA.',
+                      onTry: (query) => _onAddSearch(context, query: query),
+                    ),
+                    _ExampleContainer(
+                      title: 'Follow random tags',
+                      query: 'artistA or characterB or scenery',
+                      explain:
+                          'Follow posts that include artistA or characterB or scenery.',
+                      onTry: (query) => _onAddSearch(context, query: query),
+                    ),
+                  ],
+                ),
+              );
+            }
+
             return BlocBuilder<PostBloc, PostState>(
               builder: (context, state) {
                 return InfiniteLoadListScrollView(
@@ -115,6 +186,25 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  void _onAddSearch(
+    BuildContext context, {
+    String? query,
+  }) {
+    final bloc = context.read<SavedSearchBloc>();
+
+    showMaterialModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).backgroundColor,
+      builder: (_) => EditSavedSearchSheet(
+        initialValue: SavedSearch.empty().copyWith(query: query),
+        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
+          query: query,
+          label: label,
+        )),
       ),
     );
   }
@@ -177,4 +267,65 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
             tag: search.toQuery(),
             fetcher: SavedSearchPostFetcher(search),
           ));
+}
+
+class _ExampleContainer extends StatelessWidget {
+  const _ExampleContainer({
+    required this.title,
+    required this.query,
+    required this.explain,
+    required this.onTry,
+  });
+
+  final String title;
+  final String query;
+  final String explain;
+  final void Function(String query) onTry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
+      child: Card(
+        margin: const EdgeInsets.all(8),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+              ),
+              Card(
+                margin: const EdgeInsets.all(8),
+                color: Theme.of(context).backgroundColor,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                  child: Text(query),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8),
+                child: Text(explain),
+              ),
+              Row(
+                children: [
+                  const Spacer(),
+                  ElevatedButton(
+                    onPressed: () => onTry(query),
+                    child: const Text('Try it'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }

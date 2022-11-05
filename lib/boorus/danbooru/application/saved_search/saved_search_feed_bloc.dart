@@ -154,6 +154,16 @@ class SavedSearchFeedBloc
         .addTo(compositeSubscription);
 
     savedSearchBloc.stream
+        .distinct()
+        .pairwise()
+        .where((event) =>
+            (event.first.data.isEmpty && event[1].data.isNotEmpty) ||
+            (event.first.data.isNotEmpty && event[1].data.isEmpty))
+        .map((event) => event[1])
+        .listen((event) => add(const SavedSearchFeedRefreshed()))
+        .addTo(compositeSubscription);
+
+    savedSearchBloc.stream
         .pairwise()
         .where((event) =>
             event.first.status == LoadStatus.initial &&
