@@ -124,8 +124,7 @@ class SavedSearchFeedBloc
       if (data.isNotEmpty) {
         final searches = [
           ...data,
-        ]
-          ..sort((a, b) => b.createdAt.compareTo(a.createdAt))
+        ].where((e) => e.labels.isNotEmpty).toList()
           ..insert(0, SavedSearch.all());
 
         emit(state.copyWith(
@@ -142,10 +141,13 @@ class SavedSearchFeedBloc
     });
 
     on<_SavedSearchStateChanged>((event, emit) {
-      emit(state.copyWith(savedSearchState: event.state, savedSearches: [
-        SavedSearch.all(),
-        ...event.state.data,
-      ]));
+      emit(state.copyWith(
+        savedSearchState: event.state,
+        savedSearches: [
+          SavedSearch.all(),
+          ...event.state.data.where((e) => e.labels.isNotEmpty),
+        ],
+      ));
     });
 
     savedSearchBloc.stream

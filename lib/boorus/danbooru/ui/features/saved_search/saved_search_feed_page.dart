@@ -172,7 +172,11 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                           vertical: 16,
                         ),
                         height: 50,
-                        child: _buildTags(savedSearchState),
+                        child: _buildTags(
+                          savedSearchState.savedSearches,
+                          savedSearchState.selectedSearch,
+                          savedSearchState.status,
+                        ),
                       ),
                     ),
                     HomePostGrid(controller: controller),
@@ -206,8 +210,12 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
     );
   }
 
-  Widget _buildTags(SavedSearchFeedState savedSearchState) {
-    switch (savedSearchState.status) {
+  Widget _buildTags(
+    List<SavedSearch> searches,
+    SavedSearch selectedSearch,
+    SavedSearchFeedStatus status,
+  ) {
+    switch (status) {
       case SavedSearchFeedStatus.initial:
         return const TagChipsPlaceholder();
       case SavedSearchFeedStatus.noData:
@@ -217,13 +225,12 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
         return ListView.builder(
           shrinkWrap: true,
           scrollDirection: Axis.horizontal,
-          itemCount: savedSearchState.savedSearches.length,
+          itemCount: searches.length,
           itemBuilder: (context, index) {
-            final isSelected = savedSearchState.selectedSearch ==
-                savedSearchState.savedSearches[index];
+            final isSelected = selectedSearch == searches[index];
 
-            final text = savedSearchState.savedSearches[index].labels.first
-                .removeUnderscoreWithSpace();
+            final text =
+                searches[index].labels.first.removeUnderscoreWithSpace();
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -234,8 +241,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                 selected: isSelected,
                 onSelected: (selected) {
                   if (!isSelected) {
-                    _selectedSearchStream.value =
-                        savedSearchState.savedSearches[index];
+                    _selectedSearchStream.value = searches[index];
                   }
                 },
                 padding: EdgeInsets.symmetric(
