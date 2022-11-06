@@ -67,6 +67,7 @@
             "size" : "Kích thước",
             "resolution" : "Độ phân giải",
             "rating" : "Xếp loại",
+            "file_format" : "Định dạng file",
             "share" : {
                 "source" : "Chia sẻ link nguồn",
                 "booru" : "Chia sẻ link booru",

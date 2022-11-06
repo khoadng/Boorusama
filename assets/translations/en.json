@@ -67,6 +67,7 @@
             "size" : "Size",
             "resolution" : "Resolution",
             "rating" : "Rating",
+            "file_format" : "File format",
             "share" : {
                 "source" : "Share source link",
                 "booru" : "Share booru link",
