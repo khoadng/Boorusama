@@ -118,6 +118,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/icon/
+    - assets/images/
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json
