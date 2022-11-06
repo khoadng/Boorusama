@@ -63,6 +63,7 @@
             },
             "has_parent_notice" : "Пост имеет родителя",
             "has_children_notice" : "Пост имеет дочерний пост",
+            "file_details" : "File details",
             "size" : "Размер",
             "resolution" : "Разрешение",
             "rating" : "Рейтинг",

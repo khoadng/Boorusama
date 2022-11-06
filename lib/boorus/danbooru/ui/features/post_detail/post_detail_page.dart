@@ -31,6 +31,7 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
+import 'widgets/file_details_section.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
@@ -499,6 +500,10 @@ class _CarouselContentState extends State<_CarouselContent> {
                             ),
                           );
                         },
+                      ),
+                      const Divider(height: 8, thickness: 1),
+                      FileDetailsSection(
+                        post: post,
                       ),
                       const Divider(height: 8, thickness: 1),
                       RecommendArtistList(

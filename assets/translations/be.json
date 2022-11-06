@@ -63,6 +63,7 @@
             },
             "has_parent_notice" : "Малюнак мае бацьку",
             "has_children_notice" : "Малюнак мае дачэрны малюнак",
+            "file_details" : "File details",
             "size" : "Памер",
             "resolution" : "Разрашэнне",
             "rating" : "Рэйтынг",
