@@ -482,11 +482,18 @@ class _CarouselContentState extends State<_CarouselContent> {
                                   //         : const SizedBox.shrink();
                                   // },
                                   // ),
-                                  children: [
-                                    SimplePostTagList(
-                                      tags: tags,
+                                  onExpansionChanged: (value) => value
+                                      ? context
+                                          .read<TagBloc>()
+                                          .add(TagFetched(tags: post.tags))
+                                      : null,
+                                  children: const [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 8),
+                                      child: PostTagList(),
                                     ),
-                                    const SizedBox(height: 8),
+                                    SizedBox(height: 8),
                                   ],
                                 );
                               },

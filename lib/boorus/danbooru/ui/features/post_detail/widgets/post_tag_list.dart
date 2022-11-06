@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
@@ -88,12 +89,25 @@ class PostTagList extends StatelessWidget {
                   value: 'wiki',
                   child: const Text('post.detail.open_wiki').tr(),
                 ),
+                const PopupMenuItem(
+                  value: 'copy_and_move_to_saved_search',
+                  child: Text(
+                    'Copy to clipboard and move to saved search',
+                  ),
+                ),
               ],
               onSelected: (value) {
                 if (value == 'blacklist') {
                   onAddToBlacklisted(tag);
                 } else if (value == 'wiki') {
                   launchWikiPage(state.booru.url, tag.rawName);
+                } else if (value == 'copy_and_move_to_saved_search') {
+                  Clipboard.setData(
+                    ClipboardData(text: tag.rawName),
+                  ).then((value) => AppRouter.router.navigateTo(
+                        context,
+                        '/saved_search/edit',
+                      ));
                 }
               },
               child: GestureDetector(
