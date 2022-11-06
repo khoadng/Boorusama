@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tags_x/flutter_tags_x.dart' hide TagsState;
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tag.dart';
@@ -30,44 +31,50 @@ class PostTagList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlacklistedTagProviderWidget(
-      builder: (context, action) => BlocBuilder<TagBloc, TagState>(
-        builder: (context, state) {
-          if (state.status == LoadStatus.success) {
-            final widgets = <Widget>[];
-            for (final g in state.tags!) {
-              widgets
-                ..add(_TagBlockTitle(
-                  title: g.groupName,
-                  isFirstBlock: g.groupName == state.tags!.first.groupName,
-                ))
-                ..add(_buildTags(
-                  context,
-                  g.tags,
-                  onAddToBlacklisted: (tag) => action(tag),
-                ));
-            }
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) {
+        return BlacklistedTagProviderWidget(
+          builder: (context, action) => BlocBuilder<TagBloc, TagState>(
+            builder: (context, state) {
+              if (state.status == LoadStatus.success) {
+                final widgets = <Widget>[];
+                for (final g in state.tags!) {
+                  widgets
+                    ..add(_TagBlockTitle(
+                      title: g.groupName,
+                      isFirstBlock: g.groupName == state.tags!.first.groupName,
+                    ))
+                    ..add(_buildTags(
+                      context,
+                      authState,
+                      g.tags,
+                      onAddToBlacklisted: (tag) => action(tag),
+                    ));
+                }
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...widgets,
-              ],
-            );
-          } else {
-            return const Padding(
-              padding: EdgeInsets.only(top: 32),
-              child: Center(child: CircularProgressIndicator.adaptive()),
-            );
-          }
-        },
-      ),
-      operation: BlacklistedOperation.add,
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ...widgets,
+                  ],
+                );
+              } else {
+                return const Padding(
+                  padding: EdgeInsets.only(top: 32),
+                  child: Center(child: CircularProgressIndicator.adaptive()),
+                );
+              }
+            },
+          ),
+          operation: BlacklistedOperation.add,
+        );
+      },
     );
   }
 
   Widget _buildTags(
     BuildContext context,
+    AuthenticationState authenticationState,
     List<Tag> tags, {
     required void Function(Tag tag) onAddToBlacklisted,
   }) {
@@ -89,12 +96,13 @@ class PostTagList extends StatelessWidget {
                   value: 'wiki',
                   child: const Text('post.detail.open_wiki').tr(),
                 ),
-                const PopupMenuItem(
-                  value: 'copy_and_move_to_saved_search',
-                  child: Text(
-                    'Copy to clipboard and move to saved search',
+                if (authenticationState is Authenticated)
+                  const PopupMenuItem(
+                    value: 'copy_and_move_to_saved_search',
+                    child: Text(
+                      'Copy to clipboard and move to saved search',
+                    ),
                   ),
-                ),
               ],
               onSelected: (value) {
                 if (value == 'blacklist') {

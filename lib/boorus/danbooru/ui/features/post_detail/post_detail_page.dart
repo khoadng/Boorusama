@@ -32,7 +32,6 @@ import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
 import 'widgets/recommend_character_list.dart';
-import 'widgets/simple_post_tag_list.dart';
 import 'widgets/widgets.dart';
 
 double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
