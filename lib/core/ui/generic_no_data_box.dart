@@ -1,9 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:easy_localization/easy_localization.dart';
-
 class GenericNoDataBox extends StatelessWidget {
   const GenericNoDataBox({
     super.key,
@@ -20,7 +17,7 @@ class GenericNoDataBox extends StatelessWidget {
           child: Text(
             text,
             style: Theme.of(context).textTheme.titleLarge,
-          ).tr(),
+          ),
         ),
       ),
     );

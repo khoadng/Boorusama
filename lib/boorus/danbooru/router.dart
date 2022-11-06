@@ -78,6 +78,11 @@ class AppRouter {
         transitionType: TransitionType.material,
       )
       ..define(
+        '/saved_search/edit',
+        handler: savedSearchEditHandler,
+        transitionType: TransitionType.inFromRight,
+      )
+      ..define(
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.material,

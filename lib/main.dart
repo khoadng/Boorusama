@@ -27,6 +27,7 @@ import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
@@ -76,6 +77,8 @@ const supportedLocales = [
 ];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
+const savedSearchHelpUrl =
+    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -383,6 +386,10 @@ void main() async {
                     ),
                   );
 
+                  final savedSearchBloc = SavedSearchBloc(
+                    savedSearchRepository: savedSearchRepo,
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -456,6 +463,7 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: savedSearchBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

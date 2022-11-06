@@ -1,11 +1,17 @@
+// Dart imports:
+import 'dart:math';
+
 // Flutter imports:
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:basic_utils/basic_utils.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends StatefulWidget {
@@ -25,155 +31,189 @@ class EditSavedSearchSheet extends StatefulWidget {
 }
 
 class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
-  final accountTextController = TextEditingController();
-  final keyTextController = TextEditingController();
+  final queryTextController = TextEditingController();
+  final labelTextController = TextEditingController();
 
-  final accountNameHasText = ValueNotifier(false);
-  final apiKeyHasText = ValueNotifier(false);
+  final queryHasText = ValueNotifier(false);
+  final labelsHasText = ValueNotifier(false);
 
   final compositeSubscription = CompositeSubscription();
 
   @override
   void initState() {
     super.initState();
-    accountTextController
+    queryTextController
         .textAsStream()
         .distinct()
-        .listen((event) => accountNameHasText.value = event.isNotEmpty)
+        .listen((event) => queryHasText.value = event.isNotEmpty)
         .addTo(compositeSubscription);
 
-    keyTextController
+    labelTextController
         .textAsStream()
         .distinct()
-        .listen((event) => apiKeyHasText.value = event.isNotEmpty)
+        .listen((event) => labelsHasText.value = event.isNotEmpty)
         .addTo(compositeSubscription);
 
     if (widget.initialValue != null) {
-      accountTextController.text = widget.initialValue!.query;
-      keyTextController.text = widget.initialValue!.labels.join(' ');
+      queryTextController.text = widget.initialValue!.query;
+      labelTextController.text = widget.initialValue!.labels.join(' ');
     }
   }
 
   @override
   void dispose() {
-    accountTextController.dispose();
-    keyTextController.dispose();
+    queryTextController.dispose();
+    labelTextController.dispose();
     compositeSubscription.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: 30,
-        right: 30,
-        top: 1,
-        bottom: MediaQuery.of(context).viewInsets.bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 24, bottom: 8),
-            child: Text(
-              widget.title ?? 'Add a saved search',
-              style: Theme.of(context).textTheme.headline6,
-            ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          TextField(
-            controller: accountTextController,
-            maxLines: null,
-            decoration: _getDecoration(
-              context: context,
-              hint: 'Query',
-              suffixIcon: ValueListenableBuilder<bool>(
-                valueListenable: accountNameHasText,
-                builder: (context, hasText, _) => hasText
-                    ? _ClearTextButton(
-                        onTap: () => accountTextController.clear(),
-                      )
-                    : const SizedBox.shrink(),
+    return Material(
+      color: Colors.transparent,
+      child: Container(
+        margin: EdgeInsets.only(
+          left: 30,
+          right: 30,
+          top: 1,
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 24, bottom: 8),
+              child: Text(
+                widget.title ?? 'Add a saved search',
+                style: Theme.of(context).textTheme.headline6,
               ),
             ),
-          ),
-          const SizedBox(
-            height: 16,
-          ),
-          TextField(
-            controller: keyTextController,
-            maxLines: null,
-            decoration: _getDecoration(
-              context: context,
-              hint: 'Labels*',
-              suffixIcon: ValueListenableBuilder<bool>(
-                valueListenable: apiKeyHasText,
-                builder: (context, hasText, _) => hasText
-                    ? _ClearTextButton(
-                        onTap: () => keyTextController.clear(),
-                      )
-                    : const SizedBox.shrink(),
-              ),
+            const SizedBox(
+              height: 16,
             ),
-          ),
-          Container(
-            margin: const EdgeInsets.all(8),
-            child: Text(
-              '*A list of tags to help categorize this search. Space delimited.',
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                    color: Theme.of(context).hintColor,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w400,
-                    fontStyle: FontStyle.italic,
-                  ),
-            ),
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 8, bottom: 16),
-            child: ButtonBar(
-              alignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Theme.of(context).iconTheme.color,
-                    backgroundColor: Theme.of(context).cardColor,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(16)),
+            TextField(
+              autofocus: true,
+              controller: queryTextController,
+              maxLines: null,
+              decoration: _getDecoration(
+                context: context,
+                hint: 'Query',
+                suffixIcon: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    customBorder: const CircleBorder(),
+                    onTap: () => showBarModalBottomSheet(
+                      context: context,
+                      duration: const Duration(milliseconds: 200),
+                      builder: (context) => SimpleTagSearchView(
+                        ensureValidTag: false,
+                        floatingActionButton: (text) => FloatingActionButton(
+                          onPressed: () {
+                            Navigator.of(context).pop();
+
+                            queryTextController.text =
+                                '${queryTextController.text} $text';
+                          },
+                          child: const Icon(Icons.add),
+                        ),
+                        onSelected: (tag) {
+                          final baseOffset =
+                              max(0, queryTextController.selection.baseOffset);
+                          queryTextController
+                            ..text = StringUtils.addCharAtPosition(
+                              queryTextController.text,
+                              tag.value,
+                              baseOffset,
+                            )
+                            ..selection = TextSelection.fromPosition(
+                              TextPosition(
+                                offset: baseOffset + tag.value.length,
+                              ),
+                            );
+                        },
+                      ),
                     ),
+                    child: const Icon(Icons.add),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
                 ),
-                ValueListenableBuilder<bool>(
-                  valueListenable: accountNameHasText,
-                  builder: (context, enable, _) => ElevatedButton(
+              ),
+            ),
+            const SizedBox(
+              height: 16,
+            ),
+            TextField(
+              controller: labelTextController,
+              maxLines: null,
+              decoration: _getDecoration(
+                context: context,
+                hint: 'Labels*',
+                suffixIcon: ValueListenableBuilder<bool>(
+                  valueListenable: labelsHasText,
+                  builder: (context, hasText, _) => hasText
+                      ? _ClearTextButton(
+                          onTap: () => labelTextController.clear(),
+                        )
+                      : const SizedBox.shrink(),
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.all(8),
+              child: Text(
+                '*A list of tags to help categorize this search. Space delimited.',
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      color: Theme.of(context).hintColor,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                      fontStyle: FontStyle.italic,
+                    ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 8, bottom: 16),
+              child: ButtonBar(
+                alignment: MainAxisAlignment.spaceAround,
+                children: [
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Theme.of(context).iconTheme.color,
+                      backgroundColor: Theme.of(context).cardColor,
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                       ),
                     ),
-                    onPressed: enable
-                        ? () {
-                            widget.onSubmit(
-                              accountTextController.text,
-                              keyTextController.text,
-                            );
-                            Navigator.of(context).pop();
-                          }
-                        : null,
-                    child: const Text('OK'),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text('Cancel'),
                   ),
-                ),
-              ],
+                  ValueListenableBuilder<bool>(
+                    valueListenable: queryHasText,
+                    builder: (context, enable, _) => ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Theme.of(context).iconTheme.color,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(16)),
+                        ),
+                      ),
+                      onPressed: enable
+                          ? () {
+                              widget.onSubmit(
+                                queryTextController.text,
+                                labelTextController.text,
+                              );
+                              Navigator.of(context).pop();
+                            }
+                          : null,
+                      child: const Text('OK'),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
