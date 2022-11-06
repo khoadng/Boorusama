@@ -191,6 +191,31 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           },
                         ),
                       ),
+                      if (Screen.of(context).size == ScreenSize.small)
+                        BlocBuilder<PostDetailBloc, PostDetailState>(
+                          builder: (context, state) {
+                            return BlocBuilder<SettingsCubit, SettingsState>(
+                              builder: (context, settingsState) {
+                                return settingsState.settings
+                                            .actionBarDisplayBehavior ==
+                                        ActionBarDisplayBehavior.staticAtBottom
+                                    ? Positioned(
+                                        bottom: 12,
+                                        left:
+                                            MediaQuery.of(context).size.width *
+                                                0.05,
+                                        child: FloatingGlassyCard(
+                                          child: _ActionBar(
+                                            imagePath: imagePath,
+                                            postData: state.currentPost,
+                                          ),
+                                        ),
+                                      )
+                                    : const SizedBox.shrink();
+                              },
+                            );
+                          },
+                        ),
                     ],
                   ),
                 ),
@@ -268,20 +293,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   key: ValueKey(state.currentIndex),
                                   recommends: state.recommends,
                                   pools: widget.posts[index].pools,
-                                ),
-                              if (settingsState
-                                      .settings.actionBarDisplayBehavior ==
-                                  ActionBarDisplayBehavior.staticAtBottom)
-                                Positioned(
-                                  bottom: 6,
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.05,
-                                  child: FloatingGlassyCard(
-                                    child: _ActionBar(
-                                      imagePath: imagePath,
-                                      postData: state.currentPost,
-                                    ),
-                                  ),
                                 ),
                             ],
                           );
