@@ -49,33 +49,44 @@ class _PostMediaItemState extends State<PostMediaItem> {
             },
             child: Hero(
               tag: '${widget.post.id}_hero',
-              child: CachedNetworkImage(
-                imageUrl: widget.post.normalImageUrl,
-                imageBuilder: (context, imageProvider) {
-                  DefaultCacheManager()
-                      .getFileFromCache(widget.post.normalImageUrl)
-                      .then((file) {
-                    if (!mounted) return;
-                    widget.onCached(file!.file.path);
-                  });
+              child: AspectRatio(
+                aspectRatio: widget.post.aspectRatio,
+                child: CachedNetworkImage(
+                  imageUrl: widget.post.normalImageUrl,
+                  imageBuilder: (context, imageProvider) {
+                    DefaultCacheManager()
+                        .getFileFromCache(widget.post.normalImageUrl)
+                        .then((file) {
+                      if (!mounted) return;
+                      widget.onCached(file!.file.path);
+                    });
 
-                  return Image(image: imageProvider);
-                },
-                placeholderFadeInDuration: Duration.zero,
-                fadeOutDuration: Duration.zero,
-                progressIndicatorBuilder: (context, url, progress) => FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    height: widget.post.height,
-                    width: widget.post.width,
-                    child: Stack(children: [
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: LinearProgressIndicator(
-                          value: progress.progress,
-                        ),
+                    return Image(image: imageProvider);
+                  },
+                  placeholderFadeInDuration: Duration.zero,
+                  fadeOutDuration: Duration.zero,
+                  fadeInDuration: Duration.zero,
+                  placeholder: (context, url) => CachedNetworkImage(
+                    fit: BoxFit.fill,
+                    imageUrl: widget.post.previewImageUrl,
+                    fadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    progressIndicatorBuilder: (context, url, progress) =>
+                        FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        height: widget.post.height,
+                        width: widget.post.width,
+                        child: Stack(children: [
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: LinearProgressIndicator(
+                              value: progress.progress,
+                            ),
+                          ),
+                        ]),
                       ),
-                    ]),
+                    ),
                   ),
                 ),
               ),
