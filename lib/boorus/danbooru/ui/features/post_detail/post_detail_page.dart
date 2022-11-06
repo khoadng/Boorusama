@@ -123,6 +123,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           builder: (context, state) {
                             return ButtonBar(
                               children: [
+                                CircularIconButton(
+                                  icon: state.fullScreen
+                                      ? const Icon(Icons.fullscreen_exit)
+                                      : const Icon(Icons.fullscreen),
+                                  onPressed: () => context
+                                      .read<PostDetailBloc>()
+                                      .add(PostDetailDisplayModeChanged(
+                                        fullScreen: !state.fullScreen,
+                                      )),
+                                ),
                                 _SlideShowButton(
                                   autoPlay: state.enableSlideShow,
                                   onStop: () => context
@@ -196,11 +206,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           builder: (context, state) {
                             return BlocBuilder<SettingsCubit, SettingsState>(
                               builder: (context, settingsState) {
-                                return settingsState.settings
-                                                .actionBarDisplayBehavior ==
-                                            ActionBarDisplayBehavior
-                                                .staticAtBottom &&
-                                        !state.enableSlideShow
+                                return state.shouldShowFloatingActionBar(
+                                  settingsState
+                                      .settings.actionBarDisplayBehavior,
+                                )
                                     ? Positioned(
                                         bottom: 12,
                                         left:
@@ -268,7 +277,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
               child: Scaffold(
                 backgroundColor: Colors.transparent,
-                body: state.enableSlideShow
+                body: state.enableSlideShow || state.fullScreen
                     ? Center(
                         child: media,
                       )

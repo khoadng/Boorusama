@@ -13,6 +13,7 @@ import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 
 class PostDetailTag extends Equatable {
   const PostDetailTag({
@@ -56,6 +57,7 @@ class PostDetailState extends Equatable {
     required this.currentIndex,
     required this.currentPost,
     this.enableSlideShow = false,
+    this.fullScreen = false,
     required this.slideShowConfig,
     required this.recommends,
   });
@@ -76,6 +78,7 @@ class PostDetailState extends Equatable {
   final int currentIndex;
   final PostData currentPost;
   final bool enableSlideShow;
+  final bool fullScreen;
   final SlideShowConfiguration slideShowConfig;
   final List<Recommend> recommends;
 
@@ -88,6 +91,7 @@ class PostDetailState extends Equatable {
     int? currentIndex,
     PostData? currentPost,
     bool? enableSlideShow,
+    bool? fullScreen,
     SlideShowConfiguration? slideShowConfig,
     List<Recommend>? recommends,
   }) =>
@@ -97,6 +101,7 @@ class PostDetailState extends Equatable {
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
+        fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
         recommends: recommends ?? this.recommends,
       );
@@ -108,6 +113,7 @@ class PostDetailState extends Equatable {
         currentIndex,
         currentPost,
         enableSlideShow,
+        fullScreen,
         slideShowConfig,
         recommends,
       ];
@@ -159,6 +165,17 @@ class PostDetailSlideShowConfigChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [config];
+}
+
+class PostDetailDisplayModeChanged extends PostDetailEvent {
+  const PostDetailDisplayModeChanged({
+    required this.fullScreen,
+  });
+
+  final bool fullScreen;
+
+  @override
+  List<Object?> get props => [fullScreen];
 }
 
 class PostDetailTagUpdated extends PostDetailEvent {
@@ -451,5 +468,22 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     if (fireIndexChangedAtStart) {
       add(PostDetailIndexChanged(index: initialIndex));
     }
+
+    on<PostDetailDisplayModeChanged>((event, emit) {
+      emit(state.copyWith(
+        fullScreen: event.fullScreen,
+      ));
+    });
+  }
+}
+
+extension PostDetailStateX on PostDetailState {
+  bool shouldShowFloatingActionBar(ActionBarDisplayBehavior behavior) {
+    if (enableSlideShow) return false;
+
+    // ignore: avoid_bool_literals_in_conditional_expressions
+    return behavior == ActionBarDisplayBehavior.staticAtBottom
+        ? true
+        : fullScreen;
   }
 }
