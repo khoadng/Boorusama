@@ -197,8 +197,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             return BlocBuilder<SettingsCubit, SettingsState>(
                               builder: (context, settingsState) {
                                 return settingsState.settings
-                                            .actionBarDisplayBehavior ==
-                                        ActionBarDisplayBehavior.staticAtBottom
+                                                .actionBarDisplayBehavior ==
+                                            ActionBarDisplayBehavior
+                                                .staticAtBottom &&
+                                        !state.enableSlideShow
                                     ? Positioned(
                                         bottom: 12,
                                         left:
