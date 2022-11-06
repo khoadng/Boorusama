@@ -54,7 +54,7 @@ class _BottomBarState extends State<BottomBar> {
         ),
         BottomNavigationBarItem(
           label: 'Pool',
-          icon: currentIndex == 3
+          icon: currentIndex == 2
               ? const Icon(Icons.photo_album)
               : const Icon(Icons.photo_album_outlined),
         ),
