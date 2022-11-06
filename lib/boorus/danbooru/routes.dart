@@ -441,7 +441,8 @@ final savedSearchEditHandler =
   return MultiBlocProvider(
     providers: [
       BlocProvider.value(
-        value: context!.read<SavedSearchBloc>(),
+        value: context!.read<SavedSearchBloc>()
+          ..add(const SavedSearchFetched()),
       ),
     ],
     child: const SavedSearchPage(),
