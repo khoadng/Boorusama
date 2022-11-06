@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/saved_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
@@ -67,12 +67,9 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
           title: const Text('Feed'),
           actions: [
             IconButton(
-              onPressed: () => showMaterialModalBottomSheet(
-                context: context,
-                builder: (context) => BlocProvider.value(
-                  value: context.read<SavedSearchBloc>(),
-                  child: const SavedSearchPage(),
-                ),
+              onPressed: () => AppRouter.router.navigateTo(
+                context,
+                '/saved_search/edit',
               ),
               icon: const Icon(Icons.settings),
             ),

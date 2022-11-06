@@ -58,6 +58,7 @@ import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
 import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
+import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
 
 final rootHandler = Handler(
@@ -432,6 +433,18 @@ final savedSearchHandler =
       ),
     ],
     child: const SavedSearchFeedPage(),
+  );
+});
+
+final savedSearchEditHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider.value(
+        value: context!.read<SavedSearchBloc>(),
+      ),
+    ],
+    child: const SavedSearchPage(),
   );
 });
 
