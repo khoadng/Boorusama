@@ -53,14 +53,14 @@ class PostTagList extends StatelessWidget {
                 }
 
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     ...widgets,
                   ],
                 );
               } else {
                 return const Padding(
-                  padding: EdgeInsets.only(top: 32),
+                  padding: EdgeInsets.all(8),
                   child: Center(child: CircularProgressIndicator.adaptive()),
                 );
               }

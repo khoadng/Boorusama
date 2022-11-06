@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -35,7 +36,7 @@ import 'widgets/file_details_section.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
-double getTopActionIconAlignValue() => hasStatusBar() ? -0.94 : -1;
+double getTopActionIconAlignValue() => hasStatusBar() ? -0.92 : -1;
 
 const double _infoBarWidth = 360;
 
@@ -490,7 +491,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                                   children: const [
                                     Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 8),
+                                          EdgeInsets.symmetric(horizontal: 12),
                                       child: PostTagList(),
                                     ),
                                     SizedBox(height: 8),
@@ -722,25 +723,33 @@ class _MoreActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DownloadProviderWidget(
-      builder: (context, download) => PopupMenuButton<PostAction>(
-        onSelected: (value) async {
-          switch (value) {
-            case PostAction.download:
-              onDownload(download);
-              break;
-            // ignore: no_default_cases
-            default:
-          }
-        },
-        itemBuilder: (context) => [
-          PopupMenuItem<PostAction>(
-            value: PostAction.download,
-            child: ListTile(
-              leading: const Icon(Icons.download_rounded),
-              title: const Text('download.download').tr(),
-            ),
+      builder: (context, download) => SizedBox(
+        width: 40,
+        child: Material(
+          color: Colors.black.withOpacity(0.35),
+          shape: const CircleBorder(),
+          child: PopupMenuButton<PostAction>(
+            padding: EdgeInsets.zero,
+            onSelected: (value) async {
+              switch (value) {
+                case PostAction.download:
+                  onDownload(download);
+                  break;
+                // ignore: no_default_cases
+                default:
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem<PostAction>(
+                value: PostAction.download,
+                child: ListTile(
+                  leading: const Icon(Icons.download_rounded),
+                  title: const Text('download.download').tr(),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
@@ -756,8 +765,11 @@ class _BackButton extends StatelessWidget {
       child: Row(
         children: [
           BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
-            builder: (context, state) => IconButton(
-              icon: const Icon(Icons.arrow_back_ios),
+            builder: (context, state) => CircularIconButton(
+              icon: const Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Icon(Icons.arrow_back_ios),
+              ),
               onPressed: () {
                 context
                     .read<SliverPostGridBloc>()
@@ -766,7 +778,10 @@ class _BackButton extends StatelessWidget {
               },
             ),
           ),
-          IconButton(
+          const SizedBox(
+            width: 4,
+          ),
+          CircularIconButton(
             icon: const Icon(Icons.home),
             onPressed: () => AppRouter.router.navigateTo(
               context,
@@ -823,20 +838,22 @@ class _SlideShowButtonState extends State<_SlideShowButton>
     return play
         ? RepaintBoundary(
             child: AnimatedSpinningIcon(
-              icon: const Icon(Icons.sync),
+              icon: CircularIconButton(
+                icon: const Icon(Icons.sync),
+                onPressed: () {
+                  setState(() {
+                    widget.onStop();
+                    play = false;
+                    spinningIconpanelAnimationController
+                      ..stop()
+                      ..reset();
+                  });
+                },
+              ),
               animation: rotateAnimation,
-              onPressed: () {
-                setState(() {
-                  widget.onStop();
-                  play = false;
-                  spinningIconpanelAnimationController
-                    ..stop()
-                    ..reset();
-                });
-              },
             ),
           )
-        : IconButton(
+        : CircularIconButton(
             icon: const Icon(Icons.slideshow),
             onPressed: () => widget.onShow(() {
               setState(() {

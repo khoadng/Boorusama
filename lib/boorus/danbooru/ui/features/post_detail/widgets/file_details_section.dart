@@ -1,8 +1,13 @@
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:filesize/filesize.dart';
-import 'package:flutter/material.dart';
 import 'package:recase/recase.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
 class FileDetailsSection extends StatelessWidget {
   const FileDetailsSection({
@@ -64,6 +69,7 @@ class _FileDetailTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
+      visualDensity: VisualDensity.compact,
       leading: Text(
         title,
         style: Theme.of(context).textTheme.titleLarge!.copyWith(
