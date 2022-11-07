@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
 
 class PostMediaItem extends StatefulWidget {
@@ -20,11 +21,13 @@ class PostMediaItem extends StatefulWidget {
     required this.post,
     required this.onCached,
     this.enableNotes = true,
+    this.onTap,
   });
 
   final Post post;
   final void Function(String? path) onCached;
   final bool enableNotes;
+  final VoidCallback? onTap;
 
   @override
   State<PostMediaItem> createState() => _PostMediaItemState();
@@ -46,76 +49,80 @@ class _PostMediaItemState extends State<PostMediaItem> {
             : PostVideo(post: widget.post)
         : BlocBuilder<NoteBloc, AsyncLoadState<List<Note>>>(
             builder: (context, state) {
-              return Stack(
-                children: [
-                  Hero(
-                    tag: '${widget.post.id}_hero',
-                    child: AspectRatio(
-                      aspectRatio: widget.post.aspectRatio,
-                      child: LayoutBuilder(
-                        builder: (context, constraints) => CachedNetworkImage(
-                          imageUrl: widget.post.normalImageUrl,
-                          imageBuilder: (context, imageProvider) {
-                            final widthPercent =
-                                constraints.maxWidth / widget.post.width;
-                            final heightPercent =
-                                constraints.maxHeight / widget.post.height;
+              return InteractiveImage(
+                useOriginalSize: false,
+                onTap: widget.onTap,
+                image: Stack(
+                  children: [
+                    Hero(
+                      tag: '${widget.post.id}_hero',
+                      child: AspectRatio(
+                        aspectRatio: widget.post.aspectRatio,
+                        child: LayoutBuilder(
+                          builder: (context, constraints) => CachedNetworkImage(
+                            imageUrl: widget.post.normalImageUrl,
+                            imageBuilder: (context, imageProvider) {
+                              final widthPercent =
+                                  constraints.maxWidth / widget.post.width;
+                              final heightPercent =
+                                  constraints.maxHeight / widget.post.height;
 
-                            DefaultCacheManager()
-                                .getFileFromCache(widget.post.normalImageUrl)
-                                .then((file) {
-                              if (!mounted) return;
-                              widget.onCached(file!.file.path);
-                            });
+                              DefaultCacheManager()
+                                  .getFileFromCache(widget.post.normalImageUrl)
+                                  .then((file) {
+                                if (!mounted) return;
+                                widget.onCached(file!.file.path);
+                              });
 
-                            return Stack(
-                              children: [
-                                Image(image: imageProvider),
-                                if (state.data != null && widget.enableNotes)
-                                  ...state.data!.map((e) => PostNote(
-                                        coordinate: NoteCoordinate(
-                                          x: e.coordinate.x * widthPercent,
-                                          y: e.coordinate.y * heightPercent,
-                                          height: e.coordinate.height *
-                                              heightPercent,
-                                          width:
-                                              e.coordinate.width * widthPercent,
-                                        ),
-                                        content: e.content,
-                                      )),
-                              ],
-                            );
-                          },
-                          placeholderFadeInDuration: Duration.zero,
-                          fadeOutDuration: Duration.zero,
-                          fadeInDuration: Duration.zero,
-                          placeholder: (context, url) => CachedNetworkImage(
-                            fit: BoxFit.fill,
-                            imageUrl: widget.post.previewImageUrl,
-                            fadeInDuration: Duration.zero,
+                              return Stack(
+                                children: [
+                                  Image(image: imageProvider),
+                                  if (state.data != null && widget.enableNotes)
+                                    ...state.data!.map((e) => PostNote(
+                                          coordinate: NoteCoordinate(
+                                            x: e.coordinate.x * widthPercent,
+                                            y: e.coordinate.y * heightPercent,
+                                            height: e.coordinate.height *
+                                                heightPercent,
+                                            width: e.coordinate.width *
+                                                widthPercent,
+                                          ),
+                                          content: e.content,
+                                        )),
+                                ],
+                              );
+                            },
+                            placeholderFadeInDuration: Duration.zero,
                             fadeOutDuration: Duration.zero,
-                            progressIndicatorBuilder:
-                                (context, url, progress) => FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                height: widget.post.height,
-                                width: widget.post.width,
-                                child: Stack(children: [
-                                  Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: LinearProgressIndicator(
-                                      value: progress.progress,
+                            fadeInDuration: Duration.zero,
+                            placeholder: (context, url) => CachedNetworkImage(
+                              fit: BoxFit.fill,
+                              imageUrl: widget.post.previewImageUrl,
+                              fadeInDuration: Duration.zero,
+                              fadeOutDuration: Duration.zero,
+                              progressIndicatorBuilder:
+                                  (context, url, progress) => FittedBox(
+                                fit: BoxFit.cover,
+                                child: SizedBox(
+                                  height: widget.post.height,
+                                  width: widget.post.width,
+                                  child: Stack(children: [
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: LinearProgressIndicator(
+                                        value: progress.progress,
+                                      ),
                                     ),
-                                  ),
-                                ]),
+                                  ]),
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           );

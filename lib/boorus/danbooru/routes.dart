@@ -48,15 +48,12 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
-import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
@@ -262,32 +259,6 @@ final postSearchHandler = Handler(handlerFunc: (
       metatags: context.read<TagInfo>().metatags,
       metatagHighlightColor: Theme.of(context).colorScheme.primary,
       initialQuery: args.first,
-    ),
-  );
-});
-
-final postDetailImageHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  final args = context!.settings!.arguments as List;
-
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(
-        value: context.read<NoteBloc>()
-          ..add(const NoteReset())
-          ..add(NoteRequested(postId: args.first.id)),
-      ),
-    ],
-    child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
-      selector: (state) => state.settings.imageQualityInFullView,
-      builder: (context, quality) {
-        return PostImagePage(
-          post: args.first,
-          useOriginalSize: quality == ImageQuality.original,
-        );
-      },
     ),
   );
 });

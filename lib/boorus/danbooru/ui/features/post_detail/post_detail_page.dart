@@ -58,6 +58,7 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
+  var hideOverlay = false;
 
   @override
   void initState() {
@@ -118,125 +119,130 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   child: Stack(
                     children: [
                       _buildSlider(screenSize),
-                      ShadowGradientOverlay(
-                        alignment: Alignment.topCenter,
-                        colors: [
-                          const Color.fromARGB(16, 0, 0, 0),
-                          Colors.black12.withOpacity(0),
-                        ],
-                      ),
-                      Align(
-                        alignment:
-                            Alignment(-0.75, getTopActionIconAlignValue()),
-                        child: const _BackButton(),
-                      ),
-                      Align(
-                        alignment: Alignment(0.9, getTopActionIconAlignValue()),
-                        child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                          builder: (context, state) {
-                            return ButtonBar(
-                              children: [
-                                CircularIconButton(
-                                  icon: state.fullScreen
-                                      ? const Icon(Icons.fullscreen_exit)
-                                      : const Icon(Icons.fullscreen),
-                                  onPressed: () => context
-                                      .read<PostDetailBloc>()
-                                      .add(PostDetailDisplayModeChanged(
-                                        fullScreen: !state.fullScreen,
-                                      )),
-                                ),
-                                if (state.currentPost.post.isTranslated)
+                      if (!hideOverlay)
+                        ShadowGradientOverlay(
+                          alignment: Alignment.topCenter,
+                          colors: [
+                            const Color.fromARGB(16, 0, 0, 0),
+                            Colors.black12.withOpacity(0),
+                          ],
+                        ),
+                      if (!hideOverlay)
+                        Align(
+                          alignment:
+                              Alignment(-0.75, getTopActionIconAlignValue()),
+                          child: const _BackButton(),
+                        ),
+                      if (!hideOverlay)
+                        Align(
+                          alignment:
+                              Alignment(0.9, getTopActionIconAlignValue()),
+                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                            builder: (context, state) {
+                              return ButtonBar(
+                                children: [
                                   CircularIconButton(
-                                    icon: state.enableNotes
-                                        ? const Padding(
-                                            padding: EdgeInsets.all(3),
-                                            child: FaIcon(
-                                              FontAwesomeIcons.eyeSlash,
-                                              size: 18,
-                                            ),
-                                          )
-                                        : const Padding(
-                                            padding: EdgeInsets.all(4),
-                                            child: FaIcon(
-                                              FontAwesomeIcons.eye,
-                                              size: 18,
-                                            ),
-                                          ),
+                                    icon: state.fullScreen
+                                        ? const Icon(Icons.fullscreen_exit)
+                                        : const Icon(Icons.fullscreen),
                                     onPressed: () => context
                                         .read<PostDetailBloc>()
-                                        .add(PostDetailNoteOptionsChanged(
-                                          enable: !state.enableNotes,
+                                        .add(PostDetailDisplayModeChanged(
+                                          fullScreen: !state.fullScreen,
                                         )),
                                   ),
-                                _SlideShowButton(
-                                  autoPlay: state.enableSlideShow,
-                                  onStop: () => context
-                                      .read<PostDetailBloc>()
-                                      .add(const PostDetailModeChanged(
-                                        enableSlideshow: false,
-                                      )),
-                                  onShow: (start) {
-                                    WidgetsBinding.instance
-                                        .addPostFrameCallback((_) async {
-                                      final bloc =
-                                          context.read<PostDetailBloc>();
+                                  if (state.currentPost.post.isTranslated)
+                                    CircularIconButton(
+                                      icon: state.enableNotes
+                                          ? const Padding(
+                                              padding: EdgeInsets.all(3),
+                                              child: FaIcon(
+                                                FontAwesomeIcons.eyeSlash,
+                                                size: 18,
+                                              ),
+                                            )
+                                          : const Padding(
+                                              padding: EdgeInsets.all(4),
+                                              child: FaIcon(
+                                                FontAwesomeIcons.eye,
+                                                size: 18,
+                                              ),
+                                            ),
+                                      onPressed: () => context
+                                          .read<PostDetailBloc>()
+                                          .add(PostDetailNoteOptionsChanged(
+                                            enable: !state.enableNotes,
+                                          )),
+                                    ),
+                                  _SlideShowButton(
+                                    autoPlay: state.enableSlideShow,
+                                    onStop: () => context
+                                        .read<PostDetailBloc>()
+                                        .add(const PostDetailModeChanged(
+                                          enableSlideshow: false,
+                                        )),
+                                    onShow: (start) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) async {
+                                        final bloc =
+                                            context.read<PostDetailBloc>();
 
-                                      final config = Screen.of(context).size ==
-                                              ScreenSize.small
-                                          ? (await showModalBottomSheet(
-                                                backgroundColor:
-                                                    Colors.transparent,
-                                                context: context,
-                                                builder: (context) => Wrap(
-                                                  children: [
-                                                    SlideShowConfigContainer(
+                                        final config = Screen.of(context)
+                                                    .size ==
+                                                ScreenSize.small
+                                            ? (await showModalBottomSheet(
+                                                  backgroundColor:
+                                                      Colors.transparent,
+                                                  context: context,
+                                                  builder: (context) => Wrap(
+                                                    children: [
+                                                      SlideShowConfigContainer(
+                                                        initialConfig: state
+                                                            .slideShowConfig,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ) ??
+                                                false)
+                                            : (await showDialog(
+                                                  context: context,
+                                                  builder: (context) =>
+                                                      AlertDialog(
+                                                    content:
+                                                        SlideShowConfigContainer(
+                                                      isModal: false,
                                                       initialConfig:
                                                           state.slideShowConfig,
                                                     ),
-                                                  ],
-                                                ),
-                                              ) ??
-                                              false)
-                                          : (await showDialog(
-                                                context: context,
-                                                builder: (context) =>
-                                                    AlertDialog(
-                                                  content:
-                                                      SlideShowConfigContainer(
-                                                    isModal: false,
-                                                    initialConfig:
-                                                        state.slideShowConfig,
+                                                    contentPadding:
+                                                        EdgeInsets.zero,
                                                   ),
-                                                  contentPadding:
-                                                      EdgeInsets.zero,
-                                                ),
-                                              ) ??
-                                              false);
-                                      if (config != null) {
-                                        bloc
-                                          ..add(
-                                            PostDetailSlideShowConfigChanged(
-                                              config: config,
-                                            ),
-                                          )
-                                          ..add(const PostDetailModeChanged(
-                                            enableSlideshow: true,
-                                          ));
-                                        start();
-                                      }
-                                    });
-                                  },
-                                ),
-                                _MoreActionButton(
-                                  onDownload: (downloader) =>
-                                      downloader(state.currentPost.post),
-                                ),
-                              ],
-                            );
-                          },
+                                                ) ??
+                                                false);
+                                        if (config != null) {
+                                          bloc
+                                            ..add(
+                                              PostDetailSlideShowConfigChanged(
+                                                config: config,
+                                              ),
+                                            )
+                                            ..add(const PostDetailModeChanged(
+                                              enableSlideshow: true,
+                                            ));
+                                          start();
+                                        }
+                                      });
+                                    },
+                                  ),
+                                  _MoreActionButton(
+                                    onDownload: (downloader) =>
+                                        downloader(state.currentPost.post),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
                         ),
-                      ),
                       if (Screen.of(context).size == ScreenSize.small)
                         BlocBuilder<PostDetailBloc, PostDetailState>(
                           builder: (context, state) {
@@ -306,6 +312,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
               post: widget.posts[index].post,
               onCached: (path) => imagePath.value = path,
               enableNotes: state.enableNotes,
+              onTap: () => setState(() {
+                hideOverlay = !hideOverlay;
+              }),
             );
 
             return AnnotatedRegion<SystemUiOverlayStyle>(
