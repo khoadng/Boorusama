@@ -58,7 +58,6 @@ class PostDetailPage extends StatefulWidget {
 
 class _PostDetailPageState extends State<PostDetailPage> {
   final imagePath = ValueNotifier<String?>(null);
-  var hideOverlay = false;
 
   @override
   void initState() {
@@ -116,160 +115,174 @@ class _PostDetailPageState extends State<PostDetailPage> {
             body: Row(
               children: [
                 Expanded(
-                  child: Stack(
-                    children: [
-                      _buildSlider(screenSize),
-                      if (!hideOverlay)
-                        ShadowGradientOverlay(
-                          alignment: Alignment.topCenter,
-                          colors: [
-                            const Color.fromARGB(16, 0, 0, 0),
-                            Colors.black12.withOpacity(0),
-                          ],
-                        ),
-                      if (!hideOverlay)
-                        Align(
-                          alignment:
-                              Alignment(-0.75, getTopActionIconAlignValue()),
-                          child: const _BackButton(),
-                        ),
-                      if (!hideOverlay)
-                        Align(
-                          alignment:
-                              Alignment(0.9, getTopActionIconAlignValue()),
-                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                            builder: (context, state) {
-                              return ButtonBar(
-                                children: [
-                                  CircularIconButton(
-                                    icon: state.fullScreen
-                                        ? const Icon(Icons.fullscreen_exit)
-                                        : const Icon(Icons.fullscreen),
-                                    onPressed: () => context
-                                        .read<PostDetailBloc>()
-                                        .add(PostDetailDisplayModeChanged(
-                                          fullScreen: !state.fullScreen,
-                                        )),
-                                  ),
-                                  if (state.currentPost.post.isTranslated)
-                                    CircularIconButton(
-                                      icon: state.enableNotes
-                                          ? const Padding(
-                                              padding: EdgeInsets.all(3),
-                                              child: FaIcon(
-                                                FontAwesomeIcons.eyeSlash,
-                                                size: 18,
-                                              ),
-                                            )
-                                          : const Padding(
-                                              padding: EdgeInsets.all(4),
-                                              child: FaIcon(
-                                                FontAwesomeIcons.eye,
-                                                size: 18,
+                  child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                    buildWhen: (previous, current) =>
+                        previous.enableOverlay != current.enableOverlay,
+                    builder: (context, state) {
+                      return Stack(
+                        children: [
+                          _buildSlider(screenSize),
+                          if (state.enableOverlay)
+                            ShadowGradientOverlay(
+                              alignment: Alignment.topCenter,
+                              colors: [
+                                const Color.fromARGB(16, 0, 0, 0),
+                                Colors.black12.withOpacity(0),
+                              ],
+                            ),
+                          if (state.enableOverlay)
+                            Align(
+                              alignment: Alignment(
+                                -0.75,
+                                getTopActionIconAlignValue(),
+                              ),
+                              child: const _BackButton(),
+                            ),
+                          if (state.enableOverlay)
+                            Align(
+                              alignment:
+                                  Alignment(0.9, getTopActionIconAlignValue()),
+                              child:
+                                  BlocBuilder<PostDetailBloc, PostDetailState>(
+                                builder: (context, state) {
+                                  return ButtonBar(
+                                    children: [
+                                      CircularIconButton(
+                                        icon: state.fullScreen
+                                            ? const Icon(Icons.fullscreen_exit)
+                                            : const Icon(Icons.fullscreen),
+                                        onPressed: () => context
+                                            .read<PostDetailBloc>()
+                                            .add(PostDetailDisplayModeChanged(
+                                              fullScreen: !state.fullScreen,
+                                            )),
+                                      ),
+                                      if (state.currentPost.post.isTranslated)
+                                        CircularIconButton(
+                                          icon: state.enableNotes
+                                              ? const Padding(
+                                                  padding: EdgeInsets.all(3),
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.eyeSlash,
+                                                    size: 18,
+                                                  ),
+                                                )
+                                              : const Padding(
+                                                  padding: EdgeInsets.all(4),
+                                                  child: FaIcon(
+                                                    FontAwesomeIcons.eye,
+                                                    size: 18,
+                                                  ),
+                                                ),
+                                          onPressed: () => context
+                                              .read<PostDetailBloc>()
+                                              .add(PostDetailNoteOptionsChanged(
+                                                enable: !state.enableNotes,
+                                              )),
+                                        ),
+                                      _SlideShowButton(
+                                        autoPlay: state.enableSlideShow,
+                                        onStop: () => context
+                                            .read<PostDetailBloc>()
+                                            .add(const PostDetailModeChanged(
+                                              enableSlideshow: false,
+                                            )),
+                                        onShow: (start) {
+                                          WidgetsBinding.instance
+                                              .addPostFrameCallback((_) async {
+                                            final bloc =
+                                                context.read<PostDetailBloc>();
+
+                                            final config = Screen.of(context)
+                                                        .size ==
+                                                    ScreenSize.small
+                                                ? (await showModalBottomSheet(
+                                                      backgroundColor:
+                                                          Colors.transparent,
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          Wrap(
+                                                        children: [
+                                                          SlideShowConfigContainer(
+                                                            initialConfig: state
+                                                                .slideShowConfig,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ) ??
+                                                    false)
+                                                : (await showDialog(
+                                                      context: context,
+                                                      builder: (context) =>
+                                                          AlertDialog(
+                                                        content:
+                                                            SlideShowConfigContainer(
+                                                          isModal: false,
+                                                          initialConfig: state
+                                                              .slideShowConfig,
+                                                        ),
+                                                        contentPadding:
+                                                            EdgeInsets.zero,
+                                                      ),
+                                                    ) ??
+                                                    false);
+                                            if (config != null) {
+                                              bloc
+                                                ..add(
+                                                  PostDetailSlideShowConfigChanged(
+                                                    config: config,
+                                                  ),
+                                                )
+                                                ..add(
+                                                  const PostDetailModeChanged(
+                                                    enableSlideshow: true,
+                                                  ),
+                                                );
+                                              start();
+                                            }
+                                          });
+                                        },
+                                      ),
+                                      _MoreActionButton(
+                                        onDownload: (downloader) =>
+                                            downloader(state.currentPost.post),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
+                            ),
+                          if (Screen.of(context).size == ScreenSize.small)
+                            BlocBuilder<PostDetailBloc, PostDetailState>(
+                              builder: (context, state) {
+                                return BlocBuilder<SettingsCubit,
+                                    SettingsState>(
+                                  builder: (context, settingsState) {
+                                    return state.shouldShowFloatingActionBar(
+                                      settingsState
+                                          .settings.actionBarDisplayBehavior,
+                                    )
+                                        ? Positioned(
+                                            bottom: 12,
+                                            left: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.05,
+                                            child: FloatingGlassyCard(
+                                              child: _ActionBar(
+                                                imagePath: imagePath,
+                                                postData: state.currentPost,
                                               ),
                                             ),
-                                      onPressed: () => context
-                                          .read<PostDetailBloc>()
-                                          .add(PostDetailNoteOptionsChanged(
-                                            enable: !state.enableNotes,
-                                          )),
-                                    ),
-                                  _SlideShowButton(
-                                    autoPlay: state.enableSlideShow,
-                                    onStop: () => context
-                                        .read<PostDetailBloc>()
-                                        .add(const PostDetailModeChanged(
-                                          enableSlideshow: false,
-                                        )),
-                                    onShow: (start) {
-                                      WidgetsBinding.instance
-                                          .addPostFrameCallback((_) async {
-                                        final bloc =
-                                            context.read<PostDetailBloc>();
-
-                                        final config = Screen.of(context)
-                                                    .size ==
-                                                ScreenSize.small
-                                            ? (await showModalBottomSheet(
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  context: context,
-                                                  builder: (context) => Wrap(
-                                                    children: [
-                                                      SlideShowConfigContainer(
-                                                        initialConfig: state
-                                                            .slideShowConfig,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ) ??
-                                                false)
-                                            : (await showDialog(
-                                                  context: context,
-                                                  builder: (context) =>
-                                                      AlertDialog(
-                                                    content:
-                                                        SlideShowConfigContainer(
-                                                      isModal: false,
-                                                      initialConfig:
-                                                          state.slideShowConfig,
-                                                    ),
-                                                    contentPadding:
-                                                        EdgeInsets.zero,
-                                                  ),
-                                                ) ??
-                                                false);
-                                        if (config != null) {
-                                          bloc
-                                            ..add(
-                                              PostDetailSlideShowConfigChanged(
-                                                config: config,
-                                              ),
-                                            )
-                                            ..add(const PostDetailModeChanged(
-                                              enableSlideshow: true,
-                                            ));
-                                          start();
-                                        }
-                                      });
-                                    },
-                                  ),
-                                  _MoreActionButton(
-                                    onDownload: (downloader) =>
-                                        downloader(state.currentPost.post),
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                        ),
-                      if (Screen.of(context).size == ScreenSize.small)
-                        BlocBuilder<PostDetailBloc, PostDetailState>(
-                          builder: (context, state) {
-                            return BlocBuilder<SettingsCubit, SettingsState>(
-                              builder: (context, settingsState) {
-                                return state.shouldShowFloatingActionBar(
-                                  settingsState
-                                      .settings.actionBarDisplayBehavior,
-                                )
-                                    ? Positioned(
-                                        bottom: 12,
-                                        left:
-                                            MediaQuery.of(context).size.width *
-                                                0.05,
-                                        child: FloatingGlassyCard(
-                                          child: _ActionBar(
-                                            imagePath: imagePath,
-                                            postData: state.currentPost,
-                                          ),
-                                        ),
-                                      )
-                                    : const SizedBox.shrink();
+                                          )
+                                        : const SizedBox.shrink();
+                                  },
+                                );
                               },
-                            );
-                          },
-                        ),
-                    ],
+                            ),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 if (screenSize != ScreenSize.small)
@@ -313,9 +326,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
               post: widget.posts[index].post,
               onCached: (path) => imagePath.value = path,
               enableNotes: state.enableNotes,
-              onTap: () => setState(() {
-                hideOverlay = !hideOverlay;
-              }),
+              onTap: () => context
+                  .read<PostDetailBloc>()
+                  .add(PostDetailOverlayVisibilityChanged(
+                    enableOverlay: !state.enableOverlay,
+                  )),
               onZoomUpdated: (zoom) {
                 final swipe = !zoom;
                 if (swipe != enableSwipe) {

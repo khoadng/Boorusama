@@ -60,6 +60,7 @@ class PostDetailState extends Equatable {
     this.enableSlideShow = false,
     this.fullScreen = false,
     this.enableNotes = true,
+    this.enableOverlay = true,
     required this.slideShowConfig,
     required this.recommends,
   });
@@ -82,6 +83,7 @@ class PostDetailState extends Equatable {
   final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
+  final bool enableOverlay;
   final SlideShowConfiguration slideShowConfig;
   final List<Recommend> recommends;
 
@@ -96,6 +98,7 @@ class PostDetailState extends Equatable {
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
+    bool? enableOverlay,
     SlideShowConfiguration? slideShowConfig,
     List<Recommend>? recommends,
   }) =>
@@ -109,6 +112,7 @@ class PostDetailState extends Equatable {
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
         recommends: recommends ?? this.recommends,
         enableNotes: enableNotes ?? this.enableNotes,
+        enableOverlay: enableOverlay ?? this.enableOverlay,
       );
 
   @override
@@ -120,6 +124,7 @@ class PostDetailState extends Equatable {
         enableSlideShow,
         fullScreen,
         enableNotes,
+        enableOverlay,
         slideShowConfig,
         recommends,
       ];
@@ -193,6 +198,17 @@ class PostDetailDisplayModeChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [fullScreen];
+}
+
+class PostDetailOverlayVisibilityChanged extends PostDetailEvent {
+  const PostDetailOverlayVisibilityChanged({
+    required this.enableOverlay,
+  });
+
+  final bool enableOverlay;
+
+  @override
+  List<Object?> get props => [enableOverlay];
 }
 
 class PostDetailTagUpdated extends PostDetailEvent {
@@ -503,12 +519,21 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         enableNotes: event.enable,
       ));
     });
+
+    on<PostDetailOverlayVisibilityChanged>((event, emit) {
+      if (!state.fullScreen) return;
+
+      emit(state.copyWith(
+        enableOverlay: event.enableOverlay,
+      ));
+    });
   }
 }
 
 extension PostDetailStateX on PostDetailState {
   bool shouldShowFloatingActionBar(ActionBarDisplayBehavior behavior) {
     if (enableSlideShow) return false;
+    if (!enableOverlay) return false;
 
     // ignore: avoid_bool_literals_in_conditional_expressions
     return behavior == ActionBarDisplayBehavior.staticAtBottom
