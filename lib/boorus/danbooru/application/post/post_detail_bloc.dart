@@ -350,42 +350,9 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           noteBloc?.add(NoteRequested(postId: post.post.id));
         }
 
-        for (final tag in post.post.artistTags) {
-          final posts = await postRepository.getPosts(tag, 1);
-          emit(state.copyWith(recommends: [
-            ...state.recommends,
-            Recommend(
-              type: RecommendType.artist,
-              title: tag,
-              posts: posts
-                  .take(6)
-                  .map((e) => PostData(
-                        post: e,
-                        isFavorited: false,
-                        pools: const [],
-                      ))
-                  .toList(),
-            ),
-          ]));
-        }
-
-        for (final tag in post.post.characterTags) {
-          final posts = await postRepository.getPosts(tag, 1);
-          emit(state.copyWith(recommends: [
-            ...state.recommends,
-            Recommend(
-              type: RecommendType.character,
-              title: tag,
-              posts: posts
-                  .take(6)
-                  .map((e) => PostData(
-                        post: e,
-                        isFavorited: false,
-                        pools: const [],
-                      ))
-                  .toList(),
-            ),
-          ]));
+        if (!state.fullScreen) {
+          await _fetchArtistPosts(post, postRepository, emit);
+          await _fetchCharactersPosts(post, postRepository, emit);
         }
       },
       transformer: restartable(),
@@ -508,10 +475,14 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       add(PostDetailIndexChanged(index: initialIndex));
     }
 
-    on<PostDetailDisplayModeChanged>((event, emit) {
+    on<PostDetailDisplayModeChanged>((event, emit) async {
       emit(state.copyWith(
         fullScreen: event.fullScreen,
       ));
+      if (!event.fullScreen && state.recommends.isEmpty) {
+        await _fetchArtistPosts(state.currentPost, postRepository, emit);
+        await _fetchCharactersPosts(state.currentPost, postRepository, emit);
+      }
     });
 
     on<PostDetailNoteOptionsChanged>((event, emit) {
@@ -527,6 +498,56 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         enableOverlay: event.enableOverlay,
       ));
     });
+  }
+
+  Future<void> _fetchCharactersPosts(
+    PostData post,
+    PostRepository postRepository,
+    Emitter<PostDetailState> emit,
+  ) async {
+    for (final tag in post.post.characterTags) {
+      final posts = await postRepository.getPosts(tag, 1);
+      emit(state.copyWith(recommends: [
+        ...state.recommends,
+        Recommend(
+          type: RecommendType.character,
+          title: tag,
+          posts: posts
+              .take(6)
+              .map((e) => PostData(
+                    post: e,
+                    isFavorited: false,
+                    pools: const [],
+                  ))
+              .toList(),
+        ),
+      ]));
+    }
+  }
+
+  Future<void> _fetchArtistPosts(
+    PostData post,
+    PostRepository postRepository,
+    Emitter<PostDetailState> emit,
+  ) async {
+    for (final tag in post.post.artistTags) {
+      final posts = await postRepository.getPosts(tag, 1);
+      emit(state.copyWith(recommends: [
+        ...state.recommends,
+        Recommend(
+          type: RecommendType.artist,
+          title: tag,
+          posts: posts
+              .take(6)
+              .map((e) => PostData(
+                    post: e,
+                    isFavorited: false,
+                    pools: const [],
+                  ))
+              .toList(),
+        ),
+      ]));
+    }
   }
 }
 

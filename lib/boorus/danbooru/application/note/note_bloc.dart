@@ -1,8 +1,8 @@
 // Flutter imports:
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

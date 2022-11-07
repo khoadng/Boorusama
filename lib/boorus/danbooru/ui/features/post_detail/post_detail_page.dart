@@ -11,7 +11,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -86,17 +85,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
               context
                   .read<TagBloc>()
                   .add(TagFetched(tags: state.currentPost.post.tags));
-            }
-          },
-        ),
-        BlocListener<PostDetailBloc, PostDetailState>(
-          listenWhen: (previous, current) =>
-              previous.fullScreen != current.fullScreen,
-          listener: (context, state) {
-            if (state.fullScreen) {
-              context
-                  .read<NoteBloc>()
-                  .add(NoteRequested(postId: state.currentPost.post.id));
             }
           },
         ),
