@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -16,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
-import 'package:boorusama/core/ui/info_container.dart';
 
 class SavedSearchPage extends StatelessWidget {
   const SavedSearchPage({
@@ -92,15 +92,11 @@ class _SuccessView extends StatelessWidget {
             : CustomScrollView(slivers: [
                 const SliverToBoxAdapter(child: SizedBox(height: 15)),
                 SliverToBoxAdapter(
-                  child: InfoContainer(
-                    contentBuilder: (context) => const Text(
-                      "If you don't see any images, check if your query is correct. Also it might take a while for data to be populated.",
-                    ),
-                  ),
-                ),
-                SliverToBoxAdapter(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 4,
+                      vertical: 12,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -116,10 +112,12 @@ class _SuccessView extends StatelessWidget {
                     ),
                   ),
                 ),
-                SliverImplicitlyAnimatedList<SavedSearch>(
-                  items: state.data,
-                  areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
-                  itemBuilder: _buildSearchItems,
+                AnimationLimiter(
+                  child: SliverImplicitlyAnimatedList<SavedSearch>(
+                    items: state.data,
+                    areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                    itemBuilder: _buildSearchItems,
+                  ),
                 ),
               ]);
       },
@@ -132,31 +130,40 @@ class _SuccessView extends StatelessWidget {
     SavedSearch savedSearch,
     int index,
   ) {
-    return SizeFadeTransition(
-      sizeFraction: 0.7,
-      curve: Curves.easeInOut,
-      animation: animation,
-      child: ListTile(
-        title: Text(savedSearch.labels.join(' ')),
-        subtitle: Text(savedSearch.query),
-        trailing: savedSearch.readOnly
-            ? null
-            : IconButton(
-                onPressed: () => _showEditSheet(
-                  context,
-                  savedSearch,
-                ),
-                icon: const Icon(Icons.more_vert),
-              ),
-        onTap: savedSearch.labels.isNotEmpty
-            ? () => _goToSearchPage(
-                  context,
-                  query: 'search:${savedSearch.labels.first}',
-                )
-            : null,
-        onLongPress: savedSearch.readOnly
-            ? null
-            : () => _showEditSheet(context, savedSearch),
+    return AnimationConfiguration.staggeredList(
+      position: index,
+      duration: const Duration(milliseconds: 200),
+      child: SlideAnimation(
+        verticalOffset: 50,
+        child: FadeInAnimation(
+          child: SizeFadeTransition(
+            sizeFraction: 0.7,
+            curve: Curves.easeInOut,
+            animation: animation,
+            child: ListTile(
+              title: Text(savedSearch.labels.join(' ')),
+              subtitle: Text(savedSearch.query),
+              trailing: savedSearch.readOnly
+                  ? null
+                  : IconButton(
+                      onPressed: () => _showEditSheet(
+                        context,
+                        savedSearch,
+                      ),
+                      icon: const Icon(Icons.more_vert),
+                    ),
+              onTap: savedSearch.labels.isNotEmpty
+                  ? () => _goToSearchPage(
+                        context,
+                        query: 'search:${savedSearch.labels.first}',
+                      )
+                  : null,
+              onLongPress: savedSearch.readOnly
+                  ? null
+                  : () => _showEditSheet(context, savedSearch),
+            ),
+          ),
+        ),
       ),
     );
   }
