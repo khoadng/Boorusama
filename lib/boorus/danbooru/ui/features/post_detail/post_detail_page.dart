@@ -301,6 +301,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
+  var enableSwipe = true;
   Widget _buildSlider(ScreenSize screenSize) {
     return BlocBuilder<PostDetailBloc, PostDetailState>(
       builder: (context, state) {
@@ -315,6 +316,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
               onTap: () => setState(() {
                 hideOverlay = !hideOverlay;
               }),
+              onZoomUpdated: (zoom) {
+                final swipe = !zoom;
+                if (swipe != enableSwipe) {
+                  setState(() {
+                    enableSwipe = swipe;
+                  });
+                }
+              },
             );
 
             return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -361,7 +370,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
             );
           },
           options: CarouselOptions(
-            scrollPhysics: const DetailPageViewScrollPhysics(),
+            scrollPhysics: enableSwipe
+                ? const DetailPageViewScrollPhysics()
+                : const NeverScrollableScrollPhysics(),
             onPageChanged: (index, reason) {
               context
                   .read<SliverPostGridBloc>()

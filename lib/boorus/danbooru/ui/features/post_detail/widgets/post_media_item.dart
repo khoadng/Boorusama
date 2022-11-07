@@ -22,12 +22,14 @@ class PostMediaItem extends StatefulWidget {
     required this.onCached,
     this.enableNotes = true,
     this.onTap,
+    this.onZoomUpdated,
   });
 
   final Post post;
   final void Function(String? path) onCached;
   final bool enableNotes;
   final VoidCallback? onTap;
+  final void Function(bool zoom)? onZoomUpdated;
 
   @override
   State<PostMediaItem> createState() => _PostMediaItemState();
@@ -41,6 +43,28 @@ class _PostMediaItemState extends State<PostMediaItem> {
               </video>
             </center>''';
 
+  final transformationController = TransformationController();
+
+  @override
+  void initState() {
+    super.initState();
+    transformationController.addListener(() {
+      final clampedMatrix = Matrix4.diagonal3Values(
+        transformationController.value.right.x,
+        transformationController.value.up.y,
+        transformationController.value.forward.z,
+      );
+
+      widget.onZoomUpdated?.call(!clampedMatrix.isIdentity());
+    });
+  }
+
+  @override
+  void dispose() {
+    transformationController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return widget.post.isVideo
@@ -52,6 +76,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
               return InteractiveImage(
                 useOriginalSize: false,
                 onTap: widget.onTap,
+                transformationController: transformationController,
                 image: Stack(
                   children: [
                     Hero(

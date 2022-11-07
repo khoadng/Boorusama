@@ -7,11 +7,13 @@ class InteractiveImage extends StatefulWidget {
     required this.useOriginalSize,
     required this.image,
     this.onTap,
+    required this.transformationController,
   });
 
   final bool useOriginalSize;
   final Widget image;
   final VoidCallback? onTap;
+  final TransformationController transformationController;
 
   @override
   State<InteractiveImage> createState() => _InteractiveImageState();
@@ -21,7 +23,7 @@ class _InteractiveImageState extends State<InteractiveImage>
     with SingleTickerProviderStateMixin {
   final hideOverlay = ValueNotifier(false);
   late final fullsize = ValueNotifier(widget.useOriginalSize);
-  final _transformationController = TransformationController();
+  late final _transformationController = widget.transformationController;
   TapDownDetails? _doubleTapDetails;
 
   late final AnimationController _animationController;
@@ -38,7 +40,6 @@ class _InteractiveImageState extends State<InteractiveImage>
 
   @override
   void dispose() {
-    _transformationController.dispose();
     _animationController.dispose();
     super.dispose();
   }
@@ -95,6 +96,7 @@ class _InteractiveImageState extends State<InteractiveImage>
       CurveTween(curve: Curves.easeInOut).animate(_animationController),
     );
     _animationController.forward(from: 0);
+    _transformationController.value = endMatrix;
   }
 }
 
