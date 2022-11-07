@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -58,6 +59,7 @@ class PostDetailState extends Equatable {
     required this.currentPost,
     this.enableSlideShow = false,
     this.fullScreen = false,
+    this.enableNotes = true,
     required this.slideShowConfig,
     required this.recommends,
   });
@@ -79,6 +81,7 @@ class PostDetailState extends Equatable {
   final PostData currentPost;
   final bool enableSlideShow;
   final bool fullScreen;
+  final bool enableNotes;
   final SlideShowConfiguration slideShowConfig;
   final List<Recommend> recommends;
 
@@ -92,6 +95,7 @@ class PostDetailState extends Equatable {
     PostData? currentPost,
     bool? enableSlideShow,
     bool? fullScreen,
+    bool? enableNotes,
     SlideShowConfiguration? slideShowConfig,
     List<Recommend>? recommends,
   }) =>
@@ -104,6 +108,7 @@ class PostDetailState extends Equatable {
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
         recommends: recommends ?? this.recommends,
+        enableNotes: enableNotes ?? this.enableNotes,
       );
 
   @override
@@ -114,6 +119,7 @@ class PostDetailState extends Equatable {
         currentPost,
         enableSlideShow,
         fullScreen,
+        enableNotes,
         slideShowConfig,
         recommends,
       ];
@@ -154,6 +160,17 @@ class PostDetailModeChanged extends PostDetailEvent {
 
   @override
   List<Object?> get props => [enableSlideshow];
+}
+
+class PostDetailNoteOptionsChanged extends PostDetailEvent {
+  const PostDetailNoteOptionsChanged({
+    required this.enable,
+  });
+
+  final bool enable;
+
+  @override
+  List<Object?> get props => [enable];
 }
 
 class PostDetailSlideShowConfigChanged extends PostDetailEvent {
@@ -225,6 +242,7 @@ class _PostDetailVoteFetch extends PostDetailEvent {
 
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
+    NoteBloc? noteBloc,
     required PostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
@@ -309,6 +327,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         if (account != Account.empty) {
           add(_PostDetailFavoriteFetch(account.id));
           add(const _PostDetailVoteFetch());
+        }
+
+        if (post.post.isTranslated) {
+          noteBloc?.add(const NoteReset());
+          noteBloc?.add(NoteRequested(postId: post.post.id));
         }
 
         for (final tag in post.post.artistTags) {
@@ -472,6 +495,12 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<PostDetailDisplayModeChanged>((event, emit) {
       emit(state.copyWith(
         fullScreen: event.fullScreen,
+      ));
+    });
+
+    on<PostDetailNoteOptionsChanged>((event, emit) {
+      emit(state.copyWith(
+        enableNotes: event.enable,
       ));
     });
   }

@@ -6,10 +6,12 @@ import 'package:flutter/services.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -87,6 +89,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
             }
           },
         ),
+        BlocListener<PostDetailBloc, PostDetailState>(
+          listenWhen: (previous, current) =>
+              previous.fullScreen != current.fullScreen,
+          listener: (context, state) {
+            if (state.fullScreen) {
+              context
+                  .read<NoteBloc>()
+                  .add(NoteRequested(postId: state.currentPost.post.id));
+            }
+          },
+        ),
       ],
       child: BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
         selector: (state) => state.currentIndex,
@@ -133,6 +146,29 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                         fullScreen: !state.fullScreen,
                                       )),
                                 ),
+                                if (state.currentPost.post.isTranslated)
+                                  CircularIconButton(
+                                    icon: state.enableNotes
+                                        ? const Padding(
+                                            padding: EdgeInsets.all(3),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.eyeSlash,
+                                              size: 18,
+                                            ),
+                                          )
+                                        : const Padding(
+                                            padding: EdgeInsets.all(4),
+                                            child: FaIcon(
+                                              FontAwesomeIcons.eye,
+                                              size: 18,
+                                            ),
+                                          ),
+                                    onPressed: () => context
+                                        .read<PostDetailBloc>()
+                                        .add(PostDetailNoteOptionsChanged(
+                                          enable: !state.enableNotes,
+                                        )),
+                                  ),
                                 _SlideShowButton(
                                   autoPlay: state.enableSlideShow,
                                   onStop: () => context
@@ -269,6 +305,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
               //TODO: this is used to preload image between page
               post: widget.posts[index].post,
               onCached: (path) => imagePath.value = path,
+              enableNotes: state.enableNotes,
             );
 
             return AnnotatedRegion<SystemUiOverlayStyle>(
@@ -278,8 +315,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 body: state.enableSlideShow || state.fullScreen
-                    ? Center(
-                        child: media,
+                    ? SafeArea(
+                        child: Center(
+                          child: media,
+                        ),
                       )
                     : BlocBuilder<SettingsCubit, SettingsState>(
                         buildWhen: (previous, current) =>
