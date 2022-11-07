@@ -169,7 +169,14 @@ final postDetailHandler = Handler(handlerFunc: (
       BlocProvider.value(value: context.read<ThemeBloc>()),
       BlocProvider(
         create: (context) => PostDetailBloc(
-          noteBloc: context.read<NoteBloc>(),
+          noteBloc: context.read<NoteBloc>()
+            ..add(NotePrefetched(
+              postIds: postDatas
+                  .sublist(index)
+                  .where((e) => e.post.isTranslated)
+                  .map((e) => e.post.id)
+                  .toList(),
+            )),
           posts: postDatas,
           initialIndex: index,
           postRepository: context.read<PostRepository>(),
