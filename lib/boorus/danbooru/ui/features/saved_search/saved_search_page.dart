@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
@@ -28,31 +30,14 @@ class SavedSearchPage extends StatelessWidget {
         title: const Text('Saved search'),
         actions: [
           IconButton(
-            onPressed: () {
-              final bloc = context.read<SavedSearchBloc>();
-
-              showMaterialModalBottomSheet(
-                context: context,
-                backgroundColor: Theme.of(context).backgroundColor,
-                builder: (_) => EditSavedSearchSheet(
-                  onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-                    query: query,
-                    label: label,
-                    onCreated: (data) => showSimpleSnackBar(
-                      context: context,
-                      duration: const Duration(seconds: 1),
-                      content: const Text('Saved search has been added'),
-                    ),
-                  )),
-                ),
-              );
-            },
+            onPressed: () => _onAddButtonPressed(context),
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       body: SafeArea(
         child: BlocBuilder<SavedSearchBloc, SavedSearchState>(
+          buildWhen: (previous, current) => previous.status != current.status,
           builder: (context, state) {
             switch (state.status) {
               case LoadStatus.initial:
@@ -61,87 +46,117 @@ class SavedSearchPage extends StatelessWidget {
                   child: CircularProgressIndicator.adaptive(),
                 );
               case LoadStatus.success:
-                return state.data.isNotEmpty
-                    ? CustomScrollView(slivers: [
-                        const SliverToBoxAdapter(child: SizedBox(height: 15)),
-                        SliverToBoxAdapter(
-                          child: InfoContainer(
-                            contentBuilder: (context) => const Text(
-                              "If you don't see any images, check if your query is correct. Also it might take a while for data to be populated.",
-                            ),
-                          ),
-                        ),
-                        SliverToBoxAdapter(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  '${state.data.length} saved searches'
-                                      .toUpperCase(),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium!
-                                      .copyWith(
-                                        color: Theme.of(context).hintColor,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                ),
-                                // IconButton(
-                                //   onPressed: () => _goToSearchPage(
-                                //     context,
-                                //     query: 'search:all',
-                                //   ),
-                                //   icon: const Icon(Icons.chevron_right),
-                                // ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (context, index) {
-                              final savedSearch = state.data[index];
-
-                              return ListTile(
-                                title: Text(savedSearch.labels.join(' ')),
-                                subtitle: Text(savedSearch.query),
-                                trailing: savedSearch.readOnly
-                                    ? null
-                                    : IconButton(
-                                        onPressed: () => _showEditSheet(
-                                          context,
-                                          savedSearch,
-                                        ),
-                                        icon: const Icon(Icons.more_vert),
-                                      ),
-                                onTap: savedSearch.labels.isNotEmpty
-                                    ? () => _goToSearchPage(
-                                          context,
-                                          query:
-                                              'search:${savedSearch.labels.first}',
-                                        )
-                                    : null,
-                                onLongPress: savedSearch.readOnly
-                                    ? null
-                                    : () =>
-                                        _showEditSheet(context, savedSearch),
-                              );
-                            },
-                            childCount: state.data.length,
-                          ),
-                        ),
-                      ])
-                    : const GenericNoDataBox(
-                        text: "You haven't add any search yet",
-                      );
-
+                return const _SuccessView();
               case LoadStatus.failure:
                 return const ErrorBox();
             }
           },
         ),
+      ),
+    );
+  }
+
+  void _onAddButtonPressed(BuildContext context) {
+    final bloc = context.read<SavedSearchBloc>();
+
+    showMaterialModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).backgroundColor,
+      builder: (_) => EditSavedSearchSheet(
+        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
+          query: query,
+          label: label,
+          onCreated: (data) => showSimpleSnackBar(
+            context: context,
+            duration: const Duration(seconds: 1),
+            content: const Text('Saved search has been added'),
+          ),
+        )),
+      ),
+    );
+  }
+}
+
+class _SuccessView extends StatelessWidget {
+  const _SuccessView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<SavedSearchBloc, SavedSearchState>(
+      buildWhen: (previous, current) => previous.data != current.data,
+      builder: (context, state) {
+        return state.data.isEmpty
+            ? const GenericNoDataBox(
+                text: "You haven't add any search yet",
+              )
+            : CustomScrollView(slivers: [
+                const SliverToBoxAdapter(child: SizedBox(height: 15)),
+                SliverToBoxAdapter(
+                  child: InfoContainer(
+                    contentBuilder: (context) => const Text(
+                      "If you don't see any images, check if your query is correct. Also it might take a while for data to be populated.",
+                    ),
+                  ),
+                ),
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${state.data.length} saved searches'.toUpperCase(),
+                          style:
+                              Theme.of(context).textTheme.titleMedium!.copyWith(
+                                    color: Theme.of(context).hintColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SliverImplicitlyAnimatedList<SavedSearch>(
+                  items: state.data,
+                  areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                  itemBuilder: _buildSearchItems,
+                ),
+              ]);
+      },
+    );
+  }
+
+  Widget _buildSearchItems(
+    BuildContext context,
+    Animation<double> animation,
+    SavedSearch savedSearch,
+    int index,
+  ) {
+    return SizeFadeTransition(
+      sizeFraction: 0.7,
+      curve: Curves.easeInOut,
+      animation: animation,
+      child: ListTile(
+        title: Text(savedSearch.labels.join(' ')),
+        subtitle: Text(savedSearch.query),
+        trailing: savedSearch.readOnly
+            ? null
+            : IconButton(
+                onPressed: () => _showEditSheet(
+                  context,
+                  savedSearch,
+                ),
+                icon: const Icon(Icons.more_vert),
+              ),
+        onTap: savedSearch.labels.isNotEmpty
+            ? () => _goToSearchPage(
+                  context,
+                  query: 'search:${savedSearch.labels.first}',
+                )
+            : null,
+        onLongPress: savedSearch.readOnly
+            ? null
+            : () => _showEditSheet(context, savedSearch),
       ),
     );
   }
