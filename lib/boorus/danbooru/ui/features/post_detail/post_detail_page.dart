@@ -190,18 +190,19 @@ class _TopRightButtonGroup extends StatelessWidget {
         return state.enableOverlay
             ? ButtonBar(
                 children: [
-                  CircularIconButton(
-                    icon: state.fullScreen
-                        ? const Icon(
-                            Icons.fullscreen_exit,
-                          )
-                        : const Icon(Icons.fullscreen),
-                    onPressed: () => context
-                        .read<PostDetailBloc>()
-                        .add(PostDetailDisplayModeChanged(
-                          fullScreen: !state.fullScreen,
-                        )),
-                  ),
+                  if (Screen.of(context).size == ScreenSize.small)
+                    CircularIconButton(
+                      icon: state.fullScreen
+                          ? const Icon(
+                              Icons.fullscreen_exit,
+                            )
+                          : const Icon(Icons.fullscreen),
+                      onPressed: () => context
+                          .read<PostDetailBloc>()
+                          .add(PostDetailDisplayModeChanged(
+                            fullScreen: !state.fullScreen,
+                          )),
+                    ),
                   if (state.currentPost.post.isTranslated)
                     CircularIconButton(
                       icon: state.enableNotes
