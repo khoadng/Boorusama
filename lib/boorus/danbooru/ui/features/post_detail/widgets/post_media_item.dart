@@ -84,11 +84,6 @@ class _PostMediaItemState extends State<PostMediaItem> {
                       builder: (context, constraints) => CachedNetworkImage(
                         imageUrl: widget.post.normalImageUrl,
                         imageBuilder: (context, imageProvider) {
-                          final widthPercent =
-                              constraints.maxWidth / widget.post.width;
-                          final heightPercent =
-                              constraints.maxHeight / widget.post.height;
-
                           DefaultCacheManager()
                               .getFileFromCache(widget.post.normalImageUrl)
                               .then((file) {
@@ -100,17 +95,17 @@ class _PostMediaItemState extends State<PostMediaItem> {
                             children: [
                               Image(image: imageProvider),
                               if (widget.enableNotes)
-                                ...widget.notes.map((e) => PostNote(
-                                      coordinate: NoteCoordinate(
-                                        x: e.coordinate.x * widthPercent,
-                                        y: e.coordinate.y * heightPercent,
-                                        height:
-                                            e.coordinate.height * heightPercent,
-                                        width:
-                                            e.coordinate.width * widthPercent,
-                                      ),
-                                      content: e.content,
-                                    )),
+                                ...widget.notes
+                                    .map((e) => e.adjustNoteCoordFor(
+                                          widget.post,
+                                          widthConstraint: constraints.maxWidth,
+                                          heightConstraint:
+                                              constraints.maxHeight,
+                                        ))
+                                    .map((e) => PostNote(
+                                          coordinate: e.coordinate,
+                                          content: e.content,
+                                        )),
                             ],
                           );
                         },

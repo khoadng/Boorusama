@@ -16,3 +16,14 @@ class Note extends Equatable {
   @override
   List<Object?> get props => [coordinate, content];
 }
+
+extension NoteX on Note {
+  Note copyWith({
+    NoteCoordinate? coordinate,
+    String? content,
+  }) =>
+      Note(
+        coordinate: coordinate ?? this.coordinate,
+        content: content ?? this.content,
+      );
+}
