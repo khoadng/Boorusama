@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -163,6 +162,17 @@ final postDetailHandler = Handler(handlerFunc: (
       .expand((e) => e)
       .toList();
 
+  // Prefetch notes
+  postDatas
+      .sublist(index)
+      .where((e) => e.post.isTranslated)
+      .mapIndexed((i, e) => Future.delayed(
+            Duration(milliseconds: i * 200),
+            () => context.read<NoteRepository>().getNotesFrom(e.post.id),
+          ))
+      // ignore: no-empty-block
+      .forEach((f) => f.then((value) {}));
+
   return BlocSelector<SettingsCubit, SettingsState, Settings>(
     selector: (state) => state.settings,
     builder: (context, settings) {
@@ -174,14 +184,7 @@ final postDetailHandler = Handler(handlerFunc: (
           BlocProvider.value(value: context.read<ThemeBloc>()),
           BlocProvider(
             create: (context) => PostDetailBloc(
-              noteBloc: context.read<NoteBloc>()
-                ..add(NotePrefetched(
-                  postIds: postDatas
-                      .sublist(index)
-                      .where((e) => e.post.isTranslated)
-                      .map((e) => e.post.id)
-                      .toList(),
-                )),
+              noteRepository: context.read<NoteRepository>(),
               defaultDetailsStyle: settings.detailsDisplay,
               posts: postDatas,
               initialIndex: index,
@@ -322,11 +325,6 @@ final poolDetailHandler =
               poolDescriptionRepository:
                   context.read<PoolDescriptionRepository>(),
             )..add(PoolDescriptionFetched(poolId: pool.id)),
-          ),
-          BlocProvider(
-            create: (context) => NoteBloc(
-              noteRepository: RepositoryProvider.of<NoteRepository>(context),
-            ),
           ),
         ],
         child: PoolDetailPage(

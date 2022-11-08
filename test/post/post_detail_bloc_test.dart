@@ -7,6 +7,7 @@ import 'package:test/test.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 
@@ -18,12 +19,15 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
+class MockNoteRepository extends Mock implements NoteRepository {}
+
 void main() {
   group('[post detail test]', () {
     final postRepo = MockPostRepository();
     final favRepo = MockFavoritesRepository();
     final accountRepo = MockAccountRepository();
     final postVoteRepo = MockPostVoteRepository();
+    final noteRepo = MockNoteRepository();
 
     blocTest<PostDetailBloc, PostDetailState>(
       'add new tag',
@@ -39,6 +43,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -110,6 +115,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -157,6 +163,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -238,6 +245,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -278,6 +286,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -324,6 +333,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -366,6 +376,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -409,6 +420,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -461,6 +473,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -506,6 +519,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -567,6 +581,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -620,6 +635,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -683,6 +699,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -736,6 +753,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,

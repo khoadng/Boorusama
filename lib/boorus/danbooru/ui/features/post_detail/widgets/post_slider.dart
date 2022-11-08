@@ -61,6 +61,7 @@ class _PostSliderState extends State<PostSlider> {
               post: widget.posts[index].post,
               onCached: (path) => widget.imagePath.value = path,
               enableNotes: state.enableNotes,
+              notes: state.currentPost.notes,
               onTap: () => context
                   .read<PostDetailBloc>()
                   .add(PostDetailOverlayVisibilityChanged(

@@ -8,10 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
@@ -256,9 +256,18 @@ class _PostDetailVoteFetch extends PostDetailEvent {
   List<Object?> get props => [];
 }
 
+class _PostDetailNoteFetch extends PostDetailEvent {
+  const _PostDetailNoteFetch(this.postId);
+
+  final int postId;
+
+  @override
+  List<Object?> get props => [postId];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
-    NoteBloc? noteBloc,
+    required NoteRepository noteRepository,
     required PostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
@@ -284,6 +293,32 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           recommends: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
         )) {
+    on<PostDetailIndexChanged>(
+      (event, emit) async {
+        final post = posts[event.index];
+        emit(state.copyWith(
+          currentIndex: event.index,
+          currentPost: post,
+          recommends: [],
+        ));
+        final account = await accountRepository.get();
+        if (account != Account.empty) {
+          add(_PostDetailFavoriteFetch(account.id));
+          add(const _PostDetailVoteFetch());
+        }
+
+        if (post.post.isTranslated) {
+          add(_PostDetailNoteFetch(post.post.id));
+        }
+
+        if (!state.fullScreen) {
+          await _fetchArtistPosts(post, postRepository, emit);
+          await _fetchCharactersPosts(post, postRepository, emit);
+        }
+      },
+      transformer: restartable(),
+    );
+
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
 
@@ -333,32 +368,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       });
     });
 
-    on<PostDetailIndexChanged>(
-      (event, emit) async {
-        final post = posts[event.index];
-        emit(state.copyWith(
-          currentIndex: event.index,
-          currentPost: post,
-          recommends: [],
-        ));
-        final account = await accountRepository.get();
-        if (account != Account.empty) {
-          add(_PostDetailFavoriteFetch(account.id));
-          add(const _PostDetailVoteFetch());
-        }
+    on<_PostDetailNoteFetch>((event, emit) async {
+      final notes = await noteRepository.getNotesFrom(event.postId);
 
-        if (post.post.isTranslated) {
-          noteBloc?.add(const NoteReset());
-          noteBloc?.add(NoteRequested(postId: post.post.id));
-        }
-
-        if (!state.fullScreen) {
-          await _fetchArtistPosts(post, postRepository, emit);
-          await _fetchCharactersPosts(post, postRepository, emit);
-        }
-      },
-      transformer: restartable(),
-    );
+      emit(state.copyWith(
+        currentPost: state.currentPost.copyWith(notes: notes),
+      ));
+    });
 
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(
