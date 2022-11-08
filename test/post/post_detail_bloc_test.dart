@@ -133,6 +133,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
+          nextPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
@@ -188,6 +190,8 @@ void main() {
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
+          nextPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),

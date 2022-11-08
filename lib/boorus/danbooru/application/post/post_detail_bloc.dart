@@ -59,7 +59,7 @@ class PostDetailState extends Equatable {
     required this.tags,
     required this.currentIndex,
     required this.currentPost,
-    this.nextPost,
+    required this.nextPost,
     this.enableSlideShow = false,
     this.fullScreen = false,
     this.enableNotes = true,
@@ -73,6 +73,7 @@ class PostDetailState extends Equatable {
         tags: const [],
         currentIndex: 0,
         currentPost: PostData.empty(),
+        nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
           interval: 4,
           skipAnimation: false,
@@ -99,7 +100,7 @@ class PostDetailState extends Equatable {
     List<PostDetailTag>? tags,
     int? currentIndex,
     PostData? currentPost,
-    PostData? nextPost,
+    PostData? Function()? nextPost,
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
@@ -112,7 +113,7 @@ class PostDetailState extends Equatable {
         tags: tags ?? this.tags,
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
-        nextPost: nextPost ?? this.nextPost,
+        nextPost: nextPost != null ? nextPost() : this.nextPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
@@ -308,7 +309,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         emit(state.copyWith(
           currentIndex: event.index,
           currentPost: post,
-          nextPost: nextPost,
+          nextPost: () => nextPost,
           recommends: [],
         ));
         final account = await accountRepository.get();
