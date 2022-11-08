@@ -381,10 +381,6 @@ void main() async {
                     ),
                   );
 
-                  // final noteBloc = NoteBloc(
-                  //   noteRepository: ,
-                  // );
-
                   final savedSearchBloc = SavedSearchBloc(
                     savedSearchRepository: savedSearchRepo,
                   );
@@ -461,7 +457,6 @@ void main() async {
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
-                        // BlocProvider.value(value: noteBloc),
                         BlocProvider.value(value: savedSearchBloc),
                       ],
                       child: MultiBlocListener(
