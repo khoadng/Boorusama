@@ -1,9 +1,9 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:math';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -11,184 +11,11 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-
-class PostDetailTag extends Equatable {
-  const PostDetailTag({
-    required this.name,
-    required this.category,
-    required this.postId,
-  });
-
-  final String name;
-  final String category;
-  final int postId;
-
-  @override
-  List<Object?> get props => [postId, name];
-}
-
-enum RecommendType {
-  artist,
-  character,
-}
-
-class Recommend extends Equatable {
-  const Recommend({
-    required this.title,
-    required this.posts,
-    required this.type,
-  });
-
-  final String title;
-  final List<PostData> posts;
-  final RecommendType type;
-
-  @override
-  List<Object?> get props => [title, posts, type];
-}
-
-class PostDetailState extends Equatable {
-  const PostDetailState({
-    required this.id,
-    required this.tags,
-    required this.currentIndex,
-    required this.currentPost,
-    this.enableSlideShow = false,
-    required this.slideShowConfig,
-    required this.recommends,
-  });
-
-  factory PostDetailState.initial() => PostDetailState(
-        id: 0,
-        tags: const [],
-        currentIndex: 0,
-        currentPost: PostData.empty(),
-        slideShowConfig: const SlideShowConfiguration(
-          interval: 4,
-          skipAnimation: false,
-        ),
-        recommends: const [],
-      );
-
-  final List<PostDetailTag> tags;
-  final int currentIndex;
-  final PostData currentPost;
-  final bool enableSlideShow;
-  final SlideShowConfiguration slideShowConfig;
-  final List<Recommend> recommends;
-
-  //TODO: quick hack to force rebuild...
-  final double id;
-
-  PostDetailState copyWith({
-    double? id,
-    List<PostDetailTag>? tags,
-    int? currentIndex,
-    PostData? currentPost,
-    bool? enableSlideShow,
-    SlideShowConfiguration? slideShowConfig,
-    List<Recommend>? recommends,
-  }) =>
-      PostDetailState(
-        id: id ?? this.id,
-        tags: tags ?? this.tags,
-        currentIndex: currentIndex ?? this.currentIndex,
-        currentPost: currentPost ?? this.currentPost,
-        enableSlideShow: enableSlideShow ?? this.enableSlideShow,
-        slideShowConfig: slideShowConfig ?? this.slideShowConfig,
-        recommends: recommends ?? this.recommends,
-      );
-
-  @override
-  List<Object?> get props => [
-        tags,
-        id,
-        currentIndex,
-        currentPost,
-        enableSlideShow,
-        slideShowConfig,
-        recommends,
-      ];
-}
-
-abstract class PostDetailEvent extends Equatable {
-  const PostDetailEvent();
-}
-
-class PostDetailIndexChanged extends PostDetailEvent {
-  const PostDetailIndexChanged({
-    required this.index,
-  });
-
-  final int index;
-
-  @override
-  List<Object?> get props => [index];
-}
-
-class PostDetailFavoritesChanged extends PostDetailEvent {
-  const PostDetailFavoritesChanged({
-    required this.favorite,
-  });
-
-  final bool favorite;
-
-  @override
-  List<Object?> get props => [favorite];
-}
-
-class PostDetailModeChanged extends PostDetailEvent {
-  const PostDetailModeChanged({
-    required this.enableSlideshow,
-  });
-
-  final bool enableSlideshow;
-
-  @override
-  List<Object?> get props => [enableSlideshow];
-}
-
-class PostDetailSlideShowConfigChanged extends PostDetailEvent {
-  const PostDetailSlideShowConfigChanged({
-    required this.config,
-  });
-
-  final SlideShowConfiguration config;
-
-  @override
-  List<Object?> get props => [config];
-}
-
-class PostDetailTagUpdated extends PostDetailEvent {
-  const PostDetailTagUpdated({
-    required this.tag,
-    required this.category,
-    required this.postId,
-  });
-
-  final String? category;
-  final String tag;
-  final int postId;
-
-  @override
-  List<Object?> get props => [tag, category, postId];
-}
-
-class PostDetailUpvoted extends PostDetailEvent {
-  const PostDetailUpvoted();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class PostDetailDownvoted extends PostDetailEvent {
-  const PostDetailDownvoted();
-
-  @override
-  List<Object?> get props => [];
-}
+import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 
 class _PostDetailFavoriteFetch extends PostDetailEvent {
   const _PostDetailFavoriteFetch(this.accountId);
@@ -206,8 +33,18 @@ class _PostDetailVoteFetch extends PostDetailEvent {
   List<Object?> get props => [];
 }
 
+class _PostDetailNoteFetch extends PostDetailEvent {
+  const _PostDetailNoteFetch(this.postId);
+
+  final int postId;
+
+  @override
+  List<Object?> get props => [postId];
+}
+
 class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   PostDetailBloc({
+    required NoteRepository noteRepository,
     required PostRepository postRepository,
     required FavoritePostRepository favoritePostRepository,
     required AccountRepository accountRepository,
@@ -223,14 +60,52 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         onPostUpdated,
     double Function()? idGenerator,
     bool fireIndexChangedAtStart = true,
+    DetailsDisplay defaultDetailsStyle = DetailsDisplay.postFocus,
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
+          nextPost: posts.getOrNull(initialIndex + 1),
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
+          fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
         )) {
+    on<PostDetailIndexChanged>(
+      (event, emit) async {
+        final post = posts[event.index];
+        final nextPost = posts.getOrNull(event.index + 1);
+        emit(state.copyWith(
+          currentIndex: event.index,
+          currentPost: post,
+          nextPost: () => nextPost,
+          recommends: [],
+        ));
+        final account = await accountRepository.get();
+        if (account != Account.empty) {
+          add(_PostDetailFavoriteFetch(account.id));
+          add(const _PostDetailVoteFetch());
+        }
+
+        if (post.post.isTranslated) {
+          add(_PostDetailNoteFetch(post.post.id));
+          if (nextPost?.post.isTranslated ?? false) {
+            // prefetch next post
+            unawaited(Future.delayed(
+              const Duration(milliseconds: 200),
+              () => noteRepository.getNotesFrom(nextPost!.post.id),
+            ));
+          }
+        }
+
+        if (!state.fullScreen) {
+          await _fetchArtistPosts(post, postRepository, emit);
+          await _fetchCharactersPosts(post, postRepository, emit);
+        }
+      },
+      transformer: restartable(),
+    );
+
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
 
@@ -280,60 +155,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       });
     });
 
-    on<PostDetailIndexChanged>(
-      (event, emit) async {
-        final post = posts[event.index];
-        emit(state.copyWith(
-          currentIndex: event.index,
-          currentPost: post,
-          recommends: [],
-        ));
-        final account = await accountRepository.get();
-        if (account != Account.empty) {
-          add(_PostDetailFavoriteFetch(account.id));
-          add(const _PostDetailVoteFetch());
-        }
+    on<_PostDetailNoteFetch>((event, emit) async {
+      final notes = await noteRepository.getNotesFrom(event.postId);
 
-        for (final tag in post.post.artistTags) {
-          final posts = await postRepository.getPosts(tag, 1);
-          emit(state.copyWith(recommends: [
-            ...state.recommends,
-            Recommend(
-              type: RecommendType.artist,
-              title: tag,
-              posts: posts
-                  .take(6)
-                  .map((e) => PostData(
-                        post: e,
-                        isFavorited: false,
-                        pools: const [],
-                      ))
-                  .toList(),
-            ),
-          ]));
-        }
-
-        for (final tag in post.post.characterTags) {
-          final posts = await postRepository.getPosts(tag, 1);
-          emit(state.copyWith(recommends: [
-            ...state.recommends,
-            Recommend(
-              type: RecommendType.character,
-              title: tag,
-              posts: posts
-                  .take(6)
-                  .map((e) => PostData(
-                        post: e,
-                        isFavorited: false,
-                        pools: const [],
-                      ))
-                  .toList(),
-            ),
-          ]));
-        }
-      },
-      transformer: restartable(),
-    );
+      emit(state.copyWith(
+        currentPost: state.currentPost.copyWith(notes: notes),
+      ));
+    });
 
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(
@@ -451,5 +279,91 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     if (fireIndexChangedAtStart) {
       add(PostDetailIndexChanged(index: initialIndex));
     }
+
+    on<PostDetailDisplayModeChanged>((event, emit) async {
+      emit(state.copyWith(
+        fullScreen: event.fullScreen,
+      ));
+      if (!event.fullScreen && state.recommends.isEmpty) {
+        await _fetchArtistPosts(state.currentPost, postRepository, emit);
+        await _fetchCharactersPosts(state.currentPost, postRepository, emit);
+      }
+    });
+
+    on<PostDetailNoteOptionsChanged>((event, emit) {
+      emit(state.copyWith(
+        enableNotes: event.enable,
+      ));
+    });
+
+    on<PostDetailOverlayVisibilityChanged>((event, emit) {
+      if (!state.fullScreen) return;
+
+      emit(state.copyWith(
+        enableOverlay: event.enableOverlay,
+      ));
+    });
+  }
+
+  Future<void> _fetchCharactersPosts(
+    PostData post,
+    PostRepository postRepository,
+    Emitter<PostDetailState> emit,
+  ) async {
+    for (final tag in post.post.characterTags) {
+      final posts = await postRepository.getPosts(tag, 1);
+      emit(state.copyWith(recommends: [
+        ...state.recommends,
+        Recommend(
+          type: RecommendType.character,
+          title: tag,
+          posts: posts
+              .take(6)
+              .map((e) => PostData(
+                    post: e,
+                    isFavorited: false,
+                    pools: const [],
+                  ))
+              .toList(),
+        ),
+      ]));
+    }
+  }
+
+  Future<void> _fetchArtistPosts(
+    PostData post,
+    PostRepository postRepository,
+    Emitter<PostDetailState> emit,
+  ) async {
+    for (final tag in post.post.artistTags) {
+      final posts = await postRepository.getPosts(tag, 1);
+      emit(state.copyWith(recommends: [
+        ...state.recommends,
+        Recommend(
+          type: RecommendType.artist,
+          title: tag,
+          posts: posts
+              .take(6)
+              .map((e) => PostData(
+                    post: e,
+                    isFavorited: false,
+                    pools: const [],
+                  ))
+              .toList(),
+        ),
+      ]));
+    }
+  }
+}
+
+extension PostDetailStateX on PostDetailState {
+  bool shouldShowFloatingActionBar(ActionBarDisplayBehavior behavior) {
+    if (enableSlideShow) return false;
+    if (!enableOverlay) return false;
+
+    // ignore: avoid_bool_literals_in_conditional_expressions
+    return behavior == ActionBarDisplayBehavior.staticAtBottom
+        ? true
+        : fullScreen;
   }
 }

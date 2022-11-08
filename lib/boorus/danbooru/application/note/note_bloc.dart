@@ -2,6 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,6 +28,19 @@ class NoteBloc extends Bloc<NoteEvent, AsyncLoadState<List<Note>>> {
       transformer: debounce(const Duration(milliseconds: 200)),
     );
 
+    on<NotePrefetched>((event, emit) async {
+      event.postIds
+          .mapIndexed((i, id) => Future.delayed(
+                Duration(milliseconds: i * 200),
+                () => noteRepository.getNotesFrom(id),
+              ))
+          // ignore: no-empty-block
+          .forEach((t) => t.then((value) {
+                // do nothing
+                // print(value.length);
+              }));
+    });
+
     on<NoteReset>(
       (event, emit) async {
         emit(const AsyncLoadState.initial());
@@ -48,6 +62,16 @@ class NoteRequested extends NoteEvent {
 
   @override
   List<Object?> get props => [postId];
+}
+
+class NotePrefetched extends NoteEvent {
+  const NotePrefetched({
+    required this.postIds,
+  });
+  final List<int> postIds;
+
+  @override
+  List<Object?> get props => [postIds];
 }
 
 class NoteReset extends NoteEvent {

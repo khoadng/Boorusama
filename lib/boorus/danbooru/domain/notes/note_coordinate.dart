@@ -1,6 +1,10 @@
 // Package imports:
 import 'package:equatable/equatable.dart';
 
+// Project imports:
+import 'package:boorusama/core/domain/posts/post.dart';
+import 'note.dart';
+
 class NoteCoordinate extends Equatable {
   const NoteCoordinate({
     required this.x,
@@ -9,63 +13,41 @@ class NoteCoordinate extends Equatable {
     required this.width,
   });
 
+  factory NoteCoordinate.shrink() => const NoteCoordinate(
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0,
+      );
+
   final double x;
   final double y;
   final double height;
   final double width;
 
-  NoteCoordinate calibrate(
-    double screenHeight,
-    double screenWidth,
-    double screenAspectRatio,
-    double postHeight,
-    double postWidth,
-    double postAspectRatio,
-  ) {
-    var aspectRatio = 1.0;
-    double offset = 0;
-    double newX;
-    double newY;
-    double newWidth;
-    double newHeight;
-
-    if (screenHeight > screenWidth) {
-      if (screenAspectRatio < postAspectRatio) {
-        aspectRatio = screenWidth / postWidth;
-        offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = x * aspectRatio;
-        newY = y * aspectRatio + offset;
-      } else {
-        aspectRatio = screenHeight / postHeight;
-        offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = x * aspectRatio + offset;
-        newY = y * aspectRatio;
-      }
-    } else {
-      if (screenAspectRatio > postAspectRatio) {
-        aspectRatio = screenHeight / postHeight;
-        offset = (screenWidth - aspectRatio * postWidth) / 2;
-        newX = x * aspectRatio + offset;
-        newY = y * aspectRatio;
-      } else {
-        aspectRatio = screenWidth / postWidth;
-        offset = (screenHeight - aspectRatio * postHeight) / 2;
-        newX = x * aspectRatio;
-        newY = y * aspectRatio + offset;
-      }
-    }
-
-    newWidth = width * aspectRatio;
-    newHeight = height * aspectRatio;
-
-    return NoteCoordinate(
-      x: newX,
-      y: newY,
-      width: newWidth,
-      height: newHeight,
-    );
-  }
+  NoteCoordinate withPercent(double widthPercent, double heightPercent) =>
+      NoteCoordinate(
+        x: x * widthPercent,
+        y: y * heightPercent,
+        height: height * heightPercent,
+        width: width * widthPercent,
+      );
 
   @override
   List<Object?> get props => [x, y, width, height];
+}
+
+extension NoteCoordX on Note {
+  Note adjustNoteCoordFor(
+    Post post, {
+    required double widthConstraint,
+    required double heightConstraint,
+  }) {
+    final widthPercent = widthConstraint / post.width;
+    final heightPercent = heightConstraint / post.height;
+
+    return copyWith(
+      coordinate: coordinate.withPercent(widthPercent, heightPercent),
+    );
+  }
 }

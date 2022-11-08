@@ -16,7 +16,6 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_image_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/downloads/bulk_post_download_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
@@ -50,13 +49,12 @@ import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
-import 'ui/features/post_detail/post_image_page.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
@@ -164,59 +162,67 @@ final postDetailHandler = Handler(handlerFunc: (
       .expand((e) => e)
       .toList();
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (context) => SliverPostGridBloc()),
-      BlocProvider.value(value: context.read<AuthenticationCubit>()),
-      BlocProvider.value(value: context.read<ApiEndpointCubit>()),
-      BlocProvider.value(value: context.read<ThemeBloc>()),
-      BlocProvider(
-        create: (context) => PostDetailBloc(
-          posts: postDatas,
-          initialIndex: index,
-          postRepository: context.read<PostRepository>(),
-          favoritePostRepository: context.read<FavoritePostRepository>(),
-          accountRepository: context.read<AccountRepository>(),
-          postVoteRepository: context.read<PostVoteRepository>(),
-          tags: tags,
-          onPostUpdated: (postId, tag, category) {
-            if (postBloc == null) return;
+  return BlocSelector<SettingsCubit, SettingsState, Settings>(
+    selector: (state) => state.settings,
+    builder: (context, settings) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => SliverPostGridBloc()),
+          BlocProvider.value(value: context.read<AuthenticationCubit>()),
+          BlocProvider.value(value: context.read<ApiEndpointCubit>()),
+          BlocProvider.value(value: context.read<ThemeBloc>()),
+          BlocProvider(
+            create: (context) => PostDetailBloc(
+              noteRepository: context.read<NoteRepository>(),
+              defaultDetailsStyle: settings.detailsDisplay,
+              posts: postDatas,
+              initialIndex: index,
+              postRepository: context.read<PostRepository>(),
+              favoritePostRepository: context.read<FavoritePostRepository>(),
+              accountRepository: context.read<AccountRepository>(),
+              postVoteRepository: context.read<PostVoteRepository>(),
+              tags: tags,
+              onPostUpdated: (postId, tag, category) {
+                if (postBloc == null) return;
 
-            final posts = postDatas.where((e) => e.post.id == postId).toList();
-            if (posts.isEmpty) return;
+                final posts =
+                    postDatas.where((e) => e.post.id == postId).toList();
+                if (posts.isEmpty) return;
 
-            postBloc.add(PostUpdated(
-              post: _newPost(
-                posts.first.post,
-                tag,
-                category,
+                postBloc.add(PostUpdated(
+                  post: _newPost(
+                    posts.first.post,
+                    tag,
+                    category,
+                  ),
+                ));
+              },
+            ),
+          ),
+        ],
+        child: RepositoryProvider.value(
+          value: context.read<TagRepository>(),
+          child: Builder(
+            builder: (context) =>
+                BlocListener<SliverPostGridBloc, SliverPostGridState>(
+              listenWhen: (previous, current) =>
+                  previous.nextIndex != current.nextIndex,
+              listener: (context, state) {
+                if (controller == null) return;
+                controller.scrollToIndex(
+                  state.nextIndex,
+                  duration: const Duration(milliseconds: 200),
+                );
+              },
+              child: PostDetailPage(
+                intitialIndex: index,
+                posts: postDatas,
               ),
-            ));
-          },
-        ),
-      ),
-    ],
-    child: RepositoryProvider.value(
-      value: context.read<TagRepository>(),
-      child: Builder(
-        builder: (context) =>
-            BlocListener<SliverPostGridBloc, SliverPostGridState>(
-          listenWhen: (previous, current) =>
-              previous.nextIndex != current.nextIndex,
-          listener: (context, state) {
-            if (controller == null) return;
-            controller.scrollToIndex(
-              state.nextIndex,
-              duration: const Duration(milliseconds: 200),
-            );
-          },
-          child: PostDetailPage(
-            intitialIndex: index,
-            posts: postDatas,
+            ),
           ),
         ),
-      ),
-    ),
+      );
+    },
   );
 });
 
@@ -265,32 +271,6 @@ final postSearchHandler = Handler(handlerFunc: (
   );
 });
 
-final postDetailImageHandler = Handler(handlerFunc: (
-  context,
-  Map<String, List<String>> params,
-) {
-  final args = context!.settings!.arguments as List;
-
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider.value(
-        value: context.read<NoteBloc>()
-          ..add(const NoteReset())
-          ..add(NoteRequested(postId: args.first.id)),
-      ),
-    ],
-    child: BlocSelector<SettingsCubit, SettingsState, ImageQuality>(
-      selector: (state) => state.settings.imageQualityInFullView,
-      builder: (context, quality) {
-        return PostImagePage(
-          post: args.first,
-          useOriginalSize: quality == ImageQuality.original,
-        );
-      },
-    ),
-  );
-});
-
 final userHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   // final String userId = params["id"][0];
@@ -334,11 +314,6 @@ final poolDetailHandler =
               poolDescriptionRepository:
                   context.read<PoolDescriptionRepository>(),
             )..add(PoolDescriptionFetched(poolId: pool.id)),
-          ),
-          BlocProvider(
-            create: (context) => NoteBloc(
-              noteRepository: RepositoryProvider.of<NoteRepository>(context),
-            ),
           ),
         ],
         child: PoolDetailPage(
