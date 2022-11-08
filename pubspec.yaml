@@ -11,7 +11,7 @@ dependencies:
   android_intent_plus: ^3.1.1+1
   animated_flip_counter: ^0.2.5
   animated_list_plus: ^0.4.4
-  basic_utils: ^5.4.0
+  basic_utils: ^5.4.1
   bitsdojo_window: ^0.1.2
   bloc_concurrency: ^0.2.0
   cached_network_image: ^3.2.2
