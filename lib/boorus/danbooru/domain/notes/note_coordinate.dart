@@ -13,6 +13,13 @@ class NoteCoordinate extends Equatable {
     required this.width,
   });
 
+  factory NoteCoordinate.shrink() => const NoteCoordinate(
+        x: 0,
+        y: 0,
+        height: 0,
+        width: 0,
+      );
+
   final double x;
   final double y;
   final double height;

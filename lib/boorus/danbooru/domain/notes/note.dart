@@ -10,6 +10,11 @@ class Note extends Equatable {
     required this.content,
   });
 
+  factory Note.empty() => Note(
+        coordinate: NoteCoordinate.shrink(),
+        content: '',
+      );
+
   final NoteCoordinate coordinate;
   final String content;
 

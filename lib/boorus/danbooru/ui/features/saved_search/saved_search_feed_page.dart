@@ -7,7 +7,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/post/fetchers/saved_search_post_fetcher.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
