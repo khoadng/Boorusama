@@ -48,8 +48,10 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -161,67 +163,74 @@ final postDetailHandler = Handler(handlerFunc: (
       .expand((e) => e)
       .toList();
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(create: (context) => SliverPostGridBloc()),
-      BlocProvider.value(value: context.read<AuthenticationCubit>()),
-      BlocProvider.value(value: context.read<ApiEndpointCubit>()),
-      BlocProvider.value(value: context.read<ThemeBloc>()),
-      BlocProvider(
-        create: (context) => PostDetailBloc(
-          noteBloc: context.read<NoteBloc>()
-            ..add(NotePrefetched(
-              postIds: postDatas
-                  .sublist(index)
-                  .where((e) => e.post.isTranslated)
-                  .map((e) => e.post.id)
-                  .toList(),
-            )),
-          posts: postDatas,
-          initialIndex: index,
-          postRepository: context.read<PostRepository>(),
-          favoritePostRepository: context.read<FavoritePostRepository>(),
-          accountRepository: context.read<AccountRepository>(),
-          postVoteRepository: context.read<PostVoteRepository>(),
-          tags: tags,
-          onPostUpdated: (postId, tag, category) {
-            if (postBloc == null) return;
+  return BlocSelector<SettingsCubit, SettingsState, Settings>(
+    selector: (state) => state.settings,
+    builder: (context, settings) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(create: (context) => SliverPostGridBloc()),
+          BlocProvider.value(value: context.read<AuthenticationCubit>()),
+          BlocProvider.value(value: context.read<ApiEndpointCubit>()),
+          BlocProvider.value(value: context.read<ThemeBloc>()),
+          BlocProvider(
+            create: (context) => PostDetailBloc(
+              noteBloc: context.read<NoteBloc>()
+                ..add(NotePrefetched(
+                  postIds: postDatas
+                      .sublist(index)
+                      .where((e) => e.post.isTranslated)
+                      .map((e) => e.post.id)
+                      .toList(),
+                )),
+              defaultDetailsStyle: settings.detailsDisplay,
+              posts: postDatas,
+              initialIndex: index,
+              postRepository: context.read<PostRepository>(),
+              favoritePostRepository: context.read<FavoritePostRepository>(),
+              accountRepository: context.read<AccountRepository>(),
+              postVoteRepository: context.read<PostVoteRepository>(),
+              tags: tags,
+              onPostUpdated: (postId, tag, category) {
+                if (postBloc == null) return;
 
-            final posts = postDatas.where((e) => e.post.id == postId).toList();
-            if (posts.isEmpty) return;
+                final posts =
+                    postDatas.where((e) => e.post.id == postId).toList();
+                if (posts.isEmpty) return;
 
-            postBloc.add(PostUpdated(
-              post: _newPost(
-                posts.first.post,
-                tag,
-                category,
+                postBloc.add(PostUpdated(
+                  post: _newPost(
+                    posts.first.post,
+                    tag,
+                    category,
+                  ),
+                ));
+              },
+            ),
+          ),
+        ],
+        child: RepositoryProvider.value(
+          value: context.read<TagRepository>(),
+          child: Builder(
+            builder: (context) =>
+                BlocListener<SliverPostGridBloc, SliverPostGridState>(
+              listenWhen: (previous, current) =>
+                  previous.nextIndex != current.nextIndex,
+              listener: (context, state) {
+                if (controller == null) return;
+                controller.scrollToIndex(
+                  state.nextIndex,
+                  duration: const Duration(milliseconds: 200),
+                );
+              },
+              child: PostDetailPage(
+                intitialIndex: index,
+                posts: postDatas,
               ),
-            ));
-          },
-        ),
-      ),
-    ],
-    child: RepositoryProvider.value(
-      value: context.read<TagRepository>(),
-      child: Builder(
-        builder: (context) =>
-            BlocListener<SliverPostGridBloc, SliverPostGridState>(
-          listenWhen: (previous, current) =>
-              previous.nextIndex != current.nextIndex,
-          listener: (context, state) {
-            if (controller == null) return;
-            controller.scrollToIndex(
-              state.nextIndex,
-              duration: const Duration(milliseconds: 200),
-            );
-          },
-          child: PostDetailPage(
-            intitialIndex: index,
-            posts: postDatas,
+            ),
           ),
         ),
-      ),
-    ),
+      );
+    },
   );
 });
 

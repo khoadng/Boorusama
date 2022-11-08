@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -161,6 +162,15 @@ class _AppearancePageState extends State<AppearancePage> {
                   optionBuilder: (value) =>
                       Text(_imageQualityToString(value)).tr(),
                 ),
+                SettingsTile<DetailsDisplay>(
+                  title: const Text('Default details style'),
+                  selectedOption: state.settings.detailsDisplay,
+                  items: DetailsDisplay.values,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(detailsDisplay: value)),
+                  optionBuilder: (value) => Text(value.name.sentenceCase),
+                ),
                 const SizedBox(
                   height: 10,
                 ),
@@ -177,6 +187,7 @@ class _AppearancePageState extends State<AppearancePage> {
                   child: const Text('settings.image_grid.corner_radius').tr(),
                 ),
                 _buildBorderRadiusSlider(state),
+
                 const Divider(thickness: 1),
                 // SettingsHeader(
                 //   label: 'settings.image_viewer.image_viewer'.tr(),

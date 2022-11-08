@@ -274,6 +274,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         onPostUpdated,
     double Function()? idGenerator,
     bool fireIndexChangedAtStart = true,
+    DetailsDisplay defaultDetailsStyle = DetailsDisplay.postFocus,
   }) : super(PostDetailState(
           id: 0,
           tags: tags,
@@ -281,6 +282,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           currentPost: posts[initialIndex],
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
+          fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
         )) {
     on<PostDetailTagUpdated>((event, emit) async {
       if (event.category == null) return;
