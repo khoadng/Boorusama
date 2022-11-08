@@ -2,9 +2,11 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -25,7 +27,6 @@ import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
-import 'post_image_page.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
@@ -243,6 +244,7 @@ class _TopRightButtonGroup extends StatelessWidget {
                     onDownload: (downloader) => downloader(
                       state.currentPost.post,
                     ),
+                    post: state.currentPost.post,
                   ),
                 ],
               )
@@ -483,12 +485,15 @@ class _LargeLayoutContent extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _MoreActionButton extends StatelessWidget {
   const _MoreActionButton({
     required this.onDownload,
+    required this.post,
   });
 
   final void Function(Function(Post post) downloader) onDownload;
+  final Post post;
 
   @override
   Widget build(BuildContext context) {
@@ -498,25 +503,51 @@ class _MoreActionButton extends StatelessWidget {
         child: Material(
           color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
-          child: PopupMenuButton<PostAction>(
+          child: PopupMenuButton<String>(
             padding: EdgeInsets.zero,
-            onSelected: (value) async {
+            onSelected: (value) {
               switch (value) {
-                case PostAction.download:
+                case 'download':
                   onDownload(download);
+                  break;
+                case 'view_original':
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                      extendBody: true,
+                      appBar: AppBar(
+                        elevation: 0,
+                        backgroundColor: Colors.transparent,
+                      ),
+                      body: Center(
+                        child: CachedNetworkImage(
+                          imageUrl: post.fullImageUrl,
+                          imageBuilder: (context, imageProvider) => Hero(
+                            tag: '${post.id}_hero',
+                            child: PhotoView(imageProvider: imageProvider),
+                          ),
+                          progressIndicatorBuilder: (context, url, progress) =>
+                              CircularProgressIndicator.adaptive(
+                            value: progress.progress,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ));
                   break;
                 // ignore: no_default_cases
                 default:
               }
             },
             itemBuilder: (context) => [
-              PopupMenuItem<PostAction>(
-                value: PostAction.download,
-                child: ListTile(
-                  leading: const Icon(Icons.download_rounded),
-                  title: const Text('download.download').tr(),
-                ),
+              PopupMenuItem(
+                value: 'download',
+                child: const Text('download.download').tr(),
               ),
+              if (!post.isVideo)
+                PopupMenuItem(
+                  value: 'view_original',
+                  child: const Text('post.image_fullview.view_original').tr(),
+                ),
             ],
           ),
         ),

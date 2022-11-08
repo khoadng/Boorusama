@@ -99,10 +99,3 @@ class _InteractiveImageState extends State<InteractiveImage>
     _transformationController.value = endMatrix;
   }
 }
-
-enum PostAction {
-  download,
-  viewFullsize,
-  viewNormalsize,
-  slideShow,
-}

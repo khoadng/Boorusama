@@ -178,32 +178,32 @@ class _AppearancePageState extends State<AppearancePage> {
                 ),
                 _buildBorderRadiusSlider(state),
                 const Divider(thickness: 1),
-                SettingsHeader(
-                  label: 'settings.image_viewer.image_viewer'.tr(),
-                ),
-                ListTile(
-                  title: const Text('settings.image_viewer.full_res_as_default')
-                      .tr(),
-                  subtitle: state.settings.imageQualityInFullView ==
-                          ImageQuality.original
-                      ? const Text('settings.image_viewer.full_res_notice').tr()
-                      : null,
-                  trailing: Switch(
-                    activeColor: Theme.of(context).colorScheme.primary,
-                    value: state.settings.imageQualityInFullView ==
-                        ImageQuality.original,
-                    onChanged: (value) {
-                      context
-                          .read<SettingsCubit>()
-                          .update(state.settings.copyWith(
-                            imageQualityInFullView: value
-                                ? ImageQuality.original
-                                : ImageQuality.automatic,
-                          ));
-                    },
-                  ),
-                ),
-                const Divider(thickness: 1),
+                // SettingsHeader(
+                //   label: 'settings.image_viewer.image_viewer'.tr(),
+                // ),
+                // ListTile(
+                //   title: const Text('settings.image_viewer.full_res_as_default')
+                //       .tr(),
+                //   subtitle: state.settings.imageQualityInFullView ==
+                //           ImageQuality.original
+                //       ? const Text('settings.image_viewer.full_res_notice').tr()
+                //       : null,
+                //   trailing: Switch(
+                //     activeColor: Theme.of(context).colorScheme.primary,
+                //     value: state.settings.imageQualityInFullView ==
+                //         ImageQuality.original,
+                //     onChanged: (value) {
+                //       context
+                //           .read<SettingsCubit>()
+                //           .update(state.settings.copyWith(
+                //             imageQualityInFullView: value
+                //                 ? ImageQuality.original
+                //                 : ImageQuality.automatic,
+                //           ));
+                //     },
+                //   ),
+                // ),
+                // const Divider(thickness: 1),
                 SettingsHeader(
                   label: 'settings.image_detail.image_detail'.tr(),
                 ),

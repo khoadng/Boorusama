@@ -12,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
+import 'interactive_image.dart';
 
 class PostMediaItem extends StatefulWidget {
   const PostMediaItem({
