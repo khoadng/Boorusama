@@ -1,13 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -19,13 +16,10 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_show_config_bottom_modal.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_media_item.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -33,7 +27,7 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
 import 'post_image_page.dart';
-import 'widgets/file_details_section.dart';
+import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
 
@@ -109,7 +103,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     builder: (context, state) {
                       return Stack(
                         children: [
-                          _buildSlider(screenSize),
+                          PostSlider(
+                            posts: widget.posts,
+                            imagePath: imagePath,
+                          ),
                           if (state.enableOverlay)
                             ShadowGradientOverlay(
                               alignment: Alignment.topCenter,
@@ -175,61 +172,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                             .add(const PostDetailModeChanged(
                                               enableSlideshow: false,
                                             )),
-                                        onShow: (start) {
-                                          WidgetsBinding.instance
-                                              .addPostFrameCallback((_) async {
-                                            final bloc =
-                                                context.read<PostDetailBloc>();
-
-                                            final config = Screen.of(context)
-                                                        .size ==
-                                                    ScreenSize.small
-                                                ? (await showModalBottomSheet(
-                                                      backgroundColor:
-                                                          Colors.transparent,
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          Wrap(
-                                                        children: [
-                                                          SlideShowConfigContainer(
-                                                            initialConfig: state
-                                                                .slideShowConfig,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ) ??
-                                                    false)
-                                                : (await showDialog(
-                                                      context: context,
-                                                      builder: (context) =>
-                                                          AlertDialog(
-                                                        content:
-                                                            SlideShowConfigContainer(
-                                                          isModal: false,
-                                                          initialConfig: state
-                                                              .slideShowConfig,
-                                                        ),
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                      ),
-                                                    ) ??
-                                                    false);
-                                            if (config != null) {
-                                              bloc
-                                                ..add(
-                                                  PostDetailSlideShowConfigChanged(
-                                                    config: config,
-                                                  ),
-                                                )
-                                                ..add(
-                                                  const PostDetailModeChanged(
-                                                    enableSlideshow: true,
-                                                  ),
-                                                );
-                                              start();
-                                            }
-                                          });
-                                        },
+                                        onShow: (start) =>
+                                            _onShowSlideshowConfig(
+                                          state.slideShowConfig,
+                                          start,
+                                        ),
                                       ),
                                       _MoreActionButton(
                                         onDownload: (downloader) =>
@@ -257,7 +204,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                     .width *
                                                 0.05,
                                             child: FloatingGlassyCard(
-                                              child: _ActionBar(
+                                              child: ActionBar(
                                                 imagePath: imagePath,
                                                 postData: state.currentPost,
                                               ),
@@ -302,316 +249,52 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-  var enableSwipe = true;
-  Widget _buildSlider(ScreenSize screenSize) {
-    return BlocBuilder<PostDetailBloc, PostDetailState>(
-      builder: (context, state) {
-        return CarouselSlider.builder(
-          itemCount: widget.posts.length,
-          itemBuilder: (context, index, realIndex) {
-            final media = PostMediaItem(
-              //TODO: this is used to preload image between page
-              post: widget.posts[index].post,
-              onCached: (path) => imagePath.value = path,
-              enableNotes: state.enableNotes,
-              onTap: () => context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailOverlayVisibilityChanged(
-                    enableOverlay: !state.enableOverlay,
-                  )),
-              onZoomUpdated: (zoom) {
-                final swipe = !zoom;
-                if (swipe != enableSwipe) {
-                  setState(() {
-                    enableSwipe = swipe;
-                  });
-                }
-              },
-            );
+  void _onShowSlideshowConfig(
+    SlideShowConfiguration slideShowConfig,
+    void Function() start,
+  ) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final bloc = context.read<PostDetailBloc>();
 
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-              ),
-              child: Scaffold(
+      final config = Screen.of(context).size == ScreenSize.small
+          ? (await showModalBottomSheet(
                 backgroundColor: Colors.transparent,
-                body: state.enableSlideShow || state.fullScreen
-                    ? SafeArea(
-                        child: Center(
-                          child: media,
-                        ),
-                      )
-                    : BlocBuilder<SettingsCubit, SettingsState>(
-                        buildWhen: (previous, current) =>
-                            previous.settings.actionBarDisplayBehavior !=
-                            current.settings.actionBarDisplayBehavior,
-                        builder: (context, settingsState) {
-                          return Stack(
-                            children: [
-                              if (screenSize != ScreenSize.small &&
-                                  !state.currentPost.post.isVideo)
-                                Center(
-                                  child: media,
-                                )
-                              else
-                                _CarouselContent(
-                                  media: media,
-                                  imagePath: imagePath,
-                                  actionBarDisplayBehavior: settingsState
-                                      .settings.actionBarDisplayBehavior,
-                                  post: state.currentPost,
-                                  preloadPost: widget.posts[index].post,
-                                  key: ValueKey(state.currentIndex),
-                                  recommends: state.recommends,
-                                  pools: widget.posts[index].pools,
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-              ),
-            );
-          },
-          options: CarouselOptions(
-            scrollPhysics: enableSwipe
-                ? const DetailPageViewScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            onPageChanged: (index, reason) {
-              context
-                  .read<SliverPostGridBloc>()
-                  .add(SliverPostGridItemChanged(index: index));
-
-              context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailIndexChanged(index: index));
-            },
-            height: MediaQuery.of(context).size.height,
-            viewportFraction: 1,
-            enableInfiniteScroll: false,
-            initialPage: state.currentIndex,
-            autoPlay: state.enableSlideShow,
-            autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
-                ? const Duration(microseconds: 1)
-                : const Duration(milliseconds: 600),
-            autoPlayInterval:
-                Duration(seconds: state.slideShowConfig.interval.toInt()),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class DetailPageViewScrollPhysics extends ScrollPhysics {
-  const DetailPageViewScrollPhysics({super.parent});
-
-  @override
-  DetailPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return DetailPageViewScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-        mass: 80,
-        stiffness: 100,
-        damping: 1,
-      );
-}
-
-class _CarouselContent extends StatefulWidget {
-  const _CarouselContent({
-    super.key,
-    required this.media,
-    required this.imagePath,
-    required this.actionBarDisplayBehavior,
-    required this.post,
-    required this.preloadPost,
-    required this.recommends,
-    required this.pools,
-  });
-
-  final PostMediaItem media;
-  final ValueNotifier<String?> imagePath;
-  final PostData post;
-  final Post preloadPost;
-  final List<Pool> pools;
-  final ActionBarDisplayBehavior actionBarDisplayBehavior;
-  final List<Recommend> recommends;
-
-  @override
-  State<_CarouselContent> createState() => _CarouselContentState();
-}
-
-class _CarouselContentState extends State<_CarouselContent> {
-  Post get post => widget.post.post;
-
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = Screen.of(context).size;
-
-    return BlocProvider(
-      create: (context) =>
-          PoolFromPostIdBloc(poolRepository: context.read<PoolRepository>())
-            ..add(PoolFromPostIdRequested(postId: post.id)),
-      child: CustomScrollView(
-        slivers: [
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                RepaintBoundary(child: widget.media),
-                if (screenSize == ScreenSize.small) ...[
-                  PoolTiles(pools: widget.pools),
-                  // BlocBuilder<PoolFromPostIdBloc, AsyncLoadState<List<Pool>>>(
-                  //   builder: (context, state) {
-                  //     return state.status == LoadStatus.success
-                  //         ? PoolTiles(pools: state.data!)
-                  //         : const SizedBox.shrink();
-                  //   },
-                  // ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      InformationSection(post: widget.preloadPost),
-                      const Divider(height: 8, thickness: 1),
-                      if (widget.actionBarDisplayBehavior ==
-                          ActionBarDisplayBehavior.scrolling) ...[
-                        RepaintBoundary(
-                          child: _ActionBar(
-                            imagePath: widget.imagePath,
-                            postData: widget.post,
-                          ),
-                        ),
-                        const Divider(height: 8, thickness: 1),
-                      ],
-                      ArtistSection(post: widget.preloadPost),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child:
-                            RepaintBoundary(child: PostStatsTile(post: post)),
-                      ),
-                      if (widget.preloadPost.hasParentOrChildren)
-                        ParentChildTile(
-                          data: getParentChildData(widget.preloadPost),
-                          onTap: (data) => showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => PostBloc.of(context)
-                                    ..add(PostRefreshed(
-                                      tag: data.tagQueryForDataFetching,
-                                      fetcher: SearchedPostFetcher.fromTags(
-                                        data.tagQueryForDataFetching,
-                                      ),
-                                    )),
-                                ),
-                              ],
-                              child: ParentChildPostPage(
-                                parentPostId: data.parentId,
-                              ),
-                            ),
-                          ),
-                        ),
-                      if (!widget.preloadPost.hasParentOrChildren)
-                        const Divider(height: 8, thickness: 1),
-                      BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) {
-                          return Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                              builder: (context, detailState) {
-                                final tags = detailState.tags
-                                    .where((e) => e.postId == post.id)
-                                    .toList();
-
-                                return ExpansionTile(
-                                  title: Text('${tags.length} tags'),
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
-                                  // trailing: BlocBuilder<AuthenticationCubit,
-                                  //     AuthenticationState>(
-                                  //   builder: (context, state) {
-                                  //     return state is Authenticated
-                                  //         ? IconButton(
-                                  //             onPressed: () async {
-                                  //               final bloc = context
-                                  //                   .read<PostDetailBloc>();
-
-                                  //               await showAdaptiveBottomSheet(
-                                  //                   context,
-                                  //                   expand: true,
-                                  //                   builder: (context) =>
-                                  //                       BlocProvider.value(
-                                  //                         value: bloc,
-                                  //                         child: BlocBuilder<
-                                  //                             PostDetailBloc,
-                                  //                             PostDetailState>(
-                                  //                           builder:
-                                  //                               (context, state) {
-                                  //                             return TagEditView(
-                                  //                               post: post,
-                                  //                               tags: state.tags
-                                  //                                   .where((t) =>
-                                  //                                       t.postId ==
-                                  //                                       post.id)
-                                  //                                   .toList(),
-                                  //                             );
-                                  //                           },
-                                  //                         ),
-                                  //                       ));
-                                  //             },
-                                  //             icon: const Icon(Icons.add),
-                                  //           )
-                                  //         : const SizedBox.shrink();
-                                  // },
-                                  // ),
-                                  onExpansionChanged: (value) => value
-                                      ? context
-                                          .read<TagBloc>()
-                                          .add(TagFetched(tags: post.tags))
-                                      : null,
-                                  children: const [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 12),
-                                      child: PostTagList(),
-                                    ),
-                                    SizedBox(height: 8),
-                                  ],
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const Divider(height: 8, thickness: 1),
-                      FileDetailsSection(
-                        post: post,
-                      ),
-                      const Divider(height: 8, thickness: 1),
-                      RecommendArtistList(
-                        recommends: widget.recommends
-                            .where((element) =>
-                                element.type == RecommendType.artist)
-                            .toList(),
-                      ),
-                      RecommendCharacterList(
-                        recommends: widget.recommends
-                            .where((element) =>
-                                element.type == RecommendType.character)
-                            .toList(),
-                      ),
-                    ],
+                context: context,
+                builder: (context) => Wrap(
+                  children: [
+                    SlideShowConfigContainer(
+                      initialConfig: slideShowConfig,
+                    ),
+                  ],
+                ),
+              ) ??
+              false)
+          : (await showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  content: SlideShowConfigContainer(
+                    isModal: false,
+                    initialConfig: slideShowConfig,
                   ),
-                ],
-              ],
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ) ??
+              false);
+      if (config != null) {
+        bloc
+          ..add(
+            PostDetailSlideShowConfigChanged(
+              config: config,
             ),
-          ),
-        ],
-      ),
-    );
+          )
+          ..add(
+            const PostDetailModeChanged(
+              enableSlideshow: true,
+            ),
+          );
+        start();
+      }
+    });
   }
 }
 
@@ -645,7 +328,7 @@ class _LargeLayoutContent extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 8),
-                child: _ActionBar(
+                child: ActionBar(
                   imagePath: imagePath,
                   postData: post,
                 ),
@@ -946,26 +629,5 @@ class _SlideShowButtonState extends State<_SlideShowButton>
               });
             }),
           );
-  }
-}
-
-class _ActionBar extends StatelessWidget {
-  const _ActionBar({
-    required this.imagePath,
-    required this.postData,
-  });
-
-  final ValueNotifier<String?> imagePath;
-  final PostData postData;
-
-  @override
-  Widget build(BuildContext context) {
-    return ValueListenableBuilder<String?>(
-      valueListenable: imagePath,
-      builder: (context, value, child) => PostActionToolbar(
-        postData: postData,
-        imagePath: value,
-      ),
-    );
   }
 }
