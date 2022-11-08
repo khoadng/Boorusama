@@ -1,4 +1,5 @@
 // Dart imports:
+import 'dart:async';
 import 'dart:math';
 
 // Package imports:
@@ -14,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 
 class PostDetailTag extends Equatable {
@@ -57,6 +59,7 @@ class PostDetailState extends Equatable {
     required this.tags,
     required this.currentIndex,
     required this.currentPost,
+    this.nextPost,
     this.enableSlideShow = false,
     this.fullScreen = false,
     this.enableNotes = true,
@@ -80,6 +83,7 @@ class PostDetailState extends Equatable {
   final List<PostDetailTag> tags;
   final int currentIndex;
   final PostData currentPost;
+  final PostData? nextPost;
   final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
@@ -95,6 +99,7 @@ class PostDetailState extends Equatable {
     List<PostDetailTag>? tags,
     int? currentIndex,
     PostData? currentPost,
+    PostData? nextPost,
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
@@ -107,6 +112,7 @@ class PostDetailState extends Equatable {
         tags: tags ?? this.tags,
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
+        nextPost: nextPost ?? this.nextPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
@@ -121,6 +127,7 @@ class PostDetailState extends Equatable {
         id,
         currentIndex,
         currentPost,
+        nextPost,
         enableSlideShow,
         fullScreen,
         enableNotes,
@@ -289,6 +296,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           tags: tags,
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
+          nextPost: posts.getOrNull(initialIndex + 1),
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
@@ -296,9 +304,11 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<PostDetailIndexChanged>(
       (event, emit) async {
         final post = posts[event.index];
+        final nextPost = posts.getOrNull(event.index + 1);
         emit(state.copyWith(
           currentIndex: event.index,
           currentPost: post,
+          nextPost: nextPost,
           recommends: [],
         ));
         final account = await accountRepository.get();
@@ -309,6 +319,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
 
         if (post.post.isTranslated) {
           add(_PostDetailNoteFetch(post.post.id));
+          if (nextPost?.post.isTranslated ?? false) {
+            // prefetch next post
+            unawaited(Future.delayed(
+              const Duration(milliseconds: 200),
+              () => noteRepository.getNotesFrom(nextPost!.post.id),
+            ));
+          }
         }
 
         if (!state.fullScreen) {

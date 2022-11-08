@@ -162,17 +162,6 @@ final postDetailHandler = Handler(handlerFunc: (
       .expand((e) => e)
       .toList();
 
-  // Prefetch notes
-  postDatas
-      .sublist(index)
-      .where((e) => e.post.isTranslated)
-      .mapIndexed((i, e) => Future.delayed(
-            Duration(milliseconds: i * 200),
-            () => context.read<NoteRepository>().getNotesFrom(e.post.id),
-          ))
-      // ignore: no-empty-block
-      .forEach((f) => f.then((value) {}));
-
   return BlocSelector<SettingsCubit, SettingsState, Settings>(
     selector: (state) => state.settings,
     builder: (context, settings) {
