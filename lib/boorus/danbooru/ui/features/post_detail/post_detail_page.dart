@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
@@ -511,8 +512,9 @@ class _MoreActionButton extends StatelessWidget {
                   onDownload(download);
                   break;
                 case 'view_original':
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => Scaffold(
+                  Navigator.of(context).push(PageTransition(
+                    type: PageTransitionType.fade,
+                    child: Scaffold(
                       extendBody: true,
                       appBar: AppBar(
                         elevation: 0,
