@@ -495,7 +495,7 @@ class _MoreActionButton extends StatelessWidget {
       builder: (context, download) => SizedBox(
         width: 40,
         child: Material(
-          color: Colors.black.withOpacity(0.35),
+          color: Colors.black.withOpacity(0.5),
           shape: const CircleBorder(),
           child: PopupMenuButton<PostAction>(
             padding: EdgeInsets.zero,

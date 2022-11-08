@@ -16,7 +16,7 @@ class CircularIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Colors.black.withOpacity(0.35),
+      color: Colors.black.withOpacity(0.5),
       shape: const CircleBorder(),
       child: InkWell(
         splashFactory: InkRipple.splashFactory,
