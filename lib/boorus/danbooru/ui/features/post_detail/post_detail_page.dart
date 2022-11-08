@@ -22,7 +22,6 @@ import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
@@ -97,127 +96,58 @@ class _PostDetailPageState extends State<PostDetailPage> {
             body: Row(
               children: [
                 Expanded(
-                  child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                    buildWhen: (previous, current) =>
-                        previous.enableOverlay != current.enableOverlay,
-                    builder: (context, state) {
-                      return Stack(
-                        children: [
-                          PostSlider(
-                            posts: widget.posts,
-                            imagePath: imagePath,
-                          ),
-                          if (state.enableOverlay)
-                            ShadowGradientOverlay(
-                              alignment: Alignment.topCenter,
-                              colors: [
-                                const Color.fromARGB(16, 0, 0, 0),
-                                Colors.black12.withOpacity(0),
-                              ],
-                            ),
-                          if (state.enableOverlay)
-                            Align(
-                              alignment: Alignment(
-                                -0.75,
-                                getTopActionIconAlignValue(),
-                              ),
-                              child: const _BackButton(),
-                            ),
-                          if (state.enableOverlay)
-                            Align(
-                              alignment:
-                                  Alignment(0.9, getTopActionIconAlignValue()),
-                              child:
-                                  BlocBuilder<PostDetailBloc, PostDetailState>(
-                                builder: (context, state) {
-                                  return ButtonBar(
-                                    children: [
-                                      CircularIconButton(
-                                        icon: state.fullScreen
-                                            ? const Icon(Icons.fullscreen_exit)
-                                            : const Icon(Icons.fullscreen),
-                                        onPressed: () => context
-                                            .read<PostDetailBloc>()
-                                            .add(PostDetailDisplayModeChanged(
-                                              fullScreen: !state.fullScreen,
-                                            )),
-                                      ),
-                                      if (state.currentPost.post.isTranslated)
-                                        CircularIconButton(
-                                          icon: state.enableNotes
-                                              ? const Padding(
-                                                  padding: EdgeInsets.all(3),
-                                                  child: FaIcon(
-                                                    FontAwesomeIcons.eyeSlash,
-                                                    size: 18,
-                                                  ),
-                                                )
-                                              : const Padding(
-                                                  padding: EdgeInsets.all(4),
-                                                  child: FaIcon(
-                                                    FontAwesomeIcons.eye,
-                                                    size: 18,
-                                                  ),
-                                                ),
-                                          onPressed: () => context
-                                              .read<PostDetailBloc>()
-                                              .add(PostDetailNoteOptionsChanged(
-                                                enable: !state.enableNotes,
-                                              )),
-                                        ),
-                                      _SlideShowButton(
-                                        autoPlay: state.enableSlideShow,
-                                        onStop: () => context
-                                            .read<PostDetailBloc>()
-                                            .add(const PostDetailModeChanged(
-                                              enableSlideshow: false,
-                                            )),
-                                        onShow: (start) =>
-                                            _onShowSlideshowConfig(
-                                          state.slideShowConfig,
-                                          start,
+                  child: Stack(
+                    children: [
+                      PostSlider(
+                        posts: widget.posts,
+                        imagePath: imagePath,
+                      ),
+                      Align(
+                        alignment: Alignment(
+                          -0.75,
+                          getTopActionIconAlignValue(),
+                        ),
+                        child:
+                            BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                          selector: (state) => state.enableOverlay,
+                          builder: (context, enable) {
+                            return enable
+                                ? const _BackButton()
+                                : const SizedBox.shrink();
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment(
+                          0.9,
+                          getTopActionIconAlignValue(),
+                        ),
+                        child: const _TopRightButtonGroup(),
+                      ),
+                      if (Screen.of(context).size == ScreenSize.small)
+                        BlocBuilder<PostDetailBloc, PostDetailState>(
+                          builder: (context, state) {
+                            return BlocBuilder<SettingsCubit, SettingsState>(
+                              builder: (context, settingsState) => state
+                                      .shouldShowFloatingActionBar(
+                                settingsState.settings.actionBarDisplayBehavior,
+                              )
+                                  ? Positioned(
+                                      bottom: 12,
+                                      left: MediaQuery.of(context).size.width *
+                                          0.05,
+                                      child: FloatingGlassyCard(
+                                        child: ActionBar(
+                                          imagePath: imagePath,
+                                          postData: state.currentPost,
                                         ),
                                       ),
-                                      _MoreActionButton(
-                                        onDownload: (downloader) =>
-                                            downloader(state.currentPost.post),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                            ),
-                          if (Screen.of(context).size == ScreenSize.small)
-                            BlocBuilder<PostDetailBloc, PostDetailState>(
-                              builder: (context, state) {
-                                return BlocBuilder<SettingsCubit,
-                                    SettingsState>(
-                                  builder: (context, settingsState) {
-                                    return state.shouldShowFloatingActionBar(
-                                      settingsState
-                                          .settings.actionBarDisplayBehavior,
                                     )
-                                        ? Positioned(
-                                            bottom: 12,
-                                            left: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.05,
-                                            child: FloatingGlassyCard(
-                                              child: ActionBar(
-                                                imagePath: imagePath,
-                                                postData: state.currentPost,
-                                              ),
-                                            ),
-                                          )
-                                        : const SizedBox.shrink();
-                                  },
-                                );
-                              },
-                            ),
-                        ],
-                      );
-                    },
+                                  : const SizedBox.shrink(),
+                            );
+                          },
+                        ),
+                    ],
                   ),
                 ),
                 if (screenSize != ScreenSize.small)
@@ -248,8 +178,80 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ),
     );
   }
+}
+
+class _TopRightButtonGroup extends StatelessWidget {
+  const _TopRightButtonGroup();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<PostDetailBloc, PostDetailState>(
+      builder: (context, state) {
+        return state.enableOverlay
+            ? ButtonBar(
+                children: [
+                  CircularIconButton(
+                    icon: state.fullScreen
+                        ? const Icon(
+                            Icons.fullscreen_exit,
+                          )
+                        : const Icon(Icons.fullscreen),
+                    onPressed: () => context
+                        .read<PostDetailBloc>()
+                        .add(PostDetailDisplayModeChanged(
+                          fullScreen: !state.fullScreen,
+                        )),
+                  ),
+                  if (state.currentPost.post.isTranslated)
+                    CircularIconButton(
+                      icon: state.enableNotes
+                          ? const Padding(
+                              padding: EdgeInsets.all(3),
+                              child: FaIcon(
+                                FontAwesomeIcons.eyeSlash,
+                                size: 18,
+                              ),
+                            )
+                          : const Padding(
+                              padding: EdgeInsets.all(4),
+                              child: FaIcon(
+                                FontAwesomeIcons.eye,
+                                size: 18,
+                              ),
+                            ),
+                      onPressed: () => context.read<PostDetailBloc>().add(
+                            PostDetailNoteOptionsChanged(
+                              enable: !state.enableNotes,
+                            ),
+                          ),
+                    ),
+                  _SlideShowButton(
+                    autoPlay: state.enableSlideShow,
+                    onStop: () => context
+                        .read<PostDetailBloc>()
+                        .add(const PostDetailModeChanged(
+                          enableSlideshow: false,
+                        )),
+                    onShow: (start) => _onShowSlideshowConfig(
+                      context,
+                      state.slideShowConfig,
+                      start,
+                    ),
+                  ),
+                  _MoreActionButton(
+                    onDownload: (downloader) => downloader(
+                      state.currentPost.post,
+                    ),
+                  ),
+                ],
+              )
+            : const SizedBox.shrink();
+      },
+    );
+  }
 
   void _onShowSlideshowConfig(
+    BuildContext context,
     SlideShowConfiguration slideShowConfig,
     void Function() start,
   ) {
