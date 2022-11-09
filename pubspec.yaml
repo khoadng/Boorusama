@@ -10,6 +10,8 @@ environment:
 dependencies:
   android_intent_plus: ^3.1.1+1
   animated_flip_counter: ^0.2.5
+  animated_list_plus: ^0.4.4
+  basic_utils: ^5.4.0
   bitsdojo_window: ^0.1.2
   bloc_concurrency: ^0.2.0
   cached_network_image: ^3.2.2
@@ -27,7 +29,7 @@ dependencies:
   equatable: ^2.0.5
   file_picker: ^5.2.1
   filesize: ^2.0.1
-  fluro: ^2.0.3
+  fluro: ^2.0.4
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.0
@@ -45,6 +47,7 @@ dependencies:
   flutter_local_notifications: ^12.0.2
   flutter_markdown: ^0.6.12
   flutter_portal: ^1.1.1
+  flutter_staggered_animations: ^1.1.1
   flutter_staggered_grid_view: ^0.6.2
   flutter_tags_x: ^1.1.0
   font_awesome_flutter: ^10.2.1
@@ -61,10 +64,12 @@ dependencies:
       url: https://github.com/hilalbaig/number_inc_dec.git
       ref: f66ee872727172ce2fe57f118d569339d54c384d
   package_info_plus: ^3.0.1
+  page_transition: ^2.0.9
   path: ^1.8.2
   path_provider: ^2.0.11
   percent_indicator: ^4.2.2
   permission_handler: ^10.0.1
+  photo_view: ^0.14.0
   pull_to_refresh:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
@@ -117,6 +122,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/icon/
+    - assets/images/
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json

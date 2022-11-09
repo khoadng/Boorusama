@@ -10,9 +10,25 @@ class Note extends Equatable {
     required this.content,
   });
 
+  factory Note.empty() => Note(
+        coordinate: NoteCoordinate.shrink(),
+        content: '',
+      );
+
   final NoteCoordinate coordinate;
   final String content;
 
   @override
   List<Object?> get props => [coordinate, content];
+}
+
+extension NoteX on Note {
+  Note copyWith({
+    NoteCoordinate? coordinate,
+    String? content,
+  }) =>
+      Note(
+        coordinate: coordinate ?? this.coordinate,
+        content: content ?? this.content,
+      );
 }

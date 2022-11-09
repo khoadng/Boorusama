@@ -6,10 +6,8 @@ class AnimatedSpinningIcon extends AnimatedWidget {
     super.key,
     required Animation<double> animation,
     required this.icon,
-    this.onPressed,
   }) : super(listenable: animation);
 
-  final VoidCallback? onPressed;
   final Widget icon;
 
   @override
@@ -18,10 +16,7 @@ class AnimatedSpinningIcon extends AnimatedWidget {
 
     return Transform.rotate(
       angle: animation.value,
-      child: IconButton(
-        icon: icon,
-        onPressed: () => onPressed?.call(),
-      ),
+      child: icon,
     );
   }
 }

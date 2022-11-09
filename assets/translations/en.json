@@ -63,9 +63,11 @@
             },
             "has_parent_notice" : "This post belongs to a parent and has siblings",
             "has_children_notice" : "This post has children",
+            "file_details" : "File details",
             "size" : "Size",
             "resolution" : "Resolution",
             "rating" : "Rating",
+            "file_format" : "File format",
             "share" : {
                 "source" : "Share source link",
                 "booru" : "Share booru link",
@@ -89,8 +91,8 @@
             "view_notes" : "View translated notes"
         },
         "image_fullview" : {
-            "view_original" : "View original image",
-            "view_resized" : "View resized image"
+            "view_original" : "View original",
+            "view_resized" : "View resized"
         }
     },
 

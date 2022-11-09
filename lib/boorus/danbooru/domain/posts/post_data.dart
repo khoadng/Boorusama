@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 
@@ -15,7 +16,8 @@ class PostData extends Equatable {
     required this.isFavorited,
     this.voteState = VoteState.unvote,
     required this.pools,
-  });
+    List<Note>? notes,
+  }) : _notes = notes;
 
   factory PostData.empty() => PostData(
         post: Post.empty(),
@@ -28,21 +30,26 @@ class PostData extends Equatable {
     bool? isFavorited,
     VoteState? voteState,
     List<Pool>? pools,
+    List<Note>? notes,
   }) =>
       PostData(
         post: post ?? this.post,
         isFavorited: isFavorited ?? this.isFavorited,
         voteState: voteState ?? this.voteState,
         pools: pools ?? this.pools,
+        notes: notes ?? _notes,
       );
 
   final Post post;
   final bool isFavorited;
   final VoteState voteState;
   final List<Pool> pools;
+  List<Note> get notes => _notes ?? [];
+
+  final List<Note>? _notes;
 
   @override
-  List<Object?> get props => [post, isFavorited, voteState, pools];
+  List<Object?> get props => [post, isFavorited, voteState, pools, _notes];
 }
 
 Future<List<PostData>> Function(List<Post> posts) createPostDataWith(

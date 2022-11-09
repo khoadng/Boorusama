@@ -50,7 +50,6 @@ class _HomePageState extends State<HomePage> {
                 : Brightness.light,
           ),
           child: Scaffold(
-            extendBody: true,
             key: scaffoldKey,
             drawer: screenSize == ScreenSize.small
                 ? const SideBarMenu(

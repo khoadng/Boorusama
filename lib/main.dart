@@ -24,9 +24,9 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_c
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
@@ -76,6 +76,8 @@ const supportedLocales = [
 ];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
+const savedSearchHelpUrl =
+    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -277,7 +279,10 @@ void main() async {
                     tagInfo.defaultBlacklistedTags,
                   );
 
-                  final noteRepo = NoteRepositoryApi(api);
+                  final noteRepo = NoteCacher(
+                    cache: LruCacher(capacity: 100),
+                    repo: NoteRepositoryApi(api),
+                  );
 
                   final favoriteRepo =
                       FavoritePostRepositoryApi(api, accountRepo);
@@ -376,11 +381,8 @@ void main() async {
                     ),
                   );
 
-                  final noteBloc = NoteBloc(
-                    noteRepository: NoteCacher(
-                      cache: LruCacher(capacity: 100),
-                      repo: noteRepo,
-                    ),
+                  final savedSearchBloc = SavedSearchBloc(
+                    savedSearchRepository: savedSearchRepo,
                   );
 
                   return MultiRepositoryProvider(
@@ -455,7 +457,7 @@ void main() async {
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
-                        BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: savedSearchBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

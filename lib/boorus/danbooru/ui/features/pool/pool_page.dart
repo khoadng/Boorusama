@@ -66,7 +66,6 @@ class _PoolPageState extends State<PoolPage> {
   ) {
     return InfiniteLoadListScrollView(
       isLoading: pState.status == LoadStatus.loading,
-      extendBody: true,
       enableRefresh: false,
       enableLoadMore: pState.hasMore,
       onLoadMore: () => context.read<PoolBloc>().add(PoolFetched(

@@ -174,14 +174,14 @@ void main() {
       },
       seed: () => SavedSearchState.initial().copyWith(
         data: [
-          SavedSearch.empty().copyWith(id: 1),
+          SavedSearch.empty().copyWith(id: 1, canDelete: true),
         ],
       ),
       build: () => SavedSearchBloc(
         savedSearchRepository: savedSearchRepo,
       ),
       act: (bloc) => bloc.add(SavedSearchDeleted(
-        savedSearch: SavedSearch.empty().copyWith(id: 1),
+        savedSearch: SavedSearch.empty().copyWith(id: 1, canDelete: true),
         onDeleted: completer!.complete,
       )),
       verify: (bloc) {
@@ -192,6 +192,29 @@ void main() {
           data: [],
         ),
       ],
+    );
+
+    blocTest<SavedSearchBloc, SavedSearchState>(
+      'ignore search that is undeletable',
+      setUp: () {
+        when(() => savedSearchRepo.deleteSavedSearch(any()))
+            .thenAnswer((_) async => false);
+      },
+      tearDown: () {
+        reset(savedSearchRepo);
+      },
+      seed: () => SavedSearchState.initial().copyWith(
+        data: [
+          SavedSearch.empty().copyWith(id: 1, canDelete: false),
+        ],
+      ),
+      build: () => SavedSearchBloc(
+        savedSearchRepository: savedSearchRepo,
+      ),
+      act: (bloc) => bloc.add(SavedSearchDeleted(
+        savedSearch: SavedSearch.empty().copyWith(id: 1, canDelete: false),
+      )),
+      expect: () => [],
     );
 
     blocTest<SavedSearchBloc, SavedSearchState>(
@@ -207,14 +230,14 @@ void main() {
       },
       seed: () => SavedSearchState.initial().copyWith(
         data: [
-          SavedSearch.empty().copyWith(id: 1),
+          SavedSearch.empty().copyWith(id: 1, canDelete: true),
         ],
       ),
       build: () => SavedSearchBloc(
         savedSearchRepository: savedSearchRepo,
       ),
       act: (bloc) => bloc.add(SavedSearchDeleted(
-        savedSearch: SavedSearch.empty().copyWith(id: 1),
+        savedSearch: SavedSearch.empty().copyWith(id: 1, canDelete: true),
         onFailure: completer!.complete,
       )),
       verify: (bloc) {
@@ -238,7 +261,7 @@ void main() {
         savedSearchRepository: savedSearchRepo,
       ),
       act: (bloc) => bloc.add(SavedSearchDeleted(
-        savedSearch: SavedSearch.empty().copyWith(id: 1),
+        savedSearch: SavedSearch.empty().copyWith(id: 1, canDelete: true),
         onFailure: completer!.complete,
       )),
       verify: (bloc) {

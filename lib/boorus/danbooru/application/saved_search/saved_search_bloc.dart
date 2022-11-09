@@ -120,7 +120,7 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
           emit(state.copyWith(
             status: LoadStatus.success,
             refreshing: false,
-            data: [...data]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+            data: _sort(data),
           ));
         },
       );
@@ -138,10 +138,10 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
         onSuccess: (data) async {
           if (data != null) {
             emit(state.copyWith(
-              data: [
+              data: _sort([
                 ...state.data,
                 data,
-              ]..sort((a, b) => b.createdAt.compareTo(a.createdAt)),
+              ]),
             ));
 
             event.onCreated?.call(data);
@@ -153,6 +153,8 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
     });
 
     on<SavedSearchDeleted>((event, emit) async {
+      if (!event.savedSearch.canDelete) return;
+
       await tryAsync<bool>(
         action: () =>
             savedSearchRepository.deleteSavedSearch(event.savedSearch.id),
@@ -196,7 +198,7 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
             );
 
             emit(state.copyWith(
-              data: newData,
+              data: _sort(newData),
             ));
 
             event.onUpdated?.call(newSearch);
@@ -207,4 +209,15 @@ class SavedSearchBloc extends Bloc<SavedSearchEvent, SavedSearchState> {
       );
     });
   }
+}
+
+List<SavedSearch> _sort(List<SavedSearch> items) {
+  final group = items.groupBy((d) => d.labels.isEmpty);
+  final hasLabelItems = group[false] ?? [];
+  final noLabelItems = group[true] ?? [];
+
+  return [
+    ...noLabelItems,
+    ...hasLabelItems..sort((a, b) => a.labels.first.compareTo(b.labels.first)),
+  ];
 }

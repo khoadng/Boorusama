@@ -38,11 +38,6 @@ class AppRouter {
         transitionType: TransitionType.fadeIn,
       )
       ..define(
-        '/posts/image',
-        handler: postDetailImageHandler,
-        transitionType: TransitionType.fadeIn,
-      )
-      ..define(
         '/users/profile',
         handler: userHandler,
         transitionType: TransitionType.material,
@@ -76,6 +71,11 @@ class AppRouter {
         '/saved_search',
         handler: savedSearchHandler,
         transitionType: TransitionType.material,
+      )
+      ..define(
+        '/saved_search/edit',
+        handler: savedSearchEditHandler,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/users/blacklisted_tags',

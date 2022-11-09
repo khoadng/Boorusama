@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -17,7 +16,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
@@ -226,20 +224,6 @@ class SliverPostGrid extends HookWidget {
                       : const SizedBox.shrink();
                 },
               ),
-              if (post.post.isTranslated)
-                CupertinoContextMenuAction(
-                  trailingIcon: Icons.translate,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    AppRouter.router.navigateTo(
-                      context,
-                      '/posts/image',
-                      routeSettings: RouteSettings(arguments: [post]),
-                      transition: TransitionType.material,
-                    );
-                  },
-                  child: const Text('post.quick_preview.view_notes').tr(),
-                ),
             ],
           );
         }
