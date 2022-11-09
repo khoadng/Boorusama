@@ -6,12 +6,13 @@ String generateFullReadableName(Post post) =>
 
 String generateCopyrightOnlyReadableName(Post post) {
   final copyrights = post.copyrightTags;
+  final copyright = copyrights.isEmpty ? 'original' : copyrights.first;
 
   final remainedCopyrightString = copyrights.skip(1).isEmpty
       ? ''
       : ' and ${copyrights.skip(1).length} more';
 
-  return '${copyrights.first}$remainedCopyrightString';
+  return '$copyright$remainedCopyrightString';
 }
 
 String generateCharacterOnlyReadableName(Post post) {
@@ -37,5 +38,5 @@ String generateCharacterOnlyReadableName(Post post) {
       ? ''
       : ' and ${cleanedCharacterList.skip(3).length} more';
 
-  return '$characterString$remainedCharacterString';
+  return '${characterString.isEmpty ? 'original' : characterString}$remainedCharacterString';
 }
