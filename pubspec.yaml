@@ -29,7 +29,7 @@ dependencies:
   equatable: ^2.0.5
   file_picker: ^5.2.1
   filesize: ^2.0.1
-  fluro: ^2.0.3
+  fluro: ^2.0.4
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.0
