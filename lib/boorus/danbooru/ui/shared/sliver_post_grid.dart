@@ -13,6 +13,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -109,159 +110,173 @@ class SliverPostGrid extends HookWidget {
       return () {};
     });
 
-    return BlocBuilder<SettingsCubit, SettingsState>(
-      buildWhen: (previous, current) =>
-          previous.settings.imageBorderRadius !=
-              current.settings.imageBorderRadius ||
-          previous.settings.imageGridSpacing !=
-              current.settings.imageGridSpacing ||
-          previous.settings.imageQuality != current.settings.imageQuality ||
-          previous.settings.imageListType != current.settings.imageListType,
-      builder: (context, state) {
-        Widget buildItem(
-          int index, {
-          required bool legacy,
-        }) {
-          final post = posts[index];
+    return BlocBuilder<AuthenticationCubit, AuthenticationState>(
+      builder: (context, authState) {
+        return BlocBuilder<SettingsCubit, SettingsState>(
+          buildWhen: (previous, current) =>
+              previous.settings.imageBorderRadius !=
+                  current.settings.imageBorderRadius ||
+              previous.settings.imageGridSpacing !=
+                  current.settings.imageGridSpacing ||
+              previous.settings.imageQuality != current.settings.imageQuality ||
+              previous.settings.imageListType != current.settings.imageListType,
+          builder: (context, state) {
+            Widget buildItem(
+              int index, {
+              required bool legacy,
+            }) {
+              final post = posts[index];
 
-          return ImageGridItem(
-            autoScrollOptions: AutoScrollOptions(
-              controller: scrollController,
-              index: index,
-            ),
-            borderRadius: BorderRadius.circular(
-              state.settings.imageBorderRadius,
-            ),
-            aspectRatio: post.post.aspectRatio,
-            gridSize: gridSize,
-            imageQuality: state.settings.imageQuality,
-            image: legacy
-                ? BooruImageLegacy(
-                    imageUrl: getImageUrlForDisplay(
-                      post.post,
-                      getImageQuality(
-                        size: gridSize,
-                        presetImageQuality: state.settings.imageQuality,
-                      ),
-                    ),
-                    placeholderUrl: post.post.previewImageUrl,
-                    borderRadius: BorderRadius.circular(
-                      state.settings.imageBorderRadius,
-                    ),
-                  )
-                : null,
-            onTap: () => onTap?.call(post.post, index),
-            isAnimated: post.post.isAnimated,
-            isTranslated: post.post.isTranslated,
-            hasComments: post.post.hasComment,
-            hasParentOrChildren: post.post.hasBothParentAndChildren,
-            previewUrl: getImageUrlForDisplay(
-              post.post,
-              getImageQuality(
-                size: gridSize,
-                presetImageQuality: state.settings.imageQuality,
-              ),
-            ),
-            previewPlaceholderUrl: post.post.previewImageUrl,
-            contextMenuAction: [
-              DownloadProviderWidget(
-                builder: (context, download) => CupertinoContextMenuAction(
-                  trailingIcon: Icons.download,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    download(post.post);
-                  },
-                  child: const Text('download.download').tr(),
+              return ImageGridItem(
+                isFaved: post.isFavorited,
+                enableFav: authState is Authenticated,
+                onFavToggle: (_) => _getFavAction(context, post),
+                autoScrollOptions: AutoScrollOptions(
+                  controller: scrollController,
+                  index: index,
                 ),
-              ),
-              FutureBuilder<Account>(
-                future: context.read<AccountRepository>().get(),
-                builder: (context, snapshot) {
-                  return snapshot.hasData && snapshot.data! != Account.empty
-                      ? CupertinoContextMenuAction(
-                          trailingIcon: post.isFavorited
-                              ? Icons.favorite
-                              : Icons.favorite_outline,
-                          onPressed: () async {
-                            Navigator.of(context).pop();
-                            final action = post.isFavorited
-                                ? context
-                                    .read<FavoritePostRepository>()
-                                    .removeFromFavorites(post.post.id)
-                                : context
-                                    .read<FavoritePostRepository>()
-                                    .addToFavorites(post.post.id);
-                            final success = await action;
-                            final successMsg = post.isFavorited
-                                ? 'favorites.unfavorited'
-                                : 'favorites.favorited';
-                            final failMsg = post.isFavorited
-                                ? 'favorites.fail_to_unfavorite'
-                                : 'favorites.fail_to_favorite';
-                            if (success) {
-                              onFavoriteUpdated.call(
-                                post.post.id,
-                                !post.isFavorited,
-                              );
-                              showSimpleSnackBar(
-                                context: context,
-                                content: Text(successMsg).tr(),
-                                duration: const Duration(seconds: 1),
-                              );
-                            } else {
-                              showSimpleSnackBar(
-                                context: context,
-                                content: Text(failMsg).tr(),
-                                duration: const Duration(seconds: 2),
-                              );
-                            }
-                          },
-                          child: Text(post.isFavorited
-                                  ? 'favorites.unfavorite'
-                                  : 'favorites.favorite')
-                              .tr(),
-                        )
-                      : const SizedBox.shrink();
-                },
-              ),
-            ],
-          );
-        }
+                borderRadius: BorderRadius.circular(
+                  state.settings.imageBorderRadius,
+                ),
+                aspectRatio: post.post.aspectRatio,
+                gridSize: gridSize,
+                imageQuality: state.settings.imageQuality,
+                image: legacy
+                    ? BooruImageLegacy(
+                        imageUrl: getImageUrlForDisplay(
+                          post.post,
+                          getImageQuality(
+                            size: gridSize,
+                            presetImageQuality: state.settings.imageQuality,
+                          ),
+                        ),
+                        placeholderUrl: post.post.previewImageUrl,
+                        borderRadius: BorderRadius.circular(
+                          state.settings.imageBorderRadius,
+                        ),
+                      )
+                    : null,
+                onTap: () => onTap?.call(post.post, index),
+                isAnimated: post.post.isAnimated,
+                isTranslated: post.post.isTranslated,
+                hasComments: post.post.hasComment,
+                hasParentOrChildren: post.post.hasBothParentAndChildren,
+                previewUrl: getImageUrlForDisplay(
+                  post.post,
+                  getImageQuality(
+                    size: gridSize,
+                    presetImageQuality: state.settings.imageQuality,
+                  ),
+                ),
+                previewPlaceholderUrl: post.post.previewImageUrl,
+                contextMenuAction: _buildContextMenu(post, context),
+              );
+            }
 
-        switch (state.settings.imageListType) {
-          case ImageListType.standard:
-            return SliverGrid(
-              gridDelegate: gridSizeToGridDelegate(
-                size: gridSize,
-                spacing: state.settings.imageGridSpacing,
-                screenWidth: MediaQuery.of(context).size.width,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => buildItem(index, legacy: true),
-                childCount: posts.length,
-              ),
-            );
+            switch (state.settings.imageListType) {
+              case ImageListType.standard:
+                return SliverGrid(
+                  gridDelegate: gridSizeToGridDelegate(
+                    size: gridSize,
+                    spacing: state.settings.imageGridSpacing,
+                    screenWidth: MediaQuery.of(context).size.width,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) => buildItem(index, legacy: true),
+                    childCount: posts.length,
+                  ),
+                );
 
-          case ImageListType.masonry:
-            final data = gridSizeToGridData(
-              size: gridSize,
-              spacing: state.settings.imageGridSpacing,
-              screenWidth: MediaQuery.of(context).size.width,
-            );
-            final crossAxisCount = data.first;
-            final mainAxisSpacing = data[1];
-            final crossAxisSpacing = data[2];
+              case ImageListType.masonry:
+                final data = gridSizeToGridData(
+                  size: gridSize,
+                  spacing: state.settings.imageGridSpacing,
+                  screenWidth: MediaQuery.of(context).size.width,
+                );
+                final crossAxisCount = data.first;
+                final mainAxisSpacing = data[1];
+                final crossAxisSpacing = data[2];
 
-            return SliverMasonryGrid.count(
-              crossAxisCount: crossAxisCount,
-              mainAxisSpacing: mainAxisSpacing,
-              crossAxisSpacing: crossAxisSpacing,
-              childCount: posts.length,
-              itemBuilder: (context, index) => buildItem(index, legacy: false),
-            );
-        }
+                return SliverMasonryGrid.count(
+                  crossAxisCount: crossAxisCount,
+                  mainAxisSpacing: mainAxisSpacing,
+                  crossAxisSpacing: crossAxisSpacing,
+                  childCount: posts.length,
+                  itemBuilder: (context, index) =>
+                      buildItem(index, legacy: false),
+                );
+            }
+          },
+        );
       },
     );
+  }
+
+  List<Widget> _buildContextMenu(PostData post, BuildContext context) {
+    return [
+      DownloadProviderWidget(
+        builder: (context, download) => CupertinoContextMenuAction(
+          trailingIcon: Icons.download,
+          onPressed: () {
+            Navigator.of(context).pop();
+            download(post.post);
+          },
+          child: const Text('download.download').tr(),
+        ),
+      ),
+      FutureBuilder<Account>(
+        future: context.read<AccountRepository>().get(),
+        builder: (context, snapshot) {
+          return snapshot.hasData && snapshot.data! != Account.empty
+              ? CupertinoContextMenuAction(
+                  trailingIcon: post.isFavorited
+                      ? Icons.favorite
+                      : Icons.favorite_outline,
+                  onPressed: () async {
+                    Navigator.of(context).pop();
+                    final action = _getFavAction(context, post);
+                    final success = await action;
+                    final successMsg = post.isFavorited
+                        ? 'favorites.unfavorited'
+                        : 'favorites.favorited';
+                    final failMsg = post.isFavorited
+                        ? 'favorites.fail_to_unfavorite'
+                        : 'favorites.fail_to_favorite';
+                    if (success) {
+                      onFavoriteUpdated.call(
+                        post.post.id,
+                        !post.isFavorited,
+                      );
+                      showSimpleSnackBar(
+                        context: context,
+                        content: Text(successMsg).tr(),
+                        duration: const Duration(seconds: 1),
+                      );
+                    } else {
+                      showSimpleSnackBar(
+                        context: context,
+                        content: Text(failMsg).tr(),
+                        duration: const Duration(seconds: 2),
+                      );
+                    }
+                  },
+                  child: Text(post.isFavorited
+                          ? 'favorites.unfavorite'
+                          : 'favorites.favorite')
+                      .tr(),
+                )
+              : const SizedBox.shrink();
+        },
+      ),
+    ];
+  }
+
+  Future<bool> _getFavAction(BuildContext context, PostData post) {
+    return post.isFavorited
+        ? context
+            .read<FavoritePostRepository>()
+            .removeFromFavorites(post.post.id)
+        : context.read<FavoritePostRepository>().addToFavorites(post.post.id);
   }
 }
 

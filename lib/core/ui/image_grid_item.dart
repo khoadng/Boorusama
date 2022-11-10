@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -38,6 +39,9 @@ class ImageGridItem extends StatelessWidget {
     this.autoScrollOptions,
     required this.aspectRatio,
     this.image,
+    this.enableFav = false,
+    this.onFavToggle,
+    this.isFaved,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -55,6 +59,9 @@ class ImageGridItem extends StatelessWidget {
   final String previewUrl;
   final String previewPlaceholderUrl;
   final List<Widget> contextMenuAction;
+  final bool enableFav;
+  final Future<bool> Function(bool value)? onFavToggle;
+  final bool? isFaved;
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +73,39 @@ class ImageGridItem extends StatelessWidget {
         key: ValueKey(autoScrollOptions!.index),
         child: child,
       ),
-      child: _buildImage(context),
+      child: Stack(
+        children: [
+          _buildImage(context),
+          if (enableFav)
+            Positioned(
+              bottom: 1,
+              right: 5,
+              child: Padding(
+                padding: const EdgeInsets.all(4),
+                child: LikeButton(
+                  isLiked: isFaved,
+                  onTap: (isLiked) async {
+                    final success = await onFavToggle?.call(!isLiked) ?? false;
+
+                    return success ? !isLiked : isLiked;
+                  },
+                  likeBuilder: (bool isLiked) {
+                    return Container(
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.favorite,
+                        color: isLiked ? Colors.redAccent : Colors.grey,
+                        size: 30,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 
@@ -97,23 +136,23 @@ class ImageGridItem extends StatelessWidget {
         fit: BoxFit.contain,
       ),
       actions: contextMenuAction,
-      child: GestureDetector(
-        onTap: () => onTap?.call(),
-        child: Stack(
-          children: [
-            image ??
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: onTap,
+            child: image ??
                 BooruImage(
                   aspectRatio: aspectRatio,
                   imageUrl: previewUrl,
                   placeholderUrl: previewPlaceholderUrl,
                   borderRadius: borderRadius,
                 ),
-            Padding(
-              padding: const EdgeInsets.only(top: 1, left: 1),
-              child: _buildOverlayIcon(),
-            ),
-          ],
-        ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 1, left: 1),
+            child: _buildOverlayIcon(),
+          ),
+        ],
       ),
     );
   }
