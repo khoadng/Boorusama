@@ -63,11 +63,11 @@
             },
             "has_parent_notice" : "Пост имеет родителя",
             "has_children_notice" : "Пост имеет дочерний пост",
-            "file_details" : "File details",
+            "file_details" : "Детали",
             "size" : "Размер",
             "resolution" : "Разрешение",
             "rating" : "Рейтинг",
-            "file_format" : "File format",
+            "file_format" : "Формат файла",
             "share" : {
                 "source" : "Поделиться ссылкой на первоисточник",
                 "booru" : "Поделиться ссылкой на сайт",
