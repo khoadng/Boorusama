@@ -79,10 +79,6 @@ class ImagePlaceHolder extends StatelessWidget {
             horizontal: constraints.maxWidth * 0.25,
             vertical: constraints.maxHeight * 0.25,
           ),
-          child: Image.asset(
-            'assets/images/placeholder.png',
-            color: Theme.of(context).backgroundColor.withOpacity(0.5),
-          ),
         ),
       ),
     );

@@ -138,4 +138,10 @@ mixin InfiniteLoadMixin<T, State> {
       onError?.call(e, stackTrace);
     }
   }
+
+  void replaceAt(int index, T item) {
+    if (index < 0 || index > data.length - 1) return;
+
+    data[index] = item;
+  }
 }
