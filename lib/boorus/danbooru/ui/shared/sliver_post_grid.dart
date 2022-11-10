@@ -130,7 +130,16 @@ class SliverPostGrid extends HookWidget {
               return ImageGridItem(
                 isFaved: post.isFavorited,
                 enableFav: authState is Authenticated,
-                onFavToggle: (_) => _getFavAction(context, post),
+                onFavToggle: (isFaved) async {
+                  final success =
+                      await _getFavAction(context, !isFaved, post.post.id);
+                  if (success) {
+                    onFavoriteUpdated.call(
+                      post.post.id,
+                      isFaved,
+                    );
+                  }
+                },
                 autoScrollOptions: AutoScrollOptions(
                   controller: scrollController,
                   index: index,
@@ -234,7 +243,8 @@ class SliverPostGrid extends HookWidget {
                       : Icons.favorite_outline,
                   onPressed: () async {
                     Navigator.of(context).pop();
-                    final action = _getFavAction(context, post);
+                    final action =
+                        _getFavAction(context, post.isFavorited, post.post.id);
                     final success = await action;
                     final successMsg = post.isFavorited
                         ? 'favorites.unfavorited'
@@ -271,12 +281,10 @@ class SliverPostGrid extends HookWidget {
     ];
   }
 
-  Future<bool> _getFavAction(BuildContext context, PostData post) {
-    return post.isFavorited
-        ? context
-            .read<FavoritePostRepository>()
-            .removeFromFavorites(post.post.id)
-        : context.read<FavoritePostRepository>().addToFavorites(post.post.id);
+  Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {
+    return isFaved
+        ? context.read<FavoritePostRepository>().removeFromFavorites(postId)
+        : context.read<FavoritePostRepository>().addToFavorites(postId);
   }
 }
 

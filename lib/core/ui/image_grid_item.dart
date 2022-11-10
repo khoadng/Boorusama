@@ -60,7 +60,7 @@ class ImageGridItem extends StatelessWidget {
   final String previewPlaceholderUrl;
   final List<Widget> contextMenuAction;
   final bool enableFav;
-  final Future<bool> Function(bool value)? onFavToggle;
+  final void Function(bool value)? onFavToggle;
   final bool? isFaved;
 
   @override
@@ -78,27 +78,30 @@ class ImageGridItem extends StatelessWidget {
           _buildImage(context),
           if (enableFav)
             Positioned(
-              bottom: 1,
-              right: 5,
-              child: Padding(
-                padding: const EdgeInsets.all(4),
+              bottom: 4,
+              right: 4,
+              child: Container(
+                padding: const EdgeInsets.only(
+                  top: 2,
+                  bottom: 1,
+                  right: 1,
+                  left: 3,
+                ),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black.withOpacity(0.5),
+                ),
                 child: LikeButton(
                   isLiked: isFaved,
-                  onTap: (isLiked) async {
-                    final success = await onFavToggle?.call(!isLiked) ?? false;
+                  onTap: (isLiked) {
+                    onFavToggle?.call(!isLiked);
 
-                    return success ? !isLiked : isLiked;
+                    return Future.value(!isLiked);
                   },
                   likeBuilder: (bool isLiked) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.favorite,
-                        color: isLiked ? Colors.redAccent : Colors.grey,
-                        size: 30,
-                      ),
+                    return Icon(
+                      isLiked ? Icons.favorite : Icons.favorite_border_outlined,
+                      color: isLiked ? Colors.redAccent : Colors.white,
                     );
                   },
                 ),
