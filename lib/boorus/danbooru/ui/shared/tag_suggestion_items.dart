@@ -175,7 +175,18 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
               color: _getTagColor(tag, theme),
             ),
             'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
-            'b': Style(fontWeight: FontWeight.w900),
+            'b': Style(
+              fontWeight: FontWeight.w900,
+              textDecoration: tag.type == AutocompleteData.autoCorrect
+                  ? TextDecoration.underline
+                  : null,
+              textDecorationStyle: tag.type == AutocompleteData.autoCorrect
+                  ? TextDecorationStyle.wavy
+                  : null,
+              textDecorationColor:
+                  tag.type == AutocompleteData.autoCorrect ? Colors.red : null,
+              textDecorationThickness: 2,
+            ),
           },
           data:
               '<p>${tag.antecedent!.replaceAll('_', ' ').replaceAll(currentQuery, '<b>$currentQuery</b>')} ➞ ${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
@@ -187,7 +198,9 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
               color: _getTagColor(tag, theme),
             ),
             'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
-            'b': Style(fontWeight: FontWeight.w900),
+            'b': Style(
+              fontWeight: FontWeight.w900,
+            ),
           },
           data:
               '<p>${tag.label.replaceAll(currentQuery, '<b>$currentQuery</b>')}</p>',
