@@ -79,11 +79,13 @@ class PostBloc extends Bloc<PostEvent, PostState>
     on<PostFavoriteUpdated>((event, emit) {
       final index =
           state.posts.indexWhere((element) => element.post.id == event.postId);
-      if (index > 0) {
+      if (index >= 0) {
         final posts = [...state.posts];
         posts[index] = state.posts[index].copyWith(
           isFavorited: event.favorite,
         );
+
+        replaceAt(index, posts[index]);
 
         emit(
           state.copyWith(
@@ -96,11 +98,13 @@ class PostBloc extends Bloc<PostEvent, PostState>
     on<PostUpdated>((event, emit) {
       final index =
           state.posts.indexWhere((element) => element.post.id == event.post.id);
-      if (index > 0) {
+      if (index >= 0) {
         final posts = [...state.posts];
         posts[index] = state.posts[index].copyWith(
           post: event.post,
         );
+
+        replaceAt(index, posts[index]);
 
         emit(
           state.copyWith(

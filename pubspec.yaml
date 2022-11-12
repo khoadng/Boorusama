@@ -56,6 +56,7 @@ dependencies:
   image_gallery_saver: ^1.7.1
   intl: ^0.17.0
   jiffy: ^5.0.0
+  like_button: ^2.0.5
   lottie: ^1.4.3
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^2.1.1
