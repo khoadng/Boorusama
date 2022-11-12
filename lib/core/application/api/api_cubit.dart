@@ -1,12 +1,10 @@
 // Dart imports:
 import 'dart:io';
-import 'dart:math';
 
 // Package imports:
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:dio_cache_interceptor_hive_store/dio_cache_interceptor_hive_store.dart';
-import 'package:dio_smart_retry/dio_smart_retry.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,14 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/api/api.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/booru_factory.dart';
-
-const maxRetry = 4;
-
-List<Duration> exponentialBackoff(int retries) =>
-    [for (var i = 0; i < retries; i += 1) i]
-        .map((count) => pow(2, count))
-        .map((e) => Duration(seconds: e.toInt()))
-        .toList();
 
 Dio dio(Directory dir, String baseUrl) {
   final dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -35,15 +25,6 @@ Dio dio(Directory dir, String baseUrl) {
       ),
     ),
   );
-
-  dio.interceptors.add(RetryInterceptor(
-    dio: dio,
-    logPrint: print,
-    retries: maxRetry,
-    retryEvaluator: (error, attempt) =>
-        ![500, 422, 429, 302].contains(error.response?.statusCode),
-    retryDelays: exponentialBackoff(maxRetry),
-  ));
 
   return dio;
 }
