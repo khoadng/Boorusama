@@ -14,4 +14,7 @@ abstract class Post {
   double get height;
 
   String get downloadUrl;
+
+  String getLink(String baseUrl);
+  Uri getUriLink(String baseUrl);
 }

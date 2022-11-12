@@ -61,6 +61,7 @@
                 "ok" : "OK",
                 "cancel" : "Hủy"
             },
+            "view_in_browser" : "Xem bằng trình duyệt",
             "has_parent_notice" : "Ảnh này là một phần nhỏ trong bộ ảnh lớn hơn",
             "has_children_notice" : "Có những ảnh khác nằm chung bộ với ảnh này",
             "file_details" : "Thông số ảnh",

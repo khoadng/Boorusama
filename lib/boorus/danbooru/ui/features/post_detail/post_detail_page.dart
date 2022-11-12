@@ -21,6 +21,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/modals/slide_s
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
@@ -241,11 +242,18 @@ class _TopRightButtonGroup extends StatelessWidget {
                       start,
                     ),
                   ),
-                  _MoreActionButton(
-                    onDownload: (downloader) => downloader(
-                      state.currentPost.post,
-                    ),
-                    post: state.currentPost.post,
+                  BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+                    builder: (context, apiState) {
+                      return _MoreActionButton(
+                        onDownload: (downloader) => downloader(
+                          state.currentPost.post,
+                        ),
+                        onViewInBrowser: (post) => launchExternalUrl(state
+                            .currentPost.post
+                            .getUriLink(apiState.booru.url)),
+                        post: state.currentPost.post,
+                      );
+                    },
                   ),
                 ],
               )
@@ -490,10 +498,12 @@ class _LargeLayoutContent extends StatelessWidget {
 class _MoreActionButton extends StatelessWidget {
   const _MoreActionButton({
     required this.onDownload,
+    required this.onViewInBrowser,
     required this.post,
   });
 
   final void Function(Function(Post post) downloader) onDownload;
+  final void Function(Post post) onViewInBrowser;
   final Post post;
 
   @override
@@ -510,6 +520,9 @@ class _MoreActionButton extends StatelessWidget {
               switch (value) {
                 case 'download':
                   onDownload(download);
+                  break;
+                case 'view_in_browser':
+                  onViewInBrowser(post);
                   break;
                 case 'view_original':
                   Navigator.of(context).push(PageTransition(
@@ -544,6 +557,10 @@ class _MoreActionButton extends StatelessWidget {
               PopupMenuItem(
                 value: 'download',
                 child: const Text('download.download').tr(),
+              ),
+              PopupMenuItem(
+                value: 'view_in_browser',
+                child: const Text('post.detail.view_in_browser').tr(),
               ),
               if (!post.isVideo)
                 PopupMenuItem(
