@@ -391,34 +391,40 @@ class _TagRow extends StatelessWidget {
       builder: (context, tags) {
         final bloc = context.read<TagSearchBloc>();
 
-        return tags.isNotEmpty
-            ? Row(children: [
-                const SizedBox(width: 10),
-                InkWell(
-                  customBorder: const CircleBorder(),
-                  onTap: () => showMaterialModalBottomSheet(
-                    context: context,
-                    builder: (context) => ModalSelectedTag(
-                      onClear: () =>
-                          bloc.add(const TagSearchSelectedTagCleared()),
-                      onBulkDownload: () {
-                        AppRouter.router.navigateTo(
-                          context,
-                          '/bulk_download',
-                          routeSettings: RouteSettings(
-                            arguments: [
-                              tags.map((e) => e.toString()).toList(),
-                            ],
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  child: const Icon(Icons.more_vert),
+        return AnimatedCrossFade(
+          firstChild: Row(children: [
+            const SizedBox(width: 10),
+            InkWell(
+              customBorder: const CircleBorder(),
+              onTap: () => showMaterialModalBottomSheet(
+                context: context,
+                builder: (context) => ModalSelectedTag(
+                  onClear: () => bloc.add(const TagSearchSelectedTagCleared()),
+                  onBulkDownload: () {
+                    AppRouter.router.navigateTo(
+                      context,
+                      '/bulk_download',
+                      routeSettings: RouteSettings(
+                        arguments: [
+                          tags.map((e) => e.toString()).toList(),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-                Expanded(child: _SelectedTagChips(tags: tags)),
-              ])
-            : const SizedBox.shrink();
+              ),
+              child: const Icon(Icons.more_vert),
+            ),
+            Expanded(child: _SelectedTagChips(tags: tags)),
+          ]),
+          secondChild: const SizedBox.shrink(),
+          crossFadeState: tags.isNotEmpty
+              ? CrossFadeState.showFirst
+              : CrossFadeState.showSecond,
+          duration: const Duration(
+            milliseconds: 100,
+          ),
+        );
       },
     );
   }
