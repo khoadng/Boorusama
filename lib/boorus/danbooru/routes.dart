@@ -48,9 +48,11 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
@@ -238,6 +240,11 @@ final postSearchHandler = Handler(handlerFunc: (
         create: (context) => SearchHistoryCubit(
           searchHistoryRepository: context.read<SearchHistoryRepository>(),
         ),
+      ),
+      BlocProvider(
+        create: (context) => FavoriteTagBloc(
+          favoriteTagRepository: context.read<FavoriteTagRepository>(),
+        )..add(const FavoriteTagFetched()),
       ),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
