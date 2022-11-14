@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tag_provider_widget.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/application/tags/favorite_tag_bloc.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
@@ -96,11 +97,15 @@ class PostTagList extends StatelessWidget {
                   value: 'wiki',
                   child: const Text('post.detail.open_wiki').tr(),
                 ),
+                const PopupMenuItem(
+                  value: 'add_to_favorites',
+                  child: Text('Add to favorites'),
+                ),
                 if (authenticationState is Authenticated)
                   const PopupMenuItem(
                     value: 'copy_and_move_to_saved_search',
                     child: Text(
-                      'Copy to clipboard and move to saved search',
+                      'Copy and move to saved search',
                     ),
                   ),
               ],
@@ -116,6 +121,10 @@ class PostTagList extends StatelessWidget {
                         context,
                         '/saved_search/edit',
                       ));
+                } else if (value == 'add_to_favorites') {
+                  context
+                      .read<FavoriteTagBloc>()
+                      .add(FavoriteTagAdded(tag: tag.rawName));
                 }
               },
               child: GestureDetector(
