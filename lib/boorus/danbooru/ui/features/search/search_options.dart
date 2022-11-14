@@ -105,6 +105,7 @@ class _SearchOptionsState extends State<SearchOptions>
               BlocBuilder<FavoriteTagBloc, FavoriteTagState>(
                 builder: (context, state) {
                   return _OptionTagsArena(
+                    editable: state.tags.isNotEmpty,
                     title: 'Favorites',
                     childrenBuilder: (editMode) =>
                         _buildFavoriteTags(context, state.tags, editMode),
@@ -292,11 +293,13 @@ class _OptionTagsArena extends StatefulWidget {
     required this.title,
     this.titleTrailing,
     required this.childrenBuilder,
+    this.editable = true,
   });
 
   final String title;
   final Widget? titleTrailing;
   final List<Widget> Function(bool editMode) childrenBuilder;
+  final bool editable;
 
   @override
   State<_OptionTagsArena> createState() => __OptionTagsArenaState();
@@ -332,20 +335,21 @@ class __OptionTagsArenaState extends State<_OptionTagsArena> {
                     fontWeight: FontWeight.w700,
                   ),
             ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                visualDensity: VisualDensity.compact,
-                shape: const CircleBorder(),
-                backgroundColor: editMode
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(context).cardColor,
+            if (widget.editable)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                  shape: const CircleBorder(),
+                  backgroundColor: editMode
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).cardColor,
+                ),
+                onPressed: () => setState(() => editMode = !editMode),
+                child: Icon(
+                  editMode ? Icons.check : Icons.edit,
+                  size: 16,
+                ),
               ),
-              onPressed: () => setState(() => editMode = !editMode),
-              child: Icon(
-                editMode ? Icons.check : Icons.edit,
-                size: 16,
-              ),
-            ),
           ],
         ),
         widget.titleTrailing ?? const SizedBox.shrink(),

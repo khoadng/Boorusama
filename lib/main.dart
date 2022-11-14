@@ -51,6 +51,7 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
@@ -398,6 +399,9 @@ void main() async {
                     savedSearchRepository: savedSearchRepo,
                   );
 
+                  final favoriteTagBloc =
+                      FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -471,6 +475,7 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: savedSearchBloc),
+                        BlocProvider.value(value: favoriteTagBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
