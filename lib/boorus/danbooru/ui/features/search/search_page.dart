@@ -169,15 +169,18 @@ class _SearchPageState extends State<SearchPage> {
           },
         ),
       ],
-      child: Screen.of(context).size != ScreenSize.small
-          ? _LargeLayout(
-              focus: focus,
-              queryEditingController: queryEditingController,
-            )
-          : _SmallLayout(
-              focus: focus,
-              queryEditingController: queryEditingController,
-            ),
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Screen.of(context).size != ScreenSize.small
+            ? _LargeLayout(
+                focus: focus,
+                queryEditingController: queryEditingController,
+              )
+            : _SmallLayout(
+                focus: focus,
+                queryEditingController: queryEditingController,
+              ),
+      ),
     );
   }
 }
@@ -202,7 +205,6 @@ class _LargeLayout extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: _AppBar(
-                focus: focus,
                 queryEditingController: queryEditingController,
               ),
               body: Column(
@@ -278,11 +280,9 @@ class _LargeLayout extends StatelessWidget {
 // ignore: prefer_mixin
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
-    required this.focus,
     required this.queryEditingController,
   });
 
-  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
@@ -293,7 +293,6 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       title: _SearchBar(
-        focus: focus,
         queryEditingController: queryEditingController,
       ),
     );
@@ -318,7 +317,6 @@ class _SmallLayout extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       floatingActionButton: const SearchButton(),
       appBar: _AppBar(
-        focus: focus,
         queryEditingController: queryEditingController,
       ),
       body: SafeArea(
@@ -535,17 +533,14 @@ class _Divider extends StatelessWidget {
 
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
-    required this.focus,
     required this.queryEditingController,
   });
 
-  final FocusNode focus;
   final RichTextController queryEditingController;
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
-      focus: focus,
       queryEditingController: queryEditingController,
       leading: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
