@@ -2,7 +2,6 @@
 import 'package:hive/hive.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
@@ -52,12 +51,10 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   @override
   Future<FavoriteTag> create({
     required String name,
-    BooruType? type,
   }) async {
     final obj = FavoriteTagHiveObject(
       name: name,
       createdAt: DateTime.now(),
-      type: type?.index ?? 0,
     );
 
     await box.put(obj.name, obj);
