@@ -111,7 +111,8 @@ class _SearchOptionsState extends State<SearchOptions>
                     title: 'Favorites',
                     childrenBuilder: (editMode) =>
                         _buildFavoriteTags(context, state.tags, editMode),
-                    titleTrailing: (editMode) => editMode
+                    titleTrailing: (editMode) => editMode &&
+                            state.tags.isNotEmpty
                         ? PopupMenuButton(
                             shape: const RoundedRectangleBorder(
                               borderRadius:
@@ -120,16 +121,7 @@ class _SearchOptionsState extends State<SearchOptions>
                             onSelected: (value) {
                               final bloc = context.read<FavoriteTagBloc>();
                               if (value == 'import') {
-                                showGeneralDialog(
-                                  context: context,
-                                  pageBuilder: (context, _, __) =>
-                                      ImportFavoriteTagsDialog(
-                                    onImport: (tagString) =>
-                                        bloc.add(FavoriteTagImported(
-                                      tagString: tagString,
-                                    )),
-                                  ),
-                                );
+                                _showImportDialog(context, bloc);
                               } else if (value == 'export') {
                                 bloc.add(
                                   FavoriteTagExported(
@@ -201,6 +193,20 @@ class _SearchOptionsState extends State<SearchOptions>
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Future<Object?> _showImportDialog(
+    BuildContext context,
+    FavoriteTagBloc bloc,
+  ) {
+    return showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+        onImport: (tagString) => bloc.add(FavoriteTagImported(
+          tagString: tagString,
+        )),
       ),
     );
   }
@@ -305,33 +311,56 @@ class _SearchOptionsState extends State<SearchOptions>
                   : null,
             ),
           )),
-      if (editMode || tags.isEmpty)
-        IconButton(
-          iconSize: 28,
-          splashRadius: 20,
-          onPressed: () {
-            final bloc = context.read<FavoriteTagBloc>();
-            showBarModalBottomSheet(
-              context: context,
-              duration: const Duration(milliseconds: 200),
-              builder: (context) => SimpleTagSearchView(
-                ensureValidTag: false,
-                floatingActionButton: (text) => FloatingActionButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    bloc.add(FavoriteTagAdded(tag: text));
-                  },
-                  child: const Icon(Icons.add),
-                ),
-                onSelected: (tag) {
-                  bloc.add(FavoriteTagAdded(tag: tag.value));
-                },
-              ),
-            );
-          },
-          icon: const Icon(Icons.add),
+      if (tags.isEmpty) ...[
+        _buildAddTagButton(),
+        Padding(
+          padding: const EdgeInsets.only(top: 12, right: 8),
+          child: Text(
+            'or',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
         ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
+          onPressed: () => _showImportDialog(
+            context,
+            context.read<FavoriteTagBloc>(),
+          ),
+          child: const Text('Import'),
+        ),
+      ],
+      if (editMode && tags.isNotEmpty) _buildAddTagButton(),
     ];
+  }
+
+  Widget _buildAddTagButton() {
+    return IconButton(
+      iconSize: 28,
+      splashRadius: 20,
+      onPressed: () {
+        final bloc = context.read<FavoriteTagBloc>();
+        showBarModalBottomSheet(
+          context: context,
+          duration: const Duration(milliseconds: 200),
+          builder: (context) => SimpleTagSearchView(
+            ensureValidTag: false,
+            floatingActionButton: (text) => text.isEmpty
+                ? const SizedBox.shrink()
+                : FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      bloc.add(FavoriteTagAdded(tag: text));
+                    },
+                    child: const Icon(Icons.add),
+                  ),
+            onSelected: (tag) {
+              bloc.add(FavoriteTagAdded(tag: tag.value));
+            },
+          ),
+        );
+      },
+      icon: const Icon(Icons.add),
+    );
   }
 }
 
