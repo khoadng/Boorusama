@@ -44,7 +44,7 @@ dependencies:
       ref: fix-rebuild
   flutter_improved_scrolling: ^0.0.3
   flutter_local_notifications: ^12.0.2
-  flutter_markdown: ^0.6.12
+  flutter_markdown: ^0.6.13
   flutter_portal: ^1.1.1
   flutter_staggered_animations: ^1.1.1
   flutter_staggered_grid_view: ^0.6.2
