@@ -14,6 +14,5 @@ abstract class FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
     BooruType? type,
-    required int order,
   });
 }

@@ -54,6 +54,28 @@ class FavoriteTagAdded extends FavoriteTagEvent {
   List<Object?> get props => [tag];
 }
 
+class FavoriteTagImported extends FavoriteTagEvent {
+  const FavoriteTagImported({
+    required this.tagString,
+  });
+
+  final String tagString;
+
+  @override
+  List<Object?> get props => [tagString];
+}
+
+class FavoriteTagExported extends FavoriteTagEvent {
+  const FavoriteTagExported({
+    required this.onDone,
+  });
+
+  final void Function(String tagString) onDone;
+
+  @override
+  List<Object?> get props => [onDone];
+}
+
 class FavoriteTagRemoved extends FavoriteTagEvent {
   const FavoriteTagRemoved({
     required this.index,
@@ -78,9 +100,10 @@ class FavoriteTagBloc extends Bloc<FavoriteTagEvent, FavoriteTagState> {
     });
 
     on<FavoriteTagAdded>((event, emit) async {
+      if (event.tag.isEmpty) return;
+
       await favoriteTagRepository.create(
         name: event.tag,
-        order: state.tags.length,
       );
 
       final tags = await favoriteTagRepository.getAll();
@@ -104,6 +127,28 @@ class FavoriteTagBloc extends Bloc<FavoriteTagEvent, FavoriteTagState> {
           ));
         }
       }
+    });
+
+    on<FavoriteTagImported>((event, emit) async {
+      if (event.tagString.isEmpty) return;
+
+      final tags = event.tagString.split(' ');
+      for (final t in tags) {
+        await favoriteTagRepository.create(
+          name: t,
+        );
+      }
+
+      final newTags = await favoriteTagRepository.getAll();
+
+      emit(state.copyWith(tags: newTags));
+    });
+
+    on<FavoriteTagExported>((event, emit) async {
+      final tags = await favoriteTagRepository.getAll();
+      final tagString = tags.map((e) => e.name).join(' ');
+
+      event.onDone(tagString);
     });
   }
 }

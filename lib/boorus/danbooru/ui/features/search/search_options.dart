@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
@@ -21,6 +22,7 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/utils.dart';
 import 'package:boorusama/main.dart';
+import 'import_favorite_tag_dialog.dart';
 import 'search_history.dart';
 
 class SearchOptions extends StatefulWidget {
@@ -83,7 +85,7 @@ class _SearchOptionsState extends State<SearchOptions>
             children: [
               _OptionTagsArena(
                 title: 'Metatags',
-                titleTrailing: IconButton(
+                titleTrailing: (editMode) => IconButton(
                   onPressed: () {
                     launchExternalUrl(
                       Uri.parse(cheatsheetUrl),
@@ -109,6 +111,51 @@ class _SearchOptionsState extends State<SearchOptions>
                     title: 'Favorites',
                     childrenBuilder: (editMode) =>
                         _buildFavoriteTags(context, state.tags, editMode),
+                    titleTrailing: (editMode) => editMode
+                        ? PopupMenuButton(
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(4)),
+                            ),
+                            onSelected: (value) {
+                              final bloc = context.read<FavoriteTagBloc>();
+                              if (value == 'import') {
+                                showGeneralDialog(
+                                  context: context,
+                                  pageBuilder: (context, _, __) =>
+                                      ImportFavoriteTagsDialog(
+                                    onImport: (tagString) =>
+                                        bloc.add(FavoriteTagImported(
+                                      tagString: tagString,
+                                    )),
+                                  ),
+                                );
+                              } else if (value == 'export') {
+                                bloc.add(
+                                  FavoriteTagExported(
+                                    onDone: (tagString) => Clipboard.setData(
+                                      ClipboardData(text: tagString),
+                                    ).then((value) => showSimpleSnackBar(
+                                          context: context,
+                                          content:
+                                              const Text('Tag string copied'),
+                                        )),
+                                  ),
+                                );
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              const PopupMenuItem(
+                                value: 'import',
+                                child: Text('Import'),
+                              ),
+                              const PopupMenuItem(
+                                value: 'export',
+                                child: Text('Export'),
+                              ),
+                            ],
+                          )
+                        : const SizedBox.shrink(),
                   );
                 },
               ),
@@ -297,7 +344,7 @@ class _OptionTagsArena extends StatefulWidget {
   });
 
   final String title;
-  final Widget? titleTrailing;
+  final Widget Function(bool editMode)? titleTrailing;
   final List<Widget> Function(bool editMode) childrenBuilder;
   final bool editable;
 
@@ -313,7 +360,10 @@ class __OptionTagsArenaState extends State<_OptionTagsArena> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _buildHeader(),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 1),
+          child: _buildHeader(),
+        ),
         Wrap(
           spacing: 4,
           runSpacing: -4,
@@ -324,36 +374,39 @@ class __OptionTagsArenaState extends State<_OptionTagsArena> {
   }
 
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Text(
-              widget.title.toUpperCase(),
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
-            if (widget.editable)
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  visualDensity: VisualDensity.compact,
-                  shape: const CircleBorder(),
-                  backgroundColor: editMode
-                      ? Theme.of(context).colorScheme.primary
-                      : Theme.of(context).cardColor,
-                ),
-                onPressed: () => setState(() => editMode = !editMode),
-                child: Icon(
-                  editMode ? Icons.check : Icons.edit,
-                  size: 16,
-                ),
+    return SizedBox(
+      height: 40,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Text(
+                widget.title.toUpperCase(),
+                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
               ),
-          ],
-        ),
-        widget.titleTrailing ?? const SizedBox.shrink(),
-      ],
+              if (widget.editable)
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                    shape: const CircleBorder(),
+                    backgroundColor: editMode
+                        ? Theme.of(context).colorScheme.primary
+                        : Theme.of(context).cardColor,
+                  ),
+                  onPressed: () => setState(() => editMode = !editMode),
+                  child: Icon(
+                    editMode ? Icons.check : Icons.edit,
+                    size: 16,
+                  ),
+                ),
+            ],
+          ),
+          widget.titleTrailing?.call(editMode) ?? const SizedBox.shrink(),
+        ],
+      ),
     );
   }
 }

@@ -53,7 +53,6 @@ class FavoriteTagRepositoryHive implements FavoriteTagRepository {
   Future<FavoriteTag> create({
     required String name,
     BooruType? type,
-    required int order,
   }) async {
     final obj = FavoriteTagHiveObject(
       name: name,
