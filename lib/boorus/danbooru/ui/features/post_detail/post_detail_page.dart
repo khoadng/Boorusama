@@ -271,29 +271,27 @@ class _TopRightButtonGroup extends StatelessWidget {
       final bloc = context.read<PostDetailBloc>();
 
       final config = Screen.of(context).size == ScreenSize.small
-          ? (await showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (context) => Wrap(
-                  children: [
-                    SlideShowConfigContainer(
-                      initialConfig: slideShowConfig,
-                    ),
-                  ],
-                ),
-              ) ??
-              false)
-          : (await showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  content: SlideShowConfigContainer(
-                    isModal: false,
+          ? (await showModalBottomSheet<SlideShowConfiguration>(
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (context) => Wrap(
+                children: [
+                  SlideShowConfigContainer(
                     initialConfig: slideShowConfig,
                   ),
-                  contentPadding: EdgeInsets.zero,
+                ],
+              ),
+            ))
+          : (await showDialog<SlideShowConfiguration>(
+              context: context,
+              builder: (context) => AlertDialog(
+                content: SlideShowConfigContainer(
+                  isModal: false,
+                  initialConfig: slideShowConfig,
                 ),
-              ) ??
-              false);
+                contentPadding: EdgeInsets.zero,
+              ),
+            ));
       if (config != null) {
         bloc
           ..add(
