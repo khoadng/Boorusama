@@ -55,4 +55,12 @@ extension ListX<E> on List<E> {
       return null;
     }
   }
+
+  E? firstOrNull(bool Function(E e) selector) {
+    try {
+      return firstWhere(selector);
+    } catch (e) {
+      return null;
+    }
+  }
 }

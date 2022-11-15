@@ -423,9 +423,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: Post.empty().copyWith(
-          id: 2,
-          tags: ['foo'],
+        post: PostData.empty().copyWith(
+          post: Post.empty().copyWith(
+            id: 2,
+            tags: ['foo'],
+          ),
         ),
       )),
       expect: () => [
@@ -462,9 +464,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: Post.empty().copyWith(
-          id: 4,
-          tags: ['foo'],
+        post: PostData.empty().copyWith(
+          post: Post.empty().copyWith(
+            id: 4,
+            tags: ['foo'],
+          ),
         ),
       )),
       expect: () => [],

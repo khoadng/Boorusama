@@ -59,8 +59,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(PostDetailTagUpdated(
@@ -126,8 +124,6 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
@@ -178,8 +174,6 @@ void main() {
             post: Post.empty().copyWith(id: 3, tags: ['translated']),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
@@ -254,8 +248,6 @@ void main() {
             isFavorited: false,
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
@@ -330,8 +322,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) =>
@@ -371,8 +361,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(PostDetailSlideShowConfigChanged(
@@ -418,8 +406,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -461,8 +447,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
@@ -505,8 +489,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -558,8 +540,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -607,8 +587,6 @@ void main() {
             isFavorited: true,
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) =>
@@ -672,8 +650,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -726,8 +702,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -790,8 +764,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -844,8 +816,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -903,8 +873,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -976,8 +944,6 @@ void main() {
         posts: [
           PostData.empty(),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),

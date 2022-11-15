@@ -96,13 +96,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
     });
 
     on<PostUpdated>((event, emit) {
-      final index =
-          state.posts.indexWhere((element) => element.post.id == event.post.id);
+      final index = state.posts
+          .indexWhere((element) => element.post.id == event.post.post.id);
       if (index >= 0) {
         final posts = [...state.posts];
-        posts[index] = state.posts[index].copyWith(
-          post: event.post,
-        );
+        posts[index] = event.post;
 
         replaceAt(index, posts[index]);
 
