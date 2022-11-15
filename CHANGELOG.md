@@ -1,6 +1,8 @@
 # 2.7.0
 - Add saved search. 
 - Revamp post details, show more information by default.
+- Add a button to switch to a gallery mode that focus only on image.
+- Add a quick favorite button in image list.
 - Add a button to view post in browser
 - Add favorite tags. Now you can save your frequently used tag at ease. Support import/export tag string as text.
 
