@@ -177,15 +177,6 @@ Widget _getTitle(AutocompleteData tag, ThemeMode theme, String currentQuery) {
             'body': Style(padding: EdgeInsets.zero, margin: EdgeInsets.zero),
             'b': Style(
               fontWeight: FontWeight.w900,
-              textDecoration: tag.type == AutocompleteData.autoCorrect
-                  ? TextDecoration.underline
-                  : null,
-              textDecorationStyle: tag.type == AutocompleteData.autoCorrect
-                  ? TextDecorationStyle.wavy
-                  : null,
-              textDecorationColor:
-                  tag.type == AutocompleteData.autoCorrect ? Colors.red : null,
-              textDecorationThickness: 2,
             ),
           },
           data:
