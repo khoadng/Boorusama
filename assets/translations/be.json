@@ -61,7 +61,7 @@
                 "ok" : "OK",
                 "cancel" : "Адмена"
             },
-            "view_in_browser" : "View in browser",
+            "view_in_browser" : "Адкрыць у браўзэры",
             "has_parent_notice" : "Малюнак мае бацьку",
             "has_children_notice" : "Малюнак мае дачэрны малюнак",
             "file_details" : "Дэталі",
@@ -299,13 +299,13 @@
     },
 
     "favorite_tags": {
-        "favorites": "Favorites",
-        "or" : "or",
-        "import" : "Import",
-        "import_hint" : "Enter your tag string here. Space delimited.",
-        "cancel": "Cancel",
-        "export" : "Export",
-        "export_notification" : "Tag string copied to clipboard"
+        "favorites": "Любімае",
+        "or" : "ці",
+        "import" : "Імпарт",
+        "import_hint" : "Увядзіце тэгі(абмежавана)",
+        "cancel": "Адмена",
+        "export" : "Экспарт",
+        "export_notification" : "Радок з тэгамі скапіраван ў буфер абмену"
     },
 
     "rating" : {
