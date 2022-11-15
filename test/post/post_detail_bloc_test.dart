@@ -7,8 +7,10 @@ import 'package:test/test.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 
 class MockPostRepository extends Mock implements PostRepository {}
 
@@ -18,13 +20,16 @@ class MockAccountRepository extends Mock implements AccountRepository {}
 
 class MockPostVoteRepository extends Mock implements PostVoteRepository {}
 
-void main() {
-  group('[post detail test]', () {
-    final postRepo = MockPostRepository();
-    final favRepo = MockFavoritesRepository();
-    final accountRepo = MockAccountRepository();
-    final postVoteRepo = MockPostVoteRepository();
+class MockNoteRepository extends Mock implements NoteRepository {}
 
+void main() {
+  final postRepo = MockPostRepository();
+  final favRepo = MockFavoritesRepository();
+  final accountRepo = MockAccountRepository();
+  final postVoteRepo = MockPostVoteRepository();
+  final noteRepo = MockNoteRepository();
+
+  group('[post detail test]', () {
     blocTest<PostDetailBloc, PostDetailState>(
       'add new tag',
       setUp: () {
@@ -39,6 +44,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -53,8 +59,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(PostDetailTagUpdated(
@@ -110,6 +114,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -119,14 +124,14 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
+          nextPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
@@ -134,6 +139,75 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'index changed with notes load',
+      setUp: () {
+        when(() => accountRepo.get())
+            .thenAnswer((invocation) async => Account.empty);
+        when(() => noteRepo.getNotesFrom(any())).thenAnswer((_) async => [
+              Note.empty(),
+              Note.empty(),
+            ]);
+      },
+      tearDown: () {
+        reset(accountRepo);
+        reset(noteRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        noteRepository: noteRepo,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          ),
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          ),
+        ],
+        idGenerator: () => 1,
+      ),
+      act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
+      wait: const Duration(milliseconds: 300),
+      verify: (bloc) => verify(() => noteRepo.getNotesFrom(any())).called(2),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          currentIndex: 0,
+          nextPost: () => PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 2, tags: ['translated']),
+          ),
+          currentPost:
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 1,
+          nextPost: () => PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          ),
+          currentPost:
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+        ),
+        PostDetailState.initial().copyWith(
+          currentIndex: 1,
+          nextPost: () => PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 3, tags: ['translated']),
+          ),
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(id: 2),
+            notes: [
+              Note.empty(),
+              Note.empty(),
+            ],
+          ),
         ),
       ],
     );
@@ -157,6 +231,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -173,14 +248,14 @@ void main() {
             isFavorited: false,
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
+          nextPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
@@ -238,6 +313,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -246,8 +322,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) =>
@@ -278,6 +352,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -286,8 +361,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(PostDetailSlideShowConfigChanged(
@@ -324,6 +397,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -332,8 +406,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -366,6 +438,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -374,8 +447,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
@@ -409,6 +480,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -417,8 +489,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -461,6 +531,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -469,8 +540,6 @@ void main() {
         posts: [
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -506,6 +575,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -517,8 +587,6 @@ void main() {
             isFavorited: true,
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
       ),
       act: (bloc) =>
@@ -567,6 +635,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -581,8 +650,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -620,6 +687,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -634,8 +702,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -683,6 +749,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -697,8 +764,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -736,6 +801,7 @@ void main() {
       },
       build: () => PostDetailBloc(
         initialIndex: 0,
+        noteRepository: noteRepo,
         postRepository: postRepo,
         favoritePostRepository: favRepo,
         accountRepository: accountRepo,
@@ -750,8 +816,6 @@ void main() {
             ),
           ),
         ],
-        // ignore: no-empty-block
-        onPostUpdated: (_, __, ___) {},
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
       ),
@@ -778,6 +842,114 @@ void main() {
           ),
         ),
       ],
+    );
+  });
+
+  group('[post detail app logic tests]', () {
+    blocTest<PostDetailBloc, PostDetailState>(
+      'exit fullscreen mode will fetch recommends if it is empty',
+      setUp: () {
+        when(() => postRepo.getPosts(any(), any()))
+            .thenAnswer((invocation) async => []);
+      },
+      tearDown: () {
+        reset(postRepo);
+      },
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        noteRepository: noteRepo,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        defaultDetailsStyle: DetailsDisplay.imageFocus,
+        posts: [
+          PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              artistTags: ['foo'],
+              characterTags: ['bar'],
+            ),
+          ),
+        ],
+        idGenerator: () => 1,
+        fireIndexChangedAtStart: false,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostDetailDisplayModeChanged(fullScreen: false)),
+      expect: () => [
+        PostDetailState.initial().copyWith(
+          fullScreen: false,
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              artistTags: ['foo'],
+              characterTags: ['bar'],
+            ),
+          ),
+        ),
+        PostDetailState.initial().copyWith(
+          fullScreen: false,
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              artistTags: ['foo'],
+              characterTags: ['bar'],
+            ),
+          ),
+          recommends: [
+            const Recommend(
+              title: 'foo',
+              posts: [],
+              type: RecommendType.artist,
+            ),
+          ],
+        ),
+        PostDetailState.initial().copyWith(
+          fullScreen: false,
+          currentPost: PostData.empty().copyWith(
+            post: Post.empty().copyWith(
+              id: 1,
+              artistTags: ['foo'],
+              characterTags: ['bar'],
+            ),
+          ),
+          recommends: [
+            const Recommend(
+              title: 'foo',
+              posts: [],
+              type: RecommendType.artist,
+            ),
+            const Recommend(
+              title: 'bar',
+              posts: [],
+              type: RecommendType.character,
+            ),
+          ],
+        ),
+      ],
+    );
+
+    blocTest<PostDetailBloc, PostDetailState>(
+      'ignore overlay changed request if not in fullscreen mode',
+      build: () => PostDetailBloc(
+        initialIndex: 0,
+        noteRepository: noteRepo,
+        postRepository: postRepo,
+        favoritePostRepository: favRepo,
+        accountRepository: accountRepo,
+        postVoteRepository: postVoteRepo,
+        tags: [],
+        posts: [
+          PostData.empty(),
+        ],
+        idGenerator: () => 1,
+        fireIndexChangedAtStart: false,
+      ),
+      act: (bloc) => bloc
+          .add(const PostDetailOverlayVisibilityChanged(enableOverlay: false)),
+      expect: () => [],
     );
   });
 }

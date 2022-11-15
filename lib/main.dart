@@ -24,9 +24,9 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_c
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
-import 'package:boorusama/boorus/danbooru/application/note/note.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
@@ -38,23 +38,29 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/profiles/profile_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
+import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/sentry.dart';
@@ -74,6 +80,8 @@ const supportedLocales = [
 ];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
+const savedSearchHelpUrl =
+    'https://safebooru.donmai.us/wiki_pages/help%3Asaved_searches';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -89,7 +97,8 @@ void main() async {
 
     Hive
       ..init(dbDirectory.path)
-      ..registerAdapter(SearchHistoryHiveObjectAdapter());
+      ..registerAdapter(SearchHistoryHiveObjectAdapter())
+      ..registerAdapter(FavoriteTagHiveObjectAdapter());
   }
 
   if (isDesktopPlatform()) {
@@ -135,6 +144,12 @@ void main() async {
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
   final searchHistoryRepo = SearchHistoryRepositoryHive(
     db: searchHistoryBox,
+  );
+
+  final favoriteTagsBox =
+      await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
+  final favoriteTagsRepo = FavoriteTagRepositoryHive(
+    favoriteTagsBox,
   );
 
   final booruFactory = BooruFactory.from(await loadBooruList());
@@ -199,6 +214,9 @@ void main() async {
               value: bulkDownloader,
             ),
             RepositoryProvider.value(value: userMetatagRepo),
+            RepositoryProvider<FavoriteTagRepository>.value(
+              value: favoriteTagsRepo,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -275,7 +293,10 @@ void main() async {
                     tagInfo.defaultBlacklistedTags,
                   );
 
-                  final noteRepo = NoteRepositoryApi(api);
+                  final noteRepo = NoteCacher(
+                    cache: LruCacher(capacity: 100),
+                    repo: NoteRepositoryApi(api),
+                  );
 
                   final favoriteRepo =
                       FavoritePostRepositoryApi(api, accountRepo);
@@ -316,6 +337,9 @@ void main() async {
                     api: api,
                     accountRepository: accountRepo,
                   );
+
+                  final savedSearchRepo =
+                      SavedSearchRepositoryApi(api, accountRepo);
 
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
@@ -371,12 +395,12 @@ void main() async {
                     ),
                   );
 
-                  final noteBloc = NoteBloc(
-                    noteRepository: NoteCacher(
-                      cache: LruCacher(capacity: 100),
-                      repo: noteRepo,
-                    ),
+                  final savedSearchBloc = SavedSearchBloc(
+                    savedSearchRepository: savedSearchRepo,
                   );
+
+                  final favoriteTagBloc =
+                      FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
 
                   return MultiRepositoryProvider(
                     providers: [
@@ -428,6 +452,9 @@ void main() async {
                       RepositoryProvider<PostCountRepository>.value(
                         value: postCountRepo,
                       ),
+                      RepositoryProvider<SavedSearchRepository>.value(
+                        value: savedSearchRepo,
+                      ),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -447,7 +474,8 @@ void main() async {
                         BlocProvider.value(value: tagBloc),
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
-                        BlocProvider.value(value: noteBloc),
+                        BlocProvider.value(value: savedSearchBloc),
+                        BlocProvider.value(value: favoriteTagBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

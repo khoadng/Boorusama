@@ -47,4 +47,20 @@ extension ListX<E> on List<E> {
 
     return replaceAt(index, e);
   }
+
+  E? getOrNull(int index) {
+    try {
+      return this[index];
+    } catch (e) {
+      return null;
+    }
+  }
+
+  E? firstOrNull(bool Function(E e) selector) {
+    try {
+      return firstWhere(selector);
+    } catch (e) {
+      return null;
+    }
+  }
 }

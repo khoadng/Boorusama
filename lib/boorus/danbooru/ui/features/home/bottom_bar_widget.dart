@@ -18,13 +18,6 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   late int currentIndex;
 
-  final labels = [
-    'Home',
-    'Explore',
-    'Pool',
-    // "Favorites",
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -41,6 +34,7 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      type: BottomNavigationBarType.fixed,
       showUnselectedLabels: false,
       showSelectedLabels: false,
       landscapeLayout: BottomNavigationBarLandscapeLayout.centered,

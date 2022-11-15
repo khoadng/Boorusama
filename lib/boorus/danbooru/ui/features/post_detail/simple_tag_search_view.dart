@@ -17,11 +17,13 @@ class SimpleTagSearchView extends StatelessWidget {
     required this.onSelected,
     this.ensureValidTag = true,
     this.closeOnSelected = true,
+    this.floatingActionButton,
   });
 
   final void Function(AutocompleteData tag) onSelected;
   final bool ensureValidTag;
   final bool closeOnSelected;
+  final Widget Function(String currentText)? floatingActionButton;
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +39,7 @@ class SimpleTagSearchView extends StatelessWidget {
               : state.suggestionTags;
 
           return Scaffold(
+            floatingActionButton: floatingActionButton?.call(state.query),
             body: Column(
               children: [
                 Padding(

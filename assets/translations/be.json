@@ -61,11 +61,14 @@
                 "ok" : "OK",
                 "cancel" : "Адмена"
             },
+            "view_in_browser" : "View in browser",
             "has_parent_notice" : "Малюнак мае бацьку",
             "has_children_notice" : "Малюнак мае дачэрны малюнак",
+            "file_details" : "Дэталі",
             "size" : "Памер",
             "resolution" : "Разрашэнне",
             "rating" : "Рэйтынг",
+            "file_format" : "Фармат файла",
             "share" : {
                 "source" : "Падзяліцца спасылкай на першакрыніцу",
                 "booru" : "Падзяліцца спасылкай на сайт",
@@ -251,9 +254,9 @@
         "bulk_download_total_count" : "Усяго",
         "bulk_download_done_count" : "Загружано",
         "bulk_download_done_confirm" : "ОК",
-        "bulk_download_hidden_censored" : "Censored tags",
+        "bulk_download_hidden_censored" : "Схаваныя тэгі",
         "bulk_download_hidden_banned" : "Выдалена па запыце аўтара",
-        "bulk_download_hidden" : "Hidden",
+        "bulk_download_hidden" : "Прапушчана",
         "bulk_download_cancel" : "Адмена",
         "bulk_download_duplicate" : "Дублікат",
         "bulk_download_invalid_folder_name_error" : "Назва папкі не можа ўтрымліваць наступныя сімвалы: ",
@@ -293,6 +296,16 @@
         "unfavorited"  : "Не ў любімых",
         "failed_to_unfavorite" : "Памылка выдалення з любімых",
         "failed_to_favorite" : "Памылка дабаўлення у любімыя"
+    },
+
+    "favorite_tags": {
+        "favorites": "Favorites",
+        "or" : "or",
+        "import" : "Import",
+        "import_hint" : "Enter your tag string here. Space delimited.",
+        "cancel": "Cancel",
+        "export" : "Export",
+        "export_notification" : "Tag string copied to clipboard"
     },
 
     "rating" : {

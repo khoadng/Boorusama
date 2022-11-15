@@ -36,6 +36,7 @@ class PostStatsTile extends StatelessWidget {
             enable: post.hasFavorite,
             onTap: () => showAdaptiveBottomSheet(
               context,
+              height: MediaQuery.of(context).size.height * 0.65,
               builder: (context) => BlocProvider(
                 create: (context) => PostFavoriteBloc(
                   favoritePostRepository:
@@ -74,6 +75,7 @@ class PostStatsTile extends StatelessWidget {
             enable: post.hasVoter,
             onTap: () => showAdaptiveBottomSheet(
               context,
+              height: MediaQuery.of(context).size.height * 0.65,
               builder: (context) => BlocProvider(
                 create: (context) => PostVoteInfoBloc(
                   postVoteRepository: context.read<PostVoteRepository>(),

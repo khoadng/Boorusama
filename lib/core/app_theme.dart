@@ -35,6 +35,10 @@ class AppTheme {
         .copyWith(color: const Color.fromARGB(255, 79, 86, 96)),
     bottomNavigationBarTheme: const BottomNavigationBarThemeData()
         .copyWith(backgroundColor: const Color.fromARGB(255, 225, 227, 229)),
+    expansionTileTheme: ThemeData.light().expansionTileTheme.copyWith(
+          textColor: Colors.black,
+          iconColor: Colors.black,
+        ),
   );
   static final darkTheme = ThemeData.dark().copyWith(
     appBarTheme: ThemeData.dark().appBarTheme.copyWith(

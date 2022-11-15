@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 
 final _aspectRatio = [
   ...List<double>.generate(20, (_) => 0.71),
@@ -78,12 +79,6 @@ Widget createRandomPlaceholderContainer(
 }) {
   return AspectRatio(
     aspectRatio: _aspectRatio[Random().nextInt(_aspectRatio.length - 1)],
-    child: Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
-        borderRadius:
-            borderRadius ?? const BorderRadius.all(Radius.circular(4)),
-      ),
-    ),
+    child: const ImagePlaceHolder(),
   );
 }

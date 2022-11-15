@@ -15,6 +15,11 @@ enum ActionBarDisplayBehavior {
   staticAtBottom,
 }
 
+enum DetailsDisplay {
+  postFocus,
+  imageFocus,
+}
+
 enum DownloadMethod {
   flutterDownloader,
   imageGallerySaver,
@@ -36,6 +41,7 @@ class Settings extends Equatable {
     required this.imageQuality,
     required this.imageQualityInFullView,
     required this.imageListType,
+    required this.detailsDisplay,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -67,6 +73,9 @@ class Settings extends Equatable {
         imageListType = json['imageListType'] != null
             ? ImageListType.values[json['imageListType']]
             : ImageListType.masonry,
+        detailsDisplay = json['detailsDisplay'] != null
+            ? DetailsDisplay.values[json['detailsDisplay']]
+            : DetailsDisplay.postFocus,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -85,6 +94,7 @@ class Settings extends Equatable {
     imageQuality: ImageQuality.automatic,
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
+    detailsDisplay: DetailsDisplay.postFocus,
   );
 
   final String blacklistedTags;
@@ -108,6 +118,8 @@ class Settings extends Equatable {
 
   final ImageListType imageListType;
 
+  final DetailsDisplay detailsDisplay;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -123,6 +135,7 @@ class Settings extends Equatable {
     ImageQuality? imageQuality,
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
+    DetailsDisplay? detailsDisplay,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -141,6 +154,7 @@ class Settings extends Equatable {
         imageQualityInFullView:
             imageQualityInFullView ?? this.imageQualityInFullView,
         imageListType: imageListType ?? this.imageListType,
+        detailsDisplay: detailsDisplay ?? this.detailsDisplay,
       );
 
   Map<String, dynamic> toJson() => {
@@ -158,6 +172,7 @@ class Settings extends Equatable {
         'imageQuality': imageQuality.index,
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
+        'detailsDisplay': detailsDisplay.index,
       };
 
   @override
@@ -176,5 +191,6 @@ class Settings extends Equatable {
         imageQuality,
         imageQualityInFullView,
         imageListType,
+        detailsDisplay,
       ];
 }

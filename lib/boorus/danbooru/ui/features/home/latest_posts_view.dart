@@ -72,7 +72,6 @@ class _LatestViewState extends State<LatestView> {
       builder: (context, state) {
         return InfiniteLoadListScrollView(
           isLoading: state.loading,
-          extendBody: Screen.of(context).size == ScreenSize.small,
           enableLoadMore: state.hasMore,
           onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                 tags: _selectedTag.value,

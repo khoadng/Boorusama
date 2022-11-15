@@ -2,7 +2,7 @@ name: boorusama
 description: A mobile client for Danbooru.
 
 publish_to: "none"
-version: 2.6.1+36
+version: 2.7.0+37
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
@@ -10,6 +10,8 @@ environment:
 dependencies:
   android_intent_plus: ^3.1.1+1
   animated_flip_counter: ^0.2.5
+  animated_list_plus: ^0.4.4
+  basic_utils: ^5.4.2
   bitsdojo_window: ^0.1.2
   bloc_concurrency: ^0.2.0
   cached_network_image: ^3.2.2
@@ -22,12 +24,11 @@ dependencies:
   dio: ^4.0.6
   dio_cache_interceptor: ^3.3.1
   dio_cache_interceptor_hive_store: ^3.2.0
-  dio_smart_retry: ^1.3.2
   easy_localization: ^3.0.1
   equatable: ^2.0.5
   file_picker: ^5.2.1
   filesize: ^2.0.1
-  fluro: ^2.0.3
+  fluro: ^2.0.4
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.0
@@ -53,6 +54,7 @@ dependencies:
   image_gallery_saver: ^1.7.1
   intl: ^0.17.0
   jiffy: ^5.0.0
+  like_button: ^2.0.5
   lottie: ^1.4.3
   media_scanner: ^2.1.0
   modal_bottom_sheet: ^2.1.1
@@ -61,10 +63,12 @@ dependencies:
       url: https://github.com/hilalbaig/number_inc_dec.git
       ref: f66ee872727172ce2fe57f118d569339d54c384d
   package_info_plus: ^3.0.1
+  page_transition: ^2.0.9
   path: ^1.8.2
   path_provider: ^2.0.11
   percent_indicator: ^4.2.2
   permission_handler: ^10.0.1
+  photo_view: ^0.14.0
   pull_to_refresh:
     git:
       url: https://github.com/khoadng/flutter_pulltorefresh.git
@@ -77,10 +81,10 @@ dependencies:
     git:
       url: https://github.com/khoadng/rich_text_controller.git
       ref: flutter-3.0
-  rxdart: ^0.27.4
+  rxdart: ^0.27.6
   scroll_to_index: ^3.0.1
-  sentry_flutter: ^6.12.2
-  share_plus: ^6.0.1
+  sentry_flutter: ^6.15.1
+  share_plus: ^6.2.0
   timeago: ^3.3.0
   toggle_switch: ^2.0.1
   tuple: ^2.0.0
@@ -117,6 +121,7 @@ flutter:
   assets:
     - assets/animations/
     - assets/icon/
+    - assets/images/
     - assets/translations/
     - assets/information.json
     - assets/tagdef.json

@@ -75,6 +75,8 @@ Future<T?> showAdaptiveBottomSheet<T>(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,
   bool expand = false,
+  double? height,
+  Color? backgroundColor,
 }) {
   return Screen.of(context).size != ScreenSize.small
       ? showGeneralDialog<T>(
@@ -85,12 +87,12 @@ Future<T?> showAdaptiveBottomSheet<T>(
       : showBarModalBottomSheet<T>(
           context: context,
           barrierColor: Colors.black45,
-          backgroundColor: Colors.transparent,
+          backgroundColor: backgroundColor ?? Colors.transparent,
           builder: (context) => ConditionalParentWidget(
             condition: !expand,
             child: builder(context),
             conditionalBuilder: (child) => SizedBox(
-              height: MediaQuery.of(context).size.height * 0.65,
+              height: height,
               child: child,
             ),
           ),

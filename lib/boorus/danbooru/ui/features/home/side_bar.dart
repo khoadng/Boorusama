@@ -48,8 +48,8 @@ class SideBarMenu extends StatelessWidget {
                         const Divider(),
                       ],
                       if (state.data! == Account.empty)
-                        ListTile(
-                          leading: const Icon(Icons.login_outlined),
+                        _SideMenuTile(
+                          icon: const Icon(Icons.login_outlined),
                           title: Text('sideMenu.login'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
@@ -64,8 +64,8 @@ class SideBarMenu extends StatelessWidget {
                           },
                         )
                       else
-                        ListTile(
-                          leading: const Icon(Icons.person_outline),
+                        _SideMenuTile(
+                          icon: const Icon(Icons.person_outline),
                           title: Text('sideMenu.profile'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
@@ -80,8 +80,8 @@ class SideBarMenu extends StatelessWidget {
                           },
                         ),
                       if (state.data! != Account.empty)
-                        ListTile(
-                          leading: const Icon(Icons.favorite_outline),
+                        _SideMenuTile(
+                          icon: const Icon(Icons.favorite_outline),
                           title: Text('profile.favorites'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
@@ -99,8 +99,27 @@ class SideBarMenu extends StatelessWidget {
                           },
                         ),
                       if (state.data! != Account.empty)
-                        ListTile(
-                          leading: const FaIcon(FontAwesomeIcons.ban, size: 20),
+                        _SideMenuTile(
+                          icon: const Icon(Icons.search),
+                          title: const Text('Saved search'),
+                          onTap: () {
+                            if (popOnSelect) Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(
+                              context,
+                              '/saved_search',
+                              routeSettings: RouteSettings(
+                                arguments: [state.data!.username],
+                              ),
+                              transition:
+                                  Screen.of(context).size == ScreenSize.small
+                                      ? TransitionType.inFromRight
+                                      : null,
+                            );
+                          },
+                        ),
+                      if (state.data! != Account.empty)
+                        _SideMenuTile(
+                          icon: const FaIcon(FontAwesomeIcons.ban, size: 20),
                           title: const Text(
                             'blacklisted_tags.blacklisted_tags',
                           ).tr(),
@@ -116,8 +135,8 @@ class SideBarMenu extends StatelessWidget {
                             );
                           },
                         ),
-                      ListTile(
-                        leading: const Icon(Icons.download),
+                      _SideMenuTile(
+                        icon: const Icon(Icons.download),
                         title: const Text('download.bulk_download').tr(),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
@@ -134,8 +153,8 @@ class SideBarMenu extends StatelessWidget {
                           );
                         },
                       ),
-                      ListTile(
-                        leading: const Icon(Icons.settings_outlined),
+                      _SideMenuTile(
+                        icon: const Icon(Icons.settings_outlined),
                         title: Text('sideMenu.settings'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
@@ -153,6 +172,32 @@ class SideBarMenu extends StatelessWidget {
                   )
                 : const SizedBox.shrink();
           },
+        ),
+      ),
+    );
+  }
+}
+
+class _SideMenuTile extends StatelessWidget {
+  const _SideMenuTile({
+    required this.icon,
+    required this.title,
+    required this.onTap,
+  });
+
+  final Widget icon;
+  final Widget title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        child: ListTile(
+          leading: icon,
+          title: title,
+          onTap: onTap,
         ),
       ),
     );

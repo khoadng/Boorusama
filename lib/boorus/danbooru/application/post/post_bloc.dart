@@ -79,11 +79,13 @@ class PostBloc extends Bloc<PostEvent, PostState>
     on<PostFavoriteUpdated>((event, emit) {
       final index =
           state.posts.indexWhere((element) => element.post.id == event.postId);
-      if (index > 0) {
+      if (index >= 0) {
         final posts = [...state.posts];
         posts[index] = state.posts[index].copyWith(
           isFavorited: event.favorite,
         );
+
+        replaceAt(index, posts[index]);
 
         emit(
           state.copyWith(
@@ -94,13 +96,13 @@ class PostBloc extends Bloc<PostEvent, PostState>
     });
 
     on<PostUpdated>((event, emit) {
-      final index =
-          state.posts.indexWhere((element) => element.post.id == event.post.id);
-      if (index > 0) {
+      final index = state.posts
+          .indexWhere((element) => element.post.id == event.post.post.id);
+      if (index >= 0) {
         final posts = [...state.posts];
-        posts[index] = state.posts[index].copyWith(
-          post: event.post,
-        );
+        posts[index] = event.post;
+
+        replaceAt(index, posts[index]);
 
         emit(
           state.copyWith(
@@ -135,15 +137,17 @@ class PostBloc extends Bloc<PostEvent, PostState>
 
     error.when(
       appError: (appError) => appError.when(
-        cannotReachServer: () => failureState.copyWith(
+        cannotReachServer: () => emit(failureState.copyWith(
           exceptionMessage: 'Cannot reach server, please check your connection',
-        ),
-        failedToParseJSON: () => failureState.copyWith(
+        )),
+        failedToParseJSON: () => emit(failureState.copyWith(
           exceptionMessage:
               'Failed to parse data, please report this issue to the developer',
-        ),
-        unknown: () => failureState.copyWith(
-          exceptionMessage: 'generic.errors.unknown',
+        )),
+        unknown: () => emit(
+          failureState.copyWith(
+            exceptionMessage: 'generic.errors.unknown',
+          ),
         ),
       ),
       serverError: (error) {

@@ -61,11 +61,14 @@
                 "ok" : "OK",
                 "cancel" : "Hủy"
             },
+            "view_in_browser" : "Xem bằng trình duyệt",
             "has_parent_notice" : "Ảnh này là một phần nhỏ trong bộ ảnh lớn hơn",
             "has_children_notice" : "Có những ảnh khác nằm chung bộ với ảnh này",
+            "file_details" : "Thông số ảnh",
             "size" : "Kích thước",
             "resolution" : "Độ phân giải",
             "rating" : "Xếp loại",
+            "file_format" : "Định dạng file",
             "share" : {
                 "source" : "Chia sẻ link nguồn",
                 "booru" : "Chia sẻ link booru",
@@ -292,6 +295,16 @@
         "unfavorite"  : "Xoá yêu thích",
         "failed_to_unfavorite" : "Xảy ra lỗi khi thích ảnh này",
         "failed_to_favorite" : "Xảy ra lỗi khi xoá yêu thích ảnh này"
+    },
+
+    "favorite_tags": {
+        "favorites": "Yêu thích",
+        "or" : "hoặc",
+        "import" : "Nhập tay",
+        "import_hint" : "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
+        "cancel": "Huỷ",
+        "export" : "Xuất tag",
+        "export_notification" : "Tag đã được chép vào clipboard"
     },
 
     "rating" : {

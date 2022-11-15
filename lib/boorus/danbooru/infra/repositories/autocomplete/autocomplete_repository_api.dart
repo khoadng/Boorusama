@@ -8,22 +8,13 @@ import 'package:boorusama/boorus/danbooru/infra/dtos/dtos.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/http_parser.dart';
 
-bool _isTagType(String? type) => [
-      'tag',
-      'tag-alias',
-      'tag-abbreviation',
-      'tag-other-name',
-      'tag-autocorrect',
-      'tag-word',
-    ].contains(type);
-
 List<AutocompleteDto> parseAutocomplete(HttpResponse<dynamic> value) =>
     parse(value: value, converter: (data) => AutocompleteDto.fromJson(data));
 
 List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
     .map((e) {
       try {
-        if (_isTagType(e.type)) {
+        if (AutocompleteData.isTagType(e.type)) {
           return AutocompleteData(
             type: e.type,
             label: e.label!,
@@ -32,7 +23,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             postCount: e.postCount,
             antecedent: e.antecedent,
           );
-        } else if (e.type == 'pool') {
+        } else if (e.type == AutocompleteData.pool) {
           return AutocompleteData(
             type: e.type,
             label: e.label!,
@@ -40,7 +31,7 @@ List<AutocompleteData> mapDtoToAutocomplete(List<AutocompleteDto> dtos) => dtos
             category: e.category,
             postCount: e.postCount,
           );
-        } else if (e.type == 'user') {
+        } else if (e.type == AutocompleteData.user) {
           return AutocompleteData(
             type: e.type,
             label: e.label!,

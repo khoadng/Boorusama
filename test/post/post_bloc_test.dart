@@ -61,6 +61,61 @@ void main() {
     );
 
     blocTest<PostBloc, PostState>(
+      'cannot reach server',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+          BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
+        );
+      },
+      tearDown: () => reset(mockPostRepo),
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.failure,
+          exceptionMessage: 'Cannot reach server, please check your connection',
+        ),
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
+      'failed to parse JSON',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+        );
+      },
+      tearDown: () => reset(mockPostRepo),
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.failure,
+          exceptionMessage:
+              'Failed to parse data, please report this issue to the developer',
+        ),
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
       'time out',
       setUp: () {
         when(() => mockPostRepo.getPosts(any(), any()))
@@ -423,9 +478,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: Post.empty().copyWith(
-          id: 2,
-          tags: ['foo'],
+        post: PostData.empty().copyWith(
+          post: Post.empty().copyWith(
+            id: 2,
+            tags: ['foo'],
+          ),
         ),
       )),
       expect: () => [
@@ -462,9 +519,11 @@ void main() {
         stateIdGenerator: () => 123,
       ),
       act: (bloc) => bloc.add(PostUpdated(
-        post: Post.empty().copyWith(
-          id: 4,
-          tags: ['foo'],
+        post: PostData.empty().copyWith(
+          post: Post.empty().copyWith(
+            id: 4,
+            tags: ['foo'],
+          ),
         ),
       )),
       expect: () => [],
