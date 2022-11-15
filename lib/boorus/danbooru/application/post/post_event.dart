@@ -74,7 +74,7 @@ class PostUpdated extends PostEvent {
     required this.post,
   });
 
-  final Post post;
+  final PostData post;
 
   @override
   List<Object?> get props => [post];

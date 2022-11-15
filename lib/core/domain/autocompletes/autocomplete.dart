@@ -33,6 +33,34 @@ class AutocompleteData extends Equatable {
   bool get hasCategory => category != null;
 
   static const empty = AutocompleteData(label: '', value: '');
+  static const abbreviation = 'tag-abbreviation';
+  static const autoCorrect = 'tag-autocorrect';
+  static const otherName = 'tag-other-name';
+  static const alias = 'tag-alias';
+  static const word = 'tag-word';
+  static const tag = 'tag';
+
+  static const user = 'user';
+  static const pool = 'pool';
+
+  static const tagTypes = [
+    abbreviation,
+    autoCorrect,
+    otherName,
+    alias,
+    word,
+    tag,
+  ];
+
+  static const userTypes = [
+    user,
+  ];
+
+  static const poolTypes = [
+    pool,
+  ];
+
+  static bool isTagType(String? type) => tagTypes.contains(type);
 
   @override
   List<Object?> get props =>

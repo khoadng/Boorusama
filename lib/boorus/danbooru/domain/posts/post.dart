@@ -215,6 +215,12 @@ class Post extends Equatable
       ].every((e) => e != '');
 
   @override
+  String getLink(String baseUrl) => '$baseUrl/posts/$id';
+
+  @override
+  Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));
+
+  @override
   List<Object?> get props => [id];
 }
 

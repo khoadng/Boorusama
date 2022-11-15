@@ -5,16 +5,17 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "daily"
-    assignees:
-      - "dependabot"
-    reviewers:
-      - "khoadn"
-    commit-message:
-      prefix: "chore: "
+      interval: "weekly"
+      day: "saturday"
+      time: "17:00"
+    target-branch: "dev"
 
   # Maintain dependencies for Dart pub
   - package-ecosystem: "pub"
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "saturday"
+      time: "17:00"
+    target-branch: "dev"
+

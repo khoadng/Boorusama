@@ -61,6 +61,7 @@
                 "ok" : "OK",
                 "cancel" : "Адмена"
             },
+            "view_in_browser" : "View in browser",
             "has_parent_notice" : "Малюнак мае бацьку",
             "has_children_notice" : "Малюнак мае дачэрны малюнак",
             "file_details" : "Дэталі",
@@ -295,6 +296,16 @@
         "unfavorited"  : "Не ў любімых",
         "failed_to_unfavorite" : "Памылка выдалення з любімых",
         "failed_to_favorite" : "Памылка дабаўлення у любімыя"
+    },
+
+    "favorite_tags": {
+        "favorites": "Favorites",
+        "or" : "or",
+        "import" : "Import",
+        "import_hint" : "Enter your tag string here. Space delimited.",
+        "cancel": "Cancel",
+        "export" : "Export",
+        "export_notification" : "Tag string copied to clipboard"
     },
 
     "rating" : {

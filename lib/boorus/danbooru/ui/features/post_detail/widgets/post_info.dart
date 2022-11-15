@@ -30,8 +30,11 @@ class ArtistSection extends StatefulWidget {
 }
 
 class _ArtistSectionState extends State<ArtistSection> {
-  final artistCommentaryDisplay =
-      ValueNotifier(ArtistCommentaryTranlationState.original);
+  late final artistCommentaryDisplay = ValueNotifier(
+    (widget.post.artistCommentary?.isTranslated ?? false)
+        ? ArtistCommentaryTranlationState.translated
+        : ArtistCommentaryTranlationState.original,
+  );
 
   @override
   Widget build(BuildContext context) {

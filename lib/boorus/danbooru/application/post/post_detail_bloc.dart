@@ -52,12 +52,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required List<PostDetailTag> tags,
     required int initialIndex,
     required List<PostData> posts,
-    required void Function(
-      int postId,
-      String tag,
-      TagCategory tagCategory,
-    )
-        onPostUpdated,
+    void Function(
+      PostData post,
+    )?
+        onPostChanged,
     double Function()? idGenerator,
     bool fireIndexChangedAtStart = true,
     DetailsDisplay defaultDetailsStyle = DetailsDisplay.postFocus,
@@ -124,11 +122,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
             id: idGenerator?.call() ?? Random().nextDouble(),
           ));
 
-          onPostUpdated(
-            event.postId,
-            event.tag,
-            stringToTagCategory(event.category!),
-          );
+          final post = posts.firstOrNull((e) => e.post.id == event.postId);
+          if (post != null) {
+            final newPost = post.copyWith(
+              post: _newPost(
+                post.post,
+                event.tag,
+                stringToTagCategory(event.category!),
+              ),
+            );
+
+            onPostChanged?.call(newPost);
+          }
         },
       );
     });
@@ -209,6 +214,8 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         emit(originalState);
         posts[state.currentIndex] = post;
       }
+
+      onPostChanged?.call(newPost);
     });
 
     on<PostDetailUpvoted>((event, emit) async {
@@ -365,5 +372,34 @@ extension PostDetailStateX on PostDetailState {
     return behavior == ActionBarDisplayBehavior.staticAtBottom
         ? true
         : fullScreen;
+  }
+}
+
+Post _newPost(Post post, String tag, TagCategory category) {
+  if (category == TagCategory.artist) {
+    return post.copyWith(
+      artistTags: [...post.artistTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.copyright) {
+    return post.copyWith(
+      copyrightTags: [...post.copyrightTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.charater) {
+    return post.copyWith(
+      characterTags: [...post.characterTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else if (category == TagCategory.meta) {
+    return post.copyWith(
+      metaTags: [...post.metaTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
+  } else {
+    return post.copyWith(
+      generalTags: [...post.generalTags, tag]..sort(),
+      tags: [...post.tags, tag]..sort(),
+    );
   }
 }

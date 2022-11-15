@@ -51,12 +51,16 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
+import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
+import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/sentry.dart';
@@ -93,7 +97,8 @@ void main() async {
 
     Hive
       ..init(dbDirectory.path)
-      ..registerAdapter(SearchHistoryHiveObjectAdapter());
+      ..registerAdapter(SearchHistoryHiveObjectAdapter())
+      ..registerAdapter(FavoriteTagHiveObjectAdapter());
   }
 
   if (isDesktopPlatform()) {
@@ -139,6 +144,12 @@ void main() async {
       await Hive.openBox<SearchHistoryHiveObject>('search_history');
   final searchHistoryRepo = SearchHistoryRepositoryHive(
     db: searchHistoryBox,
+  );
+
+  final favoriteTagsBox =
+      await Hive.openBox<FavoriteTagHiveObject>('favorite_tags');
+  final favoriteTagsRepo = FavoriteTagRepositoryHive(
+    favoriteTagsBox,
   );
 
   final booruFactory = BooruFactory.from(await loadBooruList());
@@ -203,6 +214,9 @@ void main() async {
               value: bulkDownloader,
             ),
             RepositoryProvider.value(value: userMetatagRepo),
+            RepositoryProvider<FavoriteTagRepository>.value(
+              value: favoriteTagsRepo,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -385,6 +399,9 @@ void main() async {
                     savedSearchRepository: savedSearchRepo,
                   );
 
+                  final favoriteTagBloc =
+                      FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -458,6 +475,7 @@ void main() async {
                         BlocProvider.value(value: artistBloc),
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: savedSearchBloc),
+                        BlocProvider.value(value: favoriteTagBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

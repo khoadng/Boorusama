@@ -48,6 +48,7 @@ import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/app_rating.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
@@ -182,21 +183,7 @@ final postDetailHandler = Handler(handlerFunc: (
               accountRepository: context.read<AccountRepository>(),
               postVoteRepository: context.read<PostVoteRepository>(),
               tags: tags,
-              onPostUpdated: (postId, tag, category) {
-                if (postBloc == null) return;
-
-                final posts =
-                    postDatas.where((e) => e.post.id == postId).toList();
-                if (posts.isEmpty) return;
-
-                postBloc.add(PostUpdated(
-                  post: _newPost(
-                    posts.first.post,
-                    tag,
-                    category,
-                  ),
-                ));
-              },
+              onPostChanged: (post) => postBloc?.add(PostUpdated(post: post)),
             ),
           ),
         ],
@@ -238,6 +225,9 @@ final postSearchHandler = Handler(handlerFunc: (
         create: (context) => SearchHistoryCubit(
           searchHistoryRepository: context.read<SearchHistoryRepository>(),
         ),
+      ),
+      BlocProvider.value(
+        value: context.read<FavoriteTagBloc>()..add(const FavoriteTagFetched()),
       ),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
@@ -423,32 +413,3 @@ final savedSearchEditHandler =
     child: const SavedSearchPage(),
   );
 });
-
-Post _newPost(Post post, String tag, TagCategory category) {
-  if (category == TagCategory.artist) {
-    return post.copyWith(
-      artistTags: [...post.artistTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.copyright) {
-    return post.copyWith(
-      copyrightTags: [...post.copyrightTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.charater) {
-    return post.copyWith(
-      characterTags: [...post.characterTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else if (category == TagCategory.meta) {
-    return post.copyWith(
-      metaTags: [...post.metaTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  } else {
-    return post.copyWith(
-      generalTags: [...post.generalTags, tag]..sort(),
-      tags: [...post.tags, tag]..sort(),
-    );
-  }
-}

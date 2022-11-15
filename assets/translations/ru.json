@@ -61,6 +61,7 @@
                 "ok" : "OK",
                 "cancel" : "Отмена"
             },
+            "view_in_browser" : "View in browser",
             "has_parent_notice" : "Пост имеет родителя",
             "has_children_notice" : "Пост имеет дочерний пост",
             "file_details" : "Детали",
@@ -295,6 +296,16 @@
         "unfavorited"  : "Не в любимых",
         "failed_to_unfavorite" : "Ошибка удаления из любимых",
         "failed_to_favorite" : "Ошибка добавления в любимые"
+    },
+
+    "favorite_tags": {
+        "favorites": "Favorites",
+        "or" : "or",
+        "import" : "Import",
+        "import_hint" : "Enter your tag string here. Space delimited.",
+        "cancel": "Cancel",
+        "export" : "Export",
+        "export_notification" : "Tag string copied to clipboard"
     },
 
     "rating" : {
