@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
-import 'package:animated_list_plus/transitions.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -112,12 +110,10 @@ class _SuccessView extends StatelessWidget {
                     ),
                   ),
                 ),
-                AnimationLimiter(
-                  child: SliverImplicitlyAnimatedList<SavedSearch>(
-                    items: state.data,
-                    areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
-                    itemBuilder: _buildSearchItems,
-                  ),
+                SliverImplicitlyAnimatedList<SavedSearch>(
+                  items: state.data,
+                  areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                  itemBuilder: _buildSearchItems,
                 ),
               ]);
       },
@@ -130,41 +126,27 @@ class _SuccessView extends StatelessWidget {
     SavedSearch savedSearch,
     int index,
   ) {
-    return AnimationConfiguration.staggeredList(
-      position: index,
-      duration: const Duration(milliseconds: 200),
-      child: SlideAnimation(
-        verticalOffset: 50,
-        child: FadeInAnimation(
-          child: SizeFadeTransition(
-            sizeFraction: 0.7,
-            curve: Curves.easeInOut,
-            animation: animation,
-            child: ListTile(
-              title: Text(savedSearch.labels.join(' ')),
-              subtitle: Text(savedSearch.query),
-              trailing: savedSearch.readOnly
-                  ? null
-                  : IconButton(
-                      onPressed: () => _showEditSheet(
-                        context,
-                        savedSearch,
-                      ),
-                      icon: const Icon(Icons.more_vert),
-                    ),
-              onTap: savedSearch.labels.isNotEmpty
-                  ? () => _goToSearchPage(
-                        context,
-                        query: 'search:${savedSearch.labels.first}',
-                      )
-                  : null,
-              onLongPress: savedSearch.readOnly
-                  ? null
-                  : () => _showEditSheet(context, savedSearch),
+    return ListTile(
+      title: Text(savedSearch.labels.join(' ')),
+      subtitle: Text(savedSearch.query),
+      trailing: savedSearch.readOnly
+          ? null
+          : IconButton(
+              onPressed: () => _showEditSheet(
+                context,
+                savedSearch,
+              ),
+              icon: const Icon(Icons.more_vert),
             ),
-          ),
-        ),
-      ),
+      onTap: savedSearch.labels.isNotEmpty
+          ? () => _goToSearchPage(
+                context,
+                query: 'search:${savedSearch.labels.first}',
+              )
+          : null,
+      onLongPress: savedSearch.readOnly
+          ? null
+          : () => _showEditSheet(context, savedSearch),
     );
   }
 
