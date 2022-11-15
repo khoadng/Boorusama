@@ -246,27 +246,11 @@ class SliverPostGrid extends HookWidget {
                     final action =
                         _getFavAction(context, post.isFavorited, post.post.id);
                     final success = await action;
-                    final successMsg = post.isFavorited
-                        ? 'favorites.unfavorited'
-                        : 'favorites.favorited';
-                    final failMsg = post.isFavorited
-                        ? 'favorites.fail_to_unfavorite'
-                        : 'favorites.fail_to_favorite';
+
                     if (success) {
                       onFavoriteUpdated.call(
                         post.post.id,
                         !post.isFavorited,
-                      );
-                      showSimpleSnackBar(
-                        context: context,
-                        content: Text(successMsg).tr(),
-                        duration: const Duration(seconds: 1),
-                      );
-                    } else {
-                      showSimpleSnackBar(
-                        context: context,
-                        content: Text(failMsg).tr(),
-                        duration: const Duration(seconds: 2),
                       );
                     }
                   },
