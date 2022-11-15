@@ -297,6 +297,16 @@
         "failed_to_favorite" : "Xảy ra lỗi khi xoá yêu thích ảnh này"
     },
 
+    "favorite_tags": {
+        "favorites": "Yêu thích",
+        "or" : "hoặc",
+        "import" : "Nhập tay",
+        "import_hint" : "Điền tag vào đây. Mỗi tag cách nhau bằng khoảng trắng.",
+        "cancel": "Huỷ",
+        "export" : "Xuất tag",
+        "export_notification" : "Tag đã được chép vào clipboard"
+    },
+
     "rating" : {
         "rate_request": "Đánh giá app",
         "rate" : "Đánh giá",

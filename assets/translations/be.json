@@ -298,6 +298,16 @@
         "failed_to_favorite" : "Памылка дабаўлення у любімыя"
     },
 
+    "favorite_tags": {
+        "favorites": "Favorites",
+        "or" : "or",
+        "import" : "Import",
+        "import_hint" : "Enter your tag string here. Space delimited.",
+        "cancel": "Cancel",
+        "export" : "Export",
+        "export_notification" : "Tag string copied to clipboard"
+    },
+
     "rating" : {
         "rate_request": "Ацаніць прылажэнне",
         "rate" : "Ацаніць",

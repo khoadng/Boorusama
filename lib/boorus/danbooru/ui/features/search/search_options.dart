@@ -108,7 +108,7 @@ class _SearchOptionsState extends State<SearchOptions>
                 builder: (context, state) {
                   return _OptionTagsArena(
                     editable: state.tags.isNotEmpty,
-                    title: 'Favorites',
+                    title: 'favorite_tags.favorites'.tr(),
                     childrenBuilder: (editMode) =>
                         _buildFavoriteTags(context, state.tags, editMode),
                     titleTrailing: (editMode) => editMode &&
@@ -129,21 +129,22 @@ class _SearchOptionsState extends State<SearchOptions>
                                       ClipboardData(text: tagString),
                                     ).then((value) => showSimpleSnackBar(
                                           context: context,
-                                          content:
-                                              const Text('Tag string copied'),
+                                          content: const Text(
+                                            'favorite_tags.export_notification',
+                                          ).tr(),
                                         )),
                                   ),
                                 );
                               }
                             },
                             itemBuilder: (context) => [
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'import',
-                                child: Text('Import'),
+                                child: const Text('favorite_tags.import').tr(),
                               ),
-                              const PopupMenuItem(
+                              PopupMenuItem(
                                 value: 'export',
-                                child: Text('Export'),
+                                child: const Text('favorite_tags.export').tr(),
                               ),
                             ],
                           )
@@ -316,7 +317,7 @@ class _SearchOptionsState extends State<SearchOptions>
         Padding(
           padding: const EdgeInsets.only(top: 12, right: 8),
           child: Text(
-            'or',
+            'favorite_tags.or'.tr(),
             style: Theme.of(context).textTheme.titleLarge,
           ),
         ),
@@ -326,7 +327,7 @@ class _SearchOptionsState extends State<SearchOptions>
             context,
             context.read<FavoriteTagBloc>(),
           ),
-          child: const Text('Import'),
+          child: const Text('favorite_tags.import').tr(),
         ),
       ],
       if (editMode && tags.isNotEmpty) _buildAddTagButton(),

@@ -298,6 +298,16 @@
         "failed_to_favorite" : "Ошибка добавления в любимые"
     },
 
+    "favorite_tags": {
+        "favorites": "Favorites",
+        "or" : "or",
+        "import" : "Import",
+        "import_hint" : "Enter your tag string here. Space delimited.",
+        "cancel": "Cancel",
+        "export" : "Export",
+        "export_notification" : "Tag string copied to clipboard"
+    },
+
     "rating" : {
         "rate_request": "Оценить приложение",
         "rate" : "Оценить",

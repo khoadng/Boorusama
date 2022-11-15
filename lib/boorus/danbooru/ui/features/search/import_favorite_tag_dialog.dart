@@ -1,6 +1,9 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:easy_localization/easy_localization.dart';
+
 class ImportFavoriteTagsDialog extends StatefulWidget {
   const ImportFavoriteTagsDialog({
     super.key,
@@ -45,7 +48,7 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
           children: [
             Center(
               child: Text(
-                'Import',
+                'favorite_tags.import'.tr(),
                 style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
@@ -59,8 +62,7 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
                 maxLines: null,
                 decoration: InputDecoration(
                   hintMaxLines: 6,
-                  hintText:
-                      'Enter your tag string here. Space delimited.\n\n\n\n\n',
+                  hintText: '${'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
                   enabledBorder: const OutlineInputBorder(
@@ -90,12 +92,12 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
                         widget.onImport(value.text);
                       }
                     : null,
-                child: const Text('Import'),
+                child: const Text('favorite_tags.import').tr(),
               ),
             ),
             ElevatedButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('favorite_tags.cancel').tr(),
             ),
           ],
         ),
