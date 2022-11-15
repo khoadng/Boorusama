@@ -137,15 +137,17 @@ class PostBloc extends Bloc<PostEvent, PostState>
 
     error.when(
       appError: (appError) => appError.when(
-        cannotReachServer: () => failureState.copyWith(
+        cannotReachServer: () => emit(failureState.copyWith(
           exceptionMessage: 'Cannot reach server, please check your connection',
-        ),
-        failedToParseJSON: () => failureState.copyWith(
+        )),
+        failedToParseJSON: () => emit(failureState.copyWith(
           exceptionMessage:
               'Failed to parse data, please report this issue to the developer',
-        ),
-        unknown: () => failureState.copyWith(
-          exceptionMessage: 'generic.errors.unknown',
+        )),
+        unknown: () => emit(
+          failureState.copyWith(
+            exceptionMessage: 'generic.errors.unknown',
+          ),
         ),
       ),
       serverError: (error) {

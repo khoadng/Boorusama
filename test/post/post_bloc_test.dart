@@ -61,6 +61,61 @@ void main() {
     );
 
     blocTest<PostBloc, PostState>(
+      'cannot reach server',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+          BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
+        );
+      },
+      tearDown: () => reset(mockPostRepo),
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.failure,
+          exceptionMessage: 'Cannot reach server, please check your connection',
+        ),
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
+      'failed to parse JSON',
+      setUp: () {
+        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+          BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
+        );
+      },
+      tearDown: () => reset(mockPostRepo),
+      build: () => PostBloc(
+        postRepository: mockPostRepo,
+        accountRepository: mockAccountRepo,
+        favoritePostRepository: mockFavRepo,
+        blacklistedTagsRepository: mockBlacklistedRepo,
+        postVoteRepository: mockPostVoteRepo,
+        poolRepository: mockPoolRepo,
+      ),
+      act: (bloc) =>
+          bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
+      expect: () => [
+        PostState.initial(),
+        PostState.initial().copyWith(
+          status: LoadStatus.failure,
+          exceptionMessage:
+              'Failed to parse data, please report this issue to the developer',
+        ),
+      ],
+    );
+
+    blocTest<PostBloc, PostState>(
       'time out',
       setUp: () {
         when(() => mockPostRepo.getPosts(any(), any()))
