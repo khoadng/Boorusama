@@ -61,7 +61,7 @@
                 "ok" : "OK",
                 "cancel" : "Отмена"
             },
-            "view_in_browser" : "View in browser",
+            "view_in_browser" : "Открыть в браузере",
             "has_parent_notice" : "Пост имеет родителя",
             "has_children_notice" : "Пост имеет дочерний пост",
             "file_details" : "Детали",
@@ -299,13 +299,13 @@
     },
 
     "favorite_tags": {
-        "favorites": "Favorites",
-        "or" : "or",
-        "import" : "Import",
-        "import_hint" : "Enter your tag string here. Space delimited.",
-        "cancel": "Cancel",
-        "export" : "Export",
-        "export_notification" : "Tag string copied to clipboard"
+        "favorites": "Любимые",
+        "or" : "или",
+        "import" : "Импорт",
+        "import_hint" : "Введите теги(ограниченно)",
+        "cancel": "Отмена",
+        "export" : "Экспорт",
+        "export_notification" : "Строка с тегами скопированна в буфер обмена"
     },
 
     "rating" : {
