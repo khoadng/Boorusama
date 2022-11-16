@@ -10,13 +10,15 @@ class HistorySuggestion extends Equatable {
   const HistorySuggestion({
     required this.term,
     required this.tag,
+    required this.searchHistory,
   });
 
   final String term;
   final String tag;
+  final SearchHistory searchHistory;
 
   @override
-  List<Object?> get props => [term, tag];
+  List<Object?> get props => [term, tag, searchHistory];
 }
 
 class SearchHistorySuggestionsState extends Equatable {
@@ -74,6 +76,7 @@ class SearchHistorySuggestionsBloc
               .map((e) => HistorySuggestion(
                     tag: e.query,
                     term: event.text,
+                    searchHistory: e,
                   ))
               .toList();
 

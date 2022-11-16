@@ -14,7 +14,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/selected_tag_chip.dart';
@@ -305,7 +304,9 @@ class _SmallLayout extends StatelessWidget {
                             .add(SearchQueryChanged(query: query));
                       },
                       onHistoryRemoved: (value) {
-                        context.read<SearchHistoryCubit>().removeHistory(value);
+                        context
+                            .read<SearchBloc>()
+                            .add(SearchHistoryDeleted(history: value));
                       },
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
@@ -398,13 +399,10 @@ class _TagSuggestionItems extends StatelessWidget {
               tags: tagState.suggestionTags,
               histories: state.histories,
               currentQuery: tagState.query,
-              onHistoryDeleted: (history) async {
-                final bloc = context.read<SearchHistorySuggestionsBloc>();
-                await context
-                    .read<SearchHistoryCubit>()
-                    .removeHistory(history.tag);
-                // TODO: Quick hack to force refresh
-                bloc.add(SearchHistorySuggestionsFetched(text: tagState.query));
+              onHistoryDeleted: (history) {
+                context
+                    .read<SearchBloc>()
+                    .add(SearchHistoryDeleted(history: history.searchHistory));
               },
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
@@ -517,9 +515,6 @@ class _SearchBar extends StatelessWidget {
       ),
       onChanged: (value) {
         context.read<SearchBloc>().add(SearchQueryChanged(query: value));
-        context
-            .read<SearchHistorySuggestionsBloc>()
-            .add(SearchHistorySuggestionsFetched(text: value));
       },
       onSubmitted: (value) =>
           context.read<TagSearchBloc>().add(const TagSearchSubmitted()),

@@ -77,3 +77,21 @@ class SearchHistoryTagSelected extends SearchEvent {
   @override
   List<Object?> get props => [tag];
 }
+
+class SearchHistoryDeleted extends SearchEvent {
+  const SearchHistoryDeleted({
+    required this.history,
+  });
+
+  final SearchHistory history;
+
+  @override
+  List<Object?> get props => [history];
+}
+
+class SearchHistoryCleared extends SearchEvent {
+  const SearchHistoryCleared();
+
+  @override
+  List<Object?> get props => [];
+}

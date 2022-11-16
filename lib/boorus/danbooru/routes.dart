@@ -230,6 +230,9 @@ final postSearchHandler = Handler(handlerFunc: (
   final relatedTagBloc = RelatedTagBloc(
     relatedTagRepository: context.read<RelatedTagRepository>(),
   );
+  final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+    searchHistoryRepository: context.read<SearchHistoryRepository>(),
+  );
 
   return MultiBlocProvider(
     providers: [
@@ -240,17 +243,14 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider.value(value: postBloc),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider.value(value: tagSearchBloc),
-      BlocProvider(
-        create: (context) => SearchHistorySuggestionsBloc(
-          searchHistoryRepository: context.read<SearchHistoryRepository>(),
-        ),
-      ),
+      BlocProvider.value(value: searchHistorySuggestions),
       BlocProvider(
         create: (context) => SearchBloc(
           initial: DisplayState.options,
           tagSearchBloc: tagSearchBloc,
           searchHistoryCubit: searchHistoryCubit,
           relatedTagBloc: relatedTagBloc,
+          searchHistorySuggestionsBloc: searchHistorySuggestions,
           postBloc: postBloc,
           initialQuery: args.first,
         ),

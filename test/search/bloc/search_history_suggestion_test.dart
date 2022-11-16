@@ -21,6 +21,7 @@ HistorySuggestion suggestion(SearchHistory history, String query) =>
     HistorySuggestion(
       term: query,
       tag: history.query,
+      searchHistory: history,
     );
 
 void main() {

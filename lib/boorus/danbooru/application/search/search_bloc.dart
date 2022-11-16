@@ -2,6 +2,7 @@
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/foundation.dart';
@@ -24,6 +25,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required PostBloc postBloc,
     required SearchHistoryCubit searchHistoryCubit,
     required RelatedTagBloc relatedTagBloc,
+    required SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
     String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
@@ -38,6 +40,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         emit(state.copyWith(displayState: DisplayState.suggestion));
       }
 
+      searchHistorySuggestionsBloc
+          .add(SearchHistorySuggestionsFetched(text: event.query));
+
       tagSearchBloc.add(TagSearchChanged(event.query));
     });
 
@@ -48,6 +53,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchHistoryTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchTagFromHistorySelected(event.tag));
+    });
+
+    on<SearchHistoryDeleted>((event, emit) {
+      searchHistoryCubit.removeHistory(event.history.query);
+      if (state.displayState == DisplayState.suggestion) {
+        searchHistorySuggestionsBloc
+            .add(SearchHistorySuggestionsFetched(text: state.currentQuery));
+      }
+    });
+
+    on<SearchHistoryCleared>((event, emit) {
+      searchHistoryCubit.clearHistory();
     });
 
     on<SearchRequested>((event, emit) {

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -37,7 +38,7 @@ class SearchOptions extends StatefulWidget {
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
-  final ValueChanged<String>? onHistoryRemoved;
+  final ValueChanged<SearchHistory>? onHistoryRemoved;
   final ValueChanged<String>? onTagTap;
 
   final List<Metatag> metatags;

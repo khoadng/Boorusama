@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,7 +19,7 @@ class SearchHistorySection extends StatelessWidget {
   });
 
   final ValueChanged<String> onHistoryTap;
-  final void Function(String item) onHistoryRemoved;
+  final void Function(SearchHistory item) onHistoryRemoved;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class SearchHistorySection extends StatelessWidget {
             title: Text(item.query),
             contentPadding: const EdgeInsets.only(left: 16),
             trailing: IconButton(
-              onPressed: () => onHistoryRemoved(item.query),
+              onPressed: () => onHistoryRemoved(item),
               icon: const Icon(Icons.close),
             ),
             onTap: () => onHistoryTap(item.query),
@@ -71,7 +72,7 @@ class SearchHistorySection extends StatelessWidget {
             ),
             TextButton(
               onPressed: () =>
-                  context.read<SearchHistoryCubit>().clearHistory(),
+                  context.read<SearchBloc>().add(const SearchHistoryCleared()),
               child: const Text('search.history.clear').tr(),
             ),
           ],
