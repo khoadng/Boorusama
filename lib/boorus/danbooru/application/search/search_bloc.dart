@@ -51,7 +51,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchNewTagSelected(event.tag));
-      emit(state.copyWith(displayState: DisplayState.options));
+
+      if (state.displayState == DisplayState.suggestion) {
+        emit(state.copyWith(displayState: DisplayState.options));
+      }
     });
 
     on<SearchRawTagSelected>((event, emit) {
@@ -65,6 +68,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchHistoryTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchTagFromHistorySelected(event.tag));
+
+      if (state.displayState == DisplayState.suggestion) {
+        emit(state.copyWith(displayState: DisplayState.options));
+      }
     });
 
     on<SearchHistoryDeleted>((event, emit) {
@@ -100,6 +107,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchSelectedTagCleared>((event, emit) {
       tagSearchBloc.add(const TagSearchSelectedTagCleared());
       emit(state.copyWith(displayState: DisplayState.options));
+    });
+
+    on<SearchSelectedTagRemoved>((event, emit) {
+      tagSearchBloc.add(TagSearchSelectedTagRemoved(event.tag));
+
+      // State hasn't been updated yet so don't check for empty
+      if (state.selectedTags.length == 1) {
+        emit(state.copyWith(displayState: DisplayState.options));
+      }
     });
 
     on<SearchNoData>((event, emit) {

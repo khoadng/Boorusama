@@ -530,6 +530,9 @@ class _SelectedTagChips extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: SelectedTagChip(
               tagSearchItem: tags[index],
+              onDeleted: () => context
+                  .read<SearchBloc>()
+                  .add(SearchSelectedTagRemoved(tag: tags[index])),
             ),
           );
         },

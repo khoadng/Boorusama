@@ -11,6 +11,17 @@ class SearchSelectedTagCleared extends SearchEvent {
   List<Object?> get props => [];
 }
 
+class SearchSelectedTagRemoved extends SearchEvent {
+  const SearchSelectedTagRemoved({
+    required this.tag,
+  });
+
+  final TagSearchItem tag;
+
+  @override
+  List<Object?> get props => [tag];
+}
+
 class SearchRequested extends SearchEvent {
   const SearchRequested();
 
