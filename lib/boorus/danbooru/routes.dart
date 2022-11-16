@@ -227,6 +227,9 @@ final postSearchHandler = Handler(handlerFunc: (
   final searchHistoryCubit = SearchHistoryCubit(
     searchHistoryRepository: context.read<SearchHistoryRepository>(),
   );
+  final relatedTagBloc = RelatedTagBloc(
+    relatedTagRepository: context.read<RelatedTagRepository>(),
+  );
 
   return MultiBlocProvider(
     providers: [
@@ -247,15 +250,12 @@ final postSearchHandler = Handler(handlerFunc: (
           initial: DisplayState.options,
           tagSearchBloc: tagSearchBloc,
           searchHistoryCubit: searchHistoryCubit,
+          relatedTagBloc: relatedTagBloc,
           postBloc: postBloc,
           initialQuery: args.first,
         ),
       ),
-      BlocProvider(
-        create: (context) => RelatedTagBloc(
-          relatedTagRepository: context.read<RelatedTagRepository>(),
-        ),
-      ),
+      BlocProvider.value(value: relatedTagBloc),
     ],
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,

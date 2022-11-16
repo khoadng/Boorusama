@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/foundation.dart';
@@ -22,6 +23,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required TagSearchBloc tagSearchBloc,
     required PostBloc postBloc,
     required SearchHistoryCubit searchHistoryCubit,
+    required RelatedTagBloc relatedTagBloc,
     String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
@@ -32,6 +34,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         if (state.displayState != DisplayState.result) {
           emit(state.copyWith(displayState: DisplayState.options));
         }
+      } else {
+        emit(state.copyWith(displayState: DisplayState.suggestion));
       }
 
       tagSearchBloc.add(TagSearchChanged(event.query));
@@ -42,8 +46,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.options));
     });
 
-    on<SearchSuggestionReceived>((event, emit) =>
-        emit(state.copyWith(displayState: DisplayState.suggestion)));
+    on<SearchSuggestionReceived>((event, emit) {
+      emit(state.copyWith(displayState: DisplayState.suggestion));
+    });
 
     on<SearchRequested>((event, emit) {
       emit(state.copyWith(displayState: DisplayState.result));
@@ -79,6 +84,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<_SearchRequested>((event, emit) {
       searchHistoryCubit.addHistory(event.query);
 
+      relatedTagBloc.add(RelatedTagRequested(query: event.query));
+
       postBloc.add(PostRefreshed(
         tag: event.query,
         fetcher: SearchedPostFetcher.fromTags(event.query),
@@ -88,13 +95,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<_CopyState>((event, emit) {
       emit(state.copyWith(tagSearchState: event.state));
     });
-
-    tagSearchBloc.stream
-        .pairwise()
-        .where((event) => event.first.suggestionTags != event[1].suggestionTags)
-        // .map((event) => event[1])
-        .listen((event) => add(const SearchSuggestionReceived()))
-        .addTo(compositeSubscription);
 
     tagSearchBloc.stream
         .distinct()

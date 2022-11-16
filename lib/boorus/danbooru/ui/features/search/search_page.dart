@@ -113,25 +113,11 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<TagSearchBloc, TagSearchState>(
-          listenWhen: (previous, current) =>
-              current.selectedTags != previous.selectedTags,
-          listener: (context, state) {
-            final tags = state.selectedTags.map((e) => e.toString()).join(' ');
-
-            context.read<PostBloc>().add(PostRefreshed(
-                  tag: tags,
-                  fetcher: SearchedPostFetcher.fromTags(tags),
-                ));
-            context
-                .read<RelatedTagBloc>()
-                .add(RelatedTagRequested(query: tags));
-          },
-        ),
         BlocListener<SearchBloc, SearchState>(
-          listenWhen: (previous, current) => current.currentQuery.isEmpty,
+          listenWhen: (previous, current) =>
+              previous.currentQuery != current.currentQuery,
           listener: (context, state) {
-            queryEditingController.clear();
+            queryEditingController.text = state.currentQuery;
           },
         ),
       ],
