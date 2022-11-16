@@ -14,10 +14,12 @@ class SearchState extends Equatable {
   const SearchState({
     required this.displayState,
     required TagSearchState tagSearchState,
+    required this.metatags,
   }) : _tagSearchState = tagSearchState;
 
   final DisplayState displayState;
   final TagSearchState _tagSearchState;
+  final List<Metatag> metatags;
 
   SearchState copyWith({
     DisplayState? displayState,
@@ -26,10 +28,11 @@ class SearchState extends Equatable {
       SearchState(
         displayState: displayState ?? this.displayState,
         tagSearchState: tagSearchState ?? _tagSearchState,
+        metatags: metatags,
       );
 
   @override
-  List<Object> get props => [displayState, _tagSearchState];
+  List<Object> get props => [displayState, _tagSearchState, metatags];
 }
 
 extension SearchStateX on SearchState {

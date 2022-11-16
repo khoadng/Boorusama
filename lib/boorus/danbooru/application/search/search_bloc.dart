@@ -5,6 +5,7 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -26,10 +27,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required SearchHistoryCubit searchHistoryCubit,
     required RelatedTagBloc relatedTagBloc,
     required SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
+    required List<Metatag> metatags,
     String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
           tagSearchState: tagSearchBloc.state,
+          metatags: metatags,
         )) {
     on<SearchQueryChanged>((event, emit) {
       if (event.query.isEmpty) {
@@ -49,6 +52,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchNewTagSelected(event.tag));
       emit(state.copyWith(displayState: DisplayState.options));
+    });
+
+    on<SearchRawMetatagSelected>((event, emit) {
+      final query = '${event.tag}:';
+      add(SearchQueryChanged(query: query));
     });
 
     on<SearchHistoryTagSelected>((event, emit) {

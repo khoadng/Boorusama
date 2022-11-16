@@ -247,6 +247,7 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
         create: (context) => SearchBloc(
           initial: DisplayState.options,
+          metatags: context.read<TagInfo>().metatags,
           tagSearchBloc: tagSearchBloc,
           searchHistoryCubit: searchHistoryCubit,
           relatedTagBloc: relatedTagBloc,

@@ -170,28 +170,7 @@ class _LargeLayout extends StatelessWidget {
                             ? _TagSuggestionItems(
                                 queryEditingController: queryEditingController,
                               )
-                            : SearchOptions(
-                                metatags: context.read<TagInfo>().metatags,
-                                onOptionTap: (value) {
-                                  final query = '$value:';
-                                  queryEditingController.text = query;
-                                  context
-                                      .read<SearchBloc>()
-                                      .add(SearchQueryChanged(query: query));
-                                },
-                                onHistoryTap: (value) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  context.read<SearchBloc>().add(
-                                        SearchHistoryTagSelected(tag: value),
-                                      );
-                                },
-                                onTagTap: (value) {
-                                  FocusManager.instance.primaryFocus?.unfocus();
-                                  context.read<TagSearchBloc>().add(
-                                        TagSearchNewRawStringTagSelected(value),
-                                      );
-                                },
-                              );
+                            : _buildSearchOptions();
                       },
                     ),
                   ),
@@ -224,6 +203,40 @@ class _LargeLayout extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildSearchOptions() {
+    return BlocSelector<SearchBloc, SearchState, List<Metatag>>(
+      selector: (state) => state.metatags,
+      builder: (context, metatags) {
+        return SearchOptions(
+          metatags: metatags,
+          onOptionTap: (value) {
+            context.read<SearchBloc>().add(
+                  SearchRawMetatagSelected(
+                    tag: value,
+                  ),
+                );
+          },
+          onHistoryTap: (value) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            context.read<SearchBloc>().add(
+                  SearchHistoryTagSelected(
+                    tag: value,
+                  ),
+                );
+          },
+          onTagTap: (value) {
+            FocusManager.instance.primaryFocus?.unfocus();
+            context.read<TagSearchBloc>().add(
+                  TagSearchNewRawStringTagSelected(
+                    value,
+                  ),
+                );
+          },
+        );
+      },
     );
   }
 }
