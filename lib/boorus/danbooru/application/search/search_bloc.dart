@@ -15,9 +15,12 @@ part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
-    required SearchState initial,
+    required DisplayState initial,
     required TagSearchBloc tagSearchBloc,
-  }) : super(initial) {
+  }) : super(SearchState(
+          displayState: initial,
+          tagSearchState: tagSearchBloc.state,
+        )) {
     on<SearchQueryChanged>((event, emit) {
       if (event.query.isEmpty) {
         if (state.displayState != DisplayState.result) {
@@ -55,11 +58,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.error));
     });
 
+    on<_CopyState>((event, emit) {
+      emit(state.copyWith(tagSearchState: event.state));
+    });
+
     tagSearchBloc.stream
         .pairwise()
         .where((event) => event.first.suggestionTags != event[1].suggestionTags)
         // .map((event) => event[1])
         .listen((event) => add(const SearchSuggestionReceived()))
+        .addTo(compositeSubscription);
+
+    tagSearchBloc.stream
+        .distinct()
+        .listen((event) => add(_CopyState(state: event)))
         .addTo(compositeSubscription);
   }
 
@@ -71,4 +83,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     return super.close();
   }
+}
+
+class _CopyState extends SearchEvent {
+  const _CopyState({
+    required this.state,
+  });
+
+  final TagSearchState state;
+
+  @override
+  List<Object?> get props => [state];
 }

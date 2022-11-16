@@ -243,7 +243,7 @@ final postSearchHandler = Handler(handlerFunc: (
       ),
       BlocProvider(
         create: (context) => SearchBloc(
-          initial: const SearchState(displayState: DisplayState.options),
+          initial: DisplayState.options,
           tagSearchBloc: tagSearchBloc,
         ),
       ),

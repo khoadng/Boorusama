@@ -135,12 +135,6 @@ class _SearchPageState extends State<SearchPage> {
       listeners: [
         BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) =>
-              current.selectedTags.isEmpty && previous.selectedTags.length == 1,
-          listener: (context, state) =>
-              context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
-        ),
-        BlocListener<TagSearchBloc, TagSearchState>(
-          listenWhen: (previous, current) =>
               current.selectedTags != previous.selectedTags,
           listener: (context, state) {
             final tags = state.selectedTags.map((e) => e.toString()).join(' ');
@@ -152,6 +146,12 @@ class _SearchPageState extends State<SearchPage> {
             context
                 .read<RelatedTagBloc>()
                 .add(RelatedTagRequested(query: tags));
+          },
+        ),
+        BlocListener<SearchBloc, SearchState>(
+          listenWhen: (previous, current) => current.currentQuery.isEmpty,
+          listener: (context, state) {
+            queryEditingController.clear();
           },
         ),
       ],
