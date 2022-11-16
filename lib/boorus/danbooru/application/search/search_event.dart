@@ -5,12 +5,6 @@ abstract class SearchEvent extends Equatable {
   const SearchEvent();
 }
 
-class SearchSuggestionReceived extends SearchEvent {
-  const SearchSuggestionReceived();
-  @override
-  List<Object?> get props => [];
-}
-
 class SearchSelectedTagCleared extends SearchEvent {
   const SearchSelectedTagCleared();
   @override

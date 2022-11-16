@@ -46,10 +46,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.options));
     });
 
-    on<SearchSuggestionReceived>((event, emit) {
-      emit(state.copyWith(displayState: DisplayState.suggestion));
-    });
-
     on<SearchRequested>((event, emit) {
       emit(state.copyWith(displayState: DisplayState.result));
 
