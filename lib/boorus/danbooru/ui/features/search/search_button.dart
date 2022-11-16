@@ -6,7 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class SearchButton extends StatelessWidget {
@@ -18,10 +17,7 @@ class SearchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) => ConditionalRenderWidget(
-        condition: _shouldShowSearchButton(
-          state.displayState,
-          state.selectedTags,
-        ),
+        condition: state.allowSearch,
         childBuilder: (context) => FloatingActionButton(
           onPressed: () =>
               context.read<SearchBloc>().add(const SearchRequested()),
@@ -31,16 +27,4 @@ class SearchButton extends StatelessWidget {
       ),
     );
   }
-}
-
-bool _shouldShowSearchButton(
-  DisplayState displayState,
-  List<TagSearchItem> selectedTags,
-) {
-  if (displayState == DisplayState.options) {
-    return selectedTags.isNotEmpty;
-  }
-  if (displayState == DisplayState.suggestion) return false;
-
-  return false;
 }

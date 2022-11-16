@@ -39,4 +39,13 @@ extension SearchStateX on SearchState {
   String get currentQuery => _tagSearchState.query;
   List<TagSearchItem> get selectedTags => _tagSearchState.selectedTags;
   List<AutocompleteData> get suggestionTags => _tagSearchState.suggestionTags;
+
+  bool get allowSearch {
+    if (displayState == DisplayState.options) {
+      return selectedTags.isNotEmpty;
+    }
+    if (displayState == DisplayState.suggestion) return false;
+
+    return false;
+  }
 }
