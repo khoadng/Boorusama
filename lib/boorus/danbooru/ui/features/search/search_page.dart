@@ -134,14 +134,6 @@ class _SearchPageState extends State<SearchPage> {
     return MultiBlocListener(
       listeners: [
         BlocListener<TagSearchBloc, TagSearchState>(
-          listenWhen: (previous, current) => current.query.isEmpty,
-          listener: (context, state) {
-            context.read<SearchBloc>().add(const SearchQueryEmpty());
-            context.read<TagSearchBloc>().add(const TagSearchCleared());
-            queryEditingController.clear();
-          },
-        ),
-        BlocListener<TagSearchBloc, TagSearchState>(
           listenWhen: (previous, current) => current.suggestionTags.isNotEmpty,
           listener: (context, state) {
             context.read<SearchBloc>().add(const SearchSuggestionReceived());

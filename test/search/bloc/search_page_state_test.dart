@@ -59,25 +59,6 @@ void main() {
     );
 
     blocTest<SearchBloc, SearchState>(
-      'when query is empty, switch to options state',
-      build: () => bloc(tagSearchBloc),
-      act: (bloc) => bloc.add(const SearchQueryEmpty()),
-      expect: () => [
-        searchStateEmpty().copyWith(displayState: DisplayState.options),
-      ],
-    );
-
-    blocTest<SearchBloc, SearchState>(
-      'when query is empty but already in result state, no state changed',
-      build: () => bloc(
-        tagSearchBloc,
-        searchStateEmpty().copyWith(displayState: DisplayState.result),
-      ),
-      act: (bloc) => bloc.add(const SearchQueryEmpty()),
-      expect: () => [],
-    );
-
-    blocTest<SearchBloc, SearchState>(
       'when search has error, switch to error state',
       build: () => bloc(tagSearchBloc),
       act: (bloc) => bloc.add(const SearchError()),

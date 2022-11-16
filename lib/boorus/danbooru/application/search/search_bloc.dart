@@ -17,6 +17,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required TagSearchBloc tagSearchBloc,
   }) : super(initial) {
     on<SearchQueryChanged>((event, emit) {
+      if (event.query.isEmpty) {
+        if (state.displayState != DisplayState.result) {
+          emit(state.copyWith(displayState: DisplayState.options));
+        }
+      }
+
       tagSearchBloc.add(TagSearchChanged(event.query));
     });
 
@@ -31,11 +37,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchSelectedTagCleared>((event, emit) {
-      emit(state.copyWith(displayState: DisplayState.options));
-    });
-
-    on<SearchQueryEmpty>((event, emit) {
-      if (state.displayState == DisplayState.result) return;
       emit(state.copyWith(displayState: DisplayState.options));
     });
 
