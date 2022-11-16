@@ -47,6 +47,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchSelectedTagCleared>((event, emit) {
+      tagSearchBloc.add(const TagSearchSelectedTagCleared());
       emit(state.copyWith(displayState: DisplayState.options));
     });
 

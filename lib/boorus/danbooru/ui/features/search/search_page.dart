@@ -373,7 +373,7 @@ class _TagRow extends StatelessWidget {
     return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) {
-        final bloc = context.read<TagSearchBloc>();
+        final bloc = context.read<SearchBloc>();
 
         return AnimatedCrossFade(
           firstChild: Row(children: [
@@ -383,7 +383,7 @@ class _TagRow extends StatelessWidget {
               onTap: () => showMaterialModalBottomSheet(
                 context: context,
                 builder: (context) => ModalSelectedTag(
-                  onClear: () => bloc.add(const TagSearchSelectedTagCleared()),
+                  onClear: () => bloc.add(const SearchSelectedTagCleared()),
                   onBulkDownload: () {
                     AppRouter.router.navigateTo(
                       context,
