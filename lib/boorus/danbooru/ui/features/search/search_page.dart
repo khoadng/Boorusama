@@ -324,7 +324,7 @@ class _TagRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) {
         final bloc = context.read<SearchBloc>();
@@ -456,7 +456,7 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) => tags.isNotEmpty
           ? const Divider(

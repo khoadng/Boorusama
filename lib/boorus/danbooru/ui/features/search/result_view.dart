@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -38,7 +39,7 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) => BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {

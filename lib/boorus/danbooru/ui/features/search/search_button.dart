@@ -16,20 +16,17 @@ class SearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
-      selector: (state) => state.selectedTags,
-      builder: (context, tags) => BlocBuilder<SearchBloc, SearchState>(
-        builder: (context, state) => ConditionalRenderWidget(
-          condition: _shouldShowSearchButton(
-            state.displayState,
-            tags,
-          ),
-          childBuilder: (context) => FloatingActionButton(
-            onPressed: () =>
-                context.read<SearchBloc>().add(const SearchRequested()),
-            heroTag: null,
-            child: const Icon(Icons.search),
-          ),
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, state) => ConditionalRenderWidget(
+        condition: _shouldShowSearchButton(
+          state.displayState,
+          state.selectedTags,
+        ),
+        childBuilder: (context) => FloatingActionButton(
+          onPressed: () =>
+              context.read<SearchBloc>().add(const SearchRequested()),
+          heroTag: null,
+          child: const Icon(Icons.search),
         ),
       ),
     );
