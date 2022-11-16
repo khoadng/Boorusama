@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
