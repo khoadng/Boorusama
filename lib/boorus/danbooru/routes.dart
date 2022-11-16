@@ -242,7 +242,6 @@ final postSearchHandler = Handler(handlerFunc: (
       ),
       BlocProvider.value(value: postBloc),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
-      BlocProvider.value(value: tagSearchBloc),
       BlocProvider.value(value: searchHistorySuggestions),
       BlocProvider(
         create: (context) => SearchBloc(

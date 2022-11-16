@@ -377,15 +377,15 @@ class _TagSuggestionItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TagSearchBloc, TagSearchState>(
-      builder: (context, tagState) {
+    return BlocBuilder<SearchBloc, SearchState>(
+      builder: (context, searchState) {
         return BlocBuilder<SearchHistorySuggestionsBloc,
             SearchHistorySuggestionsState>(
           builder: (context, state) {
             return SliverTagSuggestionItemsWithHistory(
-              tags: tagState.suggestionTags,
+              tags: searchState.suggestionTags,
               histories: state.histories,
-              currentQuery: tagState.query,
+              currentQuery: searchState.currentQuery,
               onHistoryDeleted: (history) {
                 context
                     .read<SearchBloc>()
