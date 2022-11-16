@@ -225,8 +225,8 @@ class _LargeLayout extends StatelessWidget {
                                   final query = '$value:';
                                   queryEditingController.text = query;
                                   context
-                                      .read<TagSearchBloc>()
-                                      .add(TagSearchChanged(query));
+                                      .read<SearchBloc>()
+                                      .add(SearchQueryChanged(query: query));
                                 },
                                 onHistoryTap: (value) {
                                   FocusManager.instance.primaryFocus?.unfocus();
@@ -349,8 +349,8 @@ class _SmallLayout extends StatelessWidget {
                         final query = '$value:';
                         queryEditingController.text = query;
                         context
-                            .read<TagSearchBloc>()
-                            .add(TagSearchChanged(query));
+                            .read<SearchBloc>()
+                            .add(SearchQueryChanged(query: query));
                       },
                       onHistoryRemoved: (value) {
                         context.read<SearchHistoryCubit>().removeHistory(value);
@@ -564,7 +564,7 @@ class _SearchBar extends StatelessWidget {
             : const SizedBox.shrink(),
       ),
       onChanged: (value) {
-        context.read<TagSearchBloc>().add(TagSearchChanged(value));
+        context.read<SearchBloc>().add(SearchQueryChanged(query: value));
         context
             .read<SearchHistorySuggestionsBloc>()
             .add(SearchHistorySuggestionsFetched(text: value));

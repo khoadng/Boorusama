@@ -218,6 +218,10 @@ final postSearchHandler = Handler(handlerFunc: (
   Map<String, List<String>> params,
 ) {
   final args = context!.settings!.arguments as List;
+  final tagSearchBloc = TagSearchBloc(
+    tagInfo: context.read<TagInfo>(),
+    autocompleteRepository: context.read<AutocompleteRepository>(),
+  );
 
   return MultiBlocProvider(
     providers: [
@@ -231,12 +235,7 @@ final postSearchHandler = Handler(handlerFunc: (
       ),
       BlocProvider(create: (context) => PostBloc.of(context)),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
-      BlocProvider(
-        create: (context) => TagSearchBloc(
-          tagInfo: context.read<TagInfo>(),
-          autocompleteRepository: context.read<AutocompleteRepository>(),
-        ),
-      ),
+      BlocProvider.value(value: tagSearchBloc),
       BlocProvider(
         create: (context) => SearchHistorySuggestionsBloc(
           searchHistoryRepository: context.read<SearchHistoryRepository>(),
@@ -245,6 +244,7 @@ final postSearchHandler = Handler(handlerFunc: (
       BlocProvider(
         create: (context) => SearchBloc(
           initial: const SearchState(displayState: DisplayState.options),
+          tagSearchBloc: tagSearchBloc,
         ),
       ),
       BlocProvider(

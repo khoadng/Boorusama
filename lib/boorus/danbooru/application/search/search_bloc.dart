@@ -5,13 +5,21 @@ import 'package:flutter/foundation.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Project imports:
+import 'package:boorusama/core/application/search/tag_search_bloc.dart';
+
 part 'search_event.dart';
 part 'search_state.dart';
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required SearchState initial,
+    required TagSearchBloc tagSearchBloc,
   }) : super(initial) {
+    on<SearchQueryChanged>((event, emit) {
+      tagSearchBloc.add(TagSearchChanged(event.query));
+    });
+
     on<SearchSuggestionReceived>((event, emit) =>
         emit(state.copyWith(displayState: DisplayState.suggestion)));
 
