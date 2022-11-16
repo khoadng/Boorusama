@@ -21,7 +21,6 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
@@ -170,7 +169,7 @@ class _LargeLayout extends StatelessWidget {
                             ? _TagSuggestionItems(
                                 queryEditingController: queryEditingController,
                               )
-                            : _buildSearchOptions();
+                            : const _SearchOptions();
                       },
                     ),
                   ),
@@ -205,8 +204,13 @@ class _LargeLayout extends StatelessWidget {
       ),
     );
   }
+}
 
-  Widget _buildSearchOptions() {
+class _SearchOptions extends StatelessWidget {
+  const _SearchOptions();
+
+  @override
+  Widget build(BuildContext context) {
     return BlocSelector<SearchBloc, SearchState, List<Metatag>>(
       selector: (state) => state.metatags,
       builder: (context, metatags) {
@@ -229,11 +233,7 @@ class _LargeLayout extends StatelessWidget {
           },
           onTagTap: (value) {
             FocusManager.instance.primaryFocus?.unfocus();
-            context.read<TagSearchBloc>().add(
-                  TagSearchNewRawStringTagSelected(
-                    value,
-                  ),
-                );
+            context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
           },
         );
       },
@@ -307,33 +307,7 @@ class _SmallLayout extends StatelessWidget {
                   } else if (displayState == DisplayState.noResult) {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
-                    return SearchOptions(
-                      metatags: context.read<TagInfo>().metatags,
-                      onOptionTap: (value) {
-                        final query = '$value:';
-                        queryEditingController.text = query;
-                        context
-                            .read<SearchBloc>()
-                            .add(SearchQueryChanged(query: query));
-                      },
-                      onHistoryRemoved: (value) {
-                        context
-                            .read<SearchBloc>()
-                            .add(SearchHistoryDeleted(history: value));
-                      },
-                      onHistoryTap: (value) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        context
-                            .read<SearchBloc>()
-                            .add(SearchHistoryTagSelected(tag: value));
-                      },
-                      onTagTap: (value) {
-                        FocusManager.instance.primaryFocus?.unfocus();
-                        context
-                            .read<TagSearchBloc>()
-                            .add(TagSearchNewRawStringTagSelected(value));
-                      },
-                    );
+                    return const _SearchOptions();
                   }
                 },
               ),

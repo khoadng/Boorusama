@@ -54,6 +54,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.options));
     });
 
+    on<SearchRawTagSelected>((event, emit) {
+      tagSearchBloc.add(TagSearchNewRawStringTagSelected(event.tag));
+    });
+
     on<SearchRawMetatagSelected>((event, emit) {
       final query = '${event.tag}:';
       add(SearchQueryChanged(query: query));
