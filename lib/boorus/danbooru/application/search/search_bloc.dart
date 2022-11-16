@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/search/tag_search_bloc.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -47,5 +48,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchError>((event, emit) {
       emit(state.copyWith(displayState: DisplayState.error));
     });
+
+    tagSearchBloc.stream
+        .pairwise()
+        .where((event) => event.first.suggestionTags != event[1].suggestionTags)
+        // .map((event) => event[1])
+        .listen((event) => add(const SearchSuggestionReceived()))
+        .addTo(compositeSubscription);
+  }
+
+  final compositeSubscription = CompositeSubscription();
+
+  @override
+  Future<void> close() {
+    compositeSubscription.dispose();
+
+    return super.close();
   }
 }
