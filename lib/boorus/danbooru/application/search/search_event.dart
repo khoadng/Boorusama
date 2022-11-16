@@ -51,3 +51,14 @@ class SearchQueryChanged extends SearchEvent {
   @override
   List<Object?> get props => [query];
 }
+
+class SearchTagSelected extends SearchEvent {
+  const SearchTagSelected({
+    required this.tag,
+  });
+
+  final AutocompleteData tag;
+
+  @override
+  List<Object?> get props => [tag];
+}

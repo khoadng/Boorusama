@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -25,6 +26,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       tagSearchBloc.add(TagSearchChanged(event.query));
+    });
+
+    on<SearchTagSelected>((event, emit) {
+      tagSearchBloc.add(TagSearchNewTagSelected(event.tag));
+      emit(state.copyWith(displayState: DisplayState.options));
     });
 
     on<SearchSuggestionReceived>((event, emit) =>
