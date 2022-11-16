@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -11,7 +12,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/tags/tags.dart';
 import 'package:boorusama/core/application/api/api.dart';
-import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/application/utils.dart';
 import 'package:boorusama/core/core.dart';
@@ -47,8 +47,8 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                 (item) => _RelatedTagButton(
                   backgroundColor: getTagColor(item.category, widget.theme),
                   onPressed: () => context
-                      .read<TagSearchBloc>()
-                      .add(TagSearchNewRawStringTagSelected(item.tag)),
+                      .read<SearchBloc>()
+                      .add(SearchRelatedTagSelected(tag: item)),
                   label: Text(
                     item.tag.removeUnderscoreWithSpace(),
                     overflow: TextOverflow.fade,
@@ -76,7 +76,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                 ),
               ),
               onPressed: () {
-                final bloc = context.read<TagSearchBloc>();
+                final bloc = context.read<SearchBloc>();
                 final page = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
                   builder: (context, state) {
                     return _RelatedTagActionSheet(
@@ -87,7 +87,7 @@ class _RelatedTagHeaderState extends State<RelatedTagHeader> {
                         tag,
                       ),
                       onAddToSearch: (tag) =>
-                          bloc.add(TagSearchNewRawStringTagSelected(tag)),
+                          bloc.add(SearchRelatedTagSelected(tag: tag)),
                     );
                   },
                 );
@@ -124,7 +124,7 @@ class _RelatedTagActionSheet extends StatelessWidget {
   final RelatedTag relatedTag;
   final ThemeMode theme;
   final void Function(String tag) onOpenWiki;
-  final void Function(String tag) onAddToSearch;
+  final void Function(RelatedTagItem tag) onAddToSearch;
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +163,7 @@ class _RelatedTagActionSheet extends StatelessWidget {
                   onTap: () {
                     Navigator.of(context).pop();
                     Navigator.of(context).pop();
-                    onAddToSearch(relatedTag.tags[index].tag);
+                    onAddToSearch(relatedTag.tags[index]);
                   },
                   title: const Text('tag.related.add_to_current_search').tr(),
                   trailing: const FaIcon(

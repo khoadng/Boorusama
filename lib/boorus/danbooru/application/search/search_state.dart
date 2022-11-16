@@ -32,7 +32,7 @@ class SearchState extends Equatable {
       );
 
   @override
-  List<Object> get props => [displayState, _tagSearchState, metatags];
+  List<Object> get props => [displayState, _tagSearchState];
 }
 
 extension SearchStateX on SearchState {

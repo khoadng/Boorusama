@@ -3,6 +3,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
@@ -59,6 +60,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchRawTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchNewRawStringTagSelected(event.tag));
+    });
+
+    on<SearchRelatedTagSelected>((event, emit) {
+      add(SearchRawTagSelected(tag: event.tag.tag));
     });
 
     on<SearchRawMetatagSelected>((event, emit) {
@@ -138,6 +143,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<_CopyState>((event, emit) {
+      // Related added
+      if (state.displayState == DisplayState.result &&
+          event.state.selectedTags != state.selectedTags) {
+        add(const SearchRequested());
+      }
+
       emit(state.copyWith(tagSearchState: event.state));
     });
 
