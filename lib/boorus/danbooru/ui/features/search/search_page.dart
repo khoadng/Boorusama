@@ -32,12 +32,10 @@ import 'search_button.dart';
 class SearchPage extends StatefulWidget {
   const SearchPage({
     super.key,
-    this.initialQuery = '',
     required this.metatags,
     required this.metatagHighlightColor,
   });
 
-  final String initialQuery;
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
 
@@ -63,24 +61,6 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialQuery.isNotEmpty) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        context
-            .read<TagSearchBloc>()
-            .add(TagSearchNewRawStringTagSelected(widget.initialQuery));
-        context.read<SearchBloc>().add(const SearchRequested());
-        context.read<PostBloc>().add(PostRefreshed(
-              tag: widget.initialQuery,
-              fetcher: SearchedPostFetcher.fromTags(widget.initialQuery),
-            ));
-      });
-    } else {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        focus.requestFocus();
-      });
-    }
-
-    context.read<SearchHistoryCubit>().getSearchHistory();
 
     queryEditingController.addListener(() {
       queryEditingController.selection = TextSelection.fromPosition(

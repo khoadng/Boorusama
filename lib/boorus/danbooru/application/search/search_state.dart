@@ -34,4 +34,5 @@ class SearchState extends Equatable {
 
 extension SearchStateX on SearchState {
   String get currentQuery => _tagSearchState.query;
+  List<TagSearchItem> get selectedTags => _tagSearchState.selectedTags;
 }

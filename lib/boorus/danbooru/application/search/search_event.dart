@@ -19,8 +19,18 @@ class SearchSelectedTagCleared extends SearchEvent {
 
 class SearchRequested extends SearchEvent {
   const SearchRequested();
+
   @override
   List<Object?> get props => [];
+}
+
+class SearchWithRawTagRequested extends SearchEvent {
+  const SearchWithRawTagRequested(this.tag);
+
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
 }
 
 class SearchNoData extends SearchEvent {

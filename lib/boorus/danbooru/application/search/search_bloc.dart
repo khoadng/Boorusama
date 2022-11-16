@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:flutter/foundation.dart';
 
@@ -17,6 +20,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   SearchBloc({
     required DisplayState initial,
     required TagSearchBloc tagSearchBloc,
+    required PostBloc postBloc,
+    required SearchHistoryCubit searchHistoryCubit,
+    String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
           tagSearchState: tagSearchBloc.state,
@@ -39,8 +45,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchSuggestionReceived>((event, emit) =>
         emit(state.copyWith(displayState: DisplayState.suggestion)));
 
-    on<SearchRequested>((event, emit) =>
-        emit(state.copyWith(displayState: DisplayState.result)));
+    on<SearchRequested>((event, emit) {
+      emit(state.copyWith(displayState: DisplayState.result));
+
+      final tags = state.selectedTags.map((e) => e.toString()).join(' ');
+
+      add(_SearchRequested(query: tags));
+    });
+
+    on<SearchWithRawTagRequested>((event, emit) {
+      emit(state.copyWith(displayState: DisplayState.result));
+
+      add(_SearchRequested(query: event.tag));
+    });
 
     on<SearchGoBackToSearchOptionsRequested>((event, emit) {
       emit(state.copyWith(displayState: DisplayState.options));
@@ -59,6 +76,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.error));
     });
 
+    on<_SearchRequested>((event, emit) {
+      searchHistoryCubit.addHistory(event.query);
+
+      postBloc.add(PostRefreshed(
+        tag: event.query,
+        fetcher: SearchedPostFetcher.fromTags(event.query),
+      ));
+    });
+
     on<_CopyState>((event, emit) {
       emit(state.copyWith(tagSearchState: event.state));
     });
@@ -74,6 +100,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         .distinct()
         .listen((event) => add(_CopyState(state: event)))
         .addTo(compositeSubscription);
+
+    if (initialQuery != null && initialQuery.isNotEmpty) {
+      tagSearchBloc.add(TagSearchNewRawStringTagSelected(initialQuery));
+      add(SearchWithRawTagRequested(initialQuery));
+    }
+
+    searchHistoryCubit.getSearchHistory();
   }
 
   final compositeSubscription = CompositeSubscription();
@@ -95,4 +128,15 @@ class _CopyState extends SearchEvent {
 
   @override
   List<Object?> get props => [state];
+}
+
+class _SearchRequested extends SearchEvent {
+  const _SearchRequested({
+    required this.query,
+  });
+
+  final String query;
+
+  @override
+  List<Object?> get props => [query];
 }

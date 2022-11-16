@@ -223,17 +223,18 @@ final postSearchHandler = Handler(handlerFunc: (
     autocompleteRepository: context.read<AutocompleteRepository>(),
   );
 
+  final postBloc = PostBloc.of(context);
+  final searchHistoryCubit = SearchHistoryCubit(
+    searchHistoryRepository: context.read<SearchHistoryRepository>(),
+  );
+
   return MultiBlocProvider(
     providers: [
-      BlocProvider(
-        create: (context) => SearchHistoryCubit(
-          searchHistoryRepository: context.read<SearchHistoryRepository>(),
-        ),
-      ),
+      BlocProvider.value(value: searchHistoryCubit),
       BlocProvider.value(
         value: context.read<FavoriteTagBloc>()..add(const FavoriteTagFetched()),
       ),
-      BlocProvider(create: (context) => PostBloc.of(context)),
+      BlocProvider.value(value: postBloc),
       BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
       BlocProvider.value(value: tagSearchBloc),
       BlocProvider(
@@ -245,6 +246,9 @@ final postSearchHandler = Handler(handlerFunc: (
         create: (context) => SearchBloc(
           initial: DisplayState.options,
           tagSearchBloc: tagSearchBloc,
+          searchHistoryCubit: searchHistoryCubit,
+          postBloc: postBloc,
+          initialQuery: args.first,
         ),
       ),
       BlocProvider(
@@ -256,7 +260,6 @@ final postSearchHandler = Handler(handlerFunc: (
     child: SearchPage(
       metatags: context.read<TagInfo>().metatags,
       metatagHighlightColor: Theme.of(context).colorScheme.primary,
-      initialQuery: args.first,
     ),
   );
 });
