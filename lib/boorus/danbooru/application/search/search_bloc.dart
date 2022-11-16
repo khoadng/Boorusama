@@ -50,6 +50,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       tagSearchBloc.add(TagSearchChanged(event.query));
     });
 
+    on<SearchQuerySubmitted>((event, emit) {
+      tagSearchBloc.add(const TagSearchSubmitted());
+
+      if (state.displayState == DisplayState.suggestion) {
+        emit(state.copyWith(displayState: DisplayState.options));
+      }
+    });
+
     on<SearchTagSelected>((event, emit) {
       tagSearchBloc.add(TagSearchNewTagSelected(event.tag));
 

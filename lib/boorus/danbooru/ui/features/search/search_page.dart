@@ -479,11 +479,12 @@ class _SearchBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SearchBar(
       queryEditingController: queryEditingController,
-      leading: BlocBuilder<SearchBloc, SearchState>(
+      leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
+        selector: (state) => state.displayState,
         builder: (context, state) {
           return IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => state.displayState != DisplayState.options
+            onPressed: () => state != DisplayState.options
                 ? context
                     .read<SearchBloc>()
                     .add(const SearchGoBackToSearchOptionsRequested())
@@ -491,12 +492,14 @@ class _SearchBar extends StatelessWidget {
           );
         },
       ),
-      trailing: BlocBuilder<TagSearchBloc, TagSearchState>(
-        builder: (context, state) => state.query.isNotEmpty
+      trailing: BlocSelector<SearchBloc, SearchState, String>(
+        selector: (state) => state.currentQuery,
+        builder: (context, query) => query.isNotEmpty
             ? IconButton(
                 icon: const Icon(Icons.close),
-                onPressed: () =>
-                    context.read<TagSearchBloc>().add(const TagSearchCleared()),
+                onPressed: () => context
+                    .read<SearchBloc>()
+                    .add(const SearchQueryChanged(query: '')),
               )
             : const SizedBox.shrink(),
       ),
@@ -504,7 +507,7 @@ class _SearchBar extends StatelessWidget {
         context.read<SearchBloc>().add(SearchQueryChanged(query: value));
       },
       onSubmitted: (value) =>
-          context.read<TagSearchBloc>().add(const TagSearchSubmitted()),
+          context.read<SearchBloc>().add(const SearchQuerySubmitted()),
     );
   }
 }

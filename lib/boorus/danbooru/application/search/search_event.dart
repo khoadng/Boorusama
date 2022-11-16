@@ -67,6 +67,13 @@ class SearchQueryChanged extends SearchEvent {
   List<Object?> get props => [query];
 }
 
+class SearchQuerySubmitted extends SearchEvent {
+  const SearchQuerySubmitted();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchTagSelected extends SearchEvent {
   const SearchTagSelected({
     required this.tag,
