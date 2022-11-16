@@ -66,3 +66,14 @@ class SearchTagSelected extends SearchEvent {
   @override
   List<Object?> get props => [tag];
 }
+
+class SearchHistoryTagSelected extends SearchEvent {
+  const SearchHistoryTagSelected({
+    required this.tag,
+  });
+
+  final String tag;
+
+  @override
+  List<Object?> get props => [tag];
+}

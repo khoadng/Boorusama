@@ -46,6 +46,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(displayState: DisplayState.options));
     });
 
+    on<SearchHistoryTagSelected>((event, emit) {
+      tagSearchBloc.add(TagSearchTagFromHistorySelected(event.tag));
+    });
+
     on<SearchRequested>((event, emit) {
       emit(state.copyWith(displayState: DisplayState.result));
 

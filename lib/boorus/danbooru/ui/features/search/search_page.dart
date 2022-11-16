@@ -182,8 +182,8 @@ class _LargeLayout extends StatelessWidget {
                                 },
                                 onHistoryTap: (value) {
                                   FocusManager.instance.primaryFocus?.unfocus();
-                                  context.read<TagSearchBloc>().add(
-                                        TagSearchTagFromHistorySelected(value),
+                                  context.read<SearchBloc>().add(
+                                        SearchHistoryTagSelected(tag: value),
                                       );
                                 },
                                 onTagTap: (value) {
@@ -310,8 +310,8 @@ class _SmallLayout extends StatelessWidget {
                       onHistoryTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
                         context
-                            .read<TagSearchBloc>()
-                            .add(TagSearchTagFromHistorySelected(value));
+                            .read<SearchBloc>()
+                            .add(SearchHistoryTagSelected(tag: value));
                       },
                       onTagTap: (value) {
                         FocusManager.instance.primaryFocus?.unfocus();
@@ -409,8 +409,8 @@ class _TagSuggestionItems extends StatelessWidget {
               onHistoryTap: (history) {
                 FocusManager.instance.primaryFocus?.unfocus();
                 context
-                    .read<TagSearchBloc>()
-                    .add(TagSearchTagFromHistorySelected(history.tag));
+                    .read<SearchBloc>()
+                    .add(SearchHistoryTagSelected(tag: history.tag));
               },
               onItemTap: (tag) {
                 FocusManager.instance.primaryFocus?.unfocus();
