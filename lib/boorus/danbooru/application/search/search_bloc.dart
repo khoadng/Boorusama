@@ -1,13 +1,14 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:tuple/tuple.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -17,7 +18,6 @@ import 'package:boorusama/core/application/search/tag_search_bloc.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:tuple/tuple.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
