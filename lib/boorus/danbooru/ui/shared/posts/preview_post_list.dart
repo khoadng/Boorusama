@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -12,10 +13,12 @@ class PreviewPostList extends StatelessWidget {
     super.key,
     required this.posts,
     this.physics,
+    this.cacheManager,
   });
 
   final List<Post> posts;
   final ScrollPhysics? physics;
+  final CacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class PreviewPostList extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: CachedNetworkImage(
+            cacheManager: cacheManager,
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.width * 0.3,
             fit: BoxFit.cover,

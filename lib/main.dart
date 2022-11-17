@@ -55,6 +55,7 @@ import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -70,6 +71,7 @@ import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
+import 'core/infra/preloader/preloader.dart';
 
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [
@@ -190,6 +192,9 @@ void main() async {
 
   await bulkDownloader.init();
 
+  final previewImageCacheManager = PreviewImageCacheManager();
+  final previewPreloader = PostPreviewPreloaderImp(previewImageCacheManager);
+
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
   setLocaleMessages('ru', RuMessages());
@@ -216,6 +221,12 @@ void main() async {
             RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<FavoriteTagRepository>.value(
               value: favoriteTagsRepo,
+            ),
+            RepositoryProvider<PostPreviewPreloader>.value(
+              value: previewPreloader,
+            ),
+            RepositoryProvider<PreviewImageCacheManager>.value(
+              value: previewImageCacheManager,
             ),
           ],
           child: MultiBlocProvider(

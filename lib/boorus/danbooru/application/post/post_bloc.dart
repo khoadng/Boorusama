@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/core/domain/error.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
     with InfiniteLoadMixin<PostData, PostState> {
@@ -31,6 +32,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     required PoolRepository poolRepository,
     double Function()? stateIdGenerator,
     List<PostData>? initialData,
+    PostPreviewPreloader? previewPreloader,
   }) : super(PostState.initial()) {
     on<PostRefreshed>(
       (event, emit) async {
@@ -47,7 +49,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
                 poolRepository,
                 accountRepository,
               ))
-              .then(filterWith(blacklistedTagsRepository)),
+              .then(filterWith(blacklistedTagsRepository))
+              .then(preloadPreviewImagesWith(previewPreloader)),
           onError: handleErrorWith(emit),
         );
 
@@ -65,7 +68,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   poolRepository,
                   accountRepository,
                 ))
-                .then(filterWith(blacklistedTagsRepository)),
+                .then(filterWith(blacklistedTagsRepository))
+                .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
         }
@@ -88,7 +92,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
                 poolRepository,
                 accountRepository,
               ))
-              .then(filterWith(blacklistedTagsRepository)),
+              .then(filterWith(blacklistedTagsRepository))
+              .then(preloadPreviewImagesWith(previewPreloader)),
           onError: handleErrorWith(emit),
         );
       },
@@ -146,6 +151,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
         accountRepository: context.read<AccountRepository>(),
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
+        previewPreloader: context.read<PostPreviewPreloader>(),
       );
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(
