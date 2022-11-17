@@ -33,6 +33,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     double Function()? stateIdGenerator,
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
+    bool singleRefresh = false,
   }) : super(PostState.initial()) {
     on<PostRefreshed>(
       (event, emit) async {
@@ -54,24 +55,26 @@ class PostBloc extends Bloc<PostEvent, PostState>
           onError: handleErrorWith(emit),
         );
 
-        for (var i = 0; i < 2; i++) {
-          await fetch(
-            emit: EmitConfig(
-              stateGetter: () => state,
-              emitter: emit,
-            ),
-            fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: 20)
-                .then(createPostDataWith(
-                  favoritePostRepository,
-                  postVoteRepository,
-                  poolRepository,
-                  accountRepository,
-                ))
-                .then(filterWith(blacklistedTagsRepository))
-                .then(preloadPreviewImagesWith(previewPreloader)),
-            onError: handleErrorWith(emit),
-          );
+        if (!singleRefresh) {
+          for (var i = 0; i < 2; i++) {
+            await fetch(
+              emit: EmitConfig(
+                stateGetter: () => state,
+                emitter: emit,
+              ),
+              fetch: (page) => event.fetcher
+                  .fetch(postRepository, page, limit: 20)
+                  .then(createPostDataWith(
+                    favoritePostRepository,
+                    postVoteRepository,
+                    poolRepository,
+                    accountRepository,
+                  ))
+                  .then(filterWith(blacklistedTagsRepository))
+                  .then(preloadPreviewImagesWith(previewPreloader)),
+              onError: handleErrorWith(emit),
+            );
+          }
         }
       },
       transformer: restartable(),

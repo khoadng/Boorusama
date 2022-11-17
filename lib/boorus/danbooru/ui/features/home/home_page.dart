@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
@@ -200,7 +201,10 @@ class _HomePageState extends State<HomePage> {
                                       : null,
                                 ),
                               ),
-                              const ExplorePage(),
+                              BlocProvider.value(
+                                value: context.read<ExploreBloc>(),
+                                child: const ExplorePage(),
+                              ),
                               MultiBlocProvider(
                                 providers: [
                                   BlocProvider(

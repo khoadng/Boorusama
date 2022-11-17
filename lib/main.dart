@@ -24,7 +24,9 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_c
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -413,6 +415,24 @@ void main() async {
                   final favoriteTagBloc =
                       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
 
+                  PostBloc create() => PostBloc(
+                        postRepository: postRepo,
+                        blacklistedTagsRepository: blacklistedTagRepo,
+                        favoritePostRepository: favoriteRepo,
+                        accountRepository: accountRepo,
+                        postVoteRepository: postVoteRepo,
+                        poolRepository: poolRepo,
+                        singleRefresh: true,
+                      );
+
+                  final exploreBloc = ExploreBloc(
+                    exploreRepository: exploreRepo,
+                    popular: create(),
+                    hot: create(),
+                    curated: create(),
+                    mostViewed: create(),
+                  )..add(const ExploreFetched());
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -487,6 +507,7 @@ void main() async {
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: savedSearchBloc),
                         BlocProvider.value(value: favoriteTagBloc),
+                        BlocProvider.value(value: exploreBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

@@ -9,23 +9,28 @@ class ExplorePreviewFetcher implements PostFetcher {
     required this.date,
     required this.scale,
     required this.exploreRepository,
+    this.onDateChanged,
   });
 
   factory ExplorePreviewFetcher.now({
     required ExploreCategory category,
     required ExploreRepository exploreRepository,
+    void Function(DateTime date)? onDateChanged,
+    DateTime Function()? now,
   }) =>
       ExplorePreviewFetcher(
         category: category,
-        date: DateTime.now(),
+        date: now?.call() ?? DateTime.now(),
         scale: TimeScale.day,
         exploreRepository: exploreRepository,
+        onDateChanged: onDateChanged,
       );
 
   final ExploreCategory category;
   final ExploreRepository exploreRepository;
   final DateTime date;
   final TimeScale scale;
+  final void Function(DateTime date)? onDateChanged;
 
   @override
   Future<List<Post>> fetch(
@@ -40,8 +45,11 @@ class ExplorePreviewFetcher implements PostFetcher {
     );
 
     if (posts.isEmpty) {
-      posts = await _categoryToFetcher(date.subtract(const Duration(days: 1)))
-          .fetch(
+      final prev = date.subtract(const Duration(days: 1));
+
+      onDateChanged?.call(prev);
+
+      posts = await _categoryToFetcher(prev).fetch(
         repo,
         page,
         limit: limit,
