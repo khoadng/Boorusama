@@ -40,7 +40,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
             emitter: emit,
           ),
           refresh: (page) => event.fetcher
-              .fetch(postRepository, page)
+              .fetch(postRepository, page, limit: 20)
               .then(createPostDataWith(
                 favoritePostRepository,
                 postVoteRepository,
@@ -50,6 +50,25 @@ class PostBloc extends Bloc<PostEvent, PostState>
               .then(filterWith(blacklistedTagsRepository)),
           onError: handleErrorWith(emit),
         );
+
+        for (var i = 0; i < 2; i++) {
+          await fetch(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            fetch: (page) => event.fetcher
+                .fetch(postRepository, page, limit: 20)
+                .then(createPostDataWith(
+                  favoritePostRepository,
+                  postVoteRepository,
+                  poolRepository,
+                  accountRepository,
+                ))
+                .then(filterWith(blacklistedTagsRepository)),
+            onError: handleErrorWith(emit),
+          );
+        }
       },
       transformer: restartable(),
     );

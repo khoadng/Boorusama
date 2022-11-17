@@ -14,8 +14,9 @@ class MostViewedPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async {
+    int page, {
+    int? limit,
+  }) async {
     if (page > 1) return [];
 
     return exploreRepository.getMostViewedPosts(date);

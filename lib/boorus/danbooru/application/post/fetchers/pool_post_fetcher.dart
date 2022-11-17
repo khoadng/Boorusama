@@ -12,7 +12,8 @@ class PoolPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async =>
+    int page, {
+    int? limit,
+  }) async =>
       repo.getPostsFromIds(postIds);
 }

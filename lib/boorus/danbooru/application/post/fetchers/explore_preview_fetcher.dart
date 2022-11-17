@@ -28,12 +28,24 @@ class ExplorePreviewFetcher implements PostFetcher {
   final TimeScale scale;
 
   @override
-  Future<List<Post>> fetch(PostRepository repo, int page) async {
-    var posts = await _categoryToFetcher(date).fetch(repo, page);
+  Future<List<Post>> fetch(
+    PostRepository repo,
+    int page, {
+    int? limit,
+  }) async {
+    var posts = await _categoryToFetcher(date).fetch(
+      repo,
+      page,
+      limit: limit,
+    );
 
     if (posts.isEmpty) {
       posts = await _categoryToFetcher(date.subtract(const Duration(days: 1)))
-          .fetch(repo, page);
+          .fetch(
+        repo,
+        page,
+        limit: limit,
+      );
     }
 
     return posts.toList();
