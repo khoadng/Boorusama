@@ -6,11 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:tuple/tuple.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
@@ -64,38 +61,6 @@ class _SearchPageState extends State<SearchPage> {
         TextPosition(offset: queryEditingController.text.length),
       );
     });
-
-    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-      context.read<SearchBloc>().stream,
-      context.read<PostBloc>().stream,
-      Tuple2.new,
-    )
-        .where((event) =>
-            event.item2.status == LoadStatus.failure &&
-            event.item1.displayState == DisplayState.result)
-        .listen((state) {
-      context.read<SearchBloc>().add(const SearchError());
-      showSimpleSnackBar(
-        context: context,
-        duration: const Duration(seconds: 6),
-        content: Text(
-          state.item2.exceptionMessage!,
-        ).tr(),
-      );
-    }).addTo(compositeSubscription);
-
-    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
-      context.read<SearchBloc>().stream,
-      context.read<PostBloc>().stream,
-      Tuple2.new,
-    )
-        .where((event) =>
-            event.item2.status == LoadStatus.success &&
-            event.item2.posts.isEmpty &&
-            event.item1.displayState == DisplayState.result)
-        .listen((state) {
-      context.read<SearchBloc>().add(const SearchNoData());
-    }).addTo(compositeSubscription);
   }
 
   @override
@@ -184,7 +149,7 @@ class _LargeLayout extends StatelessWidget {
                 if (displayState == DisplayState.result) {
                   return const ResultView();
                 } else if (displayState == DisplayState.error) {
-                  return ErrorView(text: 'search.errors.generic'.tr());
+                  return const _ErrorView();
                 } else if (displayState == DisplayState.loadingResult) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -201,6 +166,20 @@ class _LargeLayout extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocSelector<SearchBloc, SearchState, String?>(
+      selector: (state) => state.error,
+      builder: (context, error) {
+        return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
+      },
     );
   }
 }
@@ -328,7 +307,7 @@ class _SmallLayout extends StatelessWidget {
                   } else if (displayState == DisplayState.result) {
                     return const ResultView();
                   } else if (displayState == DisplayState.error) {
-                    return ErrorView(text: 'search.errors.generic'.tr());
+                    return const _ErrorView();
                   } else if (displayState == DisplayState.loadingResult) {
                     return const Center(
                       child: CircularProgressIndicator(),

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -16,6 +17,7 @@ import 'package:boorusama/core/application/search/tag_search_bloc.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
+import 'package:tuple/tuple.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -38,7 +40,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     on<SearchQueryChanged>((event, emit) {
       if (event.query.isEmpty) {
         if (state.displayState != DisplayState.result) {
-          emit(state.copyWith(displayState: DisplayState.options));
+          add(const SearchGoBackToSearchOptionsRequested());
         }
       } else {
         emit(state.copyWith(displayState: DisplayState.suggestion));
@@ -54,7 +56,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       tagSearchBloc.add(const TagSearchSubmitted());
 
       if (state.displayState == DisplayState.suggestion) {
-        emit(state.copyWith(displayState: DisplayState.options));
+        add(const SearchGoBackToSearchOptionsRequested());
       }
     });
 
@@ -62,7 +64,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       tagSearchBloc.add(TagSearchNewTagSelected(event.tag));
 
       if (state.displayState == DisplayState.suggestion) {
-        emit(state.copyWith(displayState: DisplayState.options));
+        add(const SearchGoBackToSearchOptionsRequested());
       }
     });
 
@@ -83,7 +85,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       tagSearchBloc.add(TagSearchTagFromHistorySelected(event.tag));
 
       if (state.displayState == DisplayState.suggestion) {
-        emit(state.copyWith(displayState: DisplayState.options));
+        add(const SearchGoBackToSearchOptionsRequested());
       }
     });
 
@@ -114,12 +116,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchGoBackToSearchOptionsRequested>((event, emit) {
-      emit(state.copyWith(displayState: DisplayState.options));
+      postBloc.add(const PostReset());
+      emit(state.copyWith(
+        displayState: DisplayState.options,
+        error: () => null,
+      ));
     });
 
     on<SearchSelectedTagCleared>((event, emit) {
       tagSearchBloc.add(const TagSearchSelectedTagCleared());
-      emit(state.copyWith(displayState: DisplayState.options));
+      add(const SearchGoBackToSearchOptionsRequested());
     });
 
     on<SearchSelectedTagRemoved>((event, emit) {
@@ -127,7 +133,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       // State hasn't been updated yet so don't check for empty
       if (state.selectedTags.length == 1) {
-        emit(state.copyWith(displayState: DisplayState.options));
+        add(const SearchGoBackToSearchOptionsRequested());
       }
     });
 
@@ -136,7 +142,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchError>((event, emit) {
-      emit(state.copyWith(displayState: DisplayState.error));
+      emit(state.copyWith(
+        displayState: DisplayState.error,
+        error: () => event.message,
+      ));
     });
 
     on<_SearchRequested>((event, emit) {
@@ -159,6 +168,29 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       emit(state.copyWith(tagSearchState: event.state));
     });
+
+    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
+      stream,
+      postBloc.stream,
+      Tuple2.new,
+    )
+        .where((event) =>
+            event.item2.status == LoadStatus.success &&
+            event.item2.posts.isEmpty &&
+            event.item1.displayState == DisplayState.result)
+        .listen((state) => add(const SearchNoData()))
+        .addTo(compositeSubscription);
+
+    Rx.combineLatest2<SearchState, PostState, Tuple2<SearchState, PostState>>(
+      stream,
+      postBloc.stream,
+      Tuple2.new,
+    )
+        .where((event) =>
+            event.item2.status == LoadStatus.failure &&
+            event.item1.displayState == DisplayState.result)
+        .listen((state) => add(SearchError(state.item2.exceptionMessage!)))
+        .addTo(compositeSubscription);
 
     tagSearchBloc.stream
         .distinct()
