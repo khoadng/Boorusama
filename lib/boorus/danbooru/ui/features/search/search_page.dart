@@ -119,6 +119,7 @@ class _LargeLayout extends StatelessWidget {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: _AppBar(
+                focusNode: focus,
                 queryEditingController: queryEditingController,
               ),
               body: Column(
@@ -133,7 +134,9 @@ class _LargeLayout extends StatelessWidget {
                             ? _TagSuggestionItems(
                                 queryEditingController: queryEditingController,
                               )
-                            : const _SearchOptions();
+                            : _SearchOptions(
+                                onFocusRequest: () => focus.requestFocus(),
+                              );
                       },
                     ),
                   ),
@@ -215,7 +218,11 @@ class _SelectedTagList extends StatelessWidget {
 }
 
 class _SearchOptions extends StatelessWidget {
-  const _SearchOptions();
+  const _SearchOptions({
+    this.onFocusRequest,
+  });
+
+  final VoidCallback? onFocusRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -230,6 +237,7 @@ class _SearchOptions extends StatelessWidget {
                     tag: value,
                   ),
                 );
+            onFocusRequest?.call();
           },
           onHistoryTap: (value) {
             FocusManager.instance.primaryFocus?.unfocus();
@@ -253,9 +261,11 @@ class _SearchOptions extends StatelessWidget {
 class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
+    this.focusNode,
   });
 
   final RichTextController queryEditingController;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
@@ -265,6 +275,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       title: _SearchBar(
+        focusNode: focusNode,
         queryEditingController: queryEditingController,
       ),
     );
@@ -289,6 +300,7 @@ class _SmallLayout extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       floatingActionButton: const SearchButton(),
       appBar: _AppBar(
+        focusNode: focus,
         queryEditingController: queryEditingController,
       ),
       body: SafeArea(
@@ -315,7 +327,9 @@ class _SmallLayout extends StatelessWidget {
                   } else if (displayState == DisplayState.noResult) {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
-                    return const _SearchOptions();
+                    return _SearchOptions(
+                      onFocusRequest: () => focus.requestFocus(),
+                    );
                   }
                 },
               ),
@@ -388,13 +402,16 @@ class _Divider extends StatelessWidget {
 class _SearchBar extends StatelessWidget {
   const _SearchBar({
     required this.queryEditingController,
+    this.focusNode,
   });
 
   final RichTextController queryEditingController;
+  final FocusNode? focusNode;
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+      focus: focusNode,
       queryEditingController: queryEditingController,
       leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
         selector: (state) => state.displayState,
