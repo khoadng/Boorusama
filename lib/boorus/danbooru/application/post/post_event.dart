@@ -79,3 +79,10 @@ class PostUpdated extends PostEvent {
   @override
   List<Object?> get props => [post];
 }
+
+class PostReset extends PostEvent {
+  const PostReset();
+
+  @override
+  List<Object?> get props => [];
+}

@@ -15,23 +15,25 @@ class ErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Flexible(
-              child: Lottie.asset(
-                'assets/animations/server-error.json',
-                fit: BoxFit.scaleDown,
-              ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: Lottie.asset(
+              'assets/animations/server-error.json',
+              fit: BoxFit.scaleDown,
             ),
-            Text(
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: Text(
               text,
               style: const TextStyle(fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

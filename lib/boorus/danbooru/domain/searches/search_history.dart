@@ -1,5 +1,8 @@
-class SearchHistory {
-  SearchHistory({
+// Package imports:
+import 'package:equatable/equatable.dart';
+
+class SearchHistory extends Equatable {
+  const SearchHistory({
     required this.query,
     required this.createdAt,
     required this.searchCount,
@@ -36,4 +39,7 @@ class SearchHistory {
         'created_at': createdAt.toIso8601String(),
         'search_count': searchCount,
       };
+
+  @override
+  List<Object?> get props => [query, createdAt, searchCount];
 }

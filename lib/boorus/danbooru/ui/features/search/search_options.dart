@@ -13,6 +13,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
@@ -37,7 +38,7 @@ class SearchOptions extends StatefulWidget {
 
   final ValueChanged<String>? onOptionTap;
   final ValueChanged<String>? onHistoryTap;
-  final ValueChanged<String>? onHistoryRemoved;
+  final ValueChanged<SearchHistory>? onHistoryRemoved;
   final ValueChanged<String>? onTagTap;
 
   final List<Metatag> metatags;

@@ -113,6 +113,10 @@ class PostBloc extends Bloc<PostEvent, PostState>
       }
     });
 
+    on<PostReset>((event, emit) {
+      emit(PostState.initial());
+    });
+
     data = initialData ?? [];
   }
 

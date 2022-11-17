@@ -8,6 +8,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
@@ -38,7 +39,7 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<TagSearchBloc, TagSearchState, List<TagSearchItem>>(
+    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
       selector: (state) => state.selectedTags,
       builder: (context, tags) => BlocBuilder<PostBloc, PostState>(
         builder: (context, state) {
