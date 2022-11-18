@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/tags/tags.dart';
-import 'import_favorite_tag_dialog.dart';
+import '../favorite_tags/import_favorite_tag_dialog.dart';
 
 Future<Object?> showImportDialog(
   BuildContext context,

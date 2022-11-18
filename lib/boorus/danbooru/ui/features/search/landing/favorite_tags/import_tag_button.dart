@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/tags/tags.dart';
-import 'utils.dart';
+import '../common/utils.dart';
 
 class ImportTagButton extends StatelessWidget {
   const ImportTagButton({super.key});

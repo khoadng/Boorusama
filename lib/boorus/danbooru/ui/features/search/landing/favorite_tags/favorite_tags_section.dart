@@ -13,8 +13,8 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag.dart';
 import 'add_tag_button.dart';
 import 'import_tag_button.dart';
-import 'option_tags_arena.dart';
-import 'utils.dart';
+import '../common/option_tags_arena.dart';
+import '../common/utils.dart';
 
 class FavoriteTagsSection extends StatelessWidget {
   const FavoriteTagsSection({

@@ -3,16 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
-import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
-import 'favorite_tags_section.dart';
-import 'metatags_section.dart';
-import 'search_history.dart';
+import 'favorite_tags/favorite_tags_section.dart';
+import 'metatags/metatags_section.dart';
+import 'search_history/search_history.dart';
+import 'trending/trending_section.dart';
 
 class LandingView extends StatefulWidget {
   const LandingView({
@@ -89,30 +86,7 @@ class _LandingViewState extends State<LandingView>
                       ),
                 ),
               ),
-              BlocBuilder<SearchKeywordCubit, AsyncLoadState<List<Search>>>(
-                builder: (context, state) {
-                  return state.status != LoadStatus.success
-                      ? const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )
-                      : Wrap(
-                          spacing: 4,
-                          runSpacing: -4,
-                          children: state.data!
-                              .take(15)
-                              .map((e) => GestureDetector(
-                                    onTap: () =>
-                                        widget.onTagTap?.call(e.keyword),
-                                    child: Chip(
-                                      label: Text(
-                                        e.keyword.replaceAll('_', ' '),
-                                      ),
-                                    ),
-                                  ))
-                              .toList(),
-                        );
-                },
-              ),
+              TrendingSection(onTagTap: widget.onTagTap),
               SearchHistorySection(
                 onHistoryTap: (history) => widget.onHistoryTap?.call(history),
                 onHistoryRemoved: (history) =>

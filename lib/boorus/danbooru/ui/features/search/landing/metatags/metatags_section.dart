@@ -14,7 +14,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/main.dart';
-import 'option_tags_arena.dart';
+import '../common/option_tags_arena.dart';
 
 class MetatagsSection extends StatefulWidget {
   const MetatagsSection({
