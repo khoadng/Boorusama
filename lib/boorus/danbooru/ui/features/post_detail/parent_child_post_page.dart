@@ -10,7 +10,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 
-class ParentChildPostPage extends StatefulWidget {
+class ParentChildPostPage extends StatelessWidget {
   const ParentChildPostPage({
     super.key,
     required this.parentPostId,
@@ -18,11 +18,6 @@ class ParentChildPostPage extends StatefulWidget {
 
   final int parentPostId;
 
-  @override
-  State<ParentChildPostPage> createState() => _ParentChildPostPageState();
-}
-
-class _ParentChildPostPageState extends State<ParentChildPostPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,45 +30,57 @@ class _ParentChildPostPageState extends State<ParentChildPostPage> {
         ],
         automaticallyImplyLeading: false,
         title: Text(
-          '${'post.parent_child.children_of'.tr()} ${widget.parentPostId}',
+          '${'post.parent_child.children_of'.tr()} $parentPostId',
         ),
       ),
       body: SafeArea(
-        child: BlocBuilder<PostBloc, PostState>(
-          builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: InfiniteLoadListScrollView(
-                isLoading: state.loading,
-                enableRefresh: false,
-                enableLoadMore: state.hasMore,
-                onLoadMore: () => context.read<PostBloc>().add(
-                      PostFetched(
-                        tags: 'parent:${widget.parentPostId}',
-                        fetcher: SearchedPostFetcher.fromTags(
-                          'parent:${widget.parentPostId}',
-                        ),
-                      ),
-                    ),
-                onRefresh: (controller) {
-                  context.read<PostBloc>().add(PostRefreshed(
-                        tag: 'parent:${widget.parentPostId}',
-                        fetcher: SearchedPostFetcher.fromTags(
-                          'parent:${widget.parentPostId}',
-                        ),
-                      ));
-                  Future.delayed(
-                    const Duration(milliseconds: 500),
-                    () => controller.refreshCompleted(),
-                  );
-                },
-                sliverBuilder: (controller) => [
-                  HomePostGrid(controller: controller),
-                ],
+        child: _PostList(parentPostId: parentPostId),
+      ),
+    );
+  }
+}
+
+class _PostList extends StatelessWidget {
+  const _PostList({
+    required this.parentPostId,
+  });
+
+  final int parentPostId;
+
+  @override
+  Widget build(BuildContext context) {
+    final loading = context.select((PostBloc bloc) => bloc.state.loading);
+    final hasMore = context.select((PostBloc bloc) => bloc.state.hasMore);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: InfiniteLoadListScrollView(
+        isLoading: loading,
+        enableRefresh: false,
+        enableLoadMore: hasMore,
+        onLoadMore: () => context.read<PostBloc>().add(
+              PostFetched(
+                tags: 'parent:$parentPostId',
+                fetcher: SearchedPostFetcher.fromTags(
+                  'parent:$parentPostId',
+                ),
               ),
-            );
-          },
-        ),
+            ),
+        onRefresh: (controller) {
+          context.read<PostBloc>().add(PostRefreshed(
+                tag: 'parent:$parentPostId',
+                fetcher: SearchedPostFetcher.fromTags(
+                  'parent:$parentPostId',
+                ),
+              ));
+          Future.delayed(
+            const Duration(milliseconds: 500),
+            () => controller.refreshCompleted(),
+          );
+        },
+        sliverBuilder: (controller) => [
+          HomePostGrid(controller: controller),
+        ],
       ),
     );
   }
