@@ -70,6 +70,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
+    final currentIndex =
+        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
 
     return MultiBlocListener(
       listeners: [
@@ -85,98 +87,112 @@ class _PostDetailPageState extends State<PostDetailPage> {
           },
         ),
       ],
-      child: BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
-        selector: (state) => state.currentIndex,
-        builder: (context, index) => WillPopScope(
-          onWillPop: () async {
-            context
-                .read<SliverPostGridBloc>()
-                .add(SliverPostGridExited(lastIndex: index));
+      child: WillPopScope(
+        onWillPop: () async {
+          context
+              .read<SliverPostGridBloc>()
+              .add(SliverPostGridExited(lastIndex: currentIndex));
 
-            return true;
-          },
-          child: Scaffold(
-            body: Row(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      PostSlider(
-                        posts: widget.posts,
-                        imagePath: imagePath,
+          return true;
+        },
+        child: Scaffold(
+          body: Row(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    PostSlider(
+                      posts: widget.posts,
+                      imagePath: imagePath,
+                    ),
+                    Align(
+                      alignment: Alignment(
+                        -0.75,
+                        getTopActionIconAlignValue(),
                       ),
-                      Align(
-                        alignment: Alignment(
-                          -0.75,
-                          getTopActionIconAlignValue(),
-                        ),
-                        child:
-                            BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                          selector: (state) => state.enableOverlay,
-                          builder: (context, enable) {
-                            return enable
-                                ? const _NavigationButtonGroup()
-                                : const SizedBox.shrink();
-                          },
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment(
-                          0.9,
-                          getTopActionIconAlignValue(),
-                        ),
-                        child: const _TopRightButtonGroup(),
-                      ),
-                      if (Screen.of(context).size == ScreenSize.small)
-                        BlocBuilder<PostDetailBloc, PostDetailState>(
-                          builder: (context, state) {
-                            return BlocBuilder<SettingsCubit, SettingsState>(
-                              builder: (context, settingsState) => state
-                                      .shouldShowFloatingActionBar(
-                                settingsState.settings.actionBarDisplayBehavior,
-                              )
-                                  ? Positioned(
-                                      bottom: 12,
-                                      left: MediaQuery.of(context).size.width *
-                                          0.05,
-                                      child: FloatingGlassyCard(
-                                        child: ActionBar(
-                                          imagePath: imagePath,
-                                          postData: state.currentPost,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            );
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-                if (screenSize != ScreenSize.small)
-                  MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(value: context.read<TagBloc>()),
-                    ],
-                    child: Container(
-                      color: Theme.of(context).backgroundColor,
-                      width: _infoBarWidth,
-                      child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                        builder: (context, state) {
-                          return _LargeLayoutContent(
-                            key: ValueKey(state.currentPost.post.id),
-                            post: state.currentPost,
-                            imagePath: imagePath,
-                            size: screenSize,
-                            recommends: state.recommends,
-                          );
+                      child:
+                          BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                        selector: (state) => state.enableOverlay,
+                        builder: (context, enable) {
+                          return enable
+                              ? const _NavigationButtonGroup()
+                              : const SizedBox.shrink();
                         },
                       ),
                     ),
+                    Align(
+                      alignment: Alignment(
+                        0.9,
+                        getTopActionIconAlignValue(),
+                      ),
+                      child: const _TopRightButtonGroup(),
+                    ),
+                    if (Screen.of(context).size == ScreenSize.small)
+                      BlocBuilder<PostDetailBloc, PostDetailState>(
+                        builder: (context, state) {
+                          return BlocBuilder<SettingsCubit, SettingsState>(
+                            builder: (context, settingsState) => state
+                                    .shouldShowFloatingActionBar(
+                              settingsState.settings.actionBarDisplayBehavior,
+                            )
+                                ? _FloatingQuickActionBar(imagePath: imagePath)
+                                : const SizedBox.shrink(),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+              if (screenSize != ScreenSize.small)
+                MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: context.read<TagBloc>()),
+                  ],
+                  child: Container(
+                    color: Theme.of(context).backgroundColor,
+                    width: _infoBarWidth,
+                    child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                      builder: (context, state) {
+                        return _LargeLayoutContent(
+                          key: ValueKey(state.currentPost.post.id),
+                          post: state.currentPost,
+                          imagePath: imagePath,
+                          size: screenSize,
+                          recommends: state.recommends,
+                        );
+                      },
+                    ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FloatingQuickActionBar extends StatelessWidget {
+  const _FloatingQuickActionBar({
+    required this.imagePath,
+  });
+
+  final ValueNotifier<String?> imagePath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 12,
+      left: MediaQuery.of(context).size.width * 0.05,
+      child: FloatingGlassyCard(
+        child: BlocSelector<PostDetailBloc, PostDetailState, PostData>(
+          selector: (state) => state.currentPost,
+          builder: (context, post) {
+            return ActionBar(
+              imagePath: imagePath,
+              postData: post,
+            );
+          },
         ),
       ),
     );
