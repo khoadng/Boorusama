@@ -16,27 +16,31 @@ class SearchState extends Equatable {
     required TagSearchState tagSearchState,
     required this.metatags,
     this.error,
+    required this.totalResults,
   }) : _tagSearchState = tagSearchState;
 
   final DisplayState displayState;
   final TagSearchState _tagSearchState;
   final List<Metatag> metatags;
   final String? error;
+  final int totalResults;
 
   SearchState copyWith({
     DisplayState? displayState,
     TagSearchState? tagSearchState,
     String? Function()? error,
+    int? totalResults,
   }) =>
       SearchState(
         displayState: displayState ?? this.displayState,
         tagSearchState: tagSearchState ?? _tagSearchState,
         metatags: metatags,
         error: error != null ? error() : this.error,
+        totalResults: totalResults ?? this.totalResults,
       );
 
   @override
-  List<Object> get props => [displayState, _tagSearchState];
+  List<Object> get props => [displayState, _tagSearchState, totalResults];
 }
 
 extension SearchStateX on SearchState {

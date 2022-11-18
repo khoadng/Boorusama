@@ -7,14 +7,111 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
-import 'widgets/widgets.dart';
+import 'widgets/comment_section.dart';
+
+class CommentPage extends StatefulWidget {
+  const CommentPage({
+    super.key,
+    required this.postId,
+    this.useAppBar = true,
+  });
+
+  final int postId;
+  final bool useAppBar;
+
+  @override
+  State<CommentPage> createState() => _CommentPageState();
+}
+
+class _CommentPageState extends State<CommentPage> {
+  late final _focus = FocusNode();
+  final _commentReply = ValueNotifier<CommentData?>(null);
+  final isEditing = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
+
+    isEditing.addListener(_onEditing);
+
+    _focus.addListener(() {
+      if (_focus.hasPrimaryFocus) {
+        isEditing.value = true;
+      }
+    });
+  }
+
+  void _onEditing() {
+    if (!isEditing.value) {
+      _commentReply.value = null;
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    isEditing.removeListener(_onEditing);
+    _focus.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () async {
+        if (isEditing.value) {
+          isEditing.value = false;
+
+          return false;
+        } else {
+          return true;
+        }
+      },
+      child: Scaffold(
+        appBar: widget.useAppBar
+            ? AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.keyboard_arrow_down),
+                  onPressed: () => Navigator.of(context).pop(),
+                ),
+              )
+            : null,
+        body: BlocSelector<CommentBloc, CommentState, LoadStatus>(
+          selector: (state) => state.status,
+          builder: (context, status) {
+            switch (status) {
+              case LoadStatus.initial:
+              case LoadStatus.loading:
+                return const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+              case LoadStatus.success:
+                return GestureDetector(
+                  onTap: () => isEditing.value = false,
+                  child: CommentSection(
+                    commentReply: _commentReply,
+                    focus: _focus,
+                    isEditing: isEditing,
+                    postId: widget.postId,
+                  ),
+                );
+              case LoadStatus.failure:
+                return const Center(
+                  child: Text('Something went wrong'),
+                );
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
 
 Future<T?> showCommentPage<T>(
   BuildContext context, {
@@ -77,150 +174,3 @@ Future<T?> showCommentPage<T>(
             ),
             context: context,
           );
-
-class CommentPage extends StatefulWidget {
-  const CommentPage({
-    super.key,
-    required this.postId,
-    this.useAppBar = true,
-  });
-
-  final int postId;
-  final bool useAppBar;
-
-  @override
-  State<CommentPage> createState() => _CommentPageState();
-}
-
-class _CommentPageState extends State<CommentPage> {
-  late final FocusNode _focus = FocusNode();
-  final _commentReply = ValueNotifier<CommentData?>(null);
-  final isEditing = ValueNotifier(false);
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<CommentBloc>().add(CommentFetched(postId: widget.postId));
-
-    isEditing.addListener(_onEditing);
-
-    _focus.addListener(() {
-      if (_focus.hasPrimaryFocus) {
-        isEditing.value = true;
-      }
-    });
-  }
-
-  void _onEditing() {
-    if (!isEditing.value) {
-      _commentReply.value = null;
-      FocusManager.instance.primaryFocus?.unfocus();
-    }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    isEditing.removeListener(_onEditing);
-    _focus.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (isEditing.value) {
-          isEditing.value = false;
-
-          return false;
-        } else {
-          return true;
-        }
-      },
-      child: Scaffold(
-        appBar: widget.useAppBar
-            ? AppBar(
-                leading: IconButton(
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              )
-            : null,
-        body: BlocBuilder<CommentBloc, CommentState>(
-          builder: (context, state) {
-            if (state.status == LoadStatus.success) {
-              return GestureDetector(
-                onTap: () => isEditing.value = false,
-                child: BlocBuilder<AuthenticationCubit, AuthenticationState>(
-                  builder: (context, auth) {
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: CommentList(
-                            comments: state.comments,
-                            authenticated: auth is Authenticated,
-                            onEdit: (comment) {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => CommentUpdatePage(
-                                    postId: widget.postId,
-                                    commentId: comment.id,
-                                    initialContent: comment.body,
-                                  ),
-                                ),
-                              );
-                            },
-                            onReply: (comment) {
-                              _commentReply.value = comment;
-                              Future.delayed(
-                                const Duration(milliseconds: 100),
-                                _focus.requestFocus,
-                              );
-                            },
-                            onDelete: (comment) =>
-                                context.read<CommentBloc>().add(CommentDeleted(
-                                      commentId: comment.id,
-                                      postId: widget.postId,
-                                    )),
-                            onUpvote: (comment) => context
-                                .read<CommentBloc>()
-                                .add(CommentUpvoted(commentId: comment.id)),
-                            onDownvote: (comment) => context
-                                .read<CommentBloc>()
-                                .add(CommentDownvoted(commentId: comment.id)),
-                            onClearVote: (comment) => context
-                                .read<CommentBloc>()
-                                .add(CommentVoteRemoved(
-                                  commentId: comment.id,
-                                  commentVoteId: comment.voteId!,
-                                  voteState: comment.voteState,
-                                )),
-                          ),
-                        ),
-                        if (auth is Authenticated)
-                          CommentBox(
-                            focus: _focus,
-                            commentReply: _commentReply,
-                            postId: widget.postId,
-                            isEditing: isEditing,
-                          ),
-                      ],
-                    );
-                  },
-                ),
-              );
-            } else if (state.status == LoadStatus.failure) {
-              return const Center(
-                child: Text('Something went wrong'),
-              );
-            } else {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            }
-          },
-        ),
-      ),
-    );
-  }
-}

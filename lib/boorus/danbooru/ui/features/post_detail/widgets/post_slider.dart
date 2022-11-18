@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/parent_
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
@@ -52,102 +51,100 @@ class _PostSliderState extends State<PostSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostDetailBloc, PostDetailState>(
-      builder: (context, state) {
-        return CarouselSlider.builder(
-          itemCount: widget.posts.length,
-          itemBuilder: (context, index, realIndex) {
-            final media = PostMediaItem(
-              //TODO: this is used to preload image between page
-              post: widget.posts[index].post,
-              onCached: (path) => widget.imagePath.value = path,
-              enableNotes: state.enableNotes,
-              notes: state.currentPost.notes,
-              previewCacheManager: context.read<PreviewImageCacheManager>(),
-              onTap: () => context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailOverlayVisibilityChanged(
-                    enableOverlay: !state.enableOverlay,
-                  )),
-              onZoomUpdated: (zoom) {
-                final swipe = !zoom;
-                if (swipe != enableSwipe) {
-                  setState(() {
-                    enableSwipe = swipe;
-                  });
-                }
-              },
-            );
+    final state = context.watch<PostDetailBloc>().state;
 
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-              ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: state.enableSlideShow || state.fullScreen
-                    ? SafeArea(
-                        child: Center(
-                          child: media,
-                        ),
-                      )
-                    : BlocBuilder<SettingsCubit, SettingsState>(
-                        buildWhen: (previous, current) =>
-                            previous.settings.actionBarDisplayBehavior !=
-                            current.settings.actionBarDisplayBehavior,
-                        builder: (context, settingsState) {
-                          return Stack(
-                            children: [
-                              if (Screen.of(context).size != ScreenSize.small &&
-                                  !state.currentPost.post.isVideo)
-                                Center(
-                                  child: media,
-                                )
-                              else
-                                _CarouselContent(
-                                  media: media,
-                                  imagePath: widget.imagePath,
-                                  actionBarDisplayBehavior: settingsState
-                                      .settings.actionBarDisplayBehavior,
-                                  post: state.currentPost,
-                                  preloadPost: widget.posts[index].post,
-                                  key: ValueKey(state.currentIndex),
-                                  recommends: state.recommends,
-                                  pools: widget.posts[index].pools,
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-              ),
-            );
+    return CarouselSlider.builder(
+      itemCount: widget.posts.length,
+      itemBuilder: (context, index, realIndex) {
+        final media = PostMediaItem(
+          //TODO: this is used to preload image between page
+          post: widget.posts[index].post,
+          onCached: (path) => widget.imagePath.value = path,
+          enableNotes: state.enableNotes,
+          notes: state.currentPost.notes,
+          previewCacheManager: context.read<PreviewImageCacheManager>(),
+          onTap: () => context
+              .read<PostDetailBloc>()
+              .add(PostDetailOverlayVisibilityChanged(
+                enableOverlay: !state.enableOverlay,
+              )),
+          onZoomUpdated: (zoom) {
+            final swipe = !zoom;
+            if (swipe != enableSwipe) {
+              setState(() {
+                enableSwipe = swipe;
+              });
+            }
           },
-          options: CarouselOptions(
-            scrollPhysics: enableSwipe
-                ? const DetailPageViewScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            onPageChanged: (index, reason) {
-              context
-                  .read<SliverPostGridBloc>()
-                  .add(SliverPostGridItemChanged(index: index));
+        );
 
-              context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailIndexChanged(index: index));
-            },
-            height: MediaQuery.of(context).size.height,
-            viewportFraction: 1,
-            enableInfiniteScroll: false,
-            initialPage: state.currentIndex,
-            autoPlay: state.enableSlideShow,
-            autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
-                ? const Duration(microseconds: 1)
-                : const Duration(milliseconds: 600),
-            autoPlayInterval:
-                Duration(seconds: state.slideShowConfig.interval.toInt()),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: state.enableSlideShow || state.fullScreen
+                ? SafeArea(
+                    child: Center(
+                      child: media,
+                    ),
+                  )
+                : BlocBuilder<SettingsCubit, SettingsState>(
+                    buildWhen: (previous, current) =>
+                        previous.settings.actionBarDisplayBehavior !=
+                        current.settings.actionBarDisplayBehavior,
+                    builder: (context, settingsState) {
+                      return Stack(
+                        children: [
+                          if (Screen.of(context).size != ScreenSize.small &&
+                              !state.currentPost.post.isVideo)
+                            Center(
+                              child: media,
+                            )
+                          else
+                            _CarouselContent(
+                              media: media,
+                              imagePath: widget.imagePath,
+                              actionBarDisplayBehavior: settingsState
+                                  .settings.actionBarDisplayBehavior,
+                              post: state.currentPost,
+                              preloadPost: widget.posts[index].post,
+                              key: ValueKey(state.currentIndex),
+                              recommends: state.recommends,
+                              pools: widget.posts[index].pools,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
           ),
         );
       },
+      options: CarouselOptions(
+        scrollPhysics: enableSwipe
+            ? const DetailPageViewScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        onPageChanged: (index, reason) {
+          context
+              .read<SliverPostGridBloc>()
+              .add(SliverPostGridItemChanged(index: index));
+
+          context
+              .read<PostDetailBloc>()
+              .add(PostDetailIndexChanged(index: index));
+        },
+        height: MediaQuery.of(context).size.height,
+        viewportFraction: 1,
+        enableInfiniteScroll: false,
+        initialPage: state.currentIndex,
+        autoPlay: state.enableSlideShow,
+        autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
+            ? const Duration(microseconds: 1)
+            : const Duration(milliseconds: 600),
+        autoPlayInterval:
+            Duration(seconds: state.slideShowConfig.interval.toInt()),
+      ),
     );
   }
 }
@@ -241,101 +238,10 @@ class _CarouselContentState extends State<_CarouselContent> {
                             RepaintBoundary(child: PostStatsTile(post: post)),
                       ),
                       if (widget.preloadPost.hasParentOrChildren)
-                        ParentChildTile(
-                          data: getParentChildData(widget.preloadPost),
-                          onTap: (data) => showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => PostBloc.of(context)
-                                    ..add(PostRefreshed(
-                                      tag: data.tagQueryForDataFetching,
-                                      fetcher: SearchedPostFetcher.fromTags(
-                                        data.tagQueryForDataFetching,
-                                      ),
-                                    )),
-                                ),
-                              ],
-                              child: ParentChildPostPage(
-                                parentPostId: data.parentId,
-                              ),
-                            ),
-                          ),
-                        ),
+                        _ParentChildTile(post: widget.preloadPost),
                       if (!widget.preloadPost.hasParentOrChildren)
                         const Divider(height: 8, thickness: 1),
-                      BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) {
-                          return Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                              builder: (context, detailState) {
-                                final tags = detailState.tags
-                                    .where((e) => e.postId == post.id)
-                                    .toList();
-
-                                return ExpansionTile(
-                                  title: Text('${tags.length} tags'),
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
-                                  // trailing: BlocBuilder<AuthenticationCubit,
-                                  //     AuthenticationState>(
-                                  //   builder: (context, state) {
-                                  //     return state is Authenticated
-                                  //         ? IconButton(
-                                  //             onPressed: () async {
-                                  //               final bloc = context
-                                  //                   .read<PostDetailBloc>();
-
-                                  //               await showAdaptiveBottomSheet(
-                                  //                   context,
-                                  //                   expand: true,
-                                  //                   builder: (context) =>
-                                  //                       BlocProvider.value(
-                                  //                         value: bloc,
-                                  //                         child: BlocBuilder<
-                                  //                             PostDetailBloc,
-                                  //                             PostDetailState>(
-                                  //                           builder:
-                                  //                               (context, state) {
-                                  //                             return TagEditView(
-                                  //                               post: post,
-                                  //                               tags: state.tags
-                                  //                                   .where((t) =>
-                                  //                                       t.postId ==
-                                  //                                       post.id)
-                                  //                                   .toList(),
-                                  //                             );
-                                  //                           },
-                                  //                         ),
-                                  //                       ));
-                                  //             },
-                                  //             icon: const Icon(Icons.add),
-                                  //           )
-                                  //         : const SizedBox.shrink();
-                                  // },
-                                  // ),
-                                  onExpansionChanged: (value) => value
-                                      ? context
-                                          .read<TagBloc>()
-                                          .add(TagFetched(tags: post.tags))
-                                      : null,
-                                  children: const [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 12),
-                                      child: PostTagList(),
-                                    ),
-                                    SizedBox(height: 8),
-                                  ],
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                      _TagsTile(post: post),
                       const Divider(height: 8, thickness: 1),
                       FileDetailsSection(
                         post: post,
@@ -360,6 +266,72 @@ class _CarouselContentState extends State<_CarouselContent> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TagsTile extends StatelessWidget {
+  const _TagsTile({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = context.select((PostDetailBloc bloc) =>
+        bloc.state.tags.where((e) => e.postId == post.id).toList());
+
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text('${tags.length} tags'),
+        controlAffinity: ListTileControlAffinity.leading,
+        onExpansionChanged: (value) => value
+            ? context.read<TagBloc>().add(TagFetched(tags: post.tags))
+            : null,
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: PostTagList(),
+          ),
+          SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParentChildTile extends StatelessWidget {
+  const _ParentChildTile({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return ParentChildTile(
+      data: getParentChildData(post),
+      onTap: (data) => showBarModalBottomSheet(
+        context: context,
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => PostBloc.of(context)
+                ..add(PostRefreshed(
+                  tag: data.tagQueryForDataFetching,
+                  fetcher: SearchedPostFetcher.fromTags(
+                    data.tagQueryForDataFetching,
+                  ),
+                )),
+            ),
+          ],
+          child: ParentChildPostPage(
+            parentPostId: data.parentId,
+          ),
+        ),
       ),
     );
   }

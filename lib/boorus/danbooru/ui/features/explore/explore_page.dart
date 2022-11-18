@@ -20,94 +20,125 @@ const double _kMaxHeight = 250;
 const _padding = EdgeInsets.symmetric(horizontal: 2);
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({super.key});
-
-  Widget mapToCarousel(
-    BuildContext context,
-    ExploreData explore,
-  ) {
-    return explore.data.isNotEmpty
-        ? _ExploreList(
-            posts: explore.data,
-            onTap: (index) {
-              goToDetailPage(
-                context: context,
-                posts: explore.data,
-                initialIndex: index,
-                postBloc: explore.bloc,
-              );
-            },
-          )
-        : SizedBox(
-            height: _kMaxHeight,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (context, index) => Padding(
-                padding: _padding,
-                child: createRandomPlaceholderContainer(context),
-              ),
-            ),
-          );
-  }
+  const ExplorePage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExploreBloc, ExploreState>(
-      builder: (context, state) {
-        return Padding(
-          padding: Screen.of(context).size == ScreenSize.small
-              ? EdgeInsets.zero
-              : const EdgeInsets.symmetric(horizontal: 8),
-          child: CustomScrollView(
-            primary: false,
-            slivers: [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).viewPadding.top,
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: ExploreSection(
-                  date: state.popular.date,
-                  title: 'explore.popular'.tr(),
-                  category: ExploreCategory.popular,
-                  builder: (_) => mapToCarousel(context, state.popular),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: ExploreSection(
-                  date: state.hot.date,
-                  title: 'explore.hot'.tr(),
-                  category: ExploreCategory.hot,
-                  builder: (_) => mapToCarousel(context, state.hot),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: ExploreSection(
-                  date: state.curated.date,
-                  title: 'explore.curated'.tr(),
-                  category: ExploreCategory.curated,
-                  builder: (_) => mapToCarousel(context, state.curated),
-                ),
-              ),
-              SliverToBoxAdapter(
-                child: ExploreSection(
-                  date: state.mostViewed.date,
-                  title: 'explore.most_viewed'.tr(),
-                  category: ExploreCategory.mostViewed,
-                  builder: (_) => mapToCarousel(context, state.mostViewed),
-                ),
-              ),
-              const SliverToBoxAdapter(
-                child: SizedBox(
-                  height: kBottomNavigationBarHeight + 20,
-                ),
-              ),
-            ],
+    return Padding(
+      padding: Screen.of(context).size == ScreenSize.small
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 8),
+      child: CustomScrollView(
+        primary: false,
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
+          ),
+          const SliverToBoxAdapter(child: _PopularExplore()),
+          const SliverToBoxAdapter(child: _HotExplore()),
+          const SliverToBoxAdapter(child: _CuratedExplore()),
+          const SliverToBoxAdapter(child: _MostViewedExplore()),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: kBottomNavigationBarHeight + 20),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget mapToCarousel(
+  BuildContext context,
+  ExploreData explore,
+) {
+  return explore.data.isNotEmpty
+      ? _ExploreList(
+          posts: explore.data,
+          onTap: (index) {
+            goToDetailPage(
+              context: context,
+              posts: explore.data,
+              initialIndex: index,
+              postBloc: explore.bloc,
+            );
+          },
+        )
+      : SizedBox(
+          height: _kMaxHeight,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: (context, index) => Padding(
+              padding: _padding,
+              child: createRandomPlaceholderContainer(context),
+            ),
           ),
         );
-      },
+}
+
+class _MostViewedExplore extends StatelessWidget {
+  const _MostViewedExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final mostViewed =
+        context.select((ExploreBloc bloc) => bloc.state.mostViewed);
+
+    return ExploreSection(
+      date: mostViewed.date,
+      title: 'explore.most_viewed'.tr(),
+      category: ExploreCategory.mostViewed,
+      builder: (_) => mapToCarousel(context, mostViewed),
+    );
+  }
+}
+
+class _CuratedExplore extends StatelessWidget {
+  const _CuratedExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final curated = context.select((ExploreBloc bloc) => bloc.state.curated);
+
+    return ExploreSection(
+      date: curated.date,
+      title: 'explore.curated'.tr(),
+      category: ExploreCategory.curated,
+      builder: (_) => mapToCarousel(context, curated),
+    );
+  }
+}
+
+class _HotExplore extends StatelessWidget {
+  const _HotExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
+
+    return ExploreSection(
+      date: hot.date,
+      title: 'explore.hot'.tr(),
+      category: ExploreCategory.hot,
+      builder: (_) => mapToCarousel(context, hot),
+    );
+  }
+}
+
+class _PopularExplore extends StatelessWidget {
+  const _PopularExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final popular = context.select((ExploreBloc bloc) => bloc.state.popular);
+
+    return ExploreSection(
+      date: popular.date,
+      title: 'explore.popular'.tr(),
+      category: ExploreCategory.popular,
+      builder: (_) => mapToCarousel(context, popular),
     );
   }
 }

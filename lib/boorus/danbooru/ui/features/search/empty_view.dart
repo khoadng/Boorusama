@@ -15,20 +15,24 @@ class EmptyView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Flexible(
-              child: Lottie.asset(
-                'assets/animations/search-file.json',
-                fit: BoxFit.scaleDown,
-              ),
+            const SizedBox(height: 50),
+            Lottie.asset(
+              'assets/animations/search-file.json',
+              width: MediaQuery.of(context).size.width,
+              height: 300,
+              fit: BoxFit.contain,
             ),
-            Text(
-              text,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Text(
+                text,
+                style: const TextStyle(fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
             ),
           ],
         ),

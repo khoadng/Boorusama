@@ -20,7 +20,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
+import 'most_search_tag_list.dart';
 
 class LatestView extends StatefulWidget {
   const LatestView({
@@ -51,7 +51,7 @@ class _LatestViewState extends State<LatestView> {
     _selectedTag.addListener(() => _selectedTagStream.add(_selectedTag.value));
 
     _selectedTagStream
-        .debounceTime(const Duration(milliseconds: 350))
+        .debounceTime(const Duration(milliseconds: 250))
         .distinct()
         .listen(_sendRefresh)
         .addTo(_compositeSubscription);
@@ -68,39 +68,86 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostBloc, PostState>(
-      builder: (context, state) {
-        return InfiniteLoadListScrollView(
-          isLoading: state.loading,
-          enableLoadMore: state.hasMore,
-          onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                tags: _selectedTag.value,
-                fetcher: const LatestPostFetcher(),
-              )),
-          onRefresh: (controller) {
-            _sendRefresh(_selectedTag.value);
-            Future.delayed(
-              const Duration(seconds: 1),
-              () => controller.refreshCompleted(),
-            );
-          },
-          scrollController: _autoScrollController,
-          sliverBuilder: (controller) => [
-            _buildAppBar(context),
-            SliverPadding(
-              padding: const EdgeInsets.only(bottom: 2),
-              sliver: _buildMostSearchTagList(),
-            ),
-            HomePostGrid(
-              controller: controller,
-            ),
-          ],
+    final state = context.watch<PostBloc>().state;
+
+    return InfiniteLoadListScrollView(
+      isLoading: state.loading,
+      enableLoadMore: state.hasMore,
+      onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+            tags: _selectedTag.value,
+            fetcher: const LatestPostFetcher(),
+          )),
+      onRefresh: (controller) {
+        _sendRefresh(_selectedTag.value);
+        Future.delayed(
+          const Duration(seconds: 1),
+          () => controller.refreshCompleted(),
         );
       },
+      scrollController: _autoScrollController,
+      sliverBuilder: (controller) => [
+        _AppBar(onMenuTap: widget.onMenuTap),
+        SliverPadding(
+          padding: const EdgeInsets.only(bottom: 2),
+          sliver: SliverToBoxAdapter(
+            child: ValueListenableBuilder<String>(
+              valueListenable: _selectedTag,
+              builder: (context, value, child) => _MostSearchTagSection(
+                selected: value,
+                onSelected: (search) {
+                  _selectedTag.value =
+                      search.keyword == value ? '' : search.keyword;
+                },
+              ),
+            ),
+          ),
+        ),
+        HomePostGrid(
+          controller: controller,
+        ),
+      ],
     );
   }
+}
 
-  Widget _buildAppBar(BuildContext context) {
+class _MostSearchTagSection extends StatelessWidget {
+  const _MostSearchTagSection({
+    required this.onSelected,
+    required this.selected,
+  });
+
+  final void Function(Search search) onSelected;
+  final String selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final status =
+        context.select((SearchKeywordCubit cubit) => cubit.state.status);
+
+    switch (status) {
+      case LoadStatus.success:
+        return MostSearchTagList(
+          onSelected: onSelected,
+          selected: selected,
+        );
+      case LoadStatus.failure:
+        return const SizedBox.shrink();
+      case LoadStatus.initial:
+      case LoadStatus.loading:
+        return const TagChipsPlaceholder();
+    }
+  }
+}
+
+class _AppBar extends StatelessWidget {
+  const _AppBar({
+    required this.onMenuTap,
+  });
+
+  final VoidCallback? onMenuTap;
+
+  @override
+  Widget build(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       title: Row(
@@ -110,10 +157,10 @@ class _LatestViewState extends State<LatestView> {
           Expanded(
             child: SearchBar(
               enabled: false,
-              leading: widget.onMenuTap != null
+              leading: onMenuTap != null
                   ? IconButton(
                       icon: const Icon(Icons.menu),
-                      onPressed: () => widget.onMenuTap!(),
+                      onPressed: () => onMenuTap!(),
                     )
                   : null,
               onTap: () => AppRouter.router.navigateTo(
@@ -138,76 +185,6 @@ class _LatestViewState extends State<LatestView> {
       floating: true,
       snap: true,
       automaticallyImplyLeading: false,
-    );
-  }
-
-  Widget _buildMostSearchTagList() {
-    return BlocBuilder<SearchKeywordCubit, AsyncLoadState<List<Search>>>(
-      builder: (context, state) => SliverToBoxAdapter(
-        child: mapStateToTagList(state),
-      ),
-    );
-  }
-
-  Widget mapStateToTagList(AsyncLoadState<List<Search>> state) {
-    switch (state.status) {
-      case LoadStatus.success:
-        return ConditionalRenderWidget(
-          condition: state.data!.isNotEmpty,
-          childBuilder: (context) => _buildTags(state.data!),
-        );
-      case LoadStatus.failure:
-        return const SizedBox.shrink();
-      case LoadStatus.initial:
-      case LoadStatus.loading:
-        return const TagChipsPlaceholder();
-    }
-  }
-
-  Widget _buildTags(List<Search> searches) {
-    return ValueListenableBuilder(
-      valueListenable: _selectedTag,
-      builder: (context, selectedTag, child) => Container(
-        margin: const EdgeInsets.only(left: 8),
-        height: 50,
-        child: ListView.builder(
-          shrinkWrap: true,
-          scrollDirection: Axis.horizontal,
-          itemCount: searches.length,
-          itemBuilder: (context, index) {
-            final selected = selectedTag == searches[index].keyword;
-
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 4),
-              child: ChoiceChip(
-                disabledColor: Theme.of(context).chipTheme.disabledColor,
-                backgroundColor: Theme.of(context).chipTheme.backgroundColor,
-                selectedColor: Theme.of(context).chipTheme.selectedColor,
-                selected: selected,
-                onSelected: (selected) => selected
-                    ? _selectedTag.value = searches[index].keyword
-                    : _selectedTag.value = '',
-                padding: const EdgeInsets.all(4),
-                labelPadding: const EdgeInsets.all(1),
-                visualDensity: VisualDensity.compact,
-                side: BorderSide(
-                  width: 0.5,
-                  color: Theme.of(context).hintColor,
-                ),
-                label: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.85,
-                  ),
-                  child: Text(
-                    searches[index].keyword.removeUnderscoreWithSpace(),
-                    overflow: TextOverflow.fade,
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
     );
   }
 }

@@ -171,7 +171,7 @@ class SliverPostGrid extends HookWidget {
                 isAnimated: post.post.isAnimated,
                 isTranslated: post.post.isTranslated,
                 hasComments: post.post.hasComment,
-                hasParentOrChildren: post.post.hasBothParentAndChildren,
+                hasParentOrChildren: post.post.hasParentOrChildren,
                 previewUrl: getImageUrlForDisplay(
                   post.post,
                   getImageQuality(
