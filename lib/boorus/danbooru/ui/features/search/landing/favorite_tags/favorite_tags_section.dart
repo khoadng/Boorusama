@@ -11,10 +11,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag.dart';
-import 'add_tag_button.dart';
-import 'import_tag_button.dart';
 import '../common/option_tags_arena.dart';
 import '../common/utils.dart';
+import 'add_tag_button.dart';
+import 'import_tag_button.dart';
 
 class FavoriteTagsSection extends StatelessWidget {
   const FavoriteTagsSection({

@@ -18,7 +18,7 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
-import 'result_view.dart';
+import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
 

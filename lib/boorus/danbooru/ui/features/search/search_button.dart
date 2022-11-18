@@ -15,15 +15,16 @@ class SearchButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) => ConditionalRenderWidget(
-        condition: state.allowSearch,
-        childBuilder: (context) => FloatingActionButton(
-          onPressed: () =>
-              context.read<SearchBloc>().add(const SearchRequested()),
-          heroTag: null,
-          child: const Icon(Icons.search),
-        ),
+    final allowSearch =
+        context.select((SearchBloc bloc) => bloc.state.allowSearch);
+
+    return ConditionalRenderWidget(
+      condition: allowSearch,
+      childBuilder: (context) => FloatingActionButton(
+        onPressed: () =>
+            context.read<SearchBloc>().add(const SearchRequested()),
+        heroTag: null,
+        child: const Icon(Icons.search),
       ),
     );
   }

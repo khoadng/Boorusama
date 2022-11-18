@@ -1,8 +1,12 @@
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+// Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'trending_tags.dart';
 
 class TrendingSection extends StatelessWidget {
