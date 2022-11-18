@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/core/application/search/tag_search_bloc.dart';
@@ -30,12 +31,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required SearchHistoryCubit searchHistoryCubit,
     required RelatedTagBloc relatedTagBloc,
     required SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
+    required PostCountRepository postCountRepository,
     required List<Metatag> metatags,
     String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
           tagSearchState: tagSearchBloc.state,
           metatags: metatags,
+          totalResults: 0,
         )) {
     on<SearchQueryChanged>((event, emit) {
       if (event.query.isEmpty) {
@@ -148,7 +151,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
     });
 
-    on<_SearchRequested>((event, emit) {
+    on<_SearchRequested>((event, emit) async {
       searchHistoryCubit.addHistory(event.query);
 
       relatedTagBloc.add(RelatedTagRequested(query: event.query));
@@ -157,6 +160,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         tag: event.query,
         fetcher: SearchedPostFetcher.fromTags(event.query),
       ));
+
+      emit(state.copyWith(totalResults: -1));
+
+      final totalResults =
+          await postCountRepository.count(event.query.split(' '));
+
+      emit(state.copyWith(totalResults: totalResults));
     });
 
     on<_CopyState>((event, emit) {

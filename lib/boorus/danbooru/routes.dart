@@ -252,6 +252,7 @@ final postSearchHandler = Handler(handlerFunc: (
           relatedTagBloc: relatedTagBloc,
           searchHistorySuggestionsBloc: searchHistorySuggestions,
           postBloc: postBloc,
+          postCountRepository: context.read<PostCountRepository>(),
           initialQuery: args.first,
         ),
       ),

@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
@@ -39,88 +38,135 @@ class _ResultViewState extends State<ResultView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
-      selector: (state) => state.selectedTags,
-      builder: (context, tags) => BlocBuilder<PostBloc, PostState>(
-        builder: (context, state) {
-          return InfiniteLoadListScrollView(
-            isLoading: state.loading,
-            refreshController: refreshController,
-            enableLoadMore: state.hasMore,
-            onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                  tags: tags.map((e) => e.toString()).join(' '),
-                  fetcher: SearchedPostFetcher.fromTags(
-                    tags.map((e) => e.toString()).join(' '),
-                  ),
-                )),
-            onRefresh: (controller) {
-              context.read<PostBloc>().add(PostRefreshed(
-                    tag: tags.map((e) => e.toString()).join(' '),
-                    fetcher: SearchedPostFetcher.fromTags(
-                      tags.map((e) => e.toString()).join(' '),
-                    ),
-                  ));
-              Future.delayed(
-                const Duration(milliseconds: 500),
-                () => controller.refreshCompleted(),
-              );
-            },
-            sliverBuilder: (controller) => [
-              SliverToBoxAdapter(
-                child: SizedBox(
-                  height: MediaQuery.of(context).viewPadding.top,
-                ),
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+    final state = context.watch<PostBloc>().state;
+
+    return InfiniteLoadListScrollView(
+      isLoading: state.loading,
+      refreshController: refreshController,
+      enableLoadMore: state.hasMore,
+      onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+            tags: tags.map((e) => e.toString()).join(' '),
+            fetcher: SearchedPostFetcher.fromTags(
+              tags.map((e) => e.toString()).join(' '),
+            ),
+          )),
+      onRefresh: (controller) {
+        context.read<PostBloc>().add(PostRefreshed(
+              tag: tags.map((e) => e.toString()).join(' '),
+              fetcher: SearchedPostFetcher.fromTags(
+                tags.map((e) => e.toString()).join(' '),
               ),
-              SliverToBoxAdapter(
-                child: BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
-                  builder: (context, state) {
-                    if (state.status == LoadStatus.success) {
-                      return BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
-                        selector: (state) => state.theme,
-                        builder: (context, theme) {
-                          return _RelatedTag(
-                            relatedTag: state.data!,
-                            theme: theme,
-                          );
-                        },
-                      );
-                    } else if (state.status == LoadStatus.failure) {
-                      return const SizedBox.shrink();
-                    } else {
-                      return const TagChipsPlaceholder();
-                    }
-                  },
-                ),
-              ),
-              HomePostGrid(
-                controller: controller,
-                onTap: () => FocusScope.of(context).unfocus(),
-              ),
-            ],
-          );
-        },
+            ));
+        Future.delayed(
+          const Duration(milliseconds: 500),
+          () => controller.refreshCompleted(),
+        );
+      },
+      sliverBuilder: (controller) => [
+        SliverToBoxAdapter(
+          child: SizedBox(
+            height: MediaQuery.of(context).viewPadding.top,
+          ),
+        ),
+        const SliverToBoxAdapter(
+          child: _RelatedTag(),
+        ),
+        const SliverToBoxAdapter(
+          child: _ResultHeader(),
+        ),
+        HomePostGrid(
+          controller: controller,
+          onTap: () => FocusScope.of(context).unfocus(),
+        ),
+      ],
+    );
+  }
+}
+
+class _ResultHeader extends StatelessWidget {
+  const _ResultHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 40,
+      child: Row(
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 8,
+              vertical: 4,
+            ),
+            child: _ResultCounter(),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _RelatedTag extends StatelessWidget {
-  const _RelatedTag({
-    required this.relatedTag,
-    required this.theme,
-  });
-
-  final RelatedTag relatedTag;
-  final ThemeMode theme;
+class _ResultCounter extends StatelessWidget {
+  const _ResultCounter();
 
   @override
   Widget build(BuildContext context) {
-    return ConditionalRenderWidget(
-      condition: relatedTag.tags.isNotEmpty,
-      childBuilder: (context) => RelatedTagHeader(
-        relatedTag: relatedTag,
-        theme: theme,
-      ),
-    );
+    final count = context.select((SearchBloc bloc) => bloc.state.totalResults);
+
+    if (count > 0) {
+      return Text(
+        '$count Results',
+        style: Theme.of(context).textTheme.titleLarge,
+      );
+    } else if (count < 0) {
+      return Row(
+        children: [
+          Text(
+            'Searching...',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(width: 10),
+          const CircularProgressIndicator.adaptive(),
+        ],
+      );
+    } else {
+      return Text(
+        'No Results',
+        style: Theme.of(context).textTheme.titleLarge,
+      );
+    }
+  }
+}
+
+class _RelatedTag extends StatelessWidget {
+  const _RelatedTag();
+
+  @override
+  Widget build(BuildContext context) {
+    final status = context.select((RelatedTagBloc bloc) => bloc.state.status);
+
+    switch (status) {
+      case LoadStatus.initial:
+      case LoadStatus.loading:
+        return const TagChipsPlaceholder();
+      case LoadStatus.success:
+        return BlocSelector<RelatedTagBloc, AsyncLoadState<RelatedTag>,
+            RelatedTag>(
+          selector: (state) => state.data!,
+          builder: (context, tag) => ConditionalRenderWidget(
+            condition: tag.tags.isNotEmpty,
+            childBuilder: (context) =>
+                BlocSelector<ThemeBloc, ThemeState, ThemeMode>(
+              selector: (state) => state.theme,
+              builder: (context, theme) => RelatedTagHeader(
+                relatedTag: tag,
+                theme: theme,
+              ),
+            ),
+          ),
+        );
+      case LoadStatus.failure:
+        return const SizedBox.shrink();
+    }
   }
 }
