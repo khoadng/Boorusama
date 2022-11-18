@@ -97,18 +97,22 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
         popular: ExploreData.initial(
           category: ExploreCategory.popular,
           date: now,
+          bloc: popular,
         ),
         hot: ExploreData.initial(
           category: ExploreCategory.hot,
           date: now,
+          bloc: hot,
         ),
         curated: ExploreData.initial(
           category: ExploreCategory.curated,
           date: now,
+          bloc: curated,
         ),
         mostViewed: ExploreData.initial(
           category: ExploreCategory.mostViewed,
           date: now,
+          bloc: mostViewed,
         ),
       ));
 
@@ -242,6 +246,7 @@ class ExploreData extends Equatable {
     required this.data,
     required this.date,
     required this.scale,
+    required this.bloc,
   });
 
   factory ExploreData.empty([ExploreCategory? category]) => ExploreData(
@@ -249,17 +254,20 @@ class ExploreData extends Equatable {
         data: const [],
         date: DateTime(1),
         scale: TimeScale.day,
+        bloc: null,
       );
 
   factory ExploreData.initial({
     required ExploreCategory category,
     required DateTime date,
+    required PostBloc bloc,
   }) =>
       ExploreData(
         category: category,
         data: const [],
         date: date,
         scale: TimeScale.day,
+        bloc: bloc,
       );
 
   ExploreData copyWith({
@@ -273,12 +281,14 @@ class ExploreData extends Equatable {
         data: data ?? this.data,
         date: date ?? this.date,
         scale: scale ?? this.scale,
+        bloc: bloc,
       );
 
   final ExploreCategory category;
   final List<PostData> data;
   final DateTime date;
   final TimeScale scale;
+  final PostBloc? bloc;
 
   @override
   List<Object?> get props => [category, data, date, scale];

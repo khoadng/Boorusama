@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/utils.dart';
@@ -24,10 +23,21 @@ class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
 
   Widget mapToCarousel(
+    BuildContext context,
     ExploreData explore,
   ) {
     return explore.data.isNotEmpty
-        ? _ExploreList(posts: explore.data)
+        ? _ExploreList(
+            posts: explore.data,
+            onTap: (index) {
+              goToDetailPage(
+                context: context,
+                posts: explore.data,
+                initialIndex: index,
+                postBloc: explore.bloc,
+              );
+            },
+          )
         : SizedBox(
             height: _kMaxHeight,
             child: ListView.builder(
@@ -62,7 +72,7 @@ class ExplorePage extends StatelessWidget {
                   date: state.popular.date,
                   title: 'explore.popular'.tr(),
                   category: ExploreCategory.popular,
-                  builder: (_) => mapToCarousel(state.popular),
+                  builder: (_) => mapToCarousel(context, state.popular),
                 ),
               ),
               SliverToBoxAdapter(
@@ -70,7 +80,7 @@ class ExplorePage extends StatelessWidget {
                   date: state.hot.date,
                   title: 'explore.hot'.tr(),
                   category: ExploreCategory.hot,
-                  builder: (_) => mapToCarousel(state.hot),
+                  builder: (_) => mapToCarousel(context, state.hot),
                 ),
               ),
               SliverToBoxAdapter(
@@ -78,7 +88,7 @@ class ExplorePage extends StatelessWidget {
                   date: state.curated.date,
                   title: 'explore.curated'.tr(),
                   category: ExploreCategory.curated,
-                  builder: (_) => mapToCarousel(state.curated),
+                  builder: (_) => mapToCarousel(context, state.curated),
                 ),
               ),
               SliverToBoxAdapter(
@@ -86,7 +96,7 @@ class ExplorePage extends StatelessWidget {
                   date: state.mostViewed.date,
                   title: 'explore.most_viewed'.tr(),
                   category: ExploreCategory.mostViewed,
-                  builder: (_) => mapToCarousel(state.mostViewed),
+                  builder: (_) => mapToCarousel(context, state.mostViewed),
                 ),
               ),
               const SliverToBoxAdapter(
@@ -105,9 +115,11 @@ class ExplorePage extends StatelessWidget {
 class _ExploreList extends StatefulWidget {
   const _ExploreList({
     required this.posts,
+    required this.onTap,
   });
 
   final List<PostData> posts;
+  final void Function(int index) onTap;
 
   @override
   State<_ExploreList> createState() => _ExploreListState();
@@ -135,14 +147,7 @@ class _ExploreListState extends State<_ExploreList> {
           return Padding(
             padding: _padding,
             child: GestureDetector(
-              onTap: () {
-                goToDetailPage(
-                  context: context,
-                  posts: widget.posts,
-                  initialIndex: index,
-                  postBloc: context.read<PostBloc>(),
-                );
-              },
+              onTap: () => widget.onTap(index),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
