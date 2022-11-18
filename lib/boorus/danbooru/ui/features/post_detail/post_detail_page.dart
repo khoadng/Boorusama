@@ -115,7 +115,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           selector: (state) => state.enableOverlay,
                           builder: (context, enable) {
                             return enable
-                                ? const _BackButton()
+                                ? const _NavigationButtonGroup()
                                 : const SizedBox.shrink();
                           },
                         ),
@@ -573,8 +573,8 @@ class _MoreActionButton extends StatelessWidget {
   }
 }
 
-class _BackButton extends StatelessWidget {
-  const _BackButton();
+class _NavigationButtonGroup extends StatelessWidget {
+  const _NavigationButtonGroup();
 
   @override
   Widget build(BuildContext context) {
@@ -582,20 +582,7 @@ class _BackButton extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
-            builder: (context, state) => CircularIconButton(
-              icon: const Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(Icons.arrow_back_ios),
-              ),
-              onPressed: () {
-                context
-                    .read<SliverPostGridBloc>()
-                    .add(SliverPostGridExited(lastIndex: state.currentIndex));
-                AppRouter.router.pop(context);
-              },
-            ),
-          ),
+          const _BackButton(),
           const SizedBox(
             width: 4,
           ),
@@ -609,6 +596,29 @@ class _BackButton extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _BackButton extends StatelessWidget {
+  const _BackButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final currentIndex =
+        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
+
+    return CircularIconButton(
+      icon: const Padding(
+        padding: EdgeInsets.only(left: 8),
+        child: Icon(Icons.arrow_back_ios),
+      ),
+      onPressed: () {
+        context
+            .read<SliverPostGridBloc>()
+            .add(SliverPostGridExited(lastIndex: currentIndex));
+        AppRouter.router.pop(context);
+      },
     );
   }
 }
