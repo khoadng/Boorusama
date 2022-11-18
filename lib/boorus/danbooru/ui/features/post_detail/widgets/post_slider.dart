@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/parent_
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
-import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
@@ -239,101 +238,10 @@ class _CarouselContentState extends State<_CarouselContent> {
                             RepaintBoundary(child: PostStatsTile(post: post)),
                       ),
                       if (widget.preloadPost.hasParentOrChildren)
-                        ParentChildTile(
-                          data: getParentChildData(widget.preloadPost),
-                          onTap: (data) => showBarModalBottomSheet(
-                            context: context,
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider(
-                                  create: (context) => PostBloc.of(context)
-                                    ..add(PostRefreshed(
-                                      tag: data.tagQueryForDataFetching,
-                                      fetcher: SearchedPostFetcher.fromTags(
-                                        data.tagQueryForDataFetching,
-                                      ),
-                                    )),
-                                ),
-                              ],
-                              child: ParentChildPostPage(
-                                parentPostId: data.parentId,
-                              ),
-                            ),
-                          ),
-                        ),
+                        _ParentChildTile(post: widget.preloadPost),
                       if (!widget.preloadPost.hasParentOrChildren)
                         const Divider(height: 8, thickness: 1),
-                      BlocBuilder<ThemeBloc, ThemeState>(
-                        builder: (context, state) {
-                          return Theme(
-                            data: Theme.of(context)
-                                .copyWith(dividerColor: Colors.transparent),
-                            child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                              builder: (context, detailState) {
-                                final tags = detailState.tags
-                                    .where((e) => e.postId == post.id)
-                                    .toList();
-
-                                return ExpansionTile(
-                                  title: Text('${tags.length} tags'),
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
-                                  // trailing: BlocBuilder<AuthenticationCubit,
-                                  //     AuthenticationState>(
-                                  //   builder: (context, state) {
-                                  //     return state is Authenticated
-                                  //         ? IconButton(
-                                  //             onPressed: () async {
-                                  //               final bloc = context
-                                  //                   .read<PostDetailBloc>();
-
-                                  //               await showAdaptiveBottomSheet(
-                                  //                   context,
-                                  //                   expand: true,
-                                  //                   builder: (context) =>
-                                  //                       BlocProvider.value(
-                                  //                         value: bloc,
-                                  //                         child: BlocBuilder<
-                                  //                             PostDetailBloc,
-                                  //                             PostDetailState>(
-                                  //                           builder:
-                                  //                               (context, state) {
-                                  //                             return TagEditView(
-                                  //                               post: post,
-                                  //                               tags: state.tags
-                                  //                                   .where((t) =>
-                                  //                                       t.postId ==
-                                  //                                       post.id)
-                                  //                                   .toList(),
-                                  //                             );
-                                  //                           },
-                                  //                         ),
-                                  //                       ));
-                                  //             },
-                                  //             icon: const Icon(Icons.add),
-                                  //           )
-                                  //         : const SizedBox.shrink();
-                                  // },
-                                  // ),
-                                  onExpansionChanged: (value) => value
-                                      ? context
-                                          .read<TagBloc>()
-                                          .add(TagFetched(tags: post.tags))
-                                      : null,
-                                  children: const [
-                                    Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(horizontal: 12),
-                                      child: PostTagList(),
-                                    ),
-                                    SizedBox(height: 8),
-                                  ],
-                                );
-                              },
-                            ),
-                          );
-                        },
-                      ),
+                      _TagsTile(post: post),
                       const Divider(height: 8, thickness: 1),
                       FileDetailsSection(
                         post: post,
@@ -358,6 +266,72 @@ class _CarouselContentState extends State<_CarouselContent> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _TagsTile extends StatelessWidget {
+  const _TagsTile({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    final tags = context.select((PostDetailBloc bloc) =>
+        bloc.state.tags.where((e) => e.postId == post.id).toList());
+
+    return Theme(
+      data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+      child: ExpansionTile(
+        title: Text('${tags.length} tags'),
+        controlAffinity: ListTileControlAffinity.leading,
+        onExpansionChanged: (value) => value
+            ? context.read<TagBloc>().add(TagFetched(tags: post.tags))
+            : null,
+        children: const [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12),
+            child: PostTagList(),
+          ),
+          SizedBox(height: 8),
+        ],
+      ),
+    );
+  }
+}
+
+class _ParentChildTile extends StatelessWidget {
+  const _ParentChildTile({
+    required this.post,
+  });
+
+  final Post post;
+
+  @override
+  Widget build(BuildContext context) {
+    return ParentChildTile(
+      data: getParentChildData(post),
+      onTap: (data) => showBarModalBottomSheet(
+        context: context,
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => PostBloc.of(context)
+                ..add(PostRefreshed(
+                  tag: data.tagQueryForDataFetching,
+                  fetcher: SearchedPostFetcher.fromTags(
+                    data.tagQueryForDataFetching,
+                  ),
+                )),
+            ),
+          ],
+          child: ParentChildPostPage(
+            parentPostId: data.parentId,
+          ),
+        ),
       ),
     );
   }
