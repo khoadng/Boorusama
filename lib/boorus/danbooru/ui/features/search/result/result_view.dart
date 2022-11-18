@@ -67,6 +67,7 @@ class _ResultViewState extends State<ResultView> {
               const SliverToBoxAdapter(child: SizedBox(height: 20)),
               SliverToBoxAdapter(
                 child: ButtonBar(
+                  buttonPadding: const EdgeInsets.symmetric(horizontal: 2),
                   alignment: MainAxisAlignment.center,
                   children: [
                     IconButton(
