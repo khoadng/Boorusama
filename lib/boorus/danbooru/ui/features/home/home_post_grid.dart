@@ -35,57 +35,84 @@ class HomePostGrid extends StatelessWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: 18,
       ),
-      sliver: BlocSelector<SettingsCubit, SettingsState, GridSize>(
-        selector: (state) => state.settings.gridSize,
-        builder: (context, gridSize) {
-          return BlocBuilder<PostBloc, PostState>(
-            buildWhen: (previous, current) =>
-                current.status != LoadStatus.loading,
-            builder: (context, state) {
-              if (state.status == LoadStatus.initial) {
-                return usePlaceholder
-                    ? SliverPostGridPlaceHolder(gridSize: gridSize)
-                    : const SliverToBoxAdapter(
-                        child: SizedBox.shrink(),
-                      );
-              } else if (state.status == LoadStatus.success) {
-                if (state.posts.isEmpty) {
-                  return const SliverToBoxAdapter(child: NoDataBox());
-                }
-
-                return SliverPostGrid(
-                  posts: state.posts,
-                  scrollController: controller,
-                  gridSize: gridSize,
-                  borderRadius: _gridSizeToBorderRadius(gridSize),
-                  onTap: (post, index) {
-                    onTap?.call();
-                    goToDetailPage(
-                      context: context,
-                      posts: state.posts,
-                      initialIndex: index,
-                      scrollController: controller,
-                      postBloc: context.read<PostBloc>(),
-                    );
-                  },
-                  onFavoriteUpdated: (postId, value) => context
-                      .read<PostBloc>()
-                      .add(
-                        PostFavoriteUpdated(postId: postId, favorite: value),
-                      ),
-                );
-              } else if (state.status == LoadStatus.loading) {
-                return const SliverToBoxAdapter(
-                  child: SizedBox.shrink(),
-                );
-              } else {
-                return const SliverToBoxAdapter(child: ErrorBox());
-              }
-            },
-          );
+      sliver: BlocBuilder<PostBloc, PostState>(
+        buildWhen: (previous, current) => current.status != LoadStatus.loading,
+        builder: (context, state) {
+          switch (state.status) {
+            case LoadStatus.initial:
+              return _Placeholder(usePlaceholder: usePlaceholder);
+            case LoadStatus.loading:
+              return const SliverToBoxAdapter(child: SizedBox.shrink());
+            case LoadStatus.success:
+              return _SliverPostGrid(
+                controller: controller,
+                onTap: onTap,
+              );
+            case LoadStatus.failure:
+              return const SliverToBoxAdapter(child: ErrorBox());
+          }
         },
       ),
     );
+  }
+}
+
+class _Placeholder extends StatelessWidget {
+  const _Placeholder({
+    required this.usePlaceholder,
+  });
+
+  final bool usePlaceholder;
+
+  @override
+  Widget build(BuildContext context) {
+    final gridSize =
+        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
+
+    return usePlaceholder
+        ? SliverPostGridPlaceHolder(gridSize: gridSize)
+        : const SliverToBoxAdapter(
+            child: SizedBox.shrink(),
+          );
+  }
+}
+
+class _SliverPostGrid extends StatelessWidget {
+  const _SliverPostGrid({
+    required this.controller,
+    required this.onTap,
+  });
+
+  final AutoScrollController controller;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final gridSize =
+        context.select((SettingsCubit cubit) => cubit.state.settings.gridSize);
+    final posts = context.select((PostBloc bloc) => bloc.state.posts);
+
+    return posts.isNotEmpty
+        ? SliverPostGrid(
+            posts: posts,
+            scrollController: controller,
+            gridSize: gridSize,
+            borderRadius: _gridSizeToBorderRadius(gridSize),
+            onTap: (post, index) {
+              onTap?.call();
+              goToDetailPage(
+                context: context,
+                posts: posts,
+                initialIndex: index,
+                scrollController: controller,
+                postBloc: context.read<PostBloc>(),
+              );
+            },
+            onFavoriteUpdated: (postId, value) => context.read<PostBloc>().add(
+                  PostFavoriteUpdated(postId: postId, favorite: value),
+                ),
+          )
+        : const SliverToBoxAdapter(child: NoDataBox());
   }
 }
 
