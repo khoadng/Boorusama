@@ -13,7 +13,6 @@ import 'package:boorusama/boorus/danbooru/application/search_history/search_hist
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
@@ -178,12 +177,9 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState, String?>(
-      selector: (state) => state.error,
-      builder: (context, error) {
-        return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
-      },
-    );
+    final error = context.select((SearchBloc bloc) => bloc.state.error);
+
+    return ErrorView(text: error?.tr() ?? 'search.errors.generic'.tr());
   }
 }
 
@@ -192,27 +188,23 @@ class _SelectedTagList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
-      selector: (state) => state.selectedTags,
-      builder: (context, tags) {
-        return SelectedTagList(
-          tags: tags,
-          onClear: () =>
-              context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
-          onDelete: (tag) => context
-              .read<SearchBloc>()
-              .add(SearchSelectedTagRemoved(tag: tag)),
-          onBulkDownload: (tags) => AppRouter.router.navigateTo(
-            context,
-            '/bulk_download',
-            routeSettings: RouteSettings(
-              arguments: [
-                tags.map((e) => e.toString()).toList(),
-              ],
-            ),
-          ),
-        );
-      },
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+
+    return SelectedTagList(
+      tags: tags,
+      onClear: () =>
+          context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
+      onDelete: (tag) =>
+          context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
+      onBulkDownload: (tags) => AppRouter.router.navigateTo(
+        context,
+        '/bulk_download',
+        routeSettings: RouteSettings(
+          arguments: [
+            tags.map((e) => e.toString()).toList(),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -226,32 +218,29 @@ class _SearchOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState, List<Metatag>>(
-      selector: (state) => state.metatags,
-      builder: (context, metatags) {
-        return SearchOptions(
-          metatags: metatags,
-          onOptionTap: (value) {
-            context.read<SearchBloc>().add(
-                  SearchRawMetatagSelected(
-                    tag: value,
-                  ),
-                );
-            onFocusRequest?.call();
-          },
-          onHistoryTap: (value) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            context.read<SearchBloc>().add(
-                  SearchHistoryTagSelected(
-                    tag: value,
-                  ),
-                );
-          },
-          onTagTap: (value) {
-            FocusManager.instance.primaryFocus?.unfocus();
-            context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
-          },
-        );
+    final metatags = context.select((SearchBloc bloc) => bloc.state.metatags);
+
+    return SearchOptions(
+      metatags: metatags,
+      onOptionTap: (value) {
+        context.read<SearchBloc>().add(
+              SearchRawMetatagSelected(
+                tag: value,
+              ),
+            );
+        onFocusRequest?.call();
+      },
+      onHistoryTap: (value) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.read<SearchBloc>().add(
+              SearchHistoryTagSelected(
+                tag: value,
+              ),
+            );
+      },
+      onTagTap: (value) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
       },
     );
   }
@@ -350,33 +339,31 @@ class _TagSuggestionItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, searchState) {
-        return BlocBuilder<SearchHistorySuggestionsBloc,
-            SearchHistorySuggestionsState>(
-          builder: (context, state) {
-            return SliverTagSuggestionItemsWithHistory(
-              tags: searchState.suggestionTags,
-              histories: state.histories,
-              currentQuery: searchState.currentQuery,
-              onHistoryDeleted: (history) {
-                context
-                    .read<SearchBloc>()
-                    .add(SearchHistoryDeleted(history: history.searchHistory));
-              },
-              onHistoryTap: (history) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                context
-                    .read<SearchBloc>()
-                    .add(SearchHistoryTagSelected(tag: history.tag));
-              },
-              onItemTap: (tag) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
-              },
-            );
-          },
-        );
+    final suggestionTags =
+        context.select((SearchBloc bloc) => bloc.state.suggestionTags);
+    final currentQuery =
+        context.select((SearchBloc bloc) => bloc.state.currentQuery);
+    final histories = context
+        .select((SearchHistorySuggestionsBloc bloc) => bloc.state.histories);
+
+    return SliverTagSuggestionItemsWithHistory(
+      tags: suggestionTags,
+      histories: histories,
+      currentQuery: currentQuery,
+      onHistoryDeleted: (history) {
+        context
+            .read<SearchBloc>()
+            .add(SearchHistoryDeleted(history: history.searchHistory));
+      },
+      onHistoryTap: (history) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context
+            .read<SearchBloc>()
+            .add(SearchHistoryTagSelected(tag: history.tag));
+      },
+      onItemTap: (tag) {
+        FocusManager.instance.primaryFocus?.unfocus();
+        context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
     );
   }
@@ -387,15 +374,11 @@ class _Divider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<SearchBloc, SearchState, List<TagSearchItem>>(
-      selector: (state) => state.selectedTags,
-      builder: (context, tags) => tags.isNotEmpty
-          ? const Divider(
-              height: 15,
-              thickness: 1,
-            )
-          : const SizedBox.shrink(),
-    );
+    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+
+    return tags.isNotEmpty
+        ? const Divider(height: 15, thickness: 1)
+        : const SizedBox.shrink();
   }
 }
 
