@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class BooruImage extends StatelessWidget {
   const BooruImage({
@@ -12,6 +13,7 @@ class BooruImage extends StatelessWidget {
     this.borderRadius,
     this.fit,
     required this.aspectRatio,
+    this.previewCacheManager,
   });
 
   final String imageUrl;
@@ -19,6 +21,7 @@ class BooruImage extends StatelessWidget {
   final BorderRadius? borderRadius;
   final BoxFit? fit;
   final double aspectRatio;
+  final CacheManager? previewCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,7 @@ class BooruImage extends StatelessWidget {
               ? CachedNetworkImage(
                   fit: fit ?? BoxFit.fill,
                   imageUrl: placeholderUrl!,
+                  cacheManager: previewCacheManager,
                   fadeInDuration: Duration.zero,
                   fadeOutDuration: Duration.zero,
                   placeholder: (context, url) => ImagePlaceHolder(

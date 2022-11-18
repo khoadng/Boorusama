@@ -318,7 +318,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     Emitter<PostDetailState> emit,
   ) async {
     for (final tag in post.post.characterTags) {
-      final posts = await postRepository.getPosts(tag, 1);
+      final posts = await postRepository.getPosts(tag, 1, limit: 20);
       emit(state.copyWith(recommends: [
         ...state.recommends,
         Recommend(
@@ -343,7 +343,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     Emitter<PostDetailState> emit,
   ) async {
     for (final tag in post.post.artistTags) {
-      final posts = await postRepository.getPosts(tag, 1);
+      final posts = await postRepository.getPosts(tag, 1, limit: 20);
       emit(state.copyWith(recommends: [
         ...state.recommends,
         Recommend(

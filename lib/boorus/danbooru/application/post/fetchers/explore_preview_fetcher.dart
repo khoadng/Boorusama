@@ -9,31 +9,51 @@ class ExplorePreviewFetcher implements PostFetcher {
     required this.date,
     required this.scale,
     required this.exploreRepository,
+    this.onDateChanged,
   });
 
   factory ExplorePreviewFetcher.now({
     required ExploreCategory category,
     required ExploreRepository exploreRepository,
+    void Function(DateTime date)? onDateChanged,
+    DateTime Function()? now,
   }) =>
       ExplorePreviewFetcher(
         category: category,
-        date: DateTime.now(),
+        date: now?.call() ?? DateTime.now(),
         scale: TimeScale.day,
         exploreRepository: exploreRepository,
+        onDateChanged: onDateChanged,
       );
 
   final ExploreCategory category;
   final ExploreRepository exploreRepository;
   final DateTime date;
   final TimeScale scale;
+  final void Function(DateTime date)? onDateChanged;
 
   @override
-  Future<List<Post>> fetch(PostRepository repo, int page) async {
-    var posts = await _categoryToFetcher(date).fetch(repo, page);
+  Future<List<Post>> fetch(
+    PostRepository repo,
+    int page, {
+    int? limit,
+  }) async {
+    var posts = await _categoryToFetcher(date).fetch(
+      repo,
+      page,
+      limit: limit,
+    );
 
     if (posts.isEmpty) {
-      posts = await _categoryToFetcher(date.subtract(const Duration(days: 1)))
-          .fetch(repo, page);
+      final prev = date.subtract(const Duration(days: 1));
+
+      onDateChanged?.call(prev);
+
+      posts = await _categoryToFetcher(prev).fetch(
+        repo,
+        page,
+        limit: limit,
+      );
     }
 
     return posts.toList();

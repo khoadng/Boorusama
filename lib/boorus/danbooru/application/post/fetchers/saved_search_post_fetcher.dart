@@ -10,12 +10,24 @@ class SavedSearchPostFetcher implements PostFetcher {
   final SavedSearch savedSearch;
 
   @override
-  Future<List<Post>> fetch(PostRepository repo, int page) async {
-    var posts = await repo.getPosts(savedSearch.toQuery(), page);
+  Future<List<Post>> fetch(
+    PostRepository repo,
+    int page, {
+    int? limit,
+  }) async {
+    var posts = await repo.getPosts(
+      savedSearch.toQuery(),
+      page,
+      limit: limit,
+    );
 
     if (posts.isEmpty) {
       await Future.delayed(const Duration(seconds: 1));
-      posts = await repo.getPosts(savedSearch.toQuery(), page);
+      posts = await repo.getPosts(
+        savedSearch.toQuery(),
+        page,
+        limit: limit,
+      );
     }
 
     return posts;

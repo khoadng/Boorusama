@@ -18,9 +18,14 @@ class SearchedPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async =>
-      repo.getPosts(query, page);
+    int page, {
+    int? limit,
+  }) async =>
+      repo.getPosts(
+        query,
+        page,
+        limit: limit,
+      );
 }
 
 String _postsOrderToString(PostsOrder? order) {

@@ -24,7 +24,9 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_commentary_c
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -55,6 +57,7 @@ import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
@@ -70,6 +73,7 @@ import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
+import 'core/infra/preloader/preloader.dart';
 
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [
@@ -190,6 +194,9 @@ void main() async {
 
   await bulkDownloader.init();
 
+  final previewImageCacheManager = PreviewImageCacheManager();
+  final previewPreloader = PostPreviewPreloaderImp(previewImageCacheManager);
+
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
   setLocaleMessages('ru', RuMessages());
@@ -216,6 +223,12 @@ void main() async {
             RepositoryProvider.value(value: userMetatagRepo),
             RepositoryProvider<FavoriteTagRepository>.value(
               value: favoriteTagsRepo,
+            ),
+            RepositoryProvider<PostPreviewPreloader>.value(
+              value: previewPreloader,
+            ),
+            RepositoryProvider<PreviewImageCacheManager>.value(
+              value: previewImageCacheManager,
             ),
           ],
           child: MultiBlocProvider(
@@ -402,6 +415,24 @@ void main() async {
                   final favoriteTagBloc =
                       FavoriteTagBloc(favoriteTagRepository: favoriteTagsRepo);
 
+                  PostBloc create() => PostBloc(
+                        postRepository: postRepo,
+                        blacklistedTagsRepository: blacklistedTagRepo,
+                        favoritePostRepository: favoriteRepo,
+                        accountRepository: accountRepo,
+                        postVoteRepository: postVoteRepo,
+                        poolRepository: poolRepo,
+                        singleRefresh: true,
+                      );
+
+                  final exploreBloc = ExploreBloc(
+                    exploreRepository: exploreRepo,
+                    popular: create(),
+                    hot: create(),
+                    curated: create(),
+                    mostViewed: create(),
+                  )..add(const ExploreFetched());
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -476,6 +507,7 @@ void main() async {
                         BlocProvider.value(value: wikiBloc),
                         BlocProvider.value(value: savedSearchBloc),
                         BlocProvider.value(value: favoriteTagBloc),
+                        BlocProvider.value(value: exploreBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

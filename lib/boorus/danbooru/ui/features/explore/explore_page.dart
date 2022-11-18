@@ -6,14 +6,12 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/utils.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -25,12 +23,11 @@ const _padding = EdgeInsets.symmetric(horizontal: 2);
 class ExplorePage extends StatelessWidget {
   const ExplorePage({super.key});
 
-  Widget mapStateToCarousel(
-    BuildContext context,
-    PostState state,
+  Widget mapToCarousel(
+    ExploreData explore,
   ) {
-    return state.status == LoadStatus.success && state.posts.isNotEmpty
-        ? _ExploreList(posts: state.posts.take(20).toList())
+    return explore.data.isNotEmpty
+        ? _ExploreList(posts: explore.data)
         : SizedBox(
             height: _kMaxHeight,
             child: ListView.builder(
@@ -46,107 +43,59 @@ class ExplorePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
-      builder: (context, blacklistedTagsState) {
-        return BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, settingsState) {
-            return Padding(
-              padding: Screen.of(context).size == ScreenSize.small
-                  ? EdgeInsets.zero
-                  : const EdgeInsets.symmetric(horizontal: 8),
-              child: CustomScrollView(
-                primary: false,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).viewPadding.top,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.popular,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.popular'.tr(),
-                        category: ExploreCategory.popular,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.hot,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.hot'.tr(),
-                        category: ExploreCategory.hot,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.curated,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.curated'.tr(),
-                        category: ExploreCategory.curated,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.mostViewed,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.most_viewed'.tr(),
-                        category: ExploreCategory.mostViewed,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: kBottomNavigationBarHeight + 60,
-                    ),
-                  ),
-                ],
+    return BlocBuilder<ExploreBloc, ExploreState>(
+      builder: (context, state) {
+        return Padding(
+          padding: Screen.of(context).size == ScreenSize.small
+              ? EdgeInsets.zero
+              : const EdgeInsets.symmetric(horizontal: 8),
+          child: CustomScrollView(
+            primary: false,
+            slivers: [
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  height: MediaQuery.of(context).viewPadding.top,
+                ),
               ),
-            );
-          },
+              SliverToBoxAdapter(
+                child: ExploreSection(
+                  date: state.popular.date,
+                  title: 'explore.popular'.tr(),
+                  category: ExploreCategory.popular,
+                  builder: (_) => mapToCarousel(state.popular),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: ExploreSection(
+                  date: state.hot.date,
+                  title: 'explore.hot'.tr(),
+                  category: ExploreCategory.hot,
+                  builder: (_) => mapToCarousel(state.hot),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: ExploreSection(
+                  date: state.curated.date,
+                  title: 'explore.curated'.tr(),
+                  category: ExploreCategory.curated,
+                  builder: (_) => mapToCarousel(state.curated),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: ExploreSection(
+                  date: state.mostViewed.date,
+                  title: 'explore.most_viewed'.tr(),
+                  category: ExploreCategory.mostViewed,
+                  builder: (_) => mapToCarousel(state.mostViewed),
+                ),
+              ),
+              const SliverToBoxAdapter(
+                child: SizedBox(
+                  height: kBottomNavigationBarHeight + 20,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

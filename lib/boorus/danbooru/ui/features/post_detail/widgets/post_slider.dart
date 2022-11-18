@@ -20,6 +20,7 @@ import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme_bloc.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'file_details_section.dart';
 import 'information_section.dart';
 import 'parent_child_tile.dart';
@@ -62,6 +63,7 @@ class _PostSliderState extends State<PostSlider> {
               onCached: (path) => widget.imagePath.value = path,
               enableNotes: state.enableNotes,
               notes: state.currentPost.notes,
+              previewCacheManager: context.read<PreviewImageCacheManager>(),
               onTap: () => context
                   .read<PostDetailBloc>()
                   .add(PostDetailOverlayVisibilityChanged(

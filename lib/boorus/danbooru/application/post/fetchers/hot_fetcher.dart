@@ -10,6 +10,13 @@ class HotPostFetcher implements PostFetcher {
   final ExploreRepository exploreRepository;
 
   @override
-  Future<List<Post>> fetch(PostRepository repo, int page) =>
-      exploreRepository.getHotPosts(page);
+  Future<List<Post>> fetch(
+    PostRepository repo,
+    int page, {
+    int? limit,
+  }) =>
+      exploreRepository.getHotPosts(
+        page,
+        limit: limit,
+      );
 }

@@ -15,11 +15,13 @@ class ExploreSection extends StatelessWidget {
     required this.title,
     required this.category,
     required this.builder,
+    this.date,
   });
 
   final Widget Function(BuildContext context) builder;
   final String title;
   final ExploreCategory category;
+  final DateTime? date;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class ExploreSection extends StatelessWidget {
             onPressed: () => Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) => BlocProvider(
-                  create: (context) => ExploreDetailBloc(),
+                  create: (context) => ExploreDetailBloc(initialDate: date),
                   child: ExploreDetailPage(
                     title: Text(
                       title,

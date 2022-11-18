@@ -66,7 +66,13 @@ class ExploreDetailTimeScaleChanged extends ExploreDetailEvent {
 }
 
 class ExploreDetailBloc extends Bloc<ExploreDetailEvent, ExploreDetailState> {
-  ExploreDetailBloc() : super(ExploreDetailState.initial()) {
+  ExploreDetailBloc({
+    DateTime? initialDate,
+    TimeScale? initialScale,
+  }) : super(ExploreDetailState(
+          scale: initialScale ?? TimeScale.day,
+          date: initialDate ?? DateTime.now(),
+        )) {
     on<ExploreDetailDateChanged>(
       (event, emit) => emit(state.copyWith(date: event.date)),
       transformer: debounce(const Duration(milliseconds: 200)),
