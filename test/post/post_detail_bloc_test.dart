@@ -219,9 +219,9 @@ void main() {
             .thenAnswer((invocation) async => false);
         when(() => accountRepo.get())
             .thenAnswer((invocation) async => Account.empty);
-        when(() => postRepo.getPosts('foo', any()))
+        when(() => postRepo.getPosts('foo', any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [Post.empty().copyWith(id: 3)]);
-        when(() => postRepo.getPosts('bar', any()))
+        when(() => postRepo.getPosts('bar', any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [Post.empty().copyWith(id: 4)]);
       },
       tearDown: () {
@@ -849,7 +849,7 @@ void main() {
     blocTest<PostDetailBloc, PostDetailState>(
       'exit fullscreen mode will fetch recommends if it is empty',
       setUp: () {
-        when(() => postRepo.getPosts(any(), any()))
+        when(() => postRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => []);
       },
       tearDown: () {
