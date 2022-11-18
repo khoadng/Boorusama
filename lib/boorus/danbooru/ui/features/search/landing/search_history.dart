@@ -23,73 +23,103 @@ class SearchHistorySection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchHistoryCubit, AsyncLoadState<List<SearchHistory>>>(
-      builder: (context, state) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    final status =
+        context.select((SearchHistoryCubit cubit) => cubit.state.status);
+
+    return status == LoadStatus.success
+        ? _HistoryList(
+            onHistoryRemoved: onHistoryRemoved,
+            onHistoryTap: onHistoryTap,
+          )
+        : const SizedBox.shrink();
+  }
+}
+
+class _HistoryList extends StatelessWidget {
+  const _HistoryList({
+    required this.onHistoryRemoved,
+    required this.onHistoryTap,
+  });
+
+  final void Function(SearchHistory item) onHistoryRemoved;
+  final ValueChanged<String> onHistoryTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final histories =
+        context.select((SearchHistoryCubit cubit) => cubit.state.data);
+
+    if (histories == null || histories.isEmpty) return const SizedBox.shrink();
+
+    return Column(
+      children: [
+        const _HistoryHeader(),
+        const Divider(
+          thickness: 1,
+          indent: 10,
+          endIndent: 10,
+        ),
+        ...histories.map(
+          (item) => _HistoryTile(
+            item: item,
+            onHistoryRemoved: onHistoryRemoved,
+            onHistoryTap: onHistoryTap,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HistoryHeader extends StatelessWidget {
+  const _HistoryHeader();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          if (state.status == LoadStatus.success)
-            ..._buildHistories(context, state.data!)
-          else
-            const SizedBox.shrink(),
+          Text(
+            'search.history.history'.tr().toUpperCase(),
+            style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
+          ),
+          TextButton(
+            onPressed: () =>
+                context.read<SearchBloc>().add(const SearchHistoryCleared()),
+            child: const Text('search.history.clear').tr(),
+          ),
         ],
       ),
     );
   }
+}
 
-  List<Widget> _buildHistories(
-    BuildContext context,
-    List<SearchHistory> histories,
-  ) {
-    final widgets = <Widget>[];
+class _HistoryTile extends StatelessWidget {
+  const _HistoryTile({
+    required this.onHistoryRemoved,
+    required this.onHistoryTap,
+    required this.item,
+  });
 
-    final historyTiles = histories
-        .map(
-          (item) => ListTile(
-            visualDensity: VisualDensity.compact,
-            title: Text(item.query),
-            contentPadding: const EdgeInsets.only(left: 16),
-            trailing: IconButton(
-              onPressed: () => onHistoryRemoved(item),
-              icon: const Icon(Icons.close),
-            ),
-            onTap: () => onHistoryTap(item.query),
-          ),
-        )
-        .toList();
-    widgets.addAll(historyTiles);
+  final void Function(SearchHistory item) onHistoryRemoved;
+  final ValueChanged<String> onHistoryTap;
+  final SearchHistory item;
 
-    if (historyTiles.isNotEmpty) {
-      final header = Padding(
-        padding: const EdgeInsets.only(left: 10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'search.history.history'.tr().toUpperCase(),
-              style: Theme.of(context).textTheme.subtitle2!.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
-            ),
-            TextButton(
-              onPressed: () =>
-                  context.read<SearchBloc>().add(const SearchHistoryCleared()),
-              child: const Text('search.history.clear').tr(),
-            ),
-          ],
-        ),
-      );
-      widgets
-        ..insert(0, header)
-        ..insert(
-          0,
-          const Divider(
-            thickness: 1,
-            indent: 10,
-            endIndent: 10,
-          ),
-        );
-    }
-
-    return widgets;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      visualDensity: VisualDensity.compact,
+      title: Text(item.query),
+      contentPadding: const EdgeInsets.only(left: 16),
+      trailing: IconButton(
+        onPressed: () => onHistoryRemoved(item),
+        icon: const Icon(Icons.close),
+      ),
+      onTap: () => onHistoryTap(item.query),
+    );
   }
 }
