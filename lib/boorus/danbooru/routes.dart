@@ -223,7 +223,7 @@ final postSearchHandler = Handler(handlerFunc: (
     autocompleteRepository: context.read<AutocompleteRepository>(),
   );
 
-  final postBloc = PostBloc.of(context);
+  final postBloc = PostBloc.of(context, pagination: true);
   final searchHistoryCubit = SearchHistoryCubit(
     searchHistoryRepository: context.read<SearchHistoryRepository>(),
   );

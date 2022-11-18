@@ -21,13 +21,13 @@ abstract class InfiniteLoadState<T, State> {
   });
 }
 
-class EmitConfig<T, State> extends Equatable {
+class EmitConfig<T, State, StateGetter> extends Equatable {
   const EmitConfig({
     required this.stateGetter,
     required this.emitter,
   });
 
-  final InfiniteLoadState<T, State> Function() stateGetter;
+  final StateGetter Function() stateGetter;
   final Emitter<State> emitter;
 
   @override
@@ -42,7 +42,7 @@ mixin InfiniteLoadMixin<T, State> {
   List<T> data = [];
 
   FutureOr<void> refresh({
-    EmitConfig<T, State>? emit,
+    EmitConfig<T, State, InfiniteLoadState<T, State>>? emit,
     required Future<List<T>> Function(int page) refresh,
     void Function()? onRefreshStart,
     void Function()? onRefreshEnd,
@@ -92,7 +92,7 @@ mixin InfiniteLoadMixin<T, State> {
   }
 
   FutureOr<void> fetch({
-    EmitConfig<T, State>? emit,
+    EmitConfig<T, State, InfiniteLoadState<T, State>>? emit,
     required Future<List<T>> Function(int page) fetch,
     void Function()? onFetchStart,
     void Function(List<T> data)? onFetchEnd,

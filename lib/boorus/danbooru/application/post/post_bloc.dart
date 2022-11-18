@@ -18,11 +18,14 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/common/bloc/pagination_mixin.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 
 class PostBloc extends Bloc<PostEvent, PostState>
-    with InfiniteLoadMixin<PostData, PostState> {
+    with
+        InfiniteLoadMixin<PostData, PostState>,
+        PaginationMixin<PostData, PostState> {
   PostBloc({
     required PostRepository postRepository,
     required BlacklistedTagsRepository blacklistedTagsRepository,
@@ -34,47 +37,69 @@ class PostBloc extends Bloc<PostEvent, PostState>
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
     bool singleRefresh = false,
-  }) : super(PostState.initial()) {
+    bool? pagination,
+  }) : super(PostState.initial(pagination: pagination)) {
     on<PostRefreshed>(
       (event, emit) async {
-        await refresh(
-          emit: EmitConfig(
-            stateGetter: () => state,
-            emitter: emit,
-          ),
-          refresh: (page) => event.fetcher
-              .fetch(postRepository, page, limit: 20)
-              .then(createPostDataWith(
-                favoritePostRepository,
-                postVoteRepository,
-                poolRepository,
-                accountRepository,
-              ))
-              .then(filterWith(blacklistedTagsRepository))
-              .then(preloadPreviewImagesWith(previewPreloader)),
-          onError: handleErrorWith(emit),
-        );
+        if (!state.pagination) {
+          await refresh(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            refresh: (page) => event.fetcher
+                .fetch(postRepository, page, limit: 20)
+                .then(createPostDataWith(
+                  favoritePostRepository,
+                  postVoteRepository,
+                  poolRepository,
+                  accountRepository,
+                ))
+                .then(filterWith(blacklistedTagsRepository))
+                .then(preloadPreviewImagesWith(previewPreloader)),
+            onError: handleErrorWith(emit),
+          );
 
-        if (!singleRefresh) {
-          for (var i = 0; i < 2; i++) {
-            await fetch(
-              emit: EmitConfig(
-                stateGetter: () => state,
-                emitter: emit,
-              ),
-              fetch: (page) => event.fetcher
-                  .fetch(postRepository, page, limit: 20)
-                  .then(createPostDataWith(
-                    favoritePostRepository,
-                    postVoteRepository,
-                    poolRepository,
-                    accountRepository,
-                  ))
-                  .then(filterWith(blacklistedTagsRepository))
-                  .then(preloadPreviewImagesWith(previewPreloader)),
-              onError: handleErrorWith(emit),
-            );
+          if (!singleRefresh) {
+            for (var i = 0; i < 2; i++) {
+              await fetch(
+                emit: EmitConfig(
+                  stateGetter: () => state,
+                  emitter: emit,
+                ),
+                fetch: (page) => event.fetcher
+                    .fetch(postRepository, page, limit: 20)
+                    .then(createPostDataWith(
+                      favoritePostRepository,
+                      postVoteRepository,
+                      poolRepository,
+                      accountRepository,
+                    ))
+                    .then(filterWith(blacklistedTagsRepository))
+                    .then(preloadPreviewImagesWith(previewPreloader)),
+                onError: handleErrorWith(emit),
+              );
+            }
           }
+        } else {
+          await load(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            page: 1,
+            fetch: (page) => event.fetcher
+                .fetch(postRepository, page, limit: 60)
+                .then(createPostDataWith(
+                  favoritePostRepository,
+                  postVoteRepository,
+                  poolRepository,
+                  accountRepository,
+                ))
+                .then(filterWith(blacklistedTagsRepository))
+                .then(preloadPreviewImagesWith(previewPreloader)),
+            onError: handleErrorWith(emit),
+          );
         }
       },
       transformer: restartable(),
@@ -82,23 +107,46 @@ class PostBloc extends Bloc<PostEvent, PostState>
 
     on<PostFetched>(
       (event, emit) async {
-        await fetch(
-          emit: EmitConfig(
-            stateGetter: () => state,
-            emitter: emit,
-          ),
-          fetch: (page) => event.fetcher
-              .fetch(postRepository, page)
-              .then(createPostDataWith(
-                favoritePostRepository,
-                postVoteRepository,
-                poolRepository,
-                accountRepository,
-              ))
-              .then(filterWith(blacklistedTagsRepository))
-              .then(preloadPreviewImagesWith(previewPreloader)),
-          onError: handleErrorWith(emit),
-        );
+        if (!state.pagination) {
+          await fetch(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            fetch: (page) => event.fetcher
+                .fetch(postRepository, page)
+                .then(createPostDataWith(
+                  favoritePostRepository,
+                  postVoteRepository,
+                  poolRepository,
+                  accountRepository,
+                ))
+                .then(filterWith(blacklistedTagsRepository))
+                .then(preloadPreviewImagesWith(previewPreloader)),
+            onError: handleErrorWith(emit),
+          );
+        } else {
+          if (event.page == null) return;
+
+          await load(
+            emit: EmitConfig(
+              stateGetter: () => state,
+              emitter: emit,
+            ),
+            page: event.page!,
+            fetch: (page) => event.fetcher
+                .fetch(postRepository, page, limit: 60)
+                .then(createPostDataWith(
+                  favoritePostRepository,
+                  postVoteRepository,
+                  poolRepository,
+                  accountRepository,
+                ))
+                .then(filterWith(blacklistedTagsRepository))
+                .then(preloadPreviewImagesWith(previewPreloader)),
+            onError: handleErrorWith(emit),
+          );
+        }
       },
       transformer: droppable(),
     );
@@ -147,7 +195,11 @@ class PostBloc extends Bloc<PostEvent, PostState>
     data = initialData ?? [];
   }
 
-  factory PostBloc.of(BuildContext context) => PostBloc(
+  factory PostBloc.of(
+    BuildContext context, {
+    bool? pagination,
+  }) =>
+      PostBloc(
         postRepository: context.read<PostRepository>(),
         blacklistedTagsRepository: context.read<BlacklistedTagsRepository>(),
         favoritePostRepository: context.read<FavoritePostRepository>(),
@@ -155,6 +207,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
         postVoteRepository: context.read<PostVoteRepository>(),
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
+        pagination: pagination,
       );
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(
