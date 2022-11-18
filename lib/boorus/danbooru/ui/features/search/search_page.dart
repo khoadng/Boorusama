@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/search/search_options.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
@@ -133,7 +133,7 @@ class _LargeLayout extends StatelessWidget {
                             ? _TagSuggestionItems(
                                 queryEditingController: queryEditingController,
                               )
-                            : _SearchOptions(
+                            : _LandingView(
                                 onFocusRequest: () => focus.requestFocus(),
                               );
                       },
@@ -209,8 +209,8 @@ class _SelectedTagList extends StatelessWidget {
   }
 }
 
-class _SearchOptions extends StatelessWidget {
-  const _SearchOptions({
+class _LandingView extends StatelessWidget {
+  const _LandingView({
     this.onFocusRequest,
   });
 
@@ -218,10 +218,7 @@ class _SearchOptions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final metatags = context.select((SearchBloc bloc) => bloc.state.metatags);
-
-    return SearchOptions(
-      metatags: metatags,
+    return LandingView(
       onOptionTap: (value) {
         context.read<SearchBloc>().add(
               SearchRawMetatagSelected(
@@ -316,7 +313,7 @@ class _SmallLayout extends StatelessWidget {
                   } else if (displayState == DisplayState.noResult) {
                     return EmptyView(text: 'search.no_result'.tr());
                   } else {
-                    return _SearchOptions(
+                    return _LandingView(
                       onFocusRequest: () => focus.requestFocus(),
                     );
                   }
