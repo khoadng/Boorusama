@@ -89,7 +89,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: 1,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: 60)
+                .fetch(postRepository, page, limit: postPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -135,7 +135,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: event.page!,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: 60)
+                .fetch(postRepository, page, limit: postPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -209,6 +209,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
       );
+
+  static const postPerPage = 60;
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(
     Emitter emit,

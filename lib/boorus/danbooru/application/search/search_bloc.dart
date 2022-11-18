@@ -8,6 +8,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:tuple/tuple.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
@@ -33,6 +34,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
     required PostCountRepository postCountRepository,
     required List<Metatag> metatags,
+    required BooruType booruType,
     String? initialQuery,
   }) : super(SearchState(
           displayState: initial,
@@ -163,8 +165,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       emit(state.copyWith(totalResults: -1));
 
-      final totalResults =
-          await postCountRepository.count(event.query.split(' '));
+      final tags = event.query.split(' ');
+      if (booruType == BooruType.safebooru) {
+        tags.add('rating:g');
+      }
+
+      final totalResults = await postCountRepository.count(tags);
 
       emit(state.copyWith(totalResults: totalResults));
     });

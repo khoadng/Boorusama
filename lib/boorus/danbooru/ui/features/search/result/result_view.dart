@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:math' as math;
+
 // Flutter imports:
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -49,7 +52,10 @@ class _ResultViewState extends State<ResultView> {
   @override
   Widget build(BuildContext context) {
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+    final totalResults =
+        context.select((SearchBloc bloc) => bloc.state.totalResults);
     final state = context.watch<PostBloc>().state;
+    final maxPage = (totalResults / PostBloc.postPerPage).ceil();
 
     return state.pagination
         ? CustomScrollView(
@@ -76,24 +82,29 @@ class _ResultViewState extends State<ResultView> {
                           : null,
                       icon: const Icon(Icons.chevron_left),
                     ),
-                    ...generatePage(current: state.page)
-                        .map((page) => ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: const CircleBorder(),
-                                backgroundColor: page == state.page
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.transparent,
-                              ),
-                              onPressed: () {
-                                _fetch(page, tags);
-                              },
-                              child: Text(
-                                '$page',
-                                style: Theme.of(context).textTheme.titleLarge,
-                              ),
-                            )),
+                    ...generatePage(
+                      current: state.page,
+                      total: totalResults,
+                      postPerPage: PostBloc.postPerPage,
+                    ).map((page) => ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            shape: const CircleBorder(),
+                            backgroundColor: page == state.page
+                                ? Theme.of(context).colorScheme.primary
+                                : Colors.transparent,
+                          ),
+                          onPressed: () {
+                            _fetch(page, tags);
+                          },
+                          child: Text(
+                            '$page',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        )),
                     IconButton(
-                      onPressed: () => _fetch(state.page + 1, tags),
+                      onPressed: maxPage != state.page
+                          ? () => _fetch(state.page + 1, tags)
+                          : null,
                       icon: const Icon(Icons.chevron_right),
                     ),
                   ],
@@ -141,8 +152,20 @@ class _ResultViewState extends State<ResultView> {
 
 List<int> generatePage({
   required int current,
+  required int total,
+  required int postPerPage,
 }) {
-  if (current < 4) return List.generate(4, (index) => index + 1);
+  final maxPage = (total / postPerPage).ceil();
+  const maxSelectablePage = 4;
+  if (current < maxSelectablePage) {
+    return List.generate(
+      maxSelectablePage,
+      (index) => math.min(index + 1, maxPage),
+    ).toSet().toList();
+  }
 
-  return List.generate(4, (index) => current + index - 1);
+  return List.generate(
+    maxSelectablePage,
+    (index) => math.min(current + index - 1, maxPage),
+  ).toSet().toList();
 }
