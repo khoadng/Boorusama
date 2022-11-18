@@ -52,102 +52,100 @@ class _PostSliderState extends State<PostSlider> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostDetailBloc, PostDetailState>(
-      builder: (context, state) {
-        return CarouselSlider.builder(
-          itemCount: widget.posts.length,
-          itemBuilder: (context, index, realIndex) {
-            final media = PostMediaItem(
-              //TODO: this is used to preload image between page
-              post: widget.posts[index].post,
-              onCached: (path) => widget.imagePath.value = path,
-              enableNotes: state.enableNotes,
-              notes: state.currentPost.notes,
-              previewCacheManager: context.read<PreviewImageCacheManager>(),
-              onTap: () => context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailOverlayVisibilityChanged(
-                    enableOverlay: !state.enableOverlay,
-                  )),
-              onZoomUpdated: (zoom) {
-                final swipe = !zoom;
-                if (swipe != enableSwipe) {
-                  setState(() {
-                    enableSwipe = swipe;
-                  });
-                }
-              },
-            );
+    final state = context.watch<PostDetailBloc>().state;
 
-            return AnnotatedRegion<SystemUiOverlayStyle>(
-              value: const SystemUiOverlayStyle(
-                statusBarColor: Colors.transparent,
-              ),
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                body: state.enableSlideShow || state.fullScreen
-                    ? SafeArea(
-                        child: Center(
-                          child: media,
-                        ),
-                      )
-                    : BlocBuilder<SettingsCubit, SettingsState>(
-                        buildWhen: (previous, current) =>
-                            previous.settings.actionBarDisplayBehavior !=
-                            current.settings.actionBarDisplayBehavior,
-                        builder: (context, settingsState) {
-                          return Stack(
-                            children: [
-                              if (Screen.of(context).size != ScreenSize.small &&
-                                  !state.currentPost.post.isVideo)
-                                Center(
-                                  child: media,
-                                )
-                              else
-                                _CarouselContent(
-                                  media: media,
-                                  imagePath: widget.imagePath,
-                                  actionBarDisplayBehavior: settingsState
-                                      .settings.actionBarDisplayBehavior,
-                                  post: state.currentPost,
-                                  preloadPost: widget.posts[index].post,
-                                  key: ValueKey(state.currentIndex),
-                                  recommends: state.recommends,
-                                  pools: widget.posts[index].pools,
-                                ),
-                            ],
-                          );
-                        },
-                      ),
-              ),
-            );
+    return CarouselSlider.builder(
+      itemCount: widget.posts.length,
+      itemBuilder: (context, index, realIndex) {
+        final media = PostMediaItem(
+          //TODO: this is used to preload image between page
+          post: widget.posts[index].post,
+          onCached: (path) => widget.imagePath.value = path,
+          enableNotes: state.enableNotes,
+          notes: state.currentPost.notes,
+          previewCacheManager: context.read<PreviewImageCacheManager>(),
+          onTap: () => context
+              .read<PostDetailBloc>()
+              .add(PostDetailOverlayVisibilityChanged(
+                enableOverlay: !state.enableOverlay,
+              )),
+          onZoomUpdated: (zoom) {
+            final swipe = !zoom;
+            if (swipe != enableSwipe) {
+              setState(() {
+                enableSwipe = swipe;
+              });
+            }
           },
-          options: CarouselOptions(
-            scrollPhysics: enableSwipe
-                ? const DetailPageViewScrollPhysics()
-                : const NeverScrollableScrollPhysics(),
-            onPageChanged: (index, reason) {
-              context
-                  .read<SliverPostGridBloc>()
-                  .add(SliverPostGridItemChanged(index: index));
+        );
 
-              context
-                  .read<PostDetailBloc>()
-                  .add(PostDetailIndexChanged(index: index));
-            },
-            height: MediaQuery.of(context).size.height,
-            viewportFraction: 1,
-            enableInfiniteScroll: false,
-            initialPage: state.currentIndex,
-            autoPlay: state.enableSlideShow,
-            autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
-                ? const Duration(microseconds: 1)
-                : const Duration(milliseconds: 600),
-            autoPlayInterval:
-                Duration(seconds: state.slideShowConfig.interval.toInt()),
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+          ),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: state.enableSlideShow || state.fullScreen
+                ? SafeArea(
+                    child: Center(
+                      child: media,
+                    ),
+                  )
+                : BlocBuilder<SettingsCubit, SettingsState>(
+                    buildWhen: (previous, current) =>
+                        previous.settings.actionBarDisplayBehavior !=
+                        current.settings.actionBarDisplayBehavior,
+                    builder: (context, settingsState) {
+                      return Stack(
+                        children: [
+                          if (Screen.of(context).size != ScreenSize.small &&
+                              !state.currentPost.post.isVideo)
+                            Center(
+                              child: media,
+                            )
+                          else
+                            _CarouselContent(
+                              media: media,
+                              imagePath: widget.imagePath,
+                              actionBarDisplayBehavior: settingsState
+                                  .settings.actionBarDisplayBehavior,
+                              post: state.currentPost,
+                              preloadPost: widget.posts[index].post,
+                              key: ValueKey(state.currentIndex),
+                              recommends: state.recommends,
+                              pools: widget.posts[index].pools,
+                            ),
+                        ],
+                      );
+                    },
+                  ),
           ),
         );
       },
+      options: CarouselOptions(
+        scrollPhysics: enableSwipe
+            ? const DetailPageViewScrollPhysics()
+            : const NeverScrollableScrollPhysics(),
+        onPageChanged: (index, reason) {
+          context
+              .read<SliverPostGridBloc>()
+              .add(SliverPostGridItemChanged(index: index));
+
+          context
+              .read<PostDetailBloc>()
+              .add(PostDetailIndexChanged(index: index));
+        },
+        height: MediaQuery.of(context).size.height,
+        viewportFraction: 1,
+        enableInfiniteScroll: false,
+        initialPage: state.currentIndex,
+        autoPlay: state.enableSlideShow,
+        autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
+            ? const Duration(microseconds: 1)
+            : const Duration(milliseconds: 600),
+        autoPlayInterval:
+            Duration(seconds: state.slideShowConfig.interval.toInt()),
+      ),
     );
   }
 }
