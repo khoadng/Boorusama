@@ -124,6 +124,10 @@ class _LargeLayout extends StatelessWidget {
                               )
                             : _LandingView(
                                 onFocusRequest: () => focus.requestFocus(),
+                                onTextChanged: (text) => _onTextChanged(
+                                  queryEditingController,
+                                  text,
+                                ),
                               );
                       },
                     ),
@@ -201,9 +205,11 @@ class _SelectedTagList extends StatelessWidget {
 class _LandingView extends StatelessWidget {
   const _LandingView({
     this.onFocusRequest,
+    required this.onTextChanged,
   });
 
   final VoidCallback? onFocusRequest;
+  final void Function(String text) onTextChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -215,6 +221,7 @@ class _LandingView extends StatelessWidget {
               ),
             );
         onFocusRequest?.call();
+        onTextChanged.call('$value:');
       },
       onHistoryTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -304,6 +311,8 @@ class _SmallLayout extends StatelessWidget {
                   } else {
                     return _LandingView(
                       onFocusRequest: () => focus.requestFocus(),
+                      onTextChanged: (text) =>
+                          _onTextChanged(queryEditingController, text),
                     );
                   }
                 },
@@ -314,6 +323,15 @@ class _SmallLayout extends StatelessWidget {
       ),
     );
   }
+}
+
+void _onTextChanged(
+  TextEditingController controller,
+  String text,
+) {
+  controller
+    ..text = text
+    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }
 
 class _TagSuggestionItems extends StatelessWidget {
