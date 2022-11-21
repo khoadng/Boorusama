@@ -49,18 +49,7 @@ class _SearchPageState extends State<SearchPage> {
     onMatch: (List<String> match) {},
   );
   final compositeSubscription = CompositeSubscription();
-  final FocusNode focus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-
-    queryEditingController.addListener(() {
-      queryEditingController.selection = TextSelection.fromPosition(
-        TextPosition(offset: queryEditingController.text.length),
-      );
-    });
-  }
+  final focus = FocusNode();
 
   @override
   void dispose() {
@@ -76,9 +65,9 @@ class _SearchPageState extends State<SearchPage> {
       listeners: [
         BlocListener<SearchBloc, SearchState>(
           listenWhen: (previous, current) =>
-              previous.currentQuery != current.currentQuery,
+              previous.currentQuery.isNotEmpty && current.currentQuery.isEmpty,
           listener: (context, state) {
-            queryEditingController.text = state.currentQuery;
+            queryEditingController.clear();
           },
         ),
       ],

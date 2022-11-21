@@ -120,6 +120,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchGoBackToSearchOptionsRequested>((event, emit) {
       postBloc.add(const PostReset());
+      tagSearchBloc.add(const TagSearchCleared());
       emit(state.copyWith(
         displayState: DisplayState.options,
         error: () => null,
