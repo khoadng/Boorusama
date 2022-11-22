@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dar
 import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
@@ -97,6 +98,17 @@ class SettingsPage extends StatelessWidget {
                                 onTap: () => Navigator.of(context)
                                     .push(ParallaxSlideInPageRoute(
                                   enterWidget: const DownloadPage(),
+                                  oldWidget: this,
+                                )),
+                              ),
+                              ListTile(
+                                title: const Text('Search'),
+                                leading: const FaIcon(
+                                  FontAwesomeIcons.magnifyingGlass,
+                                ),
+                                onTap: () => Navigator.of(context)
+                                    .push(ParallaxSlideInPageRoute(
+                                  enterWidget: const SearchSettingsPage(),
                                   oldWidget: this,
                                 )),
                               ),
