@@ -29,7 +29,11 @@ class ResultCounter extends StatelessWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(width: 10),
-          const CircularProgressIndicator.adaptive(),
+          const SizedBox(
+            width: 15,
+            height: 15,
+            child: CircularProgressIndicator.adaptive(),
+          ),
         ],
       );
     } else {

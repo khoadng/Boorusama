@@ -17,7 +17,7 @@ class ResultHeader extends StatelessWidget {
         children: const [
           Padding(
             padding: EdgeInsets.symmetric(
-              horizontal: 8,
+              horizontal: 16,
               vertical: 4,
             ),
             child: ResultCounter(),

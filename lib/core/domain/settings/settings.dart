@@ -25,6 +25,11 @@ enum DownloadMethod {
   imageGallerySaver,
 }
 
+enum ContentOrganizationCategory {
+  infiniteScroll,
+  pagination,
+}
+
 class Settings extends Equatable {
   const Settings({
     required this.safeMode,
@@ -42,6 +47,7 @@ class Settings extends Equatable {
     required this.imageQualityInFullView,
     required this.imageListType,
     required this.detailsDisplay,
+    required this.contentOrganizationCategory,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -76,6 +82,11 @@ class Settings extends Equatable {
         detailsDisplay = json['detailsDisplay'] != null
             ? DetailsDisplay.values[json['detailsDisplay']]
             : DetailsDisplay.postFocus,
+        contentOrganizationCategory =
+            json['contentOrganizationCategory'] != null
+                ? ContentOrganizationCategory
+                    .values[json['contentOrganizationCategory']]
+                : ContentOrganizationCategory.infiniteScroll,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -95,6 +106,7 @@ class Settings extends Equatable {
     imageQualityInFullView: ImageQuality.automatic,
     imageListType: ImageListType.masonry,
     detailsDisplay: DetailsDisplay.postFocus,
+    contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
   );
 
   final String blacklistedTags;
@@ -120,6 +132,8 @@ class Settings extends Equatable {
 
   final DetailsDisplay detailsDisplay;
 
+  final ContentOrganizationCategory contentOrganizationCategory;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -136,6 +150,7 @@ class Settings extends Equatable {
     ImageQuality? imageQualityInFullView,
     ImageListType? imageListType,
     DetailsDisplay? detailsDisplay,
+    ContentOrganizationCategory? contentOrganizationCategory,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -155,6 +170,8 @@ class Settings extends Equatable {
             imageQualityInFullView ?? this.imageQualityInFullView,
         imageListType: imageListType ?? this.imageListType,
         detailsDisplay: detailsDisplay ?? this.detailsDisplay,
+        contentOrganizationCategory:
+            contentOrganizationCategory ?? this.contentOrganizationCategory,
       );
 
   Map<String, dynamic> toJson() => {
@@ -173,6 +190,7 @@ class Settings extends Equatable {
         'imageQualityInFullView': imageQualityInFullView.index,
         'imageListType': imageListType.index,
         'detailsDisplay': detailsDisplay.index,
+        'contentOrganizationCategory': contentOrganizationCategory.index,
       };
 
   @override
@@ -192,5 +210,6 @@ class Settings extends Equatable {
         imageQualityInFullView,
         imageListType,
         detailsDisplay,
+        contentOrganizationCategory,
       ];
 }
