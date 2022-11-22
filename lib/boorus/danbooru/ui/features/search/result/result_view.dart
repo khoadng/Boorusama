@@ -196,7 +196,10 @@ class _PaginationState extends State<_Pagination>
                   onPressed: state.page > 1
                       ? () => _fetch(state.page - 1, tags)
                       : null,
-                  icon: const Icon(Icons.chevron_left),
+                  icon: const Icon(
+                    Icons.chevron_left,
+                    size: 32,
+                  ),
                 ),
                 ...generatePage(
                   current: state.page,
@@ -209,19 +212,25 @@ class _PaginationState extends State<_Pagination>
                             ? Theme.of(context).colorScheme.primary
                             : Colors.transparent,
                       ),
-                      onPressed: () {
-                        _fetch(page, tags);
-                      },
+                      onPressed: () => _fetch(page, tags),
                       child: Text(
                         '$page',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        style: page == state.page
+                            ? Theme.of(context).textTheme.titleLarge
+                            : Theme.of(context)
+                                .textTheme
+                                .titleLarge!
+                                .copyWith(color: Theme.of(context).hintColor),
                       ),
                     )),
                 IconButton(
                   onPressed: maxPage != state.page
                       ? () => _fetch(state.page + 1, tags)
                       : null,
-                  icon: const Icon(Icons.chevron_right),
+                  icon: const Icon(
+                    Icons.chevron_right,
+                    size: 32,
+                  ),
                 ),
               ],
             ),
