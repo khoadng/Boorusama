@@ -102,7 +102,7 @@ class SettingsPage extends StatelessWidget {
                                 )),
                               ),
                               ListTile(
-                                title: const Text('Search'),
+                                title: const Text('settings.search').tr(),
                                 leading: const FaIcon(
                                   FontAwesomeIcons.magnifyingGlass,
                                 ),

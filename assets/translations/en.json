@@ -180,6 +180,7 @@
         "app_settings" :"App Settings",
         "appearance" :  "Appearance",
         "general" :  "General",
+        "search" :  "Search",
         "information" : "Information",
         "changelog" : "Changelog",
         "general_data_source": "Data source",

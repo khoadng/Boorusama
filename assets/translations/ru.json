@@ -180,6 +180,7 @@
         "app_settings" :"Настройки приложения",
         "appearance" :  "Внешний вид",
         "general" :  "Генеральные",
+        "search" :  "Search",
         "information" : "Информация",
         "changelog" : "История изменений",
         "general_data_source": "Источник",

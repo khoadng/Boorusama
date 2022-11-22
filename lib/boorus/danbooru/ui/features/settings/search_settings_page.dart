@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:recase/recase.dart';
 
@@ -28,7 +29,7 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
     return Scaffold(
       appBar: widget.hasAppBar
           ? AppBar(
-              title: const Text('Search'),
+              title: const Text('settings.search').tr(),
             )
           : null,
       body: BlocBuilder<SettingsCubit, SettingsState>(
