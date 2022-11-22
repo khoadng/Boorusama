@@ -224,7 +224,7 @@ final postSearchHandler = Handler(handlerFunc: (
   );
 
   final postBloc = PostBloc.of(context);
-  final searchHistoryCubit = SearchHistoryCubit(
+  final searchHistoryCubit = SearchHistoryBloc(
     searchHistoryRepository: context.read<SearchHistoryRepository>(),
   );
   final relatedTagBloc = RelatedTagBloc(
@@ -248,7 +248,7 @@ final postSearchHandler = Handler(handlerFunc: (
           initial: DisplayState.options,
           metatags: context.read<TagInfo>().metatags,
           tagSearchBloc: tagSearchBloc,
-          searchHistoryCubit: searchHistoryCubit,
+          searchHistoryBloc: searchHistoryCubit,
           relatedTagBloc: relatedTagBloc,
           searchHistorySuggestionsBloc: searchHistorySuggestions,
           postBloc: postBloc,

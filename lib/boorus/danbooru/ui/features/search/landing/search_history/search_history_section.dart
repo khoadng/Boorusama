@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'history_list.dart';
+
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+    show SearchHistoryBloc;
 
 class SearchHistorySection extends StatelessWidget {
   const SearchHistorySection({
@@ -23,9 +24,9 @@ class SearchHistorySection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status =
-        context.select((SearchHistoryCubit cubit) => cubit.state.status);
+        context.select((SearchHistoryBloc cubit) => cubit.state.histories);
 
-    return status == LoadStatus.success
+    return status.isNotEmpty
         ? HistoryList(
             onHistoryRemoved: onHistoryRemoved,
             onHistoryTap: onHistoryTap,

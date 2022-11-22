@@ -235,6 +235,9 @@ class _LandingView extends StatelessWidget {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
       },
+      onHistoryRemoved: (value) {
+        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
+      },
     );
   }
 }

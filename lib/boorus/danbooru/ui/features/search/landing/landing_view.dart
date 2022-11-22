@@ -8,22 +8,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
 import 'favorite_tags/favorite_tags_section.dart';
 import 'metatags/metatags_section.dart';
-import 'search_history/search_history.dart';
+import 'search_history/search_history_section.dart';
 import 'trending/trending_section.dart';
 
 class LandingView extends StatefulWidget {
   const LandingView({
     super.key,
-    this.onOptionTap,
-    this.onHistoryTap,
-    this.onTagTap,
-    this.onHistoryRemoved,
+    required this.onOptionTap,
+    required this.onHistoryTap,
+    required this.onTagTap,
+    required this.onHistoryRemoved,
   });
 
-  final ValueChanged<String>? onOptionTap;
-  final ValueChanged<String>? onHistoryTap;
-  final ValueChanged<SearchHistory>? onHistoryRemoved;
-  final ValueChanged<String>? onTagTap;
+  final ValueChanged<String> onOptionTap;
+  final ValueChanged<String> onHistoryTap;
+  final ValueChanged<SearchHistory> onHistoryRemoved;
+  final ValueChanged<String> onTagTap;
 
   @override
   State<LandingView> createState() => _LandingViewState();
@@ -88,9 +88,9 @@ class _LandingViewState extends State<LandingView>
               ),
               TrendingSection(onTagTap: widget.onTagTap),
               SearchHistorySection(
-                onHistoryTap: (history) => widget.onHistoryTap?.call(history),
+                onHistoryTap: (history) => widget.onHistoryTap.call(history),
                 onHistoryRemoved: (history) =>
-                    widget.onHistoryRemoved?.call(history),
+                    widget.onHistoryRemoved.call(history),
               ),
             ],
           ),

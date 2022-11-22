@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+    show SearchHistoryBloc;
 
 class HistoryList extends StatelessWidget {
   const HistoryList({
@@ -23,18 +25,18 @@ class HistoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final histories =
-        context.select((SearchHistoryCubit cubit) => cubit.state.data);
+        context.select((SearchHistoryBloc bloc) => bloc.state.histories);
 
-    if (histories == null || histories.isEmpty) return const SizedBox.shrink();
+    if (histories.isEmpty) return const SizedBox.shrink();
 
     return Column(
       children: [
-        const _HistoryHeader(),
         const Divider(
           thickness: 1,
           indent: 10,
           endIndent: 10,
         ),
+        const _HistoryHeader(),
         ...histories.map(
           (item) => _HistoryTile(
             item: item,
