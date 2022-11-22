@@ -11,7 +11,6 @@ import 'package:tuple/tuple.dart';
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/search_history.dart';
@@ -21,6 +20,9 @@ import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+    as sh;
+
 part 'search_event.dart';
 part 'search_state.dart';
 
@@ -29,9 +31,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     required DisplayState initial,
     required TagSearchBloc tagSearchBloc,
     required PostBloc postBloc,
-    required SearchHistoryCubit searchHistoryCubit,
+    required sh.SearchHistoryBloc searchHistoryBloc,
     required RelatedTagBloc relatedTagBloc,
-    required SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
+    required sh.SearchHistorySuggestionsBloc searchHistorySuggestionsBloc,
     required PostCountRepository postCountRepository,
     required List<Metatag> metatags,
     required BooruType booruType,
@@ -52,7 +54,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       }
 
       searchHistorySuggestionsBloc
-          .add(SearchHistorySuggestionsFetched(text: event.query));
+          .add(sh.SearchHistorySuggestionsFetched(text: event.query));
 
       tagSearchBloc.add(TagSearchChanged(event.query));
     });
@@ -95,15 +97,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<SearchHistoryDeleted>((event, emit) {
-      searchHistoryCubit.removeHistory(event.history.query);
+      searchHistoryBloc.add(sh.SearchHistoryRemoved(event.history.query));
       if (state.displayState == DisplayState.suggestion) {
         searchHistorySuggestionsBloc
-            .add(SearchHistorySuggestionsFetched(text: state.currentQuery));
+            .add(sh.SearchHistorySuggestionsFetched(text: state.currentQuery));
       }
     });
 
     on<SearchHistoryCleared>((event, emit) {
-      searchHistoryCubit.clearHistory();
+      searchHistoryBloc.add(const sh.SearchHistoryCleared());
     });
 
     on<SearchRequested>((event, emit) {
@@ -122,6 +124,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
     on<SearchGoBackToSearchOptionsRequested>((event, emit) {
       postBloc.add(const PostReset());
+      tagSearchBloc.add(const TagSearchCleared());
       emit(state.copyWith(
         displayState: DisplayState.options,
         error: () => null,
@@ -154,7 +157,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     });
 
     on<_SearchRequested>((event, emit) async {
-      searchHistoryCubit.addHistory(event.query);
+      searchHistoryBloc.add(sh.SearchHistoryAdded(event.query));
 
       relatedTagBloc.add(RelatedTagRequested(query: event.query));
 
@@ -218,7 +221,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       add(SearchWithRawTagRequested(initialQuery));
     }
 
-    searchHistoryCubit.getSearchHistory();
+    searchHistoryBloc.add(const sh.SearchHistoryFetched());
   }
 
   final compositeSubscription = CompositeSubscription();

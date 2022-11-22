@@ -233,7 +233,7 @@ final postSearchHandler = Handler(handlerFunc: (
             pagination: settingsState.settings.contentOrganizationCategory ==
                 ContentOrganizationCategory.pagination,
           );
-          final searchHistoryCubit = SearchHistoryCubit(
+          final searchHistoryCubit = SearchHistoryBloc(
             searchHistoryRepository: context.read<SearchHistoryRepository>(),
           );
           final relatedTagBloc = RelatedTagBloc(

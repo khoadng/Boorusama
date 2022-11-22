@@ -49,18 +49,7 @@ class _SearchPageState extends State<SearchPage> {
     onMatch: (List<String> match) {},
   );
   final compositeSubscription = CompositeSubscription();
-  final FocusNode focus = FocusNode();
-
-  @override
-  void initState() {
-    super.initState();
-
-    queryEditingController.addListener(() {
-      queryEditingController.selection = TextSelection.fromPosition(
-        TextPosition(offset: queryEditingController.text.length),
-      );
-    });
-  }
+  final focus = FocusNode();
 
   @override
   void dispose() {
@@ -76,9 +65,9 @@ class _SearchPageState extends State<SearchPage> {
       listeners: [
         BlocListener<SearchBloc, SearchState>(
           listenWhen: (previous, current) =>
-              previous.currentQuery != current.currentQuery,
+              previous.currentQuery.isNotEmpty && current.currentQuery.isEmpty,
           listener: (context, state) {
-            queryEditingController.text = state.currentQuery;
+            queryEditingController.clear();
           },
         ),
       ],
@@ -135,6 +124,10 @@ class _LargeLayout extends StatelessWidget {
                               )
                             : _LandingView(
                                 onFocusRequest: () => focus.requestFocus(),
+                                onTextChanged: (text) => _onTextChanged(
+                                  queryEditingController,
+                                  text,
+                                ),
                               );
                       },
                     ),
@@ -212,9 +205,11 @@ class _SelectedTagList extends StatelessWidget {
 class _LandingView extends StatelessWidget {
   const _LandingView({
     this.onFocusRequest,
+    required this.onTextChanged,
   });
 
   final VoidCallback? onFocusRequest;
+  final void Function(String text) onTextChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -226,6 +221,7 @@ class _LandingView extends StatelessWidget {
               ),
             );
         onFocusRequest?.call();
+        onTextChanged.call('$value:');
       },
       onHistoryTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
@@ -238,6 +234,9 @@ class _LandingView extends StatelessWidget {
       onTagTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
         context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+      },
+      onHistoryRemoved: (value) {
+        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
       },
     );
   }
@@ -315,6 +314,8 @@ class _SmallLayout extends StatelessWidget {
                   } else {
                     return _LandingView(
                       onFocusRequest: () => focus.requestFocus(),
+                      onTextChanged: (text) =>
+                          _onTextChanged(queryEditingController, text),
                     );
                   }
                 },
@@ -325,6 +326,15 @@ class _SmallLayout extends StatelessWidget {
       ),
     );
   }
+}
+
+void _onTextChanged(
+  TextEditingController controller,
+  String text,
+) {
+  controller
+    ..text = text
+    ..selection = TextSelection.collapsed(offset: controller.text.length);
 }
 
 class _TagSuggestionItems extends StatelessWidget {
