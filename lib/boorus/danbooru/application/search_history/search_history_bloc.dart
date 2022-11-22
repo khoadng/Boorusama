@@ -99,7 +99,7 @@ class SearchHistoryBloc extends Bloc<SearchHistoryEvent, SearchHistoryState> {
     List<SearchHistory> histories,
   ) =>
       emit(state.copyWith(
-        histories: _sortByDateDesc(histories).take(5).toList(),
+        histories: _sortByDateDesc(histories),
       ));
 }
 
