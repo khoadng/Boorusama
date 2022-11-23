@@ -15,26 +15,31 @@ class DateTimeSelector extends StatelessWidget {
     required this.onDateChanged,
     required this.date,
     required this.scale,
+    this.backgroundColor,
   });
 
   final void Function(DateTime date) onDateChanged;
   final DateTime date;
   final TimeScale scale;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: [
-        IconButton(
-          icon: const Icon(Icons.keyboard_arrow_left),
-          onPressed: () =>
-              onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
+        Material(
+          color: Colors.transparent,
+          child: IconButton(
+            icon: const Icon(Icons.keyboard_arrow_left),
+            onPressed: () =>
+                onDateChanged(Jiffy(date).dateTime.subtractTimeScale(scale)),
+          ),
         ),
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: Theme.of(context).textTheme.headline6!.color,
-            backgroundColor: Theme.of(context).cardColor,
+            backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(18)),
             ),
@@ -57,10 +62,13 @@ class DateTimeSelector extends StatelessWidget {
             ],
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.keyboard_arrow_right),
-          onPressed: () =>
-              onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
+        Material(
+          color: Colors.transparent,
+          child: IconButton(
+            icon: const Icon(Icons.keyboard_arrow_right),
+            onPressed: () =>
+                onDateChanged(Jiffy(date).dateTime.addTimeScale(scale)),
+          ),
         ),
       ],
     );

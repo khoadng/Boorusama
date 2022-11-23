@@ -53,16 +53,13 @@ class _ExploreDetailState extends State<_ExploreDetail> {
           _scrollController.jumpTo(0);
           _refreshController.requestRefresh();
         },
-        child: Column(
-          children: [
-            Expanded(
-              child: widget.builder(
-                context,
-                _refreshController,
-                _scrollController,
-              ),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: widget.builder(
+            context,
+            _refreshController,
+            _scrollController,
+          ),
         ),
       ),
     );
@@ -105,37 +102,22 @@ List<Widget> _categoryToListHeader(
   DateTime date,
   TimeScale scale,
 ) {
-  if (category == ExploreCategory.curated ||
-      category == ExploreCategory.popular) {
-    return [
-      DateTimeSelector(
-        onDateChanged: (date) => context
-            .read<ExploreDetailBloc>()
-            .add(ExploreDetailDateChanged(date)),
-        date: date,
-        scale: scale,
-      ),
-      TimeScaleToggleSwitch(
-        onToggle: (scale) => {
-          context
-              .read<ExploreDetailBloc>()
-              .add(ExploreDetailTimeScaleChanged(scale)),
-        },
-      ),
-      const SizedBox(height: 20),
-    ];
-  } else if (category == ExploreCategory.hot) {
-    return [];
-  } else {
-    return [
-      DateTimeSelector(
-        onDateChanged: (date) => context
-            .read<ExploreDetailBloc>()
-            .add(ExploreDetailDateChanged(date)),
-        date: date,
-        scale: scale,
-      ),
-    ];
+  switch (category) {
+    case ExploreCategory.popular:
+    case ExploreCategory.curated:
+      return [
+        TimeScaleToggleSwitch(
+          onToggle: (scale) => {
+            context
+                .read<ExploreDetailBloc>()
+                .add(ExploreDetailTimeScaleChanged(scale)),
+          },
+        ),
+        const SizedBox(height: 20),
+      ];
+    case ExploreCategory.mostViewed:
+    case ExploreCategory.hot:
+      return [];
   }
 }
 
@@ -200,35 +182,57 @@ class _ExplorePostGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<PostBloc>().state;
 
-    return ExplorePostGrid(
-      headers: _categoryToListHeader(
-        context,
-        category,
-        date,
-        scale,
-      ),
-      hasMore: state.hasMore,
-      isLoading: state.loading,
-      scrollController: scrollController,
-      controller: refreshController,
-      date: date,
-      scale: scale,
-      status: state.status,
-      posts: state.posts,
-      onLoadMore: (date, scale) => context.read<PostBloc>().add(PostFetched(
-            tags: '',
-            fetcher: _categoryToFetcher(category, date, scale, context),
-          )),
-      onRefresh: (date, scale) => context.read<PostBloc>().add(
-            PostRefreshed(
-              fetcher: _categoryToFetcher(
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: ExplorePostGrid(
+              headers: _categoryToListHeader(
+                context,
                 category,
                 date,
                 scale,
-                context,
               ),
+              hasMore: state.hasMore,
+              isLoading: state.loading,
+              scrollController: scrollController,
+              controller: refreshController,
+              date: date,
+              scale: scale,
+              status: state.status,
+              posts: state.posts,
+              onLoadMore: (date, scale) => context
+                  .read<PostBloc>()
+                  .add(PostFetched(
+                    tags: '',
+                    fetcher: _categoryToFetcher(category, date, scale, context),
+                  )),
+              onRefresh: (date, scale) => context.read<PostBloc>().add(
+                    PostRefreshed(
+                      fetcher: _categoryToFetcher(
+                        category,
+                        date,
+                        scale,
+                        context,
+                      ),
+                    ),
+                  ),
             ),
           ),
+          if (category != ExploreCategory.hot)
+            Container(
+              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+              child: DateTimeSelector(
+                onDateChanged: (date) => context
+                    .read<ExploreDetailBloc>()
+                    .add(ExploreDetailDateChanged(date)),
+                date: date,
+                scale: scale,
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
