@@ -16,6 +16,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
 import 'result/result_view.dart';
@@ -268,7 +269,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
-class _SmallLayout extends StatelessWidget {
+class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
@@ -276,6 +277,19 @@ class _SmallLayout extends StatelessWidget {
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+
+  @override
+  State<_SmallLayout> createState() => _SmallLayoutState();
+}
+
+class _SmallLayoutState extends State<_SmallLayout> {
+  final scrollController = AutoScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -287,8 +301,8 @@ class _SmallLayout extends StatelessWidget {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
           ),
           body: SafeArea(
             child: SingleChildScrollView(
@@ -297,9 +311,9 @@ class _SmallLayout extends StatelessWidget {
                   const _SelectedTagList(),
                   const _Divider(),
                   _LandingView(
-                    onFocusRequest: () => focus.requestFocus(),
+                    onFocusRequest: () => widget.focus.requestFocus(),
                     onTextChanged: (text) =>
-                        _onTextChanged(queryEditingController, text),
+                        _onTextChanged(widget.queryEditingController, text),
                   ),
                 ],
               ),
@@ -309,8 +323,8 @@ class _SmallLayout extends StatelessWidget {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -319,7 +333,7 @@ class _SmallLayout extends StatelessWidget {
                 const _Divider(),
                 Expanded(
                   child: _TagSuggestionItems(
-                    queryEditingController: queryEditingController,
+                    queryEditingController: widget.queryEditingController,
                   ),
                 ),
               ],
@@ -329,8 +343,8 @@ class _SmallLayout extends StatelessWidget {
       case DisplayState.error:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -345,8 +359,8 @@ class _SmallLayout extends StatelessWidget {
       case DisplayState.noResult:
         return Scaffold(
           appBar: _AppBar(
-            focusNode: focus,
-            queryEditingController: queryEditingController,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
           ),
           body: SafeArea(
             child: Column(
@@ -360,20 +374,40 @@ class _SmallLayout extends StatelessWidget {
         );
       case DisplayState.result:
         return ResultView(
+          scrollController: scrollController,
           headerBuilder: () => [
             SliverAppBar(
+              titleSpacing: 0,
+              toolbarHeight: kToolbarHeight * 1.9,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              title: _SearchBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SearchBar(
+                      enabled: false,
+                      onTap: () => context
+                          .read<SearchBloc>()
+                          .add(const SearchGoBackToSearchOptionsRequested()),
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => context
+                            .read<SearchBloc>()
+                            .add(const SearchGoBackToSearchOptionsRequested()),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: const _SelectedTagList(),
+                  ),
+                ],
               ),
               floating: true,
               snap: true,
               automaticallyImplyLeading: false,
-            ),
-            const SliverPadding(
-              padding: EdgeInsets.only(top: 12),
-              sliver: SliverToBoxAdapter(child: _SelectedTagList()),
             ),
             const SliverToBoxAdapter(child: _Divider()),
           ],

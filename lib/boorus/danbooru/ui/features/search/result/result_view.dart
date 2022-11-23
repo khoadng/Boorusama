@@ -24,9 +24,11 @@ class ResultView extends StatefulWidget {
   const ResultView({
     super.key,
     this.headerBuilder,
+    this.scrollController,
   });
 
   final List<Widget> Function()? headerBuilder;
+  final AutoScrollController? scrollController;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -34,12 +36,15 @@ class ResultView extends StatefulWidget {
 
 class _ResultViewState extends State<ResultView> {
   final refreshController = RefreshController();
-  final scrollController = AutoScrollController();
+  late final scrollController =
+      widget.scrollController ?? AutoScrollController();
 
   @override
   void dispose() {
     refreshController.dispose();
-    scrollController.dispose();
+    if (widget.scrollController == null) {
+      scrollController.dispose();
+    }
     super.dispose();
   }
 
@@ -77,6 +82,7 @@ class _InfiniteScroll extends StatelessWidget {
     final state = context.watch<PostBloc>().state;
 
     return InfiniteLoadListScrollView(
+      scrollPhysics: const NoImplicitScrollPhysics(),
       scrollController: scrollController,
       isLoading: state.loading,
       refreshController: refreshController,
@@ -182,6 +188,7 @@ class _PaginationState extends State<_Pagination>
         ),
       ),
       body: CustomScrollView(
+        physics: const NoImplicitScrollPhysics(),
         controller: widget.scrollController,
         slivers: [
           ...widget.headerBuilder?.call() ?? [],
@@ -275,4 +282,16 @@ List<int> generatePage({
     maxSelectablePage,
     (index) => math.min(current + index - 1, maxPage),
   ).toSet().toList();
+}
+
+class NoImplicitScrollPhysics extends AlwaysScrollableScrollPhysics {
+  const NoImplicitScrollPhysics({super.parent});
+
+  @override
+  bool get allowImplicitScrolling => false;
+
+  @override
+  NoImplicitScrollPhysics applyTo(ScrollPhysics? ancestor) {
+    return NoImplicitScrollPhysics(parent: buildParent(ancestor));
+  }
 }
