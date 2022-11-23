@@ -139,7 +139,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                   ),
                 ),
               ),
-              if (histories.isNotEmpty) const Divider(),
+              if (histories.isNotEmpty) const Divider(thickness: 1),
               ...tags.map(
                 (tag) => ListTile(
                   onTap: () => onItemTap(tag),
