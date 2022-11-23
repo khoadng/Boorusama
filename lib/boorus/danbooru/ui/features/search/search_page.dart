@@ -279,47 +279,106 @@ class _SmallLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: const SearchButton(),
-      appBar: _AppBar(
-        focusNode: focus,
-        queryEditingController: queryEditingController,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const _SelectedTagList(),
-            const _Divider(),
-            Expanded(
-              child: BlocSelector<SearchBloc, SearchState, DisplayState>(
-                selector: (state) => state.displayState,
-                builder: (context, displayState) {
-                  switch (displayState) {
-                    case DisplayState.options:
-                      return _LandingView(
-                        onFocusRequest: () => focus.requestFocus(),
-                        onTextChanged: (text) =>
-                            _onTextChanged(queryEditingController, text),
-                      );
-                    case DisplayState.suggestion:
-                      return _TagSuggestionItems(
-                        queryEditingController: queryEditingController,
-                      );
-                    case DisplayState.result:
-                      return const ResultView();
-                    case DisplayState.noResult:
-                      return EmptyView(text: 'search.no_result'.tr());
-                    case DisplayState.error:
-                      return const _ErrorView();
-                  }
-                },
+    final displayState =
+        context.select((SearchBloc bloc) => bloc.state.displayState);
+
+    switch (displayState) {
+      case DisplayState.options:
+        return Scaffold(
+          floatingActionButton: const SearchButton(),
+          appBar: _AppBar(
+            focusNode: focus,
+            queryEditingController: queryEditingController,
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const _SelectedTagList(),
+                  const _Divider(),
+                  _LandingView(
+                    onFocusRequest: () => focus.requestFocus(),
+                    onTextChanged: (text) =>
+                        _onTextChanged(queryEditingController, text),
+                  ),
+                ],
               ),
             ),
+          ),
+        );
+      case DisplayState.suggestion:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: focus,
+            queryEditingController: queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                Expanded(
+                  child: _TagSuggestionItems(
+                    queryEditingController: queryEditingController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.error:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: focus,
+            queryEditingController: queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: const [
+                _SelectedTagList(),
+                _Divider(),
+                _ErrorView(),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.noResult:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: focus,
+            queryEditingController: queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                EmptyView(text: 'search.no_result'.tr()),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.result:
+        return ResultView(
+          headerBuilder: () => [
+            SliverAppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: _SearchBar(
+                focusNode: focus,
+                queryEditingController: queryEditingController,
+              ),
+              floating: true,
+              snap: true,
+              automaticallyImplyLeading: false,
+            ),
+            const SliverPadding(
+              padding: EdgeInsets.only(top: 12),
+              sliver: SliverToBoxAdapter(child: _SelectedTagList()),
+            ),
+            const SliverToBoxAdapter(child: _Divider()),
           ],
-        ),
-      ),
-    );
+        );
+    }
   }
 }
 

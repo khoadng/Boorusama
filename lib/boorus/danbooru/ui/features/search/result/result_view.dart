@@ -23,7 +23,10 @@ import 'result_header.dart';
 class ResultView extends StatefulWidget {
   const ResultView({
     super.key,
+    this.headerBuilder,
   });
+
+  final List<Widget> Function()? headerBuilder;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -47,10 +50,12 @@ class _ResultViewState extends State<ResultView> {
     return pagination
         ? _Pagination(
             scrollController: scrollController,
+            headerBuilder: widget.headerBuilder,
           )
         : _InfiniteScroll(
             scrollController: scrollController,
             refreshController: refreshController,
+            headerBuilder: widget.headerBuilder,
           );
   }
 }
@@ -59,10 +64,12 @@ class _InfiniteScroll extends StatelessWidget {
   const _InfiniteScroll({
     required this.scrollController,
     required this.refreshController,
+    this.headerBuilder,
   });
 
   final AutoScrollController scrollController;
   final RefreshController refreshController;
+  final List<Widget> Function()? headerBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +100,7 @@ class _InfiniteScroll extends StatelessWidget {
         );
       },
       sliverBuilder: (controller) => [
-        SliverToBoxAdapter(
-          child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
-        ),
+        ...headerBuilder?.call() ?? [],
         const SliverToBoxAdapter(child: RelatedTagSection()),
         const SliverToBoxAdapter(child: ResultHeader()),
         HomePostGrid(
@@ -110,9 +115,11 @@ class _InfiniteScroll extends StatelessWidget {
 class _Pagination extends StatefulWidget {
   const _Pagination({
     required this.scrollController,
+    this.headerBuilder,
   });
 
   final AutoScrollController scrollController;
+  final List<Widget> Function()? headerBuilder;
 
   @override
   State<_Pagination> createState() => _PaginationState();
@@ -177,9 +184,7 @@ class _PaginationState extends State<_Pagination>
       body: CustomScrollView(
         controller: widget.scrollController,
         slivers: [
-          SliverToBoxAdapter(
-            child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
-          ),
+          ...widget.headerBuilder?.call() ?? [],
           const SliverToBoxAdapter(child: RelatedTagSection()),
           const SliverToBoxAdapter(child: ResultHeader()),
           HomePostGrid(
