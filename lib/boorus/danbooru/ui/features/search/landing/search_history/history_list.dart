@@ -77,6 +77,7 @@ class _HistoryHeader extends StatelessWidget {
           IconButton(
             onPressed: () {
               final bloc = context.read<SearchHistoryBloc>();
+
               showMaterialModalBottomSheet(
                 context: context,
                 duration: const Duration(milliseconds: 200),
@@ -84,37 +85,10 @@ class _HistoryHeader extends StatelessWidget {
                     BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
                   bloc: bloc,
                   builder: (context, state) {
-                    return Scaffold(
-                      appBar: AppBar(
-                        title: const Text('search.history.history').tr(),
-                        actions: [
-                          TextButton(
-                            onPressed: () => context
-                                .read<SearchBloc>()
-                                .add(const SearchHistoryCleared()),
-                            child: const Text('search.history.clear').tr(),
-                          ),
-                        ],
-                      ),
-                      body: ListView.builder(
-                        itemCount: state.histories.length,
-                        itemBuilder: (context, index) => ListTile(
-                          title: Text(state.histories[index].query),
-                          onTap: () {
-                            Navigator.of(context).pop();
-
-                            onHistoryTap(state.histories[index].query);
-                          },
-                          trailing: IconButton(
-                            onPressed: () =>
-                                onHistoryRemoved(state.histories[index]),
-                            icon: Icon(
-                              Icons.close,
-                              color: Theme.of(context).hintColor,
-                            ),
-                          ),
-                        ),
-                      ),
+                    return _HistoryList(
+                      onHistoryTap: onHistoryTap,
+                      onHistoryRemoved: onHistoryRemoved,
+                      histories: state.histories,
                     );
                   },
                 ),
@@ -123,6 +97,52 @@ class _HistoryHeader extends StatelessWidget {
             icon: const Icon(Icons.manage_history),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _HistoryList extends StatelessWidget {
+  const _HistoryList({
+    required this.onHistoryTap,
+    required this.onHistoryRemoved,
+    required this.histories,
+  });
+
+  final ValueChanged<String> onHistoryTap;
+  final void Function(SearchHistory item) onHistoryRemoved;
+  final List<SearchHistory> histories;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('search.history.history').tr(),
+        actions: [
+          TextButton(
+            onPressed: () =>
+                context.read<SearchBloc>().add(const SearchHistoryCleared()),
+            child: const Text('search.history.clear').tr(),
+          ),
+        ],
+      ),
+      body: ListView.builder(
+        itemCount: histories.length,
+        itemBuilder: (context, index) => ListTile(
+          title: Text(histories[index].query),
+          onTap: () {
+            Navigator.of(context).pop();
+
+            onHistoryTap(histories[index].query);
+          },
+          trailing: IconButton(
+            onPressed: () => onHistoryRemoved(histories[index]),
+            icon: Icon(
+              Icons.close,
+              color: Theme.of(context).hintColor,
+            ),
+          ),
+        ),
       ),
     );
   }
