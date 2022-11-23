@@ -141,20 +141,18 @@ class _LargeLayout extends StatelessWidget {
             child: BlocSelector<SearchBloc, SearchState, DisplayState>(
               selector: (state) => state.displayState,
               builder: (context, displayState) {
-                if (displayState == DisplayState.result) {
-                  return const ResultView();
-                } else if (displayState == DisplayState.error) {
-                  return const _ErrorView();
-                } else if (displayState == DisplayState.loadingResult) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (displayState == DisplayState.noResult) {
-                  return EmptyView(text: 'search.no_result'.tr());
-                } else {
-                  return const Center(
-                    child: Text('Your result will appear here'),
-                  );
+                switch (displayState) {
+                  case DisplayState.options:
+                  case DisplayState.suggestion:
+                    return const Center(
+                      child: Text('Your result will appear here'),
+                    );
+                  case DisplayState.result:
+                    return const ResultView();
+                  case DisplayState.noResult:
+                    return EmptyView(text: 'search.no_result'.tr());
+                  case DisplayState.error:
+                    return const _ErrorView();
                 }
               },
             ),
@@ -297,26 +295,23 @@ class _SmallLayout extends StatelessWidget {
               child: BlocSelector<SearchBloc, SearchState, DisplayState>(
                 selector: (state) => state.displayState,
                 builder: (context, displayState) {
-                  if (displayState == DisplayState.suggestion) {
-                    return _TagSuggestionItems(
-                      queryEditingController: queryEditingController,
-                    );
-                  } else if (displayState == DisplayState.result) {
-                    return const ResultView();
-                  } else if (displayState == DisplayState.error) {
-                    return const _ErrorView();
-                  } else if (displayState == DisplayState.loadingResult) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (displayState == DisplayState.noResult) {
-                    return EmptyView(text: 'search.no_result'.tr());
-                  } else {
-                    return _LandingView(
-                      onFocusRequest: () => focus.requestFocus(),
-                      onTextChanged: (text) =>
-                          _onTextChanged(queryEditingController, text),
-                    );
+                  switch (displayState) {
+                    case DisplayState.options:
+                      return _LandingView(
+                        onFocusRequest: () => focus.requestFocus(),
+                        onTextChanged: (text) =>
+                            _onTextChanged(queryEditingController, text),
+                      );
+                    case DisplayState.suggestion:
+                      return _TagSuggestionItems(
+                        queryEditingController: queryEditingController,
+                      );
+                    case DisplayState.result:
+                      return const ResultView();
+                    case DisplayState.noResult:
+                      return EmptyView(text: 'search.no_result'.tr());
+                    case DisplayState.error:
+                      return const _ErrorView();
                   }
                 },
               ),

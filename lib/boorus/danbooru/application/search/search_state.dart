@@ -3,7 +3,6 @@ part of 'search_bloc.dart';
 enum DisplayState {
   options,
   suggestion,
-  loadingResult,
   result,
   noResult,
   error,
