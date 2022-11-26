@@ -57,6 +57,13 @@ class SearchHistorySuggestionsFetched extends SearchHistorySuggestionsEvent {
   List<Object?> get props => [text];
 }
 
+class SearchHistorySuggestionsCleared extends SearchHistorySuggestionsEvent {
+  const SearchHistorySuggestionsCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchHistorySuggestionsBloc
     extends Bloc<SearchHistorySuggestionsEvent, SearchHistorySuggestionsState> {
   SearchHistorySuggestionsBloc({
@@ -85,6 +92,10 @@ class SearchHistorySuggestionsBloc
           ));
         },
       );
+    });
+
+    on<SearchHistorySuggestionsCleared>((event, emit) {
+      emit(state.copyWith(histories: []));
     });
   }
 }

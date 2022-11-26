@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
@@ -16,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
 import 'result/result_view.dart';
@@ -246,10 +246,12 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
     this.focusNode,
+    this.autofocus = false,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -259,6 +261,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       title: _SearchBar(
+        autofocus: autofocus,
         focusNode: focusNode,
         queryEditingController: queryEditingController,
       ),
@@ -323,6 +326,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
       case DisplayState.suggestion:
         return Scaffold(
           appBar: _AppBar(
+            autofocus: true,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
@@ -390,7 +394,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
                       enabled: false,
                       onTap: () => context
                           .read<SearchBloc>()
-                          .add(const SearchGoBackToSearchOptionsRequested()),
+                          .add(const SearchGoToSuggestionsRequested()),
                       leading: IconButton(
                         icon: const Icon(Icons.arrow_back),
                         onPressed: () => context
@@ -481,14 +485,17 @@ class _SearchBar extends StatelessWidget {
   const _SearchBar({
     required this.queryEditingController,
     this.focusNode,
+    this.autofocus = false,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+      autofocus: autofocus,
       focus: focusNode,
       queryEditingController: queryEditingController,
       leading: BlocSelector<SearchBloc, SearchState, DisplayState>(
