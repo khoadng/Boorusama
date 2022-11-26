@@ -27,8 +27,8 @@ class MostSearchTagList extends StatelessWidget {
     if (searches == null || searches.isEmpty) return const SizedBox.shrink();
 
     return Container(
-      margin: const EdgeInsets.only(left: 8),
-      height: 50,
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      height: 40,
       child: ListView.builder(
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,

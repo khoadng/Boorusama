@@ -175,6 +175,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
     this.refreshController,
     this.extendBody,
     this.enableRefresh = true,
+    this.scrollPhysics,
   });
 
   final bool? extendBody;
@@ -187,6 +188,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
   final bool isLoading;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
+  final ScrollPhysics? scrollPhysics;
 
   @override
   Widget build(BuildContext context) {
@@ -199,6 +201,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
       onLoadMore: onLoadMore,
       onRefresh: onRefresh,
       builder: (context, controller) => CustomScrollView(
+        physics: scrollPhysics,
         controller: controller,
         slivers: [
           ...sliverBuilder(controller),

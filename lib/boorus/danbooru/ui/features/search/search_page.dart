@@ -6,6 +6,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
@@ -141,20 +142,18 @@ class _LargeLayout extends StatelessWidget {
             child: BlocSelector<SearchBloc, SearchState, DisplayState>(
               selector: (state) => state.displayState,
               builder: (context, displayState) {
-                if (displayState == DisplayState.result) {
-                  return const ResultView();
-                } else if (displayState == DisplayState.error) {
-                  return const _ErrorView();
-                } else if (displayState == DisplayState.loadingResult) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (displayState == DisplayState.noResult) {
-                  return EmptyView(text: 'search.no_result'.tr());
-                } else {
-                  return const Center(
-                    child: Text('Your result will appear here'),
-                  );
+                switch (displayState) {
+                  case DisplayState.options:
+                  case DisplayState.suggestion:
+                    return const Center(
+                      child: Text('Your result will appear here'),
+                    );
+                  case DisplayState.result:
+                    return const ResultView();
+                  case DisplayState.noResult:
+                    return EmptyView(text: 'search.no_result'.tr());
+                  case DisplayState.error:
+                    return const _ErrorView();
                 }
               },
             ),
@@ -247,10 +246,12 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   const _AppBar({
     required this.queryEditingController,
     this.focusNode,
+    this.autofocus = false,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
@@ -260,6 +261,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
       title: _SearchBar(
+        autofocus: autofocus,
         focusNode: focusNode,
         queryEditingController: queryEditingController,
       ),
@@ -270,7 +272,7 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Size get preferredSize => const Size.fromHeight(kToolbarHeight * 1.2);
 }
 
-class _SmallLayout extends StatelessWidget {
+class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
@@ -280,51 +282,141 @@ class _SmallLayout extends StatelessWidget {
   final RichTextController queryEditingController;
 
   @override
+  State<_SmallLayout> createState() => _SmallLayoutState();
+}
+
+class _SmallLayoutState extends State<_SmallLayout> {
+  final scrollController = AutoScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      floatingActionButton: const SearchButton(),
-      appBar: _AppBar(
-        focusNode: focus,
-        queryEditingController: queryEditingController,
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const _SelectedTagList(),
-            const _Divider(),
-            Expanded(
-              child: BlocSelector<SearchBloc, SearchState, DisplayState>(
-                selector: (state) => state.displayState,
-                builder: (context, displayState) {
-                  if (displayState == DisplayState.suggestion) {
-                    return _TagSuggestionItems(
-                      queryEditingController: queryEditingController,
-                    );
-                  } else if (displayState == DisplayState.result) {
-                    return const ResultView();
-                  } else if (displayState == DisplayState.error) {
-                    return const _ErrorView();
-                  } else if (displayState == DisplayState.loadingResult) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if (displayState == DisplayState.noResult) {
-                    return EmptyView(text: 'search.no_result'.tr());
-                  } else {
-                    return _LandingView(
-                      onFocusRequest: () => focus.requestFocus(),
-                      onTextChanged: (text) =>
-                          _onTextChanged(queryEditingController, text),
-                    );
-                  }
-                },
+    final displayState =
+        context.select((SearchBloc bloc) => bloc.state.displayState);
+
+    switch (displayState) {
+      case DisplayState.options:
+        return Scaffold(
+          floatingActionButton: const SearchButton(),
+          appBar: _AppBar(
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  const _SelectedTagList(),
+                  const _Divider(),
+                  _LandingView(
+                    onFocusRequest: () => widget.focus.requestFocus(),
+                    onTextChanged: (text) =>
+                        _onTextChanged(widget.queryEditingController, text),
+                  ),
+                ],
               ),
             ),
+          ),
+        );
+      case DisplayState.suggestion:
+        return Scaffold(
+          appBar: _AppBar(
+            autofocus: true,
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                Expanded(
+                  child: _TagSuggestionItems(
+                    queryEditingController: widget.queryEditingController,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.error:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: const [
+                _SelectedTagList(),
+                _Divider(),
+                _ErrorView(),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.noResult:
+        return Scaffold(
+          appBar: _AppBar(
+            focusNode: widget.focus,
+            queryEditingController: widget.queryEditingController,
+          ),
+          body: SafeArea(
+            child: Column(
+              children: [
+                const _SelectedTagList(),
+                const _Divider(),
+                EmptyView(text: 'search.no_result'.tr()),
+              ],
+            ),
+          ),
+        );
+      case DisplayState.result:
+        return ResultView(
+          scrollController: scrollController,
+          headerBuilder: () => [
+            SliverAppBar(
+              titleSpacing: 0,
+              toolbarHeight: kToolbarHeight * 1.9,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: SearchBar(
+                      enabled: false,
+                      onTap: () => context
+                          .read<SearchBloc>()
+                          .add(const SearchGoToSuggestionsRequested()),
+                      leading: IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () => context
+                            .read<SearchBloc>()
+                            .add(const SearchGoBackToSearchOptionsRequested()),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: const _SelectedTagList(),
+                  ),
+                ],
+              ),
+              floating: true,
+              snap: true,
+              automaticallyImplyLeading: false,
+            ),
+            const SliverToBoxAdapter(child: _Divider()),
           ],
-        ),
-      ),
-    );
+        );
+    }
   }
 }
 
@@ -393,14 +485,17 @@ class _SearchBar extends StatelessWidget {
   const _SearchBar({
     required this.queryEditingController,
     this.focusNode,
+    this.autofocus = false,
   });
 
   final RichTextController queryEditingController;
   final FocusNode? focusNode;
+  final bool autofocus;
 
   @override
   Widget build(BuildContext context) {
     return SearchBar(
+      autofocus: autofocus,
       focus: focusNode,
       queryEditingController: queryEditingController,
       leading: BlocSelector<SearchBloc, SearchState, DisplayState>(

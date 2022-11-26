@@ -142,6 +142,13 @@ class TagSearchSelectedTagCleared extends TagSearchEvent {
   List<Object?> get props => [];
 }
 
+class TagSearchSuggestionsCleared extends TagSearchEvent {
+  const TagSearchSuggestionsCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class TagSearchDone extends TagSearchEvent {
   const TagSearchDone();
 
@@ -268,6 +275,12 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     on<TagSearchSelectedTagCleared>((event, emit) {
       emit(state.copyWith(
         selectedTags: [],
+      ));
+    });
+
+    on<TagSearchSuggestionsCleared>((event, emit) {
+      emit(state.copyWith(
+        suggestionTags: [],
       ));
     });
   }

@@ -131,6 +131,20 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
     });
 
+    on<SearchGoToSuggestionsRequested>((event, emit) {
+      tagSearchBloc
+        ..add(const TagSearchSuggestionsCleared())
+        ..add(const TagSearchCleared());
+
+      searchHistorySuggestionsBloc
+          .add(const sh.SearchHistorySuggestionsCleared());
+
+      emit(state.copyWith(
+        displayState: DisplayState.suggestion,
+        error: () => null,
+      ));
+    });
+
     on<SearchSelectedTagCleared>((event, emit) {
       tagSearchBloc.add(const TagSearchSelectedTagCleared());
       add(const SearchGoBackToSearchOptionsRequested());

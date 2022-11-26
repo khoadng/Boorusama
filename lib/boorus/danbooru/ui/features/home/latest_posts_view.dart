@@ -87,18 +87,15 @@ class _LatestViewState extends State<LatestView> {
       scrollController: _autoScrollController,
       sliverBuilder: (controller) => [
         _AppBar(onMenuTap: widget.onMenuTap),
-        SliverPadding(
-          padding: const EdgeInsets.only(bottom: 2),
-          sliver: SliverToBoxAdapter(
-            child: ValueListenableBuilder<String>(
-              valueListenable: _selectedTag,
-              builder: (context, value, child) => _MostSearchTagSection(
-                selected: value,
-                onSelected: (search) {
-                  _selectedTag.value =
-                      search.keyword == value ? '' : search.keyword;
-                },
-              ),
+        SliverToBoxAdapter(
+          child: ValueListenableBuilder<String>(
+            valueListenable: _selectedTag,
+            builder: (context, value, child) => _MostSearchTagSection(
+              selected: value,
+              onSelected: (search) {
+                _selectedTag.value =
+                    search.keyword == value ? '' : search.keyword;
+              },
             ),
           ),
         ),

@@ -59,6 +59,12 @@ class SearchGoBackToSearchOptionsRequested extends SearchEvent {
   List<Object?> get props => [];
 }
 
+class SearchGoToSuggestionsRequested extends SearchEvent {
+  const SearchGoToSuggestionsRequested();
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchQueryChanged extends SearchEvent {
   const SearchQueryChanged({
     required this.query,
