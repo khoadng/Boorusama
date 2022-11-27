@@ -360,7 +360,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
               children: const [
                 _SelectedTagList(),
                 _Divider(),
-                _ErrorView(),
+                Expanded(child: _ErrorView()),
               ],
             ),
           ),
@@ -376,7 +376,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
               children: [
                 const _SelectedTagList(),
                 const _Divider(),
-                EmptyView(text: 'search.no_result'.tr()),
+                Expanded(child: EmptyView(text: 'search.no_result'.tr())),
               ],
             ),
           ),
