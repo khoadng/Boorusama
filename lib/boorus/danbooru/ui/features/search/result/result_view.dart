@@ -221,6 +221,7 @@ class _PaginationState extends State<_Pagination>
                 ).map((page) => ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: const CircleBorder(),
+                        shadowColor: Colors.transparent,
                         backgroundColor: page == state.page
                             ? Theme.of(context).colorScheme.primary
                             : Colors.transparent,
@@ -247,6 +248,9 @@ class _PaginationState extends State<_Pagination>
                 ),
               ],
             ),
+          ),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: 20),
           ),
         ],
       ),

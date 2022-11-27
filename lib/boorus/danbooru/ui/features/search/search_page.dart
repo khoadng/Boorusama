@@ -104,36 +104,40 @@ class _LargeLayout extends StatelessWidget {
       body: Row(
         children: [
           ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 250),
-            child: Scaffold(
-              resizeToAvoidBottomInset: false,
-              appBar: _AppBar(
-                focusNode: focus,
-                queryEditingController: queryEditingController,
-              ),
-              body: Column(
-                children: [
-                  const _SelectedTagList(),
-                  const _Divider(),
-                  Expanded(
-                    child: BlocSelector<SearchBloc, SearchState, DisplayState>(
-                      selector: (state) => state.displayState,
-                      builder: (context, displayState) {
-                        return displayState == DisplayState.suggestion
-                            ? _TagSuggestionItems(
-                                queryEditingController: queryEditingController,
-                              )
-                            : _LandingView(
-                                onFocusRequest: () => focus.requestFocus(),
-                                onTextChanged: (text) => _onTextChanged(
-                                  queryEditingController,
-                                  text,
-                                ),
-                              );
-                      },
+            constraints: const BoxConstraints(maxWidth: 400),
+            child: SafeArea(
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: _AppBar(
+                  focusNode: focus,
+                  queryEditingController: queryEditingController,
+                ),
+                body: Column(
+                  children: [
+                    const _SelectedTagList(),
+                    const _Divider(),
+                    Expanded(
+                      child:
+                          BlocSelector<SearchBloc, SearchState, DisplayState>(
+                        selector: (state) => state.displayState,
+                        builder: (context, displayState) {
+                          return displayState == DisplayState.suggestion
+                              ? _TagSuggestionItems(
+                                  queryEditingController:
+                                      queryEditingController,
+                                )
+                              : _LandingView(
+                                  onFocusRequest: () => focus.requestFocus(),
+                                  onTextChanged: (text) => _onTextChanged(
+                                    queryEditingController,
+                                    text,
+                                  ),
+                                );
+                        },
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -257,9 +261,10 @@ class _AppBar extends StatelessWidget with PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       elevation: 0,
-      backgroundColor: Colors.transparent,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       shadowColor: Colors.transparent,
       automaticallyImplyLeading: false,
+      toolbarHeight: kToolbarHeight * 1.2,
       title: _SearchBar(
         autofocus: autofocus,
         focusNode: focusNode,
@@ -384,36 +389,39 @@ class _SmallLayoutState extends State<_SmallLayout> {
               titleSpacing: 0,
               toolbarHeight: kToolbarHeight * 1.9,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: SearchBar(
-                      enabled: false,
-                      onTap: () => context
-                          .read<SearchBloc>()
-                          .add(const SearchGoToSuggestionsRequested()),
-                      leading: IconButton(
-                        icon: const Icon(Icons.arrow_back),
-                        onPressed: () => context
+              elevation: 0,
+              shadowColor: Colors.transparent,
+              title: SizedBox(
+                height: kToolbarHeight * 1.85,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 8),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: SearchBar(
+                        enabled: false,
+                        onTap: () => context
                             .read<SearchBloc>()
-                            .add(const SearchGoBackToSearchOptionsRequested()),
+                            .add(const SearchGoToSuggestionsRequested()),
+                        leading: IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: () => context.read<SearchBloc>().add(
+                                const SearchGoBackToSearchOptionsRequested(),
+                              ),
+                        ),
                       ),
                     ),
-                  ),
-                  Container(
-                    margin: const EdgeInsets.only(top: 16),
-                    child: const _SelectedTagList(),
-                  ),
-                ],
+                    const SizedBox(height: 10),
+                    const _SelectedTagList(),
+                  ],
+                ),
               ),
               floating: true,
               snap: true,
               automaticallyImplyLeading: false,
             ),
-            const SliverToBoxAdapter(child: _Divider()),
+            const SliverToBoxAdapter(child: _Divider(height: 7)),
           ],
         );
     }
@@ -469,14 +477,18 @@ class _TagSuggestionItems extends StatelessWidget {
 }
 
 class _Divider extends StatelessWidget {
-  const _Divider();
+  const _Divider({
+    this.height,
+  });
+
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
 
     return tags.isNotEmpty
-        ? const Divider(height: 15, thickness: 1)
+        ? Divider(height: height ?? 15, thickness: 1)
         : const SizedBox.shrink();
   }
 }
