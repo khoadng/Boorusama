@@ -76,7 +76,7 @@ class SelectedTagChip extends StatelessWidget {
               maxWidth: MediaQuery.of(context).size.width * 0.85,
             ),
             child: Text(
-              tagSearchItem.tag,
+              tagSearchItem.tag.replaceAll('_', ' '),
               overflow: TextOverflow.fade,
               style: const TextStyle(color: Colors.white70),
             ),

@@ -21,7 +21,7 @@ final _defaultMetatags = [
 ];
 
 void main() {
-  group('[tag search item test]', () {
+  group('[parse tests]', () {
     test('valid tag', () {
       final item = TagSearchItem.fromString(
         'tag',
@@ -116,6 +116,46 @@ void main() {
           operator: FilterOperator.none,
         ),
       );
+    });
+
+    group('convert to string tests', () {
+      test('tag with operator', () {
+        const item = TagSearchItem(
+          tag: 'tag',
+          operator: FilterOperator.not,
+        );
+
+        expect(
+          item.toString(),
+          '-tag',
+        );
+      });
+
+      test('tag with metatag', () {
+        const item = TagSearchItem(
+          tag: 'tag',
+          operator: FilterOperator.none,
+          metatag: 'foo',
+        );
+
+        expect(
+          item.toString(),
+          'foo:tag',
+        );
+      });
+
+      test('tag with metatag and operator', () {
+        const item = TagSearchItem(
+          tag: 'tag',
+          operator: FilterOperator.not,
+          metatag: 'foo',
+        );
+
+        expect(
+          item.toString(),
+          '-foo:tag',
+        );
+      });
     });
   });
 }
