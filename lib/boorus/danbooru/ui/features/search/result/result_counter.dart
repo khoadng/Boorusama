@@ -16,6 +16,8 @@ class ResultCounter extends StatelessWidget {
   Widget build(BuildContext context) {
     final count = context.select((SearchBloc bloc) => bloc.state.totalResults);
 
+    if (count == null) return const SizedBox.shrink();
+
     if (count > 0) {
       return Text(
         '$count Results',

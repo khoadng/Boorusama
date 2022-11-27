@@ -180,7 +180,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         fetcher: SearchedPostFetcher.fromTags(event.query),
       ));
 
-      emit(state.copyWith(totalResults: -1));
+      emit(state.copyWith(totalResults: () => -1));
 
       final tags = event.query.split(' ');
       if (booruType == BooruType.safebooru) {
@@ -189,7 +189,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       final totalResults = await postCountRepository.count(tags);
 
-      emit(state.copyWith(totalResults: totalResults));
+      emit(state.copyWith(totalResults: () => totalResults));
     });
 
     on<_CopyState>((event, emit) {

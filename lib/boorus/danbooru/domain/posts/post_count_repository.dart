@@ -1,3 +1,3 @@
 abstract class PostCountRepository {
-  Future<int> count(List<String> tags);
+  Future<int?> count(List<String> tags);
 }

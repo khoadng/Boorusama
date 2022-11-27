@@ -172,7 +172,8 @@ class _PaginationState extends State<_Pagination>
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
     final totalResults =
         context.select((SearchBloc bloc) => bloc.state.totalResults);
-    final maxPage = (totalResults / PostBloc.postPerPage).ceil();
+    final maxPage =
+        totalResults != null ? (totalResults / PostBloc.postPerPage).ceil() : 1;
     final state = context.watch<PostBloc>().state;
 
     return Scaffold(
@@ -266,9 +267,11 @@ class _PaginationState extends State<_Pagination>
 
 List<int> generatePage({
   required int current,
-  required int total,
+  required int? total,
   required int postPerPage,
 }) {
+  if (total == null) return [1];
+
   final maxPage = (total / postPerPage).ceil();
   const maxSelectablePage = 4;
   if (current < maxSelectablePage) {
