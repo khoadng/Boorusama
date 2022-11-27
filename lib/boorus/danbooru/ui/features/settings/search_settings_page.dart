@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -39,20 +38,21 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
               primary: false,
               children: [
                 SettingsTile<ContentOrganizationCategory>(
-                  title: const Text('Result layout'),
+                  title:
+                      const Text('settings.result_layout.result_layout').tr(),
                   selectedOption: state.settings.contentOrganizationCategory,
                   subtitle: state.settings.contentOrganizationCategory ==
                           ContentOrganizationCategory.infiniteScroll
                       ? const Text(
-                          'Might crash the app if you scroll for a long time',
-                        )
+                          'settings.infinite_scroll_warning',
+                        ).tr()
                       : null,
                   items: const [...ContentOrganizationCategory.values],
                   onChanged: (value) => context.read<SettingsCubit>().update(
                         state.settings
                             .copyWith(contentOrganizationCategory: value),
                       ),
-                  optionBuilder: (value) => Text(value.name.sentenceCase),
+                  optionBuilder: (value) => Text(_layoutToString(value)).tr(),
                 ),
               ],
             ),
@@ -60,5 +60,14 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
         },
       ),
     );
+  }
+}
+
+String _layoutToString(ContentOrganizationCategory category) {
+  switch (category) {
+    case ContentOrganizationCategory.infiniteScroll:
+      return 'settings.result_layout.infinite_scroll';
+    case ContentOrganizationCategory.pagination:
+      return 'settings.result_layout.pagination';
   }
 }

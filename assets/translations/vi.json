@@ -87,6 +87,8 @@
             "login_required_notice" : "Bạn cần đăng nhập để thực hiện tác vụ này",
             "open_wiki" : "Mở wiki",
             "add_to_blacklist" : "Thêm vào bộ lọc",
+            "add_to_favorites" : "Thêm vào yêu thích",
+            "copy_and_open_saved_search" : "Copy và mở saved search",
             "score" : {
                 "one" : "Điểm",
                 "other": "Điểm"
@@ -190,6 +192,22 @@
         "information" : "Thông tin",
         "changelog" : "Changelog",
         "general_data_source": "Nguồn ảnh",
+        "infinite_scroll_warning" : "Có khả năng crash app nếu lướt quá lâu",
+        "result_layout" : {
+            "result_layout" : "Kiểu layout",
+            "infinite_scroll": "Lướt vô tận",
+            "pagination": "Chia trang"
+        },
+        "details_style" : {
+            "details_style" : "Chi tiết",
+            "post_focused": "Thông tin là chủ đạo",
+            "image_focused": "Ảnh là chủ đạo"
+        },
+        "image_list": {
+            "image_list" : "Kiểu list ảnh",
+            "standard" : "Tiêu chuẩn",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Lưới ảnh",
             "grid_size" : {

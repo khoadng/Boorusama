@@ -87,6 +87,8 @@
             "login_required_notice" : "You have to log in to perform this action",
             "open_wiki" : "Open wiki",
             "add_to_blacklist" : "Add to blacklist",
+            "add_to_favorites" : "Add to favorites",
+            "copy_and_open_saved_search" : "Copy and open saved search",
             "score" : {
                 "one" : "Point",
                 "other": "Points"
@@ -191,6 +193,22 @@
         "information" : "Information",
         "changelog" : "Changelog",
         "general_data_source": "Data source",
+        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "result_layout" : {
+            "result_layout" : "Result layout",
+            "infinite_scroll": "Infinite scroll",
+            "pagination": "Pagination"
+        },
+        "details_style" : {
+            "details_style" : "Default details style",
+            "post_focused": "Post focused",
+            "image_focused": "Image focused"
+        },
+        "image_list": {
+            "image_list" : "Image list",
+            "standard" : "Standard",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Image grid",
             "grid_size" : {
