@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class CharacterPage extends StatelessWidget {
   const CharacterPage({
@@ -25,11 +25,19 @@ class CharacterPage extends StatelessWidget {
     return TagDetailPage(
       tagName: characterName,
       otherNamesBuilder: (context) => BlocBuilder<WikiBloc, WikiState>(
-        builder: (context, state) => ConditionalRenderWidget(
-          condition: state.wiki != null,
-          childBuilder: (context) =>
-              TagOtherNames(otherNames: state.wiki!.otherNames),
-        ),
+        builder: (context, state) {
+          switch (state.status) {
+            case LoadStatus.initial:
+            case LoadStatus.loading:
+              return const SizedBox(height: 40, width: 40);
+            case LoadStatus.success:
+              return state.wiki != null
+                  ? TagOtherNames(otherNames: state.wiki!.otherNames)
+                  : const SizedBox.shrink();
+            case LoadStatus.failure:
+              return const SizedBox.shrink();
+          }
+        },
       ),
       backgroundImageUrl: backgroundImageUrl,
     );
