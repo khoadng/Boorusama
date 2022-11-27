@@ -193,12 +193,12 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
       emit(state.copyWith(
-        selectedTags: [
+        selectedTags: {
           ...state.selectedTags,
           ...event.tags
               .split(' ')
               .map((e) => TagSearchItem.fromString(e, tagInfo)),
-        ],
+        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -206,13 +206,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchNewRawStringTagSelected>((event, emit) {
       emit(state.copyWith(
-        selectedTags: [
+        selectedTags: {
           ...state.selectedTags,
           TagSearchItem.fromString(
             '${filterOperatorToString(state.operator)}${event.tag}',
             tagInfo,
           ),
-        ],
+        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -220,13 +220,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchNewRawStringTagsSelected>((event, emit) {
       emit(state.copyWith(
-        selectedTags: [
+        selectedTags: {
           ...state.selectedTags,
           ...event.tags.map((tag) => TagSearchItem.fromString(
                 '${filterOperatorToString(state.operator)}$tag',
                 tagInfo,
               )),
-        ],
+        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -234,13 +234,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
 
     on<TagSearchNewTagSelected>((event, emit) {
       emit(state.copyWith(
-        selectedTags: [
+        selectedTags: {
           ...state.selectedTags,
           TagSearchItem.fromString(
             '${filterOperatorToString(state.operator)}${event.tag.value}',
             tagInfo,
           ),
-        ],
+        }.toList(),
         query: '',
         suggestionTags: [],
       ));
@@ -260,13 +260,13 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
     on<TagSearchSubmitted>((event, emit) {
       if (state.query.isEmpty) return;
       emit(state.copyWith(
-        selectedTags: [
+        selectedTags: {
           ...state.selectedTags,
           TagSearchItem.fromString(
             state.query,
             tagInfo,
           ),
-        ],
+        }.toList(),
         query: '',
         suggestionTags: [],
       ));
