@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:basic_utils/basic_utils.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -85,7 +86,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             Padding(
               padding: const EdgeInsets.only(top: 24, bottom: 8),
               child: Text(
-                widget.title ?? 'Add a saved search',
+                widget.title ?? 'saved_search.add_saved_search'.tr(),
                 style: Theme.of(context).textTheme.headline6,
               ),
             ),
@@ -98,7 +99,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
               maxLines: null,
               decoration: _getDecoration(
                 context: context,
-                hint: 'Query',
+                hint: 'saved_search.saved_search_query'.tr(),
                 suffixIcon: Material(
                   color: Colors.transparent,
                   child: InkWell(
@@ -147,7 +148,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
               maxLines: null,
               decoration: _getDecoration(
                 context: context,
-                hint: 'Labels*',
+                hint: 'saved_search.saved_search_labels'.tr(),
                 suffixIcon: ValueListenableBuilder<bool>(
                   valueListenable: labelsHasText,
                   builder: (context, hasText, _) => hasText
@@ -161,7 +162,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
             Container(
               margin: const EdgeInsets.all(8),
               child: Text(
-                '*A list of tags to help categorize this search. Space delimited.',
+                'saved_search.saved_search_labels_description'.tr(),
                 style: Theme.of(context).textTheme.subtitle2!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontSize: 14,
@@ -186,7 +187,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
-                    child: const Text('Cancel'),
+                    child: const Text('generic.action.cancel').tr(),
                   ),
                   ValueListenableBuilder<bool>(
                     valueListenable: queryHasText,
@@ -206,7 +207,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                               Navigator.of(context).pop();
                             }
                           : null,
-                      child: const Text('OK'),
+                      child: const Text('generic.action.ok').tr(),
                     ),
                   ),
                 ],

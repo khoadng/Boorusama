@@ -4,6 +4,13 @@
         "errors" : {
             "no_data" : "Нет доступных данных",
             "unknown" : "Что-то пошло не так"
+        },
+        "action" : {
+            "add" : "Add",
+            "delete" : "Delete",
+            "edit" : "Edit",
+            "ok" : "OK",
+            "cancel" : "Cancel"
         }
     },
 
@@ -284,6 +291,26 @@
             "one": "Скачать {} изображение",
             "other": "Скачать {} изображений"
         }
+    },
+
+    "saved_search" : {
+        "saved_search" : "Saved search",
+        "saved_search_counter" : {
+            "one": "{} search",
+            "other": "{} searches"
+        },
+        "add_saved_search" : "Add a saved search",
+        "saved_search_added" : "Saved search has been added",
+        "empty_saved_search" : "You haven't add any search yet",
+        "update_saved_search" : "Update saved search",
+        "saved_search_updated" : "Saved search has been updated",
+        "saved_search_feed" : "Feed",
+        "saved_search_help" : "What is it?",
+        "saved_search_examples" : "Examples",
+        "saved_search_try" : "Try it",
+        "saved_search_query" : "Query",
+        "saved_search_labels" : "Labels*",
+        "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
     },
 
     "favorites" : {
