@@ -25,12 +25,10 @@ class TrendingTags extends StatelessWidget {
             runSpacing: -4,
             children: tags
                 .take(15)
-                .map((e) => GestureDetector(
-                      onTap: () => onTagTap?.call(e.keyword),
-                      child: Chip(
-                        label: Text(
-                          e.keyword.replaceAll('_', ' '),
-                        ),
+                .map((e) => RawChip(
+                      onPressed: () => onTagTap?.call(e.keyword),
+                      label: Text(
+                        e.keyword.replaceAll('_', ' '),
                       ),
                     ))
                 .toList(),

@@ -78,21 +78,18 @@ class FavoriteTagsSection extends StatelessWidget {
     bool editMode,
   ) {
     return [
-      ...tags.mapIndexed((index, tag) => GestureDetector(
-            onTap: editMode ? null : () => onTagTap?.call(tag.name),
-            child: RawChip(
-              label: Text(tag.name.replaceAll('_', ' ')),
-              deleteIcon: const Icon(
-                Icons.close,
-                size: 18,
-              ),
-              onDeleted: editMode
-                  ? () => context
-                      .read<FavoriteTagBloc>()
-                      .add(FavoriteTagRemoved(index: index))
-                  // ignore: no-empty-block
-                  : null,
+      ...tags.mapIndexed((index, tag) => RawChip(
+            onPressed: editMode ? null : () => onTagTap?.call(tag.name),
+            label: Text(tag.name.replaceAll('_', ' ')),
+            deleteIcon: const Icon(
+              Icons.close,
+              size: 18,
             ),
+            onDeleted: editMode
+                ? () => context
+                    .read<FavoriteTagBloc>()
+                    .add(FavoriteTagRemoved(index: index))
+                : null,
           )),
       if (tags.isEmpty) ...[
         const AddTagButton(),

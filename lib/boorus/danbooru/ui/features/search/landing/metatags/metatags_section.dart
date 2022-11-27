@@ -58,27 +58,20 @@ class _MetatagsSectionState extends State<MetatagsSection> {
     List<Metatag> metatags,
   ) {
     return [
-      ...context
-          .read<UserMetatagRepository>()
-          .getAll()
-          .map((tag) => GestureDetector(
-                onTap: editMode ? null : () => widget.onOptionTap?.call(tag),
-                child: Chip(
-                  label: Text(tag),
-                  deleteIcon: const Icon(
-                    Icons.close,
-                    size: 18,
-                  ),
-                  onDeleted: editMode
-                      ? () async {
-                          await context
-                              .read<UserMetatagRepository>()
-                              .delete(tag);
-                          setState(() => {});
-                        }
-                      : null,
-                ),
-              )),
+      ...context.read<UserMetatagRepository>().getAll().map((tag) => RawChip(
+            label: Text(tag),
+            onPressed: editMode ? null : () => widget.onOptionTap?.call(tag),
+            deleteIcon: const Icon(
+              Icons.close,
+              size: 18,
+            ),
+            onDeleted: editMode
+                ? () async {
+                    await context.read<UserMetatagRepository>().delete(tag);
+                    setState(() => {});
+                  }
+                : null,
+          )),
       if (editMode)
         IconButton(
           iconSize: 28,
