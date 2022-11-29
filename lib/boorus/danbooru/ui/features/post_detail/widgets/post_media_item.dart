@@ -21,6 +21,7 @@ class PostMediaItem extends StatefulWidget {
     this.onTap,
     this.onZoomUpdated,
     required this.notes,
+    this.previewCacheManager,
   });
 
   final Post post;
@@ -29,6 +30,7 @@ class PostMediaItem extends StatefulWidget {
   final bool enableNotes;
   final VoidCallback? onTap;
   final void Function(bool zoom)? onZoomUpdated;
+  final CacheManager? previewCacheManager;
 
   @override
   State<PostMediaItem> createState() => _PostMediaItemState();
@@ -115,6 +117,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                         placeholder: (context, url) => CachedNetworkImage(
                           fit: BoxFit.fill,
                           imageUrl: widget.post.previewImageUrl,
+                          cacheManager: widget.previewCacheManager,
                           fadeInDuration: Duration.zero,
                           fadeOutDuration: Duration.zero,
                           progressIndicatorBuilder: (context, url, progress) =>

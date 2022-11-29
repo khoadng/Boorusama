@@ -13,7 +13,7 @@ SearchHistory history(String term) => historyWithCount(term, 0);
 
 SearchHistory historyWithCount(String term, int count) => SearchHistory(
       query: term,
-      createdAt: DateTime.now(),
+      createdAt: DateTime(1),
       searchCount: count,
     );
 
@@ -21,6 +21,7 @@ HistorySuggestion suggestion(SearchHistory history, String query) =>
     HistorySuggestion(
       term: query,
       tag: history.query,
+      searchHistory: history,
     );
 
 void main() {
@@ -62,8 +63,8 @@ void main() {
     act: (bloc) => bloc.add(const SearchHistorySuggestionsFetched(text: 'foo')),
     expect: () => [
       SearchHistorySuggestionsState(histories: [
-        suggestion(history('foobar'), 'foo'),
-        suggestion(history('foo'), 'foo'),
+        suggestion(historyWithCount('foobar', 10), 'foo'),
+        suggestion(historyWithCount('foo', 1), 'foo'),
       ]),
     ],
   );

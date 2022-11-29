@@ -4,19 +4,16 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
-import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
-import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 import 'pool_options_header.dart';
+import 'pool_search_button.dart';
 import 'sliver_pool_grid.dart';
 
 class PoolPage extends StatefulWidget {
@@ -43,27 +40,31 @@ class _PoolPageState extends State<PoolPage> {
         ),
       ],
       child: Scaffold(
-        appBar: _buildAppBar(),
-        body: SafeArea(
+        appBar: AppBar(
+          title: const Text('pool.pool_gallery').tr(),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          actions: const [
+            PoolSearchButton(),
+          ],
+        ),
+        body: const SafeArea(
           bottom: false,
-          child: BlocBuilder<PoolOverviewBloc, PoolOverviewState>(
-            builder: (context, poState) {
-              return BlocBuilder<PoolBloc, PoolState>(
-                builder: (context, pState) =>
-                    _buildList(pState, context, poState),
-              );
-            },
-          ),
+          child: _PostList(),
         ),
       ),
     );
   }
+}
 
-  Widget _buildList(
-    PoolState pState,
-    BuildContext context,
-    PoolOverviewState poState,
-  ) {
+class _PostList extends StatelessWidget {
+  const _PostList();
+
+  @override
+  Widget build(BuildContext context) {
+    final pState = context.watch<PoolBloc>().state;
+    final poState = context.watch<PoolOverviewBloc>().state;
+
     return InfiniteLoadListScrollView(
       isLoading: pState.status == LoadStatus.loading,
       enableRefresh: false,
@@ -125,43 +126,6 @@ class _PoolPageState extends State<PoolPage> {
           ),
         ),
       ],
-    );
-  }
-
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('pool.pool_gallery').tr(),
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      actions: [
-        _buildSearchButton(context),
-      ],
-    );
-  }
-
-  Widget _buildSearchButton(BuildContext context) {
-    return IconButton(
-      onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider(
-                create: (context) => PoolBloc(
-                  poolRepository: context.read<PoolRepository>(),
-                  postRepository: context.read<PostRepository>(),
-                ),
-              ),
-              BlocProvider(
-                create: (context) => PoolSearchBloc(
-                  poolRepository: context.read<PoolRepository>(),
-                ),
-              ),
-            ],
-            child: const PoolSearchPage(),
-          ),
-        ));
-      },
-      icon: const FaIcon(FontAwesomeIcons.magnifyingGlass),
     );
   }
 }

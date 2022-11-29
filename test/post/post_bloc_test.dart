@@ -37,7 +37,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       'tag limit',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenThrow(BooruError(error: ServerError(httpStatusCode: 422)));
       },
       tearDown: () => reset(mockPostRepo),
@@ -48,6 +49,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -63,7 +65,9 @@ void main() {
     blocTest<PostBloc, PostState>(
       'cannot reach server',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+            .thenThrow(
           BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
         );
       },
@@ -75,6 +79,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -90,7 +95,9 @@ void main() {
     blocTest<PostBloc, PostState>(
       'failed to parse JSON',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any())).thenThrow(
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
+            .thenThrow(
           BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
         );
       },
@@ -102,6 +109,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -118,7 +126,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       'time out',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenThrow(BooruError(error: ServerError(httpStatusCode: 500)));
       },
       tearDown: () => reset(mockPostRepo),
@@ -129,6 +138,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -144,7 +154,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       'unknown',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenThrow(BooruError(error: Error()));
       },
       tearDown: () => reset(mockPostRepo),
@@ -155,6 +166,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -170,7 +182,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       'unknown server error when favorites repo failed',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
                   Post.empty(),
                   Post.empty(),
@@ -201,6 +214,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -216,7 +230,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       'unknown server error when fetch more',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenThrow(BooruError(error: ServerError(httpStatusCode: 9999)));
       },
       tearDown: () => reset(mockPostRepo),
@@ -227,6 +242,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -244,7 +260,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       '2 posts returned',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
                   Post.empty(),
                   Post.empty(),
@@ -272,6 +289,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -290,7 +308,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       '2 posts returned, non-anon user',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
                   Post.empty(),
                   Post.empty(),
@@ -321,6 +340,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -339,7 +359,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       '2 posts returned with pools',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
                   Post.empty().copyWith(id: 1),
                   Post.empty().copyWith(id: 2),
@@ -372,6 +393,7 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -402,7 +424,8 @@ void main() {
     blocTest<PostBloc, PostState>(
       '2 posts initial + 1 posts returned',
       setUp: () {
-        when(() => mockPostRepo.getPosts(any(), any()))
+        when(() =>
+                mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
             .thenAnswer((invocation) async => [
                   Post.empty(),
                 ]);
@@ -433,6 +456,7 @@ void main() {
           PostData.empty(),
           PostData.empty(),
         ],
+        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -476,6 +500,7 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
+        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(
@@ -517,6 +542,7 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
+        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(

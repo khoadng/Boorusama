@@ -28,15 +28,17 @@ class PostFetched extends PostEvent {
     required this.fetcher,
     this.category,
     this.order,
+    this.page,
   });
 
   final String tags;
   final PostsOrder? order;
   final PostListCategory? category;
   final PostFetcher fetcher;
+  final int? page;
 
   @override
-  List<Object?> get props => [tags, order, category, fetcher];
+  List<Object?> get props => [tags, order, category, fetcher, page];
 }
 
 class PostRefreshed extends PostEvent {
@@ -78,4 +80,11 @@ class PostUpdated extends PostEvent {
 
   @override
   List<Object?> get props => [post];
+}
+
+class PostReset extends PostEvent {
+  const PostReset();
+
+  @override
+  List<Object?> get props => [];
 }

@@ -4,6 +4,13 @@
         "errors" : {
             "no_data" : "Няма даступных даных",
             "unknown" : "Нешта пайшло не так"
+        },
+        "action" : {
+            "add" : "Add",
+            "delete" : "Delete",
+            "edit" : "Edit",
+            "ok" : "OK",
+            "cancel" : "Cancel"
         }
     },
 
@@ -61,7 +68,7 @@
                 "ok" : "OK",
                 "cancel" : "Адмена"
             },
-            "view_in_browser" : "View in browser",
+            "view_in_browser" : "Адкрыць у браўзэры",
             "has_parent_notice" : "Малюнак мае бацьку",
             "has_children_notice" : "Малюнак мае дачэрны малюнак",
             "file_details" : "Дэталі",
@@ -80,6 +87,8 @@
             "login_required_notice" : "Вы павінны ўвайсці ў акаўнт для здзяйснення дзеяння",
             "open_wiki" : "Адкрыць wiki",
             "add_to_blacklist" : "Дадаць у чорны спіс",
+            "add_to_favorites" : "Add to favorites",
+            "copy_and_open_saved_search" : "Copy and open saved search",
             "score" : {
                 "one" : "Адзнака",
                 "other": "Адзнакі"
@@ -180,9 +189,26 @@
         "app_settings" :"Настроікі прылажэння",
         "appearance" :  "Пастава",
         "general" :  "Генеральныя",
+        "search" :  "Search",
         "information" : "Інфармацыя",
         "changelog" : "Гісторыя змен",
         "general_data_source": "Крыніца",
+        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "result_layout" : {
+            "result_layout" : "Result layout",
+            "infinite_scroll": "Infinite scroll",
+            "pagination": "Pagination"
+        },
+        "details_style" : {
+            "details_style" : "Default details style",
+            "post_focused": "Post focused",
+            "image_focused": "Image focused"
+        },
+        "image_list": {
+            "image_list" : "Image list",
+            "standard" : "Standard",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
             "grid_size" : {
@@ -285,6 +311,26 @@
         }
     },
 
+    "saved_search" : {
+        "saved_search" : "Saved search",
+        "saved_search_counter" : {
+            "one": "{} search",
+            "other": "{} searches"
+        },
+        "add_saved_search" : "Add a saved search",
+        "saved_search_added" : "Saved search has been added",
+        "empty_saved_search" : "You haven't add any search yet",
+        "update_saved_search" : "Update saved search",
+        "saved_search_updated" : "Saved search has been updated",
+        "saved_search_feed" : "Feed",
+        "saved_search_help" : "What is it?",
+        "saved_search_examples" : "Examples",
+        "saved_search_try" : "Try it",
+        "saved_search_query" : "Query",
+        "saved_search_labels" : "Labels*",
+        "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
+    },
+
     "favorites" : {
         "counter" : {
             "one" : "Дададзена у любімыя",
@@ -299,13 +345,13 @@
     },
 
     "favorite_tags": {
-        "favorites": "Favorites",
-        "or" : "or",
-        "import" : "Import",
-        "import_hint" : "Enter your tag string here. Space delimited.",
-        "cancel": "Cancel",
-        "export" : "Export",
-        "export_notification" : "Tag string copied to clipboard"
+        "favorites": "Любімае",
+        "or" : "ці",
+        "import" : "Імпарт",
+        "import_hint" : "Увядзіце тэгі(абмежавана)",
+        "cancel": "Адмена",
+        "export" : "Экспарт",
+        "export_notification" : "Радок з тэгамі скапіраван ў буфер абмену"
     },
 
     "rating" : {

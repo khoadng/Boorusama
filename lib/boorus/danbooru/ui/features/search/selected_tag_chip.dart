@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
@@ -12,9 +11,11 @@ class SelectedTagChip extends StatelessWidget {
   const SelectedTagChip({
     super.key,
     required this.tagSearchItem,
+    this.onDeleted,
   });
 
   final TagSearchItem tagSearchItem;
+  final VoidCallback? onDeleted;
 
   @override
   Widget build(BuildContext context) {
@@ -68,16 +69,14 @@ class SelectedTagChip extends StatelessWidget {
             color: Colors.red,
             size: 15,
           ),
-          onDeleted: () => context
-              .read<TagSearchBloc>()
-              .add(TagSearchSelectedTagRemoved(tagSearchItem)),
+          onDeleted: () => onDeleted?.call(),
           labelPadding: const EdgeInsets.symmetric(horizontal: 2),
           label: ConstrainedBox(
             constraints: BoxConstraints(
               maxWidth: MediaQuery.of(context).size.width * 0.85,
             ),
             child: Text(
-              tagSearchItem.tag,
+              tagSearchItem.tag.replaceAll('_', ' '),
               overflow: TextOverflow.fade,
               style: const TextStyle(color: Colors.white70),
             ),

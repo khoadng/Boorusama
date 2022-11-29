@@ -37,7 +37,7 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
           vertical: 12,
           horizontal: 16,
         ),
-        height: MediaQuery.of(context).size.height / 3,
+        height: MediaQuery.of(context).size.height * 0.36,
         decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(
             Radius.circular(8),
@@ -80,9 +80,7 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 24,
-            ),
+            const Spacer(),
             ValueListenableBuilder<TextEditingValue>(
               valueListenable: textController,
               builder: (context, value, child) => ElevatedButton(

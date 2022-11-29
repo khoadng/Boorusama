@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -42,6 +43,7 @@ class ImageGridItem extends StatelessWidget {
     this.enableFav = false,
     this.onFavToggle,
     this.isFaved,
+    this.previewCacheManager,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -62,6 +64,7 @@ class ImageGridItem extends StatelessWidget {
   final bool enableFav;
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
+  final CacheManager? previewCacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +140,7 @@ class ImageGridItem extends StatelessWidget {
         imageUrl: previewUrl,
         placeholderUrl: previewPlaceholderUrl,
         fit: BoxFit.contain,
+        previewCacheManager: previewCacheManager,
       ),
       actions: contextMenuAction,
       child: Stack(
@@ -149,6 +153,7 @@ class ImageGridItem extends StatelessWidget {
                   imageUrl: previewUrl,
                   placeholderUrl: previewPlaceholderUrl,
                   borderRadius: borderRadius,
+                  previewCacheManager: previewCacheManager,
                 ),
           ),
           Padding(

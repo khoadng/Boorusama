@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/posts/posts.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 
 class RecommendPostSection extends StatelessWidget {
   const RecommendPostSection({
@@ -31,6 +32,7 @@ class RecommendPostSection extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(4),
               child: PreviewPostGrid(
+                cacheManager: context.read<PreviewImageCacheManager>(),
                 posts: posts,
                 imageQuality: state.settings.imageQuality,
                 onTap: onTap,

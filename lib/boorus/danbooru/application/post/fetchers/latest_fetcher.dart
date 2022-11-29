@@ -8,7 +8,8 @@ class LatestPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async =>
-      repo.getPosts('', page);
+    int page, {
+    int? limit,
+  }) async =>
+      repo.getPosts('', page, limit: limit);
 }

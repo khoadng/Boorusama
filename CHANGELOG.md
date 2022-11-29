@@ -1,3 +1,15 @@
+# 2.8.0
+- Improve overall performance when loading images
+- Persist date selector at bottom in explore page
+- Support pagination for search page
+- Make search bar in search page scrollable
+- Prevent adding duplicate tag in search page
+- Show total results when searching for images
+- Add a new screen to manage history tags
+- Minor UI adjustment
+- Fix an issue where user can't move cursor in search bar
+- Fix an issue where only 20 translation notes can be loaded
+
 # 2.7.0
 - Add saved search. 
 - Revamp post details, show more information by default.

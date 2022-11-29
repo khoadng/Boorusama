@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:async';
+
 // Package imports:
 import 'package:equatable/equatable.dart';
 
@@ -9,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/domain/posts/post_preloader.dart';
 
 class PostData extends Equatable {
   const PostData({
@@ -157,3 +161,16 @@ Future<List<PostData>> Function(List<PostData> posts) filterWith(
     (posts) => blacklistedTagsRepository
         .getBlacklistedTags()
         .then((blacklistedTags) => filter(posts, blacklistedTags));
+
+Future<List<PostData>> Function(List<PostData> posts) preloadPreviewImagesWith(
+  PostPreviewPreloader? preloader,
+) =>
+    (posts) async {
+      if (preloader != null) {
+        for (final post in posts) {
+          unawaited(preloader.preload(post.post));
+        }
+      }
+
+      return posts;
+    };

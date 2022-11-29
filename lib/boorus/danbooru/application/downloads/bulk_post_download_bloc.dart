@@ -34,7 +34,11 @@ class BulkPostDownloadBloc extends DownloadBloc<String, Post> {
               return [];
             }
           },
-          totalFetcher: (tag) => postCountRepository.count(tag.split(' ')),
+          totalFetcher: (tag) async {
+            final count = await postCountRepository.count(tag.split(' '));
+
+            return count ?? 0;
+          },
           duplicateChecker: (post, storagePath) {
             final fileExt = extension(post.downloadUrl);
             final path = join(

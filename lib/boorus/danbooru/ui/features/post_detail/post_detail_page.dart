@@ -1,5 +1,5 @@
 // Flutter imports:
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -23,6 +23,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_s
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
@@ -70,6 +71,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final screenSize = screenWidthToDisplaySize(size.width);
+    final currentIndex =
+        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
 
     return MultiBlocListener(
       listeners: [
@@ -85,98 +88,112 @@ class _PostDetailPageState extends State<PostDetailPage> {
           },
         ),
       ],
-      child: BlocSelector<SliverPostGridBloc, SliverPostGridState, int>(
-        selector: (state) => state.currentIndex,
-        builder: (context, index) => WillPopScope(
-          onWillPop: () async {
-            context
-                .read<SliverPostGridBloc>()
-                .add(SliverPostGridExited(lastIndex: index));
+      child: WillPopScope(
+        onWillPop: () async {
+          context
+              .read<SliverPostGridBloc>()
+              .add(SliverPostGridExited(lastIndex: currentIndex));
 
-            return true;
-          },
-          child: Scaffold(
-            body: Row(
-              children: [
-                Expanded(
-                  child: Stack(
-                    children: [
-                      PostSlider(
-                        posts: widget.posts,
-                        imagePath: imagePath,
+          return true;
+        },
+        child: Scaffold(
+          body: Row(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    PostSlider(
+                      posts: widget.posts,
+                      imagePath: imagePath,
+                    ),
+                    Align(
+                      alignment: Alignment(
+                        -0.75,
+                        getTopActionIconAlignValue(),
                       ),
-                      Align(
-                        alignment: Alignment(
-                          -0.75,
-                          getTopActionIconAlignValue(),
-                        ),
-                        child:
-                            BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                          selector: (state) => state.enableOverlay,
-                          builder: (context, enable) {
-                            return enable
-                                ? const _BackButton()
-                                : const SizedBox.shrink();
-                          },
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment(
-                          0.9,
-                          getTopActionIconAlignValue(),
-                        ),
-                        child: const _TopRightButtonGroup(),
-                      ),
-                      if (Screen.of(context).size == ScreenSize.small)
-                        BlocBuilder<PostDetailBloc, PostDetailState>(
-                          builder: (context, state) {
-                            return BlocBuilder<SettingsCubit, SettingsState>(
-                              builder: (context, settingsState) => state
-                                      .shouldShowFloatingActionBar(
-                                settingsState.settings.actionBarDisplayBehavior,
-                              )
-                                  ? Positioned(
-                                      bottom: 12,
-                                      left: MediaQuery.of(context).size.width *
-                                          0.05,
-                                      child: FloatingGlassyCard(
-                                        child: ActionBar(
-                                          imagePath: imagePath,
-                                          postData: state.currentPost,
-                                        ),
-                                      ),
-                                    )
-                                  : const SizedBox.shrink(),
-                            );
-                          },
-                        ),
-                    ],
-                  ),
-                ),
-                if (screenSize != ScreenSize.small)
-                  MultiBlocProvider(
-                    providers: [
-                      BlocProvider.value(value: context.read<TagBloc>()),
-                    ],
-                    child: Container(
-                      color: Theme.of(context).backgroundColor,
-                      width: _infoBarWidth,
-                      child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                        builder: (context, state) {
-                          return _LargeLayoutContent(
-                            key: ValueKey(state.currentPost.post.id),
-                            post: state.currentPost,
-                            imagePath: imagePath,
-                            size: screenSize,
-                            recommends: state.recommends,
-                          );
+                      child:
+                          BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                        selector: (state) => state.enableOverlay,
+                        builder: (context, enable) {
+                          return enable
+                              ? const _NavigationButtonGroup()
+                              : const SizedBox.shrink();
                         },
                       ),
                     ),
+                    Align(
+                      alignment: Alignment(
+                        0.9,
+                        getTopActionIconAlignValue(),
+                      ),
+                      child: const _TopRightButtonGroup(),
+                    ),
+                    if (Screen.of(context).size == ScreenSize.small)
+                      BlocBuilder<PostDetailBloc, PostDetailState>(
+                        builder: (context, state) {
+                          return BlocBuilder<SettingsCubit, SettingsState>(
+                            builder: (context, settingsState) => state
+                                    .shouldShowFloatingActionBar(
+                              settingsState.settings.actionBarDisplayBehavior,
+                            )
+                                ? _FloatingQuickActionBar(imagePath: imagePath)
+                                : const SizedBox.shrink(),
+                          );
+                        },
+                      ),
+                  ],
+                ),
+              ),
+              if (screenSize != ScreenSize.small)
+                MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: context.read<TagBloc>()),
+                  ],
+                  child: Container(
+                    color: Theme.of(context).backgroundColor,
+                    width: _infoBarWidth,
+                    child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                      builder: (context, state) {
+                        return _LargeLayoutContent(
+                          key: ValueKey(state.currentPost.post.id),
+                          post: state.currentPost,
+                          imagePath: imagePath,
+                          size: screenSize,
+                          recommends: state.recommends,
+                        );
+                      },
+                    ),
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _FloatingQuickActionBar extends StatelessWidget {
+  const _FloatingQuickActionBar({
+    required this.imagePath,
+  });
+
+  final ValueNotifier<String?> imagePath;
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned(
+      bottom: 12,
+      left: MediaQuery.of(context).size.width * 0.05,
+      child: FloatingGlassyCard(
+        child: BlocSelector<PostDetailBloc, PostDetailState, PostData>(
+          selector: (state) => state.currentPost,
+          builder: (context, post) {
+            return ActionBar(
+              imagePath: imagePath,
+              postData: post,
+            );
+          },
         ),
       ),
     );
@@ -188,78 +205,35 @@ class _TopRightButtonGroup extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PostDetailBloc, PostDetailState>(
-      builder: (context, state) {
-        return state.enableOverlay
-            ? ButtonBar(
-                children: [
-                  if (Screen.of(context).size == ScreenSize.small)
-                    CircularIconButton(
-                      icon: state.fullScreen
-                          ? const Icon(
-                              Icons.fullscreen_exit,
-                            )
-                          : const Icon(Icons.fullscreen),
-                      onPressed: () => context
-                          .read<PostDetailBloc>()
-                          .add(PostDetailDisplayModeChanged(
-                            fullScreen: !state.fullScreen,
-                          )),
-                    ),
-                  if (state.currentPost.post.isTranslated)
-                    CircularIconButton(
-                      icon: state.enableNotes
-                          ? const Padding(
-                              padding: EdgeInsets.all(3),
-                              child: FaIcon(
-                                FontAwesomeIcons.eyeSlash,
-                                size: 18,
-                              ),
-                            )
-                          : const Padding(
-                              padding: EdgeInsets.all(4),
-                              child: FaIcon(
-                                FontAwesomeIcons.eye,
-                                size: 18,
-                              ),
-                            ),
-                      onPressed: () => context.read<PostDetailBloc>().add(
-                            PostDetailNoteOptionsChanged(
-                              enable: !state.enableNotes,
-                            ),
-                          ),
-                    ),
-                  _SlideShowButton(
-                    autoPlay: state.enableSlideShow,
-                    onStop: () => context
-                        .read<PostDetailBloc>()
-                        .add(const PostDetailModeChanged(
-                          enableSlideshow: false,
-                        )),
-                    onShow: (start) => _onShowSlideshowConfig(
-                      context,
-                      state.slideShowConfig,
-                      start,
-                    ),
-                  ),
-                  BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
-                    builder: (context, apiState) {
-                      return _MoreActionButton(
-                        onDownload: (downloader) => downloader(
-                          state.currentPost.post,
-                        ),
-                        onViewInBrowser: (post) => launchExternalUrl(state
-                            .currentPost.post
-                            .getUriLink(apiState.booru.url)),
-                        post: state.currentPost.post,
-                      );
-                    },
-                  ),
-                ],
-              )
-            : const SizedBox.shrink();
-      },
+    final enableOverlay =
+        context.select((PostDetailBloc bloc) => bloc.state.enableOverlay);
+
+    final isTranslated = context.select(
+      (PostDetailBloc bloc) => bloc.state.currentPost.post.isTranslated,
     );
+
+    return enableOverlay
+        ? ButtonBar(
+            children: [
+              if (Screen.of(context).size == ScreenSize.small)
+                const _FullScreenButton(),
+              if (isTranslated) const _NoteViewControlButton(),
+              _SlideShowButton(
+                onStop: () => context
+                    .read<PostDetailBloc>()
+                    .add(const PostDetailModeChanged(
+                      enableSlideshow: false,
+                    )),
+                onShow: (start, config) => _onShowSlideshowConfig(
+                  context,
+                  config,
+                  start,
+                ),
+              ),
+              const _MoreActionButton(),
+            ],
+          )
+        : const SizedBox.shrink();
   }
 
   void _onShowSlideshowConfig(
@@ -307,6 +281,78 @@ class _TopRightButtonGroup extends StatelessWidget {
         start();
       }
     });
+  }
+}
+
+class _FullScreenButton extends StatelessWidget {
+  const _FullScreenButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final fullScreen =
+        context.select((PostDetailBloc bloc) => bloc.state.fullScreen);
+
+    return CircularIconButton(
+      icon: fullScreen
+          ? Icon(
+              Icons.fullscreen_exit,
+              color: theme == ThemeMode.light
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : null,
+            )
+          : Icon(
+              Icons.fullscreen,
+              color: theme == ThemeMode.light
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : null,
+            ),
+      onPressed: () =>
+          context.read<PostDetailBloc>().add(PostDetailDisplayModeChanged(
+                fullScreen: !fullScreen,
+              )),
+    );
+  }
+}
+
+class _NoteViewControlButton extends StatelessWidget {
+  const _NoteViewControlButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final enableNotes =
+        context.select((PostDetailBloc bloc) => bloc.state.enableNotes);
+
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
+    return CircularIconButton(
+      icon: enableNotes
+          ? Padding(
+              padding: const EdgeInsets.all(3),
+              child: FaIcon(
+                FontAwesomeIcons.eyeSlash,
+                size: 18,
+                color: theme == ThemeMode.light
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : null,
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(4),
+              child: FaIcon(
+                FontAwesomeIcons.eye,
+                size: 18,
+                color: theme == ThemeMode.light
+                    ? Theme.of(context).colorScheme.onPrimary
+                    : null,
+              ),
+            ),
+      onPressed: () => context.read<PostDetailBloc>().add(
+            PostDetailNoteOptionsChanged(
+              enable: !enableNotes,
+            ),
+          ),
+    );
   }
 }
 
@@ -492,20 +538,16 @@ class _LargeLayoutContent extends StatelessWidget {
   }
 }
 
-// ignore: unused_element
 class _MoreActionButton extends StatelessWidget {
-  const _MoreActionButton({
-    required this.onDownload,
-    required this.onViewInBrowser,
-    required this.post,
-  });
-
-  final void Function(Function(Post post) downloader) onDownload;
-  final void Function(Post post) onViewInBrowser;
-  final Post post;
+  const _MoreActionButton();
 
   @override
   Widget build(BuildContext context) {
+    final post =
+        context.select((PostDetailBloc bloc) => bloc.state.currentPost.post);
+    final endpoint =
+        context.select((ApiEndpointCubit cubit) => cubit.state.booru.url);
+
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
         width: 40,
@@ -517,10 +559,12 @@ class _MoreActionButton extends StatelessWidget {
             onSelected: (value) {
               switch (value) {
                 case 'download':
-                  onDownload(download);
+                  download(post);
                   break;
                 case 'view_in_browser':
-                  onViewInBrowser(post);
+                  launchExternalUrl(
+                    post.getUriLink(endpoint),
+                  );
                   break;
                 case 'view_original':
                   Navigator.of(context).push(PageTransition(
@@ -573,34 +617,28 @@ class _MoreActionButton extends StatelessWidget {
   }
 }
 
-class _BackButton extends StatelessWidget {
-  const _BackButton();
+class _NavigationButtonGroup extends StatelessWidget {
+  const _NavigationButtonGroup();
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Row(
         children: [
-          BlocBuilder<SliverPostGridBloc, SliverPostGridState>(
-            builder: (context, state) => CircularIconButton(
-              icon: const Padding(
-                padding: EdgeInsets.only(left: 8),
-                child: Icon(Icons.arrow_back_ios),
-              ),
-              onPressed: () {
-                context
-                    .read<SliverPostGridBloc>()
-                    .add(SliverPostGridExited(lastIndex: state.currentIndex));
-                AppRouter.router.pop(context);
-              },
-            ),
-          ),
+          const _BackButton(),
           const SizedBox(
             width: 4,
           ),
           CircularIconButton(
-            icon: const Icon(Icons.home),
+            icon: theme == ThemeMode.light
+                ? Icon(
+                    Icons.home,
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  )
+                : const Icon(Icons.home),
             onPressed: () => AppRouter.router.navigateTo(
               context,
               '/',
@@ -613,15 +651,46 @@ class _BackButton extends StatelessWidget {
   }
 }
 
+class _BackButton extends StatelessWidget {
+  const _BackButton();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+
+    final currentIndex =
+        context.select((SliverPostGridBloc bloc) => bloc.state.currentIndex);
+
+    return CircularIconButton(
+      icon: Padding(
+        padding: const EdgeInsets.only(left: 8),
+        child: theme == ThemeMode.light
+            ? Icon(
+                Icons.arrow_back_ios,
+                color: Theme.of(context).colorScheme.onPrimary,
+              )
+            : const Icon(Icons.arrow_back_ios),
+      ),
+      onPressed: () {
+        context
+            .read<SliverPostGridBloc>()
+            .add(SliverPostGridExited(lastIndex: currentIndex));
+        AppRouter.router.pop(context);
+      },
+    );
+  }
+}
+
 class _SlideShowButton extends StatefulWidget {
   const _SlideShowButton({
-    required this.autoPlay,
     required this.onShow,
     required this.onStop,
   });
 
-  final bool autoPlay;
-  final void Function(void Function() start) onShow;
+  final void Function(
+    void Function() start,
+    SlideShowConfiguration config,
+  ) onShow;
   final void Function() onStop;
 
   @override
@@ -653,11 +722,20 @@ class _SlideShowButtonState extends State<_SlideShowButton>
 
   @override
   Widget build(BuildContext context) {
+    final theme = context.select((ThemeBloc bloc) => bloc.state.theme);
+    final config =
+        context.select((PostDetailBloc bloc) => bloc.state.slideShowConfig);
+
     return play
         ? RepaintBoundary(
             child: AnimatedSpinningIcon(
               icon: CircularIconButton(
-                icon: const Icon(Icons.sync),
+                icon: Icon(
+                  Icons.sync,
+                  color: theme == ThemeMode.light
+                      ? Theme.of(context).colorScheme.onPrimary
+                      : null,
+                ),
                 onPressed: () {
                   setState(() {
                     widget.onStop();
@@ -672,13 +750,21 @@ class _SlideShowButtonState extends State<_SlideShowButton>
             ),
           )
         : CircularIconButton(
-            icon: const Icon(Icons.slideshow),
-            onPressed: () => widget.onShow(() {
-              setState(() {
-                play = true;
-                spinningIconpanelAnimationController.repeat();
-              });
-            }),
+            icon: Icon(
+              Icons.slideshow,
+              color: theme == ThemeMode.light
+                  ? Theme.of(context).colorScheme.onPrimary
+                  : null,
+            ),
+            onPressed: () => widget.onShow(
+              () {
+                setState(() {
+                  play = true;
+                  spinningIconpanelAnimationController.repeat();
+                });
+              },
+              config,
+            ),
           );
   }
 }

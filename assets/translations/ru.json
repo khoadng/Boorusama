@@ -4,6 +4,13 @@
         "errors" : {
             "no_data" : "Нет доступных данных",
             "unknown" : "Что-то пошло не так"
+        },
+        "action" : {
+            "add" : "Add",
+            "delete" : "Delete",
+            "edit" : "Edit",
+            "ok" : "OK",
+            "cancel" : "Cancel"
         }
     },
 
@@ -61,7 +68,7 @@
                 "ok" : "OK",
                 "cancel" : "Отмена"
             },
-            "view_in_browser" : "View in browser",
+            "view_in_browser" : "Открыть в браузере",
             "has_parent_notice" : "Пост имеет родителя",
             "has_children_notice" : "Пост имеет дочерний пост",
             "file_details" : "Детали",
@@ -80,6 +87,8 @@
             "login_required_notice" : "Вы должны войти в аккаунт для совершения действия",
             "open_wiki" : "Открыть wiki",
             "add_to_blacklist" : "Добавить в чёрный список",
+            "add_to_favorites" : "Add to favorites",
+            "copy_and_open_saved_search" : "Copy and open saved search",
             "score" : {
                 "one" : "Оценка",
                 "other": "Оценки"
@@ -180,9 +189,26 @@
         "app_settings" :"Настройки приложения",
         "appearance" :  "Внешний вид",
         "general" :  "Генеральные",
+        "search" :  "Search",
         "information" : "Информация",
         "changelog" : "История изменений",
         "general_data_source": "Источник",
+        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "result_layout" : {
+            "result_layout" : "Result layout",
+            "infinite_scroll": "Infinite scroll",
+            "pagination": "Pagination"
+        },
+        "details_style" : {
+            "details_style" : "Default details style",
+            "post_focused": "Post focused",
+            "image_focused": "Image focused"
+        },
+        "image_list": {
+            "image_list" : "Image list",
+            "standard" : "Standard",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Сетка изображений",
             "grid_size" : {
@@ -285,6 +311,26 @@
         }
     },
 
+    "saved_search" : {
+        "saved_search" : "Saved search",
+        "saved_search_counter" : {
+            "one": "{} search",
+            "other": "{} searches"
+        },
+        "add_saved_search" : "Add a saved search",
+        "saved_search_added" : "Saved search has been added",
+        "empty_saved_search" : "You haven't add any search yet",
+        "update_saved_search" : "Update saved search",
+        "saved_search_updated" : "Saved search has been updated",
+        "saved_search_feed" : "Feed",
+        "saved_search_help" : "What is it?",
+        "saved_search_examples" : "Examples",
+        "saved_search_try" : "Try it",
+        "saved_search_query" : "Query",
+        "saved_search_labels" : "Labels*",
+        "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
+    },
+
     "favorites" : {
         "counter" : {
             "one" : "Добавлено в любимые",
@@ -299,13 +345,13 @@
     },
 
     "favorite_tags": {
-        "favorites": "Favorites",
-        "or" : "or",
-        "import" : "Import",
-        "import_hint" : "Enter your tag string here. Space delimited.",
-        "cancel": "Cancel",
-        "export" : "Export",
-        "export_notification" : "Tag string copied to clipboard"
+        "favorites": "Любимые",
+        "or" : "или",
+        "import" : "Импорт",
+        "import_hint" : "Введите теги(ограниченно)",
+        "cancel": "Отмена",
+        "export" : "Экспорт",
+        "export_notification" : "Строка с тегами скопирована в буфер обмена"
     },
 
     "rating" : {

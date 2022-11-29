@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
@@ -15,12 +16,14 @@ class PreviewPostGrid extends StatelessWidget {
     required this.imageQuality,
     required this.onTap,
     this.physics,
+    this.cacheManager,
   });
 
   final List<PostData> posts;
   final ScrollPhysics? physics;
   final ImageQuality imageQuality;
   final void Function(int index) onTap;
+  final CacheManager? cacheManager;
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +46,7 @@ class PreviewPostGrid extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onTap(index),
               child: CachedNetworkImage(
+                cacheManager: cacheManager,
                 fit: BoxFit.cover,
                 imageUrl: _getImageUrl(
                   posts[index].post,

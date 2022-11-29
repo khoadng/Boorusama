@@ -22,8 +22,9 @@ class ExploreRepositoryApi implements ExploreRepository {
   Future<List<Post>> getCuratedPosts(
     DateTime date,
     int page,
-    TimeScale scale,
-  ) =>
+    TimeScale scale, {
+    int? limit,
+  }) =>
       accountRepository
           .get()
           .then(
@@ -34,7 +35,7 @@ class ExploreRepositoryApi implements ExploreRepository {
               scale.toString().split('.').last,
               page,
               postParams,
-              _limit,
+              limit ?? _limit,
             ),
           )
           .then(parsePost)
@@ -43,8 +44,15 @@ class ExploreRepositoryApi implements ExploreRepository {
       });
 
   @override
-  Future<List<Post>> getHotPosts(int page) =>
-      postRepository.getPosts('order:rank', page);
+  Future<List<Post>> getHotPosts(
+    int page, {
+    int? limit,
+  }) =>
+      postRepository.getPosts(
+        'order:rank',
+        page,
+        limit: limit,
+      );
 
   @override
   Future<List<Post>> getMostViewedPosts(
@@ -69,8 +77,9 @@ class ExploreRepositoryApi implements ExploreRepository {
   Future<List<Post>> getPopularPosts(
     DateTime date,
     int page,
-    TimeScale scale,
-  ) =>
+    TimeScale scale, {
+    int? limit,
+  }) =>
       accountRepository
           .get()
           .then(
@@ -81,7 +90,7 @@ class ExploreRepositoryApi implements ExploreRepository {
               scale.toString().split('.').last,
               page,
               postParams,
-              _limit,
+              limit ?? _limit,
             ),
           )
           .then(parsePost)
