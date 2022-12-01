@@ -1,5 +1,7 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:flutter/material.dart';
 
@@ -42,7 +44,16 @@ class FavoriteGroupsPage extends StatelessWidget {
 
                           return ListTile(
                             title: Text(group.name.replaceAll('_', ' ')),
-                            subtitle: Text(group.creator.name),
+                            subtitle: Text(
+                              '${group.creator.name} - ${group.totalCount} posts',
+                            ),
+                            onTap: () => AppRouter.router.navigateTo(
+                              context,
+                              '/posts/search',
+                              routeSettings: RouteSettings(arguments: [
+                                state.favoriteGroupDetailQueryOf(index),
+                              ]),
+                            ),
                           );
                         },
                         childCount: state.favoriteGroups.length,

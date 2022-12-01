@@ -29,3 +29,7 @@ class FavoriteGroup extends Equatable {
 
 typedef FavoriteGroupId = int;
 typedef FavoriteGroupName = String;
+
+extension FavoriteGroupX on FavoriteGroup {
+  int get totalCount => postIds.length;
+}

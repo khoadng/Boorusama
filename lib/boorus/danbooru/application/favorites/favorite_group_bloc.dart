@@ -83,3 +83,8 @@ class FavoriteGroupsBloc
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
       );
 }
+
+extension FavoriteGroupsStateX on FavoriteGroupsState {
+  String favoriteGroupDetailQueryOf(int index) =>
+      'favgroup:${favoriteGroups[index].id}';
+}
