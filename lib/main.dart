@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -34,7 +35,6 @@ import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
@@ -70,6 +70,7 @@ import 'package:boorusama/sentry.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'boorus/danbooru/domain/favorites/favorites.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
@@ -354,6 +355,11 @@ void main() async {
                   final savedSearchRepo =
                       SavedSearchRepositoryApi(api, accountRepo);
 
+                  final favoriteGroupRepo = FavoriteGroupRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit = SearchKeywordCubit(
@@ -485,6 +491,9 @@ void main() async {
                       ),
                       RepositoryProvider<SavedSearchRepository>.value(
                         value: savedSearchRepo,
+                      ),
+                      RepositoryProvider<FavoriteGroupRepository>.value(
+                        value: favoriteGroupRepo,
                       ),
                     ],
                     child: MultiBlocProvider(

@@ -99,6 +99,23 @@ class SideBarMenu extends StatelessWidget {
                           },
                         ),
                       if (state.data! != Account.empty)
+                        ListTile(
+                          leading: const Icon(Icons.collections),
+                          title: const Text('Favorite groups'),
+                          onTap: () {
+                            if (popOnSelect) Navigator.of(context).pop();
+                            AppRouter.router.navigateTo(
+                              context,
+                              '/favorite_groups',
+                              // routeSettings: RouteSettings(arguments: []),
+                              transition:
+                                  Screen.of(context).size == ScreenSize.small
+                                      ? TransitionType.inFromRight
+                                      : null,
+                            );
+                          },
+                        ),
+                      if (state.data! != Account.empty)
                         _SideMenuTile(
                           icon: const Icon(Icons.search),
                           title: const Text('Saved search'),
