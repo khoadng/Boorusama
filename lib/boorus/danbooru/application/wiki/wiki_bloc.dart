@@ -9,21 +9,28 @@ import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 class WikiState extends Equatable {
   const WikiState({
     required this.wiki,
+    required this.status,
   });
 
-  factory WikiState.initial() => const WikiState(wiki: null);
+  factory WikiState.initial() => const WikiState(
+        wiki: null,
+        status: LoadStatus.initial,
+      );
 
   final Wiki? wiki;
+  final LoadStatus status;
 
   WikiState copyWith({
-    Wiki? wiki,
+    Wiki? Function()? wiki,
+    LoadStatus? status,
   }) =>
       WikiState(
-        wiki: wiki,
+        wiki: wiki != null ? wiki() : this.wiki,
+        status: status ?? this.status,
       );
 
   @override
-  List<Object?> get props => [wiki];
+  List<Object?> get props => [wiki, status];
 }
 
 abstract class WikiEvent extends Equatable {
@@ -48,10 +55,14 @@ class WikiBloc extends Bloc<WikiEvent, WikiState> {
     on<WikiFetched>((event, emit) async {
       await tryAsync<Wiki?>(
         action: () => wikiRepository.getWikiFor(event.tag),
-        // onLoading: () => emit(loading),
-        // onFailure: (error, stackTrace) => emit(error),
+        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
+        onFailure: (error, stackTrace) =>
+            emit(state.copyWith(status: LoadStatus.failure)),
         onSuccess: (data) async {
-          emit(state.copyWith(wiki: data));
+          emit(state.copyWith(
+            status: LoadStatus.success,
+            wiki: () => data,
+          ));
         },
       );
     });

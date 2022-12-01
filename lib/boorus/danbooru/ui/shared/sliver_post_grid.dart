@@ -20,6 +20,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
@@ -128,6 +129,7 @@ class SliverPostGrid extends HookWidget {
               final post = posts[index];
 
               return ImageGridItem(
+                previewCacheManager: context.read<PreviewImageCacheManager>(),
                 isFaved: post.isFavorited,
                 enableFav: authState is Authenticated,
                 onFavToggle: (isFaved) async {
@@ -169,7 +171,7 @@ class SliverPostGrid extends HookWidget {
                 isAnimated: post.post.isAnimated,
                 isTranslated: post.post.isTranslated,
                 hasComments: post.post.hasComment,
-                hasParentOrChildren: post.post.hasBothParentAndChildren,
+                hasParentOrChildren: post.post.hasParentOrChildren,
                 previewUrl: getImageUrlForDisplay(
                   post.post,
                   getImageQuality(

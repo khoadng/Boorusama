@@ -108,7 +108,8 @@ abstract class Api {
 
   @GET('/notes.json')
   Future<HttpResponse> getNotes(
-    @Query('search[post_id]') int postId, {
+    @Query('search[post_id]') int postId,
+    @Query('limit') int limit, {
     @CancelRequest() CancelToken? cancelToken,
   });
 

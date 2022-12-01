@@ -75,7 +75,6 @@ class _TagDetailPageState extends State<TagDetailPage> {
                       widget.tagName.removeUnderscoreWithSpace(),
                       style: Theme.of(context).textTheme.headline6!.copyWith(
                             fontWeight: FontWeight.w900,
-                            color: Colors.white,
                           ),
                     ),
                     widget.otherNamesBuilder(context),
@@ -105,7 +104,6 @@ class _TagDetailPageState extends State<TagDetailPage> {
                         widget.tagName.removeUnderscoreWithSpace(),
                         style: Theme.of(context).textTheme.headline6!.copyWith(
                               fontWeight: FontWeight.w900,
-                              color: Colors.white,
                             ),
                       ),
                       Expanded(child: widget.otherNamesBuilder(context)),
@@ -252,10 +250,7 @@ class _CategoryToggleSwitchState extends State<_CategoryToggleSwitch> {
         valueListenable: selected,
         builder: (context, value, _) => ToggleSwitch(
           customTextStyles: const [
-            TextStyle(
-              fontWeight: FontWeight.w700,
-              color: Colors.white,
-            ),
+            TextStyle(fontWeight: FontWeight.w700),
             TextStyle(fontWeight: FontWeight.w700),
           ],
           changeOnTap: false,

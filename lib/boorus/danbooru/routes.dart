@@ -219,45 +219,64 @@ final postSearchHandler = Handler(handlerFunc: (
 ) {
   final args = context!.settings!.arguments as List;
 
-  return MultiBlocProvider(
-    providers: [
-      BlocProvider(
-        create: (context) => SearchHistoryCubit(
-          searchHistoryRepository: context.read<SearchHistoryRepository>(),
-        ),
-      ),
-      BlocProvider.value(
-        value: context.read<FavoriteTagBloc>()..add(const FavoriteTagFetched()),
-      ),
-      BlocProvider(create: (context) => PostBloc.of(context)),
-      BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
-      BlocProvider(
-        create: (context) => TagSearchBloc(
-          tagInfo: context.read<TagInfo>(),
-          autocompleteRepository: context.read<AutocompleteRepository>(),
-        ),
-      ),
-      BlocProvider(
-        create: (context) => SearchHistorySuggestionsBloc(
-          searchHistoryRepository: context.read<SearchHistoryRepository>(),
-        ),
-      ),
-      BlocProvider(
-        create: (context) => SearchBloc(
-          initial: const SearchState(displayState: DisplayState.options),
-        ),
-      ),
-      BlocProvider(
-        create: (context) => RelatedTagBloc(
-          relatedTagRepository: context.read<RelatedTagRepository>(),
-        ),
-      ),
-    ],
-    child: SearchPage(
-      metatags: context.read<TagInfo>().metatags,
-      metatagHighlightColor: Theme.of(context).colorScheme.primary,
-      initialQuery: args.first,
-    ),
+  return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return BlocBuilder<SettingsCubit, SettingsState>(
+        builder: (context, settingsState) {
+          final tagSearchBloc = TagSearchBloc(
+            tagInfo: context.read<TagInfo>(),
+            autocompleteRepository: context.read<AutocompleteRepository>(),
+          );
+
+          final postBloc = PostBloc.of(
+            context,
+            pagination: settingsState.settings.contentOrganizationCategory ==
+                ContentOrganizationCategory.pagination,
+          );
+          final searchHistoryCubit = SearchHistoryBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
+          final relatedTagBloc = RelatedTagBloc(
+            relatedTagRepository: context.read<RelatedTagRepository>(),
+          );
+          final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+            searchHistoryRepository: context.read<SearchHistoryRepository>(),
+          );
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: searchHistoryCubit),
+              BlocProvider.value(
+                value: context.read<FavoriteTagBloc>()
+                  ..add(const FavoriteTagFetched()),
+              ),
+              BlocProvider.value(value: postBloc),
+              BlocProvider.value(value: BlocProvider.of<ThemeBloc>(context)),
+              BlocProvider.value(value: searchHistorySuggestions),
+              BlocProvider(
+                create: (context) => SearchBloc(
+                  initial: DisplayState.options,
+                  metatags: context.read<TagInfo>().metatags,
+                  tagSearchBloc: tagSearchBloc,
+                  searchHistoryBloc: searchHistoryCubit,
+                  relatedTagBloc: relatedTagBloc,
+                  searchHistorySuggestionsBloc: searchHistorySuggestions,
+                  postBloc: postBloc,
+                  postCountRepository: context.read<PostCountRepository>(),
+                  initialQuery: args.first,
+                  booruType: state.booru.booruType,
+                ),
+              ),
+              BlocProvider.value(value: relatedTagBloc),
+            ],
+            child: SearchPage(
+              metatags: context.read<TagInfo>().metatags,
+              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            ),
+          );
+        },
+      );
+    },
   );
 });
 

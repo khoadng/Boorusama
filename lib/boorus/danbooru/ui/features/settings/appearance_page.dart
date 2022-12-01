@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recase/recase.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -66,9 +65,18 @@ String _gridSizeToString(GridSize size) {
 String _imageListToString(ImageListType imageListType) {
   switch (imageListType) {
     case ImageListType.standard:
-      return 'Standard';
+      return 'settings.image_list.standard';
     case ImageListType.masonry:
-      return 'Masonry';
+      return 'settings.image_list.masonry';
+  }
+}
+
+String _detailsDisplayToString(DetailsDisplay details) {
+  switch (details) {
+    case DetailsDisplay.imageFocus:
+      return 'settings.details_style.image_focused';
+    case DetailsDisplay.postFocus:
+      return 'settings.details_style.post_focused';
   }
 }
 
@@ -133,13 +141,14 @@ class _AppearancePageState extends State<AppearancePage> {
                   optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
                 ),
                 SettingsTile<ImageListType>(
-                  title: const Text('Image list'),
+                  title: const Text('settings.image_list.image_list').tr(),
                   selectedOption: state.settings.imageListType,
                   items: ImageListType.values,
                   onChanged: (value) => context
                       .read<SettingsCubit>()
                       .update(state.settings.copyWith(imageListType: value)),
-                  optionBuilder: (value) => Text(_imageListToString(value)),
+                  optionBuilder: (value) =>
+                      Text(_imageListToString(value)).tr(),
                 ),
                 SettingsTile<ImageQuality>(
                   title: const Text(
@@ -162,31 +171,42 @@ class _AppearancePageState extends State<AppearancePage> {
                   optionBuilder: (value) =>
                       Text(_imageQualityToString(value)).tr(),
                 ),
-                SettingsTile<DetailsDisplay>(
-                  title: const Text('Default details style'),
-                  selectedOption: state.settings.detailsDisplay,
-                  items: DetailsDisplay.values,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(detailsDisplay: value)),
-                  optionBuilder: (value) => Text(value.name.sentenceCase),
-                ),
+
                 const SizedBox(
                   height: 10,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: const Text('settings.image_grid.spacing').tr(),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: const Text('settings.image_grid.spacing').tr(),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _buildSpacingSlider(state),
+                    ],
+                  ),
                 ),
-                const SizedBox(
-                  height: 10,
+                const SizedBox(height: 10),
+
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: const Text('settings.image_grid.corner_radius')
+                            .tr(),
+                      ),
+                      _buildBorderRadiusSlider(state),
+                    ],
+                  ),
                 ),
-                _buildSpacingSlider(state),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: const Text('settings.image_grid.corner_radius').tr(),
-                ),
-                _buildBorderRadiusSlider(state),
 
                 const Divider(thickness: 1),
                 // SettingsHeader(
@@ -230,6 +250,17 @@ class _AppearancePageState extends State<AppearancePage> {
                   items: ActionBarDisplayBehavior.values,
                   optionBuilder: (value) =>
                       Text(_actionBarDisplayBehaviorToString(value)).tr(),
+                ),
+                SettingsTile<DetailsDisplay>(
+                  title:
+                      const Text('settings.details_style.details_style').tr(),
+                  selectedOption: state.settings.detailsDisplay,
+                  items: DetailsDisplay.values,
+                  onChanged: (value) => context
+                      .read<SettingsCubit>()
+                      .update(state.settings.copyWith(detailsDisplay: value)),
+                  optionBuilder: (value) =>
+                      Text(_detailsDisplayToString(value)).tr(),
                 ),
               ],
             ),

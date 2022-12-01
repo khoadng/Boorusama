@@ -10,13 +10,15 @@ class HistorySuggestion extends Equatable {
   const HistorySuggestion({
     required this.term,
     required this.tag,
+    required this.searchHistory,
   });
 
   final String term;
   final String tag;
+  final SearchHistory searchHistory;
 
   @override
-  List<Object?> get props => [term, tag];
+  List<Object?> get props => [term, tag, searchHistory];
 }
 
 class SearchHistorySuggestionsState extends Equatable {
@@ -55,6 +57,13 @@ class SearchHistorySuggestionsFetched extends SearchHistorySuggestionsEvent {
   List<Object?> get props => [text];
 }
 
+class SearchHistorySuggestionsCleared extends SearchHistorySuggestionsEvent {
+  const SearchHistorySuggestionsCleared();
+
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchHistorySuggestionsBloc
     extends Bloc<SearchHistorySuggestionsEvent, SearchHistorySuggestionsState> {
   SearchHistorySuggestionsBloc({
@@ -74,6 +83,7 @@ class SearchHistorySuggestionsBloc
               .map((e) => HistorySuggestion(
                     tag: e.query,
                     term: event.text,
+                    searchHistory: e,
                   ))
               .toList();
 
@@ -82,6 +92,10 @@ class SearchHistorySuggestionsBloc
           ));
         },
       );
+    });
+
+    on<SearchHistorySuggestionsCleared>((event, emit) {
+      emit(state.copyWith(histories: []));
     });
   }
 }

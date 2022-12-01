@@ -16,7 +16,13 @@ class PopularPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async =>
-      exploreRepository.getPopularPosts(date, page, scale);
+    int page, {
+    int? limit,
+  }) async =>
+      exploreRepository.getPopularPosts(
+        date,
+        page,
+        scale,
+        limit: limit,
+      );
 }

@@ -13,6 +13,8 @@ List<Note> parseNote(HttpResponse<dynamic> value) => parse(
       converter: (item) => NoteDto.fromJson(item),
     ).map((e) => e.toEntity()).toList();
 
+const _notesLimit = 200;
+
 class NoteRepositoryApi implements NoteRepository {
   NoteRepositoryApi(this._api);
   final Api _api;
@@ -26,6 +28,7 @@ class NoteRepositoryApi implements NoteRepository {
       return _api
           .getNotes(
             postId,
+            _notesLimit,
             cancelToken: cancelToken,
           )
           .then(parseNote);

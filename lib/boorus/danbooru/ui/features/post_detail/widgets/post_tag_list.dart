@@ -97,16 +97,16 @@ class PostTagList extends StatelessWidget {
                   value: 'wiki',
                   child: const Text('post.detail.open_wiki').tr(),
                 ),
-                const PopupMenuItem(
+                PopupMenuItem(
                   value: 'add_to_favorites',
-                  child: Text('Add to favorites'),
+                  child: const Text('post.detail.add_to_favorites').tr(),
                 ),
                 if (authenticationState is Authenticated)
-                  const PopupMenuItem(
+                  PopupMenuItem(
                     value: 'copy_and_move_to_saved_search',
-                    child: Text(
-                      'Copy and move to saved search',
-                    ),
+                    child: const Text(
+                      'post.detail.copy_and_open_saved_search',
+                    ).tr(),
                   ),
               ],
               onSelected: (value) {

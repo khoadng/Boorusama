@@ -4,6 +4,13 @@
         "errors" : {
             "no_data" : "Няма даступных даных",
             "unknown" : "Нешта пайшло не так"
+        },
+        "action" : {
+            "add" : "Add",
+            "delete" : "Delete",
+            "edit" : "Edit",
+            "ok" : "OK",
+            "cancel" : "Cancel"
         }
     },
 
@@ -80,6 +87,8 @@
             "login_required_notice" : "Вы павінны ўвайсці ў акаўнт для здзяйснення дзеяння",
             "open_wiki" : "Адкрыць wiki",
             "add_to_blacklist" : "Дадаць у чорны спіс",
+            "add_to_favorites" : "Add to favorites",
+            "copy_and_open_saved_search" : "Copy and open saved search",
             "score" : {
                 "one" : "Адзнака",
                 "other": "Адзнакі"
@@ -180,9 +189,26 @@
         "app_settings" :"Настроікі прылажэння",
         "appearance" :  "Пастава",
         "general" :  "Генеральныя",
+        "search" :  "Search",
         "information" : "Інфармацыя",
         "changelog" : "Гісторыя змен",
         "general_data_source": "Крыніца",
+        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "result_layout" : {
+            "result_layout" : "Result layout",
+            "infinite_scroll": "Infinite scroll",
+            "pagination": "Pagination"
+        },
+        "details_style" : {
+            "details_style" : "Default details style",
+            "post_focused": "Post focused",
+            "image_focused": "Image focused"
+        },
+        "image_list": {
+            "image_list" : "Image list",
+            "standard" : "Standard",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
             "grid_size" : {
@@ -283,6 +309,26 @@
             "one": "Скачаць {} малюнак",
             "other": "Скачаць {} малюнкаў"
         }
+    },
+
+    "saved_search" : {
+        "saved_search" : "Saved search",
+        "saved_search_counter" : {
+            "one": "{} search",
+            "other": "{} searches"
+        },
+        "add_saved_search" : "Add a saved search",
+        "saved_search_added" : "Saved search has been added",
+        "empty_saved_search" : "You haven't add any search yet",
+        "update_saved_search" : "Update saved search",
+        "saved_search_updated" : "Saved search has been updated",
+        "saved_search_feed" : "Feed",
+        "saved_search_help" : "What is it?",
+        "saved_search_examples" : "Examples",
+        "saved_search_try" : "Try it",
+        "saved_search_query" : "Query",
+        "saved_search_labels" : "Labels*",
+        "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
     },
 
     "favorites" : {

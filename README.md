@@ -25,6 +25,8 @@ Boorusama is one of the most feature-rich unofficial clients for [Danbooru](http
 
 ## Features
 - Fully supported tag search with autocomplete and metatags highlighting
+- Support saved search
+- Save, import, export your favorite tags.
 - Quick and easy image saving
 - Support download multiple images in bulk
 - Explore the newest, curated and popular posts with ease

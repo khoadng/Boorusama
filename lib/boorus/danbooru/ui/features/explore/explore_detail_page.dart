@@ -48,24 +48,19 @@ class _ExploreDetailState extends State<_ExploreDetail> {
       appBar: AppBar(
         title: widget.title,
       ),
-      body: BlocConsumer<ExploreDetailBloc, ExploreDetailState>(
+      body: BlocListener<ExploreDetailBloc, ExploreDetailState>(
         listener: (context, state) {
           _scrollController.jumpTo(0);
           _refreshController.requestRefresh();
         },
-        builder: (context, state) {
-          return Column(
-            children: [
-              Expanded(
-                child: widget.builder(
-                  context,
-                  _refreshController,
-                  _scrollController,
-                ),
-              ),
-            ],
-          );
-        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: widget.builder(
+            context,
+            _refreshController,
+            _scrollController,
+          ),
+        ),
       ),
     );
   }
@@ -107,37 +102,22 @@ List<Widget> _categoryToListHeader(
   DateTime date,
   TimeScale scale,
 ) {
-  if (category == ExploreCategory.curated ||
-      category == ExploreCategory.popular) {
-    return [
-      DateTimeSelector(
-        onDateChanged: (date) => context
-            .read<ExploreDetailBloc>()
-            .add(ExploreDetailDateChanged(date)),
-        date: date,
-        scale: scale,
-      ),
-      TimeScaleToggleSwitch(
-        onToggle: (scale) => {
-          context
-              .read<ExploreDetailBloc>()
-              .add(ExploreDetailTimeScaleChanged(scale)),
-        },
-      ),
-      const SizedBox(height: 20),
-    ];
-  } else if (category == ExploreCategory.hot) {
-    return [];
-  } else {
-    return [
-      DateTimeSelector(
-        onDateChanged: (date) => context
-            .read<ExploreDetailBloc>()
-            .add(ExploreDetailDateChanged(date)),
-        date: date,
-        scale: scale,
-      ),
-    ];
+  switch (category) {
+    case ExploreCategory.popular:
+    case ExploreCategory.curated:
+      return [
+        TimeScaleToggleSwitch(
+          onToggle: (scale) => {
+            context
+                .read<ExploreDetailBloc>()
+                .add(ExploreDetailTimeScaleChanged(scale)),
+          },
+        ),
+        const SizedBox(height: 20),
+      ];
+    case ExploreCategory.mostViewed:
+    case ExploreCategory.hot:
+      return [];
   }
 }
 
@@ -153,62 +133,106 @@ class ExploreDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ExploreDetailBloc, ExploreDetailState>(
-      builder: (context, state) {
-        return _ExploreDetail(
-          title: title,
-          builder: (context, refreshController, scrollController) {
-            return BlocProvider(
-              create: (context) => PostBloc.of(context)
-                ..add(
-                  PostRefreshed(
-                    fetcher: _categoryToFetcher(
-                      category,
-                      state.date,
-                      state.scale,
-                      context,
-                    ),
-                  ),
-                ),
-              child: BlocBuilder<PostBloc, PostState>(
-                builder: (context, ppstate) => ExplorePostGrid(
-                  headers: _categoryToListHeader(
-                    context,
-                    category,
-                    state.date,
-                    state.scale,
-                  ),
-                  hasMore: ppstate.hasMore,
-                  isLoading: ppstate.loading,
-                  scrollController: scrollController,
-                  controller: refreshController,
-                  date: state.date,
-                  scale: state.scale,
-                  status: ppstate.status,
-                  posts: ppstate.posts,
-                  onLoadMore: (date, scale) => context
-                      .read<PostBloc>()
-                      .add(PostFetched(
-                        tags: '',
-                        fetcher:
-                            _categoryToFetcher(category, date, scale, context),
-                      )),
-                  onRefresh: (date, scale) => context.read<PostBloc>().add(
-                        PostRefreshed(
-                          fetcher: _categoryToFetcher(
-                            category,
-                            date,
-                            scale,
-                            context,
-                          ),
-                        ),
-                      ),
+    final state = context.watch<ExploreDetailBloc>().state;
+
+    return _ExploreDetail(
+      title: title,
+      builder: (context, refreshController, scrollController) {
+        return BlocProvider(
+          create: (context) => PostBloc.of(context)
+            ..add(
+              PostRefreshed(
+                fetcher: _categoryToFetcher(
+                  category,
+                  state.date,
+                  state.scale,
+                  context,
                 ),
               ),
-            );
-          },
+            ),
+          child: _ExplorePostGrid(
+            category: category,
+            scrollController: scrollController,
+            refreshController: refreshController,
+            date: state.date,
+            scale: state.scale,
+          ),
         );
       },
+    );
+  }
+}
+
+class _ExplorePostGrid extends StatelessWidget {
+  const _ExplorePostGrid({
+    required this.category,
+    required this.scrollController,
+    required this.refreshController,
+    required this.date,
+    required this.scale,
+  });
+
+  final ExploreCategory category;
+  final TimeScale scale;
+  final DateTime date;
+  final AutoScrollController scrollController;
+  final RefreshController refreshController;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<PostBloc>().state;
+
+    return Scaffold(
+      body: Column(
+        children: [
+          Expanded(
+            child: ExplorePostGrid(
+              headers: _categoryToListHeader(
+                context,
+                category,
+                date,
+                scale,
+              ),
+              hasMore: state.hasMore,
+              isLoading: state.loading,
+              scrollController: scrollController,
+              controller: refreshController,
+              date: date,
+              scale: scale,
+              status: state.status,
+              posts: state.posts,
+              onLoadMore: (date, scale) => context
+                  .read<PostBloc>()
+                  .add(PostFetched(
+                    tags: '',
+                    fetcher: _categoryToFetcher(category, date, scale, context),
+                  )),
+              onRefresh: (date, scale) => context.read<PostBloc>().add(
+                    PostRefreshed(
+                      fetcher: _categoryToFetcher(
+                        category,
+                        date,
+                        scale,
+                        context,
+                      ),
+                    ),
+                  ),
+            ),
+          ),
+          if (category != ExploreCategory.hot)
+            Container(
+              color: Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+              child: DateTimeSelector(
+                onDateChanged: (date) => context
+                    .read<ExploreDetailBloc>()
+                    .add(ExploreDetailDateChanged(date)),
+                date: date,
+                scale: scale,
+                backgroundColor: Colors.transparent,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

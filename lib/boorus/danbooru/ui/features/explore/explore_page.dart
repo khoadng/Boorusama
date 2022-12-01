@@ -6,14 +6,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags_bloc.dart';
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/explore_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/utils.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
@@ -23,132 +20,125 @@ const double _kMaxHeight = 250;
 const _padding = EdgeInsets.symmetric(horizontal: 2);
 
 class ExplorePage extends StatelessWidget {
-  const ExplorePage({super.key});
-
-  Widget mapStateToCarousel(
-    BuildContext context,
-    PostState state,
-  ) {
-    return state.status == LoadStatus.success && state.posts.isNotEmpty
-        ? _ExploreList(posts: state.posts.take(20).toList())
-        : SizedBox(
-            height: _kMaxHeight,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 20,
-              itemBuilder: (context, index) => Padding(
-                padding: _padding,
-                child: createRandomPlaceholderContainer(context),
-              ),
-            ),
-          );
-  }
+  const ExplorePage({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
-      builder: (context, blacklistedTagsState) {
-        return BlocBuilder<SettingsCubit, SettingsState>(
-          builder: (context, settingsState) {
-            return Padding(
-              padding: Screen.of(context).size == ScreenSize.small
-                  ? EdgeInsets.zero
-                  : const EdgeInsets.symmetric(horizontal: 8),
-              child: CustomScrollView(
-                primary: false,
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).viewPadding.top,
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.popular,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.popular'.tr(),
-                        category: ExploreCategory.popular,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.hot,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.hot'.tr(),
-                        category: ExploreCategory.hot,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.curated,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.curated'.tr(),
-                        category: ExploreCategory.curated,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocProvider(
-                      create: (context) => PostBloc.of(context)
-                        ..add(PostRefreshed(
-                          fetcher: ExplorePreviewFetcher.now(
-                            category: ExploreCategory.mostViewed,
-                            exploreRepository:
-                                context.read<ExploreRepository>(),
-                          ),
-                        )),
-                      child: ExploreSection(
-                        title: 'explore.most_viewed'.tr(),
-                        category: ExploreCategory.mostViewed,
-                        builder: (_) => BlocBuilder<PostBloc, PostState>(
-                          builder: mapStateToCarousel,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(
-                      height: kBottomNavigationBarHeight + 60,
-                    ),
-                  ),
-                ],
-              ),
+    return Padding(
+      padding: Screen.of(context).size == ScreenSize.small
+          ? EdgeInsets.zero
+          : const EdgeInsets.symmetric(horizontal: 8),
+      child: CustomScrollView(
+        primary: false,
+        slivers: [
+          SliverToBoxAdapter(
+            child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
+          ),
+          const SliverToBoxAdapter(child: _PopularExplore()),
+          const SliverToBoxAdapter(child: _HotExplore()),
+          const SliverToBoxAdapter(child: _CuratedExplore()),
+          const SliverToBoxAdapter(child: _MostViewedExplore()),
+          const SliverToBoxAdapter(
+            child: SizedBox(height: kBottomNavigationBarHeight + 20),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+Widget mapToCarousel(
+  BuildContext context,
+  ExploreData explore,
+) {
+  return explore.data.isNotEmpty
+      ? _ExploreList(
+          posts: explore.data,
+          onTap: (index) {
+            goToDetailPage(
+              context: context,
+              posts: explore.data,
+              initialIndex: index,
+              postBloc: explore.bloc,
             );
           },
+        )
+      : SizedBox(
+          height: _kMaxHeight,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: 20,
+            itemBuilder: (context, index) => Padding(
+              padding: _padding,
+              child: createRandomPlaceholderContainer(context),
+            ),
+          ),
         );
-      },
+}
+
+class _MostViewedExplore extends StatelessWidget {
+  const _MostViewedExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final mostViewed =
+        context.select((ExploreBloc bloc) => bloc.state.mostViewed);
+
+    return ExploreSection(
+      date: mostViewed.date,
+      title: 'explore.most_viewed'.tr(),
+      category: ExploreCategory.mostViewed,
+      builder: (_) => mapToCarousel(context, mostViewed),
+    );
+  }
+}
+
+class _CuratedExplore extends StatelessWidget {
+  const _CuratedExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final curated = context.select((ExploreBloc bloc) => bloc.state.curated);
+
+    return ExploreSection(
+      date: curated.date,
+      title: 'explore.curated'.tr(),
+      category: ExploreCategory.curated,
+      builder: (_) => mapToCarousel(context, curated),
+    );
+  }
+}
+
+class _HotExplore extends StatelessWidget {
+  const _HotExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final hot = context.select((ExploreBloc bloc) => bloc.state.hot);
+
+    return ExploreSection(
+      date: hot.date,
+      title: 'explore.hot'.tr(),
+      category: ExploreCategory.hot,
+      builder: (_) => mapToCarousel(context, hot),
+    );
+  }
+}
+
+class _PopularExplore extends StatelessWidget {
+  const _PopularExplore();
+
+  @override
+  Widget build(BuildContext context) {
+    final popular = context.select((ExploreBloc bloc) => bloc.state.popular);
+
+    return ExploreSection(
+      date: popular.date,
+      title: 'explore.popular'.tr(),
+      category: ExploreCategory.popular,
+      builder: (_) => mapToCarousel(context, popular),
     );
   }
 }
@@ -156,9 +146,11 @@ class ExplorePage extends StatelessWidget {
 class _ExploreList extends StatefulWidget {
   const _ExploreList({
     required this.posts,
+    required this.onTap,
   });
 
   final List<PostData> posts;
+  final void Function(int index) onTap;
 
   @override
   State<_ExploreList> createState() => _ExploreListState();
@@ -186,14 +178,7 @@ class _ExploreListState extends State<_ExploreList> {
           return Padding(
             padding: _padding,
             child: GestureDetector(
-              onTap: () {
-                goToDetailPage(
-                  context: context,
-                  posts: widget.posts,
-                  initialIndex: index,
-                  postBloc: context.read<PostBloc>(),
-                );
-              },
+              onTap: () => widget.onTap(index),
               child: Stack(
                 alignment: Alignment.center,
                 children: [

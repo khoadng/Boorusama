@@ -13,12 +13,14 @@ class PostCountRepositoryApi implements PostCountRepository {
   final AccountRepository accountRepository;
 
   @override
-  Future<int> count(List<String> tags) => accountRepository
+  Future<int?> count(List<String> tags) => accountRepository
       .get()
       .then((account) => api.countPosts(
             account.username,
             account.apiKey,
             tags.join(' '),
           ))
-      .then((value) => value.data['counts']['posts']);
+      .then((value) => value.data['counts']['posts'])
+      .then((value) => Future<int?>.value(value))
+      .catchError((_) => null);
 }

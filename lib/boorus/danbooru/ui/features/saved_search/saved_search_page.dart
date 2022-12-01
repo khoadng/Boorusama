@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
-import 'package:animated_list_plus/transitions.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
@@ -27,7 +26,7 @@ class SavedSearchPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Saved search'),
+        title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
             onPressed: () => _onAddButtonPressed(context),
@@ -69,7 +68,7 @@ class SavedSearchPage extends StatelessWidget {
           onCreated: (data) => showSimpleSnackBar(
             context: context,
             duration: const Duration(seconds: 1),
-            content: const Text('Saved search has been added'),
+            content: const Text('saved_search.saved_search_added').tr(),
           ),
         )),
       ),
@@ -86,8 +85,8 @@ class _SuccessView extends StatelessWidget {
       buildWhen: (previous, current) => previous.data != current.data,
       builder: (context, state) {
         return state.data.isEmpty
-            ? const GenericNoDataBox(
-                text: "You haven't add any search yet",
+            ? GenericNoDataBox(
+                text: 'saved_search.empty_saved_search'.tr(),
               )
             : CustomScrollView(slivers: [
                 const SliverToBoxAdapter(child: SizedBox(height: 15)),
@@ -101,7 +100,9 @@ class _SuccessView extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '${state.data.length} saved searches'.toUpperCase(),
+                          'saved_search.saved_search_counter'
+                              .plural(state.data.length)
+                              .toUpperCase(),
                           style:
                               Theme.of(context).textTheme.titleMedium!.copyWith(
                                     color: Theme.of(context).hintColor,
@@ -112,12 +113,10 @@ class _SuccessView extends StatelessWidget {
                     ),
                   ),
                 ),
-                AnimationLimiter(
-                  child: SliverImplicitlyAnimatedList<SavedSearch>(
-                    items: state.data,
-                    areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
-                    itemBuilder: _buildSearchItems,
-                  ),
+                SliverImplicitlyAnimatedList<SavedSearch>(
+                  items: state.data,
+                  areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                  itemBuilder: _buildSearchItems,
                 ),
               ]);
       },
@@ -130,41 +129,27 @@ class _SuccessView extends StatelessWidget {
     SavedSearch savedSearch,
     int index,
   ) {
-    return AnimationConfiguration.staggeredList(
-      position: index,
-      duration: const Duration(milliseconds: 200),
-      child: SlideAnimation(
-        verticalOffset: 50,
-        child: FadeInAnimation(
-          child: SizeFadeTransition(
-            sizeFraction: 0.7,
-            curve: Curves.easeInOut,
-            animation: animation,
-            child: ListTile(
-              title: Text(savedSearch.labels.join(' ')),
-              subtitle: Text(savedSearch.query),
-              trailing: savedSearch.readOnly
-                  ? null
-                  : IconButton(
-                      onPressed: () => _showEditSheet(
-                        context,
-                        savedSearch,
-                      ),
-                      icon: const Icon(Icons.more_vert),
-                    ),
-              onTap: savedSearch.labels.isNotEmpty
-                  ? () => _goToSearchPage(
-                        context,
-                        query: 'search:${savedSearch.labels.first}',
-                      )
-                  : null,
-              onLongPress: savedSearch.readOnly
-                  ? null
-                  : () => _showEditSheet(context, savedSearch),
+    return ListTile(
+      title: Text(savedSearch.labels.join(' ')),
+      subtitle: Text(savedSearch.query),
+      trailing: savedSearch.readOnly
+          ? null
+          : IconButton(
+              onPressed: () => _showEditSheet(
+                context,
+                savedSearch,
+              ),
+              icon: const Icon(Icons.more_vert),
             ),
-          ),
-        ),
-      ),
+      onTap: savedSearch.labels.isNotEmpty
+          ? () => _goToSearchPage(
+                context,
+                query: 'search:${savedSearch.labels.first}',
+              )
+          : null,
+      onLongPress: savedSearch.readOnly
+          ? null
+          : () => _showEditSheet(context, savedSearch),
     );
   }
 
@@ -180,7 +165,7 @@ class _SuccessView extends StatelessWidget {
           context: context,
           backgroundColor: Theme.of(context).backgroundColor,
           builder: (_) => EditSavedSearchSheet(
-            title: 'Update saved search',
+            title: 'saved_search.update_saved_search'.tr(),
             initialValue: savedSearch,
             onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
               id: savedSearch.id,
@@ -192,8 +177,8 @@ class _SuccessView extends StatelessWidget {
                   seconds: 1,
                 ),
                 content: const Text(
-                  'Saved search has been updated',
-                ),
+                  'saved_search.saved_search_updated',
+                ).tr(),
               ),
             )),
           ),
@@ -237,7 +222,7 @@ class ModalSavedSearchAction extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             ListTile(
-              title: const Text('Edit'),
+              title: const Text('generic.action.edit').tr(),
               leading: const Icon(Icons.edit),
               onTap: () {
                 Navigator.of(context).pop();
@@ -245,7 +230,7 @@ class ModalSavedSearchAction extends StatelessWidget {
               },
             ),
             ListTile(
-              title: const Text('Delete'),
+              title: const Text('generic.action.delete').tr(),
               leading: const Icon(Icons.clear),
               onTap: () {
                 Navigator.of(context).pop();

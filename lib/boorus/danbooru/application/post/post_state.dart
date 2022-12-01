@@ -5,9 +5,12 @@ import 'package:equatable/equatable.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/common/bloc/pagination_mixin.dart';
 
 class PostState extends Equatable
-    implements InfiniteLoadState<PostData, PostState> {
+    implements
+        InfiniteLoadState<PostData, PostState>,
+        PaginationLoadState<PostData, PostState> {
   const PostState({
     required this.status,
     required this.posts,
@@ -16,15 +19,20 @@ class PostState extends Equatable
     required this.hasMore,
     this.exceptionMessage,
     required this.id,
+    required this.pagination,
   });
 
-  factory PostState.initial() => const PostState(
+  factory PostState.initial({
+    bool? pagination,
+  }) =>
+      PostState(
         status: LoadStatus.initial,
-        posts: [],
-        filteredPosts: [],
+        posts: const [],
+        filteredPosts: const [],
         page: 1,
         hasMore: true,
         id: 0,
+        pagination: pagination ?? false,
       );
 
   final List<PostData> posts;
@@ -40,6 +48,8 @@ class PostState extends Equatable
   bool get loading => status == LoadStatus.loading;
   @override
   bool get refreshing => status == LoadStatus.initial;
+
+  final bool pagination;
 
   final String? exceptionMessage;
 
@@ -63,11 +73,20 @@ class PostState extends Equatable
         hasMore: hasMore ?? this.hasMore,
         exceptionMessage: exceptionMessage ?? this.exceptionMessage,
         id: id ?? this.id,
+        pagination: pagination,
       );
 
   @override
-  List<Object?> get props =>
-      [status, posts, filteredPosts, page, hasMore, exceptionMessage, id];
+  List<Object?> get props => [
+        status,
+        posts,
+        filteredPosts,
+        page,
+        hasMore,
+        exceptionMessage,
+        id,
+        pagination,
+      ];
 
   @override
   PostState copyLoadState({
@@ -85,6 +104,18 @@ class PostState extends Equatable
             : loading
                 ? LoadStatus.loading
                 : LoadStatus.success,
+        posts: [...data],
+      );
+
+  @override
+  PostState copyPaginationState({
+    required int page,
+    required bool loading,
+    required List<PostData> data,
+  }) =>
+      copyWith(
+        page: page,
+        status: loading ? LoadStatus.initial : LoadStatus.success,
         posts: [...data],
       );
 }

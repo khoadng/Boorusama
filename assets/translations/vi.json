@@ -4,6 +4,13 @@
         "errors" : {
             "no_data" : "Không có dữ liệu",
             "unknown" : "Xảy ra lỗi ngoài dự kiến"
+        },
+        "action" : {
+            "add" : "Thêm",
+            "delete" : "Xoá",
+            "edit" : "Sửa",
+            "ok" : "OK",
+            "cancel" : "Huỷ"
         }
     },
 
@@ -80,6 +87,8 @@
             "login_required_notice" : "Bạn cần đăng nhập để thực hiện tác vụ này",
             "open_wiki" : "Mở wiki",
             "add_to_blacklist" : "Thêm vào bộ lọc",
+            "add_to_favorites" : "Thêm vào yêu thích",
+            "copy_and_open_saved_search" : "Copy và mở saved search",
             "score" : {
                 "one" : "Điểm",
                 "other": "Điểm"
@@ -179,9 +188,26 @@
         "app_settings" : "Cài đặt ứng dụng",
         "appearance" :  "Hiển thị",
         "general" :  "Chung",
+        "search" :  "Tìm kiếm",
         "information" : "Thông tin",
         "changelog" : "Changelog",
         "general_data_source": "Nguồn ảnh",
+        "infinite_scroll_warning" : "Có khả năng crash app nếu lướt quá lâu",
+        "result_layout" : {
+            "result_layout" : "Kiểu layout",
+            "infinite_scroll": "Lướt vô tận",
+            "pagination": "Chia trang"
+        },
+        "details_style" : {
+            "details_style" : "Chi tiết",
+            "post_focused": "Thông tin là chủ đạo",
+            "image_focused": "Ảnh là chủ đạo"
+        },
+        "image_list": {
+            "image_list" : "Kiểu list ảnh",
+            "standard" : "Tiêu chuẩn",
+            "masonry" : "Masonry"
+        },
         "image_grid" : {
             "image_grid" : "Lưới ảnh",
             "grid_size" : {
@@ -282,6 +308,26 @@
             "one": "Tải {} ảnh",
             "other": "Tải {} ảnh"
         }
+    },
+
+    "saved_search" : {
+        "saved_search" : "Saved search",
+        "saved_search_counter" : {
+            "one": "{} search",
+            "other": "{} searches"
+        },
+        "add_saved_search" : "Thêm saved search",
+        "saved_search_added" : "Đã thêm saved search",
+        "empty_saved_search" : "Bạn chưa thêm search nào",
+        "update_saved_search" : "Sửa saved search",
+        "saved_search_updated" : "Saved search đã được sửa thành công",
+        "saved_search_feed" : "Feed",
+        "saved_search_help" : "Saved search là gì?",
+        "saved_search_examples" : "Ví dụ",
+        "saved_search_try" : "Thử",
+        "saved_search_query" : "Từ khoá",
+        "saved_search_labels" : "Nhãn*",
+        "saved_search_labels_description" : "*Một danh sách tag dùng để phân loại search này. Dùng khoảng trắng để cách nhau."
     },
 
     "favorites" : {

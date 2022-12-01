@@ -16,7 +16,13 @@ class CuratedPostFetcher implements PostFetcher {
   @override
   Future<List<Post>> fetch(
     PostRepository repo,
-    int page,
-  ) async =>
-      exploreRepository.getCuratedPosts(date, page, scale);
+    int page, {
+    int? limit,
+  }) async =>
+      exploreRepository.getCuratedPosts(
+        date,
+        page,
+        scale,
+        limit: limit,
+      );
 }

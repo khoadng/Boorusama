@@ -9,7 +9,6 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 
 class ArtistPage extends StatelessWidget {
   const ArtistPage({
@@ -26,11 +25,17 @@ class ArtistPage extends StatelessWidget {
     return TagDetailPage(
       tagName: artistName,
       otherNamesBuilder: (context) => BlocBuilder<ArtistBloc, ArtistState>(
-        builder: (context, state) => ConditionalRenderWidget(
-          condition: state.status == LoadStatus.success,
-          childBuilder: (context) =>
-              TagOtherNames(otherNames: state.artist.otherNames),
-        ),
+        builder: (context, state) {
+          switch (state.status) {
+            case LoadStatus.initial:
+            case LoadStatus.loading:
+              return const SizedBox(height: 40, width: 40);
+            case LoadStatus.success:
+              return TagOtherNames(otherNames: state.artist.otherNames);
+            case LoadStatus.failure:
+              return const SizedBox.shrink();
+          }
+        },
       ),
       backgroundImageUrl: backgroundImageUrl,
     );

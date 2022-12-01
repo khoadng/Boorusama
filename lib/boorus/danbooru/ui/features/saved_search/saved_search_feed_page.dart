@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
@@ -63,7 +64,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Feed'),
+          title: const Text('saved_search.saved_search_feed').tr(),
           actions: [
             IconButton(
               onPressed: () => AppRouter.router.navigateTo(
@@ -88,18 +89,19 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                       ),
                       child: Column(
                         children: [
-                          const GenericNoDataBox(
-                            text: "You haven't add any search yet",
+                          GenericNoDataBox(
+                            text: 'saved_search.empty_saved_search'.tr(),
                           ),
                           TextButton(
                             onPressed: () => launchExternalUrl(
                               Uri.parse(savedSearchHelpUrl),
                             ),
-                            child: const Text('What is it?'),
+                            child: const Text('saved_search.saved_search_help')
+                                .tr(),
                           ),
                           ElevatedButton(
                             onPressed: () => _onAddSearch(context),
-                            child: const Text('Add'),
+                            child: const Text('generic.action.add').tr(),
                           ),
                         ],
                       ),
@@ -107,8 +109,9 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
                     const Divider(
                       thickness: 2,
                     ),
-                    const ListTile(
-                      title: Text('Examples'),
+                    ListTile(
+                      title:
+                          const Text('saved_search.saved_search_examples').tr(),
                     ),
                     _ExampleContainer(
                       title: 'Follow artists',
@@ -320,7 +323,7 @@ class _ExampleContainer extends StatelessWidget {
                   const Spacer(),
                   ElevatedButton(
                     onPressed: () => onTry(query),
-                    child: const Text('Try it'),
+                    child: const Text('saved_search.saved_search_try').tr(),
                   ),
                 ],
               ),
