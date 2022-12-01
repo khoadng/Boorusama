@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/core/ui/error_box.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,24 +17,40 @@ class FavoriteGroupsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Favorite Group'),
+      ),
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
             BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
               builder: (context, state) {
-                return SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final group = state.favoriteGroups[index];
+                switch (state.status) {
+                  case LoadStatus.initial:
+                  case LoadStatus.loading:
+                    return const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 8),
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
+                    );
+                  case LoadStatus.success:
+                    return SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final group = state.favoriteGroups[index];
 
-                      return ListTile(
-                        title: Text(group.name),
-                        subtitle: Text(group.creator.name),
-                      );
-                    },
-                    childCount: state.favoriteGroups.length,
-                  ),
-                );
+                          return ListTile(
+                            title: Text(group.name.replaceAll('_', ' ')),
+                            subtitle: Text(group.creator.name),
+                          );
+                        },
+                        childCount: state.favoriteGroups.length,
+                      ),
+                    );
+                  case LoadStatus.failure:
+                    return const SliverToBoxAdapter(child: ErrorBox());
+                }
               },
             ),
           ],

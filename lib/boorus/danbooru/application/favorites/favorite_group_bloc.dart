@@ -72,6 +72,7 @@ class FavoriteGroupsBloc
         onSuccess: (data) async {
           emit(state.copyWith(
             favoriteGroups: data,
+            status: LoadStatus.success,
           ));
         },
       );

@@ -16,7 +16,9 @@ class FavoriteGroupDto {
       FavoriteGroupDto(
         id: json['id'],
         name: json['name'],
-        creator: json['creator'] == null ? null : CreatorDto.fromJson(json),
+        creator: json['creator'] == null
+            ? null
+            : CreatorDto.fromJson(json['creator']),
         postIds: json['post_ids'] == null
             ? null
             : List<int>.from(json['post_ids'].map((x) => x)),
