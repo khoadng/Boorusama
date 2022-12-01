@@ -81,6 +81,11 @@ class AppRouter {
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.material,
+      )
+      ..define(
+        '/favorite_groups',
+        handler: favoriteGroupsHandler,
+        transitionType: TransitionType.material,
       );
   }
 }

@@ -39,6 +39,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -360,6 +361,19 @@ final favoritesHandler =
         ),
       );
     },
+  );
+});
+
+final favoriteGroupsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => FavoriteGroupsBloc.of(context)
+          ..add(const FavoriteGroupsAllFetched()),
+      ),
+    ],
+    child: const FavoriteGroupsPage(),
   );
 });
 
