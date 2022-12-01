@@ -28,6 +28,7 @@ Must be one of the following:
 * **build**: Changes that affect the build system or external dependencies (example scopes: pub, npm)
 * **ci**: Changes to our CI configuration files and scripts (examples: CircleCi, GitHub Action)
 * **docs**: Documentation only changes
+* **style**: Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)
 * **feat**: A new feature
 * **fix**: A bug fix
 * **perf**: A code change that improves performance
