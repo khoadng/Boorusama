@@ -359,10 +359,11 @@ abstract class Api {
   @GET('/favorite_groups.json')
   Future<HttpResponse> getFavoriteGroups(
     @Query('login') String? login,
-    @Query('api_key') String? apiKey,
-    @Query('page') int page,
-    @Query('search[name]') String namePattern,
-    @Query('only') String only,
-    @Query('limit') int limit,
-  );
+    @Query('api_key') String? apiKey, {
+    @Query('page') int? page,
+    @Query('search[name_contains]') String? namePattern,
+    @Query('search[creator_name]') String? creatorName,
+    @Query('only') String? only,
+    @Query('limit') int? limit,
+  });
 }

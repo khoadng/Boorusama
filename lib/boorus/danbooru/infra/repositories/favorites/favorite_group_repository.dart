@@ -25,17 +25,39 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
   final AccountRepository accountRepository;
 
   @override
-  Future<List<FavoriteGroup>> getFavoriteGroups() => accountRepository
-      .get()
-      .then(
-        (account) => api.getFavoriteGroups(
-          account.username,
-          account.apiKey,
-          1,
-          '',
-          favoriteGroupApiParams,
-          50,
-        ),
-      )
-      .then(parseFavoriteGroups);
+  Future<List<FavoriteGroup>> getFavoriteGroups({
+    String? name,
+    int? page,
+  }) =>
+      accountRepository
+          .get()
+          .then(
+            (account) => api.getFavoriteGroups(
+              account.username,
+              account.apiKey,
+              namePattern: name,
+              page: page,
+              only: favoriteGroupApiParams,
+              limit: 50,
+            ),
+          )
+          .then(parseFavoriteGroups);
+
+  @override
+  Future<List<FavoriteGroup>> getFavoriteGroupsByCreatorName({
+    required String name,
+    int? page,
+  }) =>
+      accountRepository
+          .get()
+          .then(
+            (account) => api.getFavoriteGroups(
+              account.username,
+              account.apiKey,
+              page: page,
+              only: favoriteGroupApiParams,
+              limit: 50,
+            ),
+          )
+          .then(parseFavoriteGroups);
 }

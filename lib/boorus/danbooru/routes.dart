@@ -370,7 +370,7 @@ final favoriteGroupsHandler =
     providers: [
       BlocProvider(
         create: (context) => FavoriteGroupsBloc.of(context)
-          ..add(const FavoriteGroupsAllFetched()),
+          ..add(const FavoriteGroupsRefreshed()),
       ),
     ],
     child: const FavoriteGroupsPage(),

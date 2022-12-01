@@ -6,75 +6,112 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
+import 'package:boorusama/common/bloc/pagination_mixin.dart';
 
-class FavoriteGroupsState extends Equatable {
+class FavoriteGroupsState extends Equatable
+    implements PaginationLoadState<FavoriteGroup, FavoriteGroupsState> {
   const FavoriteGroupsState({
     required this.favoriteGroups,
-    required this.status,
+    required this.page,
+    required this.loading,
   });
 
   factory FavoriteGroupsState.initial() => const FavoriteGroupsState(
         favoriteGroups: [],
-        status: LoadStatus.initial,
+        page: 1,
+        loading: true,
       );
 
   final List<FavoriteGroup> favoriteGroups;
-  final LoadStatus status;
 
   FavoriteGroupsState copyWith({
     List<FavoriteGroup>? favoriteGroups,
-    LoadStatus? status,
+    bool? loading,
+    int? page,
   }) =>
       FavoriteGroupsState(
         favoriteGroups: favoriteGroups ?? this.favoriteGroups,
-        status: status ?? this.status,
+        loading: loading ?? this.loading,
+        page: page ?? this.page,
       );
 
   @override
-  List<Object?> get props => [favoriteGroups, status];
+  List<Object?> get props => [favoriteGroups, loading, page];
+
+  @override
+  FavoriteGroupsState copyPaginationState({
+    required int page,
+    required bool loading,
+    required List<FavoriteGroup> data,
+  }) =>
+      copyWith(
+        page: page,
+        loading: loading,
+        favoriteGroups: data,
+      );
+
+  @override
+  List<FavoriteGroup> get data => favoriteGroups;
+
+  @override
+  final bool loading;
+
+  @override
+  final int page;
 }
 
 abstract class FavoriteGroupsEvent extends Equatable {
   const FavoriteGroupsEvent();
 }
 
-class FavoriteGroupsAllFetched extends FavoriteGroupsEvent {
-  const FavoriteGroupsAllFetched();
-
-  @override
-  List<Object?> get props => [];
-}
-
-class FavoriteGroupsFetched extends FavoriteGroupsEvent {
-  const FavoriteGroupsFetched({
-    required this.namePattern,
+class FavoriteGroupsRefreshed extends FavoriteGroupsEvent {
+  const FavoriteGroupsRefreshed({
+    this.namePattern,
   });
 
-  final String namePattern;
+  final String? namePattern;
 
   @override
   List<Object?> get props => [namePattern];
 }
 
-class FavoriteGroupsBloc
-    extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState> {
+class FavoriteGroupsFetched extends FavoriteGroupsEvent {
+  const FavoriteGroupsFetched({
+    required this.page,
+  });
+
+  final int page;
+
+  @override
+  List<Object?> get props => [page];
+}
+
+class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
+    with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
   }) : super(FavoriteGroupsState.initial()) {
-    on<FavoriteGroupsAllFetched>((event, emit) async {
-      await tryAsync<List<FavoriteGroup>>(
-        action: () => favoriteGroupRepository.getFavoriteGroups(),
-        onLoading: () => emit(state.copyWith(status: LoadStatus.loading)),
-        onFailure: (error, stackTrace) =>
-            emit(state.copyWith(status: LoadStatus.failure)),
-        onSuccess: (data) async {
-          emit(state.copyWith(
-            favoriteGroups: data,
-            status: LoadStatus.success,
-          ));
-        },
+    on<FavoriteGroupsRefreshed>((event, emit) async {
+      await load(
+        emit: EmitConfig(
+          stateGetter: () => state,
+          emitter: emit,
+        ),
+        page: 1,
+        fetch: (page) => favoriteGroupRepository.getFavoriteGroups(page: page),
+      );
+    });
+
+    on<FavoriteGroupsFetched>((event, emit) async {
+      await load(
+        emit: EmitConfig(
+          stateGetter: () => state,
+          emitter: emit,
+        ),
+        page: event.page,
+        fetch: (page) => favoriteGroupRepository.getFavoriteGroups(page: page),
       );
     });
   }
