@@ -90,7 +90,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                               .getFileFromCache(widget.post.normalImageUrl)
                               .then((file) {
                             if (!mounted) return;
-                            widget.onCached(file!.file.path);
+                            widget.onCached(file?.file.path);
                           });
 
                           return Stack(
