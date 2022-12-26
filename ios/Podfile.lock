@@ -60,11 +60,11 @@ PODS:
   - SDWebImage (5.14.2):
     - SDWebImage/Core (= 5.14.2)
   - SDWebImage/Core (5.14.2)
-  - Sentry/HybridSDK (7.30.2)
+  - Sentry/HybridSDK (7.31.3)
   - sentry_flutter (0.0.1):
     - Flutter
     - FlutterMacOS
-    - Sentry/HybridSDK (= 7.30.2)
+    - Sentry/HybridSDK (= 7.31.3)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -170,8 +170,8 @@ SPEC CHECKSUMS:
   rate_my_app: 96f658ddb7f0a8d2f46d54452583f084760aef57
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   SDWebImage: b9a731e1d6307f44ca703b3976d18c24ca561e84
-  Sentry: 9be48e341494bc976c963b05aa4a8ca48308c684
-  sentry_flutter: 544e6376e35b00eef9f0864f8bb7f10a0e204993
+  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
+  sentry_flutter: 91ebe7757a166b34ff432a0d550d22cd010d44d2
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904

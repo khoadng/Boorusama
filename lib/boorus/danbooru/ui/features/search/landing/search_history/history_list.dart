@@ -7,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
-import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
@@ -18,9 +17,11 @@ class HistoryList extends StatelessWidget {
     super.key,
     required this.onHistoryRemoved,
     required this.onHistoryTap,
+    required this.onHistoryCleared,
   });
 
   final void Function(SearchHistory item) onHistoryRemoved;
+  final void Function() onHistoryCleared;
   final ValueChanged<String> onHistoryTap;
 
   @override
@@ -40,6 +41,7 @@ class HistoryList extends StatelessWidget {
         _HistoryHeader(
           onHistoryRemoved: onHistoryRemoved,
           onHistoryTap: onHistoryTap,
+          onHistoryCleared: onHistoryCleared,
         ),
         ...histories.take(5).map(
               (item) => _HistoryTile(
@@ -56,9 +58,11 @@ class _HistoryHeader extends StatelessWidget {
   const _HistoryHeader({
     required this.onHistoryRemoved,
     required this.onHistoryTap,
+    required this.onHistoryCleared,
   });
 
   final void Function(SearchHistory item) onHistoryRemoved;
+  final void Function() onHistoryCleared;
   final ValueChanged<String> onHistoryTap;
 
   @override
@@ -88,6 +92,7 @@ class _HistoryHeader extends StatelessWidget {
                     return _HistoryList(
                       onHistoryTap: onHistoryTap,
                       onHistoryRemoved: onHistoryRemoved,
+                      onHistoryCleared: onHistoryCleared,
                       histories: state.histories,
                     );
                   },
@@ -106,11 +111,13 @@ class _HistoryList extends StatelessWidget {
   const _HistoryList({
     required this.onHistoryTap,
     required this.onHistoryRemoved,
+    required this.onHistoryCleared,
     required this.histories,
   });
 
   final ValueChanged<String> onHistoryTap;
   final void Function(SearchHistory item) onHistoryRemoved;
+  final void Function() onHistoryCleared;
   final List<SearchHistory> histories;
 
   @override
@@ -120,8 +127,7 @@ class _HistoryList extends StatelessWidget {
         title: const Text('search.history.history').tr(),
         actions: [
           TextButton(
-            onPressed: () =>
-                context.read<SearchBloc>().add(const SearchHistoryCleared()),
+            onPressed: onHistoryCleared,
             child: const Text('search.history.clear').tr(),
           ),
         ],
