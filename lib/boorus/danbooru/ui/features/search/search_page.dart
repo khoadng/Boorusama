@@ -10,7 +10,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
-import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -22,6 +21,9 @@ import 'error_view.dart';
 import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
+
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart'
+    hide SearchHistoryCleared;
 
 class SearchPage extends StatefulWidget {
   const SearchPage({
@@ -240,6 +242,9 @@ class _LandingView extends StatelessWidget {
       },
       onHistoryRemoved: (value) {
         context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
+      },
+      onHistoryCleared: () {
+        context.read<SearchBloc>().add(const SearchHistoryCleared());
       },
     );
   }
