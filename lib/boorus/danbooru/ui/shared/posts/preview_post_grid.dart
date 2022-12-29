@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/core.dart';
 
 class PreviewPostGrid extends StatelessWidget {
@@ -46,6 +47,9 @@ class PreviewPostGrid extends StatelessWidget {
             child: GestureDetector(
               onTap: () => onTap(index),
               child: CachedNetworkImage(
+                httpHeaders: const {
+                  'User-Agent': userAgent,
+                },
                 cacheManager: cacheManager,
                 fit: BoxFit.cover,
                 imageUrl: _getImageUrl(

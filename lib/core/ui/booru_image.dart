@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
+// Project imports:
+import 'package:boorusama/core/application/api/api.dart';
+
 class BooruImage extends StatelessWidget {
   const BooruImage({
     super.key,
@@ -30,10 +33,16 @@ class BooruImage extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: aspectRatio,
         child: CachedNetworkImage(
+          httpHeaders: const {
+            'User-Agent': userAgent,
+          },
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
           placeholder: (context, url) => placeholderUrl != null
               ? CachedNetworkImage(
+                  httpHeaders: const {
+                    'User-Agent': userAgent,
+                  },
                   fit: fit ?? BoxFit.fill,
                   imageUrl: placeholderUrl!,
                   cacheManager: previewCacheManager,

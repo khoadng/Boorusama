@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
 
+// Project imports:
+import 'package:boorusama/core/application/api/api.dart';
+
 class BooruImageLegacy extends StatefulWidget {
   const BooruImageLegacy({
     super.key,
@@ -34,7 +37,12 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
   @override
   void initState() {
     myImage = Image(
-      image: CachedNetworkImageProvider(widget.imageUrl),
+      image: CachedNetworkImageProvider(
+        widget.imageUrl,
+        headers: {
+          'User-Agent': userAgent,
+        },
+      ),
     );
     myImage.image
         // ignore: use_named_constants
@@ -47,6 +55,9 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
+      httpHeaders: const {
+        'User-Agent': userAgent,
+      },
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) {
         return Container(
@@ -62,6 +73,9 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       },
       placeholder: (context, url) => widget.placeholderUrl != null
           ? CachedNetworkImage(
+              httpHeaders: const {
+                'User-Agent': userAgent,
+              },
               imageUrl: widget.placeholderUrl!,
               imageBuilder: (context, imageProvider) => Container(
                 decoration: BoxDecoration(
