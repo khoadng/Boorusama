@@ -1,3 +1,10 @@
+# 2.8.2
+- Fix an issue where images failed to load
+
+# 2.8.1
+- Fix an issue where search history cannot be cleared
+- Fix various internal errors
+
 # 2.8.0
 - Improve overall performance when loading images
 - Persist date selector at bottom in explore page

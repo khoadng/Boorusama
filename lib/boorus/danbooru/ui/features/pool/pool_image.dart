@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
+import 'package:boorusama/core/application/api/api.dart';
 
 // Project imports:
 
@@ -22,6 +23,9 @@ class PoolImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return (pool.coverUrl != null)
         ? CachedNetworkImage(
+            httpHeaders: const {
+              'User-Agent': userAgent,
+            },
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover,
             imageUrl: pool.coverUrl!,

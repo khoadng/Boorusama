@@ -26,12 +26,12 @@ class RelatedTagSection extends StatelessWidget {
       case LoadStatus.loading:
         return const TagChipsPlaceholder();
       case LoadStatus.success:
-        return BlocSelector<RelatedTagBloc, AsyncLoadState<RelatedTag>,
-            RelatedTag>(
-          selector: (state) => state.data!,
-          builder: (context, tag) => ConditionalRenderWidget(
-            condition: tag.tags.isNotEmpty,
-            childBuilder: (context) => RelatedTagHeader(relatedTag: tag),
+        return BlocBuilder<RelatedTagBloc, AsyncLoadState<RelatedTag>>(
+          builder: (context, state) => ConditionalRenderWidget(
+            condition: state.data != null && state.data!.tags.isNotEmpty,
+            childBuilder: (context) => RelatedTagHeader(
+              relatedTag: state.data!,
+            ),
           ),
         );
       case LoadStatus.failure:

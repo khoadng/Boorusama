@@ -18,11 +18,13 @@ class LandingView extends StatefulWidget {
     required this.onHistoryTap,
     required this.onTagTap,
     required this.onHistoryRemoved,
+    required this.onHistoryCleared,
   });
 
   final ValueChanged<String> onOptionTap;
   final ValueChanged<String> onHistoryTap;
   final ValueChanged<SearchHistory> onHistoryRemoved;
+  final VoidCallback onHistoryCleared;
   final ValueChanged<String> onTagTap;
 
   @override
@@ -91,6 +93,7 @@ class _LandingViewState extends State<LandingView>
                 onHistoryTap: (history) => widget.onHistoryTap.call(history),
                 onHistoryRemoved: (history) =>
                     widget.onHistoryRemoved.call(history),
+                onHistoryCleared: () => widget.onHistoryCleared.call(),
               ),
             ],
           ),

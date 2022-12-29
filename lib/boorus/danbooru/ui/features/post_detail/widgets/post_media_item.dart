@@ -10,6 +10,7 @@ import 'package:path/path.dart' as p;
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
+import 'package:boorusama/core/application/api/api.dart';
 import 'interactive_image.dart';
 
 class PostMediaItem extends StatefulWidget {
@@ -84,13 +85,16 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     aspectRatio: widget.post.aspectRatio,
                     child: LayoutBuilder(
                       builder: (context, constraints) => CachedNetworkImage(
+                        httpHeaders: const {
+                          'User-Agent': userAgent,
+                        },
                         imageUrl: widget.post.normalImageUrl,
                         imageBuilder: (context, imageProvider) {
                           DefaultCacheManager()
                               .getFileFromCache(widget.post.normalImageUrl)
                               .then((file) {
                             if (!mounted) return;
-                            widget.onCached(file!.file.path);
+                            widget.onCached(file?.file.path);
                           });
 
                           return Stack(
@@ -115,6 +119,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                         fadeOutDuration: Duration.zero,
                         fadeInDuration: Duration.zero,
                         placeholder: (context, url) => CachedNetworkImage(
+                          httpHeaders: const {
+                            'User-Agent': userAgent,
+                          },
                           fit: BoxFit.fill,
                           imageUrl: widget.post.previewImageUrl,
                           cacheManager: widget.previewCacheManager,

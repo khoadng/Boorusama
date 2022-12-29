@@ -577,6 +577,9 @@ class _MoreActionButton extends StatelessWidget {
                       ),
                       body: Center(
                         child: CachedNetworkImage(
+                          httpHeaders: const {
+                            'User-Agent': userAgent,
+                          },
                           imageUrl: post.fullImageUrl,
                           imageBuilder: (context, imageProvider) => Hero(
                             tag: '${post.id}_hero',
