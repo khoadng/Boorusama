@@ -16,6 +16,7 @@ import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:boorusama/core/infra/services/alternative_download_service.dart';
+import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
 bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
     hasScopedStorage(deviceInfo);
@@ -31,28 +32,36 @@ Future<DownloadService<Post>> createDownloader(
   DeviceInfo deviceInfo,
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
 ) async {
-  if (method == DownloadMethod.imageGallerySaver) {
-    final d = AlternativeDownloadService(
+  if (isMobilePlatform()) {
+    if (method == DownloadMethod.imageGallerySaver) {
+      final d = AlternativeDownloadService(
+        fileNameGenerator: fileNameGenerator,
+        flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+      );
+      await d.init();
+
+      return d;
+    }
+
+    final d = DownloadServiceFlutterDownloader(
       fileNameGenerator: fileNameGenerator,
-      flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+      deviceInfo: deviceInfo,
     );
+
+    if (isAndroid() || isIOS()) {
+      await FlutterDownloader.initialize();
+    }
+
+    await d.init();
+
+    return d;
+  } else {
+    final d = WindowDownloader(fileNameGenerator);
+
     await d.init();
 
     return d;
   }
-
-  final d = DownloadServiceFlutterDownloader(
-    fileNameGenerator: fileNameGenerator,
-    deviceInfo: deviceInfo,
-  );
-
-  if (isAndroid() || isIOS()) {
-    await FlutterDownloader.initialize();
-  }
-
-  await d.init();
-
-  return d;
 }
 
 @pragma('vm:entry-point')
