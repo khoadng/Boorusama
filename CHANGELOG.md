@@ -1,3 +1,6 @@
+# 2.8.2
+- Fix an issue where images failed to load
+
 # 2.8.1
 - Fix an issue where search history cannot be cleared
 - Fix various internal errors
