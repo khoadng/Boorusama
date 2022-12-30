@@ -6,11 +6,11 @@
             "unknown" : "Нешта пайшло не так"
         },
         "action" : {
-            "add" : "Add",
-            "delete" : "Delete",
-            "edit" : "Edit",
+            "add" : "Дадаць",
+            "delete" : "Выдаліць",
+            "edit" : "Змяніць",
             "ok" : "OK",
-            "cancel" : "Cancel"
+            "cancel" : "Адмена"
         }
     },
 
@@ -189,25 +189,25 @@
         "app_settings" :"Настроікі прылажэння",
         "appearance" :  "Пастава",
         "general" :  "Генеральныя",
-        "search" :  "Search",
+        "search" :  "Пошук",
         "information" : "Інфармацыя",
         "changelog" : "Гісторыя змен",
         "general_data_source": "Крыніца",
-        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "infinite_scroll_warning" : "Можа прывесці к збою прылажэння пры доўгай пракрутке",
         "result_layout" : {
-            "result_layout" : "Result layout",
-            "infinite_scroll": "Infinite scroll",
-            "pagination": "Pagination"
+            "result_layout" : "Рэжым адлюстравання",
+            "infinite_scroll": "Бясконцая пракрутка",
+            "pagination": "Пастаронкавае"
         },
         "details_style" : {
-            "details_style" : "Default details style",
-            "post_focused": "Post focused",
-            "image_focused": "Image focused"
+            "details_style" : "Пачатковае становіша пры адкрыцці",
+            "post_focused": "Адкрыт пост",
+            "image_focused": "Разгорнут малюнак"
         },
         "image_list": {
-            "image_list" : "Image list",
-            "standard" : "Standard",
-            "masonry" : "Masonry"
+            "image_list" : "Адлюстраванне стужкі",
+            "standard" : "Стандартнае",
+            "masonry" : "Цаглянае"
         },
         "image_grid" : {
             "image_grid" : "Сетка малюнкаў",
@@ -312,21 +312,21 @@
     },
 
     "saved_search" : {
-        "saved_search" : "Saved search",
+        "saved_search" : "Запыты",
         "saved_search_counter" : {
-            "one": "{} search",
-            "other": "{} searches"
+            "one": "{} запыт",
+            "other": "{} запыты"
         },
-        "add_saved_search" : "Add a saved search",
-        "saved_search_added" : "Saved search has been added",
-        "empty_saved_search" : "You haven't add any search yet",
-        "update_saved_search" : "Update saved search",
-        "saved_search_updated" : "Saved search has been updated",
+        "add_saved_search" : "Дабавіць запыт",
+        "saved_search_added" : "Запыт быў дабаўлен",
+        "empty_saved_search" : "У вас няма ніводнага захаванага запыта",
+        "update_saved_search" : "Абнавіць",
+        "saved_search_updated" : "Запыт быў абнаўлён",
         "saved_search_feed" : "Feed",
-        "saved_search_help" : "What is it?",
-        "saved_search_examples" : "Examples",
-        "saved_search_try" : "Try it",
-        "saved_search_query" : "Query",
+        "saved_search_help" : "Што гэта?",
+        "saved_search_examples" : "Прімер",
+        "saved_search_try" : "Паспрабаваць",
+        "saved_search_query" : "Запыт",
         "saved_search_labels" : "Labels*",
         "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
     },
