@@ -56,15 +56,18 @@ class PoolRepositoryApi implements PoolRepository {
           .then(parsePool));
 
   @override
-  Future<List<Pool>> getPoolsByPostIds(List<int> postIds) =>
-      _accountRepository.get().then((account) => _api
-          .getPoolsFromPostIds(
-            account.username,
-            account.apiKey,
-            postIds.join(' '),
-            _limit,
-          )
-          .then(parsePool));
+  Future<List<Pool>> getPoolsByPostIds(List<int> postIds) {
+    if (postIds.isEmpty) return Future.value([]);
+
+    return _accountRepository.get().then((account) => _api
+        .getPoolsFromPostIds(
+          account.username,
+          account.apiKey,
+          postIds.join(' '),
+          _limit,
+        )
+        .then(parsePool));
+  }
 }
 
 Pool poolDtoToPool(PoolDto dto) => Pool(
