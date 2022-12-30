@@ -115,7 +115,7 @@ class PostFavoriteBloc extends Bloc<PostFavoriteEvent, PostFavoriteState>
         if (loading || refreshing) return;
 
         if (event.refresh) {
-          refresh(
+          await refresh(
             emit: EmitConfig(
               stateGetter: () => state,
               emitter: emit,
@@ -127,7 +127,7 @@ class PostFavoriteBloc extends Bloc<PostFavoriteEvent, PostFavoriteState>
                 emit(state.copyWith(error: 'Something went wrong')),
           );
         } else {
-          fetch(
+          await fetch(
             emit: EmitConfig(
               stateGetter: () => state,
               emitter: emit,
