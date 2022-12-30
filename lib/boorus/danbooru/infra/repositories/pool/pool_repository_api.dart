@@ -21,7 +21,7 @@ class PoolRepositoryApi implements PoolRepository {
 
   final Api _api;
   final AccountRepository _accountRepository;
-  final _limit = 100;
+  final _limit = 20;
 
   @override
   Future<List<Pool>> getPools(
