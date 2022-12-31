@@ -25,18 +25,22 @@ class PostVoteApiRepositoryApi implements PostVoteRepository {
   final Api _api;
 
   @override
-  Future<List<PostVote>> getPostVotes(List<int> postIds) => _accountRepository
-      .get()
-      .then((account) => _api.getPostVotes(
-            account.username,
-            account.apiKey,
-            1,
-            postIds.join(','),
-            account.id.toString(),
-            false,
-            100,
-          ))
-      .then(parsePostVote);
+  Future<List<PostVote>> getPostVotes(List<int> postIds) {
+    if (postIds.isEmpty) return Future.value([]);
+
+    return _accountRepository
+        .get()
+        .then((account) => _api.getPostVotes(
+              account.username,
+              account.apiKey,
+              1,
+              postIds.join(','),
+              account.id.toString(),
+              false,
+              100,
+            ))
+        .then(parsePostVote);
+  }
 
   @override
   Future<List<PostVote>> getAllVotes(int postId, int page) => _accountRepository

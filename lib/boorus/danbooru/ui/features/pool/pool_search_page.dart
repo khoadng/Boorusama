@@ -67,7 +67,8 @@ class _PoolSearchPageState extends State<PoolSearchPage> {
                             ),
                             onTap: () {
                               FocusManager.instance.primaryFocus?.unfocus();
-                              textEditingController.text = pool.name;
+                              textEditingController.text =
+                                  pool.name.replaceAll('_', ' ');
                               context
                                   .read<PoolSearchBloc>()
                                   .add(PoolSearchItemSelect(pool.name));
