@@ -6,11 +6,11 @@
             "unknown" : "Что-то пошло не так"
         },
         "action" : {
-            "add" : "Add",
-            "delete" : "Delete",
-            "edit" : "Edit",
+            "add" : "Добавить",
+            "delete" : "Удалить",
+            "edit" : "Изменить",
             "ok" : "OK",
-            "cancel" : "Cancel"
+            "cancel" : "Отмена"
         }
     },
 
@@ -88,7 +88,7 @@
             "open_wiki" : "Открыть wiki",
             "add_to_blacklist" : "Добавить в чёрный список",
             "add_to_favorites" : "Add to favorites",
-            "copy_and_open_saved_search" : "Copy and open saved search",
+            "copy_and_open_saved_search" : "Сохранить и открыть сохранённый запрос",
             "score" : {
                 "one" : "Оценка",
                 "other": "Оценки"
@@ -189,25 +189,25 @@
         "app_settings" :"Настройки приложения",
         "appearance" :  "Внешний вид",
         "general" :  "Генеральные",
-        "search" :  "Search",
+        "search" :  "Поиск",
         "information" : "Информация",
         "changelog" : "История изменений",
         "general_data_source": "Источник",
-        "infinite_scroll_warning" : "Might crash the app if you scroll for a long time",
+        "infinite_scroll_warning" : "Может произойти ошибка, если вы слишком долго скроллите ленту",
         "result_layout" : {
-            "result_layout" : "Result layout",
-            "infinite_scroll": "Infinite scroll",
-            "pagination": "Pagination"
+            "result_layout" : "Режим отображения",
+            "infinite_scroll": "Бесконечная прокрутка",
+            "pagination": "Постраничное"
         },
         "details_style" : {
-            "details_style" : "Default details style",
-            "post_focused": "Post focused",
-            "image_focused": "Image focused"
+            "details_style" : "Начальное положение при открытии",
+            "post_focused": "Открыт пост",
+            "image_focused": "Развёрнуто изображение"
         },
         "image_list": {
-            "image_list" : "Image list",
-            "standard" : "Standard",
-            "masonry" : "Masonry"
+            "image_list" : "Отображение ленты",
+            "standard" : "Стандартное",
+            "masonry" : "Кирпичное"
         },
         "image_grid" : {
             "image_grid" : "Сетка изображений",
@@ -312,21 +312,21 @@
     },
 
     "saved_search" : {
-        "saved_search" : "Saved search",
+        "saved_search" : "Поисковые запросы",
         "saved_search_counter" : {
-            "one": "{} search",
-            "other": "{} searches"
+            "one": "{} запрос",
+            "other": "{} запросов"
         },
-        "add_saved_search" : "Add a saved search",
-        "saved_search_added" : "Saved search has been added",
-        "empty_saved_search" : "You haven't add any search yet",
-        "update_saved_search" : "Update saved search",
-        "saved_search_updated" : "Saved search has been updated",
+        "add_saved_search" : "Добавить запрос",
+        "saved_search_added" : "Поисковый запрос был добавлен",
+        "empty_saved_search" : "У вас нет ни одного сохранённого запроса",
+        "update_saved_search" : "Обновить",
+        "saved_search_updated" : "Запрос был обноволён",
         "saved_search_feed" : "Feed",
-        "saved_search_help" : "What is it?",
-        "saved_search_examples" : "Examples",
-        "saved_search_try" : "Try it",
-        "saved_search_query" : "Query",
+        "saved_search_help" : "Что это?",
+        "saved_search_examples" : "Примеры",
+        "saved_search_try" : "Попробывать",
+        "saved_search_query" : "Запрос",
         "saved_search_labels" : "Labels*",
         "saved_search_labels_description" : "*A list of tags to help categorize this search. Space delimited."
     },

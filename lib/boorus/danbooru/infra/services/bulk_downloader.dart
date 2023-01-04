@@ -84,6 +84,8 @@ class BulkDownloader<T> {
         return Tuple2(id, status);
       })
       .where((event) => event.item2 == DownloadTaskStatus.complete)
+      //TODO: quick hack, should investigate why the task ID for this event doesn't exist in the first place
+      .where((event) => _taskIdToPostIdMap.containsKey(event.item1))
       .map((event) => _taskIdToPostIdMap[event.item1]!);
 
   // ignore: no-empty-block

@@ -330,7 +330,7 @@ final poolDetailHandler =
           pool: pool,
           // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
           // ignore: prefer-iterable-of
-          postIds: QueueList.from(pool.postIds),
+          postIds: QueueList.from(pool.postIds.reversed),
         ),
       );
     },

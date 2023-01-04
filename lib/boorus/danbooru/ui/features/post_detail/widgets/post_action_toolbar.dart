@@ -113,7 +113,7 @@ class PostActionToolbar extends StatelessWidget {
               ),
             ),
       icon: const FaIcon(
-        FontAwesomeIcons.shareFromSquare,
+        FontAwesomeIcons.share,
       ),
     );
   }

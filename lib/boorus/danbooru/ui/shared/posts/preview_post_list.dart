@@ -7,6 +7,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/core/application/api/api.dart';
 
 class PreviewPostList extends StatelessWidget {
   const PreviewPostList({
@@ -32,6 +33,9 @@ class PreviewPostList extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           child: CachedNetworkImage(
+            httpHeaders: const {
+              'User-Agent': userAgent,
+            },
             cacheManager: cacheManager,
             height: MediaQuery.of(context).size.height * 0.2,
             width: MediaQuery.of(context).size.width * 0.3,

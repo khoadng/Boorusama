@@ -196,7 +196,12 @@ void main() async {
   await bulkDownloader.init();
 
   final previewImageCacheManager = PreviewImageCacheManager();
-  final previewPreloader = PostPreviewPreloaderImp(previewImageCacheManager);
+  final previewPreloader = PostPreviewPreloaderImp(
+    previewImageCacheManager,
+    httpHeaders: {
+      'User-Agent': userAgent,
+    },
+  );
 
   //TODO: shouldn't hardcode language.
   setLocaleMessages('vi', ViMessages());
