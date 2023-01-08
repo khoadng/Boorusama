@@ -38,7 +38,6 @@ class ExplorePage extends StatelessWidget {
           ),
           const SliverToBoxAdapter(child: _PopularExplore()),
           const SliverToBoxAdapter(child: _HotExplore()),
-          const SliverToBoxAdapter(child: _CuratedExplore()),
           const SliverToBoxAdapter(child: _MostViewedExplore()),
           const SliverToBoxAdapter(
             child: SizedBox(height: kBottomNavigationBarHeight + 20),
@@ -91,22 +90,6 @@ class _MostViewedExplore extends StatelessWidget {
       title: 'explore.most_viewed'.tr(),
       category: ExploreCategory.mostViewed,
       builder: (_) => mapToCarousel(context, mostViewed),
-    );
-  }
-}
-
-class _CuratedExplore extends StatelessWidget {
-  const _CuratedExplore();
-
-  @override
-  Widget build(BuildContext context) {
-    final curated = context.select((ExploreBloc bloc) => bloc.state.curated);
-
-    return ExploreSection(
-      date: curated.date,
-      title: 'explore.curated'.tr(),
-      category: ExploreCategory.curated,
-      builder: (_) => mapToCarousel(context, curated),
     );
   }
 }
