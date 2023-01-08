@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:flutter/foundation.dart';
 
 // Package imports:
@@ -189,6 +190,7 @@ class TagSearchBloc extends Bloc<TagSearchEvent, TagSearchState> {
           suggestionTags: tags,
         ));
       },
+      transformer: debounceRestartable(const Duration(milliseconds: 100)),
     );
 
     on<TagSearchTagFromHistorySelected>((event, emit) {
