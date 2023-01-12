@@ -434,7 +434,6 @@ void main() async {
                     exploreRepository: exploreRepo,
                     popular: create(),
                     hot: create(),
-                    curated: create(),
                     mostViewed: create(),
                   )..add(const ExploreFetched());
 

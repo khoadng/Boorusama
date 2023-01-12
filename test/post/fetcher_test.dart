@@ -37,23 +37,6 @@ void main() {
       );
     });
 
-    test('curated', () async {
-      final fetcher = ExplorePreviewFetcher.now(
-        category: ExploreCategory.curated,
-        exploreRepository: exploreRepo,
-      );
-
-      when(() => exploreRepo.getCuratedPosts(any(), any(), TimeScale.day))
-          .thenAnswer((invocation) async => [
-                Post.empty(),
-              ]);
-
-      expect(
-        await fetcher.fetch(postRepo, 1),
-        [Post.empty()],
-      );
-    });
-
     test('popular', () async {
       final fetcher = ExplorePreviewFetcher.now(
         category: ExploreCategory.popular,

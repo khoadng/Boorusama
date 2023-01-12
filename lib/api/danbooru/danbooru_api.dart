@@ -164,17 +164,6 @@ abstract class Api {
     @Query('limit') int limit,
   );
 
-  @GET('/explore/posts/curated.json')
-  Future<HttpResponse> getCuratedPosts(
-    @Query('login') String? login,
-    @Query('api_key') String? apiKey,
-    @Query('date') String date,
-    @Query('scale') String scale,
-    @Query('page') int page,
-    @Query('only') String only,
-    @Query('limit') int limit,
-  );
-
   @GET('/explore/posts/viewed.json')
   Future<HttpResponse> getMostViewedPosts(
     @Query('login') String? login,

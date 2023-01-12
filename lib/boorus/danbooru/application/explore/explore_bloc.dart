@@ -12,37 +12,32 @@ class ExploreState extends Equatable {
   const ExploreState({
     required this.popular,
     required this.hot,
-    required this.curated,
     required this.mostViewed,
   });
 
   factory ExploreState.initial() => ExploreState(
         popular: ExploreData.empty(ExploreCategory.popular),
         hot: ExploreData.empty(ExploreCategory.hot),
-        curated: ExploreData.empty(ExploreCategory.curated),
         mostViewed: ExploreData.empty(ExploreCategory.mostViewed),
       );
 
   final ExploreData popular;
   final ExploreData hot;
-  final ExploreData curated;
   final ExploreData mostViewed;
 
   ExploreState copyWith({
     ExploreData? popular,
     ExploreData? hot,
-    ExploreData? curated,
     ExploreData? mostViewed,
   }) =>
       ExploreState(
         popular: popular ?? this.popular,
         hot: hot ?? this.hot,
-        curated: curated ?? this.curated,
         mostViewed: mostViewed ?? this.mostViewed,
       );
 
   @override
-  List<Object?> get props => [popular, hot, curated, mostViewed];
+  List<Object?> get props => [popular, hot, mostViewed];
 }
 
 abstract class ExploreEvent extends Equatable {
@@ -87,7 +82,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
     required ExploreRepository exploreRepository,
     required PostBloc popular,
     required PostBloc hot,
-    required PostBloc curated,
     required PostBloc mostViewed,
   }) : super(ExploreState.initial()) {
     on<ExploreFetched>((event, emit) async {
@@ -104,11 +98,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
           date: now,
           bloc: hot,
         ),
-        curated: ExploreData.initial(
-          category: ExploreCategory.curated,
-          date: now,
-          bloc: curated,
-        ),
         mostViewed: ExploreData.initial(
           category: ExploreCategory.mostViewed,
           date: now,
@@ -122,16 +111,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
           onDateChanged: (date) =>
               add(_ChangeDate(ExploreCategory.popular, date)),
           category: ExploreCategory.popular,
-          exploreRepository: exploreRepository,
-        ),
-      ));
-
-      curated.add(PostRefreshed(
-        fetcher: ExplorePreviewFetcher.now(
-          now: () => now,
-          onDateChanged: (date) =>
-              add(_ChangeDate(ExploreCategory.curated, date)),
-          category: ExploreCategory.curated,
           exploreRepository: exploreRepository,
         ),
       ));
@@ -164,12 +143,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
                 .copyWith(data: event.state.data.take(20).toList()),
           ));
           break;
-        case ExploreCategory.curated:
-          emit(state.copyWith(
-            curated: state.curated
-                .copyWith(data: event.state.data.take(20).toList()),
-          ));
-          break;
         case ExploreCategory.mostViewed:
           emit(state.copyWith(
             mostViewed: state.mostViewed
@@ -191,11 +164,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
             popular: state.popular.copyWith(date: event.date),
           ));
           break;
-        case ExploreCategory.curated:
-          emit(state.copyWith(
-            curated: state.curated.copyWith(date: event.date),
-          ));
-          break;
         case ExploreCategory.mostViewed:
           emit(state.copyWith(
             mostViewed: state.mostViewed.copyWith(date: event.date),
@@ -212,11 +180,6 @@ class ExploreBloc extends Bloc<ExploreEvent, ExploreState> {
     popular.stream
         .distinct()
         .listen((event) => add(_CopyState(event, ExploreCategory.popular)))
-        .addTo(compositeSubscription);
-
-    curated.stream
-        .distinct()
-        .listen((event) => add(_CopyState(event, ExploreCategory.curated)))
         .addTo(compositeSubscription);
 
     hot.stream
