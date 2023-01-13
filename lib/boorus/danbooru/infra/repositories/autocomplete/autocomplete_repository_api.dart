@@ -74,7 +74,5 @@ class AutocompleteRepositoryApi implements AutocompleteRepository {
               ))
           .then(parseAutocomplete)
           .then(mapDtoToAutocomplete)
-          .catchError((Object e) {
-        throw Exception('Failed to get autocomplete for $query');
-      });
+          .catchError((_) => <AutocompleteData>[]);
 }

@@ -72,27 +72,22 @@ PostFetcher _categoryToFetcher(
   TimeScale scale,
   BuildContext context,
 ) {
-  if (category == ExploreCategory.curated) {
-    return CuratedPostFetcher(
-      date: date,
-      scale: scale,
-      exploreRepository: context.read<ExploreRepository>(),
-    );
-  } else if (category == ExploreCategory.popular) {
-    return PopularPostFetcher(
-      date: date,
-      scale: scale,
-      exploreRepository: context.read<ExploreRepository>(),
-    );
-  } else if (category == ExploreCategory.hot) {
-    return HotPostFetcher(
-      exploreRepository: context.read<ExploreRepository>(),
-    );
-  } else {
-    return MostViewedPostFetcher(
-      date: date,
-      exploreRepository: context.read<ExploreRepository>(),
-    );
+  switch (category) {
+    case ExploreCategory.popular:
+      return PopularPostFetcher(
+        date: date,
+        scale: scale,
+        exploreRepository: context.read<ExploreRepository>(),
+      );
+    case ExploreCategory.mostViewed:
+      return MostViewedPostFetcher(
+        date: date,
+        exploreRepository: context.read<ExploreRepository>(),
+      );
+    case ExploreCategory.hot:
+      return HotPostFetcher(
+        exploreRepository: context.read<ExploreRepository>(),
+      );
   }
 }
 
@@ -104,7 +99,6 @@ List<Widget> _categoryToListHeader(
 ) {
   switch (category) {
     case ExploreCategory.popular:
-    case ExploreCategory.curated:
       return [
         TimeScaleToggleSwitch(
           onToggle: (scale) => {

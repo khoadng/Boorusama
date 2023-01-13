@@ -1,14 +1,6 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
-
-// Package imports:
 import 'package:webview_flutter/webview_flutter.dart';
-
-// Project imports:
-import 'package:boorusama/core/core.dart';
 
 class EmbeddedWebViewWebm extends StatefulWidget {
   const EmbeddedWebViewWebm({
@@ -23,11 +15,14 @@ class EmbeddedWebViewWebm extends StatefulWidget {
 }
 
 class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
+  final WebViewController controller = WebViewController();
+
   @override
   void initState() {
     super.initState();
-    // Enable virtual display.
-    if (isAndroid()) WebView.platform = SurfaceAndroidWebView();
+    controller
+      ..setBackgroundColor(Colors.black)
+      ..loadHtmlString(widget.videoHtml);
   }
 
   @override
@@ -35,18 +30,7 @@ class _EmbeddedWebViewWebmState extends State<EmbeddedWebViewWebm> {
     return Container(
       color: Colors.black,
       height: MediaQuery.of(context).size.height,
-      child: WebView(
-        backgroundColor: Colors.black,
-        allowsInlineMediaPlayback: true,
-        initialUrl: 'about:blank',
-        onWebViewCreated: (controller) {
-          controller.loadUrl(Uri.dataFromString(
-            widget.videoHtml,
-            mimeType: 'text/html',
-            encoding: Encoding.getByName('utf-8'),
-          ).toString());
-        },
-      ),
+      child: WebViewWidget(controller: controller),
     );
   }
 }

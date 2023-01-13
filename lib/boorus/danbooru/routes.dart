@@ -183,7 +183,11 @@ final postDetailHandler = Handler(handlerFunc: (
               accountRepository: context.read<AccountRepository>(),
               postVoteRepository: context.read<PostVoteRepository>(),
               tags: tags,
-              onPostChanged: (post) => postBloc?.add(PostUpdated(post: post)),
+              onPostChanged: (post) {
+                if (postBloc != null && !postBloc.isClosed) {
+                  postBloc.add(PostUpdated(post: post));
+                }
+              },
             ),
           ),
         ],

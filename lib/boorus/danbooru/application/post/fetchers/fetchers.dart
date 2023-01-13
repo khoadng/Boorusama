@@ -1,4 +1,3 @@
-export 'curated_fetcher.dart';
 export 'explore_preview_fetcher.dart';
 export 'fetcher.dart';
 export 'hot_fetcher.dart';

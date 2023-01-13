@@ -1,3 +1,9 @@
+# 2.8.4
+- Remove Curated section
+- Posts with Flash format are hidden because the app can't play Flash files at all
+- Minor compatibility fixes with animated posts
+
+
 # 2.8.3
 - Images in pools are now sorted in decreasing order, which means newer images are showed first
 - Slightly increase pool loading speed

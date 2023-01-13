@@ -162,6 +162,12 @@ Future<List<PostData>> Function(List<PostData> posts) filterWith(
         .getBlacklistedTags()
         .then((blacklistedTags) => filter(posts, blacklistedTags));
 
+Future<List<PostData>> Function(List<PostData> posts) filterUnsupportedFormat(
+  Set<String> fileExtensions,
+) =>
+    (posts) async =>
+        posts.where((e) => !fileExtensions.contains(e.post.format)).toList();
+
 Future<List<PostData>> Function(List<PostData> posts) preloadPreviewImagesWith(
   PostPreviewPreloader? preloader,
 ) =>

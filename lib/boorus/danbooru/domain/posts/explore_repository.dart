@@ -10,13 +10,6 @@ abstract class ExploreRepository {
     int? limit,
   });
 
-  Future<List<Post>> getCuratedPosts(
-    DateTime date,
-    int page,
-    TimeScale scale, {
-    int? limit,
-  });
-
   Future<List<Post>> getMostViewedPosts(DateTime date);
 
   Future<List<Post>> getHotPosts(
