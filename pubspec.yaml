@@ -90,7 +90,7 @@ dependencies:
   tuple: ^2.0.0
   url_launcher: ^6.1.7
   video_player: ^2.4.10
-  webview_flutter: ^3.0.4
+  webview_flutter: ^4.0.1
 
 dev_dependencies:
   bloc_test: ^9.0.3
