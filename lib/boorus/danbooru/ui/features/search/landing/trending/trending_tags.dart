@@ -23,7 +23,7 @@ class TrendingTags extends StatelessWidget {
     return tags != null && tags.isNotEmpty
         ? Wrap(
             spacing: 4,
-            runSpacing: isMobilePlatform() ? -4 : 6,
+            runSpacing: isMobilePlatform() ? -4 : 8,
             children: tags
                 .take(15)
                 .map((e) => RawChip(
