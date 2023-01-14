@@ -67,8 +67,11 @@ class PostRepositoryApi implements PostRepository {
   }
 
   @override
-  Future<List<Post>> getPostsFromIds(List<int> ids) =>
-      getPosts('id:${ids.join(',')}', 1);
+  Future<List<Post>> getPostsFromIds(List<int> ids) => getPosts(
+        'id:${ids.join(',')}',
+        1,
+        limit: ids.length,
+      );
 
   @override
   Future<bool> putTag(int postId, String tagString) => _accountRepository

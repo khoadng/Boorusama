@@ -215,7 +215,8 @@ class Post extends Equatable
       ].every((e) => e != '');
 
   @override
-  String getLink(String baseUrl) => '$baseUrl/posts/$id';
+  String getLink(String baseUrl) =>
+      baseUrl.endsWith('/') ? '${baseUrl}posts/$id' : '$baseUrl/posts/$id';
 
   @override
   Uri getUriLink(String baseUrl) => Uri.parse(getLink(baseUrl));

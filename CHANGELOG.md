@@ -1,3 +1,16 @@
+# 2.8.4
+- Remove Curated section
+- Posts with Flash format are hidden because the app can't play Flash files at all
+- Minor compatibility fixes with animated posts
+
+
+# 2.8.3
+- Images in pools are now sorted in decreasing order, which means newer images are showed first
+- Slightly increase pool loading speed
+- Tapping on favorites count now will show a list of users that favorites a post correctly
+- Fix an issue where pool cover images cannot be showed
+- Fix a bug where the app failed to search for any tag combination that has fewer than 60 items 
+
 # 2.8.2
 - Fix an issue where images failed to load
 

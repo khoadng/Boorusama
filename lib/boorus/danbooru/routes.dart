@@ -183,7 +183,11 @@ final postDetailHandler = Handler(handlerFunc: (
               accountRepository: context.read<AccountRepository>(),
               postVoteRepository: context.read<PostVoteRepository>(),
               tags: tags,
-              onPostChanged: (post) => postBloc?.add(PostUpdated(post: post)),
+              onPostChanged: (post) {
+                if (postBloc != null && !postBloc.isClosed) {
+                  postBloc.add(PostUpdated(post: post));
+                }
+              },
             ),
           ),
         ],
@@ -329,7 +333,7 @@ final poolDetailHandler =
           pool: pool,
           // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
           // ignore: prefer-iterable-of
-          postIds: QueueList.from(pool.postIds),
+          postIds: QueueList.from(pool.postIds.reversed),
         ),
       );
     },
