@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -10,6 +11,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -359,6 +362,50 @@ void goToLoginPage(BuildContext context) {
           ),
         );
       },
+    );
+  }
+}
+
+void goToExploreDetailPage(
+  BuildContext context,
+  DateTime? date,
+  String title,
+  ExploreCategory category,
+) {
+  if (isMobilePlatform()) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => BlocProvider(
+          create: (context) => ExploreDetailBloc(initialDate: date),
+          child: ExploreDetailPage(
+            title: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            category: category,
+          ),
+        ),
+      ),
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) => BlocProvider(
+        create: (context) => ExploreDetailBloc(initialDate: date),
+        child: ExploreDetailPageDesktop(
+          title: Text(
+            title,
+            style: Theme.of(context)
+                .textTheme
+                .headline6!
+                .copyWith(fontWeight: FontWeight.w700),
+          ),
+          category: category,
+        ),
+      ),
     );
   }
 }

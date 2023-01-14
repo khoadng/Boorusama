@@ -11,8 +11,8 @@ import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'datetime_selector.dart';
+import 'explore_detail_page.dart';
 import 'explore_post_grid.dart';
-import 'time_scale_toggle_switch.dart';
 
 class _ExploreDetail extends StatefulWidget {
   const _ExploreDetail({
@@ -54,7 +54,11 @@ class _ExploreDetailState extends State<_ExploreDetail> {
           _refreshController.requestRefresh();
         },
         child: Padding(
-          padding: const EdgeInsets.only(top: 10),
+          padding: const EdgeInsets.only(
+            top: 12,
+            left: 48,
+            right: 48,
+          ),
           child: widget.builder(
             context,
             _refreshController,
@@ -66,57 +70,8 @@ class _ExploreDetailState extends State<_ExploreDetail> {
   }
 }
 
-PostFetcher categoryToFetcher(
-  ExploreCategory category,
-  DateTime date,
-  TimeScale scale,
-  BuildContext context,
-) {
-  switch (category) {
-    case ExploreCategory.popular:
-      return PopularPostFetcher(
-        date: date,
-        scale: scale,
-        exploreRepository: context.read<ExploreRepository>(),
-      );
-    case ExploreCategory.mostViewed:
-      return MostViewedPostFetcher(
-        date: date,
-        exploreRepository: context.read<ExploreRepository>(),
-      );
-    case ExploreCategory.hot:
-      return HotPostFetcher(
-        exploreRepository: context.read<ExploreRepository>(),
-      );
-  }
-}
-
-List<Widget> categoryToListHeader(
-  BuildContext context,
-  ExploreCategory category,
-  DateTime date,
-  TimeScale scale,
-) {
-  switch (category) {
-    case ExploreCategory.popular:
-      return [
-        TimeScaleToggleSwitch(
-          onToggle: (scale) => {
-            context
-                .read<ExploreDetailBloc>()
-                .add(ExploreDetailTimeScaleChanged(scale)),
-          },
-        ),
-        const SizedBox(height: 20),
-      ];
-    case ExploreCategory.mostViewed:
-    case ExploreCategory.hot:
-      return [];
-  }
-}
-
-class ExploreDetailPage extends StatelessWidget {
-  const ExploreDetailPage({
+class ExploreDetailPageDesktop extends StatelessWidget {
+  const ExploreDetailPageDesktop({
     super.key,
     required this.title,
     required this.category,

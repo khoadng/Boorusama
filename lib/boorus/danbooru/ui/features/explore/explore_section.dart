@@ -1,13 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
-import 'explore_detail_page.dart';
 
 class ExploreSection extends StatelessWidget {
   const ExploreSection({
@@ -36,23 +35,8 @@ class ExploreSection extends StatelessWidget {
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => ExploreDetailBloc(initialDate: date),
-                  child: ExploreDetailPage(
-                    title: Text(
-                      title,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headline6!
-                          .copyWith(fontWeight: FontWeight.w700),
-                    ),
-                    category: category,
-                  ),
-                ),
-              ),
-            ),
+            onPressed: () =>
+                goToExploreDetailPage(context, date, title, category),
             child: Text(
               'explore.see_more',
               style: Theme.of(context).textTheme.button,
