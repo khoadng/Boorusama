@@ -766,7 +766,7 @@ packages:
       name: lottie
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.0"
+    version: "2.2.0"
   markdown:
     dependency: transitive
     description:
