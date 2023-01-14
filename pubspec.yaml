@@ -83,7 +83,7 @@ dependencies:
       ref: flutter-3.0
   rxdart: ^0.27.7
   scroll_to_index: ^3.0.1
-  sentry_flutter: ^6.18.1
+  sentry_flutter: ^6.18.2
   share_plus: ^6.3.0
   timeago: ^3.3.0
   toggle_switch: ^2.0.1
