@@ -158,14 +158,7 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('sideMenu.settings'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(
-                            context,
-                            '/settings',
-                            transition:
-                                Screen.of(context).size == ScreenSize.small
-                                    ? TransitionType.inFromRight
-                                    : null,
-                          );
+                          goToSettingPage(context);
                         },
                       ),
                     ],

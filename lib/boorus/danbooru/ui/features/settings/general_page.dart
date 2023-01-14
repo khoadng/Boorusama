@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -26,36 +27,36 @@ class GeneralPage extends StatefulWidget {
 class _GeneralPageState extends State<GeneralPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.hasAppBar
-          ? AppBar(
-              title: const Text('settings.general').tr(),
-            )
-          : null,
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SafeArea(
-            child: ListView(
-              primary: false,
-              children: [
-                SettingsTile<BooruType>(
-                  title: const Text('settings.general_data_source').tr(),
-                  selectedOption: state.settings.safeMode
-                      ? BooruType.safebooru
-                      : BooruType.danbooru,
-                  items: [...BooruType.values]
-                    ..remove(BooruType.testbooru)
-                    ..remove(BooruType.unknown),
-                  onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(safeMode: value == BooruType.safebooru),
-                      ),
-                  optionBuilder: (value) => Text(value.name.sentenceCase),
-                ),
-              ],
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
+
+    return ConditionalParentWidget(
+      condition: widget.hasAppBar,
+      conditionalBuilder: (child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('settings.general').tr(),
+        ),
+        body: child,
+      ),
+      child: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: [
+            SettingsTile<BooruType>(
+              title: const Text('settings.general_data_source').tr(),
+              selectedOption:
+                  settings.safeMode ? BooruType.safebooru : BooruType.danbooru,
+              items: [...BooruType.values]
+                ..remove(BooruType.testbooru)
+                ..remove(BooruType.unknown),
+              onChanged: (value) => context.read<SettingsCubit>().update(
+                    settings.copyWith(safeMode: value == BooruType.safebooru),
+                  ),
+              optionBuilder: (value) => Text(value.name.sentenceCase),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

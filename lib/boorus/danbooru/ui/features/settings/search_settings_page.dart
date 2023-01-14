@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -25,39 +26,39 @@ class SearchSettingsPage extends StatefulWidget {
 class _SearchSettingsPageState extends State<SearchSettingsPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.hasAppBar
-          ? AppBar(
-              title: const Text('settings.search').tr(),
-            )
-          : null,
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SafeArea(
-            child: ListView(
-              primary: false,
-              children: [
-                SettingsTile<ContentOrganizationCategory>(
-                  title:
-                      const Text('settings.result_layout.result_layout').tr(),
-                  selectedOption: state.settings.contentOrganizationCategory,
-                  subtitle: state.settings.contentOrganizationCategory ==
-                          ContentOrganizationCategory.infiniteScroll
-                      ? const Text(
-                          'settings.infinite_scroll_warning',
-                        ).tr()
-                      : null,
-                  items: const [...ContentOrganizationCategory.values],
-                  onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(contentOrganizationCategory: value),
-                      ),
-                  optionBuilder: (value) => Text(_layoutToString(value)).tr(),
-                ),
-              ],
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
+
+    return ConditionalParentWidget(
+      condition: widget.hasAppBar,
+      conditionalBuilder: (child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('settings.search').tr(),
+        ),
+        body: child,
+      ),
+      child: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: [
+            SettingsTile<ContentOrganizationCategory>(
+              title: const Text('settings.result_layout.result_layout').tr(),
+              selectedOption: settings.contentOrganizationCategory,
+              subtitle: settings.contentOrganizationCategory ==
+                      ContentOrganizationCategory.infiniteScroll
+                  ? const Text(
+                      'settings.infinite_scroll_warning',
+                    ).tr()
+                  : null,
+              items: const [...ContentOrganizationCategory.values],
+              onChanged: (value) => context.read<SettingsCubit>().update(
+                    settings.copyWith(contentOrganizationCategory: value),
+                  ),
+              optionBuilder: (value) => Text(_layoutToString(value)).tr(),
             ),
-          );
-        },
+          ],
+        ),
       ),
     );
   }

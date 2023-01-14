@@ -10,6 +10,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -282,6 +283,44 @@ void goToSearchPage(
               },
             );
           },
+        );
+      },
+    );
+  }
+}
+
+void goToSettingPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/settings',
+      transition: Screen.of(context).size == ScreenSize.small
+          ? TransitionType.inFromRight
+          : null,
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return Dialog(
+          backgroundColor: Theme.of(context).cardColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.8,
+            margin: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 16,
+            ),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+            child: const SettingsPageDesktop(),
+          ),
         );
       },
     );
