@@ -97,35 +97,41 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
         ),
         ValueListenableBuilder<String>(
           valueListenable: _selectedTag,
-          builder: (context, value, child) => _MostSearchTagSection(
-            selected: value,
-            onSelected: (search) {
-              _selectedTag.value =
-                  search.keyword == value ? '' : search.keyword;
-            },
+          builder: (context, value, child) => Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: _MostSearchTagSection(
+              selected: value,
+              onSelected: (search) {
+                _selectedTag.value =
+                    search.keyword == value ? '' : search.keyword;
+              },
+            ),
           ),
         ),
         Expanded(
-          child: InfiniteLoadListScrollView(
-            isLoading: state.loading,
-            enableLoadMore: state.hasMore,
-            onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                  tags: _selectedTag.value,
-                  fetcher: const LatestPostFetcher(),
-                )),
-            onRefresh: (controller) {
-              _sendRefresh(_selectedTag.value);
-              Future.delayed(
-                const Duration(seconds: 1),
-                () => controller.refreshCompleted(),
-              );
-            },
-            scrollController: _autoScrollController,
-            sliverBuilder: (controller) => [
-              HomePostGrid(
-                controller: controller,
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: InfiniteLoadListScrollView(
+              isLoading: state.loading,
+              enableLoadMore: state.hasMore,
+              onLoadMore: () => context.read<PostBloc>().add(PostFetched(
+                    tags: _selectedTag.value,
+                    fetcher: const LatestPostFetcher(),
+                  )),
+              onRefresh: (controller) {
+                _sendRefresh(_selectedTag.value);
+                Future.delayed(
+                  const Duration(seconds: 1),
+                  () => controller.refreshCompleted(),
+                );
+              },
+              scrollController: _autoScrollController,
+              sliverBuilder: (controller) => [
+                HomePostGrid(
+                  controller: controller,
+                ),
+              ],
+            ),
           ),
         ),
       ],

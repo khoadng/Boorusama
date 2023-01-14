@@ -29,15 +29,12 @@ class HomePageDesktop extends StatefulWidget {
 }
 
 class _HomePageDesktopState extends State<HomePageDesktop> {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final viewIndex = ValueNotifier(0);
   final expanded = ValueNotifier(true);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: scaffoldKey,
-      resizeToAvoidBottomInset: false,
       body: Row(
         children: [
           ValueListenableBuilder<int>(
