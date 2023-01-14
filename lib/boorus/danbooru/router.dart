@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -320,6 +321,41 @@ void goToSettingPage(BuildContext context) {
               ),
             ),
             child: const SettingsPageDesktop(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+void goToLoginPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/login',
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return Dialog(
+          backgroundColor: Theme.of(context).cardColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.8,
+            margin: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 16,
+            ),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+            child: const LoginPageDesktop(),
           ),
         );
       },

@@ -53,14 +53,7 @@ class SideBarMenu extends StatelessWidget {
                           title: Text('sideMenu.login'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/login',
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToLoginPage(context);
                           },
                         )
                       else
