@@ -1,14 +1,27 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/theme/theme.dart';
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:fluro/fluro.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
+
+import 'ui/features/post_detail/post_detail_page_desktop.dart';
 
 @immutable
 class AppRouter {
@@ -92,16 +105,89 @@ void goToDetailPage({
   AutoScrollController? scrollController,
   PostBloc? postBloc,
 }) {
-  AppRouter.router.navigateTo(
-    context,
-    '/post/detail',
-    routeSettings: RouteSettings(
-      arguments: [
-        posts,
-        initialIndex,
-        scrollController,
-        postBloc,
-      ],
-    ),
-  );
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/post/detail',
+      routeSettings: RouteSettings(
+        arguments: [
+          posts,
+          initialIndex,
+          scrollController,
+          postBloc,
+        ],
+      ),
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        final tags = posts
+            .map((e) => e.post)
+            .map((p) => [
+                  ...p.artistTags.map((e) => PostDetailTag(
+                        name: e,
+                        category: TagCategory.artist.stringify(),
+                        postId: p.id,
+                      )),
+                  ...p.characterTags.map((e) => PostDetailTag(
+                        name: e,
+                        category: TagCategory.charater.stringify(),
+                        postId: p.id,
+                      )),
+                  ...p.copyrightTags.map((e) => PostDetailTag(
+                        name: e,
+                        category: TagCategory.copyright.stringify(),
+                        postId: p.id,
+                      )),
+                  ...p.generalTags.map((e) => PostDetailTag(
+                        name: e,
+                        category: TagCategory.general.stringify(),
+                        postId: p.id,
+                      )),
+                  ...p.metaTags.map((e) => PostDetailTag(
+                        name: e,
+                        category: TagCategory.meta.stringify(),
+                        postId: p.id,
+                      )),
+                ])
+            .expand((e) => e)
+            .toList();
+
+        return BlocSelector<SettingsCubit, SettingsState, Settings>(
+          selector: (state) => state.settings,
+          builder: (context, settings) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: context.read<AuthenticationCubit>()),
+                BlocProvider.value(value: context.read<ApiEndpointCubit>()),
+                BlocProvider.value(value: context.read<ThemeBloc>()),
+                BlocProvider(
+                  create: (context) => PostDetailBloc(
+                    noteRepository: context.read<NoteRepository>(),
+                    defaultDetailsStyle: settings.detailsDisplay,
+                    posts: posts,
+                    initialIndex: initialIndex,
+                    postRepository: context.read<PostRepository>(),
+                    favoritePostRepository:
+                        context.read<FavoritePostRepository>(),
+                    accountRepository: context.read<AccountRepository>(),
+                    postVoteRepository: context.read<PostVoteRepository>(),
+                    tags: tags,
+                  ),
+                ),
+              ],
+              child: RepositoryProvider.value(
+                value: context.read<TagRepository>(),
+                child: PostDetailPageDesktop(
+                  intitialIndex: initialIndex,
+                  posts: posts,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 }

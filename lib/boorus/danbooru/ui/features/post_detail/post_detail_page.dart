@@ -230,7 +230,7 @@ class _TopRightButtonGroup extends StatelessWidget {
                   start,
                 ),
               ),
-              const _MoreActionButton(),
+              const MoreActionButton(),
             ],
           )
         : const SizedBox.shrink();
@@ -538,8 +538,9 @@ class _LargeLayoutContent extends StatelessWidget {
   }
 }
 
-class _MoreActionButton extends StatelessWidget {
-  const _MoreActionButton();
+// ignore: prefer-single-widget-per-file
+class MoreActionButton extends StatelessWidget {
+  const MoreActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
