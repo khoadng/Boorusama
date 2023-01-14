@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -56,6 +57,7 @@ import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
+import 'ui/features/home/home_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
@@ -64,7 +66,7 @@ final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
     conditionalBuilder: (child) => createAppRatingWidget(child: child),
-    child: const HomePage(),
+    child: isMobilePlatform() ? const HomePage() : const HomePageDesktop(),
   ),
 );
 

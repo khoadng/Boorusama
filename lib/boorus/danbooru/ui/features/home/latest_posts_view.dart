@@ -17,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'most_search_tag_list.dart';
@@ -168,16 +167,6 @@ class _AppBar extends StatelessWidget {
               ),
             ),
           ),
-          if (isDesktopPlatform())
-            MaterialButton(
-              color: Theme.of(context).cardColor,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(20),
-              onPressed: () => context.read<PostBloc>().add(const PostRefreshed(
-                    fetcher: LatestPostFetcher(),
-                  )),
-              child: const Icon(Icons.refresh),
-            ),
         ],
       ),
       floating: true,
