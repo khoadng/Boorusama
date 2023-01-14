@@ -241,7 +241,7 @@ class _CarouselContentState extends State<_CarouselContent> {
                         _ParentChildTile(post: widget.preloadPost),
                       if (!widget.preloadPost.hasParentOrChildren)
                         const Divider(height: 8, thickness: 1),
-                      _TagsTile(post: post),
+                      TagsTile(post: post),
                       const Divider(height: 8, thickness: 1),
                       FileDetailsSection(
                         post: post,
@@ -271,8 +271,10 @@ class _CarouselContentState extends State<_CarouselContent> {
   }
 }
 
-class _TagsTile extends StatelessWidget {
-  const _TagsTile({
+// ignore: prefer-single-widget-per-file
+class TagsTile extends StatelessWidget {
+  const TagsTile({
+    super.key,
     required this.post,
   });
 

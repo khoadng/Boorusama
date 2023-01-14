@@ -22,6 +22,7 @@ import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
 import 'parent_child_post_page.dart';
 import 'post_detail_page.dart';
+import 'widgets/file_details_section.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/post_slider_desktop.dart';
 import 'widgets/recommend_character_list.dart';
@@ -289,6 +290,11 @@ class _LargeLayoutContent extends StatelessWidget {
                     ),
                   ),
                 ),
+              TagsTile(post: post.post),
+              const Divider(height: 8, thickness: 1),
+              FileDetailsSection(
+                post: post.post,
+              ),
               BlocProvider(
                 create: (context) => PoolFromPostIdBloc(
                   poolRepository: context.read<PoolRepository>(),
@@ -379,14 +385,6 @@ class _LargeLayoutContent extends StatelessWidget {
                     .where((element) => element.type == RecommendType.character)
                     .toList(),
                 useSeperator: true,
-              ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: RepaintBoundary(
-                  child: PostTagList(
-                    maxTagWidth: _infoBarWidth,
-                  ),
-                ),
               ),
             ],
           ),
