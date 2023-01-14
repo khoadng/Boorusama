@@ -160,11 +160,7 @@ class _AppBar extends StatelessWidget {
                       onPressed: () => onMenuTap!(),
                     )
                   : null,
-              onTap: () => AppRouter.router.navigateTo(
-                context,
-                '/posts/search',
-                routeSettings: const RouteSettings(arguments: ['']),
-              ),
+              onTap: () => goToSearchPage(context),
             ),
           ),
         ],

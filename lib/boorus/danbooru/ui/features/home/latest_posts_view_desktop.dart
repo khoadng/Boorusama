@@ -76,11 +76,7 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
                 buttonPadding: EdgeInsets.zero,
                 children: [
                   _ToolbarButton(
-                    onPressed: () => AppRouter.router.navigateTo(
-                      context,
-                      '/posts/search',
-                      routeSettings: const RouteSettings(arguments: ['']),
-                    ),
+                    onPressed: () => goToSearchPage(context),
                     child: const Icon(Icons.search),
                   ),
                   _ToolbarButton(

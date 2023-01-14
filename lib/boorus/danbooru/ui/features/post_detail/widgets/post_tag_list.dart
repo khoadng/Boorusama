@@ -128,11 +128,7 @@ class PostTagList extends StatelessWidget {
                 }
               },
               child: GestureDetector(
-                onTap: () => AppRouter.router.navigateTo(
-                  context,
-                  '/posts/search',
-                  routeSettings: RouteSettings(arguments: [tag.rawName]),
-                ),
+                onTap: () => goToSearchPage(context, tag: tag.rawName),
                 child: _Chip(tag: tag, maxTagWidth: maxTagWidth),
               ),
             );

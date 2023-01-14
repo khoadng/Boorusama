@@ -191,3 +191,14 @@ void goToDetailPage({
     );
   }
 }
+
+void goToSearchPage(
+  BuildContext context, {
+  String? tag,
+}) {
+  AppRouter.router.navigateTo(
+    context,
+    '/posts/search',
+    routeSettings: RouteSettings(arguments: [tag ?? '']),
+  );
+}

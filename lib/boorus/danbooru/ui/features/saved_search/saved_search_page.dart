@@ -142,9 +142,9 @@ class _SuccessView extends StatelessWidget {
               icon: const Icon(Icons.more_vert),
             ),
       onTap: savedSearch.labels.isNotEmpty
-          ? () => _goToSearchPage(
+          ? () => goToSearchPage(
                 context,
-                query: 'search:${savedSearch.labels.first}',
+                tag: 'search:${savedSearch.labels.first}',
               )
           : null,
       onLongPress: savedSearch.readOnly
@@ -184,19 +184,6 @@ class _SuccessView extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  void _goToSearchPage(
-    BuildContext context, {
-    required String query,
-  }) {
-    AppRouter.router.navigateTo(
-      context,
-      '/posts/search',
-      routeSettings: RouteSettings(arguments: [
-        query,
-      ]),
     );
   }
 }
