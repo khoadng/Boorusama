@@ -136,6 +136,9 @@ void goToDetailPage({
   } else {
     showGeneralDialog(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         final tags = posts
             .map((e) => e.post)
@@ -220,6 +223,9 @@ void goToSearchPage(
   } else {
     showGeneralDialog(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
           builder: (context, state) {
@@ -305,6 +311,9 @@ void goToSettingPage(BuildContext context) {
   } else {
     showGeneralDialog(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
           backgroundColor: Theme.of(context).cardColor,
@@ -340,6 +349,9 @@ void goToLoginPage(BuildContext context) {
   } else {
     showGeneralDialog(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
           backgroundColor: Theme.of(context).cardColor,
@@ -393,6 +405,9 @@ void goToExploreDetailPage(
   } else {
     showGeneralDialog(
       context: context,
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
       pageBuilder: (context, _, __) => BlocProvider(
         create: (context) => ExploreDetailBloc(initialDate: date),
         child: ExploreDetailPageDesktop(
