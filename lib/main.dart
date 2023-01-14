@@ -193,7 +193,9 @@ void main() async {
     deviceInfo: deviceInfo,
   );
 
-  await bulkDownloader.init();
+  if (isMobilePlatform()) {
+    await bulkDownloader.init();
+  }
 
   final previewImageCacheManager = PreviewImageCacheManager();
   final previewPreloader = PostPreviewPreloaderImp(

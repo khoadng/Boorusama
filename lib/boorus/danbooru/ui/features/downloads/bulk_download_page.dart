@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_error_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_progress_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_tag_selection_view.dart';
+import 'package:boorusama/core/core.dart';
 
 class BulkDownloadPage extends StatefulWidget {
   const BulkDownloadPage({
@@ -25,6 +26,37 @@ class BulkDownloadPage extends StatefulWidget {
 class _BulkDownloadPageState extends State<BulkDownloadPage> {
   @override
   Widget build(BuildContext context) {
+    if (!isMobilePlatform()) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Row(
+            children: [
+              const Text('download.bulk_download').tr(),
+              const SizedBox(
+                width: 6,
+              ),
+              Chip(
+                visualDensity: const VisualDensity(
+                  horizontal: -4,
+                  vertical: -4,
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                label: const Text(
+                  'BETA',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: const Center(
+          child: Text('Only supported in mobile version'),
+        ),
+      );
+    }
+
     return BlocSelector<BulkImageDownloadBloc, BulkImageDownloadState,
         BulkImageDownloadStatus>(
       selector: (state) => state.status,
