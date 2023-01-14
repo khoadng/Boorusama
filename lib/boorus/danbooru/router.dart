@@ -1,14 +1,24 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/search/search.dart';
+import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
+import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
+import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/application/tags/tags.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -196,9 +206,84 @@ void goToSearchPage(
   BuildContext context, {
   String? tag,
 }) {
-  AppRouter.router.navigateTo(
-    context,
-    '/posts/search',
-    routeSettings: RouteSettings(arguments: [tag ?? '']),
-  );
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/posts/search',
+      routeSettings: RouteSettings(arguments: [tag ?? '']),
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      pageBuilder: (context, _, __) {
+        return BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+          builder: (context, state) {
+            return BlocBuilder<SettingsCubit, SettingsState>(
+              builder: (context, settingsState) {
+                final tagSearchBloc = TagSearchBloc(
+                  tagInfo: context.read<TagInfo>(),
+                  autocompleteRepository:
+                      context.read<AutocompleteRepository>(),
+                );
+
+                final postBloc = PostBloc.of(
+                  context,
+                  pagination:
+                      settingsState.settings.contentOrganizationCategory ==
+                          ContentOrganizationCategory.pagination,
+                );
+                final searchHistoryCubit = SearchHistoryBloc(
+                  searchHistoryRepository:
+                      context.read<SearchHistoryRepository>(),
+                );
+                final relatedTagBloc = RelatedTagBloc(
+                  relatedTagRepository: context.read<RelatedTagRepository>(),
+                );
+                final searchHistorySuggestions = SearchHistorySuggestionsBloc(
+                  searchHistoryRepository:
+                      context.read<SearchHistoryRepository>(),
+                );
+
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: searchHistoryCubit),
+                    BlocProvider.value(
+                      value: context.read<FavoriteTagBloc>()
+                        ..add(const FavoriteTagFetched()),
+                    ),
+                    BlocProvider.value(value: postBloc),
+                    BlocProvider.value(
+                      value: BlocProvider.of<ThemeBloc>(context),
+                    ),
+                    BlocProvider.value(value: searchHistorySuggestions),
+                    BlocProvider(
+                      create: (context) => SearchBloc(
+                        initial: DisplayState.options,
+                        metatags: context.read<TagInfo>().metatags,
+                        tagSearchBloc: tagSearchBloc,
+                        searchHistoryBloc: searchHistoryCubit,
+                        relatedTagBloc: relatedTagBloc,
+                        searchHistorySuggestionsBloc: searchHistorySuggestions,
+                        postBloc: postBloc,
+                        postCountRepository:
+                            context.read<PostCountRepository>(),
+                        initialQuery: tag,
+                        booruType: state.booru.booruType,
+                      ),
+                    ),
+                    BlocProvider.value(value: relatedTagBloc),
+                  ],
+                  child: SearchPageDesktop(
+                    metatags: context.read<TagInfo>().metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  ),
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 }

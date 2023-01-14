@@ -8,9 +8,11 @@ class ImportFavoriteTagsDialog extends StatefulWidget {
   const ImportFavoriteTagsDialog({
     super.key,
     required this.onImport,
+    this.padding,
   });
 
   final void Function(String tagString) onImport;
+  final double? padding;
 
   @override
   State<ImportFavoriteTagsDialog> createState() =>
@@ -32,72 +34,74 @@ class _ImportFavoriteTagsDialogState extends State<ImportFavoriteTagsDialog> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(8)),
       ),
-      child: Container(
-        margin: const EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
-        height: MediaQuery.of(context).size.height * 0.36,
-        decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(
-            Radius.circular(8),
+      child: SingleChildScrollView(
+        child: Container(
+          margin: const EdgeInsets.symmetric(
+            vertical: 12,
+            horizontal: 16,
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Text(
-                'favorite_tags.import'.tr(),
-                style: Theme.of(context).textTheme.titleLarge,
-              ),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.all(
+              Radius.circular(8),
             ),
-            const SizedBox(
-              height: 12,
-            ),
-            Container(
-              constraints: const BoxConstraints(maxHeight: 150),
-              child: TextField(
-                controller: textController,
-                maxLines: null,
-                decoration: InputDecoration(
-                  hintMaxLines: 6,
-                  hintText: '${'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
-                  filled: true,
-                  fillColor: Theme.of(context).cardColor,
-                  enabledBorder: const OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide.none,
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: const BorderRadius.all(Radius.circular(8)),
-                    borderSide: BorderSide(
-                      color: Theme.of(context).colorScheme.secondary,
-                      width: 2,
-                    ),
-                  ),
-                  contentPadding: const EdgeInsets.all(12),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Text(
+                  'favorite_tags.import'.tr(),
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
-            ),
-            const Spacer(),
-            ValueListenableBuilder<TextEditingValue>(
-              valueListenable: textController,
-              builder: (context, value, child) => ElevatedButton(
-                onPressed: value.text.isNotEmpty
-                    ? () {
-                        Navigator.of(context).pop();
-                        widget.onImport(value.text);
-                      }
-                    : null,
-                child: const Text('favorite_tags.import').tr(),
+              const SizedBox(
+                height: 12,
               ),
-            ),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('favorite_tags.cancel').tr(),
-            ),
-          ],
+              Container(
+                constraints: const BoxConstraints(maxHeight: 150),
+                child: TextField(
+                  controller: textController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    hintMaxLines: 6,
+                    hintText: '${'favorite_tags.import_hint'.tr()}\n\n\n\n\n',
+                    filled: true,
+                    fillColor: Theme.of(context).cardColor,
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2,
+                      ),
+                    ),
+                    contentPadding: const EdgeInsets.all(12),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              ValueListenableBuilder<TextEditingValue>(
+                valueListenable: textController,
+                builder: (context, value, child) => ElevatedButton(
+                  onPressed: value.text.isNotEmpty
+                      ? () {
+                          Navigator.of(context).pop();
+                          widget.onImport(value.text);
+                        }
+                      : null,
+                  child: const Text('favorite_tags.import').tr(),
+                ),
+              ),
+              SizedBox(height: widget.padding ?? 0),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('favorite_tags.cancel').tr(),
+              ),
+            ],
+          ),
         ),
       ),
     );
