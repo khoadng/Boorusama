@@ -97,17 +97,7 @@ class SideBarMenu extends StatelessWidget {
                           title: const Text('Saved search'),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/saved_search',
-                              routeSettings: RouteSettings(
-                                arguments: [state.data!.username],
-                              ),
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToSavedSearchPage(context, state.data!.username);
                           },
                         ),
                       if (state.data! != Account.empty)

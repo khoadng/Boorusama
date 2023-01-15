@@ -1,6 +1,8 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
@@ -37,6 +39,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
 
 import 'ui/features/post_detail/post_detail_page_desktop.dart';
+import 'ui/features/saved_search/saved_search_feed_page.dart';
 
 @immutable
 class AppRouter {
@@ -73,12 +76,12 @@ class AppRouter {
       ..define(
         '/login',
         handler: loginHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/settings',
         handler: settingsHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/pool/detail',
@@ -98,7 +101,7 @@ class AppRouter {
       ..define(
         '/saved_search',
         handler: savedSearchHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/saved_search/edit',
@@ -398,6 +401,35 @@ void goToExploreDetailPage(
           ),
           category: category,
         ),
+      ),
+    );
+  }
+}
+
+void goToSavedSearchPage(BuildContext context, String? username) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/saved_search',
+      routeSettings: RouteSettings(
+        arguments: [username],
+      ),
+    );
+  } else {
+    showDesktopFullScreenWindow(
+      context,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PostBloc.of(context),
+          ),
+          BlocProvider(
+            create: (context) => SavedSearchFeedBloc(
+              savedSearchBloc: context.read<SavedSearchBloc>(),
+            )..add(const SavedSearchFeedRefreshed()),
+          ),
+        ],
+        child: const SavedSearchFeedPage(),
       ),
     );
   }
