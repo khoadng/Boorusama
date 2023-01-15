@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
@@ -6,6 +7,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
@@ -13,6 +15,8 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
@@ -113,6 +117,78 @@ class AppRouter {
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.material,
       );
+  }
+}
+
+void goToArtistPage(BuildContext context, String artist) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/artist',
+      routeSettings: RouteSettings(
+        arguments: [
+          artist,
+          '',
+        ],
+      ),
+    );
+  } else {
+    showDesktopFullScreenWindow(
+      context,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                tag: artist,
+                fetcher: SearchedPostFetcher.fromTags(artist),
+              )),
+          ),
+          BlocProvider.value(
+            value: context.read<ArtistBloc>()..add(ArtistFetched(name: artist)),
+          ),
+        ],
+        child: ArtistPageDesktop(
+          artistName: artist,
+        ),
+      ),
+    );
+  }
+}
+
+void goToCharacterPage(BuildContext context, String tag) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/character',
+      routeSettings: RouteSettings(
+        arguments: [
+          tag,
+          '',
+        ],
+      ),
+    );
+  } else {
+    showDesktopFullScreenWindow(
+      context,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(PostRefreshed(
+                tag: tag,
+                fetcher: SearchedPostFetcher.fromTags(tag),
+              )),
+          ),
+          BlocProvider.value(
+            value: context.read<WikiBloc>()..add(WikiFetched(tag: tag)),
+          ),
+        ],
+        child: CharacterPageDesktop(
+          characterName: tag,
+        ),
+      ),
+    );
   }
 }
 
