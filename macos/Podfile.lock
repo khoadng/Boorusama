@@ -31,6 +31,8 @@ PODS:
     - FMDB (>= 2.7.5)
   - url_launcher_macos (0.0.1):
     - FlutterMacOS
+  - video_player_macos (0.0.1):
+    - FlutterMacOS
   - wakelock_macos (0.0.1):
     - FlutterMacOS
 
@@ -47,6 +49,7 @@ DEPENDENCIES:
   - shared_preferences_macos (from `Flutter/ephemeral/.symlinks/plugins/shared_preferences_macos/macos`)
   - sqflite (from `Flutter/ephemeral/.symlinks/plugins/sqflite/macos`)
   - url_launcher_macos (from `Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos`)
+  - video_player_macos (from `Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos`)
   - wakelock_macos (from `Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos`)
 
 SPEC REPOS:
@@ -80,6 +83,8 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/sqflite/macos
   url_launcher_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/url_launcher_macos/macos
+  video_player_macos:
+    :path: Flutter/ephemeral/.symlinks/plugins/video_player_macos/macos
   wakelock_macos:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_macos/macos
 
@@ -99,6 +104,7 @@ SPEC CHECKSUMS:
   shared_preferences_macos: a64dc611287ed6cbe28fd1297898db1336975727
   sqflite: a5789cceda41d54d23f31d6de539d65bb14100ea
   url_launcher_macos: 597e05b8e514239626bcf4a850fcf9ef5c856ec3
+  video_player_macos: 7a50b407d775a45392851b1218a9cf4be395cf7f
   wakelock_macos: bc3f2a9bd8d2e6c89fee1e1822e7ddac3bd004a9
 
 PODFILE CHECKSUM: a884f6dd3f7494f3892ee6c81feea3a3abbf9153
