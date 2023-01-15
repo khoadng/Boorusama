@@ -12,7 +12,7 @@ extension Iterables<E> on Iterable<E> {
 extension QueueX<E> on Queue<E> {
   List<E> dequeue(int times) {
     final list = <E>[];
-    for (var i = 0; i < times - 1; i++) {
+    for (var i = 0; i < times; i++) {
       if (isEmpty) break;
       list.add(removeFirst());
     }
