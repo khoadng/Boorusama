@@ -189,46 +189,51 @@ class BlacklistedTagTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-      title: Text(tag),
-      trailing: PopupMenuButton(
-        constraints: const BoxConstraints(minWidth: 150),
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(4)),
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        child: ListTile(
+          title: Text(tag),
+          onTap: () => print('object'),
+          trailing: PopupMenuButton(
+            constraints: const BoxConstraints(minWidth: 150),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context
+                        .read<BlacklistedTagsBloc>()
+                        .add(BlacklistedTagRemoved(tag: tag));
+                  },
+                  title: const Text('blacklisted_tags.remove').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.trash,
+                    size: 16,
+                  ),
+                ),
+              ),
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEditTap.call();
+                  },
+                  title: const Text('blacklisted_tags.edit').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.pen,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
-        itemBuilder: (context) => [
-          PopupMenuItem(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).pop();
-                context
-                    .read<BlacklistedTagsBloc>()
-                    .add(BlacklistedTagRemoved(tag: tag));
-              },
-              title: const Text('blacklisted_tags.remove').tr(),
-              trailing: const FaIcon(
-                FontAwesomeIcons.trash,
-                size: 16,
-              ),
-            ),
-          ),
-          PopupMenuItem(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              onTap: () {
-                Navigator.of(context).pop();
-                onEditTap.call();
-              },
-              title: const Text('blacklisted_tags.edit').tr(),
-              trailing: const FaIcon(
-                FontAwesomeIcons.pen,
-                size: 16,
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }

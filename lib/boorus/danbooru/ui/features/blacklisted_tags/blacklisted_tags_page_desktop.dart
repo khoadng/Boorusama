@@ -87,19 +87,12 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
                   case LoadStatus.success:
                     return ListView.builder(
                       itemCount: state.blacklistedTags.length,
-                      itemBuilder: (context, index) => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Divider(),
-                          BlacklistedTagTile(
-                            tag: state.blacklistedTags[index],
-                            onEditTap: () => _showEditView(
-                              context,
-                              initialTags:
-                                  state.blacklistedTags[index].split(' '),
-                            ),
-                          ),
-                        ],
+                      itemBuilder: (context, index) => BlacklistedTagTile(
+                        tag: state.blacklistedTags[index],
+                        onEditTap: () => _showEditView(
+                          context,
+                          initialTags: state.blacklistedTags[index].split(' '),
+                        ),
                       ),
                     );
                   case LoadStatus.failure:
