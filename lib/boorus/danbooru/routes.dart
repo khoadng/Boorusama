@@ -190,6 +190,7 @@ final postDetailHandler = Handler(handlerFunc: (
                   postBloc.add(PostUpdated(post: post));
                 }
               },
+              tagCache: {},
             ),
           ),
         ],

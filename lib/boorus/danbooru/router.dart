@@ -266,6 +266,7 @@ void goToDetailPage({
                   accountRepository: context.read<AccountRepository>(),
                   postVoteRepository: context.read<PostVoteRepository>(),
                   tags: tags,
+                  tagCache: {},
                 ),
               ),
             ],

@@ -35,12 +35,13 @@ class _PostDetailVoteFetch extends PostDetailEvent {
 }
 
 class _PostDetailRecommendedFetch extends PostDetailEvent {
-  const _PostDetailRecommendedFetch(this.post);
+  const _PostDetailRecommendedFetch(this.artistTags, this.characterTags);
 
-  final PostData post;
+  final List<String> artistTags;
+  final List<String> characterTags;
 
   @override
-  List<Object?> get props => [post];
+  List<Object?> get props => [artistTags, characterTags];
 }
 
 class _PostDetailNoteFetch extends PostDetailEvent {
@@ -62,6 +63,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required List<PostDetailTag> tags,
     required int initialIndex,
     required List<PostData> posts,
+    required Map<String, List<Post>> tagCache,
     void Function(
       PostData post,
     )?
@@ -110,7 +112,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           }
         }
 
-        add(_PostDetailRecommendedFetch(post));
+        add(_PostDetailRecommendedFetch(
+          post.post.artistTags,
+          post.post.characterTags,
+        ));
       },
       transformer: restartable(),
     );
@@ -152,11 +157,21 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     on<_PostDetailRecommendedFetch>(
       (event, emit) async {
         if (!state.fullScreen) {
-          await _fetchArtistPosts(event.post, postRepository, emit);
-          await _fetchCharactersPosts(event.post, postRepository, emit);
+          await _fetchArtistPosts(
+            event.artistTags,
+            postRepository,
+            emit,
+            tagCache,
+          );
+          await _fetchCharactersPosts(
+            event.characterTags,
+            postRepository,
+            emit,
+            tagCache,
+          );
         }
       },
-      transformer: debounceRestartable(const Duration(seconds: 1)),
+      transformer: debounce(const Duration(milliseconds: 500)),
     );
 
     on<_PostDetailFavoriteFetch>(
@@ -322,8 +337,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         fullScreen: event.fullScreen,
       ));
       if (!event.fullScreen && state.recommends.isEmpty) {
-        await _fetchArtistPosts(state.currentPost, postRepository, emit);
-        await _fetchCharactersPosts(state.currentPost, postRepository, emit);
+        await _fetchArtistPosts(
+          state.currentPost.post.artistTags,
+          postRepository,
+          emit,
+          tagCache,
+        );
+        await _fetchCharactersPosts(
+          state.currentPost.post.characterTags,
+          postRepository,
+          emit,
+          tagCache,
+        );
       }
     });
 
@@ -343,52 +368,68 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   Future<void> _fetchCharactersPosts(
-    PostData post,
+    List<String> tags,
     PostRepository postRepository,
     Emitter<PostDetailState> emit,
+    Map<String, List<Post>> tagCache,
   ) async {
-    for (final tag in post.post.characterTags) {
-      final posts = await postRepository.getPosts(tag, 1, limit: 20);
-      emit(state.copyWith(recommends: [
-        ...state.recommends,
-        Recommend(
-          type: RecommendType.character,
-          title: tag,
-          posts: posts
-              .take(6)
-              .map((e) => PostData(
-                    post: e,
-                    isFavorited: false,
-                    pools: const [],
-                  ))
-              .toList(),
-        ),
-      ]));
+    for (final tag in tags) {
+      final posts = tagCache.containsKey(tag)
+          ? tagCache[tag]!
+          : await postRepository.getPosts(tag, 1, limit: 20);
+
+      tagCache[tag] = posts;
+
+      emit(state.copyWith(
+        recommends: [
+          ...state.recommends,
+          Recommend(
+            type: RecommendType.character,
+            title: tag,
+            posts: posts
+                .take(6)
+                .map((e) => PostData(
+                      post: e,
+                      isFavorited: false,
+                      pools: const [],
+                    ))
+                .toList(),
+          ),
+        ],
+      ));
     }
   }
 
   Future<void> _fetchArtistPosts(
-    PostData post,
+    List<String> tags,
     PostRepository postRepository,
     Emitter<PostDetailState> emit,
+    Map<String, List<Post>> tagCache,
   ) async {
-    for (final tag in post.post.artistTags) {
-      final posts = await postRepository.getPosts(tag, 1, limit: 20);
-      emit(state.copyWith(recommends: [
-        ...state.recommends,
-        Recommend(
-          type: RecommendType.artist,
-          title: tag,
-          posts: posts
-              .take(6)
-              .map((e) => PostData(
-                    post: e,
-                    isFavorited: false,
-                    pools: const [],
-                  ))
-              .toList(),
-        ),
-      ]));
+    for (final tag in tags) {
+      final posts = tagCache.containsKey(tag)
+          ? tagCache[tag]!
+          : await postRepository.getPosts(tag, 1, limit: 20);
+
+      tagCache[tag] = posts;
+
+      emit(state.copyWith(
+        recommends: [
+          ...state.recommends,
+          Recommend(
+            type: RecommendType.artist,
+            title: tag,
+            posts: posts
+                .take(6)
+                .map((e) => PostData(
+                      post: e,
+                      isFavorited: false,
+                      pools: const [],
+                    ))
+                .toList(),
+          ),
+        ],
+      ));
     }
   }
 }
