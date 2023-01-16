@@ -12,6 +12,7 @@ class PostDetailState extends Equatable {
     required this.currentIndex,
     required this.currentPost,
     required this.nextPost,
+    required this.previousPost,
     this.enableSlideShow = false,
     this.fullScreen = false,
     this.enableNotes = true,
@@ -25,6 +26,7 @@ class PostDetailState extends Equatable {
         tags: const [],
         currentIndex: 0,
         currentPost: PostData.empty(),
+        previousPost: PostData.empty(),
         nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
           interval: 4,
@@ -37,6 +39,7 @@ class PostDetailState extends Equatable {
   final int currentIndex;
   final PostData currentPost;
   final PostData? nextPost;
+  final PostData? previousPost;
   final bool enableSlideShow;
   final bool fullScreen;
   final bool enableNotes;
@@ -53,6 +56,7 @@ class PostDetailState extends Equatable {
     int? currentIndex,
     PostData? currentPost,
     PostData? Function()? nextPost,
+    PostData? Function()? previousPost,
     bool? enableSlideShow,
     bool? fullScreen,
     bool? enableNotes,
@@ -66,6 +70,7 @@ class PostDetailState extends Equatable {
         currentIndex: currentIndex ?? this.currentIndex,
         currentPost: currentPost ?? this.currentPost,
         nextPost: nextPost != null ? nextPost() : this.nextPost,
+        previousPost: previousPost != null ? previousPost() : this.previousPost,
         enableSlideShow: enableSlideShow ?? this.enableSlideShow,
         fullScreen: fullScreen ?? this.fullScreen,
         slideShowConfig: slideShowConfig ?? this.slideShowConfig,
@@ -81,6 +86,7 @@ class PostDetailState extends Equatable {
         currentIndex,
         currentPost,
         nextPost,
+        previousPost,
         enableSlideShow,
         fullScreen,
         enableNotes,
@@ -123,4 +129,9 @@ class Recommend extends Equatable {
 
   @override
   List<Object?> get props => [title, posts, type];
+}
+
+extension PostDetailX on PostDetailState {
+  bool hasNext() => nextPost != null;
+  bool hasPrevious() => previousPost != null;
 }

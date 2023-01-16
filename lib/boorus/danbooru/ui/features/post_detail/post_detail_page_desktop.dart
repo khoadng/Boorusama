@@ -106,29 +106,39 @@ class _PostDetailPageDesktopState extends State<PostDetailPageDesktop> {
                     ),
                     child: const _TopRightButtonGroup(),
                   ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: MaterialButton(
-                      color: Theme.of(context).cardColor,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(20),
-                      onPressed: () => carouselController.previousPage(
-                        duration: const Duration(microseconds: 1),
-                      ),
-                      child: const Icon(Icons.arrow_back),
-                    ),
+                  BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                    selector: (state) => state.hasPrevious(),
+                    builder: (context, enable) => enable
+                        ? Align(
+                            alignment: Alignment.centerLeft,
+                            child: MaterialButton(
+                              color: Theme.of(context).cardColor,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(20),
+                              onPressed: () => carouselController.previousPage(
+                                duration: const Duration(microseconds: 1),
+                              ),
+                              child: const Icon(Icons.arrow_back),
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: MaterialButton(
-                      color: Theme.of(context).cardColor,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(20),
-                      onPressed: () => carouselController.nextPage(
-                        duration: const Duration(microseconds: 1),
-                      ),
-                      child: const Icon(Icons.arrow_forward),
-                    ),
+                  BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                    selector: (state) => state.hasNext(),
+                    builder: (context, enable) => enable
+                        ? Align(
+                            alignment: Alignment.centerRight,
+                            child: MaterialButton(
+                              color: Theme.of(context).cardColor,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(20),
+                              onPressed: () => carouselController.nextPage(
+                                duration: const Duration(microseconds: 1),
+                              ),
+                              child: const Icon(Icons.arrow_forward),
+                            ),
+                          )
+                        : const SizedBox(),
                   ),
                 ],
               ),

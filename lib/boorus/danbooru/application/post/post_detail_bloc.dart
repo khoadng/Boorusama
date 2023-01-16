@@ -75,6 +75,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
           nextPost: posts.getOrNull(initialIndex + 1),
+          previousPost: posts.getOrNull(initialIndex - 1),
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
@@ -83,10 +84,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       (event, emit) async {
         final post = posts[event.index];
         final nextPost = posts.getOrNull(event.index + 1);
+        final prevPost = posts.getOrNull(event.index - 1);
+
         emit(state.copyWith(
           currentIndex: event.index,
           currentPost: post,
           nextPost: () => nextPost,
+          previousPost: () => prevPost,
           recommends: [],
         ));
         final account = await accountRepository.get();
