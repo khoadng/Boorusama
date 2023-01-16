@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -77,78 +79,88 @@ class _PostMediaItemState extends State<PostMediaItem> {
             useOriginalSize: false,
             onTap: widget.onTap,
             transformationController: transformationController,
-            image: Stack(
-              children: [
-                Hero(
-                  tag: '${widget.post.id}_hero',
-                  child: AspectRatio(
-                    aspectRatio: widget.post.aspectRatio,
-                    child: LayoutBuilder(
-                      builder: (context, constraints) => CachedNetworkImage(
-                        httpHeaders: const {
-                          'User-Agent': userAgent,
-                        },
-                        imageUrl: widget.post.normalImageUrl,
-                        imageBuilder: (context, imageProvider) {
-                          DefaultCacheManager()
-                              .getFileFromCache(widget.post.normalImageUrl)
-                              .then((file) {
-                            if (!mounted) return;
-                            widget.onCached(file?.file.path);
-                          });
+            image: Hero(
+              tag: '${widget.post.id}_hero',
+              child: AspectRatio(
+                aspectRatio: widget.post.aspectRatio,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => CachedNetworkImage(
+                    httpHeaders: const {
+                      'User-Agent': userAgent,
+                    },
+                    imageUrl: widget.post.normalImageUrl,
+                    imageBuilder: (context, imageProvider) {
+                      DefaultCacheManager()
+                          .getFileFromCache(widget.post.normalImageUrl)
+                          .then((file) {
+                        if (!mounted) return;
+                        widget.onCached(file?.file.path);
+                      });
 
-                          return Stack(
-                            children: [
-                              Image(image: imageProvider),
-                              if (widget.enableNotes)
-                                ...widget.notes
-                                    .map((e) => e.adjustNoteCoordFor(
-                                          widget.post,
-                                          widthConstraint: constraints.maxWidth,
-                                          heightConstraint:
-                                              constraints.maxHeight,
-                                        ))
-                                    .map((e) => PostNote(
-                                          coordinate: e.coordinate,
-                                          content: e.content,
-                                        )),
-                            ],
-                          );
-                        },
-                        placeholderFadeInDuration: Duration.zero,
-                        fadeOutDuration: Duration.zero,
-                        fadeInDuration: Duration.zero,
-                        placeholder: (context, url) => CachedNetworkImage(
-                          httpHeaders: const {
-                            'User-Agent': userAgent,
-                          },
-                          fit: BoxFit.fill,
-                          imageUrl: widget.post.previewImageUrl,
-                          cacheManager: widget.previewCacheManager,
-                          fadeInDuration: Duration.zero,
-                          fadeOutDuration: Duration.zero,
-                          progressIndicatorBuilder: (context, url, progress) =>
-                              FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              height: widget.post.height,
-                              width: widget.post.width,
-                              child: Stack(children: [
-                                Align(
-                                  alignment: Alignment.bottomCenter,
-                                  child: LinearProgressIndicator(
-                                    value: progress.progress,
-                                  ),
-                                ),
-                              ]),
-                            ),
+                      final w = math.max(
+                        constraints.maxWidth,
+                        MediaQuery.of(context).size.width,
+                      );
+
+                      final h = math.max(
+                        constraints.maxHeight,
+                        MediaQuery.of(context).size.height,
+                      );
+
+                      return Stack(
+                        children: [
+                          Image(
+                            width: w,
+                            height: h,
+                            fit: BoxFit.contain,
+                            image: imageProvider,
                           ),
+                          if (widget.enableNotes)
+                            ...widget.notes
+                                .map((e) => e.adjustNoteCoordFor(
+                                      widget.post,
+                                      widthConstraint: constraints.maxWidth,
+                                      heightConstraint: constraints.maxHeight,
+                                    ))
+                                .map((e) => PostNote(
+                                      coordinate: e.coordinate,
+                                      content: e.content,
+                                    )),
+                        ],
+                      );
+                    },
+                    placeholderFadeInDuration: Duration.zero,
+                    fadeOutDuration: Duration.zero,
+                    fadeInDuration: Duration.zero,
+                    placeholder: (context, url) => CachedNetworkImage(
+                      httpHeaders: const {
+                        'User-Agent': userAgent,
+                      },
+                      fit: BoxFit.fill,
+                      imageUrl: widget.post.previewImageUrl,
+                      cacheManager: widget.previewCacheManager,
+                      fadeInDuration: Duration.zero,
+                      fadeOutDuration: Duration.zero,
+                      progressIndicatorBuilder: (context, url, progress) =>
+                          FittedBox(
+                        fit: BoxFit.cover,
+                        child: SizedBox(
+                          height: widget.post.height,
+                          width: widget.post.width,
+                          child: Stack(children: [
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: LinearProgressIndicator(
+                                value: progress.progress,
+                              ),
+                            ),
+                          ]),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ],
+              ),
             ),
           );
   }

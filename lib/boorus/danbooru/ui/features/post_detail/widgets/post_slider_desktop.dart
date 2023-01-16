@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'post_media_item.dart';
 
@@ -62,32 +60,10 @@ class _PostSliderDesktopState extends State<PostSliderDesktop> {
           },
         );
 
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: const SystemUiOverlayStyle(
-            statusBarColor: Colors.transparent,
-          ),
-          child: Scaffold(
-            backgroundColor: Colors.transparent,
-            body: state.enableSlideShow || state.fullScreen
-                ? SafeArea(
-                    child: Center(
-                      child: media,
-                    ),
-                  )
-                : BlocBuilder<SettingsCubit, SettingsState>(
-                    buildWhen: (previous, current) =>
-                        previous.settings.actionBarDisplayBehavior !=
-                        current.settings.actionBarDisplayBehavior,
-                    builder: (context, settingsState) {
-                      return Stack(
-                        children: [
-                          Center(
-                            child: media,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: media,
           ),
         );
       },
