@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -134,34 +133,24 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return CupertinoContextMenu(
-      previewBuilder: (context, animation, child) => BooruImage(
-        aspectRatio: aspectRatio,
-        imageUrl: previewUrl,
-        placeholderUrl: previewPlaceholderUrl,
-        fit: BoxFit.contain,
-        previewCacheManager: previewCacheManager,
-      ),
-      actions: contextMenuAction,
-      child: Stack(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: image ??
-                BooruImage(
-                  aspectRatio: aspectRatio,
-                  imageUrl: previewUrl,
-                  placeholderUrl: previewPlaceholderUrl,
-                  borderRadius: borderRadius,
-                  previewCacheManager: previewCacheManager,
-                ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(),
-          ),
-        ],
-      ),
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: image ??
+              BooruImage(
+                aspectRatio: aspectRatio,
+                imageUrl: previewUrl,
+                placeholderUrl: previewPlaceholderUrl,
+                borderRadius: borderRadius,
+                previewCacheManager: previewCacheManager,
+              ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 1, left: 1),
+          child: _buildOverlayIcon(),
+        ),
+      ],
     );
   }
 }

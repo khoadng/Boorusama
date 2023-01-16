@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:boorusama/core/core.dart';
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -75,9 +76,36 @@ final rootHandler = Handler(
           control: true,
         ): () => goToSearchPage(context!),
       },
-      child: Focus(
-        autofocus: true,
-        child: isMobilePlatform() ? const HomePage() : const HomePageDesktop(),
+      child: ContextMenuOverlay(
+        cardBuilder: (context, children) => Card(
+          child: Padding(
+            padding: const EdgeInsets.all(8),
+            child: Column(children: children),
+          ),
+        ),
+        buttonBuilder: (context, config, [__]) => ConstrainedBox(
+          constraints: const BoxConstraints(minWidth: 200),
+          child: Material(
+            color: Colors.transparent,
+            child: Ink(
+              child: ListTile(
+                dense: true,
+                visualDensity:
+                    const VisualDensity(horizontal: -4, vertical: -4),
+                hoverColor: Theme.of(context).colorScheme.primary,
+                onTap: config.onPressed,
+                title: Text(config.label),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                minVerticalPadding: 0,
+              ),
+            ),
+          ),
+        ),
+        child: Focus(
+          autofocus: true,
+          child:
+              isMobilePlatform() ? const HomePage() : const HomePageDesktop(),
+        ),
       ),
     ),
   ),
