@@ -35,10 +35,13 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
 
-  void _sendRefresh(String tag) => context.read<PostBloc>().add(PostRefreshed(
-        tag: tag,
-        fetcher: SearchedPostFetcher.fromTags(tag),
-      ));
+  void _sendRefresh(String tag) {
+    _autoScrollController.jumpTo(0);
+    context.read<PostBloc>().add(PostRefreshed(
+          tag: tag,
+          fetcher: SearchedPostFetcher.fromTags(tag),
+        ));
+  }
 
   @override
   void initState() {
@@ -49,7 +52,6 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
         .listen((tag) {
-      _autoScrollController.jumpTo(0);
       _sendRefresh(tag);
     }).addTo(_compositeSubscription);
   }
@@ -82,10 +84,7 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
                     child: const Icon(Icons.search),
                   ),
                   _ToolbarButton(
-                    onPressed: () =>
-                        context.read<PostBloc>().add(const PostRefreshed(
-                              fetcher: LatestPostFetcher(),
-                            )),
+                    onPressed: () => _sendRefresh(_selectedTag.value),
                     child: const Icon(Icons.refresh),
                   ),
                 ],
@@ -118,7 +117,7 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
               enableLoadMore: state.hasMore,
               onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                     tags: _selectedTag.value,
-                    fetcher: const LatestPostFetcher(),
+                    fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
                   )),
               onRefresh: (controller) {
                 _sendRefresh(_selectedTag.value);
