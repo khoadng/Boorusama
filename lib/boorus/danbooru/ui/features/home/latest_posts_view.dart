@@ -52,8 +52,10 @@ class _LatestViewState extends State<LatestView> {
     _selectedTagStream
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
-        .listen(_sendRefresh)
-        .addTo(_compositeSubscription);
+        .listen((tag) {
+      _autoScrollController.jumpTo(0);
+      _sendRefresh(tag);
+    }).addTo(_compositeSubscription);
   }
 
   @override
