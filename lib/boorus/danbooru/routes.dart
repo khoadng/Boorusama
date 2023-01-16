@@ -76,31 +76,7 @@ final rootHandler = Handler(
           control: true,
         ): () => goToSearchPage(context!),
       },
-      child: ContextMenuOverlay(
-        cardBuilder: (context, children) => Card(
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: Column(children: children),
-          ),
-        ),
-        buttonBuilder: (context, config, [__]) => ConstrainedBox(
-          constraints: const BoxConstraints(minWidth: 200),
-          child: Material(
-            color: Colors.transparent,
-            child: Ink(
-              child: ListTile(
-                dense: true,
-                visualDensity:
-                    const VisualDensity(horizontal: -4, vertical: -4),
-                hoverColor: Theme.of(context).colorScheme.primary,
-                onTap: config.onPressed,
-                title: Text(config.label),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
-                minVerticalPadding: 0,
-              ),
-            ),
-          ),
-        ),
+      child: CustomContextMenuOverlay(
         child: Focus(
           autofocus: true,
           child:
@@ -110,6 +86,45 @@ final rootHandler = Handler(
     ),
   ),
 );
+
+class CustomContextMenuOverlay extends StatelessWidget {
+  const CustomContextMenuOverlay({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ContextMenuOverlay(
+      cardBuilder: (context, children) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(children: children),
+        ),
+      ),
+      buttonBuilder: (context, config, [__]) => ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 200),
+        child: Material(
+          color: Colors.transparent,
+          child: Ink(
+            child: ListTile(
+              dense: true,
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              hoverColor: Theme.of(context).colorScheme.primary,
+              onTap: config.onPressed,
+              title: Text(config.label),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              minVerticalPadding: 0,
+            ),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
 
 final artistHandler = Handler(handlerFunc: (
   context,
@@ -130,9 +145,11 @@ final artistHandler = Handler(handlerFunc: (
         value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
       ),
     ],
-    child: ArtistPage(
-      artistName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: ArtistPage(
+        artistName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -156,9 +173,11 @@ final characterHandler = Handler(handlerFunc: (
         value: context.read<WikiBloc>()..add(WikiFetched(tag: args.first)),
       ),
     ],
-    child: CharacterPage(
-      characterName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: CharacterPage(
+        characterName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -317,9 +336,11 @@ final postSearchHandler = Handler(handlerFunc: (
               ),
               BlocProvider.value(value: relatedTagBloc),
             ],
-            child: SearchPage(
-              metatags: context.read<TagInfo>().metatags,
-              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            child: CustomContextMenuOverlay(
+              child: SearchPage(
+                metatags: context.read<TagInfo>().metatags,
+                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
           );
         },
@@ -403,8 +424,10 @@ final favoritesHandler =
               )),
           ),
         ],
-        child: FavoritesPage(
-          username: username,
+        child: CustomContextMenuOverlay(
+          child: FavoritesPage(
+            username: username,
+          ),
         ),
       );
     },
@@ -464,7 +487,7 @@ final savedSearchHandler =
         )..add(const SavedSearchFeedRefreshed()),
       ),
     ],
-    child: const SavedSearchFeedPage(),
+    child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
   );
 });
 

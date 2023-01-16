@@ -36,22 +36,29 @@ class TagSuggestionItems extends StatelessWidget {
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          return ListView.builder(
-            itemCount: _tags.length,
-            itemBuilder: (context, index) {
-              final tag = _tags[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: ListView.builder(
+              itemCount: _tags.length,
+              itemBuilder: (context, index) {
+                final tag = _tags[index];
 
-              return ListTile(
-                onTap: () => onItemTap(_tags[index]),
-                trailing: tag.hasCount
-                    ? Text(
-                        NumberFormat.compact().format(tag.postCount),
-                        style: const TextStyle(color: Colors.grey),
-                      )
-                    : null,
-                title: _getTitle(tag, state.theme, currentQuery),
-              );
-            },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListTile(
+                    hoverColor: Theme.of(context).cardColor,
+                    onTap: () => onItemTap(_tags[index]),
+                    trailing: tag.hasCount
+                        ? Text(
+                            NumberFormat.compact().format(tag.postCount),
+                            style: const TextStyle(color: Colors.grey),
+                          )
+                        : null,
+                    title: _getTitle(tag, state.theme, currentQuery),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
@@ -112,6 +119,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                     }
                   },
                   child: ListTile(
+                    hoverColor: Theme.of(context).cardColor,
                     visualDensity: VisualDensity.compact,
                     trailing: const Icon(
                       Icons.history,
@@ -141,19 +149,23 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
               ),
               if (histories.isNotEmpty) const Divider(thickness: 1),
               ...tags.map(
-                (tag) => ListTile(
-                  onTap: () => onItemTap(tag),
-                  trailing: tag.hasCount
-                      ? Text(
-                          NumberFormat.compact().format(tag.postCount),
-                          style: const TextStyle(color: Colors.grey),
-                        )
-                      : null,
-                  title: BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) => _getTitle(
-                      tag,
-                      state.theme,
-                      currentQuery.replaceAll('_', ' '),
+                (tag) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListTile(
+                    hoverColor: Theme.of(context).cardColor,
+                    onTap: () => onItemTap(tag),
+                    trailing: tag.hasCount
+                        ? Text(
+                            NumberFormat.compact().format(tag.postCount),
+                            style: const TextStyle(color: Colors.grey),
+                          )
+                        : null,
+                    title: BlocBuilder<ThemeBloc, ThemeState>(
+                      builder: (context, state) => _getTitle(
+                        tag,
+                        state.theme,
+                        currentQuery.replaceAll('_', ' '),
+                      ),
                     ),
                   ),
                 ),

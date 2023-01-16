@@ -166,7 +166,7 @@ class _LargeLayout extends StatelessWidget {
               ),
             ),
           ),
-          const VerticalDivider(),
+          const VerticalDivider(width: 10),
           Expanded(
             child: BlocSelector<SearchBloc, SearchState, DisplayState>(
               selector: (state) => state.displayState,

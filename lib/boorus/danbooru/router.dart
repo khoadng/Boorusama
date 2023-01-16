@@ -152,8 +152,10 @@ void goToArtistPage(BuildContext context, String artist) {
             value: context.read<ArtistBloc>()..add(ArtistFetched(name: artist)),
           ),
         ],
-        child: ArtistPageDesktop(
-          artistName: artist,
+        child: CustomContextMenuOverlay(
+          child: ArtistPageDesktop(
+            artistName: artist,
+          ),
         ),
       ),
     );
@@ -188,8 +190,10 @@ void goToCharacterPage(BuildContext context, String tag) {
             value: context.read<WikiBloc>()..add(WikiFetched(tag: tag)),
           ),
         ],
-        child: CharacterPageDesktop(
-          characterName: tag,
+        child: CustomContextMenuOverlay(
+          child: CharacterPageDesktop(
+            characterName: tag,
+          ),
         ),
       ),
     );
@@ -355,9 +359,12 @@ void goToSearchPage(
                   ),
                   BlocProvider.value(value: relatedTagBloc),
                 ],
-                child: SearchPageDesktop(
-                  metatags: context.read<TagInfo>().metatags,
-                  metatagHighlightColor: Theme.of(context).colorScheme.primary,
+                child: CustomContextMenuOverlay(
+                  child: SearchPageDesktop(
+                    metatags: context.read<TagInfo>().metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  ),
                 ),
               );
             },
@@ -398,10 +405,10 @@ Future<T?> showDesktopDialogWindow<T>(
       context: context,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black54,
+      barrierColor: Colors.black87,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
+          backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -517,7 +524,7 @@ void goToSavedSearchPage(BuildContext context, String? username) {
             )..add(const SavedSearchFeedRefreshed()),
           ),
         ],
-        child: const SavedSearchFeedPage(),
+        child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
       ),
     );
   }

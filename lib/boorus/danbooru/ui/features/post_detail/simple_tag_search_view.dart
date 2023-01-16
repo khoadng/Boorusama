@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'dart:math';
+
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
@@ -34,41 +37,20 @@ void showSimpleTagSearchView(
       ),
     );
   } else {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black54,
-      pageBuilder: (context, _, __) {
-        return Dialog(
-          backgroundColor: Theme.of(context).backgroundColor,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
-          ),
-          child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
-            margin: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 16,
-            ),
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8),
-              ),
-            ),
-            child: SimpleTagSearchView(
-              onSubmitted: onSubmitted,
-              backButton: IconButton(
-                onPressed: () => Navigator.of(context).pop(),
-                icon: const Icon(Icons.arrow_back),
-              ),
-              ensureValidTag: ensureValidTag,
-              onSelected: onSelected,
-            ),
-          ),
-        );
-      },
+    showDesktopDialogWindow(
+      context,
+      backgroundColor: Theme.of(context).backgroundColor,
+      width: min(MediaQuery.of(context).size.width * 0.7, 600),
+      height: min(MediaQuery.of(context).size.height * 0.7, 500),
+      builder: (context) => SimpleTagSearchView(
+        onSubmitted: onSubmitted,
+        backButton: IconButton(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        ensureValidTag: ensureValidTag,
+        onSelected: onSelected,
+      ),
     );
   }
 }
