@@ -112,7 +112,9 @@ class _PostDetailPageDesktopState extends State<PostDetailPageDesktop> {
                       color: Theme.of(context).cardColor,
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
-                      onPressed: () => carouselController.previousPage(),
+                      onPressed: () => carouselController.previousPage(
+                        duration: const Duration(microseconds: 1),
+                      ),
                       child: const Icon(Icons.arrow_back),
                     ),
                   ),
@@ -122,7 +124,9 @@ class _PostDetailPageDesktopState extends State<PostDetailPageDesktop> {
                       color: Theme.of(context).cardColor,
                       shape: const CircleBorder(),
                       padding: const EdgeInsets.all(20),
-                      onPressed: () => carouselController.nextPage(),
+                      onPressed: () => carouselController.nextPage(
+                        duration: const Duration(microseconds: 1),
+                      ),
                       child: const Icon(Icons.arrow_forward),
                     ),
                   ),

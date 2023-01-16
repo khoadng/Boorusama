@@ -4,6 +4,7 @@ import 'dart:math';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -31,6 +32,15 @@ class _PostDetailVoteFetch extends PostDetailEvent {
 
   @override
   List<Object?> get props => [];
+}
+
+class _PostDetailRecommendedFetch extends PostDetailEvent {
+  const _PostDetailRecommendedFetch(this.post);
+
+  final PostData post;
+
+  @override
+  List<Object?> get props => [post];
 }
 
 class _PostDetailNoteFetch extends PostDetailEvent {
@@ -96,10 +106,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           }
         }
 
-        if (!state.fullScreen) {
-          await _fetchArtistPosts(post, postRepository, emit);
-          await _fetchCharactersPosts(post, postRepository, emit);
-        }
+        add(_PostDetailRecommendedFetch(post));
       },
       transformer: restartable(),
     );
@@ -138,35 +145,54 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       );
     });
 
-    on<_PostDetailFavoriteFetch>((event, emit) async {
-      await favoritePostRepository
-          .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
-          .then((fav) {
-        emit(state.copyWith(
-          currentPost: state.currentPost.copyWith(isFavorited: fav),
-        ));
-      });
-    });
-
-    on<_PostDetailVoteFetch>((event, emit) async {
-      await postVoteRepository
-          .getPostVotes([state.currentPost.post.id]).then((votes) {
-        if (votes.isNotEmpty) {
-          emit(state.copyWith(
-            currentPost:
-                state.currentPost.copyWith(voteState: votes.first.voteState),
-          ));
+    on<_PostDetailRecommendedFetch>(
+      (event, emit) async {
+        if (!state.fullScreen) {
+          await _fetchArtistPosts(event.post, postRepository, emit);
+          await _fetchCharactersPosts(event.post, postRepository, emit);
         }
-      });
-    });
+      },
+      transformer: debounceRestartable(const Duration(seconds: 1)),
+    );
 
-    on<_PostDetailNoteFetch>((event, emit) async {
-      final notes = await noteRepository.getNotesFrom(event.postId);
+    on<_PostDetailFavoriteFetch>(
+      (event, emit) async {
+        await favoritePostRepository
+            .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
+            .then((fav) {
+          emit(state.copyWith(
+            currentPost: state.currentPost.copyWith(isFavorited: fav),
+          ));
+        });
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
 
-      emit(state.copyWith(
-        currentPost: state.currentPost.copyWith(notes: notes),
-      ));
-    });
+    on<_PostDetailVoteFetch>(
+      (event, emit) async {
+        await postVoteRepository
+            .getPostVotes([state.currentPost.post.id]).then((votes) {
+          if (votes.isNotEmpty) {
+            emit(state.copyWith(
+              currentPost:
+                  state.currentPost.copyWith(voteState: votes.first.voteState),
+            ));
+          }
+        });
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
+
+    on<_PostDetailNoteFetch>(
+      (event, emit) async {
+        final notes = await noteRepository.getNotesFrom(event.postId);
+
+        emit(state.copyWith(
+          currentPost: state.currentPost.copyWith(notes: notes),
+        ));
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
 
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(

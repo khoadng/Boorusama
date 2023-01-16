@@ -11,7 +11,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/core/infra/preloader/preview_image_cache_manager.dart';
 import 'post_media_item.dart';
 
-class PostSliderDesktop extends StatefulWidget {
+class PostSliderDesktop extends StatelessWidget {
   const PostSliderDesktop({
     super.key,
     required this.posts,
@@ -24,24 +24,17 @@ class PostSliderDesktop extends StatefulWidget {
   final CarouselController controller;
 
   @override
-  State<PostSliderDesktop> createState() => _PostSliderDesktopState();
-}
-
-class _PostSliderDesktopState extends State<PostSliderDesktop> {
-  var enableSwipe = true;
-
-  @override
   Widget build(BuildContext context) {
     final state = context.watch<PostDetailBloc>().state;
 
     return CarouselSlider.builder(
-      carouselController: widget.controller,
-      itemCount: widget.posts.length,
+      carouselController: controller,
+      itemCount: posts.length,
       itemBuilder: (context, index, realIndex) {
         final media = PostMediaItem(
           //TODO: this is used to preload image between page
-          post: widget.posts[index].post,
-          onCached: (path) => widget.imagePath.value = path,
+          post: posts[index].post,
+          onCached: (path) => imagePath.value = path,
           enableNotes: state.enableNotes,
           notes: state.currentPost.notes,
           previewCacheManager: context.read<PreviewImageCacheManager>(),
@@ -50,14 +43,6 @@ class _PostSliderDesktopState extends State<PostSliderDesktop> {
               .add(PostDetailOverlayVisibilityChanged(
                 enableOverlay: !state.enableOverlay,
               )),
-          onZoomUpdated: (zoom) {
-            final swipe = !zoom;
-            if (swipe != enableSwipe) {
-              setState(() {
-                enableSwipe = swipe;
-              });
-            }
-          },
         );
 
         return Scaffold(
@@ -68,9 +53,7 @@ class _PostSliderDesktopState extends State<PostSliderDesktop> {
         );
       },
       options: CarouselOptions(
-        scrollPhysics: enableSwipe
-            ? const DetailPageViewScrollPhysics()
-            : const NeverScrollableScrollPhysics(),
+        scrollPhysics: const NeverScrollableScrollPhysics(),
         onPageChanged: (index, reason) {
           context
               .read<PostDetailBloc>()
@@ -80,29 +63,7 @@ class _PostSliderDesktopState extends State<PostSliderDesktop> {
         viewportFraction: 1,
         enableInfiniteScroll: false,
         initialPage: state.currentIndex,
-        autoPlay: state.enableSlideShow,
-        autoPlayAnimationDuration: state.slideShowConfig.skipAnimation
-            ? const Duration(microseconds: 1)
-            : const Duration(milliseconds: 600),
-        autoPlayInterval:
-            Duration(seconds: state.slideShowConfig.interval.toInt()),
       ),
     );
   }
-}
-
-class DetailPageViewScrollPhysics extends ScrollPhysics {
-  const DetailPageViewScrollPhysics({super.parent});
-
-  @override
-  DetailPageViewScrollPhysics applyTo(ScrollPhysics? ancestor) {
-    return DetailPageViewScrollPhysics(parent: buildParent(ancestor));
-  }
-
-  @override
-  SpringDescription get spring => const SpringDescription(
-        mass: 80,
-        stiffness: 100,
-        damping: 1,
-      );
 }
