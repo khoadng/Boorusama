@@ -1,6 +1,9 @@
 // Flutter imports:
+import 'dart:math';
+
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
+import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
@@ -16,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
@@ -115,7 +119,7 @@ class AppRouter {
       ..define(
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       );
   }
 }
@@ -376,6 +380,8 @@ void goToSettingPage(BuildContext context) {
   } else {
     showDesktopDialogWindow(
       context,
+      width: min(MediaQuery.of(context).size.width * 0.8, 900),
+      height: min(MediaQuery.of(context).size.height * 0.8, 650),
       builder: (context) => const SettingsPageDesktop(),
     );
   }
@@ -384,6 +390,9 @@ void goToSettingPage(BuildContext context) {
 Future<T?> showDesktopDialogWindow<T>(
   BuildContext context, {
   required Widget Function(BuildContext context) builder,
+  double? width,
+  double? height,
+  Color? backgroundColor,
 }) =>
     showGeneralDialog(
       context: context,
@@ -392,13 +401,13 @@ Future<T?> showDesktopDialogWindow<T>(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: Theme.of(context).cardColor,
+          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: Container(
-            width: MediaQuery.of(context).size.width * 0.8,
-            height: MediaQuery.of(context).size.height * 0.8,
+            width: width ?? MediaQuery.of(context).size.width * 0.8,
+            height: height ?? MediaQuery.of(context).size.height * 0.8,
             margin: const EdgeInsets.symmetric(
               vertical: 12,
               horizontal: 16,
@@ -434,6 +443,8 @@ void goToLoginPage(BuildContext context) {
   } else {
     showDesktopDialogWindow(
       context,
+      width: min(MediaQuery.of(context).size.width * 0.8, 1000),
+      height: min(MediaQuery.of(context).size.height * 0.8, 700),
       builder: (context) => const LoginPageDesktop(),
     );
   }
@@ -507,6 +518,30 @@ void goToSavedSearchPage(BuildContext context, String? username) {
           ),
         ],
         child: const SavedSearchFeedPage(),
+      ),
+    );
+  }
+}
+
+void goToBlacklistedTagPage(BuildContext context) {
+  if (isMobilePlatform()) {
+    AppRouter.router.navigateTo(
+      context,
+      '/users/blacklisted_tags',
+    );
+  } else {
+    showDesktopDialogWindow(
+      context,
+      width: min(MediaQuery.of(context).size.width * 0.8, 700),
+      height: min(MediaQuery.of(context).size.height * 0.8, 600),
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(
+            value: BlocProvider.of<BlacklistedTagsBloc>(context)
+              ..add(const BlacklistedTagRequested()),
+          ),
+        ],
+        child: const BlacklistedTagsPageDesktop(),
       ),
     );
   }

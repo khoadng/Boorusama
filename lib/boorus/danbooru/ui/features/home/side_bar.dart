@@ -108,14 +108,7 @@ class SideBarMenu extends StatelessWidget {
                           ).tr(),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/users/blacklisted_tags',
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToBlacklistedTagPage(context);
                           },
                         ),
                       _SideMenuTile(
