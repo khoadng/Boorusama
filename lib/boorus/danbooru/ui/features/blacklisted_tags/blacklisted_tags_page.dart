@@ -194,7 +194,8 @@ class BlacklistedTagTile extends StatelessWidget {
       child: Ink(
         child: ListTile(
           title: Text(tag),
-          onTap: () => print('object'),
+          // ignore: no-empty-block
+          onTap: () {},
           trailing: PopupMenuButton(
             constraints: const BoxConstraints(minWidth: 150),
             shape: const RoundedRectangleBorder(

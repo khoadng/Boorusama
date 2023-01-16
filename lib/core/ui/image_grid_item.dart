@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -151,6 +152,47 @@ class ImageGridItem extends StatelessWidget {
           child: _buildOverlayIcon(),
         ),
       ],
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class QuickPreviewImage extends StatelessWidget {
+  const QuickPreviewImage({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            backgroundColor: const Color.fromARGB(189, 0, 0, 0),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.8,
+                ),
+                child: GestureDetector(
+                  // ignore: no-empty-block
+                  onTap: () {},
+                  child: child,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

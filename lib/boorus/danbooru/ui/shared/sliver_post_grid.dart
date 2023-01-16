@@ -2,6 +2,7 @@
 import 'dart:async';
 
 // Flutter imports:
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:context_menus/context_menus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -134,13 +135,31 @@ class SliverPostGrid extends HookWidget {
                   builder: (context, download) => GenericContextMenu(
                     buttonConfigs: [
                       ContextMenuButtonConfig(
+                        'Preview',
+                        onPressed: () => showGeneralDialog(
+                          context: context,
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  QuickPreviewImage(
+                            child: BooruImage(
+                              aspectRatio: post.post.aspectRatio,
+                              imageUrl: post.post.normalImageUrl,
+                              previewCacheManager:
+                                  context.read<PreviewImageCacheManager>(),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ContextMenuButtonConfig(
                         'download.download'.tr(),
                         onPressed: () => download(post.post),
                       ),
                       ContextMenuButtonConfig(
                         'Test Button',
-                        // ignore: no-empty-block
-                        onPressed: () {},
+                        onPressed: () => showSimpleSnackBar(
+                          context: context,
+                          content: const Text('Test message'),
+                        ),
                       ),
                     ],
                   ),
