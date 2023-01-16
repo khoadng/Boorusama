@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,97 +75,119 @@ class _PostDetailPageDesktopState extends State<PostDetailPageDesktop> {
           },
         ),
       ],
-      child: Scaffold(
-        body: Row(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  PostSliderDesktop(
-                    controller: carouselController,
-                    posts: widget.posts,
-                    imagePath: imagePath,
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.arrowRight): () =>
+              _nextPost(),
+          const SingleActivator(LogicalKeyboardKey.arrowLeft): () =>
+              _previousPost(),
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            body: Row(
+              children: [
+                Expanded(
+                  child: Stack(
+                    children: [
+                      PostSliderDesktop(
+                        controller: carouselController,
+                        posts: widget.posts,
+                        imagePath: imagePath,
+                      ),
+                      Align(
+                        alignment: Alignment(
+                          -0.75,
+                          getTopActionIconAlignValue(),
+                        ),
+                        child:
+                            BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                          selector: (state) => state.enableOverlay,
+                          builder: (context, enable) {
+                            return enable
+                                ? const _NavigationButtonGroup()
+                                : const SizedBox.shrink();
+                          },
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment(
+                          0.9,
+                          getTopActionIconAlignValue(),
+                        ),
+                        child: const _TopRightButtonGroup(),
+                      ),
+                      BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                        selector: (state) => state.hasPrevious(),
+                        builder: (context, enable) => enable
+                            ? Align(
+                                alignment: Alignment.centerLeft,
+                                child: MaterialButton(
+                                  color: Theme.of(context).cardColor,
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(20),
+                                  onPressed: () => _previousPost(),
+                                  child: const Icon(Icons.arrow_back),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                      BlocSelector<PostDetailBloc, PostDetailState, bool>(
+                        selector: (state) => state.hasNext(),
+                        builder: (context, enable) => enable
+                            ? Align(
+                                alignment: Alignment.centerRight,
+                                child: MaterialButton(
+                                  color: Theme.of(context).cardColor,
+                                  shape: const CircleBorder(),
+                                  padding: const EdgeInsets.all(20),
+                                  onPressed: () => _nextPost(),
+                                  child: const Icon(Icons.arrow_forward),
+                                ),
+                              )
+                            : const SizedBox(),
+                      ),
+                    ],
                   ),
-                  Align(
-                    alignment: Alignment(
-                      -0.75,
-                      getTopActionIconAlignValue(),
-                    ),
-                    child: BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                      selector: (state) => state.enableOverlay,
-                      builder: (context, enable) {
-                        return enable
-                            ? const _NavigationButtonGroup()
-                            : const SizedBox.shrink();
+                ),
+                MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: context.read<TagBloc>()),
+                  ],
+                  child: Container(
+                    color: Theme.of(context).backgroundColor,
+                    width: _infoBarWidth,
+                    child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                      builder: (context, state) {
+                        return _LargeLayoutContent(
+                          key: ValueKey(state.currentPost.post.id),
+                          post: state.currentPost,
+                          imagePath: imagePath,
+                          recommends: state.recommends,
+                        );
                       },
                     ),
                   ),
-                  Align(
-                    alignment: Alignment(
-                      0.9,
-                      getTopActionIconAlignValue(),
-                    ),
-                    child: const _TopRightButtonGroup(),
-                  ),
-                  BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                    selector: (state) => state.hasPrevious(),
-                    builder: (context, enable) => enable
-                        ? Align(
-                            alignment: Alignment.centerLeft,
-                            child: MaterialButton(
-                              color: Theme.of(context).cardColor,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(20),
-                              onPressed: () => carouselController.previousPage(
-                                duration: const Duration(microseconds: 1),
-                              ),
-                              child: const Icon(Icons.arrow_back),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
-                  BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                    selector: (state) => state.hasNext(),
-                    builder: (context, enable) => enable
-                        ? Align(
-                            alignment: Alignment.centerRight,
-                            child: MaterialButton(
-                              color: Theme.of(context).cardColor,
-                              shape: const CircleBorder(),
-                              padding: const EdgeInsets.all(20),
-                              onPressed: () => carouselController.nextPage(
-                                duration: const Duration(microseconds: 1),
-                              ),
-                              child: const Icon(Icons.arrow_forward),
-                            ),
-                          )
-                        : const SizedBox(),
-                  ),
-                ],
-              ),
-            ),
-            MultiBlocProvider(
-              providers: [
-                BlocProvider.value(value: context.read<TagBloc>()),
-              ],
-              child: Container(
-                color: Theme.of(context).backgroundColor,
-                width: _infoBarWidth,
-                child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                  builder: (context, state) {
-                    return _LargeLayoutContent(
-                      key: ValueKey(state.currentPost.post.id),
-                      post: state.currentPost,
-                      imagePath: imagePath,
-                      recommends: state.recommends,
-                    );
-                  },
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+    );
+  }
+
+  Future<void> _previousPost() {
+    return carouselController.previousPage(
+      duration: const Duration(microseconds: 1),
+    );
+  }
+
+  Future<void> _nextPost() {
+    return carouselController.nextPage(
+      duration: const Duration(microseconds: 1),
     );
   }
 }
