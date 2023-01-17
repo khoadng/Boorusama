@@ -49,6 +49,7 @@ import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/api/api.dart';
 import 'package:boorusama/core/application/download/download_service.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
@@ -61,7 +62,6 @@ import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
 import 'package:boorusama/core/error.dart';
-import 'package:boorusama/core/firebase.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
@@ -213,7 +213,7 @@ void main() async {
   setLocaleMessages('ru', RuMessages());
   setLocaleMessages('be', RuMessages());
 
-  await ensureFirebaseInitialized();
+  await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
   void run() {
