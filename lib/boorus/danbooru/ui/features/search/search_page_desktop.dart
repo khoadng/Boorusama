@@ -1,6 +1,8 @@
 // Flutter imports:
 import 'dart:math';
 
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
@@ -300,7 +302,7 @@ class _SelectedTagList extends StatelessWidget {
   }
 }
 
-class _LandingView extends StatelessWidget {
+class _LandingView extends StatefulWidget {
   const _LandingView({
     this.onFocusRequest,
     required this.onTextChanged,
@@ -310,37 +312,89 @@ class _LandingView extends StatelessWidget {
   final void Function(String text) onTextChanged;
 
   @override
+  State<_LandingView> createState() => _LandingViewState();
+}
+
+class _LandingViewState extends State<_LandingView> {
+  var inHistoryMode = false;
+
+  @override
   Widget build(BuildContext context) {
-    return LandingView(
-      onOptionTap: (value) {
-        context.read<SearchBloc>().add(
-              SearchRawMetatagSelected(
-                tag: value,
-              ),
-            );
-        onFocusRequest?.call();
-        onTextChanged.call('$value:');
-      },
-      onHistoryTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(
-              SearchHistoryTagSelected(
-                tag: value,
-              ),
-            );
-      },
-      onTagTap: (value) {
-        FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
-      },
-      onHistoryRemoved: (value) {
-        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-      },
-      onHistoryCleared: () {
-        context.read<SearchBloc>().add(const SearchHistoryCleared());
-      },
-    );
+    return inHistoryMode
+        ? BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+            builder: (context, state) {
+              return Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 8),
+                        Text(
+                          'search.history.recent'.tr(),
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                        const SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () => _onHistoryCleared(context),
+                          child: const Text('search.history.clear').tr(),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () =>
+                              setState(() => inHistoryMode = false),
+                          icon: const Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  Expanded(
+                    child: FullHistoryView(
+                      useAppbar: false,
+                      onHistoryTap: (value) => _onHistoryTap(context, value),
+                      onHistoryRemoved: (value) =>
+                          _onHistoryRemoved(context, value),
+                      histories: state.histories,
+                    ),
+                  ),
+                ],
+              );
+            },
+          )
+        : LandingView(
+            onOptionTap: (value) {
+              context.read<SearchBloc>().add(
+                    SearchRawMetatagSelected(
+                      tag: value,
+                    ),
+                  );
+              widget.onFocusRequest?.call();
+              widget.onTextChanged.call('$value:');
+            },
+            onHistoryTap: (value) {
+              FocusManager.instance.primaryFocus?.unfocus();
+              context.read<SearchBloc>().add(
+                    SearchHistoryTagSelected(
+                      tag: value,
+                    ),
+                  );
+            },
+            onTagTap: (value) => _onHistoryTap(context, value),
+            onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
+            onHistoryCleared: () => _onHistoryCleared(context),
+            onFullHistoryRequested: () => setState(() => inHistoryMode = true),
+          );
   }
+
+  void _onHistoryTap(BuildContext context, String value) =>
+      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+
+  void _onHistoryCleared(BuildContext context) =>
+      context.read<SearchBloc>().add(const SearchHistoryCleared());
+
+  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
+      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
 }
 
 void _onTextChanged(

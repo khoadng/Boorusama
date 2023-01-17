@@ -1,9 +1,11 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -18,6 +20,7 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
+import 'full_history_view.dart';
 import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
@@ -238,16 +241,54 @@ class _LandingView extends StatelessWidget {
       },
       onTagTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+        _onHistoryTap(context, value);
       },
-      onHistoryRemoved: (value) {
-        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-      },
-      onHistoryCleared: () {
-        context.read<SearchBloc>().add(const SearchHistoryCleared());
+      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
+      onHistoryCleared: () => _onHistoryCleared(context),
+      onFullHistoryRequested: () {
+        final bloc = context.read<SearchHistoryBloc>();
+
+        showMaterialModalBottomSheet(
+          context: context,
+          duration: const Duration(milliseconds: 200),
+          builder: (context) =>
+              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+            bloc: bloc,
+            builder: (context, state) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('search.history.history').tr(),
+                  actions: [
+                    TextButton(
+                      onPressed: () => _onHistoryCleared(context),
+                      child: const Text('search.history.clear').tr(),
+                    ),
+                  ],
+                ),
+                body: FullHistoryView(
+                  onHistoryTap: (value) => _onHistoryTap(context, value),
+                  onHistoryRemoved: (value) =>
+                      _onHistoryRemoved(context, value),
+                  histories: state.histories,
+                ),
+              );
+            },
+          ),
+        );
       },
     );
   }
+
+  void _onHistoryTap(BuildContext context, String value) {
+    Navigator.of(context).pop();
+    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+  }
+
+  void _onHistoryCleared(BuildContext context) =>
+      context.read<SearchBloc>().add(const SearchHistoryCleared());
+
+  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
+      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
 }
 
 // ignore: prefer_mixin
