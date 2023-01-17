@@ -25,10 +25,12 @@ class ResultView extends StatefulWidget {
     super.key,
     this.headerBuilder,
     this.scrollController,
+    this.backgroundColor,
   });
 
   final List<Widget> Function()? headerBuilder;
   final AutoScrollController? scrollController;
+  final Color? backgroundColor;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -54,10 +56,12 @@ class _ResultViewState extends State<ResultView> {
 
     return pagination
         ? _Pagination(
+            backgroundColor: widget.backgroundColor,
             scrollController: scrollController,
             headerBuilder: widget.headerBuilder,
           )
         : _InfiniteScroll(
+            backgroundColor: widget.backgroundColor,
             scrollController: scrollController,
             refreshController: refreshController,
             headerBuilder: widget.headerBuilder,
@@ -70,11 +74,13 @@ class _InfiniteScroll extends StatelessWidget {
     required this.scrollController,
     required this.refreshController,
     this.headerBuilder,
+    this.backgroundColor,
   });
 
   final AutoScrollController scrollController;
   final RefreshController refreshController;
   final List<Widget> Function()? headerBuilder;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +88,7 @@ class _InfiniteScroll extends StatelessWidget {
     final state = context.watch<PostBloc>().state;
 
     return InfiniteLoadListScrollView(
+      backgroundColor: backgroundColor,
       scrollPhysics: const NoImplicitScrollPhysics(),
       scrollController: scrollController,
       isLoading: state.loading,
@@ -122,10 +129,12 @@ class _Pagination extends StatefulWidget {
   const _Pagination({
     required this.scrollController,
     this.headerBuilder,
+    this.backgroundColor,
   });
 
   final AutoScrollController scrollController;
   final List<Widget> Function()? headerBuilder;
+  final Color? backgroundColor;
 
   @override
   State<_Pagination> createState() => _PaginationState();
@@ -177,6 +186,7 @@ class _PaginationState extends State<_Pagination>
     final state = context.watch<PostBloc>().state;
 
     return Scaffold(
+      backgroundColor: widget.backgroundColor,
       floatingActionButton: FadeTransition(
         opacity: _animationController,
         child: ScaleTransition(

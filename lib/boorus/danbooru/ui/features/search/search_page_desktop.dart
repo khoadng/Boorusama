@@ -1,10 +1,13 @@
 // Flutter imports:
+import 'dart:math';
+
 import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_portal/flutter_portal.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -53,6 +56,14 @@ class _SearchPageDesktopState extends State<SearchPageDesktop> {
   final focus = FocusNode();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<SearchBloc>().add(const SearchRequested());
+    });
+  }
+
+  @override
   void dispose() {
     compositeSubscription.dispose();
     queryEditingController.dispose();
@@ -94,21 +105,43 @@ class _LargeLayout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Row(
-        children: [
-          ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 400),
-            child: SafeArea(
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: AppBar(
-                  elevation: 0,
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  shadowColor: Colors.transparent,
-                  automaticallyImplyLeading: false,
-                  toolbarHeight: kToolbarHeight * 1.2,
-                  title: SearchBar(
+    return Stack(
+      children: [
+        Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor,
+          appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Theme.of(context).cardColor,
+            shadowColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            toolbarHeight: kToolbarHeight * 1.2,
+            title: BlocSelector<SearchBloc, SearchState, DisplayState>(
+              selector: (state) => state.displayState,
+              builder: (context, displayState) {
+                return PortalTarget(
+                  visible: displayState == DisplayState.suggestion,
+                  anchor: const Aligned(
+                    offset: Offset(0, 8),
+                    follower: Alignment.topCenter,
+                    target: Alignment.bottomCenter,
+                  ),
+                  portalFollower: SizedBox(
+                    width: min(500, MediaQuery.of(context).size.width),
+                    height: MediaQuery.of(context).size.height * 0.75,
+                    child: Material(
+                      borderRadius: const BorderRadius.all(Radius.circular(4)),
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: _TagSuggestionItems(
+                          queryEditingController: queryEditingController,
+                        ),
+                      ),
+                    ),
+                  ),
+                  child: SearchBar(
+                    constraints: const BoxConstraints(maxWidth: 500),
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     autofocus: true,
                     focus: focus,
                     queryEditingController: queryEditingController,
@@ -136,59 +169,77 @@ class _LargeLayout extends StatelessWidget {
                         .read<SearchBloc>()
                         .add(const SearchQuerySubmitted()),
                   ),
+                );
+              },
+            ),
+          ),
+          body: Row(
+            children: [
+              ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 350),
+                child: Scaffold(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  resizeToAvoidBottomInset: false,
+                  body: Column(
+                    children: [
+                      Expanded(
+                        child:
+                            BlocSelector<SearchBloc, SearchState, DisplayState>(
+                          selector: (state) => state.displayState,
+                          builder: (context, displayState) {
+                            return _LandingView(
+                              onFocusRequest: () => focus.requestFocus(),
+                              onTextChanged: (text) => _onTextChanged(
+                                queryEditingController,
+                                text,
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                body: Column(
+              ),
+              const VerticalDivider(),
+              Expanded(
+                child: Column(
                   children: [
-                    const _SelectedTagList(),
-                    const _Divider(),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8),
+                      child: _SelectedTagList(),
+                    ),
                     Expanded(
                       child:
                           BlocSelector<SearchBloc, SearchState, DisplayState>(
                         selector: (state) => state.displayState,
                         builder: (context, displayState) {
-                          return displayState == DisplayState.suggestion
-                              ? _TagSuggestionItems(
-                                  queryEditingController:
-                                      queryEditingController,
-                                )
-                              : _LandingView(
-                                  onFocusRequest: () => focus.requestFocus(),
-                                  onTextChanged: (text) => _onTextChanged(
-                                    queryEditingController,
-                                    text,
-                                  ),
-                                );
+                          switch (displayState) {
+                            case DisplayState.options:
+                              return const Center(
+                                child: Text('Your result will appear here'),
+                              );
+                            case DisplayState.suggestion:
+                            case DisplayState.result:
+                              return ResultView(
+                                backgroundColor:
+                                    Theme.of(context).backgroundColor,
+                              );
+                            case DisplayState.noResult:
+                              return EmptyView(text: 'search.no_result'.tr());
+                            case DisplayState.error:
+                              return const _ErrorView();
+                          }
                         },
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+            ],
           ),
-          const VerticalDivider(width: 10),
-          Expanded(
-            child: BlocSelector<SearchBloc, SearchState, DisplayState>(
-              selector: (state) => state.displayState,
-              builder: (context, displayState) {
-                switch (displayState) {
-                  case DisplayState.options:
-                  case DisplayState.suggestion:
-                    return const Center(
-                      child: Text('Your result will appear here'),
-                    );
-                  case DisplayState.result:
-                    return const ResultView();
-                  case DisplayState.noResult:
-                    return EmptyView(text: 'search.no_result'.tr());
-                  case DisplayState.error:
-                    return const _ErrorView();
-                }
-              },
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -337,23 +388,5 @@ class _TagSuggestionItems extends StatelessWidget {
         context.read<SearchBloc>().add(SearchTagSelected(tag: tag));
       },
     );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  const _Divider({
-    // ignore: unused_element
-    this.height,
-  });
-
-  final double? height;
-
-  @override
-  Widget build(BuildContext context) {
-    final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
-
-    return tags.isNotEmpty
-        ? Divider(height: height ?? 15, thickness: 1)
-        : const SizedBox.shrink();
   }
 }

@@ -120,32 +120,35 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                       onHistoryDeleted.call(history);
                     }
                   },
-                  child: ListTile(
-                    hoverColor: Theme.of(context).cardColor,
-                    visualDensity: VisualDensity.compact,
-                    trailing: const Icon(
-                      Icons.history,
-                      color: Colors.grey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: ListTile(
+                      hoverColor: Theme.of(context).cardColor,
+                      visualDensity: VisualDensity.compact,
+                      trailing: const Icon(
+                        Icons.history,
+                        color: Colors.grey,
+                      ),
+                      title: Html(
+                        style: {
+                          'p': Style(
+                            fontSize: FontSize.medium,
+                          ),
+                          'body': Style(
+                            padding: EdgeInsets.zero,
+                            margin: EdgeInsets.zero,
+                          ),
+                          'b': Style(
+                            color: Colors.redAccent,
+                          ),
+                        },
+                        data: '<p>${history.tag.replaceAll(
+                              history.term,
+                              '<b>${history.term}</b>',
+                            ).replaceAll('_', ' ')}</p>',
+                      ),
+                      onTap: () => onHistoryTap(history),
                     ),
-                    title: Html(
-                      style: {
-                        'p': Style(
-                          fontSize: FontSize.medium,
-                        ),
-                        'body': Style(
-                          padding: EdgeInsets.zero,
-                          margin: EdgeInsets.zero,
-                        ),
-                        'b': Style(
-                          color: Colors.redAccent,
-                        ),
-                      },
-                      data: '<p>${history.tag.replaceAll(
-                            history.term,
-                            '<b>${history.term}</b>',
-                          ).replaceAll('_', ' ')}</p>',
-                    ),
-                    onTap: () => onHistoryTap(history),
                   ),
                 ),
               ),
