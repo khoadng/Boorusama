@@ -519,6 +519,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.3.10"
+  firebase_performance:
+    dependency: "direct main"
+    description:
+      name: firebase_performance
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.9.0+10"
+  firebase_performance_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_performance_platform_interface
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+29"
+  firebase_performance_web:
+    dependency: transitive
+    description:
+      name: firebase_performance_web
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+18"
   fixnum:
     dependency: transitive
     description:
