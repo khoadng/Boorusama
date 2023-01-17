@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
 

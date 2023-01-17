@@ -1,5 +1,8 @@
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Project imports:
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 
 class FullHistoryView extends StatelessWidget {
   const FullHistoryView({

@@ -4,7 +4,6 @@ import 'dart:math';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -15,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 

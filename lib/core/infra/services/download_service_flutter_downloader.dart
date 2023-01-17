@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
-import 'package:boorusama/core/infra/services/macos_download_service.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,6 +16,7 @@ import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:boorusama/core/infra/services/alternative_download_service.dart';
+import 'package:boorusama/core/infra/services/macos_download_service.dart';
 import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
 bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>

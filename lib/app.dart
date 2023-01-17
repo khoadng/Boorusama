@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/analytics.dart';
-import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -10,8 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';

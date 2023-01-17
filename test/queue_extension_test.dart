@@ -1,9 +1,13 @@
 // ignore_for_file: cascade_invocations
 
+// Dart imports:
 import 'dart:collection';
 
-import 'package:boorusama/common/collection_utils.dart';
+// Package imports:
 import 'package:test/test.dart';
+
+// Project imports:
+import 'package:boorusama/common/collection_utils.dart';
 
 void main() {
   test('dequeue test', () {

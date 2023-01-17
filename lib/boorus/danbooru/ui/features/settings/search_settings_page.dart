@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -9,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
 
 class SearchSettingsPage extends StatefulWidget {

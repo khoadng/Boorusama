@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -7,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/core/core.dart';
 
 class TrendingTags extends StatelessWidget {
   const TrendingTags({

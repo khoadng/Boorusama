@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -10,6 +9,7 @@ import 'package:recase/recase.dart';
 // Project imports:
 import 'package:boorusama/boorus/booru.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
 
 class GeneralPage extends StatefulWidget {

@@ -1,6 +1,8 @@
-import 'package:boorusama/firebase_options.dart';
+// Package imports:
 import 'package:firebase_core/firebase_core.dart';
 
+// Project imports:
+import 'package:boorusama/firebase_options.dart';
 import 'platform.dart';
 
 bool isFirebaseCrashlyticsSupportedPlatforms() =>

@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';

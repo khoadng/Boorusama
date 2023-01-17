@@ -1,7 +1,11 @@
-import 'package:boorusama/core/domain/settings/settings.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+// Flutter imports:
 import 'package:flutter/foundation.dart';
 
+// Package imports:
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+// Project imports:
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'firebase.dart';
 
 void initializeErrorHandlers(Settings settings) {

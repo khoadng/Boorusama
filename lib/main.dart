@@ -1,6 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/core/error.dart';
-import 'package:boorusama/core/firebase.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -15,6 +13,7 @@ import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:video_player_win/video_player_win.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/booru_factory.dart';
@@ -61,13 +60,14 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
+import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/firebase.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart';
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:video_player_win/video_player_win.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';

@@ -1,21 +1,22 @@
-// Flutter imports:
+// Dart imports:
 import 'dart:math';
 
-import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/search/search.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 void showSimpleTagSearchView(
   BuildContext context, {

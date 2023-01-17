@@ -1,5 +1,8 @@
-import 'package:boorusama/common/collection_utils.dart';
+// Package imports:
 import 'package:test/test.dart';
+
+// Project imports:
+import 'package:boorusama/common/collection_utils.dart';
 
 void main() {
   group('[getOrNull]', () {
