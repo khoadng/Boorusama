@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -66,7 +65,6 @@ import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart'
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
-import 'package:boorusama/sentry.dart';
 import 'package:video_player_win/video_player_win.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
@@ -557,15 +555,7 @@ void main() async {
     );
   }
 
-  if (kDebugMode) {
-    run();
-  } else {
-    if (settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      await runWithSentry(run);
-    } else {
-      run();
-    }
-  }
+  run();
 }
 
 Future<void> _localNotificatonHandler(NotificationResponse response) async {

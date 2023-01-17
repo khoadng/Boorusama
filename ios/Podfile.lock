@@ -57,14 +57,9 @@ PODS:
   - rate_my_app (1.1.3):
     - Flutter
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.14.2):
-    - SDWebImage/Core (= 5.14.2)
-  - SDWebImage/Core (5.14.2)
-  - Sentry/HybridSDK (7.31.3)
-  - sentry_flutter (0.0.1):
-    - Flutter
-    - FlutterMacOS
-    - Sentry/HybridSDK (= 7.31.3)
+  - SDWebImage (5.14.3):
+    - SDWebImage/Core (= 5.14.3)
+  - SDWebImage/Core (5.14.3)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_ios (0.0.1):
@@ -94,7 +89,6 @@ DEPENDENCIES:
   - path_provider_ios (from `.symlinks/plugins/path_provider_ios/ios`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
   - rate_my_app (from `.symlinks/plugins/rate_my_app/ios`)
-  - sentry_flutter (from `.symlinks/plugins/sentry_flutter/ios`)
   - share_plus (from `.symlinks/plugins/share_plus/ios`)
   - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
@@ -110,7 +104,6 @@ SPEC REPOS:
     - FMDB
     - ReachabilitySwift
     - SDWebImage
-    - Sentry
     - SwiftyGif
 
 EXTERNAL SOURCES:
@@ -136,8 +129,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
   rate_my_app:
     :path: ".symlinks/plugins/rate_my_app/ios"
-  sentry_flutter:
-    :path: ".symlinks/plugins/sentry_flutter/ios"
   share_plus:
     :path: ".symlinks/plugins/share_plus/ios"
   shared_preferences_ios:
@@ -169,9 +160,7 @@ SPEC CHECKSUMS:
   permission_handler_apple: 44366e37eaf29454a1e7b1b7d736c2cceaeb17ce
   rate_my_app: 96f658ddb7f0a8d2f46d54452583f084760aef57
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: b9a731e1d6307f44ca703b3976d18c24ca561e84
-  Sentry: 08884c523575ec0f6690d94ed3ccb0246a1600bf
-  sentry_flutter: 91ebe7757a166b34ff432a0d550d22cd010d44d2
+  SDWebImage: 9c36e66c8ce4620b41a7407698dda44211a96764
   share_plus: 056a1e8ac890df3e33cb503afffaf1e9b4fbae68
   shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
