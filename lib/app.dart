@@ -1,6 +1,6 @@
 // Flutter imports:
-import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:flutter/foundation.dart';
+import 'package:boorusama/core/analytics.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -20,10 +20,10 @@ import 'boorus/danbooru/router.dart';
 class App extends StatefulWidget {
   const App({
     super.key,
-    this.isAnalyticsEnabled = true,
+    required this.settings,
   });
 
-  final bool isAnalyticsEnabled;
+  final Settings settings;
 
   @override
   State<App> createState() => _AppState();
@@ -76,13 +76,9 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             onGenerateRoute: AppRouter.router.generator,
             title: context.read<AppInfoProvider>().appInfo.appName,
-            navigatorObservers: widget.isAnalyticsEnabled &&
-                    kReleaseMode &&
-                    (isWeb() || isAndroid() || isIOS())
+            navigatorObservers: isAnalyticsEnabled(widget.settings)
                 ? [
-                    FirebaseAnalyticsObserver(
-                      analytics: FirebaseAnalytics.instance,
-                    ),
+                    getAnalyticsObserver(),
                   ]
                 : [],
           );

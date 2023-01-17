@@ -1,7 +1,6 @@
 // Flutter imports:
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
-import 'package:flutter/foundation.dart';
+import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/firebase.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -76,7 +75,6 @@ import 'boorus/danbooru/infra/local/repositories/search_history/search_history.d
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
 import 'core/infra/preloader/preloader.dart';
-import 'firebase_options.dart';
 
 //TODO: should parse from translation files instead of hardcoding
 const supportedLocales = [
@@ -215,31 +213,8 @@ void main() async {
   setLocaleMessages('ru', RuMessages());
   setLocaleMessages('be', RuMessages());
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  // Pass all uncaught "fatal" errors from the framework to Crashlytics
-  FlutterError.onError = (details) {
-    if (kReleaseMode &&
-        settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      FirebaseCrashlytics.instance.recordFlutterFatalError(details);
-
-      return;
-    }
-
-    FlutterError.presentError(details);
-  };
-
-  // Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    if (kReleaseMode &&
-        settings.dataCollectingStatus == DataCollectingStatus.allow) {
-      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    }
-
-    return true;
-  };
+  await ensureFirebaseInitialized();
+  initializeErrorHandlers(settings);
 
   void run() {
     runApp(
@@ -572,10 +547,7 @@ void main() async {
                             },
                           ),
                         ],
-                        child: App(
-                          isAnalyticsEnabled: settings.dataCollectingStatus ==
-                              DataCollectingStatus.allow,
-                        ),
+                        child: App(settings: settings),
                       ),
                     ),
                   );
