@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
+import 'package:boorusama/core/infra/services/macos_download_service.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
@@ -56,7 +57,9 @@ Future<DownloadService<Post>> createDownloader(
 
     return d;
   } else {
-    final d = WindowDownloader(fileNameGenerator);
+    final d = isMacOS()
+        ? MacOSDownloader(fileNameGenerator)
+        : WindowDownloader(fileNameGenerator);
 
     await d.init();
 

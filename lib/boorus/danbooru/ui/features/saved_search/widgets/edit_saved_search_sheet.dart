@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:basic_utils/basic_utils.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rxdart/rxdart.dart';
 
 // Project imports:
@@ -104,20 +103,9 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                   color: Colors.transparent,
                   child: InkWell(
                     customBorder: const CircleBorder(),
-                    onTap: () => showBarModalBottomSheet(
-                      context: context,
-                      duration: const Duration(milliseconds: 200),
-                      builder: (context) => SimpleTagSearchView(
-                        ensureValidTag: false,
-                        floatingActionButton: (text) => FloatingActionButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-
-                            queryTextController.text =
-                                '${queryTextController.text} $text';
-                          },
-                          child: const Icon(Icons.add),
-                        ),
+                    onTap: () {
+                      showSimpleTagSearchView(
+                        context,
                         onSelected: (tag) {
                           final baseOffset =
                               max(0, queryTextController.selection.baseOffset);
@@ -133,8 +121,14 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                               ),
                             );
                         },
-                      ),
-                    ),
+                        onSubmitted: (context, text) {
+                          Navigator.of(context).pop();
+
+                          queryTextController.text =
+                              '${queryTextController.text} $text';
+                        },
+                      );
+                    },
                     child: const Icon(Icons.add),
                   ),
                 ),

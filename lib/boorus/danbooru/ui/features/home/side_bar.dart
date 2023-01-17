@@ -53,14 +53,7 @@ class SideBarMenu extends StatelessWidget {
                           title: Text('sideMenu.login'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/login',
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToLoginPage(context);
                           },
                         )
                       else
@@ -104,17 +97,7 @@ class SideBarMenu extends StatelessWidget {
                           title: const Text('Saved search'),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/saved_search',
-                              routeSettings: RouteSettings(
-                                arguments: [state.data!.username],
-                              ),
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToSavedSearchPage(context, state.data!.username);
                           },
                         ),
                       if (state.data! != Account.empty)
@@ -125,14 +108,7 @@ class SideBarMenu extends StatelessWidget {
                           ).tr(),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/users/blacklisted_tags',
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToBlacklistedTagPage(context);
                           },
                         ),
                       _SideMenuTile(
@@ -158,14 +134,7 @@ class SideBarMenu extends StatelessWidget {
                         title: Text('sideMenu.settings'.tr()),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(
-                            context,
-                            '/settings',
-                            transition:
-                                Screen.of(context).size == ScreenSize.small
-                                    ? TransitionType.inFromRight
-                                    : null,
-                          );
+                          goToSettingPage(context);
                         },
                       ),
                     ],

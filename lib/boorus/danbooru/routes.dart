@@ -1,9 +1,12 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
+import 'package:context_menus/context_menus.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:collection/collection.dart';
 import 'package:fluro/fluro.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:media_scanner/media_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -54,8 +57,10 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
+import 'router.dart';
 import 'ui/features/accounts/profile/profile_page.dart';
 import 'ui/features/home/home_page.dart';
+import 'ui/features/home/home_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 import 'ui/features/saved_search/saved_search_page.dart';
 import 'ui/features/search/search_page.dart';
@@ -64,9 +69,62 @@ final rootHandler = Handler(
   handlerFunc: (context, parameters) => ConditionalParentWidget(
     condition: canRate(),
     conditionalBuilder: (child) => createAppRatingWidget(child: child),
-    child: const HomePage(),
+    child: CallbackShortcuts(
+      bindings: {
+        const SingleActivator(
+          LogicalKeyboardKey.keyF,
+          control: true,
+        ): () => goToSearchPage(context!),
+      },
+      child: CustomContextMenuOverlay(
+        child: Focus(
+          autofocus: true,
+          child:
+              isMobilePlatform() ? const HomePage() : const HomePageDesktop(),
+        ),
+      ),
+    ),
   ),
 );
+
+class CustomContextMenuOverlay extends StatelessWidget {
+  const CustomContextMenuOverlay({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return ContextMenuOverlay(
+      cardBuilder: (context, children) => Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Column(children: children),
+        ),
+      ),
+      buttonBuilder: (context, config, [__]) => ConstrainedBox(
+        constraints: const BoxConstraints(minWidth: 200),
+        child: Material(
+          color: Colors.transparent,
+          child: Ink(
+            child: ListTile(
+              dense: true,
+              visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
+              hoverColor: Theme.of(context).colorScheme.primary,
+              onTap: config.onPressed,
+              title: Text(config.label),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+              minVerticalPadding: 0,
+            ),
+          ),
+        ),
+      ),
+      child: child,
+    );
+  }
+}
 
 final artistHandler = Handler(handlerFunc: (
   context,
@@ -87,9 +145,11 @@ final artistHandler = Handler(handlerFunc: (
         value: context.read<ArtistBloc>()..add(ArtistFetched(name: args.first)),
       ),
     ],
-    child: ArtistPage(
-      artistName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: ArtistPage(
+        artistName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -113,9 +173,11 @@ final characterHandler = Handler(handlerFunc: (
         value: context.read<WikiBloc>()..add(WikiFetched(tag: args.first)),
       ),
     ],
-    child: CharacterPage(
-      characterName: args.first,
-      backgroundImageUrl: args[1],
+    child: CustomContextMenuOverlay(
+      child: CharacterPage(
+        characterName: args.first,
+        backgroundImageUrl: args[1],
+      ),
     ),
   );
 });
@@ -188,6 +250,7 @@ final postDetailHandler = Handler(handlerFunc: (
                   postBloc.add(PostUpdated(post: post));
                 }
               },
+              tagCache: {},
             ),
           ),
         ],
@@ -273,9 +336,11 @@ final postSearchHandler = Handler(handlerFunc: (
               ),
               BlocProvider.value(value: relatedTagBloc),
             ],
-            child: SearchPage(
-              metatags: context.read<TagInfo>().metatags,
-              metatagHighlightColor: Theme.of(context).colorScheme.primary,
+            child: CustomContextMenuOverlay(
+              child: SearchPage(
+                metatags: context.read<TagInfo>().metatags,
+                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+              ),
             ),
           );
         },
@@ -359,8 +424,10 @@ final favoritesHandler =
               )),
           ),
         ],
-        child: FavoritesPage(
-          username: username,
+        child: CustomContextMenuOverlay(
+          child: FavoritesPage(
+            username: username,
+          ),
         ),
       );
     },
@@ -420,7 +487,7 @@ final savedSearchHandler =
         )..add(const SavedSearchFeedRefreshed()),
       ),
     ],
-    child: const SavedSearchFeedPage(),
+    child: const CustomContextMenuOverlay(child: SavedSearchFeedPage()),
   );
 });
 

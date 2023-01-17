@@ -17,11 +17,13 @@ class SearchHistorySection extends StatelessWidget {
     required this.onHistoryTap,
     required this.onHistoryRemoved,
     required this.onHistoryCleared,
+    required this.onFullHistoryRequested,
   });
 
   final ValueChanged<String> onHistoryTap;
   final void Function(SearchHistory item) onHistoryRemoved;
   final void Function() onHistoryCleared;
+  final void Function() onFullHistoryRequested;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class SearchHistorySection extends StatelessWidget {
             onHistoryRemoved: onHistoryRemoved,
             onHistoryTap: onHistoryTap,
             onHistoryCleared: onHistoryCleared,
+            onFullHistoryRequested: onFullHistoryRequested,
           )
         : const SizedBox.shrink();
   }

@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Project imports:
@@ -12,6 +13,7 @@ Future<Object?> showImportDialog(
   return showGeneralDialog(
     context: context,
     pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+      padding: isMobilePlatform() ? 0 : 8,
       onImport: (tagString) => bloc.add(FavoriteTagImported(
         tagString: tagString,
       )),

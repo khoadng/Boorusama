@@ -1,6 +1,6 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -134,33 +134,64 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return CupertinoContextMenu(
-      previewBuilder: (context, animation, child) => BooruImage(
-        aspectRatio: aspectRatio,
-        imageUrl: previewUrl,
-        placeholderUrl: previewPlaceholderUrl,
-        fit: BoxFit.contain,
-        previewCacheManager: previewCacheManager,
-      ),
-      actions: contextMenuAction,
-      child: Stack(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: image ??
-                BooruImage(
-                  aspectRatio: aspectRatio,
-                  imageUrl: previewUrl,
-                  placeholderUrl: previewPlaceholderUrl,
-                  borderRadius: borderRadius,
-                  previewCacheManager: previewCacheManager,
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: image ??
+              BooruImage(
+                aspectRatio: aspectRatio,
+                imageUrl: previewUrl,
+                placeholderUrl: previewPlaceholderUrl,
+                borderRadius: borderRadius,
+                previewCacheManager: previewCacheManager,
+              ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 1, left: 1),
+          child: _buildOverlayIcon(),
+        ),
+      ],
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class QuickPreviewImage extends StatelessWidget {
+  const QuickPreviewImage({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            backgroundColor: const Color.fromARGB(189, 0, 0, 0),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.8,
                 ),
+                child: GestureDetector(
+                  // ignore: no-empty-block
+                  onTap: () {},
+                  child: child,
+                ),
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(),
-          ),
-        ],
+        ),
       ),
     );
   }

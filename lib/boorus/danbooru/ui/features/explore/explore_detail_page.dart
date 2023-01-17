@@ -66,7 +66,7 @@ class _ExploreDetailState extends State<_ExploreDetail> {
   }
 }
 
-PostFetcher _categoryToFetcher(
+PostFetcher categoryToFetcher(
   ExploreCategory category,
   DateTime date,
   TimeScale scale,
@@ -91,7 +91,7 @@ PostFetcher _categoryToFetcher(
   }
 }
 
-List<Widget> _categoryToListHeader(
+List<Widget> categoryToListHeader(
   BuildContext context,
   ExploreCategory category,
   DateTime date,
@@ -136,7 +136,7 @@ class ExploreDetailPage extends StatelessWidget {
           create: (context) => PostBloc.of(context)
             ..add(
               PostRefreshed(
-                fetcher: _categoryToFetcher(
+                fetcher: categoryToFetcher(
                   category,
                   state.date,
                   state.scale,
@@ -181,7 +181,7 @@ class _ExplorePostGrid extends StatelessWidget {
         children: [
           Expanded(
             child: ExplorePostGrid(
-              headers: _categoryToListHeader(
+              headers: categoryToListHeader(
                 context,
                 category,
                 date,
@@ -199,11 +199,11 @@ class _ExplorePostGrid extends StatelessWidget {
                   .read<PostBloc>()
                   .add(PostFetched(
                     tags: '',
-                    fetcher: _categoryToFetcher(category, date, scale, context),
+                    fetcher: categoryToFetcher(category, date, scale, context),
                   )),
               onRefresh: (date, scale) => context.read<PostBloc>().add(
                     PostRefreshed(
-                      fetcher: _categoryToFetcher(
+                      fetcher: categoryToFetcher(
                         category,
                         date,
                         scale,

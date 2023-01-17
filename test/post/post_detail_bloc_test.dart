@@ -60,6 +60,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(PostDetailTagUpdated(
         tag: 'bar',
@@ -125,6 +126,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
       expect: () => [
@@ -139,6 +141,8 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -175,9 +179,10 @@ void main() {
           ),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(seconds: 1),
       verify: (bloc) => verify(() => noteRepo.getNotesFrom(any())).called(2),
       expect: () => [
         PostDetailState.initial().copyWith(
@@ -195,12 +200,16 @@ void main() {
           ),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           nextPost: () => PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 3, tags: ['translated']),
           ),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 2),
             notes: [
@@ -249,8 +258,10 @@ void main() {
           ),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
+      wait: const Duration(seconds: 1),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
@@ -263,11 +274,15 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
@@ -282,6 +297,8 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
@@ -323,6 +340,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) =>
           bloc.add(const PostDetailModeChanged(enableSlideshow: true)),
@@ -362,6 +380,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(PostDetailSlideShowConfigChanged(
         config: bloc.state.slideShowConfig.copyWith(skipAnimation: true),
@@ -408,6 +427,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
       expect: () => [
@@ -448,6 +468,7 @@ void main() {
           PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
       expect: () => [
@@ -491,6 +512,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailFavoritesChanged(favorite: true)),
       expect: () => [
@@ -542,6 +564,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) =>
           bloc.add(const PostDetailFavoritesChanged(favorite: false)),
@@ -588,6 +611,7 @@ void main() {
           ),
         ],
         idGenerator: () => 1,
+        tagCache: {},
       ),
       act: (bloc) =>
           bloc.add(const PostDetailFavoritesChanged(favorite: false)),
@@ -652,6 +676,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
@@ -704,6 +729,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailUpvoted()),
       expect: () => [
@@ -766,6 +792,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
@@ -818,6 +845,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailDownvoted()),
       expect: () => [
@@ -875,6 +903,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) =>
           bloc.add(const PostDetailDisplayModeChanged(fullScreen: false)),
@@ -946,6 +975,7 @@ void main() {
         ],
         idGenerator: () => 1,
         fireIndexChangedAtStart: false,
+        tagCache: {},
       ),
       act: (bloc) => bloc
           .add(const PostDetailOverlayVisibilityChanged(enableOverlay: false)),

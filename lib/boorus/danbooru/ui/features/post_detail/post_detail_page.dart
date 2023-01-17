@@ -230,7 +230,7 @@ class _TopRightButtonGroup extends StatelessWidget {
                   start,
                 ),
               ),
-              const _MoreActionButton(),
+              const MoreActionButton(),
             ],
           )
         : const SizedBox.shrink();
@@ -489,16 +489,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 header: (item) => ListTile(
                   visualDensity: VisualDensity.compact,
                   dense: true,
-                  onTap: () => AppRouter.router.navigateTo(
-                    context,
-                    '/artist',
-                    routeSettings: RouteSettings(
-                      arguments: [
-                        item,
-                        post.post.normalImageUrl,
-                      ],
-                    ),
-                  ),
+                  onTap: () => goToArtistPage(context, item),
                   title: RichText(
                     text: TextSpan(
                       text: '',
@@ -538,8 +529,9 @@ class _LargeLayoutContent extends StatelessWidget {
   }
 }
 
-class _MoreActionButton extends StatelessWidget {
-  const _MoreActionButton();
+// ignore: prefer-single-widget-per-file
+class MoreActionButton extends StatelessWidget {
+  const MoreActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {

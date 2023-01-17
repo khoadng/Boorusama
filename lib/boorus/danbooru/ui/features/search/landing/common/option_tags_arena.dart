@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 class OptionTagsArena extends StatefulWidget {
@@ -33,7 +34,7 @@ class _OptionTagsArenaState extends State<OptionTagsArena> {
         ),
         Wrap(
           spacing: 4,
-          runSpacing: -4,
+          runSpacing: isMobilePlatform() ? -4 : 8,
           children: widget.childrenBuilder(editMode),
         ),
       ],

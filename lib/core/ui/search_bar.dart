@@ -18,6 +18,7 @@ class SearchBar extends StatefulWidget {
     this.onSubmitted,
     this.constraints,
     this.focus,
+    this.backgroundColor,
   });
 
   final VoidCallback? onTap;
@@ -31,6 +32,7 @@ class SearchBar extends StatefulWidget {
   final TextEditingController? queryEditingController;
   final String? hintText;
   final FocusNode? focus;
+  final Color? backgroundColor;
 
   @override
   State<SearchBar> createState() => _SearchBarState();
@@ -61,7 +63,7 @@ class _SearchBarState extends State<SearchBar> {
         constraints: widget.constraints ?? const BoxConstraints(maxWidth: 600),
         child: Material(
           elevation: 4,
-          color: Theme.of(context).cardColor,
+          color: widget.backgroundColor ?? Theme.of(context).cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(6)),
           ),

@@ -4,6 +4,7 @@ import 'dart:math';
 
 // Package imports:
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
@@ -33,6 +34,16 @@ class _PostDetailVoteFetch extends PostDetailEvent {
   List<Object?> get props => [];
 }
 
+class _PostDetailRecommendedFetch extends PostDetailEvent {
+  const _PostDetailRecommendedFetch(this.artistTags, this.characterTags);
+
+  final List<String> artistTags;
+  final List<String> characterTags;
+
+  @override
+  List<Object?> get props => [artistTags, characterTags];
+}
+
 class _PostDetailNoteFetch extends PostDetailEvent {
   const _PostDetailNoteFetch(this.postId);
 
@@ -52,6 +63,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
     required List<PostDetailTag> tags,
     required int initialIndex,
     required List<PostData> posts,
+    required Map<String, List<Post>> tagCache,
     void Function(
       PostData post,
     )?
@@ -65,6 +77,7 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           currentIndex: initialIndex,
           currentPost: posts[initialIndex],
           nextPost: posts.getOrNull(initialIndex + 1),
+          previousPost: posts.getOrNull(initialIndex - 1),
           slideShowConfig: PostDetailState.initial().slideShowConfig,
           recommends: const [],
           fullScreen: defaultDetailsStyle != DetailsDisplay.postFocus,
@@ -73,10 +86,13 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       (event, emit) async {
         final post = posts[event.index];
         final nextPost = posts.getOrNull(event.index + 1);
+        final prevPost = posts.getOrNull(event.index - 1);
+
         emit(state.copyWith(
           currentIndex: event.index,
           currentPost: post,
           nextPost: () => nextPost,
+          previousPost: () => prevPost,
           recommends: [],
         ));
         final account = await accountRepository.get();
@@ -96,10 +112,10 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
           }
         }
 
-        if (!state.fullScreen) {
-          await _fetchArtistPosts(post, postRepository, emit);
-          await _fetchCharactersPosts(post, postRepository, emit);
-        }
+        add(_PostDetailRecommendedFetch(
+          post.post.artistTags,
+          post.post.characterTags,
+        ));
       },
       transformer: restartable(),
     );
@@ -138,35 +154,64 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
       );
     });
 
-    on<_PostDetailFavoriteFetch>((event, emit) async {
-      await favoritePostRepository
-          .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
-          .then((fav) {
-        emit(state.copyWith(
-          currentPost: state.currentPost.copyWith(isFavorited: fav),
-        ));
-      });
-    });
-
-    on<_PostDetailVoteFetch>((event, emit) async {
-      await postVoteRepository
-          .getPostVotes([state.currentPost.post.id]).then((votes) {
-        if (votes.isNotEmpty) {
-          emit(state.copyWith(
-            currentPost:
-                state.currentPost.copyWith(voteState: votes.first.voteState),
-          ));
+    on<_PostDetailRecommendedFetch>(
+      (event, emit) async {
+        if (!state.fullScreen) {
+          await _fetchArtistPosts(
+            event.artistTags,
+            postRepository,
+            emit,
+            tagCache,
+          );
+          await _fetchCharactersPosts(
+            event.characterTags,
+            postRepository,
+            emit,
+            tagCache,
+          );
         }
-      });
-    });
+      },
+      transformer: debounce(const Duration(milliseconds: 500)),
+    );
 
-    on<_PostDetailNoteFetch>((event, emit) async {
-      final notes = await noteRepository.getNotesFrom(event.postId);
+    on<_PostDetailFavoriteFetch>(
+      (event, emit) async {
+        await favoritePostRepository
+            .checkIfFavoritedByUser(event.accountId, state.currentPost.post.id)
+            .then((fav) {
+          emit(state.copyWith(
+            currentPost: state.currentPost.copyWith(isFavorited: fav),
+          ));
+        });
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
 
-      emit(state.copyWith(
-        currentPost: state.currentPost.copyWith(notes: notes),
-      ));
-    });
+    on<_PostDetailVoteFetch>(
+      (event, emit) async {
+        await postVoteRepository
+            .getPostVotes([state.currentPost.post.id]).then((votes) {
+          if (votes.isNotEmpty) {
+            emit(state.copyWith(
+              currentPost:
+                  state.currentPost.copyWith(voteState: votes.first.voteState),
+            ));
+          }
+        });
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
+
+    on<_PostDetailNoteFetch>(
+      (event, emit) async {
+        final notes = await noteRepository.getNotesFrom(event.postId);
+
+        emit(state.copyWith(
+          currentPost: state.currentPost.copyWith(notes: notes),
+        ));
+      },
+      transformer: debounceRestartable(const Duration(milliseconds: 300)),
+    );
 
     on<PostDetailModeChanged>((event, emit) {
       emit(state.copyWith(
@@ -292,8 +337,18 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
         fullScreen: event.fullScreen,
       ));
       if (!event.fullScreen && state.recommends.isEmpty) {
-        await _fetchArtistPosts(state.currentPost, postRepository, emit);
-        await _fetchCharactersPosts(state.currentPost, postRepository, emit);
+        await _fetchArtistPosts(
+          state.currentPost.post.artistTags,
+          postRepository,
+          emit,
+          tagCache,
+        );
+        await _fetchCharactersPosts(
+          state.currentPost.post.characterTags,
+          postRepository,
+          emit,
+          tagCache,
+        );
       }
     });
 
@@ -313,52 +368,68 @@ class PostDetailBloc extends Bloc<PostDetailEvent, PostDetailState> {
   }
 
   Future<void> _fetchCharactersPosts(
-    PostData post,
+    List<String> tags,
     PostRepository postRepository,
     Emitter<PostDetailState> emit,
+    Map<String, List<Post>> tagCache,
   ) async {
-    for (final tag in post.post.characterTags) {
-      final posts = await postRepository.getPosts(tag, 1, limit: 20);
-      emit(state.copyWith(recommends: [
-        ...state.recommends,
-        Recommend(
-          type: RecommendType.character,
-          title: tag,
-          posts: posts
-              .take(6)
-              .map((e) => PostData(
-                    post: e,
-                    isFavorited: false,
-                    pools: const [],
-                  ))
-              .toList(),
-        ),
-      ]));
+    for (final tag in tags) {
+      final posts = tagCache.containsKey(tag)
+          ? tagCache[tag]!
+          : await postRepository.getPosts(tag, 1, limit: 20);
+
+      tagCache[tag] = posts;
+
+      emit(state.copyWith(
+        recommends: [
+          ...state.recommends,
+          Recommend(
+            type: RecommendType.character,
+            title: tag,
+            posts: posts
+                .take(6)
+                .map((e) => PostData(
+                      post: e,
+                      isFavorited: false,
+                      pools: const [],
+                    ))
+                .toList(),
+          ),
+        ],
+      ));
     }
   }
 
   Future<void> _fetchArtistPosts(
-    PostData post,
+    List<String> tags,
     PostRepository postRepository,
     Emitter<PostDetailState> emit,
+    Map<String, List<Post>> tagCache,
   ) async {
-    for (final tag in post.post.artistTags) {
-      final posts = await postRepository.getPosts(tag, 1, limit: 20);
-      emit(state.copyWith(recommends: [
-        ...state.recommends,
-        Recommend(
-          type: RecommendType.artist,
-          title: tag,
-          posts: posts
-              .take(6)
-              .map((e) => PostData(
-                    post: e,
-                    isFavorited: false,
-                    pools: const [],
-                  ))
-              .toList(),
-        ),
-      ]));
+    for (final tag in tags) {
+      final posts = tagCache.containsKey(tag)
+          ? tagCache[tag]!
+          : await postRepository.getPosts(tag, 1, limit: 20);
+
+      tagCache[tag] = posts;
+
+      emit(state.copyWith(
+        recommends: [
+          ...state.recommends,
+          Recommend(
+            type: RecommendType.artist,
+            title: tag,
+            posts: posts
+                .take(6)
+                .map((e) => PostData(
+                      post: e,
+                      isFavorited: false,
+                      pools: const [],
+                    ))
+                .toList(),
+          ),
+        ],
+      ));
     }
   }
 }

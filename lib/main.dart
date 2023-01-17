@@ -67,6 +67,7 @@ import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/sentry.dart';
+import 'package:video_player_win/video_player_win.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
@@ -173,6 +174,7 @@ void main() async {
   const InitializationSettings initializationSettings = InitializationSettings(
     android: AndroidInitializationSettings('@mipmap/ic_launcher'),
     iOS: DarwinInitializationSettings(),
+    macOS: DarwinInitializationSettings(),
   );
   await flutterLocalNotificationsPlugin.initialize(
     initializationSettings,
@@ -195,6 +197,8 @@ void main() async {
   if (isMobilePlatform()) {
     await bulkDownloader.init();
   }
+
+  if (isWindows()) WindowsVideoPlayer.registerWith();
 
   final previewImageCacheManager = PreviewImageCacheManager();
   final previewPreloader = PostPreviewPreloaderImp(

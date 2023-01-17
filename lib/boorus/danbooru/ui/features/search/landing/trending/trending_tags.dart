@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -22,7 +23,7 @@ class TrendingTags extends StatelessWidget {
     return tags != null && tags.isNotEmpty
         ? Wrap(
             spacing: 4,
-            runSpacing: -4,
+            runSpacing: isMobilePlatform() ? -4 : 8,
             children: tags
                 .take(15)
                 .map((e) => RawChip(
