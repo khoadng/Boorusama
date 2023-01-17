@@ -6,12 +6,10 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:android_intent_plus/flag.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:timeago/timeago.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:video_player_win/video_player_win.dart';
 
@@ -68,6 +66,7 @@ import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart'
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
@@ -75,14 +74,6 @@ import 'boorus/danbooru/infra/local/repositories/search_history/search_history.d
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
 import 'core/infra/preloader/preloader.dart';
-
-//TODO: should parse from translation files instead of hardcoding
-const supportedLocales = [
-  Locale('en', ''),
-  Locale('vi', ''),
-  Locale('ru', ''),
-  Locale('be', ''),
-];
 
 const cheatsheetUrl = 'https://safebooru.donmai.us/wiki_pages/help:cheatsheet';
 const savedSearchHelpUrl =
@@ -92,8 +83,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final fileNameGenerator = PostFileNameGenerator();
-
-  await EasyLocalization.ensureInitialized();
 
   if (!isWeb()) {
     final dbDirectory = isAndroid()
@@ -208,22 +197,13 @@ void main() async {
     },
   );
 
-  //TODO: shouldn't hardcode language.
-  setLocaleMessages('vi', ViMessages());
-  setLocaleMessages('ru', RuMessages());
-  setLocaleMessages('be', RuMessages());
-
+  await ensureI18nInitialized();
   await initializeAnalytics(settings);
   initializeErrorHandlers(settings);
 
   void run() {
     runApp(
-      EasyLocalization(
-        useOnlyLangCode: true,
-        supportedLocales: supportedLocales,
-        path: 'assets/translations',
-        fallbackLocale: const Locale('en', ''),
-        useFallbackTranslations: true,
+      BooruLocalization(
         child: MultiRepositoryProvider(
           providers: [
             RepositoryProvider.value(value: packageInfo),
