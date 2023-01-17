@@ -22,16 +22,18 @@ class TagSuggestionItems extends StatelessWidget {
     required List<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
+    this.backgroundColor,
   }) : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
   final String currentQuery;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: BlocBuilder<ThemeBloc, ThemeState>(

@@ -400,6 +400,7 @@ Future<T?> showDesktopDialogWindow<T>(
   double? width,
   double? height,
   Color? backgroundColor,
+  EdgeInsets? margin,
 }) =>
     showGeneralDialog(
       context: context,
@@ -408,17 +409,18 @@ Future<T?> showDesktopDialogWindow<T>(
       barrierColor: Colors.black87,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: backgroundColor ?? Theme.of(context).backgroundColor,
+          backgroundColor: backgroundColor ?? Theme.of(context).cardColor,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
           child: Container(
             width: width ?? MediaQuery.of(context).size.width * 0.8,
             height: height ?? MediaQuery.of(context).size.height * 0.8,
-            margin: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 16,
-            ),
+            margin: margin ??
+                const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
             decoration: const BoxDecoration(
               borderRadius: BorderRadius.all(
                 Radius.circular(8),

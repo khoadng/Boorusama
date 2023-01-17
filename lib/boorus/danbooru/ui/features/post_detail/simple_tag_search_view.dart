@@ -4,6 +4,7 @@ import 'dart:math';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,17 +40,27 @@ void showSimpleTagSearchView(
   } else {
     showDesktopDialogWindow(
       context,
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).cardColor,
+      margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(MediaQuery.of(context).size.width * 0.7, 600),
       height: min(MediaQuery.of(context).size.height * 0.7, 500),
-      builder: (context) => SimpleTagSearchView(
-        onSubmitted: onSubmitted,
-        backButton: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back),
+      builder: (context) => CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: SimpleTagSearchView(
+            onSubmitted: onSubmitted,
+            backButton: IconButton(
+              onPressed: () => Navigator.of(context).pop(),
+              icon: const Icon(Icons.arrow_back),
+            ),
+            ensureValidTag: ensureValidTag,
+            onSelected: onSelected,
+          ),
         ),
-        ensureValidTag: ensureValidTag,
-        onSelected: onSelected,
       ),
     );
   }
@@ -87,13 +98,15 @@ class SimpleTagSearchView extends StatelessWidget {
               : state.suggestionTags;
 
           return Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
+            backgroundColor: Theme.of(context).cardColor,
             floatingActionButton: floatingActionButton?.call(state.query),
             body: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(16),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   child: SearchBar(
+                    backgroundColor: Theme.of(context).backgroundColor,
                     leading: backButton,
                     autofocus: true,
                     onSubmitted: (text) => onSubmitted?.call(context, text),
@@ -106,15 +119,19 @@ class SimpleTagSearchView extends StatelessWidget {
                 ),
                 if (tags.isNotEmpty)
                   Expanded(
-                    child: TagSuggestionItems(
-                      tags: tags,
-                      onItemTap: (tag) {
-                        if (closeOnSelected) {
-                          Navigator.of(context).pop();
-                        }
-                        onSelected(tag);
-                      },
-                      currentQuery: state.query,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: TagSuggestionItems(
+                        backgroundColor: Theme.of(context).backgroundColor,
+                        tags: tags,
+                        onItemTap: (tag) {
+                          if (closeOnSelected) {
+                            Navigator.of(context).pop();
+                          }
+                          onSelected(tag);
+                        },
+                        currentQuery: state.query,
+                      ),
                     ),
                   )
                 else
