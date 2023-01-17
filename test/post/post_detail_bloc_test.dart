@@ -141,6 +141,8 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
       ],
     );
@@ -180,7 +182,7 @@ void main() {
         tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(seconds: 1),
       verify: (bloc) => verify(() => noteRepo.getNotesFrom(any())).called(2),
       expect: () => [
         PostDetailState.initial().copyWith(
@@ -198,12 +200,16 @@ void main() {
           ),
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           nextPost: () => PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 3, tags: ['translated']),
           ),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           currentPost: PostData.empty().copyWith(
             post: Post.empty().copyWith(id: 2),
             notes: [
@@ -255,6 +261,7 @@ void main() {
         tagCache: {},
       ),
       act: (bloc) => bloc.add(const PostDetailIndexChanged(index: 1)),
+      wait: const Duration(seconds: 1),
       expect: () => [
         PostDetailState.initial().copyWith(
           currentIndex: 0,
@@ -267,11 +274,15 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
         ),
         PostDetailState.initial().copyWith(
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',
@@ -286,6 +297,8 @@ void main() {
           currentIndex: 1,
           currentPost:
               PostData.empty().copyWith(post: Post.empty().copyWith(id: 2)),
+          previousPost: () =>
+              PostData.empty().copyWith(post: Post.empty().copyWith(id: 1)),
           recommends: [
             Recommend(
               title: 'foo',

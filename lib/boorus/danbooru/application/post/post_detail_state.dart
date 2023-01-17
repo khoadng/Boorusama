@@ -26,7 +26,7 @@ class PostDetailState extends Equatable {
         tags: const [],
         currentIndex: 0,
         currentPost: PostData.empty(),
-        previousPost: PostData.empty(),
+        previousPost: null,
         nextPost: null,
         slideShowConfig: const SlideShowConfiguration(
           interval: 4,
