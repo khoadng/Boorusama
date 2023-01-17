@@ -1,4 +1,6 @@
 // Flutter imports:
+import 'package:boorusama/core/error.dart';
+import 'package:boorusama/core/firebase.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -210,6 +212,9 @@ void main() async {
   setLocaleMessages('vi', ViMessages());
   setLocaleMessages('ru', RuMessages());
   setLocaleMessages('be', RuMessages());
+
+  await ensureFirebaseInitialized();
+  initializeErrorHandlers(settings);
 
   void run() {
     runApp(
@@ -542,7 +547,7 @@ void main() async {
                             },
                           ),
                         ],
-                        child: const App(),
+                        child: App(settings: settings),
                       ),
                     ),
                   );

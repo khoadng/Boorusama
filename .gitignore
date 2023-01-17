@@ -54,3 +54,9 @@ lcov.info
 
 # iOS local build
 exportOptions.plist
+
+# Firebase secrets
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+firebase_app_id_file.json
