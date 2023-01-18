@@ -21,6 +21,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -34,7 +35,8 @@ class _LoginPageState extends State<LoginPage> {
               WarningContainer(
                 contentBuilder: (context) => const Text('login.notice').tr(),
               ),
-              const Center(
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 36),
                 child: LoginBox(),
               ),
             ],

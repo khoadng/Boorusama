@@ -89,9 +89,10 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                   tag: '${widget.post.id}_hero',
                   child: PhotoView(imageProvider: imageProvider),
                 ),
-                progressIndicatorBuilder: (context, url, progress) =>
-                    CircularProgressIndicator.adaptive(
-                  value: progress.progress,
+                progressIndicatorBuilder: (context, url, progress) => Center(
+                  child: CircularProgressIndicator.adaptive(
+                    value: progress.progress,
+                  ),
                 ),
               ),
             ),
