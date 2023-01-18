@@ -30,13 +30,11 @@ class DownloadData {
 class BulkDownloader<T> {
   BulkDownloader({
     required FileNameGenerator<T> fileNameGenerator,
-    required this.deviceInfo,
     required this.idSelector,
     required this.downloadUrlSelector,
   }) : _fileNameGenerator = fileNameGenerator;
 
   final FileNameGenerator<T> _fileNameGenerator;
-  final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   final Map<String, DownloadData> _taskIdToPostIdMap = {};
 

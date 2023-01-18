@@ -1,6 +1,11 @@
+// Package imports:
+import 'package:device_info_plus/device_info_plus.dart';
+
 // Project imports:
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/infra/device_info_service.dart';
 
-bool hasScopedStorage(DeviceInfo deviceInfo) =>
-    isAndroid() && deviceInfo.versionCode >= 29;
+bool hasScopedStorage(AndroidDeviceInfo info) =>
+    isAndroid() && info.version.sdkInt >= 29;
+
+bool hasGranularMediaPermissions(AndroidDeviceInfo info) =>
+    isAndroid() && info.version.sdkInt >= 33;

@@ -151,8 +151,7 @@ void main() async {
   final appInfo = AppInfoProvider(await getAppInfo());
   final tagInfo =
       await TagInfoService.create().then((value) => value.getInfo());
-  final deviceInfo =
-      await DeviceInfoService(plugin: DeviceInfoPlugin()).getDeviceInfo();
+  final androidDeviceInfo = await DeviceInfoPlugin().androidInfo;
 
   final defaultBooru = booruFactory.create(isSafeMode: settings.safeMode);
 
@@ -173,14 +172,13 @@ void main() async {
   final downloader = await createDownloader(
     settings.downloadMethod,
     fileNameGenerator,
-    deviceInfo,
+    androidDeviceInfo,
     flutterLocalNotificationsPlugin,
   );
   final bulkDownloader = BulkDownloader<Post>(
     idSelector: (item) => item.id,
     downloadUrlSelector: (item) => item.downloadUrl,
     fileNameGenerator: Md5OnlyFileNameGenerator(),
-    deviceInfo: deviceInfo,
   );
 
   if (isMobilePlatform()) {
@@ -208,7 +206,7 @@ void main() async {
           providers: [
             RepositoryProvider.value(value: packageInfo),
             RepositoryProvider.value(value: appInfo),
-            RepositoryProvider.value(value: deviceInfo),
+            RepositoryProvider.value(value: androidDeviceInfo),
             RepositoryProvider.value(value: tagInfo),
             RepositoryProvider<DownloadService>.value(value: downloader),
             RepositoryProvider<BulkDownloader<Post>>.value(
