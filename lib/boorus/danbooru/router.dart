@@ -125,12 +125,31 @@ class AppRouter {
   }
 }
 
+const _artist = 'artist';
+const _character = 'character';
+const _home = 'home';
+const _postDetails = 'post_details';
+const _settings = 'settings';
+const _blacklisted = 'blacklisted_tags';
+const _savedSearch = 'saved_search';
+const _savedSearchEdit = 'saved_search/edit';
+const _profile = 'profile';
+const _favorties = 'favorites';
+const _bulkDownload = 'bulk_download';
+const _poolDetails = 'pool_details';
+const _search = 'search';
+const _login = 'login';
+const _explorePopular = 'explore/popular';
+const _exploreHot = 'explore/hot';
+const _exploreMostViewed = 'explore/most_viewed';
+
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
     AppRouter.router.navigateTo(
       context,
       '/artist',
       routeSettings: RouteSettings(
+        name: _artist,
         arguments: [
           artist,
           '',
@@ -169,6 +188,7 @@ void goToCharacterPage(BuildContext context, String tag) {
       context,
       '/character',
       routeSettings: RouteSettings(
+        name: _character,
         arguments: [
           tag,
           '',
@@ -205,6 +225,9 @@ void goToProfilePage(BuildContext context) {
   AppRouter.router.navigateTo(
     context,
     '/users/profile',
+    routeSettings: const RouteSettings(
+      name: _profile,
+    ),
   );
 }
 
@@ -213,6 +236,7 @@ void goToFavoritesPage(BuildContext context, String? username) {
     context,
     '/favorites',
     routeSettings: RouteSettings(
+      name: _favorties,
       arguments: [username],
     ),
   );
@@ -223,6 +247,7 @@ void goToBulkDownloadPage(BuildContext context, List<String>? tags) {
     context,
     '/bulk_download',
     routeSettings: RouteSettings(
+      name: _bulkDownload,
       arguments: [
         tags,
       ],
@@ -235,6 +260,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
     context,
     'pool/detail',
     routeSettings: RouteSettings(
+      name: _poolDetails,
       arguments: [
         pool,
       ],
@@ -249,6 +275,9 @@ void goToHomePage(
   AppRouter.router.navigateTo(
     context,
     '/',
+    routeSettings: const RouteSettings(
+      name: _home,
+    ),
     clearStack: true,
     replace: replace,
   );
@@ -266,6 +295,7 @@ void goToDetailPage({
       context,
       '/post/detail',
       routeSettings: RouteSettings(
+        name: _postDetails,
         arguments: [
           posts,
           initialIndex,
@@ -354,7 +384,10 @@ void goToSearchPage(
     AppRouter.router.navigateTo(
       context,
       '/posts/search',
-      routeSettings: RouteSettings(arguments: [tag ?? '']),
+      routeSettings: RouteSettings(
+        name: _search,
+        arguments: [tag ?? ''],
+      ),
     );
   } else {
     showDesktopFullScreenWindow(context, builder: (context) {
@@ -434,9 +467,9 @@ void goToSettingPage(BuildContext context) {
     AppRouter.router.navigateTo(
       context,
       '/settings',
-      transition: Screen.of(context).size == ScreenSize.small
-          ? TransitionType.inFromRight
-          : null,
+      routeSettings: const RouteSettings(
+        name: _settings,
+      ),
     );
   } else {
     showDesktopDialogWindow(
@@ -502,6 +535,9 @@ void goToLoginPage(BuildContext context) {
     AppRouter.router.navigateTo(
       context,
       '/login',
+      routeSettings: const RouteSettings(
+        name: _login,
+      ),
     );
   } else {
     showDesktopDialogWindow(
@@ -522,6 +558,18 @@ void goToExploreDetailPage(
   if (isMobilePlatform()) {
     Navigator.of(context).push(
       MaterialPageRoute(
+        settings: RouteSettings(
+          name: () {
+            switch (category) {
+              case ExploreCategory.popular:
+                return _explorePopular;
+              case ExploreCategory.mostViewed:
+                return _exploreMostViewed;
+              case ExploreCategory.hot:
+                return _exploreHot;
+            }
+          }(),
+        ),
         builder: (context) => BlocProvider(
           create: (context) => ExploreDetailBloc(initialDate: date),
           child: ExploreDetailPage(
@@ -563,6 +611,7 @@ void goToSavedSearchPage(BuildContext context, String? username) {
       context,
       '/saved_search',
       routeSettings: RouteSettings(
+        name: _savedSearch,
         arguments: [username],
       ),
     );
@@ -590,6 +639,9 @@ void goToSavedSearchEditPage(BuildContext context) {
   AppRouter.router.navigateTo(
     context,
     '/saved_search/edit',
+    routeSettings: const RouteSettings(
+      name: _savedSearchEdit,
+    ),
   );
 }
 
@@ -598,6 +650,9 @@ void goToBlacklistedTagPage(BuildContext context) {
     AppRouter.router.navigateTo(
       context,
       '/users/blacklisted_tags',
+      routeSettings: const RouteSettings(
+        name: _blacklisted,
+      ),
     );
   } else {
     showDesktopDialogWindow(
