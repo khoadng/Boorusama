@@ -154,13 +154,6 @@ class SliverPostGrid extends HookWidget {
                         'download.download'.tr(),
                         onPressed: () => download(post.post),
                       ),
-                      ContextMenuButtonConfig(
-                        'Test Button',
-                        onPressed: () => showSimpleSnackBar(
-                          context: context,
-                          content: const Text('Test message'),
-                        ),
-                      ),
                     ],
                   ),
                 ),

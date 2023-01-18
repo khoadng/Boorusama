@@ -182,12 +182,9 @@ class QuickPreviewImage extends StatelessWidget {
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.8,
+                  maxWidth: MediaQuery.of(context).size.width * 0.8,
                 ),
-                child: GestureDetector(
-                  // ignore: no-empty-block
-                  onTap: () {},
-                  child: child,
-                ),
+                child: child,
               ),
             ),
           ),

@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
+import 'package:boorusama/core/core.dart';
 
 class CharacterPage extends StatelessWidget {
   const CharacterPage({
@@ -22,24 +24,42 @@ class CharacterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TagDetailPage(
-      tagName: characterName,
-      otherNamesBuilder: (context) => BlocBuilder<WikiBloc, WikiState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case LoadStatus.initial:
-            case LoadStatus.loading:
-              return const SizedBox(height: 40, width: 40);
-            case LoadStatus.success:
-              return state.wiki != null
-                  ? TagOtherNames(otherNames: state.wiki!.otherNames)
-                  : const SizedBox.shrink();
-            case LoadStatus.failure:
-              return const SizedBox.shrink();
-          }
-        },
-      ),
-      backgroundImageUrl: backgroundImageUrl,
-    );
+    return Screen.of(context).size == ScreenSize.small
+        ? TagDetailPage(
+            tagName: characterName,
+            otherNamesBuilder: (context) =>
+                BlocBuilder<WikiBloc, WikiState>(builder: (context, state) {
+              switch (state.status) {
+                case LoadStatus.initial:
+                case LoadStatus.loading:
+                  return const SizedBox(height: 40, width: 40);
+                case LoadStatus.success:
+                  return state.wiki != null
+                      ? TagOtherNames(otherNames: state.wiki!.otherNames)
+                      : const SizedBox.shrink();
+                case LoadStatus.failure:
+                  return const SizedBox.shrink();
+              }
+            }),
+            backgroundImageUrl: backgroundImageUrl,
+          )
+        : TagDetailPageDesktop(
+            tagName: characterName,
+            otherNamesBuilder: (context) => BlocBuilder<WikiBloc, WikiState>(
+              builder: (context, state) {
+                switch (state.status) {
+                  case LoadStatus.initial:
+                  case LoadStatus.loading:
+                    return const SizedBox(height: 40, width: 40);
+                  case LoadStatus.success:
+                    return state.wiki != null
+                        ? TagOtherNames(otherNames: state.wiki!.otherNames)
+                        : const SizedBox.shrink();
+                  case LoadStatus.failure:
+                    return const SizedBox.shrink();
+                }
+              },
+            ),
+          );
   }
 }

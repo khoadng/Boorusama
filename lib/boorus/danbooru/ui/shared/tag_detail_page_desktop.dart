@@ -9,7 +9,6 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'tag_detail_page.dart';
 
@@ -57,12 +56,7 @@ class _TagDetailPageDesktopState extends State<TagDetailPageDesktop> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const SizedBox(height: 70),
-                      Text(
-                        widget.tagName.removeUnderscoreWithSpace(),
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ),
-                      ),
+                      TagTitleName(tagName: widget.tagName),
                       const SizedBox(height: 8),
                       Expanded(child: widget.otherNamesBuilder(context)),
                     ],
