@@ -236,12 +236,13 @@ class _LandingView extends StatelessWidget {
       },
       onTagTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
-        _onHistoryTap(context, value);
+        _onTagTap(context, value);
       },
       onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
       onHistoryCleared: () => _onHistoryCleared(context),
       onFullHistoryRequested: () {
         final bloc = context.read<SearchHistoryBloc>();
+        final searchBloc = context.read<SearchBloc>();
 
         showMaterialModalBottomSheet(
           context: context,
@@ -261,7 +262,11 @@ class _LandingView extends StatelessWidget {
                   ],
                 ),
                 body: FullHistoryView(
-                  onHistoryTap: (value) => _onHistoryTap(context, value),
+                  onHistoryTap: (value) => _onHistoryTap(
+                    context,
+                    value,
+                    searchBloc,
+                  ),
                   onHistoryRemoved: (value) =>
                       _onHistoryRemoved(context, value),
                   histories: state.histories,
@@ -274,9 +279,12 @@ class _LandingView extends StatelessWidget {
     );
   }
 
-  void _onHistoryTap(BuildContext context, String value) {
+  void _onTagTap(BuildContext context, String value) =>
+      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+
+  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
     Navigator.of(context).pop();
-    context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+    bloc.add(SearchRawTagSelected(tag: value));
   }
 
   void _onHistoryCleared(BuildContext context) =>
