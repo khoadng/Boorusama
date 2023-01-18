@@ -117,10 +117,7 @@ class PostTagList extends StatelessWidget {
                 } else if (value == 'copy_and_move_to_saved_search') {
                   Clipboard.setData(
                     ClipboardData(text: tag.rawName),
-                  ).then((value) => AppRouter.router.navigateTo(
-                        context,
-                        '/saved_search/edit',
-                      ));
+                  ).then((value) => goToSavedSearchEditPage(context));
                 } else if (value == 'add_to_favorites') {
                   context
                       .read<FavoriteTagBloc>()

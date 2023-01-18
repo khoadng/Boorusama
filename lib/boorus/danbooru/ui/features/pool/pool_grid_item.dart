@@ -25,13 +25,7 @@ class PoolGridItem extends StatelessWidget {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(4)),
         child: GestureDetector(
-          onTap: () => AppRouter.router.navigateTo(
-            context,
-            'pool/detail',
-            routeSettings: RouteSettings(arguments: [
-              pool.pool,
-            ]),
-          ),
+          onTap: () => goToPoolDetailPage(context, pool.pool),
           child: Column(
             children: [
               Expanded(

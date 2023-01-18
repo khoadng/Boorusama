@@ -197,14 +197,9 @@ class _SelectedTagList extends StatelessWidget {
           context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
       onDelete: (tag) =>
           context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
-      onBulkDownload: (tags) => AppRouter.router.navigateTo(
+      onBulkDownload: (tags) => goToBulkDownloadPage(
         context,
-        '/bulk_download',
-        routeSettings: RouteSettings(
-          arguments: [
-            tags.map((e) => e.toString()).toList(),
-          ],
-        ),
+        tags.map((e) => e.toString()).toList(),
       ),
     );
   }

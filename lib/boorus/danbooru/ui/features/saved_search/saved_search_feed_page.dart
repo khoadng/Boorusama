@@ -67,10 +67,7 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
           title: const Text('saved_search.saved_search_feed').tr(),
           actions: [
             IconButton(
-              onPressed: () => AppRouter.router.navigateTo(
-                context,
-                '/saved_search/edit',
-              ),
+              onPressed: () => goToSavedSearchEditPage(context),
               icon: const Icon(Icons.settings),
             ),
           ],

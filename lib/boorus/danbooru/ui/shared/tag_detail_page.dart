@@ -51,14 +51,9 @@ class _TagDetailPageState extends State<TagDetailPage> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    AppRouter.router.navigateTo(
+                    goToBulkDownloadPage(
                       context,
-                      '/bulk_download',
-                      routeSettings: RouteSettings(
-                        arguments: [
-                          [widget.tagName],
-                        ],
-                      ),
+                      [widget.tagName],
                     );
                   },
                   icon: const Icon(Icons.download),

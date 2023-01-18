@@ -47,14 +47,9 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
         actions: [
           IconButton(
             onPressed: () {
-              AppRouter.router.navigateTo(
+              goToBulkDownloadPage(
                 context,
-                '/bulk_download',
-                routeSettings: RouteSettings(
-                  arguments: [
-                    ['pool:${widget.pool.id}'],
-                  ],
-                ),
+                ['pool:${widget.pool.id}'],
               );
             },
             icon: const Icon(Icons.download),

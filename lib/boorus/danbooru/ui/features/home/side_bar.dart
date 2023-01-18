@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
-import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -12,7 +11,6 @@ import 'package:boorusama/boorus/danbooru/application/account/account.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/side_bar.dart';
 
 class SideBarMenu extends StatelessWidget {
@@ -62,14 +60,7 @@ class SideBarMenu extends StatelessWidget {
                           title: Text('sideMenu.profile'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/users/profile',
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToProfilePage(context);
                           },
                         ),
                       if (state.data! != Account.empty)
@@ -78,17 +69,7 @@ class SideBarMenu extends StatelessWidget {
                           title: Text('profile.favorites'.tr()),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/favorites',
-                              routeSettings: RouteSettings(
-                                arguments: [state.data!.username],
-                              ),
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToFavoritesPage(context, state.data!.username);
                           },
                         ),
                       if (state.data! != Account.empty)
@@ -116,17 +97,7 @@ class SideBarMenu extends StatelessWidget {
                         title: const Text('download.bulk_download').tr(),
                         onTap: () {
                           if (popOnSelect) Navigator.of(context).pop();
-                          AppRouter.router.navigateTo(
-                            context,
-                            '/bulk_download',
-                            routeSettings: const RouteSettings(
-                              arguments: [],
-                            ),
-                            transition:
-                                Screen.of(context).size == ScreenSize.small
-                                    ? TransitionType.inFromRight
-                                    : null,
-                          );
+                          goToBulkDownloadPage(context, null);
                         },
                       ),
                       _SideMenuTile(

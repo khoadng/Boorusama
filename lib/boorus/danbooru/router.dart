@@ -24,6 +24,7 @@ import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
+import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
@@ -79,7 +80,7 @@ class AppRouter {
       ..define(
         '/users/profile',
         handler: userHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/login',
@@ -99,7 +100,7 @@ class AppRouter {
       ..define(
         '/favorites',
         handler: favoritesHandler,
-        transitionType: TransitionType.material,
+        transitionType: TransitionType.inFromRight,
       )
       ..define(
         '/bulk_download',
@@ -198,6 +199,59 @@ void goToCharacterPage(BuildContext context, String tag) {
       ),
     );
   }
+}
+
+void goToProfilePage(BuildContext context) {
+  AppRouter.router.navigateTo(
+    context,
+    '/users/profile',
+  );
+}
+
+void goToFavoritesPage(BuildContext context, String? username) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorites',
+    routeSettings: RouteSettings(
+      arguments: [username],
+    ),
+  );
+}
+
+void goToBulkDownloadPage(BuildContext context, List<String>? tags) {
+  AppRouter.router.navigateTo(
+    context,
+    '/bulk_download',
+    routeSettings: RouteSettings(
+      arguments: [
+        tags,
+      ],
+    ),
+  );
+}
+
+void goToPoolDetailPage(BuildContext context, Pool pool) {
+  AppRouter.router.navigateTo(
+    context,
+    'pool/detail',
+    routeSettings: RouteSettings(
+      arguments: [
+        pool,
+      ],
+    ),
+  );
+}
+
+void goToHomePage(
+  BuildContext context, {
+  bool replace = false,
+}) {
+  AppRouter.router.navigateTo(
+    context,
+    '/',
+    clearStack: true,
+    replace: replace,
+  );
 }
 
 void goToDetailPage({
@@ -530,6 +584,13 @@ void goToSavedSearchPage(BuildContext context, String? username) {
       ),
     );
   }
+}
+
+void goToSavedSearchEditPage(BuildContext context) {
+  AppRouter.router.navigateTo(
+    context,
+    '/saved_search/edit',
+  );
 }
 
 void goToBlacklistedTagPage(BuildContext context) {

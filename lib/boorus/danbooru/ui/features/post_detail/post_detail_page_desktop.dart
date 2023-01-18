@@ -368,12 +368,8 @@ class _LargeLayoutContent extends StatelessWidget {
                                       ),
                                       subtitle: Text('${e.postCount} posts'),
                                       trailing: const Icon(Icons.arrow_right),
-                                      onTap: () => AppRouter.router.navigateTo(
-                                        context,
-                                        'pool/detail',
-                                        routeSettings:
-                                            RouteSettings(arguments: [e]),
-                                      ),
+                                      onTap: () =>
+                                          goToPoolDetailPage(context, e),
                                     ),
                                   ])),
                             ],
@@ -444,11 +440,7 @@ class _NavigationButtonGroup extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimary,
                   )
                 : const Icon(Icons.home),
-            onPressed: () => AppRouter.router.navigateTo(
-              context,
-              '/',
-              clearStack: true,
-            ),
+            onPressed: () => goToHomePage(context),
           ),
         ],
       ),

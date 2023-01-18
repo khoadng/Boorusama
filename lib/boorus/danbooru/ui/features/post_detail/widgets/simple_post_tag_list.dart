@@ -96,10 +96,8 @@ class SimplePostTagList extends StatelessWidget {
                                     Clipboard.setData(
                                       ClipboardData(text: tag.rawName),
                                     ).then(
-                                      (value) => AppRouter.router.navigateTo(
-                                        context,
-                                        '/saved_search/edit',
-                                      ),
+                                      (value) =>
+                                          goToSavedSearchEditPage(context),
                                     );
                                   }
                                 },
