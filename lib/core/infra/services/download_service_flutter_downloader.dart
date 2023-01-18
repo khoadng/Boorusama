@@ -3,7 +3,6 @@ import 'dart:isolate';
 import 'dart:ui';
 
 // Package imports:
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:path_provider/path_provider.dart';
@@ -14,18 +13,16 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:boorusama/core/infra/services/alternative_download_service.dart';
 import 'package:boorusama/core/infra/services/macos_download_service.dart';
 import 'package:boorusama/core/infra/services/windows_download_service.dart';
 
-bool _shouldUsePublicStorage(AndroidDeviceInfo deviceInfo) =>
+bool _shouldUsePublicStorage(DeviceInfo deviceInfo) =>
     hasScopedStorage(deviceInfo);
 
-Future<String> _getSaveDir(
-  AndroidDeviceInfo deviceInfo,
-  String defaultPath,
-) async =>
+Future<String> _getSaveDir(DeviceInfo deviceInfo, String defaultPath) async =>
     hasScopedStorage(deviceInfo)
         ? defaultPath
         : await IOHelper.getDownloadPath();
@@ -33,7 +30,7 @@ Future<String> _getSaveDir(
 Future<DownloadService<Post>> createDownloader(
   DownloadMethod method,
   FileNameGenerator fileNameGenerator,
-  AndroidDeviceInfo deviceInfo,
+  DeviceInfo deviceInfo,
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
 ) async {
   if (isMobilePlatform()) {
@@ -78,7 +75,7 @@ class DownloadServiceFlutterDownloader implements DownloadService<Post> {
   }) : _fileNameGenerator = fileNameGenerator;
 
   final FileNameGenerator _fileNameGenerator;
-  final AndroidDeviceInfo deviceInfo;
+  final DeviceInfo deviceInfo;
   final ReceivePort _port = ReceivePort();
   String _savedDir = '';
 
