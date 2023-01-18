@@ -12,6 +12,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_error_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_progress_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/widgets/download_tag_selection_view.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 
 class BulkDownloadPage extends StatefulWidget {
@@ -103,7 +104,13 @@ class _BulkDownloadPageState extends State<BulkDownloadPage> {
   Widget _buildBody(BulkImageDownloadStatus status) {
     switch (status) {
       case BulkImageDownloadStatus.initial:
-        return const DownloadEmptyTagView();
+        return BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
+            return DownloadEmptyTagView(
+              settings: state.settings,
+            );
+          },
+        );
       case BulkImageDownloadStatus.dataSelected:
         return const DownloadTagSelectionView();
       case BulkImageDownloadStatus.downloadInProgress:
