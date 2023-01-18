@@ -2,12 +2,10 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:page_transition/page_transition.dart';
-import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -29,6 +27,7 @@ import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
+import 'original_image_page.dart';
 import 'parent_child_post_page.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
@@ -561,28 +560,9 @@ class MoreActionButton extends StatelessWidget {
                 case 'view_original':
                   Navigator.of(context).push(PageTransition(
                     type: PageTransitionType.fade,
-                    child: Scaffold(
-                      extendBody: true,
-                      appBar: AppBar(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                      ),
-                      body: Center(
-                        child: CachedNetworkImage(
-                          httpHeaders: const {
-                            'User-Agent': userAgent,
-                          },
-                          imageUrl: post.fullImageUrl,
-                          imageBuilder: (context, imageProvider) => Hero(
-                            tag: '${post.id}_hero',
-                            child: PhotoView(imageProvider: imageProvider),
-                          ),
-                          progressIndicatorBuilder: (context, url, progress) =>
-                              CircularProgressIndicator.adaptive(
-                            value: progress.progress,
-                          ),
-                        ),
-                      ),
+                    child: OriginalImagePage(
+                      post: post,
+                      initialOrientation: MediaQuery.of(context).orientation,
                     ),
                   ));
                   break;
