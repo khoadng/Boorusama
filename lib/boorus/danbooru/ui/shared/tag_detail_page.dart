@@ -18,11 +18,13 @@ class TagDetailPage extends StatelessWidget {
     required this.tagName,
     required this.otherNamesBuilder,
     required this.backgroundImageUrl,
+    this.includeHeaders = true,
   });
 
   final String tagName;
   final String backgroundImageUrl;
   final Widget Function(BuildContext context) otherNamesBuilder;
+  final bool includeHeaders;
 
   @override
   Widget build(BuildContext context) {
@@ -38,33 +40,36 @@ class TagDetailPage extends StatelessWidget {
             ));
       },
       sliverHeaderBuilder: (context) => [
-        SliverAppBar(
-          floating: true,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          actions: [
-            IconButton(
-              onPressed: () {
-                goToBulkDownloadPage(
-                  context,
-                  [tagName],
-                );
-              },
-              icon: const Icon(Icons.download),
-            ),
-          ],
-        ),
-        SliverToBoxAdapter(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TagTitleName(tagName: tagName),
-              otherNamesBuilder(context),
+        if (includeHeaders)
+          SliverAppBar(
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  goToBulkDownloadPage(
+                    context,
+                    [tagName],
+                  );
+                },
+                icon: const Icon(Icons.download),
+              ),
             ],
           ),
-        ),
-        const SliverToBoxAdapter(child: SizedBox(height: 50)),
+        if (includeHeaders)
+          SliverToBoxAdapter(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TagTitleName(tagName: tagName),
+                otherNamesBuilder(context),
+              ],
+            ),
+          ),
+        if (includeHeaders)
+          const SliverToBoxAdapter(child: SizedBox(height: 50)),
         SliverPadding(
           padding: const EdgeInsets.only(bottom: 10),
           sliver: SliverToBoxAdapter(
