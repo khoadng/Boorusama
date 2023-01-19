@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -22,12 +23,18 @@ class HomePostGrid extends StatelessWidget {
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
+    this.onMultiSelect,
+    this.multiSelect = false,
+    this.onPostSelectChanged,
   });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
+  final void Function()? onMultiSelect;
+  final bool multiSelect;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +54,9 @@ class HomePostGrid extends StatelessWidget {
               return _SliverPostGrid(
                 controller: controller,
                 onTap: onTap,
+                onMultiSelect: onMultiSelect,
+                multiSelect: multiSelect,
+                onPostSelectChanged: onPostSelectChanged,
               );
             case LoadStatus.failure:
               return const SliverToBoxAdapter(child: ErrorBox());
@@ -81,10 +91,16 @@ class _SliverPostGrid extends StatelessWidget {
   const _SliverPostGrid({
     required this.controller,
     required this.onTap,
+    this.onMultiSelect,
+    this.onPostSelectChanged,
+    this.multiSelect = false,
   });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
+  final void Function()? onMultiSelect;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final bool multiSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +114,9 @@ class _SliverPostGrid extends StatelessWidget {
             scrollController: controller,
             gridSize: gridSize,
             borderRadius: _gridSizeToBorderRadius(gridSize),
+            onMultiSelect: onMultiSelect,
+            multiSelect: multiSelect,
+            onPostSelectChanged: onPostSelectChanged,
             onTap: (post, index) {
               onTap?.call();
               goToDetailPage(
