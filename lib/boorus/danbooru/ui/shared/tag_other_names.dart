@@ -49,7 +49,8 @@ class TagOtherNames extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Wrap(
-                spacing: 5,
+                spacing: 4,
+                runSpacing: 6,
                 alignment: WrapAlignment.center,
                 runAlignment: WrapAlignment.center,
                 children: otherNames

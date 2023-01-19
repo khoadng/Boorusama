@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:context_menus/context_menus.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,6 +22,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
@@ -128,59 +130,87 @@ class SliverPostGrid extends HookWidget {
             }) {
               final post = posts[index];
 
-              return ImageGridItem(
-                previewCacheManager: context.read<PreviewImageCacheManager>(),
-                isFaved: post.isFavorited,
-                enableFav: authState is Authenticated,
-                onFavToggle: (isFaved) async {
-                  final success =
-                      await _getFavAction(context, !isFaved, post.post.id);
-                  if (success) {
-                    onFavoriteUpdated.call(
-                      post.post.id,
-                      isFaved,
-                    );
-                  }
-                },
-                autoScrollOptions: AutoScrollOptions(
-                  controller: scrollController,
-                  index: index,
-                ),
-                borderRadius: BorderRadius.circular(
-                  state.settings.imageBorderRadius,
-                ),
-                aspectRatio: post.post.aspectRatio,
-                gridSize: gridSize,
-                imageQuality: state.settings.imageQuality,
-                image: legacy
-                    ? BooruImageLegacy(
-                        imageUrl: getImageUrlForDisplay(
-                          post.post,
-                          getImageQuality(
-                            size: gridSize,
-                            presetImageQuality: state.settings.imageQuality,
+              return ContextMenuRegion(
+                contextMenu: DownloadProviderWidget(
+                  builder: (context, download) => GenericContextMenu(
+                    buttonConfigs: [
+                      ContextMenuButtonConfig(
+                        'Preview',
+                        onPressed: () => showGeneralDialog(
+                          context: context,
+                          pageBuilder:
+                              (context, animation, secondaryAnimation) =>
+                                  QuickPreviewImage(
+                            child: BooruImage(
+                              aspectRatio: post.post.aspectRatio,
+                              imageUrl: post.post.normalImageUrl,
+                              previewCacheManager:
+                                  context.read<PreviewImageCacheManager>(),
+                            ),
                           ),
                         ),
-                        placeholderUrl: post.post.previewImageUrl,
-                        borderRadius: BorderRadius.circular(
-                          state.settings.imageBorderRadius,
-                        ),
-                      )
-                    : null,
-                onTap: () => onTap?.call(post.post, index),
-                isAnimated: post.post.isAnimated,
-                isTranslated: post.post.isTranslated,
-                hasComments: post.post.hasComment,
-                hasParentOrChildren: post.post.hasParentOrChildren,
-                previewUrl: getImageUrlForDisplay(
-                  post.post,
-                  getImageQuality(
-                    size: gridSize,
-                    presetImageQuality: state.settings.imageQuality,
+                      ),
+                      ContextMenuButtonConfig(
+                        'download.download'.tr(),
+                        onPressed: () => download(post.post),
+                      ),
+                    ],
                   ),
                 ),
-                previewPlaceholderUrl: post.post.previewImageUrl,
-                contextMenuAction: _buildContextMenu(post, context),
+                child: ImageGridItem(
+                  previewCacheManager: context.read<PreviewImageCacheManager>(),
+                  isFaved: post.isFavorited,
+                  enableFav: authState is Authenticated,
+                  onFavToggle: (isFaved) async {
+                    final success =
+                        await _getFavAction(context, !isFaved, post.post.id);
+                    if (success) {
+                      onFavoriteUpdated.call(
+                        post.post.id,
+                        isFaved,
+                      );
+                    }
+                  },
+                  autoScrollOptions: AutoScrollOptions(
+                    controller: scrollController,
+                    index: index,
+                  ),
+                  borderRadius: BorderRadius.circular(
+                    state.settings.imageBorderRadius,
+                  ),
+                  aspectRatio: post.post.aspectRatio,
+                  gridSize: gridSize,
+                  imageQuality: state.settings.imageQuality,
+                  image: legacy
+                      ? BooruImageLegacy(
+                          imageUrl: getImageUrlForDisplay(
+                            post.post,
+                            getImageQuality(
+                              size: gridSize,
+                              presetImageQuality: state.settings.imageQuality,
+                            ),
+                          ),
+                          placeholderUrl: post.post.previewImageUrl,
+                          borderRadius: BorderRadius.circular(
+                            state.settings.imageBorderRadius,
+                          ),
+                        )
+                      : null,
+                  onTap: () => onTap?.call(post.post, index),
+                  isAnimated: post.post.isAnimated,
+                  isTranslated: post.post.isTranslated,
+                  hasComments: post.post.hasComment,
+                  hasParentOrChildren: post.post.hasParentOrChildren,
+                  previewUrl: getImageUrlForDisplay(
+                    post.post,
+                    getImageQuality(
+                      size: gridSize,
+                      presetImageQuality: state.settings.imageQuality,
+                    ),
+                  ),
+                  previewPlaceholderUrl: post.post.previewImageUrl,
+                  contextMenuAction: _buildContextMenu(post, context),
+                ),
               );
             }
 

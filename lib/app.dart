@@ -8,8 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_portal/flutter_portal.dart';
 
 // Project imports:
+import 'package:boorusama/core/analytics.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/platforms/windows/windows.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
@@ -18,7 +20,10 @@ import 'boorus/danbooru/router.dart';
 class App extends StatefulWidget {
   const App({
     super.key,
+    required this.settings,
   });
+
+  final Settings settings;
 
   @override
   State<App> createState() => _AppState();
@@ -71,6 +76,11 @@ class _AppState extends State<App> {
             debugShowCheckedModeBanner: false,
             onGenerateRoute: AppRouter.router.generator,
             title: context.read<AppInfoProvider>().appInfo.appName,
+            navigatorObservers: isAnalyticsEnabled(widget.settings)
+                ? [
+                    getAnalyticsObserver(),
+                  ]
+                : [],
           );
         },
       ),

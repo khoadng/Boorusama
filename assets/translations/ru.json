@@ -246,7 +246,8 @@
             "english" : "Английский",
             "russian" : "Русский",
             "belarusian" : "Белорусский",
-            "vietnamese" : "Вьетнамский"
+            "vietnamese" : "Вьетнамский",
+            "japanese" : "Японский"
         },
         "theme" : {
             "theme" : "Тема",

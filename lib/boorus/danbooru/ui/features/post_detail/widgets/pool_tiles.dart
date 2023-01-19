@@ -27,11 +27,7 @@ class PoolTiles extends StatelessWidget {
           ...pools.mapIndexed(
             (index, e) => ListTile(
               dense: true,
-              onTap: () => AppRouter.router.navigateTo(
-                context,
-                'pool/detail',
-                routeSettings: RouteSettings(arguments: [e]),
-              ),
+              onTap: () => goToPoolDetailPage(context, e),
               visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
               title: Text(
                 e.name.removeUnderscoreWithSpace(),

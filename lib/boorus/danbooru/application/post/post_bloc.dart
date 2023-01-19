@@ -56,6 +56,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   accountRepository,
                 ))
                 .then(filterWith(blacklistedTagsRepository))
+                .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
@@ -76,6 +77,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                       accountRepository,
                     ))
                     .then(filterWith(blacklistedTagsRepository))
+                    .then(filterFlashFiles())
                     .then(preloadPreviewImagesWith(previewPreloader)),
                 onError: handleErrorWith(emit),
               );
@@ -97,6 +99,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   accountRepository,
                 ))
                 .then(filterWith(blacklistedTagsRepository))
+                .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
@@ -122,6 +125,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   accountRepository,
                 ))
                 .then(filterWith(blacklistedTagsRepository))
+                .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
@@ -143,6 +147,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
                   accountRepository,
                 ))
                 .then(filterWith(blacklistedTagsRepository))
+                .then(filterFlashFiles())
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
@@ -282,3 +287,6 @@ String? getErrorMessage(BooruError error) {
 
   return message;
 }
+
+Future<List<PostData>> Function(List<PostData> posts) filterFlashFiles() =>
+    filterUnsupportedFormat({'swf'});

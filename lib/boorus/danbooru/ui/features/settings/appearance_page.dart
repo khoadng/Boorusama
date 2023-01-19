@@ -11,6 +11,7 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
 import 'widgets/settings_header.dart';
 
@@ -105,172 +106,166 @@ class _AppearancePageState extends State<AppearancePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: widget.hasAppBar
-          ? AppBar(
-              title: const Text('settings.appearance').tr(),
-            )
-          : null,
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          return SafeArea(
-            child: ListView(
-              primary: false,
-              children: [
-                SettingsHeader(label: 'settings.general'.tr()),
-                SettingsTile<ThemeMode>(
-                  title: const Text('settings.theme.theme').tr(),
-                  selectedOption: state.settings.themeMode,
-                  items: [...ThemeMode.values]..remove(ThemeMode.system),
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(themeMode: value)),
-                  optionBuilder: (value) =>
-                      Text(_themeModeToString(value).tr()),
-                ),
-                const Divider(thickness: 1),
-                SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
-                SettingsTile<GridSize>(
-                  title: const Text('settings.image_grid.grid_size.grid_size')
-                      .tr(),
-                  selectedOption: state.settings.gridSize,
-                  items: GridSize.values,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(gridSize: value)),
-                  optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
-                ),
-                SettingsTile<ImageListType>(
-                  title: const Text('settings.image_list.image_list').tr(),
-                  selectedOption: state.settings.imageListType,
-                  items: ImageListType.values,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(imageListType: value)),
-                  optionBuilder: (value) =>
-                      Text(_imageListToString(value)).tr(),
-                ),
-                SettingsTile<ImageQuality>(
-                  title: const Text(
-                    'settings.image_grid.image_quality.image_quality',
-                  ).tr(),
-                  subtitle: state.settings.imageQuality == ImageQuality.high
-                      ? Text(
-                          'settings.image_grid.image_quality.high_quality_notice',
-                          style: TextStyle(
-                            color: Theme.of(context).hintColor,
-                          ),
-                        ).tr()
-                      : null,
-                  selectedOption: state.settings.imageQuality,
-                  items: [...ImageQuality.values]
-                    ..remove(ImageQuality.original),
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(imageQuality: value)),
-                  optionBuilder: (value) =>
-                      Text(_imageQualityToString(value)).tr(),
-                ),
+    final settings =
+        context.select((SettingsCubit cubit) => cubit.state.settings);
 
-                const SizedBox(
-                  height: 10,
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: const Text('settings.image_grid.spacing').tr(),
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      _buildSpacingSlider(state),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        child: const Text('settings.image_grid.corner_radius')
-                            .tr(),
-                      ),
-                      _buildBorderRadiusSlider(state),
-                    ],
-                  ),
-                ),
-
-                const Divider(thickness: 1),
-                // SettingsHeader(
-                //   label: 'settings.image_viewer.image_viewer'.tr(),
-                // ),
-                // ListTile(
-                //   title: const Text('settings.image_viewer.full_res_as_default')
-                //       .tr(),
-                //   subtitle: state.settings.imageQualityInFullView ==
-                //           ImageQuality.original
-                //       ? const Text('settings.image_viewer.full_res_notice').tr()
-                //       : null,
-                //   trailing: Switch(
-                //     activeColor: Theme.of(context).colorScheme.primary,
-                //     value: state.settings.imageQualityInFullView ==
-                //         ImageQuality.original,
-                //     onChanged: (value) {
-                //       context
-                //           .read<SettingsCubit>()
-                //           .update(state.settings.copyWith(
-                //             imageQualityInFullView: value
-                //                 ? ImageQuality.original
-                //                 : ImageQuality.automatic,
-                //           ));
-                //     },
-                //   ),
-                // ),
-                // const Divider(thickness: 1),
-                SettingsHeader(
-                  label: 'settings.image_detail.image_detail'.tr(),
-                ),
-                SettingsTile<ActionBarDisplayBehavior>(
-                  title: const Text(
-                    'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior',
-                  ).tr(),
-                  selectedOption: state.settings.actionBarDisplayBehavior,
-                  onChanged: (value) => context.read<SettingsCubit>().update(
-                        state.settings
-                            .copyWith(actionBarDisplayBehavior: value),
-                      ),
-                  items: ActionBarDisplayBehavior.values,
-                  optionBuilder: (value) =>
-                      Text(_actionBarDisplayBehaviorToString(value)).tr(),
-                ),
-                SettingsTile<DetailsDisplay>(
-                  title:
-                      const Text('settings.details_style.details_style').tr(),
-                  selectedOption: state.settings.detailsDisplay,
-                  items: DetailsDisplay.values,
-                  onChanged: (value) => context
-                      .read<SettingsCubit>()
-                      .update(state.settings.copyWith(detailsDisplay: value)),
-                  optionBuilder: (value) =>
-                      Text(_detailsDisplayToString(value)).tr(),
-                ),
-              ],
+    return ConditionalParentWidget(
+      condition: widget.hasAppBar,
+      conditionalBuilder: (child) => Scaffold(
+        appBar: AppBar(
+          title: const Text('settings.appearance').tr(),
+        ),
+        body: child,
+      ),
+      child: SafeArea(
+        child: ListView(
+          shrinkWrap: true,
+          primary: false,
+          children: [
+            SettingsHeader(label: 'settings.general'.tr()),
+            SettingsTile<ThemeMode>(
+              title: const Text('settings.theme.theme').tr(),
+              selectedOption: settings.themeMode,
+              items: [...ThemeMode.values]..remove(ThemeMode.system),
+              onChanged: (value) => context
+                  .read<SettingsCubit>()
+                  .update(settings.copyWith(themeMode: value)),
+              optionBuilder: (value) => Text(_themeModeToString(value).tr()),
             ),
-          );
-        },
+            const Divider(thickness: 1),
+            SettingsHeader(label: 'settings.image_grid.image_grid'.tr()),
+            SettingsTile<GridSize>(
+              title: const Text('settings.image_grid.grid_size.grid_size').tr(),
+              selectedOption: settings.gridSize,
+              items: GridSize.values,
+              onChanged: (value) => context
+                  .read<SettingsCubit>()
+                  .update(settings.copyWith(gridSize: value)),
+              optionBuilder: (value) => Text(_gridSizeToString(value).tr()),
+            ),
+            SettingsTile<ImageListType>(
+              title: const Text('settings.image_list.image_list').tr(),
+              selectedOption: settings.imageListType,
+              items: ImageListType.values,
+              onChanged: (value) => context
+                  .read<SettingsCubit>()
+                  .update(settings.copyWith(imageListType: value)),
+              optionBuilder: (value) => Text(_imageListToString(value)).tr(),
+            ),
+            SettingsTile<ImageQuality>(
+              title: const Text(
+                'settings.image_grid.image_quality.image_quality',
+              ).tr(),
+              subtitle: settings.imageQuality == ImageQuality.high
+                  ? Text(
+                      'settings.image_grid.image_quality.high_quality_notice',
+                      style: TextStyle(
+                        color: Theme.of(context).hintColor,
+                      ),
+                    ).tr()
+                  : null,
+              selectedOption: settings.imageQuality,
+              items: [...ImageQuality.values]..remove(ImageQuality.original),
+              onChanged: (value) => context
+                  .read<SettingsCubit>()
+                  .update(settings.copyWith(imageQuality: value)),
+              optionBuilder: (value) => Text(_imageQualityToString(value)).tr(),
+            ),
+
+            const SizedBox(
+              height: 10,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Text('settings.image_grid.spacing').tr(),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  _buildSpacingSlider(settings),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: const Text('settings.image_grid.corner_radius').tr(),
+                  ),
+                  _buildBorderRadiusSlider(settings),
+                ],
+              ),
+            ),
+
+            const Divider(thickness: 1),
+            // SettingsHeader(
+            //   label: 'settings.image_viewer.image_viewer'.tr(),
+            // ),
+            // ListTile(
+            //   title: const Text('settings.image_viewer.full_res_as_default')
+            //       .tr(),
+            //   subtitle: state.settings.imageQualityInFullView ==
+            //           ImageQuality.original
+            //       ? const Text('settings.image_viewer.full_res_notice').tr()
+            //       : null,
+            //   trailing: Switch(
+            //     activeColor: Theme.of(context).colorScheme.primary,
+            //     value: state.settings.imageQualityInFullView ==
+            //         ImageQuality.original,
+            //     onChanged: (value) {
+            //       context
+            //           .read<SettingsCubit>()
+            //           .update(state.settings.copyWith(
+            //             imageQualityInFullView: value
+            //                 ? ImageQuality.original
+            //                 : ImageQuality.automatic,
+            //           ));
+            //     },
+            //   ),
+            // ),
+            // const Divider(thickness: 1),
+            SettingsHeader(
+              label: 'settings.image_detail.image_detail'.tr(),
+            ),
+            SettingsTile<ActionBarDisplayBehavior>(
+              title: const Text(
+                'settings.image_detail.action_bar_display_behavior.action_bar_display_behavior',
+              ).tr(),
+              selectedOption: settings.actionBarDisplayBehavior,
+              onChanged: (value) => context.read<SettingsCubit>().update(
+                    settings.copyWith(actionBarDisplayBehavior: value),
+                  ),
+              items: ActionBarDisplayBehavior.values,
+              optionBuilder: (value) =>
+                  Text(_actionBarDisplayBehaviorToString(value)).tr(),
+            ),
+            SettingsTile<DetailsDisplay>(
+              title: const Text('settings.details_style.details_style').tr(),
+              selectedOption: settings.detailsDisplay,
+              items: DetailsDisplay.values,
+              onChanged: (value) => context
+                  .read<SettingsCubit>()
+                  .update(settings.copyWith(detailsDisplay: value)),
+              optionBuilder: (value) =>
+                  Text(_detailsDisplayToString(value)).tr(),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildBorderRadiusSlider(SettingsState state) {
+  Widget _buildBorderRadiusSlider(Settings settings) {
     return ValueListenableBuilder<double>(
       valueListenable: _borderRadiusSliderValue,
       builder: (context, value, child) {
@@ -281,14 +276,14 @@ class _AppearancePageState extends State<AppearancePage> {
           value: value,
           onChangeEnd: (value) => context
               .read<SettingsCubit>()
-              .update(state.settings.copyWith(imageBorderRadius: value)),
+              .update(settings.copyWith(imageBorderRadius: value)),
           onChanged: (value) => _borderRadiusSliderValue.value = value,
         );
       },
     );
   }
 
-  Widget _buildSpacingSlider(SettingsState state) {
+  Widget _buildSpacingSlider(Settings settings) {
     return ValueListenableBuilder<double>(
       valueListenable: _spacingSliderValue,
       builder: (context, value, child) {
@@ -299,7 +294,7 @@ class _AppearancePageState extends State<AppearancePage> {
           value: value,
           onChangeEnd: (value) => context
               .read<SettingsCubit>()
-              .update(state.settings.copyWith(imageGridSpacing: value)),
+              .update(settings.copyWith(imageGridSpacing: value)),
           onChanged: (value) => _spacingSliderValue.value = value,
         );
       },

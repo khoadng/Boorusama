@@ -7,7 +7,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/download/download_service.dart';
+import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 
@@ -61,6 +61,9 @@ class AlternativeDownloadService implements DownloadService<Post> {
       final response = await dio.get(
         item.downloadUrl,
         options: Options(
+          headers: {
+            'User-Agent': userAgent,
+          },
           responseType: ResponseType.bytes,
           followRedirects: false,
           validateStatus: (status) => status != null && status < 500,

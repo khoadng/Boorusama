@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'package:boorusama/core/core.dart';
 
 class TrendingTags extends StatelessWidget {
   const TrendingTags({
@@ -22,7 +23,7 @@ class TrendingTags extends StatelessWidget {
     return tags != null && tags.isNotEmpty
         ? Wrap(
             spacing: 4,
-            runSpacing: -4,
+            runSpacing: isMobilePlatform() ? -4 : 8,
             children: tags
                 .take(15)
                 .map((e) => RawChip(

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
+import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/landing_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
@@ -18,6 +20,7 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
+import 'full_history_view.dart';
 import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
@@ -194,14 +197,9 @@ class _SelectedTagList extends StatelessWidget {
           context.read<SearchBloc>().add(const SearchSelectedTagCleared()),
       onDelete: (tag) =>
           context.read<SearchBloc>().add(SearchSelectedTagRemoved(tag: tag)),
-      onBulkDownload: (tags) => AppRouter.router.navigateTo(
+      onBulkDownload: (tags) => goToBulkDownloadPage(
         context,
-        '/bulk_download',
-        routeSettings: RouteSettings(
-          arguments: [
-            tags.map((e) => e.toString()).toList(),
-          ],
-        ),
+        tags.map((e) => e.toString()).toList(),
       ),
     );
   }
@@ -238,16 +236,62 @@ class _LandingView extends StatelessWidget {
       },
       onTagTap: (value) {
         FocusManager.instance.primaryFocus?.unfocus();
-        context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+        _onTagTap(context, value);
       },
-      onHistoryRemoved: (value) {
-        context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
-      },
-      onHistoryCleared: () {
-        context.read<SearchBloc>().add(const SearchHistoryCleared());
+      onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
+      onHistoryCleared: () => _onHistoryCleared(context),
+      onFullHistoryRequested: () {
+        final bloc = context.read<SearchHistoryBloc>();
+        final searchBloc = context.read<SearchBloc>();
+
+        showMaterialModalBottomSheet(
+          context: context,
+          duration: const Duration(milliseconds: 200),
+          builder: (context) =>
+              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+            bloc: bloc,
+            builder: (context, state) {
+              return Scaffold(
+                appBar: AppBar(
+                  title: const Text('search.history.history').tr(),
+                  actions: [
+                    TextButton(
+                      onPressed: () => _onHistoryCleared(context),
+                      child: const Text('search.history.clear').tr(),
+                    ),
+                  ],
+                ),
+                body: FullHistoryView(
+                  onHistoryTap: (value) => _onHistoryTap(
+                    context,
+                    value,
+                    searchBloc,
+                  ),
+                  onHistoryRemoved: (value) =>
+                      _onHistoryRemoved(context, value),
+                  histories: state.histories,
+                ),
+              );
+            },
+          ),
+        );
       },
     );
   }
+
+  void _onTagTap(BuildContext context, String value) =>
+      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+
+  void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
+    Navigator.of(context).pop();
+    bloc.add(SearchRawTagSelected(tag: value));
+  }
+
+  void _onHistoryCleared(BuildContext context) =>
+      context.read<SearchBloc>().add(const SearchHistoryCleared());
+
+  void _onHistoryRemoved(BuildContext context, SearchHistory value) =>
+      context.read<SearchBloc>().add(SearchHistoryDeleted(history: value));
 }
 
 // ignore: prefer_mixin

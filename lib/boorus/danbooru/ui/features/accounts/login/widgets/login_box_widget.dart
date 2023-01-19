@@ -68,6 +68,7 @@ class LoginBox extends HookWidget {
       child: SizedBox(
         width: 400,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,
           children: [
             Form(
@@ -76,8 +77,6 @@ class LoginBox extends HookWidget {
               child: Container(
                 margin: const EdgeInsets.only(
                   top: 40,
-                  left: 30,
-                  right: 30,
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -181,7 +180,7 @@ class LoginBox extends HookWidget {
             const SizedBox(height: 20),
             BlocBuilder<AuthenticationCubit, AuthenticationState>(
               builder: (context, state) => state is AuthenticationInProgress
-                  ? const CircularProgressIndicator()
+                  ? const Center(child: CircularProgressIndicator())
                   : _buildLoginButton(
                       context,
                       formKey,

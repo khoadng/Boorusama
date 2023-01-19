@@ -31,7 +31,7 @@ class BlacklistedTagsPage extends StatelessWidget {
               title: const Text('blacklisted_tags.blacklisted_tags').tr(),
               actions: [_buildAddTagButton()],
             ),
-            body: SafeArea(child: _buildTags()),
+            body: const SafeArea(child: BlacklistedTagsList()),
           )
         : Scaffold(
             body: Row(children: [
@@ -55,126 +55,9 @@ class BlacklistedTagsPage extends StatelessWidget {
                 ),
               ),
               const VerticalDivider(),
-              Expanded(child: _buildTags()),
+              const Expanded(child: BlacklistedTagsList()),
             ]),
           );
-  }
-
-  Widget _buildTags() {
-    return BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
-      listenWhen: (previous, current) => current is BlacklistedTagsError,
-      listener: (context, state) {
-        final snackbar = SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6,
-          content: Text((state as BlacklistedTagsError).errorMessage),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackbar);
-      },
-      builder: (context, state) {
-        if (state.status == LoadStatus.success ||
-            state.status == LoadStatus.loading) {
-          return CustomScrollView(
-            slivers: [
-              _buildWarning(),
-              _buildBlacklistedList(state),
-            ],
-          );
-        } else if (state.status == LoadStatus.failure) {
-          return Center(
-            child: const Text('blacklisted_tags.load_error').tr(),
-          );
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-
-  Widget _buildBlacklistedList(BlacklistedTagsState state) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final tag = state.blacklistedTags[index];
-
-          return ListTile(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            title: Text(tag),
-            trailing: PopupMenuButton(
-              constraints: const BoxConstraints(minWidth: 150),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      context
-                          .read<BlacklistedTagsBloc>()
-                          .add(BlacklistedTagRemoved(tag: tag));
-                    },
-                    title: const Text('blacklisted_tags.remove').tr(),
-                    trailing: const FaIcon(
-                      FontAwesomeIcons.trash,
-                      size: 16,
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    onTap: () {
-                      final bloc = context.read<BlacklistedTagsBloc>();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                        enterWidget: MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => TagSearchBloc(
-                                tagInfo: context.read<TagInfo>(),
-                                autocompleteRepository:
-                                    context.read<AutocompleteRepository>(),
-                              ),
-                            ),
-                          ],
-                          child: BlacklistedTagsSearchPage(
-                            initialTags: tag.split(' '),
-                            onSelectedDone: (tagItems) {
-                              bloc.add(BlacklistedTagReplaced(
-                                oldTag: tag,
-                                newTag:
-                                    tagItems.map((e) => e.toString()).join(' '),
-                              ));
-                            },
-                          ),
-                        ),
-                        oldWidget: this,
-                      ));
-                    },
-                    title: const Text('blacklisted_tags.edit').tr(),
-                    trailing: const FaIcon(
-                      FontAwesomeIcons.pen,
-                      size: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-        childCount: state.blacklistedTags.length,
-      ),
-    );
-  }
-
-  Widget _buildWarning() {
-    return SliverToBoxAdapter(
-      child: WarningContainer(contentBuilder: (context) {
-        return Html(data: 'blacklisted_tags.limitation_notice'.tr());
-      }),
-    );
   }
 
   Widget _buildAddTagButton() {
@@ -210,6 +93,149 @@ class BlacklistedTagsPage extends StatelessWidget {
           icon: const FaIcon(FontAwesomeIcons.plus),
         );
       },
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class BlacklistedTagsList extends StatelessWidget {
+  const BlacklistedTagsList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
+      listenWhen: (previous, current) => current is BlacklistedTagsError,
+      listener: (context, state) {
+        final snackbar = SnackBar(
+          behavior: SnackBarBehavior.floating,
+          elevation: 6,
+          content: Text((state as BlacklistedTagsError).errorMessage),
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackbar);
+      },
+      builder: (context, state) {
+        if (state.status == LoadStatus.success ||
+            state.status == LoadStatus.loading) {
+          return CustomScrollView(
+            slivers: [
+              SliverToBoxAdapter(
+                child: WarningContainer(contentBuilder: (context) {
+                  return Html(data: 'blacklisted_tags.limitation_notice'.tr());
+                }),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => BlacklistedTagTile(
+                    tag: state.blacklistedTags[index],
+                    onEditTap: () {
+                      final bloc = context.read<BlacklistedTagsBloc>();
+
+                      Navigator.of(context).push(ParallaxSlideInPageRoute(
+                        enterWidget: MultiBlocProvider(
+                          providers: [
+                            BlocProvider(
+                              create: (context) => TagSearchBloc(
+                                tagInfo: context.read<TagInfo>(),
+                                autocompleteRepository:
+                                    context.read<AutocompleteRepository>(),
+                              ),
+                            ),
+                          ],
+                          child: BlacklistedTagsSearchPage(
+                            initialTags:
+                                state.blacklistedTags[index].split(' '),
+                            onSelectedDone: (tagItems) {
+                              bloc.add(BlacklistedTagReplaced(
+                                oldTag: state.blacklistedTags[index],
+                                newTag:
+                                    tagItems.map((e) => e.toString()).join(' '),
+                              ));
+                            },
+                          ),
+                        ),
+                        oldWidget: this,
+                      ));
+                    },
+                  ),
+                  childCount: state.blacklistedTags.length,
+                ),
+              ),
+            ],
+          );
+        } else if (state.status == LoadStatus.failure) {
+          return Center(
+            child: const Text('blacklisted_tags.load_error').tr(),
+          );
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      },
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class BlacklistedTagTile extends StatelessWidget {
+  const BlacklistedTagTile({
+    super.key,
+    required this.tag,
+    required this.onEditTap,
+  });
+
+  final String tag;
+  final VoidCallback onEditTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        child: ListTile(
+          title: Text(tag),
+          // ignore: no-empty-block
+          onTap: () {},
+          trailing: PopupMenuButton(
+            constraints: const BoxConstraints(minWidth: 150),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    context
+                        .read<BlacklistedTagsBloc>()
+                        .add(BlacklistedTagRemoved(tag: tag));
+                  },
+                  title: const Text('blacklisted_tags.remove').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.trash,
+                    size: 16,
+                  ),
+                ),
+              ),
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEditTap.call();
+                  },
+                  title: const Text('blacklisted_tags.edit').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.pen,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

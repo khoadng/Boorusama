@@ -21,6 +21,7 @@ class InfiniteLoadList extends StatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.builder,
+    this.backgroundColor,
   });
 
   final bool extendBody;
@@ -36,6 +37,7 @@ class InfiniteLoadList extends StatefulWidget {
     BuildContext context,
     AutoScrollController controller,
   ) builder;
+  final Color? backgroundColor;
 
   @override
   State<InfiniteLoadList> createState() => _InfiniteLoadListState();
@@ -119,6 +121,7 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: widget.backgroundColor,
       floatingActionButton: FadeTransition(
         opacity: _animationController,
         child: ScaleTransition(
@@ -176,6 +179,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
     this.extendBody,
     this.enableRefresh = true,
     this.scrollPhysics,
+    this.backgroundColor,
   });
 
   final bool? extendBody;
@@ -189,10 +193,12 @@ class InfiniteLoadListScrollView extends StatelessWidget {
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
   final ScrollPhysics? scrollPhysics;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return InfiniteLoadList(
+      backgroundColor: backgroundColor,
       extendBody: extendBody ?? false,
       scrollController: scrollController,
       refreshController: refreshController,

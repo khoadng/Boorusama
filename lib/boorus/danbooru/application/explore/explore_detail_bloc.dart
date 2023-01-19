@@ -12,7 +12,6 @@ import 'package:boorusama/common/bloc/bloc.dart';
 
 enum ExploreCategory {
   popular,
-  curated,
   mostViewed,
   hot,
 }

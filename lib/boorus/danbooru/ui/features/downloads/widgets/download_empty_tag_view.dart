@@ -3,30 +3,61 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:readmore/readmore.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
+
+const _message =
+    'Please be aware that since you are currently using the experimental download method, bulk download may not function as expected. This is because bulk download relies on the primary download method, and if the primary method is not working properly, bulk download will also not work.';
 
 class DownloadEmptyTagView extends StatelessWidget {
   const DownloadEmptyTagView({
     super.key,
+    required this.settings,
   });
+
+  final Settings settings;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(4),
-      child: SimpleTagSearchView(
-        closeOnSelected: false,
-        ensureValidTag: false,
-        onSelected: (tag) {
-          context.read<BulkImageDownloadBloc>().add(
-                BulkImageDownloadTagsAdded(
-                  tags: [tag.value],
+    return Scaffold(
+      backgroundColor: Theme.of(context).cardColor,
+      body: Padding(
+        padding: const EdgeInsets.all(4),
+        child: Column(
+          children: [
+            if (settings.downloadMethod != DownloadMethod.flutterDownloader)
+              WarningContainer(
+                contentBuilder: (context) => const ReadMoreText(
+                  _message,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: 'Show less',
+                  moreStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-              );
-        },
+              ),
+            Expanded(
+              child: SimpleTagSearchView(
+                closeOnSelected: false,
+                ensureValidTag: false,
+                onSelected: (tag) {
+                  context.read<BulkImageDownloadBloc>().add(
+                        BulkImageDownloadTagsAdded(
+                          tags: [tag.value],
+                        ),
+                      );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

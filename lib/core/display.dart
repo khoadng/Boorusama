@@ -11,9 +11,9 @@ enum ScreenSize {
 ScreenSize screenWidthToDisplaySize(double width) {
   if (width <= 600) {
     return ScreenSize.small;
-  } else if (width <= 1000) {
+  } else if (width <= 1100) {
     return ScreenSize.medium;
-  } else if (width <= 1366) {
+  } else if (width <= 1400) {
     return ScreenSize.large;
   } else {
     return ScreenSize.veryLarge;

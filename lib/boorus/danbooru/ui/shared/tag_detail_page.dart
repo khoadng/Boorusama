@@ -42,85 +42,64 @@ class _TagDetailPageState extends State<TagDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Screen.of(context).size == ScreenSize.small
-        ? Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              shadowColor: Colors.transparent,
-              backgroundColor: Colors.transparent,
-              actions: [
-                IconButton(
-                  onPressed: () {
-                    AppRouter.router.navigateTo(
-                      context,
-                      '/bulk_download',
-                      routeSettings: RouteSettings(
-                        arguments: [
-                          [widget.tagName],
-                        ],
-                      ),
-                    );
-                  },
-                  icon: const Icon(Icons.download),
-                ),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        actions: [
+          IconButton(
+            onPressed: () {
+              goToBulkDownloadPage(
+                context,
+                [widget.tagName],
+              );
+            },
+            icon: const Icon(Icons.download),
+          ),
+        ],
+      ),
+      body: Stack(children: [
+        _Panel(
+          tagName: widget.tagName,
+          scrollController: scrollController,
+          header: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TagTitleName(tagName: widget.tagName),
+                widget.otherNamesBuilder(context),
               ],
             ),
-            body: Stack(children: [
-              _Panel(
-                tagName: widget.tagName,
-                scrollController: scrollController,
-                header: [
-                  Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text(
-                      widget.tagName.removeUnderscoreWithSpace(),
-                      style: Theme.of(context).textTheme.headline6!.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                    ),
-                    widget.otherNamesBuilder(context),
-                  ]),
-                  const SizedBox(height: 50),
-                ],
-              ),
-            ]),
-          )
-        : Scaffold(
-            body: Row(children: [
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.3,
-                child: Stack(children: [
-                  Align(
-                    alignment: const Alignment(-0.9, -0.9),
-                    child: IconButton(
-                      onPressed: Navigator.of(context).pop,
-                      icon: const Icon(Icons.close),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      const SizedBox(height: 70),
-                      Text(
-                        widget.tagName.removeUnderscoreWithSpace(),
-                        style: Theme.of(context).textTheme.headline6!.copyWith(
-                              fontWeight: FontWeight.w900,
-                            ),
-                      ),
-                      Expanded(child: widget.otherNamesBuilder(context)),
-                    ]),
-                  ),
-                ]),
-              ),
-              const VerticalDivider(width: 3, thickness: 2),
-              Expanded(
-                child: _Panel(
-                  useSliverAppBar: false,
-                  tagName: widget.tagName,
-                  scrollController: scrollController,
-                ),
-              ),
-            ]),
-          );
+            const SizedBox(height: 50),
+          ],
+        ),
+      ]),
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class TagTitleName extends StatelessWidget {
+  const TagTitleName({
+    super.key,
+    required this.tagName,
+  });
+
+  final String tagName;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Text(
+        tagName.removeUnderscoreWithSpace(),
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headline6!.copyWith(
+              fontWeight: FontWeight.w900,
+            ),
+      ),
+    );
   }
 }
 
@@ -129,13 +108,11 @@ class _Panel extends StatefulWidget {
     required this.tagName,
     required this.scrollController,
     this.header,
-    this.useSliverAppBar = true,
   });
 
   final String tagName;
   final AutoScrollController scrollController;
   final List<Widget>? header;
-  final bool useSliverAppBar;
 
   @override
   State<_Panel> createState() => _PanelState();
@@ -195,13 +172,13 @@ class _PanelState extends State<_Panel> {
                 SliverPadding(
                   padding: const EdgeInsets.only(bottom: 10),
                   sliver: SliverToBoxAdapter(
-                    child: _CategoryToggleSwitch(
+                    child: CategoryToggleSwitch(
                       onToggle: (category) => context.read<PostBloc>().add(
                             PostRefreshed(
                               tag: widget.tagName,
                               fetcher: SearchedPostFetcher.fromTags(
                                 widget.tagName,
-                                order: _tagFilterCategoryToPostsOrder(category),
+                                order: tagFilterCategoryToPostsOrder(category),
                               ),
                             ),
                           ),
@@ -223,24 +200,26 @@ enum TagFilterCategory {
   newest,
 }
 
-PostsOrder _tagFilterCategoryToPostsOrder(TagFilterCategory category) {
+PostsOrder tagFilterCategoryToPostsOrder(TagFilterCategory category) {
   if (category == TagFilterCategory.popular) return PostsOrder.popular;
 
   return PostsOrder.newest;
 }
 
-class _CategoryToggleSwitch extends StatefulWidget {
-  const _CategoryToggleSwitch({
+// ignore: prefer-single-widget-per-file
+class CategoryToggleSwitch extends StatefulWidget {
+  const CategoryToggleSwitch({
+    super.key,
     required this.onToggle,
   });
 
   final void Function(TagFilterCategory category) onToggle;
 
   @override
-  State<_CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
+  State<CategoryToggleSwitch> createState() => _CategoryToggleSwitchState();
 }
 
-class _CategoryToggleSwitchState extends State<_CategoryToggleSwitch> {
+class _CategoryToggleSwitchState extends State<CategoryToggleSwitch> {
   final ValueNotifier<int> selected = ValueNotifier(0);
 
   @override

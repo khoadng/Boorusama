@@ -13,6 +13,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/generated_plugin_registrant.dart"
+    - "**/firebase_options.dart"
   errors:
     unnecessary_lambdas: ignore
     invalid_annotation_target: ignore

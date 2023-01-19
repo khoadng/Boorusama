@@ -28,16 +28,7 @@ class RecommendArtistList extends StatelessWidget {
           (r) => RecommendPostSection(
             header: header?.call(r.title) ??
                 ListTile(
-                  onTap: () => AppRouter.router.navigateTo(
-                    context,
-                    '/artist',
-                    routeSettings: RouteSettings(
-                      arguments: [
-                        r.title,
-                        '',
-                      ],
-                    ),
-                  ),
+                  onTap: () => goToArtistPage(context, r.title),
                   title: Text(r.title.removeUnderscoreWithSpace()),
                   trailing: const Icon(Icons.keyboard_arrow_right_rounded),
                 ),
