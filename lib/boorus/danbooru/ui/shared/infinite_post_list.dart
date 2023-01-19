@@ -11,13 +11,13 @@ class InfinitePostList extends StatefulWidget {
   const InfinitePostList({
     super.key,
     required this.onLoadMore,
-    required this.onRefresh,
+    this.onRefresh,
     this.sliverHeaderBuilder,
     this.scrollController,
   });
 
   final VoidCallback onLoadMore;
-  final void Function(RefreshController controller) onRefresh;
+  final void Function(RefreshController controller)? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
 
@@ -89,12 +89,13 @@ class _InfinitePostListState extends State<InfinitePostList> {
           //   ),
           // ],
         ),
+        enableRefresh: widget.onRefresh != null,
         multiSelect: multiSelect,
         isLoading: state.loading,
         enableLoadMore: state.hasMore,
         onLoadMore: () => widget.onLoadMore.call(),
         onRefresh: (controller) {
-          widget.onRefresh.call(controller);
+          widget.onRefresh?.call(controller);
           Future.delayed(
             const Duration(seconds: 1),
             () => controller.refreshCompleted(),
