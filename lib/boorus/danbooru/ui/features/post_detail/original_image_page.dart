@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
@@ -10,6 +9,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/mobile.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
 class OriginalImagePage extends StatefulWidget {
@@ -29,54 +29,75 @@ class OriginalImagePage extends StatefulWidget {
 class _OriginalImagePageState extends State<OriginalImagePage> {
   late Orientation currentRotation;
   bool overlay = true;
+  bool zoom = false;
 
   @override
   void initState() {
     super.initState();
     currentRotation = widget.initialOrientation;
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.leanBack);
   }
 
   @override
   void dispose() {
     super.dispose();
-    SystemChrome.setEnabledSystemUIMode(
-      SystemUiMode.manual,
-      overlays: [
-        SystemUiOverlay.bottom,
-        SystemUiOverlay.top,
-      ],
-    );
+    showSystemStatus();
 
     switch (widget.initialOrientation) {
       case Orientation.portrait:
-        _changeToPortrait();
+        setDeviceToPortraitMode();
         break;
       case Orientation.landscape:
-        _changeToLandscape();
+        setDeviceToLandscapeMode();
         break;
     }
-  }
-
-  void _changeToLandscape() {
-    SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.landscapeRight],
-    );
-  }
-
-  void _changeToPortrait() {
-    SystemChrome.setPreferredOrientations(
-      [DeviceOrientation.portraitUp],
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => setState(() {
-        overlay = !overlay;
-      }),
+      onTap: () {
+        if (!zoom) {
+          setState(() {
+            overlay = !overlay;
+            setSystemActiveStatus(active: overlay);
+          });
+        }
+      },
       child: Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          elevation: 0,
+          toolbarHeight: kToolbarHeight * 1.3,
+          backgroundColor: Colors.transparent,
+          automaticallyImplyLeading: false,
+          leading: overlay
+              ? IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.of(context).pop(),
+                )
+              : null,
+          actions: [
+            if (isMobilePlatform() && overlay)
+              IconButton(
+                onPressed: () {
+                  if (currentRotation == Orientation.portrait) {
+                    setState(() {
+                      setDeviceToLandscapeMode();
+                      currentRotation = Orientation.landscape;
+                    });
+                  } else {
+                    setState(() {
+                      setDeviceToPortraitMode();
+                      currentRotation = Orientation.portrait;
+                    });
+                  }
+                },
+                icon: currentRotation == Orientation.portrait
+                    ? const Icon(Icons.rotate_left)
+                    : const Icon(Icons.rotate_right),
+              ),
+          ],
+        ),
         body: Stack(
           children: [
             Positioned.fill(
@@ -87,7 +108,20 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                 imageUrl: widget.post.fullImageUrl,
                 imageBuilder: (context, imageProvider) => Hero(
                   tag: '${widget.post.id}_hero',
-                  child: PhotoView(imageProvider: imageProvider),
+                  child: PhotoView(
+                    scaleStateChangedCallback: (value) {
+                      if (value != PhotoViewScaleState.initial) {
+                        setState(() {
+                          zoom = true;
+                          overlay = false;
+                          setSystemActiveStatus(active: overlay);
+                        });
+                      } else {
+                        setState(() => zoom = false);
+                      }
+                    },
+                    imageProvider: imageProvider,
+                  ),
                 ),
                 progressIndicatorBuilder: (context, url, progress) => Center(
                   child: CircularProgressIndicator.adaptive(
@@ -111,50 +145,6 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                   const Color.fromARGB(60, 0, 0, 0),
                   Colors.black12.withOpacity(0),
                 ],
-              ),
-            if (overlay)
-              Align(
-                alignment: const Alignment(-0.95, -0.9),
-                child: MaterialButton(
-                  color: Theme.of(context).cardColor.withOpacity(0.8),
-                  shape: const CircleBorder(),
-                  padding: const EdgeInsets.all(12),
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Icon(Icons.close),
-                ),
-              ),
-            if (overlay && isMobilePlatform())
-              Align(
-                alignment: const Alignment(0, 0.9),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: ButtonBar(
-                    children: [
-                      ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).cardColor,
-                        ),
-                        label: const Text('Rotate'),
-                        onPressed: () {
-                          if (currentRotation == Orientation.portrait) {
-                            setState(() {
-                              _changeToLandscape();
-                              currentRotation = Orientation.landscape;
-                            });
-                          } else {
-                            setState(() {
-                              _changeToPortrait();
-                              currentRotation = Orientation.portrait;
-                            });
-                          }
-                        },
-                        icon: currentRotation == Orientation.portrait
-                            ? const Icon(Icons.rotate_left)
-                            : const Icon(Icons.rotate_right),
-                      ),
-                    ],
-                  ),
-                ),
               ),
           ],
         ),

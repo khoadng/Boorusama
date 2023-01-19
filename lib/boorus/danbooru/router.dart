@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 // Package imports:
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
@@ -36,6 +37,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklist
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -128,7 +130,7 @@ class AppRouter {
 const _artist = 'artist';
 const _character = 'character';
 const _home = 'home';
-const _postDetails = 'post_details';
+const _postDetails = 'post/details';
 const _settings = 'settings';
 const _blacklisted = 'blacklisted_tags';
 const _savedSearch = 'saved_search';
@@ -142,6 +144,7 @@ const _login = 'login';
 const _explorePopular = 'explore/popular';
 const _exploreHot = 'explore/hot';
 const _exploreMostViewed = 'explore/most_viewed';
+const _image = 'image';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
@@ -670,4 +673,17 @@ void goToBlacklistedTagPage(BuildContext context) {
       ),
     );
   }
+}
+
+void goToOriginalImagePage(BuildContext context, Post post) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.fade,
+    settings: const RouteSettings(
+      name: _image,
+    ),
+    child: OriginalImagePage(
+      post: post,
+      initialOrientation: MediaQuery.of(context).orientation,
+    ),
+  ));
 }
