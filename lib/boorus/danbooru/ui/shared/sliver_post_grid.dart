@@ -27,7 +27,6 @@ import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
-
 import 'selectable_icon_button.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {

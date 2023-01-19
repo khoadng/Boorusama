@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -39,6 +38,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';

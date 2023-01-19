@@ -2,7 +2,6 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -18,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/common/collection_utils.dart';
 import 'package:boorusama/core/utils.dart';
 

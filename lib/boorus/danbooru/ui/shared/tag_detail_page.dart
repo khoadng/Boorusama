@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
@@ -10,6 +9,7 @@ import 'package:toggle_switch/toggle_switch.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/core/core.dart';
 
 class TagDetailPage extends StatelessWidget {
