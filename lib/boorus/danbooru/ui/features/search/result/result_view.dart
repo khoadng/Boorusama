@@ -15,7 +15,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
@@ -190,7 +190,7 @@ class _PaginationState extends State<_Pagination>
           ...widget.headerBuilder?.call() ?? [],
           const SliverToBoxAdapter(child: RelatedTagSection()),
           const SliverToBoxAdapter(child: ResultHeader()),
-          HomePostGrid(
+          PostGrid(
             controller: widget.scrollController,
             onTap: () => FocusScope.of(context).unfocus(),
           ),

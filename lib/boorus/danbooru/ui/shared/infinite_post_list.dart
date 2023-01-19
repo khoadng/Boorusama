@@ -1,6 +1,6 @@
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -105,7 +105,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
         sliverBuilder: (controller) => [
           if (widget.sliverHeaderBuilder != null)
             ...widget.sliverHeaderBuilder!(context),
-          HomePostGrid(
+          PostGrid(
             controller: controller,
             onPostSelectChanged: (post, selected) {
               setState(() {
