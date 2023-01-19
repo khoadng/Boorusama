@@ -36,10 +36,6 @@ class TagDetailPage extends StatelessWidget {
               tag: tagName,
               fetcher: SearchedPostFetcher.fromTags(tagName),
             ));
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          () => controller.refreshCompleted(),
-        );
       },
       sliverHeaderBuilder: (context) => [
         SliverAppBar(
