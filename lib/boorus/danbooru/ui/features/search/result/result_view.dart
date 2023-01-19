@@ -2,6 +2,7 @@
 import 'dart:math' as math;
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/rendering.dart';
 
@@ -16,7 +17,6 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -85,15 +85,8 @@ class _InfiniteScroll extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
-    final state = context.watch<PostBloc>().state;
 
-    return InfiniteLoadListScrollView(
-      backgroundColor: backgroundColor,
-      scrollPhysics: const NoImplicitScrollPhysics(),
-      scrollController: scrollController,
-      isLoading: state.loading,
-      refreshController: refreshController,
-      enableLoadMore: state.hasMore,
+    return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
             tags: tags.map((e) => e.toString()).join(' '),
             fetcher: SearchedPostFetcher.fromTags(
@@ -107,19 +100,11 @@ class _InfiniteScroll extends StatelessWidget {
                 tags.map((e) => e.toString()).join(' '),
               ),
             ));
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          () => controller.refreshCompleted(),
-        );
       },
-      sliverBuilder: (controller) => [
+      sliverHeaderBuilder: (context) => [
         ...headerBuilder?.call() ?? [],
         const SliverToBoxAdapter(child: RelatedTagSection()),
         const SliverToBoxAdapter(child: ResultHeader()),
-        HomePostGrid(
-          controller: controller,
-          onTap: () => FocusScope.of(context).unfocus(),
-        ),
       ],
     );
   }
