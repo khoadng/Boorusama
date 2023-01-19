@@ -48,71 +48,80 @@ class _InfinitePostListState extends State<InfinitePostList> {
   Widget build(BuildContext context) {
     final state = context.watch<PostBloc>().state;
 
-    return InfiniteLoadListScrollView(
-      bottomBuilder: () => ButtonBar(
-        alignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            onPressed: () =>
-                print('download ${selectedPosts.map((e) => e.id)}'),
-            icon: const Icon(Icons.download),
-          ),
-          IconButton(
-            onPressed: () => print('share'),
-            icon: const Icon(Icons.share),
-          ),
-        ],
-      ),
-      topBuilder: () => AppBar(
-        leading: IconButton(
-          onPressed: () => setState(() {
-            multiSelect = false;
+    return BlocListener<PostBloc, PostState>(
+      listener: (context, state) {
+        if (state.refreshing) {
+          setState(() {
             selectedPosts.clear();
-          }),
-          icon: const Icon(Icons.close),
+          });
+        }
+      },
+      child: InfiniteLoadListScrollView(
+        bottomBuilder: () => ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              onPressed: () =>
+                  print('download ${selectedPosts.map((e) => e.id)}'),
+              icon: const Icon(Icons.download),
+            ),
+            IconButton(
+              onPressed: () => print('share'),
+              icon: const Icon(Icons.share),
+            ),
+          ],
         ),
-        title: selectedPosts.isEmpty
-            ? const Text('Select items')
-            : Text('${selectedPosts.length} Items selected'),
-        actions: [
-          IconButton(
-            onPressed: () => print('select all'),
-            icon: const Icon(Icons.done_all),
+        topBuilder: () => AppBar(
+          leading: IconButton(
+            onPressed: () => setState(() {
+              multiSelect = false;
+              selectedPosts.clear();
+            }),
+            icon: const Icon(Icons.close),
+          ),
+          title: selectedPosts.isEmpty
+              ? const Text('Select items')
+              : Text('${selectedPosts.length} Items selected'),
+          // actions: [
+          //   IconButton(
+          //     onPressed: () => print('select all'),
+          //     icon: const Icon(Icons.done_all),
+          //   ),
+          // ],
+        ),
+        multiSelect: multiSelect,
+        isLoading: state.loading,
+        enableLoadMore: state.hasMore,
+        onLoadMore: () => widget.onLoadMore.call(),
+        onRefresh: (controller) {
+          widget.onRefresh.call(controller);
+          Future.delayed(
+            const Duration(seconds: 1),
+            () => controller.refreshCompleted(),
+          );
+        },
+        scrollController: _autoScrollController,
+        sliverBuilder: (controller) => [
+          if (widget.sliverHeaderBuilder != null)
+            ...widget.sliverHeaderBuilder!(context),
+          HomePostGrid(
+            controller: controller,
+            onPostSelectChanged: (post, selected) {
+              setState(() {
+                if (selected) {
+                  selectedPosts.add(post);
+                } else {
+                  selectedPosts.remove(post);
+                }
+              });
+            },
+            multiSelect: multiSelect,
+            onMultiSelect: () => setState(() {
+              multiSelect = true;
+            }),
           ),
         ],
       ),
-      multiSelect: multiSelect,
-      isLoading: state.loading,
-      enableLoadMore: state.hasMore,
-      onLoadMore: () => widget.onLoadMore.call(),
-      onRefresh: (controller) {
-        widget.onRefresh.call(controller);
-        Future.delayed(
-          const Duration(seconds: 1),
-          () => controller.refreshCompleted(),
-        );
-      },
-      scrollController: _autoScrollController,
-      sliverBuilder: (controller) => [
-        if (widget.sliverHeaderBuilder != null)
-          ...widget.sliverHeaderBuilder!(context),
-        HomePostGrid(
-          controller: controller,
-          onPostSelectChanged: (post, selected) {
-            setState(() {
-              if (selected) {
-                selectedPosts.add(post);
-              } else {
-                selectedPosts.remove(post);
-              }
-            });
-          },
-          multiSelect: multiSelect,
-          onMultiSelect: () => setState(() {
-            multiSelect = true;
-          }),
-        ),
-      ],
     );
   }
 }

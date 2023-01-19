@@ -16,11 +16,14 @@ class SelectableIconButton extends StatefulWidget {
   State<SelectableIconButton> createState() => _SelectableIconButtonState();
 }
 
-class _SelectableIconButtonState extends State<SelectableIconButton> {
+class _SelectableIconButtonState extends State<SelectableIconButton>
+    with AutomaticKeepAliveClientMixin {
   var selected = false;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     return IconButton(
       onPressed: () => setState(() {
         selected = !selected;
@@ -29,4 +32,8 @@ class _SelectableIconButtonState extends State<SelectableIconButton> {
       icon: selected ? widget.selectedIcon : widget.unSelectedIcon,
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
