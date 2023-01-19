@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -145,6 +146,7 @@ const _explorePopular = 'explore/popular';
 const _exploreHot = 'explore/hot';
 const _exploreMostViewed = 'explore/most_viewed';
 const _image = 'image';
+const _parentChild = 'post/child';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
@@ -269,6 +271,35 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
       ],
     ),
   );
+}
+
+void goToParentChildPage(
+  BuildContext context,
+  int parentId,
+  String tagQueryForDataFetching,
+) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.bottomToTop,
+    settings: const RouteSettings(
+      name: _parentChild,
+    ),
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: tagQueryForDataFetching,
+              fetcher: SearchedPostFetcher.fromTags(
+                tagQueryForDataFetching,
+              ),
+            )),
+        ),
+      ],
+      child: CustomContextMenuOverlay(
+        child: ParentChildPostPage(parentPostId: parentId),
+      ),
+    ),
+  ));
 }
 
 void goToHomePage(
