@@ -222,7 +222,7 @@ class InfiniteLoadListScrollView extends StatelessWidget {
                 // ignore: no-empty-block
                 onClosing: () {},
                 builder: (context) => SizedBox(
-                  height: 75,
+                  height: 60,
                   child: bottomBuilder?.call(),
                 ),
               )

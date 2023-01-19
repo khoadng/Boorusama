@@ -1,6 +1,7 @@
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
+import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,14 +61,22 @@ class _InfinitePostListState extends State<InfinitePostList> {
         bottomBuilder: () => ButtonBar(
           alignment: MainAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () =>
-                  print('download ${selectedPosts.map((e) => e.id)}'),
-              icon: const Icon(Icons.download),
-            ),
-            IconButton(
-              onPressed: () => print('share'),
-              icon: const Icon(Icons.share),
+            DownloadProviderWidget(
+              builder: (context, download) => IconButton(
+                onPressed: selectedPosts.isNotEmpty
+                    ? () {
+                        // ignore: prefer_foreach
+                        for (final p in selectedPosts) {
+                          download(p);
+                        }
+
+                        setState(() {
+                          multiSelect = false;
+                        });
+                      }
+                    : null,
+                icon: const Icon(Icons.download),
+              ),
             ),
           ],
         ),
@@ -82,12 +91,6 @@ class _InfinitePostListState extends State<InfinitePostList> {
           title: selectedPosts.isEmpty
               ? const Text('Select items')
               : Text('${selectedPosts.length} Items selected'),
-          // actions: [
-          //   IconButton(
-          //     onPressed: () => print('select all'),
-          //     icon: const Icon(Icons.done_all),
-          //   ),
-          // ],
         ),
         enableRefresh: widget.onRefresh != null,
         multiSelect: multiSelect,
