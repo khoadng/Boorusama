@@ -14,6 +14,7 @@ final languages = {
   'vi': 'vietnamese',
   'ru': 'russian',
   'be': 'belarusian',
+  'ja': 'japanese',
 };
 
 String getLanguageText(String value) {
