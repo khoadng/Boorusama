@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 
 Future<void> hideSystemStatus() => SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [],
+      overlays: [
+        SystemUiOverlay.bottom,
+      ],
     );
 
 Future<void> showSystemStatus() => SystemChrome.setEnabledSystemUIMode(
