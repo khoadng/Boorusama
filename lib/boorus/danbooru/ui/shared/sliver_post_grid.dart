@@ -151,6 +151,7 @@ class SliverPostGrid extends HookWidget {
                               (context, animation, secondaryAnimation) =>
                                   QuickPreviewImage(
                             child: BooruImage(
+                              placeholderUrl: post.post.previewImageUrl,
                               aspectRatio: post.post.aspectRatio,
                               imageUrl: post.post.normalImageUrl,
                               previewCacheManager:
