@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 // Package imports:
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
@@ -13,8 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/models/parent_child_data.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
@@ -316,24 +315,10 @@ class _ParentChildTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ParentChildTile(
       data: getParentChildData(post),
-      onTap: (data) => showBarModalBottomSheet(
-        context: context,
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider(
-              create: (context) => PostBloc.of(context)
-                ..add(PostRefreshed(
-                  tag: data.tagQueryForDataFetching,
-                  fetcher: SearchedPostFetcher.fromTags(
-                    data.tagQueryForDataFetching,
-                  ),
-                )),
-            ),
-          ],
-          child: ParentChildPostPage(
-            parentPostId: data.parentId,
-          ),
-        ),
+      onTap: (data) => goToParentChildPage(
+        context,
+        data.parentId,
+        data.tagQueryForDataFetching,
       ),
     );
   }

@@ -24,9 +24,7 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
-import 'parent_child_post_page.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
@@ -409,22 +407,10 @@ class _LargeLayoutContent extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8),
                   child: ParentChildTile(
                     data: getParentChildData(post.post),
-                    onTap: (data) => showSideSheetFromRight(
-                      context: context,
-                      body: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc.of(context)
-                              ..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                  data.tagQueryForDataFetching,
-                                ),
-                              )),
-                          ),
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
-                      ),
+                    onTap: (data) => goToParentChildPage(
+                      context,
+                      data.parentId,
+                      data.tagQueryForDataFetching,
                     ),
                   ),
                 ),

@@ -19,9 +19,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circul
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
-import 'parent_child_post_page.dart';
 import 'post_detail_page.dart';
 import 'widgets/file_details_section.dart';
 import 'widgets/post_slider.dart';
@@ -308,22 +306,10 @@ class _LargeLayoutContent extends StatelessWidget {
                   child: ParentChildTile(
                     minVerticalPadding: 12,
                     data: getParentChildData(post.post),
-                    onTap: (data) => showSideSheetFromRight(
-                      context: context,
-                      body: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc.of(context)
-                              ..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                  data.tagQueryForDataFetching,
-                                ),
-                              )),
-                          ),
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
-                      ),
+                    onTap: (data) => goToParentChildPage(
+                      context,
+                      data.parentId,
+                      data.tagQueryForDataFetching,
                     ),
                   ),
                 ),

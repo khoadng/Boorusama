@@ -36,8 +36,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_deskto
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
@@ -145,6 +145,7 @@ const _explorePopular = 'explore/popular';
 const _exploreHot = 'explore/hot';
 const _exploreMostViewed = 'explore/most_viewed';
 const _image = 'image';
+const _parentChild = 'post/child';
 
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
@@ -269,6 +270,35 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
       ],
     ),
   );
+}
+
+void goToParentChildPage(
+  BuildContext context,
+  int parentId,
+  String tagQueryForDataFetching,
+) {
+  Navigator.of(context).push(PageTransition(
+    type: PageTransitionType.bottomToTop,
+    settings: const RouteSettings(
+      name: _parentChild,
+    ),
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PostBloc.of(context)
+            ..add(PostRefreshed(
+              tag: tagQueryForDataFetching,
+              fetcher: SearchedPostFetcher.fromTags(
+                tagQueryForDataFetching,
+              ),
+            )),
+        ),
+      ],
+      child: CustomContextMenuOverlay(
+        child: ParentChildPostPage(parentPostId: parentId),
+      ),
+    ),
+  ));
 }
 
 void goToHomePage(
@@ -573,8 +603,63 @@ void goToExploreDetailPage(
             }
           }(),
         ),
-        builder: (context) => BlocProvider(
-          create: (context) => ExploreDetailBloc(initialDate: date),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ExploreDetailBloc(initialDate: date),
+            ),
+            BlocProvider(
+              create: (context) => PostBloc.of(context)
+                ..add(
+                  PostRefreshed(
+                    fetcher: categoryToFetcher(
+                      category,
+                      date ?? DateTime.now(),
+                      TimeScale.day,
+                      context,
+                    ),
+                  ),
+                ),
+            ),
+          ],
+          child: CustomContextMenuOverlay(
+            child: ExploreDetailPage(
+              title: Text(
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              category: category,
+            ),
+          ),
+        ),
+      ),
+    );
+  } else {
+    showDesktopFullScreenWindow(
+      context,
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ExploreDetailBloc(initialDate: date),
+          ),
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(
+                PostRefreshed(
+                  fetcher: categoryToFetcher(
+                    category,
+                    date ?? DateTime.now(),
+                    TimeScale.day,
+                    context,
+                  ),
+                ),
+              ),
+          ),
+        ],
+        child: CustomContextMenuOverlay(
           child: ExploreDetailPage(
             title: Text(
               title,
@@ -585,23 +670,6 @@ void goToExploreDetailPage(
             ),
             category: category,
           ),
-        ),
-      ),
-    );
-  } else {
-    showDesktopFullScreenWindow(
-      context,
-      builder: (context) => BlocProvider(
-        create: (context) => ExploreDetailBloc(initialDate: date),
-        child: ExploreDetailPageDesktop(
-          title: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .headline6!
-                .copyWith(fontWeight: FontWeight.w700),
-          ),
-          category: category,
         ),
       ),
     );

@@ -44,6 +44,8 @@ class ImageGridItem extends StatelessWidget {
     this.onFavToggle,
     this.isFaved,
     this.previewCacheManager,
+    this.multiSelect = false,
+    this.multiSelectBuilder,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -65,6 +67,8 @@ class ImageGridItem extends StatelessWidget {
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
   final CacheManager? previewCacheManager;
+  final bool multiSelect;
+  final Widget Function()? multiSelectBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +83,7 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if (enableFav)
+          if (enableFav && !multiSelect)
             Positioned(
               bottom: 4,
               right: 4,
@@ -134,25 +138,35 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return Stack(
-      children: [
-        GestureDetector(
-          onTap: onTap,
-          child: image ??
-              BooruImage(
-                aspectRatio: aspectRatio,
-                imageUrl: previewUrl,
-                placeholderUrl: previewPlaceholderUrl,
-                borderRadius: borderRadius,
-                previewCacheManager: previewCacheManager,
+    final imageItem = image ??
+        BooruImage(
+          aspectRatio: aspectRatio,
+          imageUrl: previewUrl,
+          placeholderUrl: previewPlaceholderUrl,
+          borderRadius: borderRadius,
+          previewCacheManager: previewCacheManager,
+        );
+
+    return !multiSelect
+        ? Stack(
+            children: [
+              GestureDetector(
+                onTap: onTap,
+                child: imageItem,
               ),
-        ),
-        Padding(
-          padding: const EdgeInsets.only(top: 1, left: 1),
-          child: _buildOverlayIcon(),
-        ),
-      ],
-    );
+              Padding(
+                padding: const EdgeInsets.only(top: 1, left: 1),
+                child: _buildOverlayIcon(),
+              ),
+            ],
+          )
+        : Stack(
+            children: [
+              imageItem,
+              // multiSelectBackgroundBuilder?.call() ?? const SizedBox.shrink(),
+              multiSelectBuilder?.call() ?? const SizedBox.shrink(),
+            ],
+          );
   }
 }
 

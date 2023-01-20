@@ -13,11 +13,10 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_chips_placeholder.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/main.dart';
 import 'widgets/edit_saved_search_sheet.dart';
 
@@ -56,136 +55,132 @@ class _SavedSearchFeedPageState extends State<SavedSearchFeedPage> {
 
   @override
   Widget build(BuildContext context) {
+    final savedSearchState =
+        context.select((SavedSearchFeedBloc bloc) => bloc.state);
+
+    return savedSearchState.savedSearches.isEmpty
+        ? _buildLandingView(context)
+        : _buildListView(context, savedSearchState);
+  }
+
+  Widget _buildListView(
+    BuildContext context,
+    SavedSearchFeedState savedSearchState,
+  ) {
     return BlocListener<SavedSearchFeedBloc, SavedSearchFeedState>(
       listenWhen: (previous, current) =>
           previous.selectedSearch != current.selectedSearch,
       listener: (context, state) {
         _sendRefresh(state.selectedSearch);
       },
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('saved_search.saved_search_feed').tr(),
-          actions: [
-            IconButton(
-              onPressed: () => goToSavedSearchEditPage(context),
-              icon: const Icon(Icons.settings),
-            ),
-          ],
-        ),
-        body: BlocBuilder<SavedSearchFeedBloc, SavedSearchFeedState>(
-          builder: (context, savedSearchState) {
-            if (savedSearchState.savedSearches.isEmpty) {
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 48,
-                        horizontal: 8,
-                      ),
-                      child: Column(
-                        children: [
-                          GenericNoDataBox(
-                            text: 'saved_search.empty_saved_search'.tr(),
-                          ),
-                          TextButton(
-                            onPressed: () => launchExternalUrl(
-                              Uri.parse(savedSearchHelpUrl),
-                            ),
-                            child: const Text('saved_search.saved_search_help')
-                                .tr(),
-                          ),
-                          ElevatedButton(
-                            onPressed: () => _onAddSearch(context),
-                            child: const Text('generic.action.add').tr(),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(
-                      thickness: 2,
-                    ),
-                    ListTile(
-                      title:
-                          const Text('saved_search.saved_search_examples').tr(),
-                    ),
-                    _ExampleContainer(
-                      title: 'Follow artists',
-                      query: 'artistA or artistB or artistC or artistD',
-                      explain:
-                          'Follow posts from artistA, artistB, artistC, artistD.',
-                      onTry: (query) => _onAddSearch(context, query: query),
-                    ),
-                    _ExampleContainer(
-                      title: 'Follow specific characters from an artist',
-                      query: 'artistA (characterA or characterB or characterC)',
-                      explain:
-                          'Follow posts that feature characterA or characterB or characterC from artistA.',
-                      onTry: (query) => _onAddSearch(context, query: query),
-                    ),
-                    _ExampleContainer(
-                      title: 'Follow a specific thing',
-                      query:
-                          'artistA ((characterA 1girl -ocean) or (characterB swimsuit))',
-                      explain:
-                          'Follow posts that feature characterA with 1girl tag but without the ocean tag or characterB with swimsuit tag from artistA.',
-                      onTry: (query) => _onAddSearch(context, query: query),
-                    ),
-                    _ExampleContainer(
-                      title: 'Follow random tags',
-                      query: 'artistA or characterB or scenery',
-                      explain:
-                          'Follow posts that include artistA or characterB or scenery.',
-                      onTry: (query) => _onAddSearch(context, query: query),
-                    ),
-                  ],
+      child: InfinitePostList(
+        onRefresh: (controller) {
+          _sendRefresh(savedSearchState.selectedSearch);
+        },
+        onLoadMore: () {
+          context.read<PostBloc>().add(PostFetched(
+                tags: savedSearchState.selectedSearch.toQuery(),
+                fetcher: SavedSearchPostFetcher(
+                  savedSearchState.selectedSearch,
                 ),
-              );
-            }
+              ));
+        },
+        sliverHeaderBuilder: (context) => [
+          SliverAppBar(
+            title: const Text('saved_search.saved_search_feed').tr(),
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              IconButton(
+                onPressed: () => goToSavedSearchEditPage(context),
+                icon: const Icon(Icons.settings),
+              ),
+            ],
+          ),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 12,
+                vertical: 16,
+              ),
+              height: 50,
+              child: _buildTags(
+                savedSearchState.savedSearches,
+                savedSearchState.selectedSearch,
+                savedSearchState.status,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
-            return BlocBuilder<PostBloc, PostState>(
-              builder: (context, state) {
-                return InfiniteLoadListScrollView(
-                  enableLoadMore: state.hasMore,
-                  onRefresh: (controller) {
-                    _sendRefresh(savedSearchState.selectedSearch);
-                    Future.delayed(
-                      const Duration(seconds: 1),
-                      () => controller.refreshCompleted(),
-                    );
-                  },
-                  onLoadMore: () {
-                    context.read<PostBloc>().add(PostFetched(
-                          tags: savedSearchState.selectedSearch.toQuery(),
-                          fetcher: SavedSearchPostFetcher(
-                            savedSearchState.selectedSearch,
-                          ),
-                        ));
-                  },
-                  sliverBuilder: (controller) => [
-                    SliverToBoxAdapter(
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 16,
-                        ),
-                        height: 50,
-                        child: _buildTags(
-                          savedSearchState.savedSearches,
-                          savedSearchState.selectedSearch,
-                          savedSearchState.status,
-                        ),
-                      ),
-                    ),
-                    HomePostGrid(controller: controller),
-                  ],
-                  isLoading: state.loading,
-                );
-              },
-            );
-          },
-        ),
+  Widget _buildLandingView(BuildContext context) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 48,
+              horizontal: 8,
+            ),
+            child: Column(
+              children: [
+                GenericNoDataBox(
+                  text: 'saved_search.empty_saved_search'.tr(),
+                ),
+                TextButton(
+                  onPressed: () => launchExternalUrl(
+                    Uri.parse(savedSearchHelpUrl),
+                  ),
+                  child: const Text('saved_search.saved_search_help').tr(),
+                ),
+                ElevatedButton(
+                  onPressed: () => _onAddSearch(context),
+                  child: const Text('generic.action.add').tr(),
+                ),
+              ],
+            ),
+          ),
+          const Divider(
+            thickness: 2,
+          ),
+          ListTile(
+            title: const Text('saved_search.saved_search_examples').tr(),
+          ),
+          _ExampleContainer(
+            title: 'Follow artists',
+            query: 'artistA or artistB or artistC or artistD',
+            explain: 'Follow posts from artistA, artistB, artistC, artistD.',
+            onTry: (query) => _onAddSearch(context, query: query),
+          ),
+          _ExampleContainer(
+            title: 'Follow specific characters from an artist',
+            query: 'artistA (characterA or characterB or characterC)',
+            explain:
+                'Follow posts that feature characterA or characterB or characterC from artistA.',
+            onTry: (query) => _onAddSearch(context, query: query),
+          ),
+          _ExampleContainer(
+            title: 'Follow a specific thing',
+            query:
+                'artistA ((characterA 1girl -ocean) or (characterB swimsuit))',
+            explain:
+                'Follow posts that feature characterA with 1girl tag but without the ocean tag or characterB with swimsuit tag from artistA.',
+            onTry: (query) => _onAddSearch(context, query: query),
+          ),
+          _ExampleContainer(
+            title: 'Follow random tags',
+            query: 'artistA or characterB or scenery',
+            explain:
+                'Follow posts that include artistA or characterB or scenery.',
+            onTry: (query) => _onAddSearch(context, query: query),
+          ),
+        ],
       ),
     );
   }

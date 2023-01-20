@@ -8,6 +8,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
@@ -15,19 +16,25 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 
-class HomePostGrid extends StatelessWidget {
-  const HomePostGrid({
+class PostGrid extends StatelessWidget {
+  const PostGrid({
     super.key,
     required this.controller,
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
+    this.onMultiSelect,
+    this.multiSelect = false,
+    this.onPostSelectChanged,
   });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
+  final void Function()? onMultiSelect;
+  final bool multiSelect;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +54,9 @@ class HomePostGrid extends StatelessWidget {
               return _SliverPostGrid(
                 controller: controller,
                 onTap: onTap,
+                onMultiSelect: onMultiSelect,
+                multiSelect: multiSelect,
+                onPostSelectChanged: onPostSelectChanged,
               );
             case LoadStatus.failure:
               return const SliverToBoxAdapter(child: ErrorBox());
@@ -81,10 +91,16 @@ class _SliverPostGrid extends StatelessWidget {
   const _SliverPostGrid({
     required this.controller,
     required this.onTap,
+    this.onMultiSelect,
+    this.onPostSelectChanged,
+    this.multiSelect = false,
   });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
+  final void Function()? onMultiSelect;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final bool multiSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +114,9 @@ class _SliverPostGrid extends StatelessWidget {
             scrollController: controller,
             gridSize: gridSize,
             borderRadius: _gridSizeToBorderRadius(gridSize),
+            onMultiSelect: onMultiSelect,
+            multiSelect: multiSelect,
+            onPostSelectChanged: onPostSelectChanged,
             onTap: (post, index) {
               onTap?.call();
               goToDetailPage(
