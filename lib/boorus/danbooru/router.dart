@@ -604,17 +604,36 @@ void goToExploreDetailPage(
             }
           }(),
         ),
-        builder: (context) => BlocProvider(
-          create: (context) => ExploreDetailBloc(initialDate: date),
-          child: ExploreDetailPage(
-            title: Text(
-              title,
-              style: Theme.of(context)
-                  .textTheme
-                  .headline6!
-                  .copyWith(fontWeight: FontWeight.w700),
+        builder: (context) => MultiBlocProvider(
+          providers: [
+            BlocProvider(
+              create: (context) => ExploreDetailBloc(initialDate: date),
             ),
-            category: category,
+            BlocProvider(
+              create: (context) => PostBloc.of(context)
+                ..add(
+                  PostRefreshed(
+                    fetcher: categoryToFetcher(
+                      category,
+                      date ?? DateTime.now(),
+                      TimeScale.day,
+                      context,
+                    ),
+                  ),
+                ),
+            ),
+          ],
+          child: CustomContextMenuOverlay(
+            child: ExploreDetailPage(
+              title: Text(
+                title,
+                style: Theme.of(context)
+                    .textTheme
+                    .headline6!
+                    .copyWith(fontWeight: FontWeight.w700),
+              ),
+              category: category,
+            ),
           ),
         ),
       ),

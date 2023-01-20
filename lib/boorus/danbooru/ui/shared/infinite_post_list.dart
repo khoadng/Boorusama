@@ -20,12 +20,14 @@ class InfinitePostList extends StatefulWidget {
     this.onRefresh,
     this.sliverHeaderBuilder,
     this.scrollController,
+    this.refreshController,
   });
 
   final VoidCallback onLoadMore;
   final void Function(RefreshController controller)? onRefresh;
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
+  final RefreshController? refreshController;
 
   @override
   State<InfinitePostList> createState() => _InfinitePostListState();
@@ -35,11 +37,13 @@ class _InfinitePostListState extends State<InfinitePostList> {
   var selectedPosts = <Post>[];
   var multiSelect = false;
   late final AutoScrollController _autoScrollController;
+  late final RefreshController _refreshController;
 
   @override
   void initState() {
     super.initState();
     _autoScrollController = widget.scrollController ?? AutoScrollController();
+    _refreshController = widget.refreshController ?? RefreshController();
   }
 
   @override
@@ -47,6 +51,10 @@ class _InfinitePostListState extends State<InfinitePostList> {
     super.dispose();
     if (widget.scrollController == null) {
       _autoScrollController.dispose();
+    }
+
+    if (widget.refreshController == null) {
+      _refreshController.dispose();
     }
   }
 
@@ -110,6 +118,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
           );
         },
         scrollController: _autoScrollController,
+        refreshController: _refreshController,
         sliverBuilder: (controller) => [
           if (widget.sliverHeaderBuilder != null)
             ...widget.sliverHeaderBuilder!(context),
