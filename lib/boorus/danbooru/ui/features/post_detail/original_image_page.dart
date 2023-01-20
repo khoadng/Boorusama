@@ -40,7 +40,6 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
   @override
   void dispose() {
     super.dispose();
-    showSystemStatus();
 
     switch (widget.initialOrientation) {
       case Orientation.portrait:
@@ -59,7 +58,6 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
         if (!zoom) {
           setState(() {
             overlay = !overlay;
-            setSystemActiveStatus(active: overlay);
           });
         }
       },
@@ -114,7 +112,6 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                         setState(() {
                           zoom = true;
                           overlay = false;
-                          setSystemActiveStatus(active: overlay);
                         });
                       } else {
                         setState(() => zoom = false);
@@ -130,14 +127,6 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                 ),
               ),
             ),
-            if (overlay)
-              ShadowGradientOverlay(
-                alignment: Alignment.bottomCenter,
-                colors: <Color>[
-                  const Color.fromARGB(60, 0, 0, 0),
-                  Colors.black12.withOpacity(0),
-                ],
-              ),
             if (overlay)
               ShadowGradientOverlay(
                 alignment: Alignment.topCenter,
