@@ -36,7 +36,6 @@ import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_deskto
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
@@ -641,17 +640,36 @@ void goToExploreDetailPage(
   } else {
     showDesktopFullScreenWindow(
       context,
-      builder: (context) => BlocProvider(
-        create: (context) => ExploreDetailBloc(initialDate: date),
-        child: ExploreDetailPageDesktop(
-          title: Text(
-            title,
-            style: Theme.of(context)
-                .textTheme
-                .headline6!
-                .copyWith(fontWeight: FontWeight.w700),
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ExploreDetailBloc(initialDate: date),
           ),
-          category: category,
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(
+                PostRefreshed(
+                  fetcher: categoryToFetcher(
+                    category,
+                    date ?? DateTime.now(),
+                    TimeScale.day,
+                    context,
+                  ),
+                ),
+              ),
+          ),
+        ],
+        child: CustomContextMenuOverlay(
+          child: ExploreDetailPage(
+            title: Text(
+              title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headline6!
+                  .copyWith(fontWeight: FontWeight.w700),
+            ),
+            category: category,
+          ),
         ),
       ),
     );

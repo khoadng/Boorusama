@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,6 +10,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'datetime_selector.dart';
 import 'time_scale_toggle_switch.dart';
 
@@ -128,13 +128,10 @@ class _ExploreDetailState extends State<_ExploreDetail> {
         _scrollController.jumpTo(0);
         _refreshController.requestRefresh();
       },
-      child: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: widget.builder(
-          context,
-          _refreshController,
-          _scrollController,
-        ),
+      child: widget.builder(
+        context,
+        _refreshController,
+        _scrollController,
       ),
     );
   }
