@@ -337,9 +337,15 @@ final postSearchHandler = Handler(handlerFunc: (
               BlocProvider.value(value: relatedTagBloc),
             ],
             child: CustomContextMenuOverlay(
-              child: SearchPage(
-                metatags: context.read<TagInfo>().metatags,
-                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+              child: BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, state) {
+                  return SearchPage(
+                    autoFocusSearchBar: state.settings.autoFocusSearchBar,
+                    metatags: context.read<TagInfo>().metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  );
+                },
               ),
             ),
           );

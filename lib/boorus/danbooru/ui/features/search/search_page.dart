@@ -33,10 +33,12 @@ class SearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
+    this.autoFocusSearchBar = true,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
+  final bool autoFocusSearchBar;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -82,10 +84,12 @@ class _SearchPageState extends State<SearchPage> {
         child: Screen.of(context).size != ScreenSize.small
             ? _LargeLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               )
             : _SmallLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               ),
       ),
@@ -97,10 +101,12 @@ class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -330,10 +336,12 @@ class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -358,6 +366,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
+            autofocus: widget.autoFocus,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),
