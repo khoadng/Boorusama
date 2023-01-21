@@ -31,7 +31,7 @@ dependencies:
   filesize: ^2.0.1
   firebase_analytics: ^10.1.0
   firebase_core: ^2.4.1
-  firebase_crashlytics: ^3.0.10
+  firebase_crashlytics: ^3.0.11
   firebase_performance: ^0.9.0+10
   fluro: ^2.0.4
   flutter:
