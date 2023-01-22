@@ -36,7 +36,6 @@ class ImageGridItem extends StatelessWidget {
     this.isTranslated,
     required this.previewUrl,
     required this.previewPlaceholderUrl,
-    required this.contextMenuAction,
     this.autoScrollOptions,
     required this.aspectRatio,
     this.image,
@@ -62,7 +61,6 @@ class ImageGridItem extends StatelessWidget {
   final bool? isTranslated;
   final String previewUrl;
   final String previewPlaceholderUrl;
-  final List<Widget> contextMenuAction;
   final bool enableFav;
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;

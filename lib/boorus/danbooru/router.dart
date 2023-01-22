@@ -53,6 +53,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_p
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/landing/favorite_tags/import_favorite_tag_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
@@ -72,7 +73,10 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/infra.dart';
+import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
@@ -1207,4 +1211,39 @@ void goToSavedSearchQuickUpdatePage(BuildContext context) {
       },
     );
   }
+}
+
+Future<Object?> goToFavoriteTagImportPage(
+  BuildContext context,
+  FavoriteTagBloc bloc,
+) {
+  return showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteTagsImport,
+    ),
+    pageBuilder: (context, _, __) => ImportFavoriteTagsDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      onImport: (tagString) => bloc.add(FavoriteTagImported(
+        tagString: tagString,
+      )),
+    ),
+  );
+}
+
+void goToImagePreviewPage(BuildContext context, Post post) {
+  showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.postQuickPreview,
+    ),
+    pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
+      child: BooruImage(
+        placeholderUrl: post.previewImageUrl,
+        aspectRatio: post.aspectRatio,
+        imageUrl: post.normalImageUrl,
+        previewCacheManager: context.read<PreviewImageCacheManager>(),
+      ),
+    ),
+  );
 }

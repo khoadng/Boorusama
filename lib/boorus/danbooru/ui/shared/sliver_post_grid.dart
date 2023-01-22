@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -16,14 +15,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
@@ -145,20 +143,8 @@ class SliverPostGrid extends HookWidget {
                     buttonConfigs: [
                       ContextMenuButtonConfig(
                         'Preview',
-                        onPressed: () => showGeneralDialog(
-                          context: context,
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  QuickPreviewImage(
-                            child: BooruImage(
-                              placeholderUrl: post.post.previewImageUrl,
-                              aspectRatio: post.post.aspectRatio,
-                              imageUrl: post.post.normalImageUrl,
-                              previewCacheManager:
-                                  context.read<PreviewImageCacheManager>(),
-                            ),
-                          ),
-                        ),
+                        onPressed: () =>
+                            goToImagePreviewPage(context, post.post),
                       ),
                       ContextMenuButtonConfig(
                         'download.download'.tr(),
@@ -253,7 +239,6 @@ class SliverPostGrid extends HookWidget {
                     ),
                   ),
                   previewPlaceholderUrl: post.post.previewImageUrl,
-                  contextMenuAction: _buildContextMenu(post, context),
                 ),
               );
             }
@@ -295,50 +280,6 @@ class SliverPostGrid extends HookWidget {
         );
       },
     );
-  }
-
-  List<Widget> _buildContextMenu(PostData post, BuildContext context) {
-    return [
-      DownloadProviderWidget(
-        builder: (context, download) => CupertinoContextMenuAction(
-          trailingIcon: Icons.download,
-          onPressed: () {
-            Navigator.of(context).pop();
-            download(post.post);
-          },
-          child: const Text('download.download').tr(),
-        ),
-      ),
-      FutureBuilder<Account>(
-        future: context.read<AccountRepository>().get(),
-        builder: (context, snapshot) {
-          return snapshot.hasData && snapshot.data! != Account.empty
-              ? CupertinoContextMenuAction(
-                  trailingIcon: post.isFavorited
-                      ? Icons.favorite
-                      : Icons.favorite_outline,
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    final action =
-                        _getFavAction(context, post.isFavorited, post.post.id);
-                    final success = await action;
-
-                    if (success) {
-                      onFavoriteUpdated.call(
-                        post.post.id,
-                        !post.isFavorited,
-                      );
-                    }
-                  },
-                  child: Text(post.isFavorited
-                          ? 'favorites.unfavorite'
-                          : 'favorites.favorite')
-                      .tr(),
-                )
-              : const SizedBox.shrink();
-        },
-      ),
-    ];
   }
 
   Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {

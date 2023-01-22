@@ -6,6 +6,7 @@ class RouterPageConstant {
   static const postDetails = 'post/details';
   static const parentChild = 'post/child';
   static const originalImage = 'post/original_image';
+  static const postQuickPreview = 'post/preview';
   static const postFavoriters = 'post/favorites';
   static const postVoters = 'post/voters';
 
@@ -39,6 +40,8 @@ class RouterPageConstant {
 
   static const search = 'search';
   static const quickSearch = 'quick_search';
+
+  static const favoriteTagsImport = 'tag/favorites/import';
 
   static const relatedTags = 'related_tags';
   static const metatags = 'metatags';
