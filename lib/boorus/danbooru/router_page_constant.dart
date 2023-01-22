@@ -8,7 +8,7 @@ class RouterPageConstant {
   static const originalImage = 'post/original_image';
   static const postQuickPreview = 'post/preview';
   static const postFavoriters = 'post/favorites';
-  static const postVoters = 'post/voters';
+  static const postVoters = 'post/votes';
 
   static const settings = 'settings';
   static const settingsGeneral = 'settings/general';
@@ -39,6 +39,7 @@ class RouterPageConstant {
   static const poolSearch = 'pool/search';
 
   static const search = 'search';
+  static const searchHistories = 'search/history';
   static const quickSearch = 'quick_search';
 
   static const favoriteTagsImport = 'tag/favorites/import';

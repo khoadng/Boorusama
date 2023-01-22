@@ -53,6 +53,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_p
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/full_history_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/landing/favorite_tags/import_favorite_tag_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
@@ -1244,6 +1245,44 @@ void goToImagePreviewPage(BuildContext context, Post post) {
         imageUrl: post.normalImageUrl,
         previewCacheManager: context.read<PreviewImageCacheManager>(),
       ),
+    ),
+  );
+}
+
+void goToSearchHistoryPage(
+  BuildContext context, {
+  required Function() onClear,
+  required Function(SearchHistory history) onRemove,
+  required Function(String history) onTap,
+}) {
+  final bloc = context.read<SearchHistoryBloc>();
+
+  showMaterialModalBottomSheet(
+    context: context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.searchHistories,
+    ),
+    duration: const Duration(milliseconds: 200),
+    builder: (context) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+      bloc: bloc,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('search.history.history').tr(),
+            actions: [
+              TextButton(
+                onPressed: () => onClear(),
+                child: const Text('search.history.clear').tr(),
+              ),
+            ],
+          ),
+          body: FullHistoryView(
+            onHistoryTap: (value) => onTap(value),
+            onHistoryRemoved: (value) => onRemove(value),
+            histories: state.histories,
+          ),
+        );
+      },
     ),
   );
 }
