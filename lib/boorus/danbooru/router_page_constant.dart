@@ -37,6 +37,8 @@ class RouterPageConstant {
   static const search = 'search';
   static const quickSearch = 'quick_search';
 
+  static const relatedTags = 'related_tags';
+
   static const login = 'login';
   static const explorePopular = 'explore/popular';
   static const exploreHot = 'explore/hot';

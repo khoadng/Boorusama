@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -48,6 +49,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
@@ -67,6 +69,7 @@ import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
+import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
 import 'ui/features/post_detail/post_detail_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
@@ -1003,4 +1006,41 @@ void goToQuickSearchPage(
     onSubmitted: onSubmitted,
     onSelected: onSelected,
   );
+}
+
+void goToRelatedTagsPage(
+  BuildContext context, {
+  required RelatedTag relatedTag,
+}) {
+  final bloc = context.read<SearchBloc>();
+  final page = BlocBuilder<ApiEndpointCubit, ApiEndpointState>(
+    builder: (context, state) {
+      return RelatedTagActionSheet(
+        relatedTag: relatedTag,
+        onOpenWiki: (tag) => launchWikiPage(
+          state.booru.url,
+          tag,
+        ),
+        onAddToSearch: (tag) => bloc.add(SearchRelatedTagSelected(tag: tag)),
+      );
+    },
+  );
+  if (Screen.of(context).size == ScreenSize.small) {
+    showBarModalBottomSheet(
+      context: context,
+      settings: const RouteSettings(
+        name: RouterPageConstant.relatedTags,
+      ),
+      builder: (context) => page,
+    );
+  } else {
+    showSideSheetFromRight(
+      settings: const RouteSettings(
+        name: RouterPageConstant.relatedTags,
+      ),
+      width: 220,
+      body: page,
+      context: context,
+    );
+  }
 }
