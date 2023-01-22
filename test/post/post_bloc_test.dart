@@ -57,6 +57,7 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 422)),
           exceptionMessage: 'search.errors.tag_limit',
         ),
       ],
@@ -87,6 +88,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error:
+              BooruError(error: AppError(type: AppErrorType.cannotReachServer)),
           exceptionMessage: 'Cannot reach server, please check your connection',
         ),
       ],
@@ -117,6 +120,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error:
+              BooruError(error: AppError(type: AppErrorType.failedToParseJSON)),
           exceptionMessage:
               'Failed to parse data, please report this issue to the developer',
         ),
@@ -146,6 +151,7 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 500)),
           exceptionMessage: 'search.errors.database_timeout',
         ),
       ],
@@ -156,7 +162,7 @@ void main() {
       setUp: () {
         when(() =>
                 mockPostRepo.getPosts(any(), any(), limit: any(named: 'limit')))
-            .thenThrow(BooruError(error: Error()));
+            .thenThrow(BooruError(error: 1));
       },
       tearDown: () => reset(mockPostRepo),
       build: () => PostBloc(
@@ -174,7 +180,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
-          exceptionMessage: 'search.errors.unknown',
+          error: BooruError(error: 1),
+          exceptionMessage: 'generic.errors.unknown',
         ),
       ],
     );
@@ -193,7 +200,7 @@ void main() {
         when(() => mockBlacklistedRepo.getBlacklistedTags())
             .thenAnswer((invocation) async => []);
         when(() => mockFavRepo.filterFavoritesFromUserId(any(), any(), any()))
-            .thenThrow(Error());
+            .thenThrow(1);
         when(() => mockPoolRepo.getPoolsByPostIds(any()))
             .thenAnswer((invocation) async => []);
         when(() => mockPostVoteRepo.getPostVotes(any()))
@@ -222,7 +229,8 @@ void main() {
         PostState.initial(),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
-          exceptionMessage: 'search.errors.unknown',
+          error: BooruError(error: 1),
+          exceptionMessage: 'generic.errors.unknown',
         ),
       ],
     );
@@ -250,6 +258,7 @@ void main() {
         PostState.initial().copyWith(status: LoadStatus.loading),
         PostState.initial().copyWith(
           status: LoadStatus.failure,
+          error: BooruError(error: ServerError(httpStatusCode: 9999)),
           exceptionMessage: 'search.errors.unknown',
         ),
       ],

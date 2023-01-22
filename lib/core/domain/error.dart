@@ -1,13 +1,16 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 enum AppErrorType {
   cannotReachServer,
   failedToParseJSON,
   unknown,
 }
 
-class AppError extends Error {
+class AppError extends Error with EquatableMixin {
   AppError({
     required this.type,
   });
@@ -27,17 +30,23 @@ class AppError extends Error {
       unknown?.call();
     }
   }
+
+  @override
+  List<Object?> get props => [type];
 }
 
-class ServerError extends Error {
+class ServerError extends Error with EquatableMixin {
   ServerError({
     required this.httpStatusCode,
   });
 
   final int? httpStatusCode;
+
+  @override
+  List<Object?> get props => [httpStatusCode];
 }
 
-class BooruError extends Error {
+class BooruError extends Error with EquatableMixin {
   BooruError({
     required this.error,
   }) : super();
@@ -72,4 +81,7 @@ class BooruError extends Error {
       return unknownError?.call(error) ?? const SizedBox.shrink();
     }
   }
+
+  @override
+  List<Object?> get props => [error];
 }

@@ -288,7 +288,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
       },
       unknownError: (error) {
         emit(failureState.copyWith(
-          exceptionMessage: 'generic.errors.unknown\n\n${error.toString()}',
+          exceptionMessage: 'generic.errors.unknown',
         ));
       },
     );
