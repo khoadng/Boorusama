@@ -97,7 +97,7 @@ dependencies:
   video_player: ^2.4.10
   video_player_macos: ^1.0.6
   video_player_win: ^1.1.5
-  webview_flutter: ^4.0.1
+  webview_flutter: ^4.0.2
 
 dev_dependencies:
   bloc_test: ^9.0.3
