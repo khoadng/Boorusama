@@ -83,9 +83,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
                           download(p);
                         }
 
-                        setState(() {
-                          multiSelect = false;
-                        });
+                        _endMultiSelect();
                       }
                     : null,
                 icon: const Icon(Icons.download),
@@ -95,10 +93,7 @@ class _InfinitePostListState extends State<InfinitePostList> {
         ),
         topBuilder: () => AppBar(
           leading: IconButton(
-            onPressed: () => setState(() {
-              multiSelect = false;
-              selectedPosts.clear();
-            }),
+            onPressed: () => _endMultiSelect(),
             icon: const Icon(Icons.close),
           ),
           title: selectedPosts.isEmpty
@@ -141,5 +136,12 @@ class _InfinitePostListState extends State<InfinitePostList> {
         ],
       ),
     );
+  }
+
+  void _endMultiSelect() {
+    setState(() {
+      multiSelect = false;
+      selectedPosts.clear();
+    });
   }
 }
