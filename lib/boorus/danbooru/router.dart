@@ -3,10 +3,13 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:fluro/fluro.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -15,6 +18,7 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_feed_bloc.dart';
@@ -34,11 +38,22 @@ import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/application/search/search.dart';
@@ -48,7 +63,10 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
+import 'router_page_constant.dart';
 import 'ui/features/post_detail/post_detail_page_desktop.dart';
 import 'ui/features/saved_search/saved_search_feed_page.dart';
 
@@ -127,33 +145,13 @@ class AppRouter {
   }
 }
 
-const _artist = 'artist';
-const _character = 'character';
-const _home = 'home';
-const _postDetails = 'post/details';
-const _settings = 'settings';
-const _blacklisted = 'blacklisted_tags';
-const _savedSearch = 'saved_search';
-const _savedSearchEdit = 'saved_search/edit';
-const _profile = 'profile';
-const _favorties = 'favorites';
-const _bulkDownload = 'bulk_download';
-const _poolDetails = 'pool_details';
-const _search = 'search';
-const _login = 'login';
-const _explorePopular = 'explore/popular';
-const _exploreHot = 'explore/hot';
-const _exploreMostViewed = 'explore/most_viewed';
-const _image = 'image';
-const _parentChild = 'post/child';
-
 void goToArtistPage(BuildContext context, String artist) {
   if (isMobilePlatform()) {
     AppRouter.router.navigateTo(
       context,
       '/artist',
       routeSettings: RouteSettings(
-        name: _artist,
+        name: RouterPageConstant.artist,
         arguments: [
           artist,
           '',
@@ -192,7 +190,7 @@ void goToCharacterPage(BuildContext context, String tag) {
       context,
       '/character',
       routeSettings: RouteSettings(
-        name: _character,
+        name: RouterPageConstant.character,
         arguments: [
           tag,
           '',
@@ -230,7 +228,7 @@ void goToProfilePage(BuildContext context) {
     context,
     '/users/profile',
     routeSettings: const RouteSettings(
-      name: _profile,
+      name: RouterPageConstant.profile,
     ),
   );
 }
@@ -240,7 +238,7 @@ void goToFavoritesPage(BuildContext context, String? username) {
     context,
     '/favorites',
     routeSettings: RouteSettings(
-      name: _favorties,
+      name: RouterPageConstant.favorties,
       arguments: [username],
     ),
   );
@@ -251,7 +249,7 @@ void goToBulkDownloadPage(BuildContext context, List<String>? tags) {
     context,
     '/bulk_download',
     routeSettings: RouteSettings(
-      name: _bulkDownload,
+      name: RouterPageConstant.bulkDownload,
       arguments: [
         tags,
       ],
@@ -264,7 +262,7 @@ void goToPoolDetailPage(BuildContext context, Pool pool) {
     context,
     'pool/detail',
     routeSettings: RouteSettings(
-      name: _poolDetails,
+      name: RouterPageConstant.poolDetails,
       arguments: [
         pool,
       ],
@@ -280,7 +278,7 @@ void goToParentChildPage(
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.bottomToTop,
     settings: const RouteSettings(
-      name: _parentChild,
+      name: RouterPageConstant.parentChild,
     ),
     child: MultiBlocProvider(
       providers: [
@@ -309,7 +307,7 @@ void goToHomePage(
     context,
     '/',
     routeSettings: const RouteSettings(
-      name: _home,
+      name: RouterPageConstant.home,
     ),
     clearStack: true,
     replace: replace,
@@ -328,7 +326,7 @@ void goToDetailPage({
       context,
       '/post/detail',
       routeSettings: RouteSettings(
-        name: _postDetails,
+        name: RouterPageConstant.postDetails,
         arguments: [
           posts,
           initialIndex,
@@ -418,7 +416,7 @@ void goToSearchPage(
       context,
       '/posts/search',
       routeSettings: RouteSettings(
-        name: _search,
+        name: RouterPageConstant.search,
         arguments: [tag ?? ''],
       ),
     );
@@ -501,7 +499,7 @@ void goToSettingPage(BuildContext context) {
       context,
       '/settings',
       routeSettings: const RouteSettings(
-        name: _settings,
+        name: RouterPageConstant.settings,
       ),
     );
   } else {
@@ -569,7 +567,7 @@ void goToLoginPage(BuildContext context) {
       context,
       '/login',
       routeSettings: const RouteSettings(
-        name: _login,
+        name: RouterPageConstant.login,
       ),
     );
   } else {
@@ -595,11 +593,11 @@ void goToExploreDetailPage(
           name: () {
             switch (category) {
               case ExploreCategory.popular:
-                return _explorePopular;
+                return RouterPageConstant.explorePopular;
               case ExploreCategory.mostViewed:
-                return _exploreMostViewed;
+                return RouterPageConstant.exploreMostViewed;
               case ExploreCategory.hot:
-                return _exploreHot;
+                return RouterPageConstant.exploreHot;
             }
           }(),
         ),
@@ -682,7 +680,7 @@ void goToSavedSearchPage(BuildContext context, String? username) {
       context,
       '/saved_search',
       routeSettings: RouteSettings(
-        name: _savedSearch,
+        name: RouterPageConstant.savedSearch,
         arguments: [username],
       ),
     );
@@ -711,7 +709,7 @@ void goToSavedSearchEditPage(BuildContext context) {
     context,
     '/saved_search/edit',
     routeSettings: const RouteSettings(
-      name: _savedSearchEdit,
+      name: RouterPageConstant.savedSearchEdit,
     ),
   );
 }
@@ -722,7 +720,7 @@ void goToBlacklistedTagPage(BuildContext context) {
       context,
       '/users/blacklisted_tags',
       routeSettings: const RouteSettings(
-        name: _blacklisted,
+        name: RouterPageConstant.blacklistedTags,
       ),
     );
   } else {
@@ -747,11 +745,240 @@ void goToOriginalImagePage(BuildContext context, Post post) {
   Navigator.of(context).push(PageTransition(
     type: PageTransitionType.fade,
     settings: const RouteSettings(
-      name: _image,
+      name: RouterPageConstant.originalImage,
     ),
     child: OriginalImagePage(
       post: post,
       initialOrientation: MediaQuery.of(context).orientation,
+    ),
+  ));
+}
+
+void goToSettingsGeneral(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(ParallaxSlideInPageRoute(
+    enterWidget: const GeneralPage(),
+    oldWidget: oldWidget,
+    settings: const RouteSettings(
+      name: RouterPageConstant.settingsGeneral,
+    ),
+  ));
+}
+
+void goToSettingsAppearance(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const AppearancePage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsAppearance,
+      ),
+    ),
+  );
+}
+
+void goToSettingsLanguage(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const LanguagePage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsLanguage,
+      ),
+    ),
+  );
+}
+
+void goToSettingsDownload(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const DownloadPage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsDownload,
+      ),
+    ),
+  );
+}
+
+void goToSettingsSearch(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const SearchSettingsPage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsSearch,
+      ),
+    ),
+  );
+}
+
+void goToSettingsPrivacy(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const PrivacyPage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsPrivacy,
+      ),
+    ),
+  );
+}
+
+void goToChanglog(BuildContext context) {
+  showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.settingsChangelog,
+    ),
+    pageBuilder: (context, __, ___) => Scaffold(
+      appBar: AppBar(
+        title: const Text('settings.changelog').tr(),
+        automaticallyImplyLeading: false,
+        shadowColor: Colors.transparent,
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            onPressed: () => Navigator.of(context).pop(),
+            icon: const Icon(
+              Icons.close,
+              size: 24,
+            ),
+          ),
+        ],
+      ),
+      body: FutureBuilder<String>(
+        future: rootBundle.loadString('CHANGELOG.md'),
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? Markdown(
+                  data: snapshot.data!,
+                )
+              : const Center(
+                  child: CircularProgressIndicator.adaptive(),
+                );
+        },
+      ),
+    ),
+  );
+}
+
+void goToAppAboutPage(BuildContext context) {
+  showAboutDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.settingsInformation,
+    ),
+    applicationIcon: Image.asset(
+      'assets/icon/icon-512x512.png',
+      width: 64,
+      height: 64,
+    ),
+    applicationVersion: getVersion(
+      RepositoryProvider.of<PackageInfoProvider>(
+        context,
+      ).getPackageInfo(),
+    ),
+    applicationLegalese: '\u{a9} 2020-2023 Nguyen Duc Khoa',
+    applicationName: context.read<AppInfoProvider>().appInfo.appName,
+  );
+}
+
+void goToBlacklistedTagsSearchPage(
+  BuildContext context, {
+  required void Function(List<TagSearchItem> tags) onSelectDone,
+  required Widget oldWidget,
+  List<String>? initialTags,
+}) {
+  Navigator.of(context).push(ParallaxSlideInPageRoute(
+    enterWidget: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => TagSearchBloc(
+            tagInfo: context.read<TagInfo>(),
+            autocompleteRepository: context.read<AutocompleteRepository>(),
+          ),
+        ),
+      ],
+      child: BlacklistedTagsSearchPage(
+        initialTags: initialTags,
+        onSelectedDone: onSelectDone,
+      ),
+    ),
+    oldWidget: oldWidget,
+    settings: const RouteSettings(
+      name: RouterPageConstant.blacklistedSearch,
+    ),
+  ));
+}
+
+void goToCommentPage(BuildContext context, int postId) {
+  showCommentPage(
+    context,
+    postId: postId,
+    settings: const RouteSettings(
+      name: RouterPageConstant.comment,
+    ),
+  );
+}
+
+void goToCommentCreatePage(
+  BuildContext context, {
+  required int postId,
+  String? initialContent,
+}) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => CommentCreatePage(
+      postId: postId,
+      initialContent: initialContent,
+    ),
+    settings: const RouteSettings(
+      name: RouterPageConstant.commentCreate,
+    ),
+  ));
+}
+
+void goToCommentUpdatePage(
+  BuildContext context, {
+  required int postId,
+  required int commentId,
+  required String commentBody,
+  String? initialContent,
+}) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => CommentUpdatePage(
+        postId: postId,
+        commentId: commentId,
+        initialContent: commentBody,
+      ),
+      settings: const RouteSettings(
+        name: RouterPageConstant.commentUpdate,
+      ),
+    ),
+  );
+}
+
+void goToPoolSearchPage(BuildContext context) {
+  Navigator.of(context).push(MaterialPageRoute(
+    builder: (context) => MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => PoolBloc(
+            poolRepository: context.read<PoolRepository>(),
+            postRepository: context.read<PostRepository>(),
+          ),
+        ),
+        BlocProvider(
+          create: (context) => PoolSearchBloc(
+            poolRepository: context.read<PoolRepository>(),
+          ),
+        ),
+      ],
+      child: const PoolSearchPage(),
+    ),
+    settings: const RouteSettings(
+      name: RouterPageConstant.poolSearch,
     ),
   ));
 }
