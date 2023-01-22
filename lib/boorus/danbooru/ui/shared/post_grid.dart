@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
@@ -13,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/no_data_box.dart';
 
@@ -59,7 +61,72 @@ class PostGrid extends StatelessWidget {
                 onPostSelectChanged: onPostSelectChanged,
               );
             case LoadStatus.failure:
-              return const SliverToBoxAdapter(child: ErrorBox());
+              return SliverToBoxAdapter(
+                child: state.error!.buildWhen(
+                  appError: (err) {
+                    switch (err.type) {
+                      case AppErrorType.cannotReachServer:
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 48, bottom: 16),
+                              child: Text(
+                                'Cannot reach server',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                            const Text(
+                              'Please check your internet connection.',
+                            ),
+                          ],
+                        );
+                      case AppErrorType.failedToParseJSON:
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(top: 48, bottom: 16),
+                              child: Text(
+                                'API schema changed error',
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                            ),
+                            const Text(
+                              'Please report this error to the developer',
+                            ),
+                          ],
+                        );
+                      case AppErrorType.unknown:
+                        return ErrorBox(
+                          errorMessage: state.error!.error.toString(),
+                        );
+                    }
+                  },
+                  serverError: (err) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 32),
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(top: 48, bottom: 16),
+                          child: Text(
+                            err.httpStatusCode.toString(),
+                            style: Theme.of(context).textTheme.displayLarge,
+                          ),
+                        ),
+                        Text(
+                          state.exceptionMessage ?? 'generic.errors.unknown',
+                        ).tr(),
+                      ],
+                    ),
+                  ),
+                  unknownError: (context) => ErrorBox(
+                    errorMessage: state.error!.error.toString(),
+                  ),
+                ),
+              );
           }
         },
       ),

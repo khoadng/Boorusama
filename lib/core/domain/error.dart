@@ -1,3 +1,6 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
 enum AppErrorType {
   cannotReachServer,
   failedToParseJSON,
@@ -53,6 +56,20 @@ class BooruError extends Error {
       serverError?.call(error as ServerError);
     } else {
       unknownError?.call(error);
+    }
+  }
+
+  Widget buildWhen({
+    required Widget Function(AppError error)? appError,
+    required Widget Function(ServerError error)? serverError,
+    required Widget Function(Object error)? unknownError,
+  }) {
+    if (error is AppError) {
+      return appError?.call(error as AppError) ?? const SizedBox.shrink();
+    } else if (error is ServerError) {
+      return serverError?.call(error as ServerError) ?? const SizedBox.shrink();
+    } else {
+      return unknownError?.call(error) ?? const SizedBox.shrink();
     }
   }
 }

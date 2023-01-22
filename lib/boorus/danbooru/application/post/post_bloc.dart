@@ -227,7 +227,10 @@ class PostBloc extends Bloc<PostEvent, PostState>
           : _emitError(BooruError(error: error), emit);
 
   void _emitError(BooruError error, Emitter emit) {
-    final failureState = state.copyWith(status: LoadStatus.failure);
+    final failureState = state.copyWith(
+      status: LoadStatus.failure,
+      error: error,
+    );
 
     error.when(
       appError: (appError) => appError.when(
@@ -253,15 +256,35 @@ class PostBloc extends Bloc<PostEvent, PostState>
           emit(failureState.copyWith(
             exceptionMessage: 'search.errors.database_timeout',
           ));
+        } else if (error.httpStatusCode == 429) {
+          emit(failureState.copyWith(
+            exceptionMessage:
+                "You're being rate limited. Please try again later",
+          ));
+        } else if (error.httpStatusCode == 410) {
+          emit(failureState.copyWith(
+            exceptionMessage:
+                "You're have reached pagination limit. It simply means you cannot scroll more",
+          ));
+        } else if (error.httpStatusCode == 502) {
+          emit(failureState.copyWith(
+            exceptionMessage:
+                'Server is under heavy load and cannot handle the request be, please try again later',
+          ));
+        } else if (error.httpStatusCode == 503) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'Server is downn. please try again later',
+          ));
         } else {
           emit(failureState.copyWith(
-            exceptionMessage: 'search.errors.unknown',
+            exceptionMessage:
+                'Unknown server error, please report this issue to the developer',
           ));
         }
       },
-      unknownError: (_) {
+      unknownError: (error) {
         emit(failureState.copyWith(
-          exceptionMessage: 'search.errors.unknown',
+          exceptionMessage: 'search.errors.unknown\n\n${error.toString()}',
         ));
       },
     );

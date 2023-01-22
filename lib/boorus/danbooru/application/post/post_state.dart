@@ -6,6 +6,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
+import 'package:boorusama/core/domain/error.dart';
 
 class PostState extends Equatable
     implements
@@ -18,6 +19,7 @@ class PostState extends Equatable
     required this.page,
     required this.hasMore,
     this.exceptionMessage,
+    this.error,
     required this.id,
     required this.pagination,
   });
@@ -52,6 +54,7 @@ class PostState extends Equatable
   final bool pagination;
 
   final String? exceptionMessage;
+  final BooruError? error;
 
   //TODO: quick hack to force rebuild...
   final double id;
@@ -63,6 +66,7 @@ class PostState extends Equatable
     int? page,
     bool? hasMore,
     String? exceptionMessage,
+    BooruError? error,
     double? id,
   }) =>
       PostState(
@@ -72,6 +76,7 @@ class PostState extends Equatable
         page: page ?? this.page,
         hasMore: hasMore ?? this.hasMore,
         exceptionMessage: exceptionMessage ?? this.exceptionMessage,
+        error: error ?? this.error,
         id: id ?? this.id,
         pagination: pagination,
       );
@@ -84,6 +89,7 @@ class PostState extends Equatable
         page,
         hasMore,
         exceptionMessage,
+        error,
         id,
         pagination,
       ];
