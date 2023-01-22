@@ -48,7 +48,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page, limit: 20)
+                .fetch(postRepository, page, limit: singleRefresh ? null : 20)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -203,6 +203,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
   factory PostBloc.of(
     BuildContext context, {
     bool? pagination,
+    bool? singleRefresh,
   }) =>
       PostBloc(
         postRepository: context.read<PostRepository>(),
@@ -213,6 +214,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
+        singleRefresh: singleRefresh ?? false,
       );
 
   static const postPerPage = 60;

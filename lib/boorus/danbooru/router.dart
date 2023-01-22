@@ -180,7 +180,7 @@ void goToArtistPage(BuildContext context, String artist) {
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => PostBloc.of(context)
+            create: (context) => PostBloc.of(context, singleRefresh: true)
               ..add(PostRefreshed(
                 tag: artist,
                 fetcher: SearchedPostFetcher.fromTags(artist),
@@ -219,7 +219,7 @@ void goToCharacterPage(BuildContext context, String tag) {
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => PostBloc.of(context)
+            create: (context) => PostBloc.of(context, singleRefresh: true)
               ..add(PostRefreshed(
                 tag: tag,
                 fetcher: SearchedPostFetcher.fromTags(tag),

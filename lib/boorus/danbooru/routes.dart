@@ -135,7 +135,7 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context)
+        create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
@@ -163,7 +163,7 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context)
+        create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
