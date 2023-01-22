@@ -142,7 +142,13 @@
             "generic" : "Something went wrong",
             "tag_limit" : "タグの上限に達しました。",
             "database_timeout" : "検索に時間がかかりすぎたため、検索がキャンセルされました。",
-            "unknown" : "不明なエラーが発生したため、後で再試行してください"
+            "rate_limited" : "You're being rate limited. Please try again later",
+            "pagination_limit" : "You're have reached pagination limit. It means you cannot scroll more",
+            "max_capacity" : "Server is under heavy load and cannot handle the request be, please try again later",
+            "down" : "Server is downn. please try again later",
+            "access_denied" : "Access denied",
+            "forbidden" : "Authentication failed",
+            "unknown" : "Unknown server error, please report this issue to the developer"
         },
         "hint": "検索...",
         "no_result" : "We searched far and wide, but no results were found.",

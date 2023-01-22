@@ -258,33 +258,37 @@ class PostBloc extends Bloc<PostEvent, PostState>
           ));
         } else if (error.httpStatusCode == 429) {
           emit(failureState.copyWith(
-            exceptionMessage:
-                "You're being rate limited. Please try again later",
+            exceptionMessage: 'search.errors.rate_limited',
           ));
         } else if (error.httpStatusCode == 410) {
           emit(failureState.copyWith(
-            exceptionMessage:
-                "You're have reached pagination limit. It simply means you cannot scroll more",
+            exceptionMessage: 'search.errors.pagination_limit',
+          ));
+        } else if (error.httpStatusCode == 403) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.access_denied',
+          ));
+        } else if (error.httpStatusCode == 401) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.forbidden',
           ));
         } else if (error.httpStatusCode == 502) {
           emit(failureState.copyWith(
-            exceptionMessage:
-                'Server is under heavy load and cannot handle the request be, please try again later',
+            exceptionMessage: 'search.errors.max_capacity',
           ));
         } else if (error.httpStatusCode == 503) {
           emit(failureState.copyWith(
-            exceptionMessage: 'Server is downn. please try again later',
+            exceptionMessage: 'search.errors.down',
           ));
         } else {
           emit(failureState.copyWith(
-            exceptionMessage:
-                'Unknown server error, please report this issue to the developer',
+            exceptionMessage: 'search.errors.unknown',
           ));
         }
       },
       unknownError: (error) {
         emit(failureState.copyWith(
-          exceptionMessage: 'search.errors.unknown\n\n${error.toString()}',
+          exceptionMessage: 'generic.errors.unknown\n\n${error.toString()}',
         ));
       },
     );
