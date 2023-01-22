@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends StatefulWidget {
@@ -104,7 +104,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () {
-                      showSimpleTagSearchView(
+                      goToQuickSearchPage(
                         context,
                         onSelected: (tag) {
                           final baseOffset =

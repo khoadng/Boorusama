@@ -35,6 +35,8 @@ class RouterPageConstant {
   static const poolSearch = 'pool/search';
 
   static const search = 'search';
+  static const quickSearch = 'quick_search';
+
   static const login = 'login';
   static const explorePopular = 'explore/popular';
   static const exploreHot = 'explore/hot';

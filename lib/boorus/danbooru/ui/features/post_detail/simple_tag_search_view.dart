@@ -24,10 +24,12 @@ void showSimpleTagSearchView(
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
+  RouteSettings? settings,
 }) {
   if (isMobilePlatform()) {
     showBarModalBottomSheet(
       context: context,
+      settings: settings,
       duration: const Duration(milliseconds: 200),
       builder: (context) => SimpleTagSearchView(
         onSubmitted: onSubmitted,
@@ -41,6 +43,7 @@ void showSimpleTagSearchView(
   } else {
     showDesktopDialogWindow(
       context,
+      settings: settings,
       backgroundColor: Theme.of(context).cardColor,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(MediaQuery.of(context).size.width * 0.7, 600),

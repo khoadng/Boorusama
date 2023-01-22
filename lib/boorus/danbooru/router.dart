@@ -47,6 +47,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_pag
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
@@ -519,9 +520,11 @@ Future<T?> showDesktopDialogWindow<T>(
   double? height,
   Color? backgroundColor,
   EdgeInsets? margin,
+  RouteSettings? settings,
 }) =>
     showGeneralDialog(
       context: context,
+      routeSettings: settings,
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black87,
@@ -981,4 +984,23 @@ void goToPoolSearchPage(BuildContext context) {
       name: RouterPageConstant.poolSearch,
     ),
   ));
+}
+
+void goToQuickSearchPage(
+  BuildContext context, {
+  bool ensureValidTag = false,
+  Widget Function(String text)? floatingActionButton,
+  required void Function(AutocompleteData tag) onSelected,
+  void Function(BuildContext context, String text)? onSubmitted,
+}) {
+  showSimpleTagSearchView(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.quickSearch,
+    ),
+    ensureValidTag: ensureValidTag,
+    floatingActionButton: floatingActionButton,
+    onSubmitted: onSubmitted,
+    onSelected: onSelected,
+  );
 }
