@@ -29,7 +29,7 @@ class SavedSearchPage extends StatelessWidget {
         title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
-            onPressed: () => _onAddButtonPressed(context),
+            onPressed: () => goToSavedSearchQuickUpdatePage(context),
             icon: const Icon(Icons.add),
           ),
         ],
@@ -53,68 +53,6 @@ class SavedSearchPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _onAddButtonPressed(BuildContext context) {
-    final bloc = context.read<SavedSearchBloc>();
-
-    if (isMobilePlatform()) {
-      showMaterialModalBottomSheet(
-        context: context,
-        backgroundColor: Theme.of(context).backgroundColor,
-        builder: (_) => EditSavedSearchSheet(
-          onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-            query: query,
-            label: label,
-            onCreated: (data) => showSimpleSnackBar(
-              context: context,
-              duration: const Duration(seconds: 1),
-              content: const Text('saved_search.saved_search_added').tr(),
-            ),
-          )),
-        ),
-      );
-    } else {
-      showGeneralDialog(
-        context: context,
-        barrierDismissible: true,
-        barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        barrierColor: Colors.black54,
-        pageBuilder: (context, _, __) {
-          return Dialog(
-            backgroundColor: Theme.of(context).backgroundColor,
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(8)),
-            ),
-            child: Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.height * 0.8,
-              margin: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 16,
-              ),
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(8),
-                ),
-              ),
-              child: EditSavedSearchSheet(
-                onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-                  query: query,
-                  label: label,
-                  onCreated: (data) => showSimpleSnackBar(
-                    context: context,
-                    duration: const Duration(seconds: 1),
-                    content: const Text('saved_search.saved_search_added').tr(),
-                  ),
-                )),
-              ),
-            ),
-          );
-        },
-      );
-    }
   }
 }
 

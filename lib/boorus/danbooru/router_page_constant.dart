@@ -6,6 +6,8 @@ class RouterPageConstant {
   static const postDetails = 'post/details';
   static const parentChild = 'post/child';
   static const originalImage = 'post/original_image';
+  static const postFavoriters = 'post/favorites';
+  static const postVoters = 'post/voters';
 
   static const settings = 'settings';
   static const settingsGeneral = 'settings/general';
@@ -26,6 +28,7 @@ class RouterPageConstant {
 
   static const savedSearch = 'saved_search';
   static const savedSearchEdit = 'saved_search/edit';
+  static const savedSearchQuickUpdate = 'saved_search/quick_update';
 
   static const profile = 'profile';
   static const favorties = 'favorites';
@@ -38,6 +41,7 @@ class RouterPageConstant {
   static const quickSearch = 'quick_search';
 
   static const relatedTags = 'related_tags';
+  static const metatags = 'metatags';
 
   static const login = 'login';
   static const explorePopular = 'explore/popular';

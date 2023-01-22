@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/explore/explore.dart';
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
@@ -35,6 +36,7 @@ import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dar
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/routes.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/accounts/login/login_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page_desktop.dart';
@@ -49,6 +51,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/post_stats_tile.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/result/related_tag_action_sheet.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/search/search_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.dart';
@@ -66,8 +70,10 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'router_page_constant.dart';
@@ -1041,6 +1047,164 @@ void goToRelatedTagsPage(
       width: 220,
       body: page,
       context: context,
+    );
+  }
+}
+
+void goToMetatagsPage(
+  BuildContext context, {
+  required List<Metatag> metatags,
+  required void Function(Metatag tag) onSelected,
+}) {
+  showAdaptiveBottomSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.metatags,
+    ),
+    builder: (context) => Scaffold(
+      appBar: AppBar(
+        title: const Text('Metatags'),
+        automaticallyImplyLeading: false,
+        actions: [
+          IconButton(
+            onPressed: Navigator.of(context).pop,
+            icon: const Icon(Icons.close),
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          InfoContainer(
+            contentBuilder: (context) =>
+                const Text('search.metatags_notice').tr(),
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: metatags.length,
+              itemBuilder: (context, index) {
+                final tag = metatags[index];
+
+                return ListTile(
+                  onTap: () => onSelected(tag),
+                  title: Text(tag.name),
+                  trailing: tag.isFree ? const Chip(label: Text('Free')) : null,
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+void goToPostFavoritesDetails(BuildContext context, Post post) {
+  showAdaptiveBottomSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.postFavoriters,
+    ),
+    height: MediaQuery.of(context).size.height * 0.65,
+    builder: (context) => BlocProvider(
+      create: (context) => PostFavoriteBloc(
+        favoritePostRepository: context.read<FavoritePostRepository>(),
+        userRepository: context.read<UserRepository>(),
+      )..add(PostFavoriteFetched(
+          postId: post.id,
+          refresh: true,
+        )),
+      child: FavoriterDetailsView(
+        post: post,
+      ),
+    ),
+  );
+}
+
+void goToPostVotesDetails(BuildContext context, Post post) {
+  showAdaptiveBottomSheet(
+    context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.postVoters,
+    ),
+    height: MediaQuery.of(context).size.height * 0.65,
+    builder: (context) => BlocProvider(
+      create: (context) => PostVoteInfoBloc(
+        postVoteRepository: context.read<PostVoteRepository>(),
+        userRepository: context.read<UserRepository>(),
+      )..add(PostVoteInfoFetched(
+          postId: post.id,
+          refresh: true,
+        )),
+      child: VoterDetailsView(
+        post: post,
+      ),
+    ),
+  );
+}
+
+void goToSavedSearchQuickUpdatePage(BuildContext context) {
+  final bloc = context.read<SavedSearchBloc>();
+
+  if (isMobilePlatform()) {
+    showMaterialModalBottomSheet(
+      context: context,
+      settings: const RouteSettings(
+        name: RouterPageConstant.savedSearchQuickUpdate,
+      ),
+      backgroundColor: Theme.of(context).backgroundColor,
+      builder: (_) => EditSavedSearchSheet(
+        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
+          query: query,
+          label: label,
+          onCreated: (data) => showSimpleSnackBar(
+            context: context,
+            duration: const Duration(seconds: 1),
+            content: const Text('saved_search.saved_search_added').tr(),
+          ),
+        )),
+      ),
+    );
+  } else {
+    showGeneralDialog(
+      context: context,
+      routeSettings: const RouteSettings(
+        name: RouterPageConstant.savedSearchQuickUpdate,
+      ),
+      barrierDismissible: true,
+      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
+      barrierColor: Colors.black54,
+      pageBuilder: (context, _, __) {
+        return Dialog(
+          backgroundColor: Theme.of(context).backgroundColor,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(8)),
+          ),
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.8,
+            height: MediaQuery.of(context).size.height * 0.8,
+            margin: const EdgeInsets.symmetric(
+              vertical: 12,
+              horizontal: 16,
+            ),
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8),
+              ),
+            ),
+            child: EditSavedSearchSheet(
+              onSubmit: (query, label) => bloc.add(SavedSearchCreated(
+                query: query,
+                label: label,
+                onCreated: (data) => showSimpleSnackBar(
+                  context: context,
+                  duration: const Duration(seconds: 1),
+                  content: const Text('saved_search.saved_search_added').tr(),
+                ),
+              )),
+            ),
+          ),
+        );
+      },
     );
   }
 }

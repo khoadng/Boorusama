@@ -87,15 +87,18 @@ Future<T?> showAdaptiveBottomSheet<T>(
   bool expand = false,
   double? height,
   Color? backgroundColor,
+  RouteSettings? settings,
 }) {
   return Screen.of(context).size != ScreenSize.small
       ? showGeneralDialog<T>(
           context: context,
+          routeSettings: settings,
           pageBuilder: (context, animation, secondaryAnimation) =>
               builder(context),
         )
       : showBarModalBottomSheet<T>(
           context: context,
+          settings: settings,
           barrierColor: Colors.black45,
           backgroundColor: backgroundColor ?? Colors.transparent,
           builder: (context) => ConditionalParentWidget(
