@@ -34,6 +34,7 @@ import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/searches/searches.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
@@ -1147,17 +1148,21 @@ void goToPostVotesDetails(BuildContext context, Post post) {
   );
 }
 
-void goToSavedSearchQuickUpdatePage(BuildContext context) {
+void goToSavedSearchCreatePage(
+  BuildContext context, {
+  SavedSearch? initialValue,
+}) {
   final bloc = context.read<SavedSearchBloc>();
 
   if (isMobilePlatform()) {
     showMaterialModalBottomSheet(
       context: context,
       settings: const RouteSettings(
-        name: RouterPageConstant.savedSearchQuickUpdate,
+        name: RouterPageConstant.savedSearchCreate,
       ),
       backgroundColor: Theme.of(context).backgroundColor,
       builder: (_) => EditSavedSearchSheet(
+        initialValue: initialValue,
         onSubmit: (query, label) => bloc.add(SavedSearchCreated(
           query: query,
           label: label,
@@ -1173,7 +1178,7 @@ void goToSavedSearchQuickUpdatePage(BuildContext context) {
     showGeneralDialog(
       context: context,
       routeSettings: const RouteSettings(
-        name: RouterPageConstant.savedSearchQuickUpdate,
+        name: RouterPageConstant.savedSearchCreate,
       ),
       barrierDismissible: true,
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
@@ -1212,6 +1217,38 @@ void goToSavedSearchQuickUpdatePage(BuildContext context) {
       },
     );
   }
+}
+
+void goToSavedSearchPatchPage(
+  BuildContext context,
+  SavedSearch savedSearch,
+  SavedSearchBloc bloc,
+) {
+  showMaterialModalBottomSheet(
+    context: context,
+    settings: const RouteSettings(
+      name: RouterPageConstant.savedSearchPatch,
+    ),
+    backgroundColor: Theme.of(context).backgroundColor,
+    builder: (_) => EditSavedSearchSheet(
+      title: 'saved_search.update_saved_search'.tr(),
+      initialValue: savedSearch,
+      onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
+        id: savedSearch.id,
+        label: label,
+        query: query,
+        onUpdated: (data) => showSimpleSnackBar(
+          context: context,
+          duration: const Duration(
+            seconds: 1,
+          ),
+          content: const Text(
+            'saved_search.saved_search_updated',
+          ).tr(),
+        ),
+      )),
+    ),
+  );
 }
 
 Future<Object?> goToFavoriteTagImportPage(

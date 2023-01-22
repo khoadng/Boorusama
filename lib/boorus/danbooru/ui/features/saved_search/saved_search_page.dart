@@ -12,8 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 
@@ -29,7 +27,7 @@ class SavedSearchPage extends StatelessWidget {
         title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
-            onPressed: () => goToSavedSearchQuickUpdatePage(context),
+            onPressed: () => goToSavedSearchCreatePage(context),
             icon: const Icon(Icons.add),
           ),
         ],
@@ -141,28 +139,7 @@ class _SuccessView extends StatelessWidget {
         onDelete: () => bloc.add(SavedSearchDeleted(
           savedSearch: savedSearch,
         )),
-        onEdit: () => showMaterialModalBottomSheet(
-          context: context,
-          backgroundColor: Theme.of(context).backgroundColor,
-          builder: (_) => EditSavedSearchSheet(
-            title: 'saved_search.update_saved_search'.tr(),
-            initialValue: savedSearch,
-            onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
-              id: savedSearch.id,
-              label: label,
-              query: query,
-              onUpdated: (data) => showSimpleSnackBar(
-                context: context,
-                duration: const Duration(
-                  seconds: 1,
-                ),
-                content: const Text(
-                  'saved_search.saved_search_updated',
-                ).tr(),
-              ),
-            )),
-          ),
-        ),
+        onEdit: () => goToSavedSearchPatchPage(context, savedSearch, bloc),
       ),
     );
   }
