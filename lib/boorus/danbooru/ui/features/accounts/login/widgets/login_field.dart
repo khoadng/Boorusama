@@ -29,7 +29,7 @@ class LoginField extends StatelessWidget {
       decoration: InputDecoration(
         suffixIcon: suffixIcon,
         filled: true,
-        fillColor: Theme.of(context).cardColor,
+        fillColor: Theme.of(context).backgroundColor,
         enabledBorder: const OutlineInputBorder(
           borderSide: BorderSide.none,
         ),

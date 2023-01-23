@@ -12,8 +12,6 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/saved_search/widgets/edit_saved_search_sheet.dart';
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/error_box.dart';
 import 'package:boorusama/core/ui/generic_no_data_box.dart';
 
@@ -29,7 +27,7 @@ class SavedSearchPage extends StatelessWidget {
         title: const Text('saved_search.saved_search').tr(),
         actions: [
           IconButton(
-            onPressed: () => _onAddButtonPressed(context),
+            onPressed: () => goToSavedSearchCreatePage(context),
             icon: const Icon(Icons.add),
           ),
         ],
@@ -51,26 +49,6 @@ class SavedSearchPage extends StatelessWidget {
             }
           },
         ),
-      ),
-    );
-  }
-
-  void _onAddButtonPressed(BuildContext context) {
-    final bloc = context.read<SavedSearchBloc>();
-
-    showMaterialModalBottomSheet(
-      context: context,
-      backgroundColor: Theme.of(context).backgroundColor,
-      builder: (_) => EditSavedSearchSheet(
-        onSubmit: (query, label) => bloc.add(SavedSearchCreated(
-          query: query,
-          label: label,
-          onCreated: (data) => showSimpleSnackBar(
-            context: context,
-            duration: const Duration(seconds: 1),
-            content: const Text('saved_search.saved_search_added').tr(),
-          ),
-        )),
       ),
     );
   }
@@ -142,9 +120,9 @@ class _SuccessView extends StatelessWidget {
               icon: const Icon(Icons.more_vert),
             ),
       onTap: savedSearch.labels.isNotEmpty
-          ? () => _goToSearchPage(
+          ? () => goToSearchPage(
                 context,
-                query: 'search:${savedSearch.labels.first}',
+                tag: 'search:${savedSearch.labels.first}',
               )
           : null,
       onLongPress: savedSearch.readOnly
@@ -161,42 +139,8 @@ class _SuccessView extends StatelessWidget {
         onDelete: () => bloc.add(SavedSearchDeleted(
           savedSearch: savedSearch,
         )),
-        onEdit: () => showMaterialModalBottomSheet(
-          context: context,
-          backgroundColor: Theme.of(context).backgroundColor,
-          builder: (_) => EditSavedSearchSheet(
-            title: 'saved_search.update_saved_search'.tr(),
-            initialValue: savedSearch,
-            onSubmit: (query, label) => bloc.add(SavedSearchUpdated(
-              id: savedSearch.id,
-              label: label,
-              query: query,
-              onUpdated: (data) => showSimpleSnackBar(
-                context: context,
-                duration: const Duration(
-                  seconds: 1,
-                ),
-                content: const Text(
-                  'saved_search.saved_search_updated',
-                ).tr(),
-              ),
-            )),
-          ),
-        ),
+        onEdit: () => goToSavedSearchPatchPage(context, savedSearch, bloc),
       ),
-    );
-  }
-
-  void _goToSearchPage(
-    BuildContext context, {
-    required String query,
-  }) {
-    AppRouter.router.navigateTo(
-      context,
-      '/posts/search',
-      routeSettings: RouteSettings(arguments: [
-        query,
-      ]),
     );
   }
 }

@@ -14,9 +14,9 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
 
@@ -25,10 +25,12 @@ class ResultView extends StatefulWidget {
     super.key,
     this.headerBuilder,
     this.scrollController,
+    this.backgroundColor,
   });
 
   final List<Widget> Function()? headerBuilder;
   final AutoScrollController? scrollController;
+  final Color? backgroundColor;
 
   @override
   State<ResultView> createState() => _ResultViewState();
@@ -54,10 +56,12 @@ class _ResultViewState extends State<ResultView> {
 
     return pagination
         ? _Pagination(
+            backgroundColor: widget.backgroundColor,
             scrollController: scrollController,
             headerBuilder: widget.headerBuilder,
           )
         : _InfiniteScroll(
+            backgroundColor: widget.backgroundColor,
             scrollController: scrollController,
             refreshController: refreshController,
             headerBuilder: widget.headerBuilder,
@@ -70,23 +74,19 @@ class _InfiniteScroll extends StatelessWidget {
     required this.scrollController,
     required this.refreshController,
     this.headerBuilder,
+    this.backgroundColor,
   });
 
   final AutoScrollController scrollController;
   final RefreshController refreshController;
   final List<Widget> Function()? headerBuilder;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
-    final state = context.watch<PostBloc>().state;
 
-    return InfiniteLoadListScrollView(
-      scrollPhysics: const NoImplicitScrollPhysics(),
-      scrollController: scrollController,
-      isLoading: state.loading,
-      refreshController: refreshController,
-      enableLoadMore: state.hasMore,
+    return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
             tags: tags.map((e) => e.toString()).join(' '),
             fetcher: SearchedPostFetcher.fromTags(
@@ -100,19 +100,11 @@ class _InfiniteScroll extends StatelessWidget {
                 tags.map((e) => e.toString()).join(' '),
               ),
             ));
-        Future.delayed(
-          const Duration(milliseconds: 500),
-          () => controller.refreshCompleted(),
-        );
       },
-      sliverBuilder: (controller) => [
+      sliverHeaderBuilder: (context) => [
         ...headerBuilder?.call() ?? [],
         const SliverToBoxAdapter(child: RelatedTagSection()),
         const SliverToBoxAdapter(child: ResultHeader()),
-        HomePostGrid(
-          controller: controller,
-          onTap: () => FocusScope.of(context).unfocus(),
-        ),
       ],
     );
   }
@@ -122,10 +114,12 @@ class _Pagination extends StatefulWidget {
   const _Pagination({
     required this.scrollController,
     this.headerBuilder,
+    this.backgroundColor,
   });
 
   final AutoScrollController scrollController;
   final List<Widget> Function()? headerBuilder;
+  final Color? backgroundColor;
 
   @override
   State<_Pagination> createState() => _PaginationState();
@@ -177,6 +171,7 @@ class _PaginationState extends State<_Pagination>
     final state = context.watch<PostBloc>().state;
 
     return Scaffold(
+      backgroundColor: widget.backgroundColor,
       floatingActionButton: FadeTransition(
         opacity: _animationController,
         child: ScaleTransition(
@@ -195,7 +190,7 @@ class _PaginationState extends State<_Pagination>
           ...widget.headerBuilder?.call() ?? [],
           const SliverToBoxAdapter(child: RelatedTagSection()),
           const SliverToBoxAdapter(child: ResultHeader()),
-          HomePostGrid(
+          PostGrid(
             controller: widget.scrollController,
             onTap: () => FocusScope.of(context).unfocus(),
           ),

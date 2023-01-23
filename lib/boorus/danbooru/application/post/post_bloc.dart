@@ -48,7 +48,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page, limit: 20)
+                .fetch(postRepository, page, limit: singleRefresh ? null : 20)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -203,6 +203,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
   factory PostBloc.of(
     BuildContext context, {
     bool? pagination,
+    bool? singleRefresh,
   }) =>
       PostBloc(
         postRepository: context.read<PostRepository>(),
@@ -213,6 +214,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
+        singleRefresh: singleRefresh ?? false,
       );
 
   static const postPerPage = 60;
@@ -225,7 +227,10 @@ class PostBloc extends Bloc<PostEvent, PostState>
           : _emitError(BooruError(error: error), emit);
 
   void _emitError(BooruError error, Emitter emit) {
-    final failureState = state.copyWith(status: LoadStatus.failure);
+    final failureState = state.copyWith(
+      status: LoadStatus.failure,
+      error: error,
+    );
 
     error.when(
       appError: (appError) => appError.when(
@@ -251,15 +256,39 @@ class PostBloc extends Bloc<PostEvent, PostState>
           emit(failureState.copyWith(
             exceptionMessage: 'search.errors.database_timeout',
           ));
+        } else if (error.httpStatusCode == 429) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.rate_limited',
+          ));
+        } else if (error.httpStatusCode == 410) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.pagination_limit',
+          ));
+        } else if (error.httpStatusCode == 403) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.access_denied',
+          ));
+        } else if (error.httpStatusCode == 401) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.forbidden',
+          ));
+        } else if (error.httpStatusCode == 502) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.max_capacity',
+          ));
+        } else if (error.httpStatusCode == 503) {
+          emit(failureState.copyWith(
+            exceptionMessage: 'search.errors.down',
+          ));
         } else {
           emit(failureState.copyWith(
             exceptionMessage: 'search.errors.unknown',
           ));
         }
       },
-      unknownError: (_) {
+      unknownError: (error) {
         emit(failureState.copyWith(
-          exceptionMessage: 'search.errors.unknown',
+          exceptionMessage: 'generic.errors.unknown',
         ));
       },
     );

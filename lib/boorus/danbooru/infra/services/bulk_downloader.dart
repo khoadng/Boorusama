@@ -112,6 +112,9 @@ class BulkDownloader<T> {
   }
 
   Future<void> init() async {
+    if (!FlutterDownloader.initialized) {
+      await FlutterDownloader.initialize();
+    }
     _bindBackgroundIsolate();
     await FlutterDownloader.registerCallback(downloadCallback);
     await _prepare();

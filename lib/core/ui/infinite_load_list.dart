@@ -21,6 +21,10 @@ class InfiniteLoadList extends StatefulWidget {
     this.extendBody = false,
     this.extendBodyHeight,
     required this.builder,
+    this.backgroundColor,
+    this.multiSelect = false,
+    this.bottomBuilder,
+    this.topBuilder,
   });
 
   final bool extendBody;
@@ -36,6 +40,10 @@ class InfiniteLoadList extends StatefulWidget {
     BuildContext context,
     AutoScrollController controller,
   ) builder;
+  final Color? backgroundColor;
+  final bool multiSelect;
+  final Widget Function()? bottomBuilder;
+  final PreferredSizeWidget Function()? topBuilder;
 
   @override
   State<InfiniteLoadList> createState() => _InfiniteLoadListState();
@@ -119,6 +127,9 @@ class _InfiniteLoadListState extends State<InfiniteLoadList>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: widget.multiSelect ? widget.topBuilder?.call() : null,
+      backgroundColor: widget.backgroundColor,
+      bottomSheet: widget.multiSelect ? widget.bottomBuilder?.call() : null,
       floatingActionButton: FadeTransition(
         opacity: _animationController,
         child: ScaleTransition(
@@ -176,6 +187,10 @@ class InfiniteLoadListScrollView extends StatelessWidget {
     this.extendBody,
     this.enableRefresh = true,
     this.scrollPhysics,
+    this.backgroundColor,
+    this.multiSelect = false,
+    this.bottomBuilder,
+    this.topBuilder,
   });
 
   final bool? extendBody;
@@ -189,10 +204,30 @@ class InfiniteLoadListScrollView extends StatelessWidget {
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
   final ScrollPhysics? scrollPhysics;
+  final Color? backgroundColor;
+
+  final bool multiSelect;
+  final Widget Function()? bottomBuilder;
+  final PreferredSizeWidget Function()? topBuilder;
 
   @override
   Widget build(BuildContext context) {
     return InfiniteLoadList(
+      multiSelect: multiSelect,
+      topBuilder: multiSelect ? topBuilder : null,
+      bottomBuilder: multiSelect
+          ? () => BottomSheet(
+                backgroundColor: Theme.of(context).backgroundColor,
+                enableDrag: false,
+                // ignore: no-empty-block
+                onClosing: () {},
+                builder: (context) => SizedBox(
+                  height: 60,
+                  child: bottomBuilder?.call(),
+                ),
+              )
+          : null,
+      backgroundColor: backgroundColor,
       extendBody: extendBody ?? false,
       scrollController: scrollController,
       refreshController: refreshController,

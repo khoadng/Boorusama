@@ -25,16 +25,7 @@ class RecommendCharacterList extends StatelessWidget {
         ...recommends.map(
           (r) => RecommendPostSection(
             header: ListTile(
-              onTap: () => AppRouter.router.navigateTo(
-                context,
-                '/character',
-                routeSettings: RouteSettings(
-                  arguments: [
-                    r.title,
-                    '',
-                  ],
-                ),
-              ),
+              onTap: () => goToCharacterPage(context, r.title),
               title: Text(r.title.removeUnderscoreWithSpace()),
               trailing: const Icon(Icons.keyboard_arrow_right_rounded),
             ),

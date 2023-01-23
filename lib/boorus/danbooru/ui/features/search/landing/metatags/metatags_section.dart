@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,9 +9,9 @@ import 'package:url_launcher/url_launcher.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/tags/metatag.dart';
-import 'package:boorusama/core/ui/info_container.dart';
 import 'package:boorusama/main.dart';
 import '../common/option_tags_arena.dart';
 
@@ -76,52 +75,14 @@ class _MetatagsSectionState extends State<MetatagsSection> {
         IconButton(
           iconSize: 28,
           splashRadius: 20,
-          onPressed: () {
-            showAdaptiveBottomSheet(
-              context,
-              builder: (context) => Scaffold(
-                appBar: AppBar(
-                  title: const Text('Metatags'),
-                  automaticallyImplyLeading: false,
-                  actions: [
-                    IconButton(
-                      onPressed: Navigator.of(context).pop,
-                      icon: const Icon(Icons.close),
-                    ),
-                  ],
-                ),
-                body: Column(
-                  children: [
-                    InfoContainer(
-                      contentBuilder: (context) =>
-                          const Text('search.metatags_notice').tr(),
-                    ),
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: metatags.length,
-                        itemBuilder: (context, index) {
-                          final tag = metatags[index];
-
-                          return ListTile(
-                            onTap: () => setState(() {
-                              Navigator.of(context).pop();
-                              context
-                                  .read<UserMetatagRepository>()
-                                  .put(tag.name);
-                            }),
-                            title: Text(tag.name),
-                            trailing: tag.isFree
-                                ? const Chip(label: Text('Free'))
-                                : null,
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
+          onPressed: () => goToMetatagsPage(
+            context,
+            metatags: metatags,
+            onSelected: (tag) => setState(() {
+              Navigator.of(context).pop();
+              context.read<UserMetatagRepository>().put(tag.name);
+            }),
+          ),
           icon: const Icon(Icons.add),
         ),
     ];

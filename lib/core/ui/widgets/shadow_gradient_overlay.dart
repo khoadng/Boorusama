@@ -6,11 +6,13 @@ class ShadowGradientOverlay extends StatelessWidget {
     super.key,
     required this.alignment,
     required this.colors,
-  })  : assert(alignment == Alignment.bottomCenter ||
+    this.height,
+  }) : assert(alignment == Alignment.bottomCenter ||
             alignment == Alignment.topCenter);
 
   final List<Color> colors;
   final Alignment alignment;
+  final double? height;
 
   Gradient _buildGradient(Alignment alignment, List<Color> colors) {
     return alignment == Alignment.topCenter
@@ -32,7 +34,7 @@ class ShadowGradientOverlay extends StatelessWidget {
       child: Align(
         alignment: alignment,
         child: Container(
-          height: 200,
+          height: height ?? 200,
           width: double.infinity,
           decoration: BoxDecoration(
             gradient: _buildGradient(alignment, colors),

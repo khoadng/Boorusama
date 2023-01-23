@@ -142,7 +142,13 @@
             "generic" : "Có lỗi xảy ra",
             "tag_limit" : "Số tag sử dụng vượt mức cho phép. Nâng cấp tài khoản để có thể dùng nhiều tag hơn.",
             "database_timeout" : "Search bị hủy do tốn quá nhiều thời gian.",
-            "unknown" : "Có lỗi ngoài dự kiến, vui lòng thử lại sau."
+            "rate_limited" : "You're being rate limited. Please try again later",
+            "pagination_limit" : "You're have reached pagination limit. It means you cannot scroll more",
+            "max_capacity" : "Server is under heavy load and cannot handle the request be, please try again later",
+            "down" : "Server is downn. please try again later",
+            "access_denied" : "Access denied",
+            "forbidden" : "Authentication failed",
+            "unknown" : "Unknown server error, please report this issue to the developer"
         },
         "hint": "Tìm...",
         "no_result" : "Không tìm được kết quả phù hợp.",
@@ -245,7 +251,8 @@
             "english" : "Tiếng Anh",
             "russian" : "Tiếng Nga",
             "belarusian" : "Tiếng Belarus",
-            "vietnamese" : "Tiếng Việt"
+            "vietnamese" : "Tiếng Việt",
+            "japanese" : "Tiếng Nhật"
         },
         "theme" : {
             "theme" : "Nền",

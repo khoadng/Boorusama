@@ -48,6 +48,7 @@ class Settings extends Equatable {
     required this.imageListType,
     required this.detailsDisplay,
     required this.contentOrganizationCategory,
+    required this.autoFocusSearchBar,
   });
 
   Settings.fromJson(Map<String, dynamic> json)
@@ -87,6 +88,7 @@ class Settings extends Equatable {
                 ? ContentOrganizationCategory
                     .values[json['contentOrganizationCategory']]
                 : ContentOrganizationCategory.infiniteScroll,
+        autoFocusSearchBar = json['autoFocusSearchBar'] ?? true,
         imageBorderRadius = json['imageBorderRadius'],
         imageGridSpacing = json['imageGridSpacing'];
 
@@ -107,6 +109,7 @@ class Settings extends Equatable {
     imageListType: ImageListType.masonry,
     detailsDisplay: DetailsDisplay.postFocus,
     contentOrganizationCategory: ContentOrganizationCategory.infiniteScroll,
+    autoFocusSearchBar: true,
   );
 
   final String blacklistedTags;
@@ -134,6 +137,8 @@ class Settings extends Equatable {
 
   final ContentOrganizationCategory contentOrganizationCategory;
 
+  final bool autoFocusSearchBar;
+
   Settings copyWith({
     String? blacklistedTags,
     String? language,
@@ -151,6 +156,7 @@ class Settings extends Equatable {
     ImageListType? imageListType,
     DetailsDisplay? detailsDisplay,
     ContentOrganizationCategory? contentOrganizationCategory,
+    bool? autoFocusSearchBar,
   }) =>
       Settings(
         safeMode: safeMode ?? this.safeMode,
@@ -172,6 +178,7 @@ class Settings extends Equatable {
         detailsDisplay: detailsDisplay ?? this.detailsDisplay,
         contentOrganizationCategory:
             contentOrganizationCategory ?? this.contentOrganizationCategory,
+        autoFocusSearchBar: autoFocusSearchBar ?? this.autoFocusSearchBar,
       );
 
   Map<String, dynamic> toJson() => {
@@ -191,6 +198,7 @@ class Settings extends Equatable {
         'imageListType': imageListType.index,
         'detailsDisplay': detailsDisplay.index,
         'contentOrganizationCategory': contentOrganizationCategory.index,
+        'autoFocusSearchBar': autoFocusSearchBar,
       };
 
   @override
@@ -211,5 +219,6 @@ class Settings extends Equatable {
         imageListType,
         detailsDisplay,
         contentOrganizationCategory,
+        autoFocusSearchBar,
       ];
 }

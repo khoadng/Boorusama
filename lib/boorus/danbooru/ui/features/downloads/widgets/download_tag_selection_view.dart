@@ -6,11 +6,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/downloads/downloads.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/infra.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
@@ -82,19 +81,23 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                       splashRadius: 20,
                       onPressed: () {
                         final bloc = context.read<BulkImageDownloadBloc>();
-                        showBarModalBottomSheet(
-                          context: context,
-                          duration: const Duration(milliseconds: 200),
-                          builder: (context) => SimpleTagSearchView(
-                            ensureValidTag: false,
-                            onSelected: (tag) {
-                              bloc.add(
-                                BulkImageDownloadTagsAdded(
-                                  tags: [tag.value],
-                                ),
-                              );
-                            },
-                          ),
+                        goToQuickSearchPage(
+                          context,
+                          onSubmitted: (context, text) {
+                            Navigator.of(context).pop();
+                            bloc.add(
+                              BulkImageDownloadTagsAdded(
+                                tags: [text],
+                              ),
+                            );
+                          },
+                          onSelected: (tag) {
+                            bloc.add(
+                              BulkImageDownloadTagsAdded(
+                                tags: [tag.value],
+                              ),
+                            );
+                          },
                         );
                       },
                       icon: const Icon(Icons.add),

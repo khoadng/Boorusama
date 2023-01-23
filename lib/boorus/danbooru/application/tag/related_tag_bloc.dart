@@ -28,6 +28,11 @@ class RelatedTagBloc extends Bloc<RelatedTagEvent, AsyncLoadState<RelatedTag>> {
   }) : super(const AsyncLoadState.initial()) {
     on<RelatedTagRequested>(
       (event, emit) async {
+        if (event.query.isEmpty) {
+          emit(const AsyncLoadState.failure());
+
+          return;
+        }
         await tryAsync<RelatedTag>(
           action: () => relatedTagRepository.getRelatedTag(event.query),
           onLoading: () => emit(const AsyncLoadState.loading()),

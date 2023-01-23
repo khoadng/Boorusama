@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -15,10 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'most_search_tag_list.dart';
 
@@ -40,10 +35,14 @@ class _LatestViewState extends State<LatestView> {
   final BehaviorSubject<String> _selectedTagStream = BehaviorSubject();
   final CompositeSubscription _compositeSubscription = CompositeSubscription();
 
-  void _sendRefresh(String tag) => context.read<PostBloc>().add(PostRefreshed(
-        tag: tag,
-        fetcher: SearchedPostFetcher.fromTags(tag),
-      ));
+  void _sendRefresh(String tag) {
+    _autoScrollController.jumpTo(0);
+
+    context.read<PostBloc>().add(PostRefreshed(
+          tag: tag,
+          fetcher: SearchedPostFetcher.fromTags(tag),
+        ));
+  }
 
   @override
   void initState() {
@@ -53,8 +52,9 @@ class _LatestViewState extends State<LatestView> {
     _selectedTagStream
         .debounceTime(const Duration(milliseconds: 250))
         .distinct()
-        .listen(_sendRefresh)
-        .addTo(_compositeSubscription);
+        .listen((tag) {
+      _sendRefresh(tag);
+    }).addTo(_compositeSubscription);
   }
 
   @override
@@ -68,24 +68,16 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
-
-    return InfiniteLoadListScrollView(
-      isLoading: state.loading,
-      enableLoadMore: state.hasMore,
+    return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
             tags: _selectedTag.value,
-            fetcher: const LatestPostFetcher(),
+            fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
           )),
       onRefresh: (controller) {
         _sendRefresh(_selectedTag.value);
-        Future.delayed(
-          const Duration(seconds: 1),
-          () => controller.refreshCompleted(),
-        );
       },
       scrollController: _autoScrollController,
-      sliverBuilder: (controller) => [
+      sliverHeaderBuilder: (context) => [
         _AppBar(onMenuTap: widget.onMenuTap),
         SliverToBoxAdapter(
           child: ValueListenableBuilder<String>(
@@ -98,9 +90,6 @@ class _LatestViewState extends State<LatestView> {
               },
             ),
           ),
-        ),
-        HomePostGrid(
-          controller: controller,
         ),
       ],
     );
@@ -161,23 +150,9 @@ class _AppBar extends StatelessWidget {
                       onPressed: () => onMenuTap!(),
                     )
                   : null,
-              onTap: () => AppRouter.router.navigateTo(
-                context,
-                '/posts/search',
-                routeSettings: const RouteSettings(arguments: ['']),
-              ),
+              onTap: () => goToSearchPage(context),
             ),
           ),
-          if (isDesktopPlatform())
-            MaterialButton(
-              color: Theme.of(context).cardColor,
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(20),
-              onPressed: () => context.read<PostBloc>().add(const PostRefreshed(
-                    fetcher: LatestPostFetcher(),
-                  )),
-              child: const Icon(Icons.refresh),
-            ),
         ],
       ),
       floating: true,

@@ -22,36 +22,45 @@ class TagSuggestionItems extends StatelessWidget {
     required List<AutocompleteData> tags,
     required this.onItemTap,
     required this.currentQuery,
+    this.backgroundColor,
   }) : _tags = tags;
 
   final List<AutocompleteData> _tags;
   final ValueChanged<AutocompleteData> onItemTap;
   final String currentQuery;
+  final Color? backgroundColor;
 
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
+      color: backgroundColor ?? Theme.of(context).scaffoldBackgroundColor,
       elevation: 4,
       borderRadius: const BorderRadius.all(Radius.circular(8)),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          return ListView.builder(
-            itemCount: _tags.length,
-            itemBuilder: (context, index) {
-              final tag = _tags[index];
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: ListView.builder(
+              itemCount: _tags.length,
+              itemBuilder: (context, index) {
+                final tag = _tags[index];
 
-              return ListTile(
-                onTap: () => onItemTap(_tags[index]),
-                trailing: tag.hasCount
-                    ? Text(
-                        NumberFormat.compact().format(tag.postCount),
-                        style: const TextStyle(color: Colors.grey),
-                      )
-                    : null,
-                title: _getTitle(tag, state.theme, currentQuery),
-              );
-            },
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListTile(
+                    hoverColor: Theme.of(context).cardColor,
+                    onTap: () => onItemTap(_tags[index]),
+                    trailing: tag.hasCount
+                        ? Text(
+                            NumberFormat.compact().format(tag.postCount),
+                            style: const TextStyle(color: Colors.grey),
+                          )
+                        : null,
+                    title: _getTitle(tag, state.theme, currentQuery),
+                  ),
+                );
+              },
+            ),
           );
         },
       ),
@@ -111,49 +120,57 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                       onHistoryDeleted.call(history);
                     }
                   },
-                  child: ListTile(
-                    visualDensity: VisualDensity.compact,
-                    trailing: const Icon(
-                      Icons.history,
-                      color: Colors.grey,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: ListTile(
+                      hoverColor: Theme.of(context).cardColor,
+                      visualDensity: VisualDensity.compact,
+                      trailing: const Icon(
+                        Icons.history,
+                        color: Colors.grey,
+                      ),
+                      title: Html(
+                        style: {
+                          'p': Style(
+                            fontSize: FontSize.medium,
+                          ),
+                          'body': Style(
+                            padding: EdgeInsets.zero,
+                            margin: EdgeInsets.zero,
+                          ),
+                          'b': Style(
+                            color: Colors.redAccent,
+                          ),
+                        },
+                        data: '<p>${history.tag.replaceAll(
+                              history.term,
+                              '<b>${history.term}</b>',
+                            ).replaceAll('_', ' ')}</p>',
+                      ),
+                      onTap: () => onHistoryTap(history),
                     ),
-                    title: Html(
-                      style: {
-                        'p': Style(
-                          fontSize: FontSize.medium,
-                        ),
-                        'body': Style(
-                          padding: EdgeInsets.zero,
-                          margin: EdgeInsets.zero,
-                        ),
-                        'b': Style(
-                          color: Colors.redAccent,
-                        ),
-                      },
-                      data: '<p>${history.tag.replaceAll(
-                            history.term,
-                            '<b>${history.term}</b>',
-                          ).replaceAll('_', ' ')}</p>',
-                    ),
-                    onTap: () => onHistoryTap(history),
                   ),
                 ),
               ),
               if (histories.isNotEmpty) const Divider(thickness: 1),
               ...tags.map(
-                (tag) => ListTile(
-                  onTap: () => onItemTap(tag),
-                  trailing: tag.hasCount
-                      ? Text(
-                          NumberFormat.compact().format(tag.postCount),
-                          style: const TextStyle(color: Colors.grey),
-                        )
-                      : null,
-                  title: BlocBuilder<ThemeBloc, ThemeState>(
-                    builder: (context, state) => _getTitle(
-                      tag,
-                      state.theme,
-                      currentQuery.replaceAll('_', ' '),
+                (tag) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: ListTile(
+                    hoverColor: Theme.of(context).cardColor,
+                    onTap: () => onItemTap(tag),
+                    trailing: tag.hasCount
+                        ? Text(
+                            NumberFormat.compact().format(tag.postCount),
+                            style: const TextStyle(color: Colors.grey),
+                          )
+                        : null,
+                    title: BlocBuilder<ThemeBloc, ThemeState>(
+                      builder: (context, state) => _getTitle(
+                        tag,
+                        state.theme,
+                        currentQuery.replaceAll('_', ' '),
+                      ),
                     ),
                   ),
                 ),

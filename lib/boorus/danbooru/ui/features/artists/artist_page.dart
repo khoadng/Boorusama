@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/tag_detail_page_desktop.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/tag_other_names.dart';
+import 'package:boorusama/core/core.dart';
 
 class ArtistPage extends StatelessWidget {
   const ArtistPage({
@@ -22,22 +24,37 @@ class ArtistPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TagDetailPage(
-      tagName: artistName,
-      otherNamesBuilder: (context) => BlocBuilder<ArtistBloc, ArtistState>(
-        builder: (context, state) {
-          switch (state.status) {
-            case LoadStatus.initial:
-            case LoadStatus.loading:
-              return const SizedBox(height: 40, width: 40);
-            case LoadStatus.success:
-              return TagOtherNames(otherNames: state.artist.otherNames);
-            case LoadStatus.failure:
-              return const SizedBox.shrink();
-          }
-        },
-      ),
-      backgroundImageUrl: backgroundImageUrl,
-    );
+    return Screen.of(context).size == ScreenSize.small
+        ? TagDetailPage(
+            tagName: artistName,
+            otherNamesBuilder: (context) =>
+                BlocBuilder<ArtistBloc, ArtistState>(builder: (context, state) {
+              switch (state.status) {
+                case LoadStatus.initial:
+                case LoadStatus.loading:
+                  return const SizedBox(height: 40, width: 40);
+                case LoadStatus.success:
+                  return TagOtherNames(otherNames: state.artist.otherNames);
+                case LoadStatus.failure:
+                  return const SizedBox.shrink();
+              }
+            }),
+            backgroundImageUrl: backgroundImageUrl,
+          )
+        : TagDetailPageDesktop(
+            tagName: artistName,
+            otherNamesBuilder: (context) =>
+                BlocBuilder<ArtistBloc, ArtistState>(builder: (context, state) {
+              switch (state.status) {
+                case LoadStatus.initial:
+                case LoadStatus.loading:
+                  return const SizedBox(height: 40, width: 40);
+                case LoadStatus.success:
+                  return TagOtherNames(otherNames: state.artist.otherNames);
+                case LoadStatus.failure:
+                  return const SizedBox.shrink();
+              }
+            }),
+          );
   }
 }

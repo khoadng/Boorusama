@@ -96,22 +96,16 @@ class SimplePostTagList extends StatelessWidget {
                                     Clipboard.setData(
                                       ClipboardData(text: tag.rawName),
                                     ).then(
-                                      (value) => AppRouter.router.navigateTo(
-                                        context,
-                                        '/saved_search/edit',
-                                      ),
+                                      (value) =>
+                                          goToSavedSearchEditPage(context),
                                     );
                                   }
                                 },
                                 child: _Badge(
                                   label: tag.displayName,
                                   backgroundColor: tag.color,
-                                  onTap: () => AppRouter.router.navigateTo(
-                                    context,
-                                    '/posts/search',
-                                    routeSettings:
-                                        RouteSettings(arguments: [tag.rawName]),
-                                  ),
+                                  onTap: () =>
+                                      goToSearchPage(context, tag: tag.rawName),
                                 ),
                               ))
                           .toList(),

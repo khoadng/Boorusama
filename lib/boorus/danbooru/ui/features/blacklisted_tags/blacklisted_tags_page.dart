@@ -10,12 +10,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'blacklisted_tags_search_page.dart';
 
 class BlacklistedTagsPage extends StatelessWidget {
@@ -31,7 +31,7 @@ class BlacklistedTagsPage extends StatelessWidget {
               title: const Text('blacklisted_tags.blacklisted_tags').tr(),
               actions: [_buildAddTagButton()],
             ),
-            body: SafeArea(child: _buildTags()),
+            body: const SafeArea(child: BlacklistedTagsList()),
           )
         : Scaffold(
             body: Row(children: [
@@ -55,12 +55,44 @@ class BlacklistedTagsPage extends StatelessWidget {
                 ),
               ),
               const VerticalDivider(),
-              Expanded(child: _buildTags()),
+              const Expanded(child: BlacklistedTagsList()),
             ]),
           );
   }
 
-  Widget _buildTags() {
+  Widget _buildAddTagButton() {
+    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
+      builder: (context, state) {
+        return IconButton(
+          onPressed: () {
+            final bloc = context.read<BlacklistedTagsBloc>();
+
+            goToBlacklistedTagsSearchPage(
+              context,
+              oldWidget: this,
+              onSelectDone: (tagItems) {
+                bloc.add(BlacklistedTagAdded(
+                  tag: tagItems.map((e) => e.toString()).join(' '),
+                ));
+                Navigator.of(context).pop();
+              },
+            );
+          },
+          icon: const FaIcon(FontAwesomeIcons.plus),
+        );
+      },
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class BlacklistedTagsList extends StatelessWidget {
+  const BlacklistedTagsList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return BlocConsumer<BlacklistedTagsBloc, BlacklistedTagsState>(
       listenWhen: (previous, current) => current is BlacklistedTagsError,
       listener: (context, state) {
@@ -76,8 +108,34 @@ class BlacklistedTagsPage extends StatelessWidget {
             state.status == LoadStatus.loading) {
           return CustomScrollView(
             slivers: [
-              _buildWarning(),
-              _buildBlacklistedList(state),
+              SliverToBoxAdapter(
+                child: WarningContainer(contentBuilder: (context) {
+                  return Html(data: 'blacklisted_tags.limitation_notice'.tr());
+                }),
+              ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) => BlacklistedTagTile(
+                    tag: state.blacklistedTags[index],
+                    onEditTap: () {
+                      final bloc = context.read<BlacklistedTagsBloc>();
+
+                      goToBlacklistedTagsSearchPage(
+                        context,
+                        initialTags: state.blacklistedTags[index].split(' '),
+                        onSelectDone: (tagItems) {
+                          bloc.add(BlacklistedTagReplaced(
+                            oldTag: state.blacklistedTags[index],
+                            newTag: tagItems.map((e) => e.toString()).join(' '),
+                          ));
+                        },
+                        oldWidget: this,
+                      );
+                    },
+                  ),
+                  childCount: state.blacklistedTags.length,
+                ),
+              ),
             ],
           );
         } else if (state.status == LoadStatus.failure) {
@@ -90,126 +148,68 @@ class BlacklistedTagsPage extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildBlacklistedList(BlacklistedTagsState state) {
-    return SliverList(
-      delegate: SliverChildBuilderDelegate(
-        (context, index) {
-          final tag = state.blacklistedTags[index];
+// ignore: prefer-single-widget-per-file
+class BlacklistedTagTile extends StatelessWidget {
+  const BlacklistedTagTile({
+    super.key,
+    required this.tag,
+    required this.onEditTap,
+  });
 
-          return ListTile(
-            visualDensity: const VisualDensity(horizontal: -4, vertical: -4),
-            title: Text(tag),
-            trailing: PopupMenuButton(
-              constraints: const BoxConstraints(minWidth: 150),
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(4)),
-              ),
-              itemBuilder: (context) => [
-                PopupMenuItem(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      context
-                          .read<BlacklistedTagsBloc>()
-                          .add(BlacklistedTagRemoved(tag: tag));
-                    },
-                    title: const Text('blacklisted_tags.remove').tr(),
-                    trailing: const FaIcon(
-                      FontAwesomeIcons.trash,
-                      size: 16,
-                    ),
-                  ),
-                ),
-                PopupMenuItem(
-                  padding: EdgeInsets.zero,
-                  child: ListTile(
-                    onTap: () {
-                      final bloc = context.read<BlacklistedTagsBloc>();
-                      Navigator.of(context).pop();
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                        enterWidget: MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => TagSearchBloc(
-                                tagInfo: context.read<TagInfo>(),
-                                autocompleteRepository:
-                                    context.read<AutocompleteRepository>(),
-                              ),
-                            ),
-                          ],
-                          child: BlacklistedTagsSearchPage(
-                            initialTags: tag.split(' '),
-                            onSelectedDone: (tagItems) {
-                              bloc.add(BlacklistedTagReplaced(
-                                oldTag: tag,
-                                newTag:
-                                    tagItems.map((e) => e.toString()).join(' '),
-                              ));
-                            },
-                          ),
-                        ),
-                        oldWidget: this,
-                      ));
-                    },
-                    title: const Text('blacklisted_tags.edit').tr(),
-                    trailing: const FaIcon(
-                      FontAwesomeIcons.pen,
-                      size: 16,
-                    ),
-                  ),
-                ),
-              ],
+  final String tag;
+  final VoidCallback onEditTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: Ink(
+        child: ListTile(
+          title: Text(tag),
+          // ignore: no-empty-block
+          onTap: () {},
+          trailing: PopupMenuButton(
+            constraints: const BoxConstraints(minWidth: 150),
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(4)),
             ),
-          );
-        },
-        childCount: state.blacklistedTags.length,
-      ),
-    );
-  }
-
-  Widget _buildWarning() {
-    return SliverToBoxAdapter(
-      child: WarningContainer(contentBuilder: (context) {
-        return Html(data: 'blacklisted_tags.limitation_notice'.tr());
-      }),
-    );
-  }
-
-  Widget _buildAddTagButton() {
-    return BlocBuilder<BlacklistedTagsBloc, BlacklistedTagsState>(
-      builder: (context, state) {
-        return IconButton(
-          onPressed: () {
-            final bloc = context.read<BlacklistedTagsBloc>();
-
-            Navigator.of(context).push(ParallaxSlideInPageRoute(
-              enterWidget: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => TagSearchBloc(
-                      tagInfo: context.read<TagInfo>(),
-                      autocompleteRepository:
-                          context.read<AutocompleteRepository>(),
-                    ),
-                  ),
-                ],
-                child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) {
-                    bloc.add(BlacklistedTagAdded(
-                      tag: tagItems.map((e) => e.toString()).join(' '),
-                    ));
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
                     Navigator.of(context).pop();
+                    context
+                        .read<BlacklistedTagsBloc>()
+                        .add(BlacklistedTagRemoved(tag: tag));
                   },
+                  title: const Text('blacklisted_tags.remove').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.trash,
+                    size: 16,
+                  ),
                 ),
               ),
-              oldWidget: this,
-            ));
-          },
-          icon: const FaIcon(FontAwesomeIcons.plus),
-        );
-      },
+              PopupMenuItem(
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    onEditTap.call();
+                  },
+                  title: const Text('blacklisted_tags.edit').tr(),
+                  trailing: const FaIcon(
+                    FontAwesomeIcons.pen,
+                    size: 16,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

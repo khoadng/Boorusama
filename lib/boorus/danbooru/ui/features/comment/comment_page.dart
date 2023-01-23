@@ -116,16 +116,19 @@ class _CommentPageState extends State<CommentPage> {
 Future<T?> showCommentPage<T>(
   BuildContext context, {
   required int postId,
+  RouteSettings? settings,
 }) =>
     Screen.of(context).size == ScreenSize.small
         ? showMaterialModalBottomSheet<T>(
             context: context,
+            settings: settings,
             duration: const Duration(milliseconds: 250),
             builder: (context) => CommentPage(
               postId: postId,
             ),
           )
         : showSideSheetFromRight(
+            settings: settings,
             width: MediaQuery.of(context).size.width * 0.41,
             body: Container(
               color: Colors.transparent,

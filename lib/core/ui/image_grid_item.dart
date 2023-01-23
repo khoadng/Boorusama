@@ -1,6 +1,6 @@
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Package imports:
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -36,7 +36,6 @@ class ImageGridItem extends StatelessWidget {
     this.isTranslated,
     required this.previewUrl,
     required this.previewPlaceholderUrl,
-    required this.contextMenuAction,
     this.autoScrollOptions,
     required this.aspectRatio,
     this.image,
@@ -44,6 +43,8 @@ class ImageGridItem extends StatelessWidget {
     this.onFavToggle,
     this.isFaved,
     this.previewCacheManager,
+    this.multiSelect = false,
+    this.multiSelectBuilder,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -60,11 +61,12 @@ class ImageGridItem extends StatelessWidget {
   final bool? isTranslated;
   final String previewUrl;
   final String previewPlaceholderUrl;
-  final List<Widget> contextMenuAction;
   final bool enableFav;
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
   final CacheManager? previewCacheManager;
+  final bool multiSelect;
+  final Widget Function()? multiSelectBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +81,7 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if (enableFav)
+          if (enableFav && !multiSelect)
             Positioned(
               bottom: 4,
               right: 4,
@@ -134,33 +136,71 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    return CupertinoContextMenu(
-      previewBuilder: (context, animation, child) => BooruImage(
-        aspectRatio: aspectRatio,
-        imageUrl: previewUrl,
-        placeholderUrl: previewPlaceholderUrl,
-        fit: BoxFit.contain,
-        previewCacheManager: previewCacheManager,
-      ),
-      actions: contextMenuAction,
-      child: Stack(
-        children: [
-          GestureDetector(
-            onTap: onTap,
-            child: image ??
-                BooruImage(
-                  aspectRatio: aspectRatio,
-                  imageUrl: previewUrl,
-                  placeholderUrl: previewPlaceholderUrl,
-                  borderRadius: borderRadius,
-                  previewCacheManager: previewCacheManager,
+    final imageItem = image ??
+        BooruImage(
+          aspectRatio: aspectRatio,
+          imageUrl: previewUrl,
+          placeholderUrl: previewPlaceholderUrl,
+          borderRadius: borderRadius,
+          previewCacheManager: previewCacheManager,
+        );
+
+    return !multiSelect
+        ? Stack(
+            children: [
+              GestureDetector(
+                onTap: onTap,
+                child: imageItem,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 1, left: 1),
+                child: _buildOverlayIcon(),
+              ),
+            ],
+          )
+        : Stack(
+            children: [
+              imageItem,
+              // multiSelectBackgroundBuilder?.call() ?? const SizedBox.shrink(),
+              multiSelectBuilder?.call() ?? const SizedBox.shrink(),
+            ],
+          );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class QuickPreviewImage extends StatelessWidget {
+  const QuickPreviewImage({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => Navigator.of(context).pop(),
+      child: CallbackShortcuts(
+        bindings: {
+          const SingleActivator(LogicalKeyboardKey.escape): () =>
+              Navigator.of(context).pop(),
+        },
+        child: Focus(
+          autofocus: true,
+          child: Scaffold(
+            backgroundColor: const Color.fromARGB(189, 0, 0, 0),
+            body: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.8,
+                  maxWidth: MediaQuery.of(context).size.width * 0.8,
                 ),
+                child: child,
+              ),
+            ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 1, left: 1),
-            child: _buildOverlayIcon(),
-          ),
-        ],
+        ),
       ),
     );
   }

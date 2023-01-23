@@ -47,6 +47,16 @@ cd Boorusama
 flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
+
+- Setup a [Firebase](https://firebase.google.com/) project and then install [FlutterFire](https://firebase.flutter.dev/docs/overview/) (Ignore this step you use the `boorusama-foss` branch)
+```
+# Install the CLI if not already done so
+dart pub global activate flutterfire_cli
+
+# Run the `configure` command, select a Firebase project and platforms
+flutterfire configure
+```
+
 - Connect to an Android device/emulator and run the app.
 ```bash
 flutter run --release
@@ -56,6 +66,8 @@ or you could build an apk and install it manually.
 ```bash
 flutter build apk --release
 ```
+
+
 ## Translation
 1. Fork this repo
 2. Use the existing English translations as a reference.

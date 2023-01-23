@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 class ErrorBox extends StatelessWidget {
   const ErrorBox({
     super.key,
+    this.errorMessage,
     this.child,
   });
 
@@ -22,6 +23,7 @@ class ErrorBox extends StatelessWidget {
       );
 
   final Widget? child;
+  final String? errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class ErrorBox extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            'generic.errors.unknown',
+            errorMessage ?? 'generic.errors.unknown',
             style: Theme.of(context).textTheme.titleLarge,
           ).tr(),
           const SizedBox(height: 5),

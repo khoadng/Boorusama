@@ -2,12 +2,9 @@
 import 'package:flutter/material.dart' hide ThemeMode;
 
 // Package imports:
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:page_transition/page_transition.dart';
-import 'package:photo_view/photo_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/common.dart';
@@ -27,9 +24,7 @@ import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
-import 'parent_child_post_page.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
@@ -230,7 +225,7 @@ class _TopRightButtonGroup extends StatelessWidget {
                   start,
                 ),
               ),
-              const _MoreActionButton(),
+              const MoreActionButton(),
             ],
           )
         : const SizedBox.shrink();
@@ -412,22 +407,10 @@ class _LargeLayoutContent extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8),
                   child: ParentChildTile(
                     data: getParentChildData(post.post),
-                    onTap: (data) => showSideSheetFromRight(
-                      context: context,
-                      body: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc.of(context)
-                              ..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                  data.tagQueryForDataFetching,
-                                ),
-                              )),
-                          ),
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
-                      ),
+                    onTap: (data) => goToParentChildPage(
+                      context,
+                      data.parentId,
+                      data.tagQueryForDataFetching,
                     ),
                   ),
                 ),
@@ -467,12 +450,8 @@ class _LargeLayoutContent extends StatelessWidget {
                                       ),
                                       subtitle: Text('${e.postCount} posts'),
                                       trailing: const Icon(Icons.arrow_right),
-                                      onTap: () => AppRouter.router.navigateTo(
-                                        context,
-                                        'pool/detail',
-                                        routeSettings:
-                                            RouteSettings(arguments: [e]),
-                                      ),
+                                      onTap: () =>
+                                          goToPoolDetailPage(context, e),
                                     ),
                                   ])),
                             ],
@@ -489,16 +468,7 @@ class _LargeLayoutContent extends StatelessWidget {
                 header: (item) => ListTile(
                   visualDensity: VisualDensity.compact,
                   dense: true,
-                  onTap: () => AppRouter.router.navigateTo(
-                    context,
-                    '/artist',
-                    routeSettings: RouteSettings(
-                      arguments: [
-                        item,
-                        post.post.normalImageUrl,
-                      ],
-                    ),
-                  ),
+                  onTap: () => goToArtistPage(context, item),
                   title: RichText(
                     text: TextSpan(
                       text: '',
@@ -538,8 +508,9 @@ class _LargeLayoutContent extends StatelessWidget {
   }
 }
 
-class _MoreActionButton extends StatelessWidget {
-  const _MoreActionButton();
+// ignore: prefer-single-widget-per-file
+class MoreActionButton extends StatelessWidget {
+  const MoreActionButton({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -567,32 +538,7 @@ class _MoreActionButton extends StatelessWidget {
                   );
                   break;
                 case 'view_original':
-                  Navigator.of(context).push(PageTransition(
-                    type: PageTransitionType.fade,
-                    child: Scaffold(
-                      extendBody: true,
-                      appBar: AppBar(
-                        elevation: 0,
-                        backgroundColor: Colors.transparent,
-                      ),
-                      body: Center(
-                        child: CachedNetworkImage(
-                          httpHeaders: const {
-                            'User-Agent': userAgent,
-                          },
-                          imageUrl: post.fullImageUrl,
-                          imageBuilder: (context, imageProvider) => Hero(
-                            tag: '${post.id}_hero',
-                            child: PhotoView(imageProvider: imageProvider),
-                          ),
-                          progressIndicatorBuilder: (context, url, progress) =>
-                              CircularProgressIndicator.adaptive(
-                            value: progress.progress,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ));
+                  goToOriginalImagePage(context, post);
                   break;
                 // ignore: no_default_cases
                 default:
@@ -642,11 +588,7 @@ class _NavigationButtonGroup extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onPrimary,
                   )
                 : const Icon(Icons.home),
-            onPressed: () => AppRouter.router.navigateTo(
-              context,
-              '/',
-              clearStack: true,
-            ),
+            onPressed: () => goToHomePage(context),
           ),
         ],
       ),
