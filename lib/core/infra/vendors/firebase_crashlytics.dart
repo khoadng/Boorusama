@@ -1,3 +1,6 @@
+// Dart imports:
+import 'dart:io';
+
 // Flutter imports:
 import 'package:flutter/foundation.dart';
 
@@ -13,4 +16,13 @@ bool isFirebaseCrashlyticsSupportedPlatforms() =>
 Future<void> initializeFirebaseCrashlytics() async {
   await FirebaseCrashlytics.instance
       .setCrashlyticsCollectionEnabled(!kDebugMode);
+
+  await FirebaseCrashlytics.instance
+      .setCustomKey('locale', Platform.localeName);
+
+  await FirebaseCrashlytics.instance
+      .setCustomKey('time-zone-name', DateTime.now().timeZoneName);
+
+  await FirebaseCrashlytics.instance
+      .setCustomKey('time-zone-offset', DateTime.now().timeZoneOffset);
 }
