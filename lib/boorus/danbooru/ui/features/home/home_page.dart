@@ -17,9 +17,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_page.dart';
 import 'package:boorusama/core/application/networking/networking.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/display.dart';
+import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_indexed_stack.dart';
-import 'package:boorusama/core/ui/widgets/conditional_render_widget.dart';
-import 'package:boorusama/core/ui/widgets/network_unavailable_indicator.dart';
 import 'bottom_bar_widget.dart';
 import 'side_bar.dart';
 
@@ -165,7 +164,7 @@ class _HomePageState extends State<HomePage> {
             Expanded(
               child: Column(
                 children: [
-                  const _NetworkUnavailableIndicator(),
+                  const NetworkUnavailableIndicatorWithNetworkBloc(),
                   Expanded(
                     child: ValueListenableBuilder<int>(
                       valueListenable: viewIndex,
@@ -178,9 +177,7 @@ class _HomePageState extends State<HomePage> {
                                 fetcher: LatestPostFetcher(),
                               )),
                             child: _LatestView(
-                              onMenuTap: () => screenSize == ScreenSize.small
-                                  ? () => _onMenuTap(screenSize)
-                                  : null,
+                              onMenuTap: () => _onMenuTap(screenSize),
                             ),
                           ),
                           BlocProvider.value(
@@ -273,21 +270,6 @@ class _LatestView extends StatelessWidget {
     return LatestView(
       onMenuTap: onMenuTap,
       useAppBarPadding: state is NetworkConnectedState,
-    );
-  }
-}
-
-class _NetworkUnavailableIndicator extends StatelessWidget {
-  const _NetworkUnavailableIndicator();
-
-  @override
-  Widget build(BuildContext context) {
-    final state = context.watch<NetworkBloc>().state;
-
-    return ConditionalRenderWidget(
-      condition:
-          state is NetworkDisconnectedState || state is NetworkInitialState,
-      childBuilder: (_) => const SafeArea(child: NetworkUnavailableIndicator()),
     );
   }
 }
