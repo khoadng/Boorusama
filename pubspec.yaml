@@ -16,7 +16,7 @@ dependencies:
   bloc_concurrency: ^0.2.0
   cached_network_image: ^3.2.3
   carousel_slider: ^4.2.1
-  chewie: ^1.3.6
+  chewie: ^1.4.0
   collection: ^1.16.0
   connectivity_plus: ^3.0.2
   context_menus: ^1.0.2
