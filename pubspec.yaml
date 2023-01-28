@@ -113,7 +113,7 @@ dev_dependencies:
   import_sorter: ^4.6.0
   mocktail: ^0.3.0
   retrofit_generator: ^4.0.1
-  test: ^1.21.1
+  test: ^1.22.0
 
 flutter_icons:
   remove_alpha_ios: true
