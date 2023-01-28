@@ -22,7 +22,10 @@ const _padding = EdgeInsets.symmetric(horizontal: 2);
 class ExplorePage extends StatelessWidget {
   const ExplorePage({
     super.key,
+    this.useAppBarPadding = true,
   });
+
+  final bool useAppBarPadding;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +37,10 @@ class ExplorePage extends StatelessWidget {
         primary: false,
         slivers: [
           SliverToBoxAdapter(
-            child: SizedBox(height: MediaQuery.of(context).viewPadding.top),
+            child: SizedBox(
+              height:
+                  useAppBarPadding ? MediaQuery.of(context).viewPadding.top : 0,
+            ),
           ),
           const SliverToBoxAdapter(child: _PopularExplore()),
           const SliverToBoxAdapter(child: _HotExplore()),

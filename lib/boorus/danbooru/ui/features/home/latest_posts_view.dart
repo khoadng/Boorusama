@@ -21,9 +21,11 @@ class LatestView extends StatefulWidget {
   const LatestView({
     super.key,
     this.onMenuTap,
+    this.useAppBarPadding,
   });
 
   final VoidCallback? onMenuTap;
+  final bool? useAppBarPadding;
 
   @override
   State<LatestView> createState() => _LatestViewState();
@@ -78,7 +80,10 @@ class _LatestViewState extends State<LatestView> {
       },
       scrollController: _autoScrollController,
       sliverHeaderBuilder: (context) => [
-        _AppBar(onMenuTap: widget.onMenuTap),
+        _AppBar(
+          onMenuTap: widget.onMenuTap,
+          primary: widget.useAppBarPadding,
+        ),
         SliverToBoxAdapter(
           child: ValueListenableBuilder<String>(
             valueListenable: _selectedTag,
@@ -128,32 +133,27 @@ class _MostSearchTagSection extends StatelessWidget {
 class _AppBar extends StatelessWidget {
   const _AppBar({
     required this.onMenuTap,
+    this.primary,
   });
 
   final VoidCallback? onMenuTap;
+  final bool? primary;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: SearchBar(
-              enabled: false,
-              leading: onMenuTap != null
-                  ? IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () => onMenuTap!(),
-                    )
-                  : null,
-              onTap: () => goToSearchPage(context),
-            ),
-          ),
-        ],
+      primary: primary ?? true,
+      title: SearchBar(
+        enabled: false,
+        leading: onMenuTap != null
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => onMenuTap!(),
+              )
+            : null,
+        onTap: () => goToSearchPage(context),
       ),
       floating: true,
       snap: true,

@@ -177,15 +177,15 @@ class _HomePageState extends State<HomePage> {
                               ..add(const PostRefreshed(
                                 fetcher: LatestPostFetcher(),
                               )),
-                            child: LatestView(
-                              onMenuTap: screenSize == ScreenSize.small
+                            child: _LatestView(
+                              onMenuTap: () => screenSize == ScreenSize.small
                                   ? () => _onMenuTap(screenSize)
                                   : null,
                             ),
                           ),
                           BlocProvider.value(
                             value: context.read<ExploreBloc>(),
-                            child: const ExplorePage(),
+                            child: const _ExplorePage(),
                           ),
                           MultiBlocProvider(
                             providers: [
@@ -201,7 +201,7 @@ class _HomePageState extends State<HomePage> {
                                   )),
                               ),
                             ],
-                            child: const PoolPage(),
+                            child: const _PoolPage(),
                           ),
                         ],
                       ),
@@ -233,6 +233,50 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+class _ExplorePage extends StatelessWidget {
+  const _ExplorePage();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<NetworkBloc>().state;
+
+    return ExplorePage(
+      useAppBarPadding: state is NetworkConnectedState,
+    );
+  }
+}
+
+class _PoolPage extends StatelessWidget {
+  const _PoolPage();
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<NetworkBloc>().state;
+
+    return PoolPage(
+      useAppBarPadding: state is NetworkConnectedState,
+    );
+  }
+}
+
+class _LatestView extends StatelessWidget {
+  const _LatestView({
+    required this.onMenuTap,
+  });
+
+  final void Function() onMenuTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final state = context.watch<NetworkBloc>().state;
+
+    return LatestView(
+      onMenuTap: onMenuTap,
+      useAppBarPadding: state is NetworkConnectedState,
+    );
+  }
+}
+
 class _NetworkUnavailableIndicator extends StatelessWidget {
   const _NetworkUnavailableIndicator();
 
@@ -243,7 +287,7 @@ class _NetworkUnavailableIndicator extends StatelessWidget {
     return ConditionalRenderWidget(
       condition:
           state is NetworkDisconnectedState || state is NetworkInitialState,
-      childBuilder: (_) => const NetworkUnavailableIndicator(),
+      childBuilder: (_) => const SafeArea(child: NetworkUnavailableIndicator()),
     );
   }
 }
