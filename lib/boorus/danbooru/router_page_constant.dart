@@ -35,6 +35,7 @@ class RouterPageConstant {
   static const profile = 'profile';
   static const favorties = 'favorites';
   static const favoriteGroups = 'favorite_groups';
+  static const favoriteGroupDetails = 'favorite_groups/details';
   static const bulkDownload = 'bulk_download';
 
   static const poolDetails = 'pool/details';

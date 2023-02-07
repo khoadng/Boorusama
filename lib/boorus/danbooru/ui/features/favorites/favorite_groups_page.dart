@@ -55,13 +55,7 @@ class FavoriteGroupsPage extends StatelessWidget {
             subtitle: Text(
               '${group.creator.name} - ${group.totalCount} posts',
             ),
-            onTap: () => AppRouter.router.navigateTo(
-              context,
-              '/posts/search',
-              routeSettings: RouteSettings(arguments: [
-                state.favoriteGroupDetailQueryOf(index),
-              ]),
-            ),
+            onTap: () => goToFavoriteGroupDetailsPage(context, group),
           );
         },
         childCount: state.favoriteGroups.length,

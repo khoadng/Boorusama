@@ -159,6 +159,11 @@ class AppRouter {
         transitionType: TransitionType.inFromRight,
       )
       ..define(
+        '/favorite_groups/details',
+        handler: favoriteGroupDetailsHandler,
+        transitionType: TransitionType.inFromRight,
+      )
+      ..define(
         '/favorite_groups',
         handler: favoriteGroupsHandler,
         transitionType: TransitionType.material,
@@ -1339,5 +1344,19 @@ void goToFavoriteGroupPage(BuildContext context) {
     transition: Screen.of(context).size == ScreenSize.small
         ? TransitionType.inFromRight
         : null,
+  );
+}
+
+void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups/details',
+    routeSettings: RouteSettings(
+      name: RouterPageConstant.favoriteGroupDetails,
+      arguments: [
+        group.id,
+        group.name,
+      ],
+    ),
   );
 }

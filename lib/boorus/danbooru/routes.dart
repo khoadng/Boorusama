@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -463,6 +464,32 @@ final favoriteGroupsHandler =
       ),
     ],
     child: const FavoriteGroupsPage(),
+  );
+});
+
+final favoriteGroupDetailsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+
+  final int id = args.first;
+  final String name = args[1];
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => PostBloc.of(context, singleRefresh: true)
+          ..add(PostRefreshed(
+            tag: 'favgroup:$id',
+            fetcher: SearchedPostFetcher.fromTags(
+              'favgroup:$id',
+            ),
+          )),
+      ),
+    ],
+    child: FavoriteGroupDetailsPage(
+      favoriteGroupId: id,
+      groupName: name,
+    ),
   );
 });
 
