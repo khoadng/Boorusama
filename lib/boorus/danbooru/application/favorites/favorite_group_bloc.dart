@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -92,32 +93,46 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
+    required AccountRepository accountRepository,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
+      final currentUser = await accountRepository.get();
       await load(
         emit: EmitConfig(
           stateGetter: () => state,
           emitter: emit,
         ),
         page: 1,
-        fetch: (page) => favoriteGroupRepository.getFavoriteGroups(page: page),
+        fetch: (page) => currentUser != Account.empty
+            ? favoriteGroupRepository.getFavoriteGroupsByCreatorName(
+                page: page,
+                name: currentUser.username!,
+              )
+            : favoriteGroupRepository.getFavoriteGroups(),
       );
     });
 
     on<FavoriteGroupsFetched>((event, emit) async {
+      final currentUser = await accountRepository.get();
       await load(
         emit: EmitConfig(
           stateGetter: () => state,
           emitter: emit,
         ),
         page: event.page,
-        fetch: (page) => favoriteGroupRepository.getFavoriteGroups(page: page),
+        fetch: (page) => currentUser != Account.empty
+            ? favoriteGroupRepository.getFavoriteGroupsByCreatorName(
+                page: page,
+                name: currentUser.username!,
+              )
+            : favoriteGroupRepository.getFavoriteGroups(),
       );
     });
   }
 
   factory FavoriteGroupsBloc.of(BuildContext context) => FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
+        accountRepository: context.read<AccountRepository>(),
       );
 }
 

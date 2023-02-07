@@ -55,6 +55,7 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
               account.username,
               account.apiKey,
               page: page,
+              creatorName: name,
               only: favoriteGroupApiParams,
               limit: 50,
             ),
