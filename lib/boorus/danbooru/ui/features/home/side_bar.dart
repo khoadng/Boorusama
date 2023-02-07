@@ -78,15 +78,7 @@ class SideBarMenu extends StatelessWidget {
                           title: const Text('Favorite groups'),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();
-                            AppRouter.router.navigateTo(
-                              context,
-                              '/favorite_groups',
-                              // routeSettings: RouteSettings(arguments: []),
-                              transition:
-                                  Screen.of(context).size == ScreenSize.small
-                                      ? TransitionType.inFromRight
-                                      : null,
-                            );
+                            goToFavoriteGroupPage(context);
                           },
                         ),
                       if (state.data! != Account.empty)

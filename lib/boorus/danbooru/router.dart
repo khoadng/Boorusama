@@ -1328,3 +1328,16 @@ void goToSearchHistoryPage(
     ),
   );
 }
+
+void goToFavoriteGroupPage(BuildContext context) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups',
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteGroups,
+    ),
+    transition: Screen.of(context).size == ScreenSize.small
+        ? TransitionType.inFromRight
+        : null,
+  );
+}
