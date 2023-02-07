@@ -1,5 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -89,6 +91,21 @@ class FavoriteGroupsFetched extends FavoriteGroupsEvent {
   List<Object?> get props => [page];
 }
 
+class FavoriteGroupsCreated extends FavoriteGroupsEvent {
+  const FavoriteGroupsCreated({
+    required this.name,
+    required this.initialIds,
+    required this.isPrivate,
+  });
+
+  final String name;
+  final String initialIds;
+  final bool isPrivate;
+
+  @override
+  List<Object?> get props => [name, initialIds, isPrivate];
+}
+
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
@@ -126,6 +143,30 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
                 name: currentUser.username!,
               )
             : favoriteGroupRepository.getFavoriteGroups(),
+      );
+    });
+
+    on<FavoriteGroupsCreated>((event, emit) async {
+      final idString = event.initialIds.split(' ');
+      final ids = idString
+          .map(
+            (e) => int.tryParse(e),
+          )
+          .toList();
+
+      final validIds = ids.whereNotNull().toList();
+
+      await tryAsync<bool>(
+        action: () => favoriteGroupRepository.createFavoriteGroup(
+          name: event.name,
+          initialItems: validIds,
+          isPrivate: event.isPrivate,
+        ),
+        onSuccess: (success) async {
+          if (success) {
+            add(const FavoriteGroupsRefreshed());
+          }
+        },
       );
     });
   }

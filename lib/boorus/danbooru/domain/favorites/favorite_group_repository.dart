@@ -11,4 +11,10 @@ abstract class FavoriteGroupRepository {
     required String name,
     int? page,
   });
+
+  Future<bool> createFavoriteGroup({
+    required String name,
+    List<int>? initialItems,
+    bool isPrivate = false,
+  });
 }

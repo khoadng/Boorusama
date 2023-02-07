@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1274,6 +1275,26 @@ Future<Object?> goToFavoriteTagImportPage(
       padding: isMobilePlatform() ? 0 : 8,
       onImport: (tagString) => bloc.add(FavoriteTagImported(
         tagString: tagString,
+      )),
+    ),
+  );
+}
+
+Future<Object?> goToFavoriteGroupCreatePage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc,
+) {
+  return showGeneralDialog(
+    context: context,
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteTagsImport,
+    ),
+    pageBuilder: (context, _, __) => CreateFavoriteGroupDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      onCreate: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
       )),
     ),
   );

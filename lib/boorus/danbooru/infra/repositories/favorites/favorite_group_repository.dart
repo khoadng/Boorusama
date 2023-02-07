@@ -61,4 +61,23 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
             ),
           )
           .then(parseFavoriteGroups);
+
+  @override
+  Future<bool> createFavoriteGroup({
+    required String name,
+    List<int>? initialItems,
+    bool isPrivate = false,
+  }) =>
+      accountRepository
+          .get()
+          .then((account) => api.postFavoriteGroups(
+                account.username,
+                account.apiKey,
+                name: name,
+                postIdsString: initialItems?.join(' '),
+                isPrivate: isPrivate,
+              ))
+          .then((value) {
+        return [302, 201].contains(value.response.statusCode);
+      });
 }

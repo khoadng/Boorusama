@@ -355,4 +355,13 @@ abstract class Api {
     @Query('only') String? only,
     @Query('limit') int? limit,
   });
+
+  @POST('/favorite_groups.json')
+  Future<HttpResponse> postFavoriteGroups(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey, {
+    @Query('favorite_group[name]') String? name,
+    @Query('favorite_group[post_ids_string]') String? postIdsString,
+    @Query('favorite_group[is_private]') bool? isPrivate,
+  });
 }

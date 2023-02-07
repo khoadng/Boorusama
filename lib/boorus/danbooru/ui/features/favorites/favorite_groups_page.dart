@@ -9,6 +9,7 @@ import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/ui/pagination.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class FavoriteGroupsPage extends StatelessWidget {
   const FavoriteGroupsPage({
@@ -20,6 +21,15 @@ class FavoriteGroupsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Favorite Group'),
+        actions: [
+          IconButton(
+            onPressed: () {
+              final bloc = context.read<FavoriteGroupsBloc>();
+              goToFavoriteGroupCreatePage(context, bloc);
+            },
+            icon: const FaIcon(FontAwesomeIcons.plus),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Column(
