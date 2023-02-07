@@ -106,6 +106,17 @@ class FavoriteGroupsCreated extends FavoriteGroupsEvent {
   List<Object?> get props => [name, initialIds, isPrivate];
 }
 
+class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
+  const FavoriteGroupsDeleted({
+    required this.groupId,
+  });
+
+  final int groupId;
+
+  @override
+  List<Object?> get props => [groupId];
+}
+
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
@@ -161,6 +172,19 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           name: event.name,
           initialItems: validIds,
           isPrivate: event.isPrivate,
+        ),
+        onSuccess: (success) async {
+          if (success) {
+            add(const FavoriteGroupsRefreshed());
+          }
+        },
+      );
+    });
+
+    on<FavoriteGroupsDeleted>((event, emit) async {
+      await tryAsync<bool>(
+        action: () => favoriteGroupRepository.deleteFavoriteGroup(
+          id: event.groupId,
         ),
         onSuccess: (success) async {
           if (success) {

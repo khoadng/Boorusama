@@ -364,4 +364,11 @@ abstract class Api {
     @Query('favorite_group[post_ids_string]') String? postIdsString,
     @Query('favorite_group[is_private]') bool? isPrivate,
   });
+
+  @DELETE('/favorite_groups/{groupId}.json')
+  Future<HttpResponse> deleteFavoriteGroup(
+    @Query('login') String? login,
+    @Query('api_key') String? apiKey,
+    @Path() int groupId,
+  );
 }

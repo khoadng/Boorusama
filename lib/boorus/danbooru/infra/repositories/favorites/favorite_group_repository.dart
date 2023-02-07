@@ -80,4 +80,16 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
           .then((value) {
         return [302, 201].contains(value.response.statusCode);
       });
+
+  @override
+  Future<bool> deleteFavoriteGroup({required int id}) => accountRepository
+          .get()
+          .then((account) => api.deleteFavoriteGroup(
+                account.username,
+                account.apiKey,
+                id,
+              ))
+          .then((value) {
+        return [302, 204].contains(value.response.statusCode);
+      });
 }

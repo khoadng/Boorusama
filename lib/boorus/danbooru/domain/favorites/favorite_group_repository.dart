@@ -17,4 +17,8 @@ abstract class FavoriteGroupRepository {
     List<int>? initialItems,
     bool isPrivate = false,
   });
+
+  Future<bool> deleteFavoriteGroup({
+    required int id,
+  });
 }
