@@ -644,7 +644,7 @@ void goToExploreDetailPage(
                 title,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .titleLarge!
                     .copyWith(fontWeight: FontWeight.w700),
               ),
               category: category,
@@ -681,7 +681,7 @@ void goToExploreDetailPage(
               title,
               style: Theme.of(context)
                   .textTheme
-                  .headline6!
+                  .titleLarge!
                   .copyWith(fontWeight: FontWeight.w700),
             ),
             category: category,
@@ -1160,7 +1160,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
         onSubmit: (query, label) => bloc.add(SavedSearchCreated(
@@ -1185,7 +1185,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -1229,7 +1229,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: Theme.of(context).backgroundColor,
+    backgroundColor: Theme.of(context).colorScheme.background,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,

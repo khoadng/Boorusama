@@ -194,7 +194,7 @@ class _ExploreListState extends State<_ExploreList> {
                       '${index + 1}',
                       style: Theme.of(context)
                           .textTheme
-                          .headline2!
+                          .displayMedium!
                           .copyWith(color: Colors.white),
                     ),
                   ),

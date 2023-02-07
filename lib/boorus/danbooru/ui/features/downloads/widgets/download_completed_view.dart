@@ -39,7 +39,7 @@ class DownloadCompletedView extends StatelessWidget {
                             .plural(doneCount),
                         style: Theme.of(context)
                             .textTheme
-                            .headline5!
+                            .headlineSmall!
                             .copyWith(fontWeight: FontWeight.w900),
                       ),
                       if (filteredPosts.isNotEmpty)
@@ -48,7 +48,7 @@ class DownloadCompletedView extends StatelessWidget {
                               .plural(filteredPosts.length),
                           style: Theme.of(context)
                               .textTheme
-                              .headline5!
+                              .headlineSmall!
                               .copyWith(fontWeight: FontWeight.w900),
                         ),
                     ],

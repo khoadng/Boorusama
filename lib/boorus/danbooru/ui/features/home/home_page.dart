@@ -110,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                               : null,
                         )
                       : ColoredBox(
-                          color: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).colorScheme.background,
                           child: Column(
                             children: [
                               SizedBox(
@@ -124,7 +124,7 @@ class _HomePageState extends State<HomePage> {
                                 child: NavigationRail(
                                   minWidth: 60,
                                   backgroundColor:
-                                      Theme.of(context).backgroundColor,
+                                      Theme.of(context).colorScheme.background,
                                   onDestinationSelected: (value) =>
                                       viewIndex.value = value,
                                   destinations: [

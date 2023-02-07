@@ -157,7 +157,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           BlocProvider.value(value: context.read<TagBloc>()),
                         ],
                         child: Container(
-                          color: Theme.of(context).backgroundColor,
+                          color: Theme.of(context).colorScheme.background,
                           width: _infoBarWidth,
                           child: BlocBuilder<PostDetailBloc, PostDetailState>(
                             builder: (context, state) {

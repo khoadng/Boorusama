@@ -139,7 +139,7 @@ Future<T?> showCommentPage<T>(
                   Container(
                     height: kToolbarHeight * 0.8,
                     decoration: BoxDecoration(
-                      color: Theme.of(context).backgroundColor,
+                      color: Theme.of(context).colorScheme.background,
                       borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(6),
                       ),
@@ -150,7 +150,7 @@ Future<T?> showCommentPage<T>(
                         const SizedBox(width: 8),
                         Text(
                           'comment.comments',
-                          style: Theme.of(context).textTheme.headline6,
+                          style: Theme.of(context).textTheme.titleLarge,
                         ).tr(),
                         const Spacer(),
                         Material(

@@ -42,6 +42,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
             if (response == null) return false;
             return response.statusCode == 302;
           default:
+            return false;
         }
       });
 
@@ -66,6 +67,7 @@ class FavoritePostRepositoryApi implements FavoritePostRepository {
           if (response == null) return false;
           return response.statusCode == 302;
         default:
+          return false;
       }
     });
   }

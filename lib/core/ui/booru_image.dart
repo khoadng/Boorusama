@@ -123,7 +123,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: Theme.of(context).backgroundColor.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.background.withOpacity(0.7),
           ),
         ),
       ),

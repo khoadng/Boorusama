@@ -111,7 +111,7 @@ class _LargeLayout extends StatelessWidget {
     return Stack(
       children: [
         Scaffold(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           appBar: AppBar(
             elevation: 0,
             backgroundColor: Theme.of(context).cardColor,
@@ -181,7 +181,7 @@ class _LargeLayout extends StatelessWidget {
               ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 350),
                 child: Scaffold(
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: Theme.of(context).colorScheme.background,
                   resizeToAvoidBottomInset: false,
                   body: Column(
                     children: [
@@ -226,7 +226,7 @@ class _LargeLayout extends StatelessWidget {
                             case DisplayState.result:
                               return ResultView(
                                 backgroundColor:
-                                    Theme.of(context).backgroundColor,
+                                    Theme.of(context).colorScheme.background,
                               );
                             case DisplayState.noResult:
                               return EmptyView(text: 'search.no_result'.tr());

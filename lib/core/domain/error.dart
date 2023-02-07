@@ -35,7 +35,7 @@ class AppError extends Error with EquatableMixin {
   bool? get stringify => false;
 
   @override
-  String toString() => 'Error: ${type.toString()}';
+  String toString() => 'Error: $type';
 
   @override
   List<Object?> get props => [type];

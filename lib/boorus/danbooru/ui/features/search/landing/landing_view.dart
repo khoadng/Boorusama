@@ -85,7 +85,7 @@ class _LandingViewState extends State<LandingView>
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Text(
                   'search.trending'.tr().toUpperCase(),
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                 ),

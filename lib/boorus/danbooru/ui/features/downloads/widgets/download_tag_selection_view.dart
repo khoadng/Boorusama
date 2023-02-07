@@ -49,7 +49,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
               textAlign: TextAlign.center,
               style: Theme.of(context)
                   .textTheme
-                  .headline5!
+                  .headlineSmall!
                   .copyWith(fontWeight: FontWeight.w900),
             ).tr(),
           ),
@@ -154,7 +154,7 @@ class _DownloadTagSelectionViewState extends State<DownloadTagSelectionView> {
                               overflow: TextOverflow.fade,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1!
+                                  .titleMedium!
                                   .copyWith(color: Theme.of(context).hintColor),
                             ),
                       trailing: IconButton(

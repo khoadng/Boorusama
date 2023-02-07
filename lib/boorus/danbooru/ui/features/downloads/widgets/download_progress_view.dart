@@ -252,7 +252,7 @@ class DownloadProgressView extends StatelessWidget {
                               state,
                               style: Theme.of(context)
                                   .textTheme
-                                  .subtitle1!
+                                  .titleMedium!
                                   .copyWith(
                                     color: Theme.of(context).colorScheme.error,
                                   ),
@@ -300,7 +300,7 @@ class _DownloadIndicator extends StatelessWidget {
           ),
           Text(
             subtitle.toUpperCase(),
-            style: Theme.of(context).textTheme.subtitle1?.copyWith(
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).hintColor,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,

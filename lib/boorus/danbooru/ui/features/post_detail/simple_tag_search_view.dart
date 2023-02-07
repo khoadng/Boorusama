@@ -110,7 +110,7 @@ class SimpleTagSearchView extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   child: SearchBar(
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                     leading: backButton,
                     autofocus: true,
                     onSubmitted: (text) => onSubmitted?.call(context, text),
@@ -126,7 +126,7 @@ class SimpleTagSearchView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: TagSuggestionItems(
-                        backgroundColor: Theme.of(context).backgroundColor,
+                        backgroundColor: Theme.of(context).colorScheme.background,
                         tags: tags,
                         onItemTap: (tag) {
                           if (closeOnSelected) {
