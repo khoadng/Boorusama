@@ -44,11 +44,11 @@ class SourceLink extends StatelessWidget {
           url.toString(),
           maxLines: 1,
           softWrap: false,
-          style: Theme.of(context).textTheme.caption,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
       ),
       leading: CircleAvatar(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).colorScheme.background,
         child: Center(
           child: Text(name.getFirstCharacter().toUpperCase()),
         ),

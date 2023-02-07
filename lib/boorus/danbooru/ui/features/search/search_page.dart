@@ -4,7 +4,6 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:rich_text_controller/rich_text_controller.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
@@ -20,7 +19,6 @@ import 'package:boorusama/core/domain/tags/metatag.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'empty_view.dart';
 import 'error_view.dart';
-import 'full_history_view.dart';
 import 'result/result_view.dart';
 import 'search_button.dart';
 import 'selected_tag_list.dart';
@@ -33,10 +31,12 @@ class SearchPage extends StatefulWidget {
     super.key,
     required this.metatags,
     required this.metatagHighlightColor,
+    this.autoFocusSearchBar = true,
   });
 
   final List<Metatag> metatags;
   final Color metatagHighlightColor;
+  final bool autoFocusSearchBar;
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -82,10 +82,12 @@ class _SearchPageState extends State<SearchPage> {
         child: Screen.of(context).size != ScreenSize.small
             ? _LargeLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               )
             : _SmallLayout(
                 focus: focus,
+                autoFocus: widget.autoFocusSearchBar,
                 queryEditingController: queryEditingController,
               ),
       ),
@@ -97,10 +99,12 @@ class _LargeLayout extends StatelessWidget {
   const _LargeLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   Widget build(BuildContext context) {
@@ -241,39 +245,13 @@ class _LandingView extends StatelessWidget {
       onHistoryRemoved: (value) => _onHistoryRemoved(context, value),
       onHistoryCleared: () => _onHistoryCleared(context),
       onFullHistoryRequested: () {
-        final bloc = context.read<SearchHistoryBloc>();
         final searchBloc = context.read<SearchBloc>();
 
-        showMaterialModalBottomSheet(
-          context: context,
-          duration: const Duration(milliseconds: 200),
-          builder: (context) =>
-              BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
-            bloc: bloc,
-            builder: (context, state) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: const Text('search.history.history').tr(),
-                  actions: [
-                    TextButton(
-                      onPressed: () => _onHistoryCleared(context),
-                      child: const Text('search.history.clear').tr(),
-                    ),
-                  ],
-                ),
-                body: FullHistoryView(
-                  onHistoryTap: (value) => _onHistoryTap(
-                    context,
-                    value,
-                    searchBloc,
-                  ),
-                  onHistoryRemoved: (value) =>
-                      _onHistoryRemoved(context, value),
-                  histories: state.histories,
-                ),
-              );
-            },
-          ),
+        goToSearchHistoryPage(
+          context,
+          onClear: () => _onHistoryCleared(context),
+          onRemove: (value) => _onHistoryRemoved(context, value),
+          onTap: (value) => _onHistoryTap(context, value, searchBloc),
         );
       },
     );
@@ -330,10 +308,12 @@ class _SmallLayout extends StatefulWidget {
   const _SmallLayout({
     required this.focus,
     required this.queryEditingController,
+    this.autoFocus = true,
   });
 
   final FocusNode focus;
   final RichTextController queryEditingController;
+  final bool autoFocus;
 
   @override
   State<_SmallLayout> createState() => _SmallLayoutState();
@@ -358,6 +338,7 @@ class _SmallLayoutState extends State<_SmallLayout> {
         return Scaffold(
           floatingActionButton: const SearchButton(),
           appBar: _AppBar(
+            autofocus: widget.autoFocus,
             focusNode: widget.focus,
             queryEditingController: widget.queryEditingController,
           ),

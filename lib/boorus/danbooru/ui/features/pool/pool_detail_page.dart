@@ -17,9 +17,8 @@ import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pool.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/common/collection_utils.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/utils.dart';
 
 class PoolDetailPage extends StatefulWidget {
@@ -41,90 +40,67 @@ class _PoolDetailPageState extends State<PoolDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('pool.pool').tr(),
-        actions: [
-          IconButton(
-            onPressed: () {
-              goToBulkDownloadPage(
-                context,
-                ['pool:${widget.pool.id}'],
-              );
-            },
-            icon: const Icon(Icons.download),
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: BlocProvider(
-          create: (context) => PostBloc.of(context)
-            ..add(
-              PostRefreshed(
-                fetcher: PoolPostFetcher(
-                  postIds: widget.postIds.dequeue(20),
-                ),
+    return InfinitePostList(
+      onLoadMore: () => context.read<PostBloc>().add(
+            PostFetched(
+              tags: '',
+              fetcher: PoolPostFetcher(
+                postIds: widget.postIds.dequeue(20),
               ),
             ),
-          child: BlocBuilder<PostBloc, PostState>(
+          ),
+      sliverHeaderBuilder: (context) => [
+        SliverAppBar(
+          title: const Text('pool.pool').tr(),
+          floating: true,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                goToBulkDownloadPage(
+                  context,
+                  ['pool:${widget.pool.id}'],
+                );
+              },
+              icon: const Icon(Icons.download),
+            ),
+          ],
+        ),
+        SliverToBoxAdapter(
+          child: ListTile(
+            title: Text(
+              widget.pool.name.removeUnderscoreWithSpace(),
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            subtitle: Text(
+              '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
+                widget.pool.updatedAt,
+                locale: Localizations.localeOf(context).languageCode,
+              )}',
+            ),
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
             builder: (context, state) {
-              return InfiniteLoadListScrollView(
-                isLoading: state.loading,
-                refreshController: refreshController,
-                enableRefresh: false,
-                enableLoadMore: state.hasMore,
-                onLoadMore: () => context.read<PostBloc>().add(
-                      PostFetched(
-                        tags: '',
-                        fetcher: PoolPostFetcher(
-                          postIds: widget.postIds.dequeue(20),
-                        ),
+              return state.status == LoadStatus.success &&
+                      state.description.isNotEmpty
+                  ? Html(
+                      onLinkTap: (url, context, attributes, element) =>
+                          _onHtmlLinkTapped(
+                        attributes,
+                        url,
+                        state.descriptionEndpointRefUrl,
                       ),
-                    ),
-                sliverBuilder: (controller) => [
-                  SliverToBoxAdapter(
-                    child: ListTile(
-                      title: Text(
-                        widget.pool.name.removeUnderscoreWithSpace(),
-                        style: Theme.of(context).textTheme.headline6,
-                      ),
-                      subtitle: Text(
-                        '${'pool.detail.last_updated'.tr()}: ${dateTimeToStringTimeAgo(
-                          widget.pool.updatedAt,
-                          locale: Localizations.localeOf(context).languageCode,
-                        )}',
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(
-                    child:
-                        BlocBuilder<PoolDescriptionBloc, PoolDescriptionState>(
-                      builder: (context, state) {
-                        return state.status == LoadStatus.success
-                            ? Html(
-                                onLinkTap:
-                                    (url, context, attributes, element) =>
-                                        _onHtmlLinkTapped(
-                                  attributes,
-                                  url,
-                                  state.descriptionEndpointRefUrl,
-                                ),
-                                data: state.description,
-                              )
-                            : const SizedBox.shrink();
-                      },
-                    ),
-                  ),
-                  HomePostGrid(
-                    controller: controller,
-                    usePlaceholder: false,
-                  ),
-                ],
-              );
+                      data: state.description,
+                    )
+                  : const SizedBox.shrink();
             },
           ),
         ),
-      ),
+      ],
     );
   }
 }

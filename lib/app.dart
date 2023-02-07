@@ -90,10 +90,10 @@ class _AppState extends State<App> {
 
 class AppScrollBehavior extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(
+  Widget buildScrollbar(
     BuildContext context,
     Widget child,
-    AxisDirection axisDirection,
+    ScrollableDetails details,
   ) =>
       child;
 }

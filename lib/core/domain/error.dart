@@ -1,10 +1,16 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:equatable/equatable.dart';
+
 enum AppErrorType {
   cannotReachServer,
   failedToParseJSON,
   unknown,
 }
 
-class AppError extends Error {
+class AppError extends Error with EquatableMixin {
   AppError({
     required this.type,
   });
@@ -24,17 +30,35 @@ class AppError extends Error {
       unknown?.call();
     }
   }
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => 'Error: $type';
+
+  @override
+  List<Object?> get props => [type];
 }
 
-class ServerError extends Error {
+class ServerError extends Error with EquatableMixin {
   ServerError({
     required this.httpStatusCode,
   });
 
   final int? httpStatusCode;
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => 'HTTP error with status code $httpStatusCode';
+
+  @override
+  List<Object?> get props => [httpStatusCode];
 }
 
-class BooruError extends Error {
+class BooruError extends Error with EquatableMixin {
   BooruError({
     required this.error,
   }) : super();
@@ -55,4 +79,27 @@ class BooruError extends Error {
       unknownError?.call(error);
     }
   }
+
+  Widget buildWhen({
+    required Widget Function(AppError error)? appError,
+    required Widget Function(ServerError error)? serverError,
+    required Widget Function(Object error)? unknownError,
+  }) {
+    if (error is AppError) {
+      return appError?.call(error as AppError) ?? const SizedBox.shrink();
+    } else if (error is ServerError) {
+      return serverError?.call(error as ServerError) ?? const SizedBox.shrink();
+    } else {
+      return unknownError?.call(error) ?? const SizedBox.shrink();
+    }
+  }
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => error.toString();
+
+  @override
+  List<Object?> get props => [error];
 }

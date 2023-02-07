@@ -4,16 +4,13 @@ import 'package:flutter/material.dart' hide ThemeMode;
 // Package imports:
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' hide LoadStatus;
-import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 class TagDetailPage extends StatefulWidget {
   const TagDetailPage({
@@ -21,61 +18,94 @@ class TagDetailPage extends StatefulWidget {
     required this.tagName,
     required this.otherNamesBuilder,
     required this.backgroundImageUrl,
+    this.includeHeaders = true,
   });
 
   final String tagName;
   final String backgroundImageUrl;
   final Widget Function(BuildContext context) otherNamesBuilder;
+  final bool includeHeaders;
 
   @override
   State<TagDetailPage> createState() => _TagDetailPageState();
 }
 
 class _TagDetailPageState extends State<TagDetailPage> {
-  final AutoScrollController scrollController = AutoScrollController();
-
-  @override
-  void dispose() {
-    scrollController.dispose();
-    super.dispose();
-  }
+  var currentCategory = TagFilterCategory.newest;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        shadowColor: Colors.transparent,
-        backgroundColor: Colors.transparent,
-        actions: [
-          IconButton(
-            onPressed: () {
-              goToBulkDownloadPage(
-                context,
-                [widget.tagName],
-              );
-            },
-            icon: const Icon(Icons.download),
+    return InfinitePostList(
+      onLoadMore: () => _load(),
+      onRefresh: (controller) => _refresh(),
+      sliverHeaderBuilder: (context) => [
+        if (widget.includeHeaders)
+          SliverAppBar(
+            floating: true,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            actions: [
+              IconButton(
+                onPressed: () {
+                  goToBulkDownloadPage(
+                    context,
+                    [widget.tagName],
+                  );
+                },
+                icon: const Icon(Icons.download),
+              ),
+            ],
           ),
-        ],
-      ),
-      body: Stack(children: [
-        _Panel(
-          tagName: widget.tagName,
-          scrollController: scrollController,
-          header: [
-            Column(
+        if (widget.includeHeaders)
+          SliverToBoxAdapter(
+            child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 TagTitleName(tagName: widget.tagName),
                 widget.otherNamesBuilder(context),
               ],
             ),
-            const SizedBox(height: 50),
-          ],
+          ),
+        if (widget.includeHeaders)
+          const SliverToBoxAdapter(child: SizedBox(height: 50)),
+        SliverPadding(
+          padding: const EdgeInsets.only(bottom: 10),
+          sliver: SliverToBoxAdapter(
+            child: CategoryToggleSwitch(
+              onToggle: (category) => setState(() {
+                currentCategory = category;
+                _refresh();
+              }),
+            ),
+          ),
         ),
-      ]),
+      ],
     );
+  }
+
+  void _load() {
+    context.read<PostBloc>().add(PostFetched(
+          tags: widget.tagName,
+          order: tagFilterCategoryToPostsOrder(currentCategory),
+          fetcher: SearchedPostFetcher.fromTags(
+            widget.tagName,
+            order: tagFilterCategoryToPostsOrder(currentCategory),
+          ),
+        ));
+  }
+
+  void _refresh() {
+    context.read<PostBloc>().add(
+          PostRefreshed(
+            tag: widget.tagName,
+            order: tagFilterCategoryToPostsOrder(currentCategory),
+            fetcher: SearchedPostFetcher.fromTags(
+              widget.tagName,
+              order: tagFilterCategoryToPostsOrder(currentCategory),
+            ),
+          ),
+        );
   }
 }
 
@@ -95,101 +125,9 @@ class TagTitleName extends StatelessWidget {
       child: Text(
         tagName.removeUnderscoreWithSpace(),
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6!.copyWith(
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.w900,
             ),
-      ),
-    );
-  }
-}
-
-class _Panel extends StatefulWidget {
-  const _Panel({
-    required this.tagName,
-    required this.scrollController,
-    this.header,
-  });
-
-  final String tagName;
-  final AutoScrollController scrollController;
-  final List<Widget>? header;
-
-  @override
-  State<_Panel> createState() => _PanelState();
-}
-
-class _PanelState extends State<_Panel> {
-  final RefreshController refreshController = RefreshController();
-
-  @override
-  void dispose() {
-    refreshController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor,
-        borderRadius: const BorderRadius.all(Radius.circular(24)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: BlocBuilder<PostBloc, PostState>(
-          builder: (context, state) {
-            return InfiniteLoadListScrollView(
-              isLoading: state.loading,
-              scrollController: widget.scrollController,
-              refreshController: refreshController,
-              enableLoadMore: state.hasMore,
-              onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-                    tags: widget.tagName,
-                    fetcher: SearchedPostFetcher.fromTags(widget.tagName),
-                  )),
-              onRefresh: (controller) {
-                context.read<PostBloc>().add(PostRefreshed(
-                      tag: widget.tagName,
-                      fetcher: SearchedPostFetcher.fromTags(widget.tagName),
-                    ));
-                Future.delayed(
-                  const Duration(milliseconds: 500),
-                  () => controller.refreshCompleted(),
-                );
-              },
-              sliverBuilder: (controller) => [
-                SliverToBoxAdapter(
-                  child: SizedBox(
-                    height: MediaQuery.of(context).viewPadding.top,
-                  ),
-                ),
-                if (widget.header != null)
-                  SliverToBoxAdapter(
-                    child: Column(
-                      children: widget.header!,
-                    ),
-                  ),
-                SliverPadding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  sliver: SliverToBoxAdapter(
-                    child: CategoryToggleSwitch(
-                      onToggle: (category) => context.read<PostBloc>().add(
-                            PostRefreshed(
-                              tag: widget.tagName,
-                              fetcher: SearchedPostFetcher.fromTags(
-                                widget.tagName,
-                                order: tagFilterCategoryToPostsOrder(category),
-                              ),
-                            ),
-                          ),
-                    ),
-                  ),
-                ),
-                HomePostGrid(controller: controller),
-              ],
-            );
-          },
-        ),
       ),
     );
   }

@@ -142,7 +142,13 @@
             "generic" : "Нешта пайшло не так",
             "tag_limit" : "Максімальную колькасць тэгаў. Абновіце свой акаўнт для пашырэння ліміту",
             "database_timeout" : "Запыт перапынены з-за занадта доўгай апрацоўкі",
-            "unknown" : "Невядомая памылка, паспрабуйце яшчэ раз"
+            "rate_limited" : "You're being rate limited. Please try again later",
+            "pagination_limit" : "You're have reached pagination limit. It means you cannot scroll more",
+            "max_capacity" : "Server is under heavy load and cannot handle the request be, please try again later",
+            "down" : "Server is downn. please try again later",
+            "access_denied" : "Access denied",
+            "forbidden" : "Authentication failed",
+            "unknown" : "Unknown server error, please report this issue to the developer"
         },
         "hint": "Пошук...",
         "no_result" : "Мы шукалі і там, і тут, але нічога не знайшлі.",

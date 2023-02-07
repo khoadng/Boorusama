@@ -10,7 +10,7 @@ Future<T?> showAppModalBottomSheet<T>({
 }) =>
     showMaterialModalBottomSheet(
       duration: const Duration(milliseconds: 200),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       context: context,
       builder: builder,
     );
@@ -37,7 +37,7 @@ class ModalOptions extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).backgroundColor,
+      color: Theme.of(context).colorScheme.background,
       child: SafeArea(
         top: false,
         child: Column(

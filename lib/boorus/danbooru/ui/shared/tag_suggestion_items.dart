@@ -101,7 +101,7 @@ class SliverTagSuggestionItemsWithHistory extends StatelessWidget {
                   dense: true,
                   title: Text(
                     'search.history.recent',
-                    style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                    style: Theme.of(context).textTheme.titleSmall!.copyWith(
                           fontWeight: FontWeight.w700,
                           fontSize: 18,
                         ),

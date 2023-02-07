@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import '../comment_update_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'comment_box.dart';
 import 'comment_list.dart';
 
@@ -38,14 +38,11 @@ class CommentSection extends StatelessWidget {
             comments: comments,
             authenticated: auth is Authenticated,
             onEdit: (comment) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => CommentUpdatePage(
-                    postId: postId,
-                    commentId: comment.id,
-                    initialContent: comment.body,
-                  ),
-                ),
+              goToCommentUpdatePage(
+                context,
+                postId: postId,
+                commentId: comment.id,
+                commentBody: comment.body,
               );
             },
             onReply: (comment) {

@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 import 'settings_tile.dart';
@@ -42,6 +43,21 @@ class _SearchSettingsPageState extends State<SearchSettingsPage> {
           shrinkWrap: true,
           primary: false,
           children: [
+            if (isMobilePlatform())
+              ListTile(
+                title: const Text(
+                  'Auto focus search bar when first open search view',
+                ),
+                trailing: Switch(
+                  activeColor: Theme.of(context).colorScheme.primary,
+                  value: settings.autoFocusSearchBar,
+                  onChanged: (value) {
+                    context.read<SettingsCubit>().update(settings.copyWith(
+                          autoFocusSearchBar: value,
+                        ));
+                  },
+                ),
+              ),
             SettingsTile<ContentOrganizationCategory>(
               title: const Text('settings.result_layout.result_layout').tr(),
               selectedOption: settings.contentOrganizationCategory,

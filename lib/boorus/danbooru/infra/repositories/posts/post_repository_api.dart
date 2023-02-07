@@ -63,6 +63,8 @@ class PostRepositoryApi implements PostRepository {
         .then(parsePostWithOptions(includeInvalid: includeInvalid ?? false))
         .catchError((e) {
       handleError(e);
+
+      return <Post>[];
     });
   }
 

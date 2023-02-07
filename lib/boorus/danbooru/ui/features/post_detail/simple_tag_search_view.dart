@@ -24,10 +24,12 @@ void showSimpleTagSearchView(
   Widget Function(String text)? floatingActionButton,
   required void Function(AutocompleteData tag) onSelected,
   void Function(BuildContext context, String text)? onSubmitted,
+  RouteSettings? settings,
 }) {
   if (isMobilePlatform()) {
     showBarModalBottomSheet(
       context: context,
+      settings: settings,
       duration: const Duration(milliseconds: 200),
       builder: (context) => SimpleTagSearchView(
         onSubmitted: onSubmitted,
@@ -41,6 +43,7 @@ void showSimpleTagSearchView(
   } else {
     showDesktopDialogWindow(
       context,
+      settings: settings,
       backgroundColor: Theme.of(context).cardColor,
       margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       width: min(MediaQuery.of(context).size.width * 0.7, 600),
@@ -107,7 +110,7 @@ class SimpleTagSearchView extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
                   child: SearchBar(
-                    backgroundColor: Theme.of(context).backgroundColor,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                     leading: backButton,
                     autofocus: true,
                     onSubmitted: (text) => onSubmitted?.call(context, text),
@@ -123,7 +126,7 @@ class SimpleTagSearchView extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: TagSuggestionItems(
-                        backgroundColor: Theme.of(context).backgroundColor,
+                        backgroundColor: Theme.of(context).colorScheme.background,
                         tags: tags,
                         onItemTap: (tag) {
                           if (closeOnSelected) {

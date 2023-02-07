@@ -6,8 +6,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/tags/tags.dart';
-import '../common/utils.dart';
 
 class ImportTagButton extends StatelessWidget {
   const ImportTagButton({super.key});
@@ -16,7 +16,7 @@ class ImportTagButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(shape: const StadiumBorder()),
-      onPressed: () => showImportDialog(
+      onPressed: () => goToFavoriteTagImportPage(
         context,
         context.read<FavoriteTagBloc>(),
       ),

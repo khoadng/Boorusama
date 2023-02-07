@@ -10,12 +10,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/application/search/search.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
-import 'package:boorusama/core/ui/widgets/parallax_slide_in_page_route.dart';
 import 'blacklisted_tags_search_page.dart';
 
 class BlacklistedTagsPage extends StatelessWidget {
@@ -67,28 +67,16 @@ class BlacklistedTagsPage extends StatelessWidget {
           onPressed: () {
             final bloc = context.read<BlacklistedTagsBloc>();
 
-            Navigator.of(context).push(ParallaxSlideInPageRoute(
-              enterWidget: MultiBlocProvider(
-                providers: [
-                  BlocProvider(
-                    create: (context) => TagSearchBloc(
-                      tagInfo: context.read<TagInfo>(),
-                      autocompleteRepository:
-                          context.read<AutocompleteRepository>(),
-                    ),
-                  ),
-                ],
-                child: BlacklistedTagsSearchPage(
-                  onSelectedDone: (tagItems) {
-                    bloc.add(BlacklistedTagAdded(
-                      tag: tagItems.map((e) => e.toString()).join(' '),
-                    ));
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ),
+            goToBlacklistedTagsSearchPage(
+              context,
               oldWidget: this,
-            ));
+              onSelectDone: (tagItems) {
+                bloc.add(BlacklistedTagAdded(
+                  tag: tagItems.map((e) => e.toString()).join(' '),
+                ));
+                Navigator.of(context).pop();
+              },
+            );
           },
           icon: const FaIcon(FontAwesomeIcons.plus),
         );
@@ -132,31 +120,17 @@ class BlacklistedTagsList extends StatelessWidget {
                     onEditTap: () {
                       final bloc = context.read<BlacklistedTagsBloc>();
 
-                      Navigator.of(context).push(ParallaxSlideInPageRoute(
-                        enterWidget: MultiBlocProvider(
-                          providers: [
-                            BlocProvider(
-                              create: (context) => TagSearchBloc(
-                                tagInfo: context.read<TagInfo>(),
-                                autocompleteRepository:
-                                    context.read<AutocompleteRepository>(),
-                              ),
-                            ),
-                          ],
-                          child: BlacklistedTagsSearchPage(
-                            initialTags:
-                                state.blacklistedTags[index].split(' '),
-                            onSelectedDone: (tagItems) {
-                              bloc.add(BlacklistedTagReplaced(
-                                oldTag: state.blacklistedTags[index],
-                                newTag:
-                                    tagItems.map((e) => e.toString()).join(' '),
-                              ));
-                            },
-                          ),
-                        ),
+                      goToBlacklistedTagsSearchPage(
+                        context,
+                        initialTags: state.blacklistedTags[index].split(' '),
+                        onSelectDone: (tagItems) {
+                          bloc.add(BlacklistedTagReplaced(
+                            oldTag: state.blacklistedTags[index],
+                            newTag: tagItems.map((e) => e.toString()).join(' '),
+                          ));
+                        },
                         oldWidget: this,
-                      ));
+                      );
                     },
                   ),
                   childCount: state.blacklistedTags.length,

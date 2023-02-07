@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -15,9 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'most_search_tag_list.dart';
 
 class LatestViewDesktop extends StatefulWidget {
@@ -67,8 +63,6 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
-
     return Column(
       children: [
         SizedBox(
@@ -112,26 +106,15 @@ class _LatestViewDesktopState extends State<LatestViewDesktop> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: InfiniteLoadListScrollView(
-              isLoading: state.loading,
-              enableLoadMore: state.hasMore,
+            child: InfinitePostList(
+              scrollController: _autoScrollController,
               onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                     tags: _selectedTag.value,
                     fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
                   )),
               onRefresh: (controller) {
                 _sendRefresh(_selectedTag.value);
-                Future.delayed(
-                  const Duration(seconds: 1),
-                  () => controller.refreshCompleted(),
-                );
               },
-              scrollController: _autoScrollController,
-              sliverBuilder: (controller) => [
-                HomePostGrid(
-                  controller: controller,
-                ),
-              ],
             ),
           ),
         ),

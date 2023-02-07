@@ -23,10 +23,9 @@ import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/application/theme/theme.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
+import 'package:boorusama/core/ui/network_indicator_with_network_bloc.dart';
 import 'package:boorusama/core/ui/widgets/animated_spinning_icon.dart';
-import 'package:boorusama/core/ui/widgets/side_sheet.dart';
 import 'models/parent_child_data.dart';
-import 'parent_child_post_page.dart';
 import 'widgets/post_slider.dart';
 import 'widgets/recommend_character_list.dart';
 import 'widgets/widgets.dart';
@@ -94,74 +93,88 @@ class _PostDetailPageState extends State<PostDetailPage> {
           return true;
         },
         child: Scaffold(
-          body: Row(
+          body: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
+              const NetworkUnavailableIndicatorWithNetworkBloc(
+                includeSafeArea: false,
+              ),
               Expanded(
-                child: Stack(
+                child: Row(
                   children: [
-                    PostSlider(
-                      posts: widget.posts,
-                      imagePath: imagePath,
-                    ),
-                    Align(
-                      alignment: Alignment(
-                        -0.75,
-                        getTopActionIconAlignValue(),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          PostSlider(
+                            posts: widget.posts,
+                            imagePath: imagePath,
+                          ),
+                          Align(
+                            alignment: Alignment(
+                              -0.75,
+                              getTopActionIconAlignValue(),
+                            ),
+                            child: BlocSelector<PostDetailBloc, PostDetailState,
+                                bool>(
+                              selector: (state) => state.enableOverlay,
+                              builder: (context, enable) {
+                                return enable
+                                    ? const _NavigationButtonGroup()
+                                    : const SizedBox.shrink();
+                              },
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment(
+                              0.9,
+                              getTopActionIconAlignValue(),
+                            ),
+                            child: const _TopRightButtonGroup(),
+                          ),
+                          if (Screen.of(context).size == ScreenSize.small)
+                            BlocBuilder<PostDetailBloc, PostDetailState>(
+                              builder: (context, state) {
+                                return BlocBuilder<SettingsCubit,
+                                    SettingsState>(
+                                  builder: (context, settingsState) =>
+                                      state.shouldShowFloatingActionBar(
+                                    settingsState
+                                        .settings.actionBarDisplayBehavior,
+                                  )
+                                          ? _FloatingQuickActionBar(
+                                              imagePath: imagePath,
+                                            )
+                                          : const SizedBox.shrink(),
+                                );
+                              },
+                            ),
+                        ],
                       ),
-                      child:
-                          BlocSelector<PostDetailBloc, PostDetailState, bool>(
-                        selector: (state) => state.enableOverlay,
-                        builder: (context, enable) {
-                          return enable
-                              ? const _NavigationButtonGroup()
-                              : const SizedBox.shrink();
-                        },
-                      ),
                     ),
-                    Align(
-                      alignment: Alignment(
-                        0.9,
-                        getTopActionIconAlignValue(),
-                      ),
-                      child: const _TopRightButtonGroup(),
-                    ),
-                    if (Screen.of(context).size == ScreenSize.small)
-                      BlocBuilder<PostDetailBloc, PostDetailState>(
-                        builder: (context, state) {
-                          return BlocBuilder<SettingsCubit, SettingsState>(
-                            builder: (context, settingsState) => state
-                                    .shouldShowFloatingActionBar(
-                              settingsState.settings.actionBarDisplayBehavior,
-                            )
-                                ? _FloatingQuickActionBar(imagePath: imagePath)
-                                : const SizedBox.shrink(),
-                          );
-                        },
+                    if (screenSize != ScreenSize.small)
+                      MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: context.read<TagBloc>()),
+                        ],
+                        child: Container(
+                          color: Theme.of(context).colorScheme.background,
+                          width: _infoBarWidth,
+                          child: BlocBuilder<PostDetailBloc, PostDetailState>(
+                            builder: (context, state) {
+                              return _LargeLayoutContent(
+                                key: ValueKey(state.currentPost.post.id),
+                                post: state.currentPost,
+                                imagePath: imagePath,
+                                size: screenSize,
+                                recommends: state.recommends,
+                              );
+                            },
+                          ),
+                        ),
                       ),
                   ],
                 ),
               ),
-              if (screenSize != ScreenSize.small)
-                MultiBlocProvider(
-                  providers: [
-                    BlocProvider.value(value: context.read<TagBloc>()),
-                  ],
-                  child: Container(
-                    color: Theme.of(context).backgroundColor,
-                    width: _infoBarWidth,
-                    child: BlocBuilder<PostDetailBloc, PostDetailState>(
-                      builder: (context, state) {
-                        return _LargeLayoutContent(
-                          key: ValueKey(state.currentPost.post.id),
-                          post: state.currentPost,
-                          imagePath: imagePath,
-                          size: screenSize,
-                          recommends: state.recommends,
-                        );
-                      },
-                    ),
-                  ),
-                ),
             ],
           ),
         ),
@@ -409,22 +422,10 @@ class _LargeLayoutContent extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 8),
                   child: ParentChildTile(
                     data: getParentChildData(post.post),
-                    onTap: (data) => showSideSheetFromRight(
-                      context: context,
-                      body: MultiBlocProvider(
-                        providers: [
-                          BlocProvider(
-                            create: (context) => PostBloc.of(context)
-                              ..add(PostRefreshed(
-                                tag: data.tagQueryForDataFetching,
-                                fetcher: SearchedPostFetcher.fromTags(
-                                  data.tagQueryForDataFetching,
-                                ),
-                              )),
-                          ),
-                        ],
-                        child: ParentChildPostPage(parentPostId: data.parentId),
-                      ),
+                    onTap: (data) => goToParentChildPage(
+                      context,
+                      data.parentId,
+                      data.tagQueryForDataFetching,
                     ),
                   ),
                 ),

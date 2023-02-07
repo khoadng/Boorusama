@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:async';
-
 // Flutter imports:
 import 'package:flutter/material.dart';
 
@@ -15,9 +12,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/tags/tags.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/home/home_post_grid.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'most_search_tag_list.dart';
 
@@ -25,9 +21,11 @@ class LatestView extends StatefulWidget {
   const LatestView({
     super.key,
     this.onMenuTap,
+    this.useAppBarPadding,
   });
 
   final VoidCallback? onMenuTap;
+  final bool? useAppBarPadding;
 
   @override
   State<LatestView> createState() => _LatestViewState();
@@ -72,25 +70,20 @@ class _LatestViewState extends State<LatestView> {
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<PostBloc>().state;
-
-    return InfiniteLoadListScrollView(
-      isLoading: state.loading,
-      enableLoadMore: state.hasMore,
+    return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
             tags: _selectedTag.value,
             fetcher: SearchedPostFetcher.fromTags(_selectedTag.value),
           )),
       onRefresh: (controller) {
         _sendRefresh(_selectedTag.value);
-        Future.delayed(
-          const Duration(seconds: 1),
-          () => controller.refreshCompleted(),
-        );
       },
       scrollController: _autoScrollController,
-      sliverBuilder: (controller) => [
-        _AppBar(onMenuTap: widget.onMenuTap),
+      sliverHeaderBuilder: (context) => [
+        _AppBar(
+          onMenuTap: widget.onMenuTap,
+          primary: widget.useAppBarPadding,
+        ),
         SliverToBoxAdapter(
           child: ValueListenableBuilder<String>(
             valueListenable: _selectedTag,
@@ -102,9 +95,6 @@ class _LatestViewState extends State<LatestView> {
               },
             ),
           ),
-        ),
-        HomePostGrid(
-          controller: controller,
         ),
       ],
     );
@@ -143,32 +133,27 @@ class _MostSearchTagSection extends StatelessWidget {
 class _AppBar extends StatelessWidget {
   const _AppBar({
     required this.onMenuTap,
+    this.primary,
   });
 
   final VoidCallback? onMenuTap;
+  final bool? primary;
 
   @override
   Widget build(BuildContext context) {
     return SliverAppBar(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       toolbarHeight: kToolbarHeight * 1.2,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: SearchBar(
-              enabled: false,
-              leading: onMenuTap != null
-                  ? IconButton(
-                      icon: const Icon(Icons.menu),
-                      onPressed: () => onMenuTap!(),
-                    )
-                  : null,
-              onTap: () => goToSearchPage(context),
-            ),
-          ),
-        ],
+      primary: primary ?? true,
+      title: SearchBar(
+        enabled: false,
+        leading: onMenuTap != null
+            ? IconButton(
+                icon: const Icon(Icons.menu),
+                onPressed: () => onMenuTap!(),
+              )
+            : null,
+        onTap: () => goToSearchPage(context),
       ),
       floating: true,
       snap: true,

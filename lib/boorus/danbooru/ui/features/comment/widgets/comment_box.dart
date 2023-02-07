@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/comment/comment.dart';
 import 'package:boorusama/boorus/danbooru/domain/comments/comments.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_page.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'reply_header.dart';
 
 class CommentBox extends StatefulWidget {
@@ -82,12 +82,11 @@ class _CommentBoxState extends State<CommentBox> {
                           '[quote]\n${comment.authorName} said:\n\n${comment.body}\n[/quote]\n\n$content';
                     }
 
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CommentCreatePage(
-                        postId: widget.postId,
-                        initialContent: initialContent,
-                      ),
-                    ));
+                    goToCommentCreatePage(
+                      context,
+                      postId: widget.postId,
+                      initialContent: initialContent,
+                    );
                     widget.isEditing.value = false;
                   },
                 ),

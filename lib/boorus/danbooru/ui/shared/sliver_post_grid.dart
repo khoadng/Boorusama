@@ -2,7 +2,6 @@
 import 'dart:async';
 
 // Flutter imports:
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,21 +10,22 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
-import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
+import 'selectable_icon_button.dart';
 
 class SliverPostGridDelegate extends SliverGridDelegateWithFixedCrossAxisCount {
   SliverPostGridDelegate({
@@ -78,6 +78,9 @@ class SliverPostGrid extends HookWidget {
     this.gridSize = GridSize.normal,
     this.borderRadius,
     this.postAnnotationBuilder,
+    this.onMultiSelect,
+    this.onPostSelectChanged,
+    this.multiSelect = false,
   });
 
   final List<PostData> posts;
@@ -90,6 +93,9 @@ class SliverPostGrid extends HookWidget {
   final Widget Function(BuildContext context, Post post, int index)?
       postAnnotationBuilder;
   final void Function(int postId, bool value) onFavoriteUpdated;
+  final void Function()? onMultiSelect;
+  final void Function(Post post, bool selected)? onPostSelectChanged;
+  final bool multiSelect;
 
   @override
   Widget build(BuildContext context) {
@@ -131,33 +137,57 @@ class SliverPostGrid extends HookWidget {
               final post = posts[index];
 
               return ContextMenuRegion(
+                isEnabled: !multiSelect,
                 contextMenu: DownloadProviderWidget(
                   builder: (context, download) => GenericContextMenu(
                     buttonConfigs: [
                       ContextMenuButtonConfig(
                         'Preview',
-                        onPressed: () => showGeneralDialog(
-                          context: context,
-                          pageBuilder:
-                              (context, animation, secondaryAnimation) =>
-                                  QuickPreviewImage(
-                            child: BooruImage(
-                              aspectRatio: post.post.aspectRatio,
-                              imageUrl: post.post.normalImageUrl,
-                              previewCacheManager:
-                                  context.read<PreviewImageCacheManager>(),
-                            ),
-                          ),
-                        ),
+                        onPressed: () =>
+                            goToImagePreviewPage(context, post.post),
                       ),
                       ContextMenuButtonConfig(
                         'download.download'.tr(),
                         onPressed: () => download(post.post),
                       ),
+                      ContextMenuButtonConfig(
+                        'Select',
+                        onPressed: () {
+                          onMultiSelect?.call();
+                        },
+                      ),
                     ],
                   ),
                 ),
                 child: ImageGridItem(
+                  multiSelect: multiSelect,
+                  multiSelectBuilder: () => SelectableIconButton(
+                    unSelectedIcon: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: const BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black45,
+                      ),
+                      child: const Icon(
+                        FontAwesomeIcons.circle,
+                        size: 32,
+                      ),
+                    ),
+                    selectedIcon: Container(
+                      width: 36,
+                      height: 36,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      child: const Icon(
+                        Icons.check,
+                      ),
+                    ),
+                    onChanged: (value) =>
+                        onPostSelectChanged?.call(post.post, value),
+                  ),
                   previewCacheManager: context.read<PreviewImageCacheManager>(),
                   isFaved: post.isFavorited,
                   enableFav: authState is Authenticated,
@@ -209,7 +239,6 @@ class SliverPostGrid extends HookWidget {
                     ),
                   ),
                   previewPlaceholderUrl: post.post.previewImageUrl,
-                  contextMenuAction: _buildContextMenu(post, context),
                 ),
               );
             }
@@ -251,50 +280,6 @@ class SliverPostGrid extends HookWidget {
         );
       },
     );
-  }
-
-  List<Widget> _buildContextMenu(PostData post, BuildContext context) {
-    return [
-      DownloadProviderWidget(
-        builder: (context, download) => CupertinoContextMenuAction(
-          trailingIcon: Icons.download,
-          onPressed: () {
-            Navigator.of(context).pop();
-            download(post.post);
-          },
-          child: const Text('download.download').tr(),
-        ),
-      ),
-      FutureBuilder<Account>(
-        future: context.read<AccountRepository>().get(),
-        builder: (context, snapshot) {
-          return snapshot.hasData && snapshot.data! != Account.empty
-              ? CupertinoContextMenuAction(
-                  trailingIcon: post.isFavorited
-                      ? Icons.favorite
-                      : Icons.favorite_outline,
-                  onPressed: () async {
-                    Navigator.of(context).pop();
-                    final action =
-                        _getFavAction(context, post.isFavorited, post.post.id);
-                    final success = await action;
-
-                    if (success) {
-                      onFavoriteUpdated.call(
-                        post.post.id,
-                        !post.isFavorited,
-                      );
-                    }
-                  },
-                  child: Text(post.isFavorited
-                          ? 'favorites.unfavorite'
-                          : 'favorites.favorite')
-                      .tr(),
-                )
-              : const SizedBox.shrink();
-        },
-      ),
-    ];
   }
 
   Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {

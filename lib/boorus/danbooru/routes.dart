@@ -136,7 +136,7 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context)
+        create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
@@ -164,7 +164,7 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context)
+        create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
@@ -338,9 +338,15 @@ final postSearchHandler = Handler(handlerFunc: (
               BlocProvider.value(value: relatedTagBloc),
             ],
             child: CustomContextMenuOverlay(
-              child: SearchPage(
-                metatags: context.read<TagInfo>().metatags,
-                metatagHighlightColor: Theme.of(context).colorScheme.primary,
+              child: BlocBuilder<SettingsCubit, SettingsState>(
+                builder: (context, state) {
+                  return SearchPage(
+                    autoFocusSearchBar: state.settings.autoFocusSearchBar,
+                    metatags: context.read<TagInfo>().metatags,
+                    metatagHighlightColor:
+                        Theme.of(context).colorScheme.primary,
+                  );
+                },
               ),
             ),
           );
@@ -394,12 +400,24 @@ final poolDetailHandler =
                   context.read<PoolDescriptionRepository>(),
             )..add(PoolDescriptionFetched(poolId: pool.id)),
           ),
+          BlocProvider(
+            create: (context) => PostBloc.of(context)
+              ..add(
+                PostRefreshed(
+                  fetcher: PoolPostFetcher(
+                    postIds: pool.postIds.reversed.take(20).toList(),
+                  ),
+                ),
+              ),
+          ),
         ],
-        child: PoolDetailPage(
-          pool: pool,
-          // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
-          // ignore: prefer-iterable-of
-          postIds: QueueList.from(pool.postIds.reversed),
+        child: CustomContextMenuOverlay(
+          child: PoolDetailPage(
+            pool: pool,
+            // https://github.com/dart-code-checker/dart-code-metrics/issues/1046
+            // ignore: prefer-iterable-of
+            postIds: QueueList.from(pool.postIds.reversed.skip(20)),
+          ),
         ),
       );
     },

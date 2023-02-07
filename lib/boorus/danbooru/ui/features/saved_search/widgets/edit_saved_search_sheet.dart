@@ -11,7 +11,7 @@ import 'package:rxdart/rxdart.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/domain/saved_searches/saved_searches.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/simple_tag_search_view.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/common/stream/text_editing_controller_utils.dart';
 
 class EditSavedSearchSheet extends StatefulWidget {
@@ -86,7 +86,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
               padding: const EdgeInsets.only(top: 24, bottom: 8),
               child: Text(
                 widget.title ?? 'saved_search.add_saved_search'.tr(),
-                style: Theme.of(context).textTheme.headline6,
+                style: Theme.of(context).textTheme.titleLarge,
               ),
             ),
             const SizedBox(
@@ -104,7 +104,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
                   child: InkWell(
                     customBorder: const CircleBorder(),
                     onTap: () {
-                      showSimpleTagSearchView(
+                      goToQuickSearchPage(
                         context,
                         onSelected: (tag) {
                           final baseOffset =
@@ -157,7 +157,7 @@ class _EditSavedSearchSheetState extends State<EditSavedSearchSheet> {
               margin: const EdgeInsets.all(8),
               child: Text(
                 'saved_search.saved_search_labels_description'.tr(),
-                style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                style: Theme.of(context).textTheme.titleSmall!.copyWith(
                       color: Theme.of(context).hintColor,
                       fontSize: 14,
                       fontWeight: FontWeight.w400,
@@ -257,11 +257,11 @@ InputDecoration _getDecoration({
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: Theme.of(context).errorColor),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
       ),
       focusedErrorBorder: OutlineInputBorder(
         borderRadius: const BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: Theme.of(context).errorColor, width: 2),
+        borderSide: BorderSide(color: Theme.of(context).colorScheme.error, width: 2),
       ),
       contentPadding: const EdgeInsets.all(12),
     );

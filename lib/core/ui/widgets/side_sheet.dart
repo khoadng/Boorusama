@@ -11,6 +11,7 @@ Future<T?> showSideSheetFromLeft<T>({
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
   Duration transitionDuration = const Duration(milliseconds: 300),
+  RouteSettings? settings,
 }) async =>
     _showSheetSide<T>(
       body: body,
@@ -21,6 +22,7 @@ Future<T?> showSideSheetFromLeft<T>({
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor,
       transitionDuration: transitionDuration,
+      settings: settings,
     );
 
 Future<T?> showSideSheetFromRight<T>({
@@ -31,6 +33,7 @@ Future<T?> showSideSheetFromRight<T>({
   bool barrierDismissible = true,
   Color barrierColor = const Color(0xFF66000000),
   Duration transitionDuration = const Duration(milliseconds: 300),
+  RouteSettings? settings,
 }) =>
     _showSheetSide<T>(
       body: body,
@@ -41,6 +44,7 @@ Future<T?> showSideSheetFromRight<T>({
       barrierDismissible: barrierDismissible,
       barrierColor: barrierColor,
       transitionDuration: transitionDuration,
+      settings: settings,
     );
 
 Future<T?> _showSheetSide<T>({
@@ -52,6 +56,7 @@ Future<T?> _showSheetSide<T>({
   required bool barrierDismissible,
   required Color barrierColor,
   required Duration transitionDuration,
+  RouteSettings? settings,
 }) =>
     showGeneralDialog(
       barrierLabel: barrierLabel,
@@ -59,6 +64,7 @@ Future<T?> _showSheetSide<T>({
       barrierColor: barrierColor,
       transitionDuration: transitionDuration,
       context: context,
+      routeSettings: settings,
       pageBuilder: (context, animation1, animation2) {
         return Align(
           alignment: rightSide ? Alignment.centerRight : Alignment.centerLeft,
