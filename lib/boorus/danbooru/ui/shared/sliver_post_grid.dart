@@ -150,6 +150,16 @@ class SliverPostGrid extends HookWidget {
                         'download.download'.tr(),
                         onPressed: () => download(post.post),
                       ),
+                      if (authState is Authenticated)
+                        ContextMenuButtonConfig(
+                          'Add to favorite group',
+                          onPressed: () {
+                            goToAddToFavoriteGroupSelectionPage(
+                              context,
+                              [post.post],
+                            );
+                          },
+                        ),
                       ContextMenuButtonConfig(
                         'Select',
                         onPressed: () {
