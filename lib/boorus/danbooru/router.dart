@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1375,6 +1376,7 @@ void goToSearchHistoryPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
+  context.read<ProfileCubit>().getProfile();
   AppRouter.router.navigateTo(
     context,
     '/favorite_groups',

@@ -351,6 +351,10 @@
         "failed_to_favorite" : "Fail to favorite this post"
     },
 
+    "favorite_groups" : {
+        "max_limit_warning" : "Anonymous and Member can only create 10 favorite groups"
+    },
+
     "favorite_tags": {
         "favorites": "Favorites",
         "or" : "or",

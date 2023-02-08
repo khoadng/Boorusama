@@ -1,4 +1,9 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -34,29 +39,50 @@ class FavoriteGroupsPage extends StatelessWidget {
         ],
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
-                    builder: (context, state) {
-                      return state.loading
-                          ? _buildLoading()
-                          : _buildList(state);
-                    },
+        child: BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
+          builder: (context, state) {
+            return Column(
+              children: [
+                BlocBuilder<ProfileCubit, AsyncLoadState<Profile>>(
+                  builder: (context, state) {
+                    return state.status == LoadStatus.success &&
+                            !isBooruGoldPlusAccountInt(state.data!.level)
+                        ? WarningContainer(
+                            contentBuilder: (context) =>
+                                const Text('favorite_groups.max_limit_warning')
+                                    .tr(),
+                          )
+                        : const SizedBox.shrink();
+                  },
+                ),
+                Expanded(
+                  child: CustomScrollView(
+                    slivers: [
+                      if (state.loading) _buildLoading() else _buildList(state),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            const _PageSelector(),
-          ],
+                ),
+                if (state.favoriteGroups.isNotEmpty) const _PageSelector(),
+              ],
+            );
+          },
         ),
       ),
     );
   }
 
   Widget _buildList(FavoriteGroupsState state) {
+    if (state.favoriteGroups.isEmpty) {
+      return const SliverToBoxAdapter(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 42),
+          child: Center(
+            child: Text('No favorite groups'),
+          ),
+        ),
+      );
+    }
+
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
