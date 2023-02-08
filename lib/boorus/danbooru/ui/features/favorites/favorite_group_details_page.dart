@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart';
 
@@ -36,6 +37,17 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
           elevation: 0,
           shadowColor: Colors.transparent,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          actions: [
+            IconButton(
+              onPressed: () {
+                goToBulkDownloadPage(
+                  context,
+                  ['favgroup:${group.id}'],
+                );
+              },
+              icon: const Icon(Icons.download),
+            ),
+          ],
         ),
         const SliverToBoxAdapter(
           child: SizedBox(
