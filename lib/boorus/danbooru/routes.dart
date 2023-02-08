@@ -486,9 +486,11 @@ final favoriteGroupDetailsHandler =
           )),
       ),
     ],
-    child: FavoriteGroupDetailsPage(
-      favoriteGroupId: id,
-      groupName: name,
+    child: CustomContextMenuOverlay(
+      child: FavoriteGroupDetailsPage(
+        favoriteGroupId: id,
+        groupName: name,
+      ),
     ),
   );
 });
