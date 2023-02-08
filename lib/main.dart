@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -437,6 +438,11 @@ void main() async {
                     accountRepository: accountRepo,
                   );
 
+                  final currentUserBloc = CurrentUserBloc(
+                    userRepository: userRepo,
+                    accountRepository: accountRepo,
+                  )..add(const CurrentUserFetched());
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -516,6 +522,7 @@ void main() async {
                         BlocProvider.value(value: favoriteTagBloc),
                         BlocProvider.value(value: exploreBloc),
                         BlocProvider.value(value: favoriteGroupBloc),
+                        BlocProvider.value(value: currentUserBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
@@ -525,9 +532,11 @@ void main() async {
                               //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
+                                currentUserBloc.add(const CurrentUserFetched());
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
                                 blacklistedTagRepo.clearCache();
+                                currentUserBloc.add(const CurrentUserFetched());
                               }
                             },
                           ),

@@ -1376,7 +1376,6 @@ void goToSearchHistoryPage(
 }
 
 void goToFavoriteGroupPage(BuildContext context) {
-  context.read<ProfileCubit>().getProfile();
   AppRouter.router.navigateTo(
     context,
     '/favorite_groups',

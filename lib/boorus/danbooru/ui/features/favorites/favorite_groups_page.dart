@@ -1,7 +1,5 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:flutter/material.dart';
@@ -43,10 +41,10 @@ class FavoriteGroupsPage extends StatelessWidget {
           builder: (context, state) {
             return Column(
               children: [
-                BlocBuilder<ProfileCubit, AsyncLoadState<Profile>>(
+                BlocBuilder<CurrentUserBloc, CurrentUserState>(
                   builder: (context, state) {
-                    return state.status == LoadStatus.success &&
-                            !isBooruGoldPlusAccountInt(state.data!.level)
+                    return state.user != null &&
+                            !isBooruGoldPlusAccount(state.user!.level)
                         ? WarningContainer(
                             contentBuilder: (context) =>
                                 const Text('favorite_groups.max_limit_warning')

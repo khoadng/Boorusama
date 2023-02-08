@@ -1,8 +1,6 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,10 +37,6 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
   @override
   void initState() {
     super.initState();
-
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      context.read<ProfileCubit>().getProfile();
-    });
 
     if (widget.initialData != null) {
       textController.text = widget.initialData!.postIds.join(' ');
@@ -161,7 +155,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                         ),
                       ),
                     ),
-                    BlocBuilder<ProfileCubit, AsyncLoadState<Profile>>(
+                    BlocBuilder<CurrentUserBloc, CurrentUserState>(
                       builder: (context, state) {
                         return AnimatedCrossFade(
                           firstChild: const SizedBox.shrink(),
@@ -175,8 +169,8 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                                   setState(() => isPrivate = value),
                             ),
                           ),
-                          crossFadeState: state.status == LoadStatus.success &&
-                                  isBooruGoldPlusAccountInt(state.data!.level)
+                          crossFadeState: state.user != null &&
+                                  isBooruGoldPlusAccount(state.user!.level)
                               ? CrossFadeState.showSecond
                               : CrossFadeState.showFirst,
                           duration: const Duration(milliseconds: 150),
