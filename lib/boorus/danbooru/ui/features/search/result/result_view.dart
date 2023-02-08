@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/rendering.dart';
 
@@ -191,6 +192,11 @@ class _PaginationState extends State<_Pagination>
           PostGrid(
             controller: widget.scrollController,
             onTap: () => FocusScope.of(context).unfocus(),
+            contextMenuBuilder: (post) => DefaultPostContextMenu(
+              post: post,
+              // ignore: no-empty-block
+              onMultiSelect: () {},
+            ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
           if (totalResults != null && totalResults >= PostBloc.postPerPage)

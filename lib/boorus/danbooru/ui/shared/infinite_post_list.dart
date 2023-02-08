@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -23,6 +24,7 @@ class InfinitePostList extends StatefulWidget {
     this.sliverHeaderBuilder,
     this.scrollController,
     this.refreshController,
+    this.contextMenuBuilder,
   });
 
   final VoidCallback onLoadMore;
@@ -30,6 +32,8 @@ class InfinitePostList extends StatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
+  final Widget Function(PostData post, void Function() next)?
+      contextMenuBuilder;
 
   @override
   State<InfinitePostList> createState() => _InfinitePostListState();
@@ -149,14 +153,21 @@ class _InfinitePostListState extends State<InfinitePostList> {
               });
             },
             multiSelect: multiSelect,
-            onMultiSelect: () => setState(() {
-              multiSelect = true;
-            }),
+            contextMenuBuilder: (post) =>
+                widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
+                DefaultPostContextMenu(
+                  onMultiSelect: _enableMultiSelect,
+                  post: post,
+                ),
           ),
         ],
       ),
     );
   }
+
+  void _enableMultiSelect() => setState(() {
+        multiSelect = true;
+      });
 
   void _endMultiSelect() {
     setState(() {
