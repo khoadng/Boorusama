@@ -111,6 +111,23 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
       });
 
   @override
+  Future<bool> removeItemsFromFavoriteGroup({
+    required int id,
+    required List<int> itemIds,
+  }) =>
+      accountRepository
+          .get()
+          .then((account) => api.patchFavoriteGroups(
+                account.username,
+                account.apiKey,
+                id,
+                postIdsString: itemIds.join(' '),
+              ))
+          .then((value) {
+        return [302, 204].contains(value.response.statusCode);
+      });
+
+  @override
   Future<bool> editFavoriteGroup({
     required int id,
     String? name,

@@ -152,6 +152,23 @@ class FavoriteGroupsItemAdded extends FavoriteGroupsEvent {
   List<Object?> get props => [group, postIds, onSuccess, onFailure];
 }
 
+class FavoriteGroupsItemRemoved extends FavoriteGroupsEvent {
+  const FavoriteGroupsItemRemoved({
+    required this.group,
+    required this.postIds,
+    this.onSuccess,
+    this.onFailure,
+  });
+
+  final FavoriteGroup group;
+  final List<int> postIds;
+  final void Function()? onSuccess;
+  final void Function(String message)? onFailure;
+
+  @override
+  List<Object?> get props => [group, postIds, onSuccess, onFailure];
+}
+
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
@@ -279,6 +296,26 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
             add(const FavoriteGroupsRefreshed());
           } else {
             event.onFailure?.call('Failed to add posts to favgroup');
+          }
+        },
+      );
+    });
+
+    on<FavoriteGroupsItemRemoved>((event, emit) async {
+      final items = [...event.group.postIds]
+        ..removeWhere((element) => event.postIds.contains(element));
+
+      await tryAsync<bool>(
+        action: () => favoriteGroupRepository.removeItemsFromFavoriteGroup(
+          id: event.group.id,
+          itemIds: items,
+        ),
+        onSuccess: (success) async {
+          if (success) {
+            event.onSuccess?.call();
+            add(const FavoriteGroupsRefreshed());
+          } else {
+            event.onFailure?.call('Failed to remove posts to favgroup');
           }
         },
       );

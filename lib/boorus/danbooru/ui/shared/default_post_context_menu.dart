@@ -62,7 +62,7 @@ class FavoriteGroupsPostContextMenu extends StatelessWidget {
     super.key,
     required this.post,
     required this.onMultiSelect,
-    this.onRemoveFromFavGroup,
+    required this.onRemoveFromFavGroup,
   });
 
   final PostData post;

@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1395,8 +1394,7 @@ void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
     routeSettings: RouteSettings(
       name: RouterPageConstant.favoriteGroupDetails,
       arguments: [
-        group.id,
-        group.name,
+        group,
       ],
     ),
   );

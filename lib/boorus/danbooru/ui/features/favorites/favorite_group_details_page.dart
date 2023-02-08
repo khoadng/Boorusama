@@ -1,4 +1,7 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -11,30 +14,24 @@ import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 class FavoriteGroupDetailsPage extends StatelessWidget {
   const FavoriteGroupDetailsPage({
     super.key,
-    required this.favoriteGroupId,
-    required this.groupName,
+    required this.group,
   });
 
-  final int favoriteGroupId;
-  final String groupName;
+  final FavoriteGroup group;
 
   @override
   Widget build(BuildContext context) {
     return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-            tags: 'favgroup:$favoriteGroupId',
-            fetcher: SearchedPostFetcher.fromTags('favgroup:$favoriteGroupId'),
+            tags: 'favgroup:${group.id}',
+            fetcher: SearchedPostFetcher.fromTags('favgroup:${group.id}'),
           )),
       onRefresh: (controller) {
-        context.read<PostBloc>().add(PostRefreshed(
-              tag: 'favgroup:$favoriteGroupId',
-              fetcher:
-                  SearchedPostFetcher.fromTags('favgroup:$favoriteGroupId'),
-            ));
+        _refresh(context);
       },
       sliverHeaderBuilder: (context) => [
         SliverAppBar(
-          title: Text(groupName.replaceAll('_', ' ')),
+          title: Text(group.name.replaceAll('_', ' ')),
           floating: true,
           elevation: 0,
           shadowColor: Colors.transparent,
@@ -46,6 +43,35 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
           ),
         ),
       ],
+      multiSelectActions: (selectedPosts, endMultiSelect) =>
+          FavoriteGroupMultiSelectionActions(
+        selectedPosts: selectedPosts,
+        endMultiSelect: endMultiSelect,
+        onRemoveFromFavGroup: () =>
+            context.read<FavoriteGroupsBloc>().add(FavoriteGroupsItemRemoved(
+                  group: group,
+                  postIds: selectedPosts.map((e) => e.id).toList(),
+                  onSuccess: () => _refresh(context),
+                )),
+      ),
+      contextMenuBuilder: (post, next) => FavoriteGroupsPostContextMenu(
+        post: post,
+        onMultiSelect: next,
+        onRemoveFromFavGroup: () =>
+            context.read<FavoriteGroupsBloc>().add(FavoriteGroupsItemRemoved(
+                  group: group,
+                  postIds: [post.post.id],
+                  onSuccess: () => _refresh(context),
+                )),
+      ),
     );
+  }
+
+  void _refresh(BuildContext context) {
+    context.read<FavoriteGroupsBloc>().add(const FavoriteGroupsRefreshed());
+    context.read<PostBloc>().add(PostRefreshed(
+          tag: 'favgroup:${group.id}',
+          fetcher: SearchedPostFetcher.fromTags('favgroup:${group.id}'),
+        ));
   }
 }

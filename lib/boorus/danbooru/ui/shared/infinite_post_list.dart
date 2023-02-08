@@ -25,6 +25,7 @@ class InfinitePostList extends StatefulWidget {
     this.scrollController,
     this.refreshController,
     this.contextMenuBuilder,
+    this.multiSelectActions,
   });
 
   final VoidCallback onLoadMore;
@@ -34,6 +35,11 @@ class InfinitePostList extends StatefulWidget {
   final RefreshController? refreshController;
   final Widget Function(PostData post, void Function() next)?
       contextMenuBuilder;
+
+  final Widget Function(
+    List<Post> selectedPosts,
+    void Function() endMultiSelect,
+  )? multiSelectActions;
 
   @override
   State<InfinitePostList> createState() => _InfinitePostListState();
@@ -67,8 +73,6 @@ class _InfinitePostListState extends State<InfinitePostList> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<PostBloc>().state;
-    final authenticationState =
-        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
@@ -79,42 +83,12 @@ class _InfinitePostListState extends State<InfinitePostList> {
         }
       },
       child: InfiniteLoadListScrollView(
-        bottomBuilder: () => ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            DownloadProviderWidget(
-              builder: (context, download) => IconButton(
-                onPressed: selectedPosts.isNotEmpty
-                    ? () {
-                        // ignore: prefer_foreach
-                        for (final p in selectedPosts) {
-                          download(p);
-                        }
-
-                        _endMultiSelect();
-                      }
-                    : null,
-                icon: const Icon(Icons.download),
-              ),
+        bottomBuilder: () =>
+            widget.multiSelectActions?.call(selectedPosts, _endMultiSelect) ??
+            DefaultMultiSelectionActions(
+              selectedPosts: selectedPosts,
+              endMultiSelect: _enableMultiSelect,
             ),
-            if (authenticationState is Authenticated)
-              IconButton(
-                onPressed: selectedPosts.isNotEmpty
-                    ? () async {
-                        final shouldEnd =
-                            await goToAddToFavoriteGroupSelectionPage(
-                          context,
-                          selectedPosts,
-                        );
-                        if (shouldEnd != null && shouldEnd) {
-                          _endMultiSelect();
-                        }
-                      }
-                    : null,
-                icon: const Icon(Icons.add),
-              ),
-          ],
-        ),
         topBuilder: () => AppBar(
           leading: IconButton(
             onPressed: () => _endMultiSelect(),
@@ -174,5 +148,110 @@ class _InfinitePostListState extends State<InfinitePostList> {
       multiSelect = false;
       selectedPosts.clear();
     });
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class DefaultMultiSelectionActions extends StatelessWidget {
+  const DefaultMultiSelectionActions({
+    super.key,
+    required this.selectedPosts,
+    required this.endMultiSelect,
+  });
+
+  final List<Post> selectedPosts;
+  final void Function() endMultiSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
+
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        DownloadProviderWidget(
+          builder: (context, download) => IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      download(p);
+                    }
+
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.download),
+          ),
+        ),
+        if (authenticationState is Authenticated)
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () async {
+                    final shouldEnd = await goToAddToFavoriteGroupSelectionPage(
+                      context,
+                      selectedPosts,
+                    );
+                    if (shouldEnd != null && shouldEnd) {
+                      endMultiSelect();
+                    }
+                  }
+                : null,
+            icon: const Icon(Icons.add),
+          ),
+      ],
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class FavoriteGroupMultiSelectionActions extends StatelessWidget {
+  const FavoriteGroupMultiSelectionActions({
+    super.key,
+    required this.selectedPosts,
+    required this.endMultiSelect,
+    required this.onRemoveFromFavGroup,
+  });
+
+  final List<Post> selectedPosts;
+  final void Function() endMultiSelect;
+  final void Function() onRemoveFromFavGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
+
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        DownloadProviderWidget(
+          builder: (context, download) => IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      download(p);
+                    }
+
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.download),
+          ),
+        ),
+        if (authenticationState is Authenticated)
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    onRemoveFromFavGroup();
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.remove),
+          ),
+      ],
+    );
   }
 }

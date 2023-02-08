@@ -471,25 +471,23 @@ final favoriteGroupDetailsHandler =
     Handler(handlerFunc: (context, Map<String, List<String>> params) {
   final args = context!.settings!.arguments as List;
 
-  final int id = args.first;
-  final String name = args[1];
+  final FavoriteGroup group = args.first;
 
   return MultiBlocProvider(
     providers: [
       BlocProvider(
         create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
-            tag: 'favgroup:$id',
+            tag: 'favgroup:${group.id}',
             fetcher: SearchedPostFetcher.fromTags(
-              'favgroup:$id',
+              'favgroup:${group.id}',
             ),
           )),
       ),
     ],
     child: CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
-        favoriteGroupId: id,
-        groupName: name,
+        group: group,
       ),
     ),
   );
