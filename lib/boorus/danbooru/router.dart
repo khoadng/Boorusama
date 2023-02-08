@@ -2,7 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -49,6 +48,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_pag
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
@@ -1378,6 +1378,90 @@ void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
         group.id,
         group.name,
       ],
+    ),
+  );
+}
+
+Future<bool?> goToAddToFavoriteGroupSelectionPage(
+  BuildContext context,
+  List<Post> posts,
+) {
+  final bloc = context.read<FavoriteGroupsBloc>()
+    ..add(const FavoriteGroupsRefreshed());
+
+  return showMaterialModalBottomSheet<bool>(
+    context: context,
+    duration: const Duration(milliseconds: 200),
+    builder: (context) => BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
+      builder: (context, state) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.6,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                child: ElevatedButton.icon(
+                  onPressed: () => goToFavoriteGroupCreatePage(context, bloc),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Create new favorite group'),
+                ),
+              ),
+              if (state.loading)
+                const Padding(
+                  padding: EdgeInsets.all(8),
+                  child: Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  ),
+                )
+              else
+                Expanded(
+                  child: MediaQuery.removePadding(
+                    context: context,
+                    removeTop: true,
+                    child: ListView.builder(
+                      itemBuilder: (context, index) => ListTile(
+                        title: Text(
+                          state.favoriteGroups[index].name.replaceAll('_', ' '),
+                        ),
+                        subtitle: Text('pool.item'.plural(
+                          state.favoriteGroups[index].postIds.length,
+                        )),
+                        onTap: () => bloc.add(FavoriteGroupsItemAdded(
+                          group: state.favoriteGroups[index],
+                          postIds: posts.map((e) => e.id).toList(),
+                          onFailure: (message) {
+                            Navigator.of(context).pop(false);
+
+                            showSimpleSnackBar(
+                              context: context,
+                              duration: const Duration(seconds: 6),
+                              content: Text(
+                                message,
+                              ),
+                            );
+                          },
+                          onSuccess: () {
+                            Navigator.of(context).pop(true);
+                            showSimpleSnackBar(
+                              context: context,
+                              duration: const Duration(seconds: 2),
+                              content: Text(
+                                '${posts.length} posts added to ${state.favoriteGroups[index].name.replaceAll('_', ' ')} ',
+                              ),
+                            );
+                          },
+                        )),
+                      ),
+                      itemCount: state.favoriteGroups.length,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        );
+      },
     ),
   );
 }

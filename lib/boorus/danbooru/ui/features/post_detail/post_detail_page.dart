@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/application/pool/pool.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
@@ -533,6 +534,8 @@ class MoreActionButton extends StatelessWidget {
         context.select((PostDetailBloc bloc) => bloc.state.currentPost.post);
     final endpoint =
         context.select((ApiEndpointCubit cubit) => cubit.state.booru.url);
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return DownloadProviderWidget(
       builder: (context, download) => SizedBox(
@@ -546,6 +549,9 @@ class MoreActionButton extends StatelessWidget {
               switch (value) {
                 case 'download':
                   download(post);
+                  break;
+                case 'add_to_favgroup':
+                  goToAddToFavoriteGroupSelectionPage(context, [post]);
                   break;
                 case 'view_in_browser':
                   launchExternalUrl(
@@ -564,6 +570,11 @@ class MoreActionButton extends StatelessWidget {
                 value: 'download',
                 child: const Text('download.download').tr(),
               ),
+              if (authenticationState is Authenticated)
+                const PopupMenuItem(
+                  value: 'add_to_favgroup',
+                  child: Text('Add to favorite group'),
+                ),
               PopupMenuItem(
                 value: 'view_in_browser',
                 child: const Text('post.detail.view_in_browser').tr(),

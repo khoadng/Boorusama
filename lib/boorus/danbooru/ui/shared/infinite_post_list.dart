@@ -7,8 +7,10 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
@@ -61,6 +63,8 @@ class _InfinitePostListState extends State<InfinitePostList> {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<PostBloc>().state;
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
@@ -89,6 +93,22 @@ class _InfinitePostListState extends State<InfinitePostList> {
                 icon: const Icon(Icons.download),
               ),
             ),
+            if (authenticationState is Authenticated)
+              IconButton(
+                onPressed: selectedPosts.isNotEmpty
+                    ? () async {
+                        final shouldEnd =
+                            await goToAddToFavoriteGroupSelectionPage(
+                          context,
+                          selectedPosts,
+                        );
+                        if (shouldEnd != null && shouldEnd) {
+                          _endMultiSelect();
+                        }
+                      }
+                    : null,
+                icon: const Icon(Icons.add),
+              ),
           ],
         ),
         topBuilder: () => AppBar(

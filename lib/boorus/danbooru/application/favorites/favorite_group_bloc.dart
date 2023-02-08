@@ -1,14 +1,14 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/common.dart';
-import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
@@ -117,6 +117,23 @@ class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
   List<Object?> get props => [groupId];
 }
 
+class FavoriteGroupsItemAdded extends FavoriteGroupsEvent {
+  const FavoriteGroupsItemAdded({
+    required this.group,
+    required this.postIds,
+    this.onSuccess,
+    this.onFailure,
+  });
+
+  final FavoriteGroup group;
+  final List<int> postIds;
+  final void Function()? onSuccess;
+  final void Function(String message)? onFailure;
+
+  @override
+  List<Object?> get props => [group, postIds, onSuccess, onFailure];
+}
+
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
@@ -189,6 +206,36 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         onSuccess: (success) async {
           if (success) {
             add(const FavoriteGroupsRefreshed());
+          }
+        },
+      );
+    });
+
+    on<FavoriteGroupsItemAdded>((event, emit) async {
+      final duplicates =
+          event.postIds.where((e) => event.group.postIds.contains(e)).toList();
+
+      if (duplicates.isNotEmpty) {
+        event.onFailure
+            ?.call('Favgroup already contains post ${duplicates.join(' ')}');
+
+        return;
+      }
+
+      await tryAsync<bool>(
+        action: () => favoriteGroupRepository.addItemsToFavoriteGroup(
+          id: event.group.id,
+          itemIds: [
+            ...event.group.postIds,
+            ...event.postIds,
+          ],
+        ),
+        onSuccess: (success) async {
+          if (success) {
+            event.onSuccess?.call();
+            add(const FavoriteGroupsRefreshed());
+          } else {
+            event.onFailure?.call('Failed to add posts to favgroup');
           }
         },
       );

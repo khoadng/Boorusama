@@ -21,4 +21,9 @@ abstract class FavoriteGroupRepository {
   Future<bool> deleteFavoriteGroup({
     required int id,
   });
+
+  Future<bool> addItemsToFavoriteGroup({
+    required int id,
+    required List<int> itemIds,
+  });
 }

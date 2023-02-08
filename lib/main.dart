@@ -432,6 +432,11 @@ void main() async {
                     mostViewed: create(),
                   )..add(const ExploreFetched());
 
+                  final favoriteGroupBloc = FavoriteGroupsBloc(
+                    favoriteGroupRepository: favoriteGroupRepo,
+                    accountRepository: accountRepo,
+                  );
+
                   return MultiRepositoryProvider(
                     providers: [
                       RepositoryProvider<TagRepository>.value(value: tagRepo),
@@ -510,6 +515,7 @@ void main() async {
                         BlocProvider.value(value: savedSearchBloc),
                         BlocProvider.value(value: favoriteTagBloc),
                         BlocProvider.value(value: exploreBloc),
+                        BlocProvider.value(value: favoriteGroupBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [

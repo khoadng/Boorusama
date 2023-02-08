@@ -92,4 +92,21 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
           .then((value) {
         return [302, 204].contains(value.response.statusCode);
       });
+
+  @override
+  Future<bool> addItemsToFavoriteGroup({
+    required int id,
+    required List<int> itemIds,
+  }) =>
+      accountRepository
+          .get()
+          .then((account) => api.patchFavoriteGroups(
+                account.username,
+                account.apiKey,
+                id,
+                postIdsString: itemIds.join(' '),
+              ))
+          .then((value) {
+        return [302, 204].contains(value.response.statusCode);
+      });
 }
