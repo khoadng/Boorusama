@@ -1286,12 +1286,31 @@ Future<Object?> goToFavoriteGroupCreatePage(
 ) {
   return showGeneralDialog(
     context: context,
-    routeSettings: const RouteSettings(
-      name: RouterPageConstant.favoriteTagsImport,
-    ),
-    pageBuilder: (context, _, __) => CreateFavoriteGroupDialog(
+    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
       padding: isMobilePlatform() ? 0 : 8,
-      onCreate: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+      title: 'Create group',
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
+      )),
+    ),
+  );
+}
+
+Future<Object?> goToFavoriteGroupEditPage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc,
+  FavoriteGroup group,
+) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
+      initialData: group,
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'Edit group',
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
+        group: group,
         name: name,
         initialIds: ids,
         isPrivate: isPrivate,

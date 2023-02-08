@@ -1,29 +1,55 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/application/common.dart';
+import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
+import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/profiles/profiles.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CreateFavoriteGroupDialog extends StatefulWidget {
-  const CreateFavoriteGroupDialog({
+class EditFavoriteGroupDialog extends StatefulWidget {
+  const EditFavoriteGroupDialog({
     super.key,
-    required this.onCreate,
+    required this.onDone,
+    required this.title,
     this.padding,
+    this.initialData,
   });
 
   final void Function(
     String name,
     String initialIds,
     bool isPrivate,
-  ) onCreate;
+  ) onDone;
+
   final double? padding;
+  final String title;
+  final FavoriteGroup? initialData;
 
   @override
-  State<CreateFavoriteGroupDialog> createState() =>
-      _CreateFavoriteGroupDialogState();
+  State<EditFavoriteGroupDialog> createState() =>
+      _EditFavoriteGroupDialogState();
 }
 
-class _CreateFavoriteGroupDialogState extends State<CreateFavoriteGroupDialog> {
+class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
   final textController = TextEditingController();
   final nameController = TextEditingController();
   bool isPrivate = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<ProfileCubit>().getProfile();
+    });
+
+    if (widget.initialData != null) {
+      textController.text = widget.initialData!.postIds.join(' ');
+      nameController.text = widget.initialData!.name;
+      isPrivate = !widget.initialData!.isPublic;
+    }
+  }
 
   @override
   void dispose() {
@@ -54,18 +80,27 @@ class _CreateFavoriteGroupDialogState extends State<CreateFavoriteGroupDialog> {
             children: [
               Center(
                 child: Text(
-                  'Create a group',
+                  widget.title,
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               ),
               const SizedBox(
                 height: 12,
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Text(
+                  'Group name'.toUpperCase(),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w800,
+                      ),
+                ),
+              ),
               TextField(
                 controller: nameController,
                 maxLines: null,
                 decoration: InputDecoration(
-                  hintText: 'Group name',
+                  hintText: 'New group',
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
                   enabledBorder: const OutlineInputBorder(
@@ -85,59 +120,99 @@ class _CreateFavoriteGroupDialogState extends State<CreateFavoriteGroupDialog> {
               const SizedBox(
                 height: 8,
               ),
-              Container(
-                constraints: const BoxConstraints(maxHeight: 150),
-                child: TextField(
-                  controller: textController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    hintMaxLines: 6,
-                    hintText:
-                        '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
-                    filled: true,
-                    fillColor: Theme.of(context).cardColor,
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 2,
+              Theme(
+                data: Theme.of(context)
+                    .copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  tilePadding: EdgeInsets.zero,
+                  initiallyExpanded: true,
+                  title: Text(
+                    'Advanced settings'.toUpperCase(),
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                  ),
+                  maintainState: true,
+                  children: [
+                    Container(
+                      constraints: const BoxConstraints(maxHeight: 150),
+                      child: TextField(
+                        controller: textController,
+                        maxLines: null,
+                        decoration: InputDecoration(
+                          hintMaxLines: 6,
+                          hintText:
+                              '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
+                          filled: true,
+                          fillColor: Theme.of(context).cardColor,
+                          enabledBorder: const OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8)),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8)),
+                            borderSide: BorderSide(
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 2,
+                            ),
+                          ),
+                          contentPadding: const EdgeInsets.all(12),
+                        ),
                       ),
                     ),
-                    contentPadding: const EdgeInsets.all(12),
+                    BlocBuilder<ProfileCubit, AsyncLoadState<Profile>>(
+                      builder: (context, state) {
+                        return AnimatedCrossFade(
+                          firstChild: const SizedBox.shrink(),
+                          secondChild: ListTile(
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 4),
+                            title: const Text('Private Group'),
+                            trailing: Switch.adaptive(
+                              value: isPrivate,
+                              onChanged: (value) =>
+                                  setState(() => isPrivate = value),
+                            ),
+                          ),
+                          crossFadeState: state.status == LoadStatus.success &&
+                                  isBooruGoldPlusAccountInt(state.data!.level)
+                              ? CrossFadeState.showSecond
+                              : CrossFadeState.showFirst,
+                          duration: const Duration(milliseconds: 150),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              ButtonBar(
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    style: TextButton.styleFrom(
+                      foregroundColor:
+                          Theme.of(context).colorScheme.onBackground,
+                    ),
+                    child: const Text('Cancel'),
                   ),
-                ),
-              ),
-              ListTile(
-                title: const Text('Private?'),
-                trailing: Switch.adaptive(
-                  value: isPrivate,
-                  onChanged: (value) => setState(() => isPrivate = value),
-                ),
-              ),
-              ValueListenableBuilder<TextEditingValue>(
-                valueListenable: textController,
-                builder: (context, value, child) => ElevatedButton(
-                  onPressed: nameController.text.isNotEmpty
-                      ? () {
-                          Navigator.of(context).pop();
-                          widget.onCreate(
-                            nameController.text,
-                            textController.text,
-                            isPrivate,
-                          );
-                        }
-                      : null,
-                  child: const Text('Create'),
-                ),
-              ),
-              SizedBox(height: widget.padding ?? 0),
-              ElevatedButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                  ValueListenableBuilder<TextEditingValue>(
+                    valueListenable: nameController,
+                    builder: (context, value, child) => ElevatedButton(
+                      onPressed: nameController.text.isNotEmpty
+                          ? () {
+                              Navigator.of(context).pop();
+                              widget.onDone(
+                                nameController.text,
+                                textController.text,
+                                isPrivate,
+                              );
+                            }
+                          : null,
+                      child: const Text('OK'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

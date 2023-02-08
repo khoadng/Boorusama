@@ -106,6 +106,24 @@ class FavoriteGroupsCreated extends FavoriteGroupsEvent {
   List<Object?> get props => [name, initialIds, isPrivate];
 }
 
+class FavoriteGroupsEdited extends FavoriteGroupsEvent {
+  const FavoriteGroupsEdited({
+    required this.group,
+    this.name,
+    this.initialIds,
+    this.isPrivate,
+  });
+
+  final FavoriteGroup group;
+
+  final String? name;
+  final String? initialIds;
+  final bool? isPrivate;
+
+  @override
+  List<Object?> get props => [group, name, initialIds, isPrivate];
+}
+
 class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
   const FavoriteGroupsDeleted({
     required this.groupId,
@@ -189,6 +207,31 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           name: event.name,
           initialItems: validIds,
           isPrivate: event.isPrivate,
+        ),
+        onSuccess: (success) async {
+          if (success) {
+            add(const FavoriteGroupsRefreshed());
+          }
+        },
+      );
+    });
+
+    on<FavoriteGroupsEdited>((event, emit) async {
+      final idString = event.initialIds?.split(' ') ?? [];
+      final ids = idString
+          .map(
+            (e) => int.tryParse(e),
+          )
+          .toList();
+
+      final validIds = ids.whereNotNull().toList();
+
+      await tryAsync<bool>(
+        action: () => favoriteGroupRepository.editFavoriteGroup(
+          id: event.group.id,
+          name: event.name ?? event.group.name,
+          itemIds: event.initialIds != null ? validIds : null,
+          isPrivate: event.isPrivate ?? !event.group.isPublic,
         ),
         onSuccess: (success) async {
           if (success) {

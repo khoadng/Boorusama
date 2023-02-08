@@ -63,9 +63,19 @@ class FavoriteGroupsPage extends StatelessWidget {
           final group = state.favoriteGroups[index];
 
           return ListTile(
-            title: Text(group.name.replaceAll('_', ' ')),
+            title: Row(
+              children: [
+                if (!group.isPublic)
+                  const Icon(
+                    Icons.lock,
+                    size: 14,
+                  ),
+                if (!group.isPublic) const SizedBox(width: 4),
+                Text(group.name.replaceAll('_', ' ')),
+              ],
+            ),
             subtitle: Text(
-              '${group.creator.name} - ${group.totalCount} posts',
+              '${group.totalCount} posts',
             ),
             onTap: () => goToFavoriteGroupDetailsPage(context, group),
             trailing: IconButton(
@@ -90,7 +100,7 @@ class FavoriteGroupsPage extends StatelessWidget {
         onDelete: () => bloc.add(FavoriteGroupsDeleted(
           groupId: favGroup.id,
         )),
-        onEdit: () => print('edit'),
+        onEdit: () => goToFavoriteGroupEditPage(context, bloc, favGroup),
       ),
     );
   }

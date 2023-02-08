@@ -109,4 +109,25 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
           .then((value) {
         return [302, 204].contains(value.response.statusCode);
       });
+
+  @override
+  Future<bool> editFavoriteGroup({
+    required int id,
+    String? name,
+    List<int>? itemIds,
+    bool isPrivate = false,
+  }) =>
+      accountRepository
+          .get()
+          .then((account) => api.patchFavoriteGroups(
+                account.username,
+                account.apiKey,
+                id,
+                name: name,
+                isPrivate: isPrivate,
+                postIdsString: itemIds?.join(' '),
+              ))
+          .then((value) {
+        return [302, 204].contains(value.response.statusCode);
+      });
 }

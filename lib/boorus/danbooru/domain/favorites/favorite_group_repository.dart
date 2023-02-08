@@ -18,6 +18,13 @@ abstract class FavoriteGroupRepository {
     bool isPrivate = false,
   });
 
+  Future<bool> editFavoriteGroup({
+    required int id,
+    String? name,
+    List<int>? itemIds,
+    bool isPrivate = false,
+  });
+
   Future<bool> deleteFavoriteGroup({
     required int id,
   });
