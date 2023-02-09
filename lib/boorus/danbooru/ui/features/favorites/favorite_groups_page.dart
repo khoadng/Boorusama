@@ -60,7 +60,7 @@ class FavoriteGroupsPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (state.favoriteGroups.isNotEmpty) const _PageSelector(),
+                if (_shouldShowPageSelector(state)) const _PageSelector(),
               ],
             );
           },
@@ -71,11 +71,13 @@ class FavoriteGroupsPage extends StatelessWidget {
 
   Widget _buildList(FavoriteGroupsState state) {
     if (state.favoriteGroups.isEmpty) {
-      return const SliverToBoxAdapter(
+      return SliverToBoxAdapter(
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 42),
+          padding: const EdgeInsets.symmetric(vertical: 42),
           child: Center(
-            child: Text('No favorite groups'),
+            child: state.page == 1
+                ? const Text('No favorite groups')
+                : const Text('No data'),
           ),
         ),
       );
@@ -158,6 +160,13 @@ class FavoriteGroupsPage extends StatelessWidget {
       ),
     );
   }
+}
+
+bool _shouldShowPageSelector(FavoriteGroupsState state) {
+  if (state.favoriteGroups.isNotEmpty) return true;
+  if (state.page != 1) return true;
+
+  return false;
 }
 
 class _PageSelector extends StatelessWidget {
