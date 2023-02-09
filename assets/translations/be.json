@@ -352,7 +352,8 @@
     },
 
     "favorite_groups" : {
-        "max_limit_warning" : "Member can only create 10 favorite groups"
+        "max_limit_warning" : "Member can only create 10 favorite groups",
+        "detete_confirmation" : "Are you sure you want to delete this favorite group"
     },
 
     "favorite_tags": {

@@ -121,9 +121,30 @@ class FavoriteGroupsPage extends StatelessWidget {
     showMaterialModalBottomSheet(
       context: context,
       builder: (_) => ModalFavoriteGroupAction(
-        onDelete: () => bloc.add(FavoriteGroupsDeleted(
-          groupId: favGroup.id,
-        )),
+        onDelete: () => showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            content: const Text('favorite_groups.detete_confirmation').tr(),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: Theme.of(context).colorScheme.onBackground,
+                ),
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  bloc.add(FavoriteGroupsDeleted(
+                    groupId: favGroup.id,
+                  ));
+                },
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        ),
         onEdit: () => goToFavoriteGroupEditPage(context, bloc, favGroup),
       ),
     );
