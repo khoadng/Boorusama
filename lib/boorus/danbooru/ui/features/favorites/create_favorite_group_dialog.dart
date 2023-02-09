@@ -40,7 +40,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
 
     if (widget.initialData != null) {
       textController.text = widget.initialData!.postIds.join(' ');
-      nameController.text = widget.initialData!.name;
+      nameController.text = widget.initialData!.name.replaceAll('_', ' ');
       isPrivate = !widget.initialData!.isPublic;
     }
   }
@@ -114,71 +114,60 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
               const SizedBox(
                 height: 8,
               ),
-              Theme(
-                data: Theme.of(context)
-                    .copyWith(dividerColor: Colors.transparent),
-                child: ExpansionTile(
-                  tilePadding: EdgeInsets.zero,
-                  initiallyExpanded: true,
-                  title: Text(
-                    'Advanced settings'.toUpperCase(),
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                  ),
-                  maintainState: true,
-                  children: [
-                    Container(
-                      constraints: const BoxConstraints(maxHeight: 150),
-                      child: TextField(
-                        controller: textController,
-                        maxLines: null,
-                        decoration: InputDecoration(
-                          hintMaxLines: 6,
-                          hintText:
-                              '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
-                          filled: true,
-                          fillColor: Theme.of(context).cardColor,
-                          enabledBorder: const OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8)),
-                            borderSide: BorderSide.none,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(8)),
-                            borderSide: BorderSide(
-                              color: Theme.of(context).colorScheme.secondary,
-                              width: 2,
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.all(12),
-                        ),
+              Text(
+                'Posts'.toUpperCase(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Container(
+                constraints: const BoxConstraints(maxHeight: 150),
+                child: TextField(
+                  controller: textController,
+                  maxLines: null,
+                  decoration: InputDecoration(
+                    hintMaxLines: 6,
+                    hintText:
+                        '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
+                    filled: true,
+                    fillColor: Theme.of(context).cardColor,
+                    enabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide.none,
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      borderSide: BorderSide(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 2,
                       ),
                     ),
-                    BlocBuilder<CurrentUserBloc, CurrentUserState>(
-                      builder: (context, state) {
-                        return AnimatedCrossFade(
-                          firstChild: const SizedBox.shrink(),
-                          secondChild: ListTile(
-                            contentPadding:
-                                const EdgeInsets.symmetric(horizontal: 4),
-                            title: const Text('Private Group'),
-                            trailing: Switch.adaptive(
-                              value: isPrivate,
-                              onChanged: (value) =>
-                                  setState(() => isPrivate = value),
-                            ),
-                          ),
-                          crossFadeState: state.user != null &&
-                                  isBooruGoldPlusAccount(state.user!.level)
-                              ? CrossFadeState.showSecond
-                              : CrossFadeState.showFirst,
-                          duration: const Duration(milliseconds: 150),
-                        );
-                      },
-                    ),
-                  ],
+                    contentPadding: const EdgeInsets.all(12),
+                  ),
                 ),
+              ),
+              BlocBuilder<CurrentUserBloc, CurrentUserState>(
+                builder: (context, state) {
+                  return AnimatedCrossFade(
+                    firstChild: const SizedBox.shrink(),
+                    secondChild: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 4),
+                      title: const Text('Private Group'),
+                      trailing: Switch.adaptive(
+                        value: isPrivate,
+                        onChanged: (value) => setState(() => isPrivate = value),
+                      ),
+                    ),
+                    crossFadeState: state.user != null &&
+                            isBooruGoldPlusAccount(state.user!.level)
+                        ? CrossFadeState.showSecond
+                        : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 150),
+                  );
+                },
               ),
               ButtonBar(
                 children: [

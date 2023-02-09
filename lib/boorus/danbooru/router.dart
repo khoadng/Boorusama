@@ -1305,7 +1305,7 @@ Future<Object?> goToFavoriteGroupEditPage(
 ) {
   return showGeneralDialog(
     context: context,
-    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
+    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
       initialData: group,
       padding: isMobilePlatform() ? 0 : 8,
       title: 'Edit group',
@@ -1314,6 +1314,12 @@ Future<Object?> goToFavoriteGroupEditPage(
         name: name,
         initialIds: ids,
         isPrivate: isPrivate,
+        onFailure: (message) {
+          showSimpleSnackBar(
+            context: context,
+            content: Text(message.toString()),
+          );
+        },
       )),
     ),
   );

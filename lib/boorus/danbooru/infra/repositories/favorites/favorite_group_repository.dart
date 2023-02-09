@@ -1,4 +1,5 @@
 // Package imports:
+import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
 // Project imports:
@@ -133,8 +134,9 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     String? name,
     List<int>? itemIds,
     bool isPrivate = false,
-  }) =>
-      accountRepository
+  }) async {
+    try {
+      return await accountRepository
           .get()
           .then((account) => api.patchFavoriteGroups(
                 account.username,
@@ -144,7 +146,16 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
                 isPrivate: isPrivate,
                 postIdsString: itemIds?.join(' '),
               ))
-          .then((value) {
-        return [302, 204].contains(value.response.statusCode);
-      });
+          .then((value) => true);
+    } on DioError catch (e, stackTrace) {
+      if (e.response?.statusCode == 422) {
+        Error.throwWithStackTrace(
+          Exception(e.response?.data['errors']['base'].first),
+          stackTrace,
+        );
+      } else {
+        return Future.value(false);
+      }
+    }
+  }
 }

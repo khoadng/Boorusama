@@ -112,6 +112,7 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
     this.name,
     this.initialIds,
     this.isPrivate,
+    this.onFailure,
   });
 
   final FavoriteGroup group;
@@ -119,9 +120,10 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
   final String? name;
   final String? initialIds;
   final bool? isPrivate;
+  final void Function(Object message)? onFailure;
 
   @override
-  List<Object?> get props => [group, name, initialIds, isPrivate];
+  List<Object?> get props => [group, name, initialIds, isPrivate, onFailure];
 }
 
 class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
@@ -250,6 +252,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           itemIds: event.initialIds != null ? validIds : null,
           isPrivate: event.isPrivate ?? !event.group.isPublic,
         ),
+        onUnknownFailure: (stackTrace, error) {
+          event.onFailure?.call(error);
+        },
         onSuccess: (success) async {
           if (success) {
             add(const FavoriteGroupsRefreshed());
