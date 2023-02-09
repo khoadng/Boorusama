@@ -352,7 +352,7 @@
     },
 
     "favorite_groups" : {
-        "max_limit_warning" : "Anonymous and Member can only create 10 favorite groups"
+        "max_limit_warning" : "Member can only create 10 favorite groups"
     },
 
     "favorite_tags": {
