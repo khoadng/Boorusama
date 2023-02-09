@@ -87,11 +87,11 @@ class _InfinitePostListState extends State<InfinitePostList> {
             widget.multiSelectActions?.call(selectedPosts, _endMultiSelect) ??
             DefaultMultiSelectionActions(
               selectedPosts: selectedPosts,
-              endMultiSelect: _enableMultiSelect,
+              endMultiSelect: _endMultiSelect,
             ),
         topBuilder: () => AppBar(
           leading: IconButton(
-            onPressed: () => _endMultiSelect(),
+            onPressed: _endMultiSelect,
             icon: const Icon(Icons.close),
           ),
           title: selectedPosts.isEmpty
