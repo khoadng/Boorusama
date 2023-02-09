@@ -1421,82 +1421,140 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
         BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
       builder: (_, state) {
         return SizedBox(
-          height: MediaQuery.of(dialogContext).size.height * 0.6,
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
-                child: ElevatedButton.icon(
-                  onPressed: () => goToFavoriteGroupCreatePage(context, bloc),
-                  icon: const Icon(Icons.add),
-                  label: const Text('Create new favorite group'),
-                ),
-              ),
-              if (state.loading)
-                const Padding(
-                  padding: EdgeInsets.all(8),
-                  child: Center(
-                    child: CircularProgressIndicator.adaptive(),
+          height: MediaQuery.of(dialogContext).size.height * 0.85,
+          child: Scaffold(
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Text(
+                    'Add to favorite group',
+                    style: Theme.of(dialogContext).textTheme.titleLarge,
                   ),
-                )
-              else
-                Expanded(
-                  child: MediaQuery.removePadding(
-                    context: dialogContext,
-                    removeTop: true,
-                    child: ListView.builder(
-                      itemBuilder: (_, index) => ListTile(
-                        title: Text(
-                          state.favoriteGroups[index].name.replaceAll('_', ' '),
-                        ),
-                        subtitle: Text('pool.item'.plural(
-                          state.favoriteGroups[index].postIds.length,
-                        )),
-                        onTap: () => bloc.add(FavoriteGroupsItemAdded(
-                          group: state.favoriteGroups[index],
-                          postIds: posts.map((e) => e.id).toList(),
-                          onFailure: (message) {
-                            showSimpleSnackBar(
-                              context: dialogContext,
-                              duration: const Duration(seconds: 6),
-                              content: Text(
-                                message,
+                ),
+                if (state.loading)
+                  const Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: MediaQuery.removePadding(
+                      context: dialogContext,
+                      removeTop: true,
+                      child: ListView.builder(
+                        itemBuilder: (_, index) {
+                          if (index == 0) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8),
+                              child: ButtonBar(
+                                alignment: MainAxisAlignment.start,
+                                children: [
+                                  _AddGroupButton(
+                                    bloc: bloc,
+                                  ),
+                                ],
                               ),
                             );
-                            Navigator.of(dialogContext).pop(false);
-                          },
-                          onSuccess: () {
-                            showSimpleSnackBar(
-                              context: dialogContext,
-                              duration: const Duration(seconds: 2),
-                              action: SnackBarAction(
-                                label: 'View',
-                                onPressed: () {
-                                  if (navigatorKey.currentContext != null) {
-                                    goToFavoriteGroupDetailsPage(
-                                      navigatorKey.currentContext!,
-                                      state.favoriteGroups[index],
-                                    );
-                                  }
-                                },
-                              ),
-                              content: Text(
-                                '${posts.length} posts added to ${state.favoriteGroups[index].name.replaceAll('_', ' ')} ',
-                              ),
-                            );
-                            Navigator.of(dialogContext).pop(true);
-                          },
-                        )),
+                          }
+
+                          final group = state.favoriteGroups[index - 1];
+
+                          return ListTile(
+                            title: Text(
+                              group.name.replaceAll('_', ' '),
+                            ),
+                            subtitle: Text('pool.item'.plural(
+                              group.postIds.length,
+                            )),
+                            onTap: () => bloc.add(FavoriteGroupsItemAdded(
+                              group: group,
+                              postIds: posts.map((e) => e.id).toList(),
+                              onFailure: (message) {
+                                showSimpleSnackBar(
+                                  context: dialogContext,
+                                  duration: const Duration(seconds: 6),
+                                  content: Text(
+                                    message,
+                                  ),
+                                );
+                                Navigator.of(dialogContext).pop(false);
+                              },
+                              onSuccess: () {
+                                showSimpleSnackBar(
+                                  context: dialogContext,
+                                  duration: const Duration(seconds: 2),
+                                  action: SnackBarAction(
+                                    label: 'View',
+                                    onPressed: () {
+                                      if (navigatorKey.currentContext != null) {
+                                        goToFavoriteGroupDetailsPage(
+                                          navigatorKey.currentContext!,
+                                          group,
+                                        );
+                                      }
+                                    },
+                                  ),
+                                  content: Text(
+                                    '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
+                                  ),
+                                );
+                                Navigator.of(dialogContext).pop(true);
+                              },
+                            )),
+                          );
+                        },
+                        itemCount: state.favoriteGroups.length + 1,
                       ),
-                      itemCount: state.favoriteGroups.length,
                     ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         );
       },
     ),
   );
+}
+
+class _AddGroupButton extends StatelessWidget {
+  const _AddGroupButton({
+    required this.bloc,
+  });
+
+  final FavoriteGroupsBloc bloc;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: 60,
+          height: 60,
+          decoration: BoxDecoration(
+            color: Theme.of(context).cardColor,
+            borderRadius: const BorderRadius.all(Radius.circular(12)),
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(12)),
+              onTap: () => goToFavoriteGroupCreatePage(context, bloc),
+              child: Icon(
+                Icons.add,
+                size: 32,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 8),
+        const Text('Create a group'),
+        const SizedBox(height: 8),
+      ],
+    );
+  }
 }
