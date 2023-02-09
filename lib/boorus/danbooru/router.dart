@@ -2,6 +2,7 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:boorusama/app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1414,12 +1415,13 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     ..add(const FavoriteGroupsRefreshed());
 
   return showMaterialModalBottomSheet<bool>(
-    context: context,
+    context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
-    builder: (context) => BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
-      builder: (context, state) {
+    builder: (dialogContext) =>
+        BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
+      builder: (_, state) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height * 0.6,
+          height: MediaQuery.of(dialogContext).size.height * 0.6,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -1442,10 +1444,10 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
               else
                 Expanded(
                   child: MediaQuery.removePadding(
-                    context: context,
+                    context: dialogContext,
                     removeTop: true,
                     child: ListView.builder(
-                      itemBuilder: (context, index) => ListTile(
+                      itemBuilder: (_, index) => ListTile(
                         title: Text(
                           state.favoriteGroups[index].name.replaceAll('_', ' '),
                         ),
@@ -1456,25 +1458,35 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
                           group: state.favoriteGroups[index],
                           postIds: posts.map((e) => e.id).toList(),
                           onFailure: (message) {
-                            Navigator.of(context).pop(false);
-
                             showSimpleSnackBar(
-                              context: context,
+                              context: dialogContext,
                               duration: const Duration(seconds: 6),
                               content: Text(
                                 message,
                               ),
                             );
+                            Navigator.of(dialogContext).pop(false);
                           },
                           onSuccess: () {
-                            Navigator.of(context).pop(true);
                             showSimpleSnackBar(
-                              context: context,
+                              context: dialogContext,
                               duration: const Duration(seconds: 2),
+                              action: SnackBarAction(
+                                label: 'View',
+                                onPressed: () {
+                                  if (navigatorKey.currentContext != null) {
+                                    goToFavoriteGroupDetailsPage(
+                                      navigatorKey.currentContext!,
+                                      state.favoriteGroups[index],
+                                    );
+                                  }
+                                },
+                              ),
                               content: Text(
                                 '${posts.length} posts added to ${state.favoriteGroups[index].name.replaceAll('_', ' ')} ',
                               ),
                             );
+                            Navigator.of(dialogContext).pop(true);
                           },
                         )),
                       ),
