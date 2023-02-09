@@ -14,7 +14,6 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
-import 'package:boorusama/core/ui/pagination.dart';
 
 class FavoriteGroupsPage extends StatelessWidget {
   const FavoriteGroupsPage({
@@ -60,7 +59,6 @@ class FavoriteGroupsPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                if (_shouldShowPageSelector(state)) const _PageSelector(),
               ],
             );
           },
@@ -159,36 +157,6 @@ class FavoriteGroupsPage extends StatelessWidget {
         child: CircularProgressIndicator.adaptive(),
       ),
     );
-  }
-}
-
-bool _shouldShowPageSelector(FavoriteGroupsState state) {
-  if (state.favoriteGroups.isNotEmpty) return true;
-  if (state.page != 1) return true;
-
-  return false;
-}
-
-class _PageSelector extends StatelessWidget {
-  const _PageSelector();
-
-  @override
-  Widget build(BuildContext context) {
-    final page = context.select((FavoriteGroupsBloc bloc) => bloc.state.page);
-
-    return PageSelector(
-      currentPage: page,
-      itemPerPage: 50,
-      onPrevious: page > 1 ? () => _fetch(context, page - 1) : null,
-      onNext: () => _fetch(context, page + 1),
-      onPageSelect: (page) => _fetch(context, page),
-    );
-  }
-
-  void _fetch(BuildContext context, int page) {
-    return context
-        .read<FavoriteGroupsBloc>()
-        .add(FavoriteGroupsFetched(page: page));
   }
 }
 

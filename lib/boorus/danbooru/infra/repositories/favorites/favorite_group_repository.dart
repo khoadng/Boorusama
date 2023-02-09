@@ -11,6 +11,8 @@ import 'package:boorusama/core/infra/http_parser.dart';
 const favoriteGroupApiParams =
     'id,name,post_ids,created_at,updated_at,is_public,creator';
 
+const _favGroupLimit = 1000;
+
 List<FavoriteGroup> parseFavoriteGroups(HttpResponse<dynamic> value) => parse(
       value: value,
       converter: (item) => FavoriteGroupDto.fromJson(item),
@@ -49,19 +51,18 @@ class FavoriteGroupRepositoryApi implements FavoriteGroupRepository {
     required String name,
     int? page,
   }) =>
-      accountRepository
-          .get()
-          .then(
-            (account) => api.getFavoriteGroups(
-              account.username,
-              account.apiKey,
-              page: page,
-              creatorName: name,
-              only: favoriteGroupApiParams,
-              limit: 50,
-            ),
-          )
-          .then(parseFavoriteGroups);
+      accountRepository.get().then(
+        (account) {
+          return api.getFavoriteGroups(
+            account.username,
+            account.apiKey,
+            page: page,
+            creatorName: name,
+            only: favoriteGroupApiParams,
+            limit: _favGroupLimit,
+          );
+        },
+      ).then(parseFavoriteGroups);
 
   @override
   Future<bool> createFavoriteGroup({

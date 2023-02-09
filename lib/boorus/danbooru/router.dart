@@ -1423,7 +1423,6 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
         return SizedBox(
           height: MediaQuery.of(dialogContext).size.height * 0.6,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
                 padding:
