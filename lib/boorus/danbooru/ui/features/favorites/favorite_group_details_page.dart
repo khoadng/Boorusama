@@ -40,6 +40,15 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
           actions: [
             IconButton(
               onPressed: () {
+                goToSearchPage(
+                  context,
+                  tag: 'favgroup:${group.id}',
+                );
+              },
+              icon: const Icon(Icons.search),
+            ),
+            IconButton(
+              onPressed: () {
                 goToBulkDownloadPage(
                   context,
                   ['favgroup:${group.id}'],
