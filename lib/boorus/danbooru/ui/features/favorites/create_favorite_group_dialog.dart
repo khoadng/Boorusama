@@ -91,6 +91,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                 ),
               ),
               TextField(
+                autofocus: true,
                 controller: nameController,
                 maxLines: null,
                 decoration: InputDecoration(
