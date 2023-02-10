@@ -2,6 +2,8 @@
 import 'dart:math';
 
 // Flutter imports:
+import 'package:animated_list_plus/animated_list_plus.dart';
+import 'package:animated_list_plus/transitions.dart';
 import 'package:boorusama/app.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:flutter/material.dart';
@@ -1511,73 +1513,79 @@ class AddToFavoriteGroupPage extends StatelessWidget {
             )
           else
             Expanded(
-              child: ListView.builder(
+              child: ImplicitlyAnimatedList<FavoriteGroup>(
+                items: state.filteredFavoriteGroups,
                 controller: ModalScrollController.of(context),
-                itemBuilder: (_, index) {
-                  final group = state.filteredFavoriteGroups[index];
-
-                  return ListTile(
-                    title: Row(
-                      children: [
-                        if (!group.isPublic)
-                          Chip(
-                            label: const Text('Private'),
-                            visualDensity: const VisualDensity(
-                              horizontal: -4,
-                              vertical: -4,
+                areItemsTheSame: (oldItem, newItem) => oldItem == newItem,
+                insertDuration: const Duration(milliseconds: 250),
+                removeDuration: const Duration(milliseconds: 250),
+                itemBuilder: (_, animation, group, index) {
+                  return SizeFadeTransition(
+                    sizeFraction: 0.7,
+                    curve: Curves.easeInOut,
+                    animation: animation,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          if (!group.isPublic)
+                            Chip(
+                              label: const Text('Private'),
+                              visualDensity: const VisualDensity(
+                                horizontal: -4,
+                                vertical: -4,
+                              ),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.primary,
                             ),
-                            backgroundColor:
-                                Theme.of(context).colorScheme.primary,
+                          if (!group.isPublic) const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              group.name.replaceAll('_', ' '),
+                            ),
                           ),
-                        if (!group.isPublic) const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            group.name.replaceAll('_', ' '),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
+                      trailing: Text('pool.item'.plural(
+                        group.postIds.length,
+                      )),
+                      onTap: () => bloc.add(FavoriteGroupsItemAdded(
+                        group: group,
+                        postIds: posts.map((e) => e.id).toList(),
+                        onFailure: (message) {
+                          showSimpleSnackBar(
+                            context: context,
+                            duration: const Duration(seconds: 6),
+                            content: Text(
+                              message,
+                            ),
+                          );
+                        },
+                        onSuccess: () {
+                          showSimpleSnackBar(
+                            context: context,
+                            duration: const Duration(seconds: 2),
+                            action: SnackBarAction(
+                              label: 'View',
+                              onPressed: () {
+                                if (navigatorKey.currentContext != null) {
+                                  goToFavoriteGroupDetailsPage(
+                                    navigatorKey.currentContext!,
+                                    group,
+                                  );
+                                }
+                              },
+                            ),
+                            content: Text(
+                              '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
+                            ),
+                          );
+                          Navigator.of(context).pop(true);
+                        },
+                      )),
                     ),
-                    subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
-                    trailing: Text('pool.item'.plural(
-                      group.postIds.length,
-                    )),
-                    onTap: () => bloc.add(FavoriteGroupsItemAdded(
-                      group: group,
-                      postIds: posts.map((e) => e.id).toList(),
-                      onFailure: (message) {
-                        showSimpleSnackBar(
-                          context: context,
-                          duration: const Duration(seconds: 6),
-                          content: Text(
-                            message,
-                          ),
-                        );
-                      },
-                      onSuccess: () {
-                        showSimpleSnackBar(
-                          context: context,
-                          duration: const Duration(seconds: 2),
-                          action: SnackBarAction(
-                            label: 'View',
-                            onPressed: () {
-                              if (navigatorKey.currentContext != null) {
-                                goToFavoriteGroupDetailsPage(
-                                  navigatorKey.currentContext!,
-                                  group,
-                                );
-                              }
-                            },
-                          ),
-                          content: Text(
-                            '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
-                          ),
-                        );
-                        Navigator.of(context).pop(true);
-                      },
-                    )),
                   );
                 },
-                itemCount: state.filteredFavoriteGroups.length,
               ),
             ),
         ],
