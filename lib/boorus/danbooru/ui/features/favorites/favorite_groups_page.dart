@@ -90,12 +90,18 @@ class FavoriteGroupsPage extends StatelessWidget {
             title: Row(
               children: [
                 if (!group.isPublic)
-                  const Icon(
-                    Icons.lock,
-                    size: 14,
+                  Chip(
+                    label: const Text('Private'),
+                    visualDensity:
+                        const VisualDensity(horizontal: -4, vertical: -4),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
-                if (!group.isPublic) const SizedBox(width: 4),
-                Text(group.name.replaceAll('_', ' ')),
+                if (!group.isPublic) const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    group.name.replaceAll('_', ' '),
+                  ),
+                ),
               ],
             ),
             subtitle: Text(

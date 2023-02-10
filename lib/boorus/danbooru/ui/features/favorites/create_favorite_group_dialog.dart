@@ -12,6 +12,7 @@ class EditFavoriteGroupDialog extends StatefulWidget {
     required this.title,
     this.padding,
     this.initialData,
+    this.enableManualDataInput = true,
   });
 
   final void Function(
@@ -23,6 +24,7 @@ class EditFavoriteGroupDialog extends StatefulWidget {
   final double? padding;
   final String title;
   final FavoriteGroup? initialData;
+  final bool enableManualDataInput;
 
   @override
   State<EditFavoriteGroupDialog> createState() =>
@@ -112,44 +114,49 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                   contentPadding: const EdgeInsets.all(12),
                 ),
               ),
-              const SizedBox(
-                height: 8,
-              ),
-              Text(
-                'Posts'.toUpperCase(),
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      fontWeight: FontWeight.w800,
-                    ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              Container(
-                constraints: const BoxConstraints(maxHeight: 150),
-                child: TextField(
-                  controller: textController,
-                  maxLines: null,
-                  decoration: InputDecoration(
-                    hintMaxLines: 6,
-                    hintText:
-                        '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
-                    filled: true,
-                    fillColor: Theme.of(context).cardColor,
-                    enabledBorder: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide.none,
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      borderSide: BorderSide(
-                        color: Theme.of(context).colorScheme.secondary,
-                        width: 2,
+              if (widget.enableManualDataInput)
+                const SizedBox(
+                  height: 8,
+                ),
+              if (widget.enableManualDataInput)
+                Text(
+                  'Posts'.toUpperCase(),
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontWeight: FontWeight.w800,
                       ),
+                ),
+              if (widget.enableManualDataInput)
+                const SizedBox(
+                  height: 12,
+                ),
+              if (widget.enableManualDataInput)
+                Container(
+                  constraints: const BoxConstraints(maxHeight: 150),
+                  child: TextField(
+                    controller: textController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintMaxLines: 6,
+                      hintText:
+                          '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
+                      filled: true,
+                      fillColor: Theme.of(context).cardColor,
+                      enabledBorder: const OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide.none,
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: 2,
+                        ),
+                      ),
+                      contentPadding: const EdgeInsets.all(12),
                     ),
-                    contentPadding: const EdgeInsets.all(12),
                   ),
                 ),
-              ),
               BlocBuilder<CurrentUserBloc, CurrentUserState>(
                 builder: (context, state) {
                   return AnimatedCrossFade(

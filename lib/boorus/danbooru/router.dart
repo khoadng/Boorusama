@@ -3,6 +3,7 @@ import 'dart:math';
 
 // Flutter imports:
 import 'package:boorusama/app.dart';
+import 'package:boorusama/core/ui/search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -1283,13 +1284,15 @@ Future<Object?> goToFavoriteTagImportPage(
 
 Future<Object?> goToFavoriteGroupCreatePage(
   BuildContext context,
-  FavoriteGroupsBloc bloc,
-) {
+  FavoriteGroupsBloc bloc, {
+  bool enableManualPostInput = true,
+}) {
   return showGeneralDialog(
     context: context,
     pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
       padding: isMobilePlatform() ? 0 : 8,
       title: 'Create group',
+      enableManualDataInput: enableManualPostInput,
       onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
         name: name,
         initialIds: ids,
@@ -1411,150 +1414,174 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
   BuildContext context,
   List<Post> posts,
 ) {
-  final bloc = context.read<FavoriteGroupsBloc>()
-    ..add(const FavoriteGroupsRefreshed());
-
   return showMaterialModalBottomSheet<bool>(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
-    builder: (dialogContext) =>
-        BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
-      builder: (_, state) {
-        return SizedBox(
-          height: MediaQuery.of(dialogContext).size.height * 0.85,
-          child: Scaffold(
-            body: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    'Add to favorite group',
-                    style: Theme.of(dialogContext).textTheme.titleLarge,
-                  ),
-                ),
-                if (state.loading)
-                  const Padding(
-                    padding: EdgeInsets.all(8),
-                    child: Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                  )
-                else
-                  Expanded(
-                    child: MediaQuery.removePadding(
-                      context: dialogContext,
-                      removeTop: true,
-                      child: ListView.builder(
-                        itemBuilder: (_, index) {
-                          if (index == 0) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
-                              child: ButtonBar(
-                                alignment: MainAxisAlignment.start,
-                                children: [
-                                  _AddGroupButton(
-                                    bloc: bloc,
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-
-                          final group = state.favoriteGroups[index - 1];
-
-                          return ListTile(
-                            title: Text(
-                              group.name.replaceAll('_', ' '),
-                            ),
-                            subtitle: Text('pool.item'.plural(
-                              group.postIds.length,
-                            )),
-                            onTap: () => bloc.add(FavoriteGroupsItemAdded(
-                              group: group,
-                              postIds: posts.map((e) => e.id).toList(),
-                              onFailure: (message) {
-                                showSimpleSnackBar(
-                                  context: dialogContext,
-                                  duration: const Duration(seconds: 6),
-                                  content: Text(
-                                    message,
-                                  ),
-                                );
-                                Navigator.of(dialogContext).pop(false);
-                              },
-                              onSuccess: () {
-                                showSimpleSnackBar(
-                                  context: dialogContext,
-                                  duration: const Duration(seconds: 2),
-                                  action: SnackBarAction(
-                                    label: 'View',
-                                    onPressed: () {
-                                      if (navigatorKey.currentContext != null) {
-                                        goToFavoriteGroupDetailsPage(
-                                          navigatorKey.currentContext!,
-                                          group,
-                                        );
-                                      }
-                                    },
-                                  ),
-                                  content: Text(
-                                    '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
-                                  ),
-                                );
-                                Navigator.of(dialogContext).pop(true);
-                              },
-                            )),
-                          );
-                        },
-                        itemCount: state.favoriteGroups.length + 1,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        );
-      },
+    expand: true,
+    builder: (dialogContext) => BlocProvider(
+      create: (context) =>
+          FavoriteGroupsBloc.of(context)..add(const FavoriteGroupsRefreshed()),
+      child: AddToFavoriteGroupPage(
+        posts: posts,
+      ),
     ),
   );
 }
 
-class _AddGroupButton extends StatelessWidget {
-  const _AddGroupButton({
-    required this.bloc,
+class AddToFavoriteGroupPage extends StatelessWidget {
+  const AddToFavoriteGroupPage({
+    super.key,
+    required this.posts,
   });
 
-  final FavoriteGroupsBloc bloc;
+  final List<Post> posts;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Container(
-          width: 60,
-          height: 60,
-          decoration: BoxDecoration(
-            color: Theme.of(context).cardColor,
-            borderRadius: const BorderRadius.all(Radius.circular(12)),
-          ),
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(12)),
-              onTap: () => goToFavoriteGroupCreatePage(context, bloc),
-              child: Icon(
-                Icons.add,
-                size: 32,
-                color: Theme.of(context).colorScheme.primary,
+    final state = context.select((FavoriteGroupsBloc bloc) => bloc.state);
+    final bloc = context.read<FavoriteGroupsBloc>();
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        title: Text(
+          'Add to favorite group',
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        backgroundColor: Colors.transparent,
+      ),
+      backgroundColor: Theme.of(context).colorScheme.background,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+            child: SizedBox(
+              height: 160,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (_, index) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: BooruImage(
+                    imageUrl: posts[index].previewImageUrl,
+                    aspectRatio: posts[index].aspectRatio,
+                  ),
+                ),
+                itemCount: posts.length,
               ),
             ),
           ),
-        ),
-        const SizedBox(height: 8),
-        const Text('Create a group'),
-        const SizedBox(height: 8),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 12),
+            child: ListTile(
+              visualDensity: VisualDensity.compact,
+              title: Text(
+                'Add to'.toUpperCase(),
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+              ),
+              trailing: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  visualDensity: VisualDensity.compact,
+                ),
+                onPressed: () => goToFavoriteGroupCreatePage(
+                  context,
+                  bloc,
+                  enableManualPostInput: false,
+                ),
+                child: const Text('Create'),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: SearchBar(
+              onChanged: (value) =>
+                  bloc.add(FavoriteGroupsFiltered(pattern: value)),
+            ),
+          ),
+          const SizedBox(height: 8),
+          if (state.loading)
+            const Padding(
+              padding: EdgeInsets.all(8),
+              child: Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+            )
+          else
+            Expanded(
+              child: ListView.builder(
+                controller: ModalScrollController.of(context),
+                itemBuilder: (_, index) {
+                  final group = state.filteredFavoriteGroups[index];
+
+                  return ListTile(
+                    title: Row(
+                      children: [
+                        if (!group.isPublic)
+                          Chip(
+                            label: const Text('Private'),
+                            visualDensity: const VisualDensity(
+                              horizontal: -4,
+                              vertical: -4,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                          ),
+                        if (!group.isPublic) const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            group.name.replaceAll('_', ' '),
+                          ),
+                        ),
+                      ],
+                    ),
+                    subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
+                    trailing: Text('pool.item'.plural(
+                      group.postIds.length,
+                    )),
+                    onTap: () => bloc.add(FavoriteGroupsItemAdded(
+                      group: group,
+                      postIds: posts.map((e) => e.id).toList(),
+                      onFailure: (message) {
+                        showSimpleSnackBar(
+                          context: context,
+                          duration: const Duration(seconds: 6),
+                          content: Text(
+                            message,
+                          ),
+                        );
+                      },
+                      onSuccess: () {
+                        showSimpleSnackBar(
+                          context: context,
+                          duration: const Duration(seconds: 2),
+                          action: SnackBarAction(
+                            label: 'View',
+                            onPressed: () {
+                              if (navigatorKey.currentContext != null) {
+                                goToFavoriteGroupDetailsPage(
+                                  navigatorKey.currentContext!,
+                                  group,
+                                );
+                              }
+                            },
+                          ),
+                          content: Text(
+                            '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
+                          ),
+                        );
+                        Navigator.of(context).pop(true);
+                      },
+                    )),
+                  );
+                },
+                itemCount: state.filteredFavoriteGroups.length,
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

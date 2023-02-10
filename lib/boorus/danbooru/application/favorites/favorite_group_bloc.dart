@@ -17,31 +17,38 @@ class FavoriteGroupsState extends Equatable
     implements PaginationLoadState<FavoriteGroup, FavoriteGroupsState> {
   const FavoriteGroupsState({
     required this.favoriteGroups,
+    required this.filteredFavoriteGroups,
     required this.page,
     required this.loading,
   });
 
   factory FavoriteGroupsState.initial() => const FavoriteGroupsState(
         favoriteGroups: [],
+        filteredFavoriteGroups: [],
         page: 1,
         loading: true,
       );
 
   final List<FavoriteGroup> favoriteGroups;
+  final List<FavoriteGroup> filteredFavoriteGroups;
 
   FavoriteGroupsState copyWith({
     List<FavoriteGroup>? favoriteGroups,
+    List<FavoriteGroup>? filteredFavoriteGroups,
     bool? loading,
     int? page,
   }) =>
       FavoriteGroupsState(
         favoriteGroups: favoriteGroups ?? this.favoriteGroups,
+        filteredFavoriteGroups:
+            filteredFavoriteGroups ?? this.filteredFavoriteGroups,
         loading: loading ?? this.loading,
         page: page ?? this.page,
       );
 
   @override
-  List<Object?> get props => [favoriteGroups, loading, page];
+  List<Object?> get props =>
+      [filteredFavoriteGroups, favoriteGroups, loading, page];
 
   @override
   FavoriteGroupsState copyPaginationState({
@@ -89,6 +96,17 @@ class FavoriteGroupsFetched extends FavoriteGroupsEvent {
 
   @override
   List<Object?> get props => [page];
+}
+
+class FavoriteGroupsFiltered extends FavoriteGroupsEvent {
+  const FavoriteGroupsFiltered({
+    required this.pattern,
+  });
+
+  final String pattern;
+
+  @override
+  List<Object?> get props => [pattern];
 }
 
 class FavoriteGroupsCreated extends FavoriteGroupsEvent {
@@ -185,6 +203,8 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           emitter: emit,
         ),
         page: 1,
+        onFetchEnd: (data) =>
+            emit(state.copyWith(filteredFavoriteGroups: data)),
         fetch: (page) => currentUser != Account.empty
             ? favoriteGroupRepository.getFavoriteGroupsByCreatorName(
                 page: page,
@@ -324,6 +344,16 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           }
         },
       );
+    });
+
+    on<FavoriteGroupsFiltered>((event, emit) {
+      final filtered = event.pattern.isNotEmpty
+          ? state.favoriteGroups
+              .where((e) => e.name.toLowerCase().contains(event.pattern))
+              .toList()
+          : state.favoriteGroups;
+
+      emit(state.copyWith(filteredFavoriteGroups: filtered));
     });
   }
 
