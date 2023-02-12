@@ -351,6 +351,8 @@
     },
 
     "favorite_groups" : {
+        "create_group" : "Create group",
+        "edit_group" : "Edit group",
         "max_limit_warning" : "Member can only create 10 favorite groups",
         "detete_confirmation" : "Are you sure you want to delete this favorite group"
     },

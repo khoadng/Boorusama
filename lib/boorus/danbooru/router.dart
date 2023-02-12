@@ -1291,7 +1291,7 @@ Future<Object?> goToFavoriteGroupCreatePage(
     context: context,
     pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
       padding: isMobilePlatform() ? 0 : 8,
-      title: 'Create group',
+      title: 'favorite_groups.create_group'.tr(),
       enableManualDataInput: enableManualPostInput,
       onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
         name: name,
@@ -1312,7 +1312,7 @@ Future<Object?> goToFavoriteGroupEditPage(
     pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
       initialData: group,
       padding: isMobilePlatform() ? 0 : 8,
-      title: 'Edit group',
+      title: 'favorite_groups.edit_group'.tr(),
       onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
         group: group,
         name: name,
