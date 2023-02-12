@@ -166,7 +166,7 @@ class FavoriteGroupsItemAdded extends FavoriteGroupsEvent {
   final FavoriteGroup group;
   final List<int> postIds;
   final void Function()? onSuccess;
-  final void Function(String message)? onFailure;
+  final void Function(String message, bool translatable)? onFailure;
 
   @override
   List<Object?> get props => [group, postIds, onSuccess, onFailure];
@@ -301,8 +301,10 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           event.postIds.where((e) => event.group.postIds.contains(e)).toList();
 
       if (duplicates.isNotEmpty) {
-        event.onFailure
-            ?.call('Favgroup already contains post ${duplicates.join(' ')}');
+        event.onFailure?.call(
+          'favorite_groups.duplicate_items_warning_notification',
+          true,
+        );
 
         return;
       }
@@ -320,7 +322,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
             event.onSuccess?.call();
             add(const FavoriteGroupsRefreshed());
           } else {
-            event.onFailure?.call('Failed to add posts to favgroup');
+            event.onFailure?.call('Failed to add posts to favgroup', false);
           }
         },
       );

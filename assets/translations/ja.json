@@ -368,6 +368,7 @@
         "create_group_cancel" : "Cancel",
         "create_group_confirm" : "OK",
         "max_limit_warning" : "Member can only create 10 favorite groups",
+        "duplicate_items_warning_notification" : "The entered posts already exist in the group",
         "detete_confirmation" : "Are you sure you want to delete this favorite group",
         "group_item_counter" : {
             "one": "{} item",

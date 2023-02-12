@@ -141,13 +141,17 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                       onTap: () => bloc.add(FavoriteGroupsItemAdded(
                         group: group,
                         postIds: posts.map((e) => e.id).toList(),
-                        onFailure: (message) {
+                        onFailure: (message, translatable) {
                           showSimpleSnackBar(
                             context: context,
                             duration: const Duration(seconds: 6),
-                            content: Text(
-                              message,
-                            ),
+                            content: translatable
+                                ? Text(
+                                    message,
+                                  ).tr()
+                                : Text(
+                                    message,
+                                  ),
                           );
                         },
                         onSuccess: () {
