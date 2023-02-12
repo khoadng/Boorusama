@@ -1,6 +1,7 @@
 // Flutter imports:
 import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:flutter/material.dart';
 
@@ -160,50 +161,7 @@ class FavoriteGroupsPage extends StatelessWidget {
     return const SliverToBoxAdapter(
       child: Padding(
         padding: EdgeInsets.only(top: 8),
-        child: CircularProgressIndicator.adaptive(),
-      ),
-    );
-  }
-}
-
-// ignore: prefer-single-widget-per-file
-class ModalFavoriteGroupAction extends StatelessWidget {
-  const ModalFavoriteGroupAction({
-    super.key,
-    this.onEdit,
-    this.onDelete,
-  });
-
-  final void Function()? onEdit;
-  final void Function()? onDelete;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.background,
-      child: SafeArea(
-        top: false,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              title: const Text('generic.action.edit').tr(),
-              leading: const Icon(Icons.edit),
-              onTap: () {
-                Navigator.of(context).pop();
-                onEdit?.call();
-              },
-            ),
-            ListTile(
-              title: const Text('generic.action.delete').tr(),
-              leading: const Icon(Icons.clear),
-              onTap: () {
-                Navigator.of(context).pop();
-                onDelete?.call();
-              },
-            ),
-          ],
-        ),
+        child: Center(child: CircularProgressIndicator.adaptive()),
       ),
     );
   }
