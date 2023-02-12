@@ -7,8 +7,11 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
@@ -21,6 +24,8 @@ class InfinitePostList extends StatefulWidget {
     this.sliverHeaderBuilder,
     this.scrollController,
     this.refreshController,
+    this.contextMenuBuilder,
+    this.multiSelectActions,
   });
 
   final VoidCallback onLoadMore;
@@ -28,6 +33,13 @@ class InfinitePostList extends StatefulWidget {
   final List<Widget> Function(BuildContext context)? sliverHeaderBuilder;
   final AutoScrollController? scrollController;
   final RefreshController? refreshController;
+  final Widget Function(PostData post, void Function() next)?
+      contextMenuBuilder;
+
+  final Widget Function(
+    List<Post> selectedPosts,
+    void Function() endMultiSelect,
+  )? multiSelectActions;
 
   @override
   State<InfinitePostList> createState() => _InfinitePostListState();
@@ -71,29 +83,15 @@ class _InfinitePostListState extends State<InfinitePostList> {
         }
       },
       child: InfiniteLoadListScrollView(
-        bottomBuilder: () => ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: [
-            DownloadProviderWidget(
-              builder: (context, download) => IconButton(
-                onPressed: selectedPosts.isNotEmpty
-                    ? () {
-                        // ignore: prefer_foreach
-                        for (final p in selectedPosts) {
-                          download(p);
-                        }
-
-                        _endMultiSelect();
-                      }
-                    : null,
-                icon: const Icon(Icons.download),
-              ),
+        bottomBuilder: () =>
+            widget.multiSelectActions?.call(selectedPosts, _endMultiSelect) ??
+            DefaultMultiSelectionActions(
+              selectedPosts: selectedPosts,
+              endMultiSelect: _endMultiSelect,
             ),
-          ],
-        ),
         topBuilder: () => AppBar(
           leading: IconButton(
-            onPressed: () => _endMultiSelect(),
+            onPressed: _endMultiSelect,
             icon: const Icon(Icons.close),
           ),
           title: selectedPosts.isEmpty
@@ -129,19 +127,131 @@ class _InfinitePostListState extends State<InfinitePostList> {
               });
             },
             multiSelect: multiSelect,
-            onMultiSelect: () => setState(() {
-              multiSelect = true;
-            }),
+            contextMenuBuilder: (post) =>
+                widget.contextMenuBuilder?.call(post, _enableMultiSelect) ??
+                DefaultPostContextMenu(
+                  onMultiSelect: _enableMultiSelect,
+                  post: post,
+                ),
           ),
         ],
       ),
     );
   }
 
+  void _enableMultiSelect() => setState(() {
+        multiSelect = true;
+      });
+
   void _endMultiSelect() {
     setState(() {
       multiSelect = false;
       selectedPosts.clear();
     });
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class DefaultMultiSelectionActions extends StatelessWidget {
+  const DefaultMultiSelectionActions({
+    super.key,
+    required this.selectedPosts,
+    required this.endMultiSelect,
+  });
+
+  final List<Post> selectedPosts;
+  final void Function() endMultiSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
+
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        DownloadProviderWidget(
+          builder: (context, download) => IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      download(p);
+                    }
+
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.download),
+          ),
+        ),
+        if (authenticationState is Authenticated)
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () async {
+                    final shouldEnd = await goToAddToFavoriteGroupSelectionPage(
+                      context,
+                      selectedPosts,
+                    );
+                    if (shouldEnd != null && shouldEnd) {
+                      endMultiSelect();
+                    }
+                  }
+                : null,
+            icon: const Icon(Icons.add),
+          ),
+      ],
+    );
+  }
+}
+
+// ignore: prefer-single-widget-per-file
+class FavoriteGroupMultiSelectionActions extends StatelessWidget {
+  const FavoriteGroupMultiSelectionActions({
+    super.key,
+    required this.selectedPosts,
+    required this.endMultiSelect,
+    required this.onRemoveFromFavGroup,
+  });
+
+  final List<Post> selectedPosts;
+  final void Function() endMultiSelect;
+  final void Function() onRemoveFromFavGroup;
+
+  @override
+  Widget build(BuildContext context) {
+    final authenticationState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
+
+    return ButtonBar(
+      alignment: MainAxisAlignment.center,
+      children: [
+        DownloadProviderWidget(
+          builder: (context, download) => IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    // ignore: prefer_foreach
+                    for (final p in selectedPosts) {
+                      download(p);
+                    }
+
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.download),
+          ),
+        ),
+        if (authenticationState is Authenticated)
+          IconButton(
+            onPressed: selectedPosts.isNotEmpty
+                ? () {
+                    onRemoveFromFavGroup();
+                    endMultiSelect();
+                  }
+                : null,
+            icon: const Icon(Icons.remove),
+          ),
+      ],
+    );
   }
 }

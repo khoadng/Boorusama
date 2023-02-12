@@ -15,6 +15,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -48,6 +49,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_pag
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
@@ -157,6 +160,16 @@ class AppRouter {
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.inFromRight,
+      )
+      ..define(
+        '/favorite_groups/details',
+        handler: favoriteGroupDetailsHandler,
+        transitionType: TransitionType.inFromRight,
+      )
+      ..define(
+        '/favorite_groups',
+        handler: favoriteGroupsHandler,
+        transitionType: TransitionType.material,
       );
   }
 }
@@ -1269,6 +1282,53 @@ Future<Object?> goToFavoriteTagImportPage(
   );
 }
 
+Future<Object?> goToFavoriteGroupCreatePage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc, {
+  bool enableManualPostInput = true,
+}) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.create_group'.tr(),
+      enableManualDataInput: enableManualPostInput,
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
+      )),
+    ),
+  );
+}
+
+Future<Object?> goToFavoriteGroupEditPage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc,
+  FavoriteGroup group,
+) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
+      initialData: group,
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.edit_group'.tr(),
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
+        group: group,
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
+        onFailure: (message) {
+          showSimpleSnackBar(
+            context: context,
+            content: Text(message.toString()),
+          );
+        },
+      )),
+    ),
+  );
+}
+
 void goToImagePreviewPage(BuildContext context, Post post) {
   showGeneralDialog(
     context: context,
@@ -1320,6 +1380,50 @@ void goToSearchHistoryPage(
           ),
         );
       },
+    ),
+  );
+}
+
+void goToFavoriteGroupPage(BuildContext context) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups',
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteGroups,
+    ),
+    transition: Screen.of(context).size == ScreenSize.small
+        ? TransitionType.inFromRight
+        : null,
+  );
+}
+
+void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups/details',
+    routeSettings: RouteSettings(
+      name: RouterPageConstant.favoriteGroupDetails,
+      arguments: [
+        group,
+      ],
+    ),
+  );
+}
+
+Future<bool?> goToAddToFavoriteGroupSelectionPage(
+  BuildContext context,
+  List<Post> posts,
+) {
+  return showMaterialModalBottomSheet<bool>(
+    context: navigatorKey.currentContext ?? context,
+    duration: const Duration(milliseconds: 200),
+    expand: true,
+    builder: (dialogContext) => BlocProvider(
+      create: (context) =>
+          FavoriteGroupsBloc.of(context)..add(const FavoriteGroupsRefreshed()),
+      child: AddToFavoriteGroupPage(
+        posts: posts,
+      ),
     ),
   );
 }

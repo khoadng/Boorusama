@@ -48,6 +48,25 @@ UserLevel stringToUserLevel(String value) {
   }
 }
 
+bool isBooruGoldPlusAccount(UserLevel level) {
+  switch (level) {
+    case UserLevel.restricted:
+    case UserLevel.member:
+      return false;
+    case UserLevel.gold:
+    case UserLevel.platinum:
+    case UserLevel.builder:
+    case UserLevel.janitor:
+    case UserLevel.moderator:
+    case UserLevel.admin:
+    case UserLevel.owner:
+      return true;
+  }
+}
+
+bool isBooruGoldPlusAccountInt(int level) =>
+    isBooruGoldPlusAccount(intToUserLevel(level));
+
 enum UserLevel {
   restricted,
   member,

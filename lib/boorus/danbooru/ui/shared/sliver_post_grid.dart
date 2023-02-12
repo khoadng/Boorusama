@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -17,13 +16,11 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
-import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'selectable_icon_button.dart';
 
@@ -78,9 +75,9 @@ class SliverPostGrid extends HookWidget {
     this.gridSize = GridSize.normal,
     this.borderRadius,
     this.postAnnotationBuilder,
-    this.onMultiSelect,
     this.onPostSelectChanged,
     this.multiSelect = false,
+    required this.contextMenuBuilder,
   });
 
   final List<PostData> posts;
@@ -93,9 +90,9 @@ class SliverPostGrid extends HookWidget {
   final Widget Function(BuildContext context, Post post, int index)?
       postAnnotationBuilder;
   final void Function(int postId, bool value) onFavoriteUpdated;
-  final void Function()? onMultiSelect;
   final void Function(Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
+  final Widget Function(PostData post) contextMenuBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -138,27 +135,7 @@ class SliverPostGrid extends HookWidget {
 
               return ContextMenuRegion(
                 isEnabled: !multiSelect,
-                contextMenu: DownloadProviderWidget(
-                  builder: (context, download) => GenericContextMenu(
-                    buttonConfigs: [
-                      ContextMenuButtonConfig(
-                        'Preview',
-                        onPressed: () =>
-                            goToImagePreviewPage(context, post.post),
-                      ),
-                      ContextMenuButtonConfig(
-                        'download.download'.tr(),
-                        onPressed: () => download(post.post),
-                      ),
-                      ContextMenuButtonConfig(
-                        'Select',
-                        onPressed: () {
-                          onMultiSelect?.call();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
+                contextMenu: contextMenuBuilder(post),
                 child: ImageGridItem(
                   multiSelect: multiSelect,
                   multiSelectBuilder: () => SelectableIconButton(
