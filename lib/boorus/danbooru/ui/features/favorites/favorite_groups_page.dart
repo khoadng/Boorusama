@@ -25,7 +25,7 @@ class FavoriteGroupsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Favorite Group'),
+        title: const Text('favorite_groups.favorite_groups').tr(),
         actions: [
           IconButton(
             onPressed: () {
@@ -75,7 +75,7 @@ class FavoriteGroupsPage extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 42),
           child: Center(
             child: state.page == 1
-                ? const Text('No favorite groups')
+                ? const Text('favorite_groups.empty_group_notice').tr()
                 : const Text('No data'),
           ),
         ),
@@ -92,7 +92,7 @@ class FavoriteGroupsPage extends StatelessWidget {
               children: [
                 if (!group.isPublic)
                   Chip(
-                    label: const Text('Private'),
+                    label: const Text('favorite_groups.private').tr(),
                     visualDensity:
                         const VisualDensity(horizontal: -4, vertical: -4),
                     backgroundColor: Theme.of(context).colorScheme.primary,
@@ -106,7 +106,7 @@ class FavoriteGroupsPage extends StatelessWidget {
               ],
             ),
             subtitle: Text(
-              '${group.totalCount} posts',
+              'favorite_groups.group_item_counter'.plural(group.totalCount),
             ),
             onTap: () => goToFavoriteGroupDetailsPage(context, group),
             trailing: IconButton(
@@ -138,7 +138,7 @@ class FavoriteGroupsPage extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onBackground,
                 ),
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Cancel'),
+                child: const Text('generic.action.cancel').tr(),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -147,7 +147,7 @@ class FavoriteGroupsPage extends StatelessWidget {
                     groupId: favGroup.id,
                   ));
                 },
-                child: const Text('OK'),
+                child: const Text('generic.action.ok').tr(),
               ),
             ],
           ),

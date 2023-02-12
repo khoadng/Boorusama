@@ -352,6 +352,8 @@
     },
 
     "favorite_groups" : {
+        "favorite_groups" : "Favorite Groups",
+        "empty_group_notice" : "No favorite groups",
         "create_group" : "Create group",
         "edit_group" : "Edit group",
         "add_to_group_dialog_title" : "Add to favorite group",
