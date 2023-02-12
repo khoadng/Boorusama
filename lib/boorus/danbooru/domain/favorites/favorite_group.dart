@@ -32,4 +32,5 @@ typedef FavoriteGroupName = String;
 
 extension FavoriteGroupX on FavoriteGroup {
   int get totalCount => postIds.length;
+  String getQueryString() => 'favgroup:$id';
 }

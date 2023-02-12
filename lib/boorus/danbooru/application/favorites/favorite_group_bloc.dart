@@ -362,8 +362,3 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         accountRepository: context.read<AccountRepository>(),
       );
 }
-
-extension FavoriteGroupsStateX on FavoriteGroupsState {
-  String favoriteGroupDetailQueryOf(int index) =>
-      'favgroup:${favoriteGroups[index].id}';
-}

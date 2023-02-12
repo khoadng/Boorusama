@@ -478,9 +478,9 @@ final favoriteGroupDetailsHandler =
       BlocProvider(
         create: (context) => PostBloc.of(context, singleRefresh: true)
           ..add(PostRefreshed(
-            tag: 'favgroup:${group.id}',
+            tag: group.getQueryString(),
             fetcher: SearchedPostFetcher.fromTags(
-              'favgroup:${group.id}',
+              group.getQueryString(),
             ),
           )),
       ),

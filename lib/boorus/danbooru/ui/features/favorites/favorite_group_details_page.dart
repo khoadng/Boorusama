@@ -24,8 +24,8 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return InfinitePostList(
       onLoadMore: () => context.read<PostBloc>().add(PostFetched(
-            tags: 'favgroup:${group.id}',
-            fetcher: SearchedPostFetcher.fromTags('favgroup:${group.id}'),
+            tags: group.getQueryString(),
+            fetcher: SearchedPostFetcher.fromTags(group.getQueryString()),
           )),
       onRefresh: (controller) {
         _refresh(context);
@@ -42,7 +42,7 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
               onPressed: () {
                 goToSearchPage(
                   context,
-                  tag: 'favgroup:${group.id}',
+                  tag: group.getQueryString(),
                 );
               },
               icon: const Icon(Icons.search),
@@ -51,7 +51,7 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
               onPressed: () {
                 goToBulkDownloadPage(
                   context,
-                  ['favgroup:${group.id}'],
+                  [group.getQueryString()],
                 );
               },
               icon: const Icon(Icons.download),
@@ -91,8 +91,8 @@ class FavoriteGroupDetailsPage extends StatelessWidget {
   void _refresh(BuildContext context) {
     context.read<FavoriteGroupsBloc>().add(const FavoriteGroupsRefreshed());
     context.read<PostBloc>().add(PostRefreshed(
-          tag: 'favgroup:${group.id}',
-          fetcher: SearchedPostFetcher.fromTags('favgroup:${group.id}'),
+          tag: group.getQueryString(),
+          fetcher: SearchedPostFetcher.fromTags(group.getQueryString()),
         ));
   }
 }
