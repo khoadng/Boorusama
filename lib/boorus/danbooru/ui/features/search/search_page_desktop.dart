@@ -349,7 +349,10 @@ class _LandingViewState extends State<_LandingView> {
                       onHistoryTap: (value) => _onHistoryTap(context, value),
                       onHistoryRemoved: (value) =>
                           _onHistoryRemoved(context, value),
-                      histories: state.histories,
+                      onHistoryFiltered: (value) => context
+                          .read<SearchHistoryBloc>()
+                          .add(SearchHistoryFiltered(value)),
+                      histories: state.filteredhistories,
                     ),
                   ),
                 ],

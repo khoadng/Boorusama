@@ -1360,7 +1360,7 @@ void goToSearchHistoryPage(
       name: RouterPageConstant.searchHistories,
     ),
     duration: const Duration(milliseconds: 200),
-    builder: (context) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+    builder: (_) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
       bloc: bloc,
       builder: (context, state) {
         return Scaffold(
@@ -1374,9 +1374,12 @@ void goToSearchHistoryPage(
             ],
           ),
           body: FullHistoryView(
+            scrollController: ModalScrollController.of(context),
             onHistoryTap: (value) => onTap(value),
             onHistoryRemoved: (value) => onRemove(value),
-            histories: state.histories,
+            onHistoryFiltered: (value) =>
+                bloc.add(SearchHistoryFiltered(value)),
+            histories: state.filteredhistories,
           ),
         );
       },
