@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -12,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';

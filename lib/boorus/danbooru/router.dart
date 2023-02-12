@@ -2,8 +2,6 @@
 import 'dart:math';
 
 // Flutter imports:
-import 'package:boorusama/app.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -17,6 +15,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -50,6 +49,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_pag
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';

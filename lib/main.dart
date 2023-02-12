@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -29,6 +28,7 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';

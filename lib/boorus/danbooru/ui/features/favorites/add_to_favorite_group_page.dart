@@ -1,5 +1,14 @@
+// Flutter imports:
+import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:animated_list_plus/animated_list_plus.dart';
 import 'package:animated_list_plus/transitions.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
+
+// Project imports:
 import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -8,10 +17,6 @@ import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/search_bar.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 class AddToFavoriteGroupPage extends StatelessWidget {
   const AddToFavoriteGroupPage({

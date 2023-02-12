@@ -1,8 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
-import 'package:boorusama/boorus/danbooru/ui/features/favorites/modal_favorite_group_action.dart';
-import 'package:boorusama/core/ui/warning_container.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -13,8 +9,12 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/modal_favorite_group_action.dart';
+import 'package:boorusama/core/ui/warning_container.dart';
 
 class FavoriteGroupsPage extends StatelessWidget {
   const FavoriteGroupsPage({

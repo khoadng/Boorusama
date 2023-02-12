@@ -1,5 +1,4 @@
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:flutter/material.dart' hide ThemeMode;
 import 'package:flutter/rendering.dart';
 
@@ -12,6 +11,7 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/search/search_bloc.dart';
+import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
