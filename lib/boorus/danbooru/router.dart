@@ -1368,7 +1368,29 @@ void goToSearchHistoryPage(
             title: const Text('search.history.history').tr(),
             actions: [
               TextButton(
-                onPressed: () => onClear(),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: const Text('Are you sure?').tr(),
+                    actions: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onBackground,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('generic.action.cancel').tr(),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          onClear();
+                        },
+                        child: const Text('generic.action.ok').tr(),
+                      ),
+                    ],
+                  ),
+                ),
                 child: const Text('search.history.clear').tr(),
               ),
             ],
