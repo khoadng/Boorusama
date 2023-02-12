@@ -382,7 +382,7 @@ class _LandingViewState extends State<_LandingView> {
   }
 
   void _onHistoryTap(BuildContext context, String value) =>
-      context.read<SearchBloc>().add(SearchRawTagSelected(tag: value));
+      context.read<SearchBloc>().add(SearchHistoryTagSelected(tag: value));
 
   void _onHistoryCleared(BuildContext context) =>
       context.read<SearchBloc>().add(const SearchHistoryCleared());
