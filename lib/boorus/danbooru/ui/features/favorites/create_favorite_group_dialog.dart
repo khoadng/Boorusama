@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -90,7 +91,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 12),
                 child: Text(
-                  'Group name'.toUpperCase(),
+                  'favorite_groups.group_name'.tr().toUpperCase(),
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -101,7 +102,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                 controller: nameController,
                 maxLines: null,
                 decoration: InputDecoration(
-                  hintText: 'New group',
+                  hintText: 'favorite_groups.group_name_hint'.tr(),
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
                   enabledBorder: const OutlineInputBorder(
@@ -124,7 +125,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                 ),
               if (widget.enableManualDataInput)
                 Text(
-                  'Posts'.toUpperCase(),
+                  'favorite_groups.all_posts'.tr().toUpperCase(),
                   style: Theme.of(context).textTheme.titleMedium!.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
@@ -142,7 +143,7 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                     decoration: InputDecoration(
                       hintMaxLines: 6,
                       hintText:
-                          '${'Initial post ids (Optional). Space delimited'}\n\n\n\n\n',
+                          '${'favorite_groups.initial_posts_hint'.tr()}\n\n\n\n\n',
                       filled: true,
                       fillColor: Theme.of(context).cardColor,
                       enabledBorder: const OutlineInputBorder(
@@ -167,7 +168,9 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                     firstChild: const SizedBox.shrink(),
                     secondChild: ListTile(
                       contentPadding: const EdgeInsets.symmetric(horizontal: 4),
-                      title: const Text('Private Group'),
+                      title:
+                          const Text('favorite_groups.is_private_group_option')
+                              .tr(),
                       trailing: Switch.adaptive(
                         value: isPrivate,
                         onChanged: (value) => setState(() => isPrivate = value),
@@ -189,7 +192,8 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                       foregroundColor:
                           Theme.of(context).colorScheme.onBackground,
                     ),
-                    child: const Text('Cancel'),
+                    child:
+                        const Text('favorite_groups.create_group_cancel').tr(),
                   ),
                   ValueListenableBuilder<TextEditingValue>(
                     valueListenable: nameController,
@@ -204,7 +208,8 @@ class _EditFavoriteGroupDialogState extends State<EditFavoriteGroupDialog> {
                               );
                             }
                           : null,
-                      child: const Text('OK'),
+                      child: const Text('favorite_groups.create_group_confirm')
+                          .tr(),
                     ),
                   ),
                 ],
