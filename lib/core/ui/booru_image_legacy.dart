@@ -14,12 +14,16 @@ class BooruImageLegacy extends StatefulWidget {
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
+    this.cacheHeight,
+    this.cacheWidth,
   });
 
   final String imageUrl;
   final String? placeholderUrl;
   final BorderRadiusGeometry? borderRadius;
   final BoxFit? fit;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   @override
   State<BooruImageLegacy> createState() => _BooruImageLegacyState();
@@ -58,6 +62,8 @@ class _BooruImageLegacyState extends State<BooruImageLegacy> {
       httpHeaders: const {
         'User-Agent': userAgent,
       },
+      memCacheWidth: widget.cacheWidth,
+      memCacheHeight: widget.cacheHeight,
       imageUrl: widget.imageUrl,
       imageBuilder: (context, imageProvider) {
         return Container(

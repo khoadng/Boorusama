@@ -17,6 +17,7 @@ import 'package:boorusama/boorus/danbooru/application/authentication/authenticat
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
@@ -136,86 +137,93 @@ class SliverPostGrid extends HookWidget {
               return ContextMenuRegion(
                 isEnabled: !multiSelect,
                 contextMenu: contextMenuBuilder(post),
-                child: ImageGridItem(
-                  multiSelect: multiSelect,
-                  multiSelectBuilder: () => SelectableIconButton(
-                    unSelectedIcon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black45,
+                child: LayoutBuilder(
+                  builder: (context, constraints) => ImageGridItem(
+                    cacheHeight: constraints.maxHeight.toIntOrNull(),
+                    cacheWidth: constraints.maxWidth.toIntOrNull(),
+                    multiSelect: multiSelect,
+                    multiSelectBuilder: () => SelectableIconButton(
+                      unSelectedIcon: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black45,
+                        ),
+                        child: const Icon(
+                          FontAwesomeIcons.circle,
+                          size: 32,
+                        ),
                       ),
-                      child: const Icon(
-                        FontAwesomeIcons.circle,
-                        size: 32,
+                      selectedIcon: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                        ),
                       ),
+                      onChanged: (value) =>
+                          onPostSelectChanged?.call(post.post, value),
                     ),
-                    selectedIcon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                      ),
+                    previewCacheManager:
+                        context.read<PreviewImageCacheManager>(),
+                    isFaved: post.isFavorited,
+                    enableFav: authState is Authenticated,
+                    onFavToggle: (isFaved) async {
+                      final success =
+                          await _getFavAction(context, !isFaved, post.post.id);
+                      if (success) {
+                        onFavoriteUpdated.call(
+                          post.post.id,
+                          isFaved,
+                        );
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: scrollController,
+                      index: index,
                     ),
-                    onChanged: (value) =>
-                        onPostSelectChanged?.call(post.post, value),
-                  ),
-                  previewCacheManager: context.read<PreviewImageCacheManager>(),
-                  isFaved: post.isFavorited,
-                  enableFav: authState is Authenticated,
-                  onFavToggle: (isFaved) async {
-                    final success =
-                        await _getFavAction(context, !isFaved, post.post.id);
-                    if (success) {
-                      onFavoriteUpdated.call(
-                        post.post.id,
-                        isFaved,
-                      );
-                    }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: scrollController,
-                    index: index,
-                  ),
-                  borderRadius: BorderRadius.circular(
-                    state.settings.imageBorderRadius,
-                  ),
-                  aspectRatio: post.post.aspectRatio,
-                  gridSize: gridSize,
-                  imageQuality: state.settings.imageQuality,
-                  image: legacy
-                      ? BooruImageLegacy(
-                          imageUrl: getImageUrlForDisplay(
-                            post.post,
-                            getImageQuality(
-                              size: gridSize,
-                              presetImageQuality: state.settings.imageQuality,
+                    borderRadius: BorderRadius.circular(
+                      state.settings.imageBorderRadius,
+                    ),
+                    aspectRatio: post.post.aspectRatio,
+                    gridSize: gridSize,
+                    imageQuality: state.settings.imageQuality,
+                    image: legacy
+                        ? BooruImageLegacy(
+                            imageUrl: getImageUrlForDisplay(
+                              post.post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
                             ),
-                          ),
-                          placeholderUrl: post.post.previewImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                        )
-                      : null,
-                  onTap: () => onTap?.call(post.post, index),
-                  isAnimated: post.post.isAnimated,
-                  isTranslated: post.post.isTranslated,
-                  hasComments: post.post.hasComment,
-                  hasParentOrChildren: post.post.hasParentOrChildren,
-                  previewUrl: getImageUrlForDisplay(
-                    post.post,
-                    getImageQuality(
-                      size: gridSize,
-                      presetImageQuality: state.settings.imageQuality,
+                            placeholderUrl: post.post.previewImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            cacheHeight: constraints.maxHeight.toIntOrNull(),
+                            cacheWidth: constraints.maxWidth.toIntOrNull(),
+                          )
+                        : null,
+                    onTap: () => onTap?.call(post.post, index),
+                    isAnimated: post.post.isAnimated,
+                    isTranslated: post.post.isTranslated,
+                    hasComments: post.post.hasComment,
+                    hasParentOrChildren: post.post.hasParentOrChildren,
+                    previewUrl: getImageUrlForDisplay(
+                      post.post,
+                      getImageQuality(
+                        size: gridSize,
+                        presetImageQuality: state.settings.imageQuality,
+                      ),
                     ),
+                    previewPlaceholderUrl: post.post.previewImageUrl,
                   ),
-                  previewPlaceholderUrl: post.post.previewImageUrl,
                 ),
               );
             }

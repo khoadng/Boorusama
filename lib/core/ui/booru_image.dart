@@ -17,6 +17,8 @@ class BooruImage extends StatelessWidget {
     this.fit,
     required this.aspectRatio,
     this.previewCacheManager,
+    this.cacheHeight,
+    this.cacheWidth,
   });
 
   final String imageUrl;
@@ -25,6 +27,8 @@ class BooruImage extends StatelessWidget {
   final BoxFit? fit;
   final double aspectRatio;
   final CacheManager? previewCacheManager;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,8 @@ class BooruImage extends StatelessWidget {
           httpHeaders: const {
             'User-Agent': userAgent,
           },
+          memCacheWidth: cacheWidth,
+          memCacheHeight: cacheHeight,
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
           placeholder: (context, url) => placeholderUrl != null

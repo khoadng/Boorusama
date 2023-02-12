@@ -39,6 +39,8 @@ class ImageGridItem extends StatelessWidget {
     this.autoScrollOptions,
     required this.aspectRatio,
     this.image,
+    this.cacheHeight,
+    this.cacheWidth,
     this.enableFav = false,
     this.onFavToggle,
     this.isFaved,
@@ -54,6 +56,8 @@ class ImageGridItem extends StatelessWidget {
   final ImageQuality imageQuality;
   final double aspectRatio;
   final Widget? image;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   final bool? isAnimated;
   final bool? hasComments;
@@ -143,6 +147,8 @@ class ImageGridItem extends StatelessWidget {
           placeholderUrl: previewPlaceholderUrl,
           borderRadius: borderRadius,
           previewCacheManager: previewCacheManager,
+          cacheHeight: cacheHeight,
+          cacheWidth: cacheWidth,
         );
 
     return !multiSelect
