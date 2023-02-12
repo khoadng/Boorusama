@@ -35,9 +35,9 @@ class AddToFavoriteGroupPage extends StatelessWidget {
       appBar: AppBar(
         elevation: 0,
         title: Text(
-          'Add to favorite group',
+          'favorite_groups.add_to_group_dialog_title',
           style: Theme.of(context).textTheme.titleLarge,
-        ),
+        ).tr(),
         backgroundColor: Colors.transparent,
       ),
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -66,7 +66,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
             child: ListTile(
               visualDensity: VisualDensity.compact,
               title: Text(
-                'Add to'.toUpperCase(),
+                'favorite_groups.add_to'.tr().toUpperCase(),
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.w800,
                     ),
@@ -80,7 +80,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                   bloc,
                   enableManualPostInput: false,
                 ),
-                child: const Text('Create'),
+                child: const Text('favorite_groups.create').tr(),
               ),
             ),
           ),
@@ -117,7 +117,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                         children: [
                           if (!group.isPublic)
                             Chip(
-                              label: const Text('Private'),
+                              label: const Text('favorite_groups.private').tr(),
                               visualDensity: const VisualDensity(
                                 horizontal: -4,
                                 vertical: -4,
@@ -134,7 +134,8 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                         ],
                       ),
                       subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
-                      trailing: Text('pool.item'.plural(
+                      trailing:
+                          Text('favorite_groups.group_item_counter'.plural(
                         group.postIds.length,
                       )),
                       onTap: () => bloc.add(FavoriteGroupsItemAdded(
@@ -152,9 +153,9 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                         onSuccess: () {
                           showSimpleSnackBar(
                             context: context,
-                            duration: const Duration(seconds: 2),
+                            duration: const Duration(seconds: 3),
                             action: SnackBarAction(
-                              label: 'View',
+                              label: 'favorite_groups.view_more_popup'.tr(),
                               onPressed: () {
                                 if (navigatorKey.currentContext != null) {
                                   goToFavoriteGroupDetailsPage(
@@ -165,7 +166,13 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                               },
                             ),
                             content: Text(
-                              '${posts.length} posts added to ${group.name.replaceAll('_', ' ')} ',
+                              'favorite_groups.items_added_notification_popup'
+                                  .tr()
+                                  .replaceAll('{0}', '${posts.length}')
+                                  .replaceAll(
+                                    '{1}',
+                                    group.name.replaceAll('_', ' '),
+                                  ),
                             ),
                           );
                           Navigator.of(context).pop(true);

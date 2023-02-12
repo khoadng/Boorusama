@@ -354,8 +354,18 @@
     "favorite_groups" : {
         "create_group" : "Create group",
         "edit_group" : "Edit group",
+        "add_to_group_dialog_title" : "Add to favorite group",
+        "add_to" : "Add to",
+        "create" : "Create",
+        "private" : "Private",
+        "view_more_popup": "View",
+        "items_added_notification_popup" : "{0} posts added to {1}",
         "max_limit_warning" : "Member can only create 10 favorite groups",
-        "detete_confirmation" : "Are you sure you want to delete this favorite group"
+        "detete_confirmation" : "Are you sure you want to delete this favorite group",
+        "group_item_counter" : {
+            "one": "{} item",
+            "other": "{} items"
+        } 
     },
 
     "favorite_tags": {
