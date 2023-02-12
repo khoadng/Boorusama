@@ -36,7 +36,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
     double Function()? stateIdGenerator,
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
-    bool singleRefresh = false,
     bool? pagination,
   }) : super(PostState.initial(pagination: pagination)) {
     on<PostRefreshed>(
@@ -48,7 +47,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page, limit: singleRefresh ? null : 20)
+                .fetch(postRepository, page)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -60,29 +59,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
-
-          if (!singleRefresh) {
-            for (var i = 0; i < 2; i++) {
-              await fetch(
-                emit: EmitConfig(
-                  stateGetter: () => state,
-                  emitter: emit,
-                ),
-                fetch: (page) => event.fetcher
-                    .fetch(postRepository, page, limit: 20)
-                    .then(createPostDataWith(
-                      favoritePostRepository,
-                      postVoteRepository,
-                      poolRepository,
-                      accountRepository,
-                    ))
-                    .then(filterWith(blacklistedTagsRepository))
-                    .then(filterFlashFiles())
-                    .then(preloadPreviewImagesWith(previewPreloader)),
-                onError: handleErrorWith(emit),
-              );
-            }
-          }
         } else {
           await load(
             emit: EmitConfig(
@@ -203,7 +179,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
   factory PostBloc.of(
     BuildContext context, {
     bool? pagination,
-    bool? singleRefresh,
   }) =>
       PostBloc(
         postRepository: context.read<PostRepository>(),
@@ -214,7 +189,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
-        singleRefresh: singleRefresh ?? false,
       );
 
   static const postPerPage = 60;

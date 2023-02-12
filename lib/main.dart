@@ -423,7 +423,6 @@ void main() async {
                         accountRepository: accountRepo,
                         postVoteRepository: postVoteRepo,
                         poolRepository: poolRepo,
-                        singleRefresh: true,
                       );
 
                   final exploreBloc = ExploreBloc(

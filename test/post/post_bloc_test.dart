@@ -49,7 +49,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -80,7 +79,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -112,7 +110,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -143,7 +140,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -172,7 +168,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -221,7 +216,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -250,7 +244,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -298,7 +291,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -349,7 +341,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -402,7 +393,6 @@ void main() {
         blacklistedTagsRepository: mockBlacklistedRepo,
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostRefreshed(fetcher: LatestPostFetcher())),
@@ -465,7 +455,6 @@ void main() {
           PostData.empty(),
           PostData.empty(),
         ],
-        singleRefresh: true,
       ),
       act: (bloc) =>
           bloc.add(const PostFetched(tags: '', fetcher: LatestPostFetcher())),
@@ -509,7 +498,6 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
-        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(
@@ -551,7 +539,6 @@ void main() {
         postVoteRepository: mockPostVoteRepo,
         poolRepository: mockPoolRepo,
         stateIdGenerator: () => 123,
-        singleRefresh: true,
       ),
       act: (bloc) => bloc.add(PostUpdated(
         post: PostData.empty().copyWith(
