@@ -2,6 +2,8 @@
 import 'dart:collection';
 
 // Flutter imports:
+import 'package:boorusama/core/core.dart';
+import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -121,32 +123,51 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                               });
                             },
                           )),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: _sizeToGridCount(Screen.of(context).size),
                     mainAxisSpacing: 4,
                     crossAxisSpacing: 4,
                   ),
                   itemBuilder: (context, index) {
-                    final post = state.data[index].post;
+                    final post = state.data[index];
 
-                    return GestureDetector(
+                    return ImageGridItem(
                       key: ValueKey(index),
                       onTap: () => goToDetailPage(
                         context: context,
                         posts: state.data,
                         initialIndex: index,
                       ),
-                      child: BooruImage(
+                      image: BooruImage(
                         fit: BoxFit.cover,
-                        imageUrl: post.normalImageUrl,
-                        placeholderUrl: post.previewImageUrl,
-                        aspectRatio: post.aspectRatio,
+                        imageUrl: post.post.isAnimated
+                            ? post.post.previewImageUrl
+                            : post.post.normalImageUrl,
+                        placeholderUrl: post.post.previewImageUrl,
+                        aspectRatio: 1,
                       ),
+                      isAnimated: post.post.isAnimated,
+                      isTranslated: post.post.isTranslated,
+                      hasComments: post.post.hasComment,
+                      hasParentOrChildren: post.post.hasParentOrChildren,
                     );
                   },
                 );
               },
             ),
     );
+  }
+}
+
+int _sizeToGridCount(ScreenSize size) {
+  switch (size) {
+    case ScreenSize.small:
+      return 2;
+    case ScreenSize.medium:
+      return 4;
+    case ScreenSize.large:
+      return 6;
+    case ScreenSize.veryLarge:
+      return 8;
   }
 }
