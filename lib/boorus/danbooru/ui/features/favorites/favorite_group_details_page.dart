@@ -2,23 +2,25 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
-import 'package:boorusama/core/core.dart';
-import 'package:boorusama/core/ui/image_grid_item.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reorderable_grid_view/reorderable_grid_view.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/circular_icon_button.dart';
 import 'package:boorusama/common/collection_utils.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 class FavoriteGroupDetailsPage extends StatefulWidget {
@@ -39,6 +41,7 @@ class FavoriteGroupDetailsPage extends StatefulWidget {
 class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
   List<List<Object>> commands = [];
   bool editing = false;
+  final AutoScrollController scrollController = AutoScrollController();
 
   void _aggregate() {
     final ids = widget.group.postIds;
@@ -63,8 +66,16 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final state = context.select((PostBloc bloc) => bloc.state);
+    final authState =
+        context.select((AuthenticationCubit cubit) => cubit.state);
 
     return Scaffold(
       floatingActionButton: editing
@@ -140,6 +151,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                   ),
                 Expanded(
                   child: InfiniteLoadList(
+                    scrollController: scrollController,
                     onLoadMore: () => context.read<PostBloc>().add(PostFetched(
                           tags: '',
                           fetcher: FavoriteGroupPostFetcher(
@@ -180,6 +192,29 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                             key: ValueKey(index),
                             children: [
                               ImageGridItem(
+                                hideOverlay: editing,
+                                isFaved: post.isFavorited,
+                                enableFav: authState is Authenticated,
+                                onFavToggle: (isFaved) async {
+                                  final bloc = context.read<PostBloc>();
+                                  final success = await _getFavAction(
+                                    context,
+                                    !isFaved,
+                                    post.post.id,
+                                  );
+                                  if (success) {
+                                    bloc.add(
+                                      PostFavoriteUpdated(
+                                        postId: post.post.id,
+                                        favorite: isFaved,
+                                      ),
+                                    );
+                                  }
+                                },
+                                autoScrollOptions: AutoScrollOptions(
+                                  controller: scrollController,
+                                  index: index,
+                                ),
                                 onTap: !editing
                                     ? () => goToDetailPage(
                                           context: context,
@@ -227,6 +262,12 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
               ],
             ),
     );
+  }
+
+  Future<bool> _getFavAction(BuildContext context, bool isFaved, int postId) {
+    return isFaved
+        ? context.read<FavoritePostRepository>().removeFromFavorites(postId)
+        : context.read<FavoritePostRepository>().addToFavorites(postId);
   }
 }
 

@@ -35,6 +35,7 @@ class ImageGridItem extends StatelessWidget {
     this.isFaved,
     this.multiSelect = false,
     this.multiSelectBuilder,
+    this.hideOverlay = false,
   });
 
   final AutoScrollOptions? autoScrollOptions;
@@ -50,6 +51,7 @@ class ImageGridItem extends StatelessWidget {
   final bool? isFaved;
   final bool multiSelect;
   final Widget Function()? multiSelectBuilder;
+  final bool hideOverlay;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if (enableFav && !multiSelect)
+          if ((enableFav && !multiSelect) && !hideOverlay)
             Positioned(
               bottom: 4,
               right: 4,
@@ -126,10 +128,11 @@ class ImageGridItem extends StatelessWidget {
                 onTap: onTap,
                 child: image,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 1, left: 1),
-                child: _buildOverlayIcon(),
-              ),
+              if (!hideOverlay)
+                Padding(
+                  padding: const EdgeInsets.only(top: 1, left: 1),
+                  child: _buildOverlayIcon(),
+                ),
             ],
           )
         : Stack(
