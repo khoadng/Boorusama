@@ -161,6 +161,8 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                     enableRefresh: false,
                     enableLoadMore: state.hasMore,
                     builder: (context, controller) {
+                      final count = _sizeToGridCount(Screen.of(context).size);
+
                       return ReorderableGridView.builder(
                         controller: controller,
                         dragEnabled: editing,
@@ -181,7 +183,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                             )),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount:
-                              _sizeToGridCount(Screen.of(context).size),
+                              !editing ? count : (count * 1.5).round(),
                           mainAxisSpacing: 4,
                           crossAxisSpacing: 4,
                         ),
