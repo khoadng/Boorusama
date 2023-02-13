@@ -2,12 +2,11 @@
 import 'dart:collection';
 
 // Flutter imports:
-import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/infinite_load_list.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:reorderable_grid_view/reorderable_grid_view.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
@@ -15,7 +14,8 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/common/collection_utils.dart';
-import 'package:reorderable_grid_view/reorderable_grid_view.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
+import 'package:boorusama/core/ui/infinite_load_list.dart';
 
 class FavoriteGroupDetailsPage extends StatefulWidget {
   const FavoriteGroupDetailsPage({
