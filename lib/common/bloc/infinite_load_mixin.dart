@@ -149,4 +149,10 @@ mixin InfiniteLoadMixin<T, State> {
 
     data[index] = item;
   }
+
+  void swap(int fromIndex, int toIndex) {
+    final tmp = data[fromIndex];
+    data[fromIndex] = data[toIndex];
+    data[toIndex] = tmp;
+  }
 }

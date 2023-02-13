@@ -178,6 +178,20 @@ class PostBloc extends Bloc<PostEvent, PostState>
       ));
     });
 
+    on<PostSwapped>((event, emit) {
+      final data = [...state.data];
+      final tmp = data[event.fromIndex];
+      data[event.fromIndex] = data[event.toIndex];
+      data[event.toIndex] = tmp;
+      swap(event.fromIndex, event.toIndex);
+
+      event.onSuccess?.call();
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
     on<PostReset>((event, emit) {
       emit(PostState.initial());
     });

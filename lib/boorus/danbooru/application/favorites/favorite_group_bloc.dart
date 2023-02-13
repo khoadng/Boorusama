@@ -189,6 +189,23 @@ class FavoriteGroupsItemRemoved extends FavoriteGroupsEvent {
   List<Object?> get props => [group, postIds, onSuccess, onFailure];
 }
 
+class FavoriteGroupsItemSwapped extends FavoriteGroupsEvent {
+  const FavoriteGroupsItemSwapped({
+    required this.group,
+    required this.fromIndex,
+    required this.toIndex,
+    // this.onSuccess,
+  });
+
+  final FavoriteGroup group;
+  final int fromIndex;
+  final int toIndex;
+  // final void Function(FavoriteGroup group)? onSuccess;
+
+  @override
+  List<Object?> get props => [group, fromIndex, toIndex];
+}
+
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     with PaginationMixin<FavoriteGroup, FavoriteGroupsState> {
   FavoriteGroupsBloc({
@@ -362,6 +379,17 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
           : state.favoriteGroups;
 
       emit(state.copyWith(filteredFavoriteGroups: filtered));
+    });
+
+    on<FavoriteGroupsItemSwapped>((event, emit) {
+      final data = [...state.data];
+      final tmp = data[event.fromIndex];
+      data[event.fromIndex] = data[event.toIndex];
+      data[event.toIndex] = tmp;
+
+      emit(state.copyWith(
+        favoriteGroups: data,
+      ));
     });
   }
 
