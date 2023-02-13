@@ -41,9 +41,8 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
     for (final cmd in commands) {
       final toIndex = cmd[1] as int;
       final fromIndex = cmd.first as int;
-      final tmp = ids[fromIndex];
-      ids[fromIndex] = ids[toIndex];
-      ids[toIndex] = tmp;
+      final item = ids.removeAt(fromIndex);
+      ids.insert(toIndex, item);
     }
 
     context.read<FavoriteGroupsBloc>().add(FavoriteGroupsEdited(
@@ -112,7 +111,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                   controller: controller,
                   itemCount: state.data.length,
                   onReorder: (oldIndex, newIndex) =>
-                      context.read<PostBloc>().add(PostSwapped(
+                      context.read<PostBloc>().add(PostMovedAndInserted(
                             fromIndex: oldIndex,
                             toIndex: newIndex,
                             onSuccess: () {

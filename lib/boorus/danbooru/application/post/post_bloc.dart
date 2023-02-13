@@ -192,6 +192,19 @@ class PostBloc extends Bloc<PostEvent, PostState>
       ));
     });
 
+    on<PostMovedAndInserted>((event, emit) {
+      final data = [...state.data];
+      final item = data.removeAt(event.fromIndex);
+      data.insert(event.toIndex, item);
+      moveAndInsert(event.fromIndex, event.toIndex);
+
+      event.onSuccess?.call();
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
     on<PostReset>((event, emit) {
       emit(PostState.initial());
     });

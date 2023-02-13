@@ -155,4 +155,9 @@ mixin InfiniteLoadMixin<T, State> {
     data[fromIndex] = data[toIndex];
     data[toIndex] = tmp;
   }
+
+  void moveAndInsert(int from, int to) {
+    final item = data.removeAt(from);
+    data.insert(to, item);
+  }
 }
