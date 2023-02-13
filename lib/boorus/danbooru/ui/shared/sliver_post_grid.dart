@@ -197,8 +197,10 @@ class SliverPostGrid extends HookWidget {
                             borderRadius: BorderRadius.circular(
                               state.settings.imageBorderRadius,
                             ),
-                            cacheHeight: constraints.maxHeight.toIntOrNull(),
-                            cacheWidth: constraints.maxWidth.toIntOrNull(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           )
                         : BooruImage(
                             aspectRatio: post.post.aspectRatio,
@@ -215,8 +217,10 @@ class SliverPostGrid extends HookWidget {
                             ),
                             previewCacheManager:
                                 context.read<PreviewImageCacheManager>(),
-                            cacheHeight: constraints.maxHeight.toIntOrNull(),
-                            cacheWidth: constraints.maxWidth.toIntOrNull(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
                     onTap: () => onTap?.call(post.post, index),
                     isAnimated: post.post.isAnimated,
