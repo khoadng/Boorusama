@@ -82,6 +82,17 @@ class PostUpdated extends PostEvent {
   List<Object?> get props => [post];
 }
 
+class PostRemoved extends PostEvent {
+  const PostRemoved({
+    required this.postIds,
+  });
+
+  final List<int> postIds;
+
+  @override
+  List<Object?> get props => [postIds];
+}
+
 class PostReset extends PostEvent {
   const PostReset();
 

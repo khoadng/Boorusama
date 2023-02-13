@@ -478,16 +478,15 @@ final favoriteGroupDetailsHandler =
       BlocProvider(
         create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
-            tag: group.getQueryString(),
-            fetcher: SearchedPostFetcher.fromTags(
-              group.getQueryString(),
-            ),
+            fetcher:
+                FavoriteGroupPostFetcher(ids: group.postIds.take(20).toList()),
           )),
       ),
     ],
     child: CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
+        postIds: QueueList.from(group.postIds.skip(20)),
       ),
     ),
   );

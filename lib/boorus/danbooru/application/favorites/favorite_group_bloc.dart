@@ -165,7 +165,7 @@ class FavoriteGroupsItemAdded extends FavoriteGroupsEvent {
 
   final FavoriteGroup group;
   final List<int> postIds;
-  final void Function()? onSuccess;
+  final void Function(FavoriteGroup group)? onSuccess;
   final void Function(String message, bool translatable)? onFailure;
 
   @override
@@ -182,7 +182,7 @@ class FavoriteGroupsItemRemoved extends FavoriteGroupsEvent {
 
   final FavoriteGroup group;
   final List<int> postIds;
-  final void Function()? onSuccess;
+  final void Function(FavoriteGroup group)? onSuccess;
   final void Function(String message)? onFailure;
 
   @override
@@ -309,17 +309,21 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         return;
       }
 
+      final items = [
+        ...event.group.postIds,
+        ...event.postIds,
+      ];
+
       await tryAsync<bool>(
         action: () => favoriteGroupRepository.addItemsToFavoriteGroup(
           id: event.group.id,
-          itemIds: [
-            ...event.group.postIds,
-            ...event.postIds,
-          ],
+          itemIds: items,
         ),
         onSuccess: (success) async {
           if (success) {
-            event.onSuccess?.call();
+            event.onSuccess?.call(event.group.copyWith(
+              postIds: items,
+            ));
             add(const FavoriteGroupsRefreshed());
           } else {
             event.onFailure?.call('Failed to add posts to favgroup', false);
@@ -339,7 +343,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         ),
         onSuccess: (success) async {
           if (success) {
-            event.onSuccess?.call();
+            event.onSuccess?.call(event.group.copyWith(
+              postIds: items,
+            ));
             add(const FavoriteGroupsRefreshed());
           } else {
             event.onFailure?.call('Failed to remove posts to favgroup');

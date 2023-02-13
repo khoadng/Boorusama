@@ -154,7 +154,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                                   ),
                           );
                         },
-                        onSuccess: () {
+                        onSuccess: (newGroup) {
                           showSimpleSnackBar(
                             context: context,
                             duration: const Duration(seconds: 3),
@@ -164,7 +164,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                                 if (navigatorKey.currentContext != null) {
                                   goToFavoriteGroupDetailsPage(
                                     navigatorKey.currentContext!,
-                                    group,
+                                    newGroup,
                                   );
                                 }
                               },

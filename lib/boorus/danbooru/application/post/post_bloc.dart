@@ -169,6 +169,15 @@ class PostBloc extends Bloc<PostEvent, PostState>
       }
     });
 
+    on<PostRemoved>((event, emit) {
+      final data = [...state.data]
+        ..removeWhere((e) => event.postIds.contains(e.post.id));
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
     on<PostReset>((event, emit) {
       emit(PostState.initial());
     });
