@@ -47,7 +47,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
             child: SizedBox(
-              height: 200,
+              height: 160,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (_, index) => Padding(
