@@ -47,13 +47,15 @@ class AddToFavoriteGroupPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
             child: SizedBox(
-              height: 160,
+              height: 200,
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (_, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: BooruImage(
-                    imageUrl: posts[index].previewImageUrl,
+                    imageUrl: posts[index].isAnimated
+                        ? posts[index].previewImageUrl
+                        : posts[index].normalImageUrl,
                     aspectRatio: posts[index].aspectRatio,
                   ),
                 ),
