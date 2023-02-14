@@ -18,7 +18,7 @@ class DefaultPostContextMenu extends StatelessWidget {
   const DefaultPostContextMenu({
     super.key,
     required this.post,
-    required this.onMultiSelect,
+    this.onMultiSelect,
   });
 
   final PostData post;
@@ -50,12 +50,13 @@ class DefaultPostContextMenu extends StatelessWidget {
                 );
               },
             ),
-          ContextMenuButtonConfig(
-            'Select',
-            onPressed: () {
-              onMultiSelect?.call();
-            },
-          ),
+          if (onMultiSelect != null)
+            ContextMenuButtonConfig(
+              'Select',
+              onPressed: () {
+                onMultiSelect?.call();
+              },
+            ),
         ],
       ),
     );
