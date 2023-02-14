@@ -435,6 +435,7 @@ void main() async {
                   final favoriteGroupBloc = FavoriteGroupsBloc(
                     favoriteGroupRepository: favoriteGroupRepo,
                     accountRepository: accountRepo,
+                    postRepository: postRepo,
                   );
 
                   final currentUserBloc = CurrentUserBloc(

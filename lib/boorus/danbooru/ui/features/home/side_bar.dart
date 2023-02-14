@@ -73,8 +73,8 @@ class SideBarMenu extends StatelessWidget {
                           },
                         ),
                       if (state.data! != Account.empty)
-                        ListTile(
-                          leading: const Icon(Icons.collections),
+                        _SideMenuTile(
+                          icon: const Icon(Icons.collections),
                           title: const Text('Favorite groups'),
                           onTap: () {
                             if (popOnSelect) Navigator.of(context).pop();

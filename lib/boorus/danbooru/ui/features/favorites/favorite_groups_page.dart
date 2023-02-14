@@ -14,6 +14,7 @@ import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/modal_favorite_group_action.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/warning_container.dart';
 
 class FavoriteGroupsPage extends StatelessWidget {
@@ -88,27 +89,34 @@ class FavoriteGroupsPage extends StatelessWidget {
           final group = state.favoriteGroups[index];
 
           return ListTile(
-            title: Row(
+            title: Text(
+              group.name.replaceAll('_', ' '),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+            ),
+            subtitle: Row(
               children: [
-                if (!group.isPublic)
-                  Chip(
-                    label: const Text('favorite_groups.private').tr(),
-                    visualDensity:
-                        const VisualDensity(horizontal: -4, vertical: -4),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                if (!group.isPublic) const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    group.name.replaceAll('_', ' '),
-                  ),
+                Text(
+                  'favorite_groups.group_item_counter'.plural(group.totalCount),
                 ),
+                if (!group.isPublic)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4),
+                    child: Text('|'),
+                  ),
+                if (!group.isPublic) const Text('favorite_groups.private').tr(),
               ],
             ),
-            subtitle: Text(
-              'favorite_groups.group_item_counter'.plural(group.totalCount),
-            ),
             onTap: () => goToFavoriteGroupDetailsPage(context, group),
+            leading: state.previews.isNotEmpty && group.totalCount > 0
+                ? BooruImage(
+                    fit: BoxFit.cover,
+                    imageUrl: state.previews[group.postIds.first] ?? '',
+                  )
+                : const BooruImage(imageUrl: ''),
             trailing: IconButton(
               onPressed: () => _showEditSheet(
                 context,
@@ -160,7 +168,7 @@ class FavoriteGroupsPage extends StatelessWidget {
   Widget _buildLoading() {
     return const SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.only(top: 8),
+        padding: EdgeInsets.only(top: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
       ),
     );

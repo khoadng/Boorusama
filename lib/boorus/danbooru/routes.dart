@@ -460,7 +460,7 @@ final favoriteGroupsHandler =
     providers: [
       BlocProvider.value(
         value: context!.read<FavoriteGroupsBloc>()
-          ..add(const FavoriteGroupsRefreshed()),
+          ..add(const FavoriteGroupsRefreshed(includePreviews: true)),
       ),
     ],
     child: const FavoriteGroupsPage(),
@@ -478,16 +478,15 @@ final favoriteGroupDetailsHandler =
       BlocProvider(
         create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
-            tag: group.getQueryString(),
-            fetcher: SearchedPostFetcher.fromTags(
-              group.getQueryString(),
-            ),
+            fetcher:
+                FavoriteGroupPostFetcher(ids: group.postIds.take(60).toList()),
           )),
       ),
     ],
     child: CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
+        postIds: QueueList.from(group.postIds.skip(60)),
       ),
     ),
   );

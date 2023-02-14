@@ -21,6 +21,7 @@ import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'selectable_icon_button.dart';
@@ -139,8 +140,6 @@ class SliverPostGrid extends HookWidget {
                 contextMenu: contextMenuBuilder(post),
                 child: LayoutBuilder(
                   builder: (context, constraints) => ImageGridItem(
-                    cacheHeight: constraints.maxHeight.toIntOrNull(),
-                    cacheWidth: constraints.maxWidth.toIntOrNull(),
                     multiSelect: multiSelect,
                     multiSelectBuilder: () => SelectableIconButton(
                       unSelectedIcon: Container(
@@ -169,8 +168,6 @@ class SliverPostGrid extends HookWidget {
                       onChanged: (value) =>
                           onPostSelectChanged?.call(post.post, value),
                     ),
-                    previewCacheManager:
-                        context.read<PreviewImageCacheManager>(),
                     isFaved: post.isFavorited,
                     enableFav: authState is Authenticated,
                     onFavToggle: (isFaved) async {
@@ -187,12 +184,6 @@ class SliverPostGrid extends HookWidget {
                       controller: scrollController,
                       index: index,
                     ),
-                    borderRadius: BorderRadius.circular(
-                      state.settings.imageBorderRadius,
-                    ),
-                    aspectRatio: post.post.aspectRatio,
-                    gridSize: gridSize,
-                    imageQuality: state.settings.imageQuality,
                     image: legacy
                         ? BooruImageLegacy(
                             imageUrl: getImageUrlForDisplay(
@@ -206,23 +197,36 @@ class SliverPostGrid extends HookWidget {
                             borderRadius: BorderRadius.circular(
                               state.settings.imageBorderRadius,
                             ),
-                            cacheHeight: constraints.maxHeight.toIntOrNull(),
-                            cacheWidth: constraints.maxWidth.toIntOrNull(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           )
-                        : null,
+                        : BooruImage(
+                            aspectRatio: post.post.aspectRatio,
+                            imageUrl: getImageUrlForDisplay(
+                              post.post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
+                            ),
+                            placeholderUrl: post.post.previewImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            previewCacheManager:
+                                context.read<PreviewImageCacheManager>(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
+                          ),
                     onTap: () => onTap?.call(post.post, index),
                     isAnimated: post.post.isAnimated,
                     isTranslated: post.post.isTranslated,
                     hasComments: post.post.hasComment,
                     hasParentOrChildren: post.post.hasParentOrChildren,
-                    previewUrl: getImageUrlForDisplay(
-                      post.post,
-                      getImageQuality(
-                        size: gridSize,
-                        presetImageQuality: state.settings.imageQuality,
-                      ),
-                    ),
-                    previewPlaceholderUrl: post.post.previewImageUrl,
                   ),
                 ),
               );

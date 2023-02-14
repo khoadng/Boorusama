@@ -53,7 +53,9 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                 itemBuilder: (_, index) => Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 2),
                   child: BooruImage(
-                    imageUrl: posts[index].previewImageUrl,
+                    imageUrl: posts[index].isAnimated
+                        ? posts[index].previewImageUrl
+                        : posts[index].normalImageUrl,
                     aspectRatio: posts[index].aspectRatio,
                   ),
                 ),
@@ -113,25 +115,8 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                     curve: Curves.easeInOut,
                     animation: animation,
                     child: ListTile(
-                      title: Row(
-                        children: [
-                          if (!group.isPublic)
-                            Chip(
-                              label: const Text('favorite_groups.private').tr(),
-                              visualDensity: const VisualDensity(
-                                horizontal: -4,
-                                vertical: -4,
-                              ),
-                              backgroundColor:
-                                  Theme.of(context).colorScheme.primary,
-                            ),
-                          if (!group.isPublic) const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              group.name.replaceAll('_', ' '),
-                            ),
-                          ),
-                        ],
+                      title: Text(
+                        group.name.replaceAll('_', ' '),
                       ),
                       subtitle: Text(dateTimeToStringTimeAgo(group.updatedAt)),
                       trailing:
@@ -154,7 +139,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                                   ),
                           );
                         },
-                        onSuccess: () {
+                        onSuccess: (newGroup) {
                           showSimpleSnackBar(
                             context: context,
                             duration: const Duration(seconds: 3),
@@ -164,7 +149,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                                 if (navigatorKey.currentContext != null) {
                                   goToFavoriteGroupDetailsPage(
                                     navigatorKey.currentContext!,
-                                    group,
+                                    newGroup,
                                   );
                                 }
                               },

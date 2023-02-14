@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
+import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
 
@@ -18,6 +19,7 @@ class FavoriteGroupsState extends Equatable
   const FavoriteGroupsState({
     required this.favoriteGroups,
     required this.filteredFavoriteGroups,
+    required this.previews,
     required this.page,
     required this.loading,
   });
@@ -27,16 +29,19 @@ class FavoriteGroupsState extends Equatable
         filteredFavoriteGroups: [],
         page: 1,
         loading: true,
+        previews: {},
       );
 
   final List<FavoriteGroup> favoriteGroups;
   final List<FavoriteGroup> filteredFavoriteGroups;
+  final Map<int, String> previews;
 
   FavoriteGroupsState copyWith({
     List<FavoriteGroup>? favoriteGroups,
     List<FavoriteGroup>? filteredFavoriteGroups,
     bool? loading,
     int? page,
+    Map<int, String>? previews,
   }) =>
       FavoriteGroupsState(
         favoriteGroups: favoriteGroups ?? this.favoriteGroups,
@@ -44,11 +49,12 @@ class FavoriteGroupsState extends Equatable
             filteredFavoriteGroups ?? this.filteredFavoriteGroups,
         loading: loading ?? this.loading,
         page: page ?? this.page,
+        previews: previews ?? this.previews,
       );
 
   @override
   List<Object?> get props =>
-      [filteredFavoriteGroups, favoriteGroups, loading, page];
+      [filteredFavoriteGroups, favoriteGroups, loading, page, previews];
 
   @override
   FavoriteGroupsState copyPaginationState({
@@ -79,12 +85,14 @@ abstract class FavoriteGroupsEvent extends Equatable {
 class FavoriteGroupsRefreshed extends FavoriteGroupsEvent {
   const FavoriteGroupsRefreshed({
     this.namePattern,
+    this.includePreviews = false,
   });
 
   final String? namePattern;
+  final bool includePreviews;
 
   @override
-  List<Object?> get props => [namePattern];
+  List<Object?> get props => [namePattern, includePreviews];
 }
 
 class FavoriteGroupsFetched extends FavoriteGroupsEvent {
@@ -130,6 +138,7 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
     this.name,
     this.initialIds,
     this.isPrivate,
+    this.refreshPreviews = false,
     this.onFailure,
   });
 
@@ -138,10 +147,12 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
   final String? name;
   final String? initialIds;
   final bool? isPrivate;
+  final bool refreshPreviews;
   final void Function(Object message)? onFailure;
 
   @override
-  List<Object?> get props => [group, name, initialIds, isPrivate, onFailure];
+  List<Object?> get props =>
+      [group, name, initialIds, isPrivate, onFailure, refreshPreviews];
 }
 
 class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
@@ -165,7 +176,7 @@ class FavoriteGroupsItemAdded extends FavoriteGroupsEvent {
 
   final FavoriteGroup group;
   final List<int> postIds;
-  final void Function()? onSuccess;
+  final void Function(FavoriteGroup group)? onSuccess;
   final void Function(String message, bool translatable)? onFailure;
 
   @override
@@ -182,11 +193,39 @@ class FavoriteGroupsItemRemoved extends FavoriteGroupsEvent {
 
   final FavoriteGroup group;
   final List<int> postIds;
-  final void Function()? onSuccess;
+  final void Function(FavoriteGroup group)? onSuccess;
   final void Function(String message)? onFailure;
 
   @override
   List<Object?> get props => [group, postIds, onSuccess, onFailure];
+}
+
+class FavoriteGroupsItemSwapped extends FavoriteGroupsEvent {
+  const FavoriteGroupsItemSwapped({
+    required this.group,
+    required this.fromIndex,
+    required this.toIndex,
+    // this.onSuccess,
+  });
+
+  final FavoriteGroup group;
+  final int fromIndex;
+  final int toIndex;
+  // final void Function(FavoriteGroup group)? onSuccess;
+
+  @override
+  List<Object?> get props => [group, fromIndex, toIndex];
+}
+
+class _FetchPreviews extends FavoriteGroupsEvent {
+  const _FetchPreviews({
+    required this.ids,
+  });
+
+  final List<int> ids;
+
+  @override
+  List<Object?> get props => [ids];
 }
 
 class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
@@ -194,6 +233,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
   FavoriteGroupsBloc({
     required FavoriteGroupRepository favoriteGroupRepository,
     required AccountRepository accountRepository,
+    required PostRepository postRepository,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
       final currentUser = await accountRepository.get();
@@ -206,27 +246,27 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         onFetchEnd: (data) =>
             emit(state.copyWith(filteredFavoriteGroups: data)),
         fetch: (page) => currentUser != Account.empty
-            ? favoriteGroupRepository.getFavoriteGroupsByCreatorName(
+            ? favoriteGroupRepository
+                .getFavoriteGroupsByCreatorName(
                 page: page,
                 name: currentUser.username!,
               )
-            : favoriteGroupRepository.getFavoriteGroups(),
-      );
-    });
+                .then((value) {
+                if (event.includePreviews) {
+                  //TODO: shouldn't load everything
+                  final ids = value
+                      .map((e) => e.postIds.take(1))
+                      .expand((e) => e)
+                      .toSet()
+                      .toList()
+                      .take(200)
+                      .toList();
 
-    on<FavoriteGroupsFetched>((event, emit) async {
-      final currentUser = await accountRepository.get();
-      await load(
-        emit: EmitConfig(
-          stateGetter: () => state,
-          emitter: emit,
-        ),
-        page: event.page,
-        fetch: (page) => currentUser != Account.empty
-            ? favoriteGroupRepository.getFavoriteGroupsByCreatorName(
-                page: page,
-                name: currentUser.username!,
-              )
+                  add(_FetchPreviews(ids: ids));
+                }
+
+                return value;
+              })
             : favoriteGroupRepository.getFavoriteGroups(),
       );
     });
@@ -277,7 +317,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         },
         onSuccess: (success) async {
           if (success) {
-            add(const FavoriteGroupsRefreshed());
+            add(FavoriteGroupsRefreshed(
+              includePreviews: event.refreshPreviews,
+            ));
           }
         },
       );
@@ -309,17 +351,21 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         return;
       }
 
+      final items = [
+        ...event.group.postIds,
+        ...event.postIds,
+      ];
+
       await tryAsync<bool>(
         action: () => favoriteGroupRepository.addItemsToFavoriteGroup(
           id: event.group.id,
-          itemIds: [
-            ...event.group.postIds,
-            ...event.postIds,
-          ],
+          itemIds: items,
         ),
         onSuccess: (success) async {
           if (success) {
-            event.onSuccess?.call();
+            event.onSuccess?.call(event.group.copyWith(
+              postIds: items,
+            ));
             add(const FavoriteGroupsRefreshed());
           } else {
             event.onFailure?.call('Failed to add posts to favgroup', false);
@@ -339,7 +385,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         ),
         onSuccess: (success) async {
           if (success) {
-            event.onSuccess?.call();
+            event.onSuccess?.call(event.group.copyWith(
+              postIds: items,
+            ));
             add(const FavoriteGroupsRefreshed());
           } else {
             event.onFailure?.call('Failed to remove posts to favgroup');
@@ -357,10 +405,29 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
 
       emit(state.copyWith(filteredFavoriteGroups: filtered));
     });
+
+    on<FavoriteGroupsItemSwapped>((event, emit) {
+      final data = [...state.data];
+      final tmp = data[event.fromIndex];
+      data[event.fromIndex] = data[event.toIndex];
+      data[event.toIndex] = tmp;
+
+      emit(state.copyWith(
+        favoriteGroups: data,
+      ));
+    });
+
+    on<_FetchPreviews>((event, emit) async {
+      final posts = await postRepository.getPostsFromIds(event.ids);
+      final map = {for (final p in posts) p.id: p.previewImageUrl};
+
+      emit(state.copyWith(previews: map));
+    });
   }
 
   factory FavoriteGroupsBloc.of(BuildContext context) => FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
         accountRepository: context.read<AccountRepository>(),
+        postRepository: context.read<PostRepository>(),
       );
 }
