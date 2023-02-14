@@ -373,8 +373,8 @@
         "duplicate_items_warning_notification" : "The entered posts already exist in the group",
         "detete_confirmation" : "Are you sure you want to delete this favorite group",
         "group_item_counter" : {
-            "one": "{} item",
-            "other": "{} items"
+            "one": "{} post",
+            "other": "{} posts"
         } 
     },
 

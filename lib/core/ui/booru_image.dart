@@ -32,6 +32,10 @@ class BooruImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl.isEmpty) {
+      return _Empty(borderRadius: borderRadius);
+    }
+
     return ClipRRect(
       borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       child: AspectRatio(
@@ -71,6 +75,21 @@ class BooruImage extends StatelessWidget {
           fadeOutDuration: const Duration(microseconds: 500),
         ),
       ),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({
+    required this.borderRadius,
+  });
+
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImagePlaceHolder(
+      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
     );
   }
 }

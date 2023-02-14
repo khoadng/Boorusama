@@ -460,7 +460,7 @@ final favoriteGroupsHandler =
     providers: [
       BlocProvider.value(
         value: context!.read<FavoriteGroupsBloc>()
-          ..add(const FavoriteGroupsRefreshed()),
+          ..add(const FavoriteGroupsRefreshed(includePreviews: true)),
       ),
     ],
     child: const FavoriteGroupsPage(),
