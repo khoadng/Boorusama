@@ -115,12 +115,8 @@ class FavoriteGroupsPage extends StatelessWidget {
                 ? BooruImage(
                     fit: BoxFit.cover,
                     imageUrl: state.previews[group.postIds.first] ?? '',
-                    aspectRatio: 1,
                   )
-                : const AspectRatio(
-                    aspectRatio: 1,
-                    child: Card(),
-                  ),
+                : const BooruImage(imageUrl: ''),
             trailing: IconButton(
               onPressed: () => _showEditSheet(
                 context,

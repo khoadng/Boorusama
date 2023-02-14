@@ -66,6 +66,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
     context.read<FavoriteGroupsBloc>().add(FavoriteGroupsEdited(
           group: widget.group,
           initialIds: ids.join(' '),
+          refreshPreviews: true,
         ));
   }
 
@@ -261,7 +262,6 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                                         ? post.post.previewImageUrl
                                         : post.post.normalImageUrl,
                                     placeholderUrl: post.post.previewImageUrl,
-                                    aspectRatio: 1,
                                   ),
                                   isAnimated: post.post.isAnimated,
                                   isTranslated: post.post.isTranslated,

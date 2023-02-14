@@ -138,6 +138,7 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
     this.name,
     this.initialIds,
     this.isPrivate,
+    this.refreshPreviews = false,
     this.onFailure,
   });
 
@@ -146,10 +147,12 @@ class FavoriteGroupsEdited extends FavoriteGroupsEvent {
   final String? name;
   final String? initialIds;
   final bool? isPrivate;
+  final bool refreshPreviews;
   final void Function(Object message)? onFailure;
 
   @override
-  List<Object?> get props => [group, name, initialIds, isPrivate, onFailure];
+  List<Object?> get props =>
+      [group, name, initialIds, isPrivate, onFailure, refreshPreviews];
 }
 
 class FavoriteGroupsDeleted extends FavoriteGroupsEvent {
@@ -314,7 +317,9 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         },
         onSuccess: (success) async {
           if (success) {
-            add(const FavoriteGroupsRefreshed());
+            add(FavoriteGroupsRefreshed(
+              includePreviews: event.refreshPreviews,
+            ));
           }
         },
       );

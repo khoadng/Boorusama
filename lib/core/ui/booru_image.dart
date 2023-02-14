@@ -15,7 +15,7 @@ class BooruImage extends StatelessWidget {
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
-    required this.aspectRatio,
+    this.aspectRatio = 1,
     this.previewCacheManager,
     this.cacheHeight,
     this.cacheWidth,
@@ -33,7 +33,10 @@ class BooruImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (imageUrl.isEmpty) {
-      return _Empty(borderRadius: borderRadius);
+      return AspectRatio(
+        aspectRatio: aspectRatio,
+        child: _Empty(borderRadius: borderRadius),
+      );
     }
 
     return ClipRRect(
