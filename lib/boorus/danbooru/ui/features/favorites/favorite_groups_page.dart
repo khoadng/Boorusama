@@ -94,7 +94,7 @@ class FavoriteGroupsPage extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                fontSize: 20,
+                fontSize: 18,
               ),
             ),
             subtitle: Row(
