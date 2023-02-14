@@ -160,7 +160,7 @@ class FavoriteGroupsPage extends StatelessWidget {
   Widget _buildLoading() {
     return const SliverToBoxAdapter(
       child: Padding(
-        padding: EdgeInsets.only(top: 8),
+        padding: EdgeInsets.only(top: 24),
         child: Center(child: CircularProgressIndicator.adaptive()),
       ),
     );
