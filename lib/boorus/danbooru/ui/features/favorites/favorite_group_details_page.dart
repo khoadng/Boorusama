@@ -182,8 +182,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                               },
                             )),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount:
-                              !editing ? count : (count * 1.5).round(),
+                          crossAxisCount: count,
                           mainAxisSpacing: 4,
                           crossAxisSpacing: 4,
                         ),
@@ -240,9 +239,10 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                               ),
                               if (editing)
                                 Positioned(
-                                  top: 8,
-                                  right: 8,
+                                  top: 4,
+                                  right: 4,
                                   child: CircularIconButton(
+                                    padding: const EdgeInsets.all(4),
                                     icon: const Icon(Icons.close),
                                     onPressed: () {
                                       context.read<PostBloc>().add(
