@@ -479,14 +479,14 @@ final favoriteGroupDetailsHandler =
         create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
             fetcher:
-                FavoriteGroupPostFetcher(ids: group.postIds.take(20).toList()),
+                FavoriteGroupPostFetcher(ids: group.postIds.take(60).toList()),
           )),
       ),
     ],
     child: CustomContextMenuOverlay(
       child: FavoriteGroupDetailsPage(
         group: group,
-        postIds: QueueList.from(group.postIds.skip(20)),
+        postIds: QueueList.from(group.postIds.skip(60)),
       ),
     ),
   );

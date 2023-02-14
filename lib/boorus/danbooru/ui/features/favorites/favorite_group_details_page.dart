@@ -42,6 +42,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
   List<List<Object>> commands = [];
   bool editing = false;
   final AutoScrollController scrollController = AutoScrollController();
+  int rowCountEditMode = 2;
 
   void _aggregate() {
     final ids = widget.group.postIds;
@@ -82,9 +83,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
           ? FloatingActionButton(
               onPressed: () {
                 _aggregate();
-                setState(() {
-                  editing = false;
-                });
+                setState(() => editing = false);
               },
               child: const Icon(Icons.save),
             )
@@ -145,9 +144,31 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
           : Column(
               children: [
                 if (editing)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 4),
-                    child: Text('Drag and drop to determine ordering.'),
+                  Row(
+                    children: [
+                      const Expanded(
+                        child: Text('Drag and drop to determine ordering.'),
+                      ),
+                      ButtonBar(
+                        children: [
+                          IconButton(
+                            onPressed: rowCountEditMode > 1
+                                ? () => setState(() => rowCountEditMode -= 1)
+                                : null,
+                            icon: const Icon(Icons.remove),
+                          ),
+                          IconButton(
+                            onPressed: rowCountEditMode <
+                                    _sizeToGridCount(
+                                      Screen.of(context).nextBreakpoint(),
+                                    )
+                                ? () => setState(() => rowCountEditMode += 1)
+                                : null,
+                            icon: const Icon(Icons.add),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 Expanded(
                   child: InfiniteLoadList(
@@ -182,7 +203,7 @@ class _FavoriteGroupDetailsPageState extends State<FavoriteGroupDetailsPage> {
                               },
                             )),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: count,
+                          crossAxisCount: editing ? rowCountEditMode : count,
                           mainAxisSpacing: 4,
                           crossAxisSpacing: 4,
                         ),
