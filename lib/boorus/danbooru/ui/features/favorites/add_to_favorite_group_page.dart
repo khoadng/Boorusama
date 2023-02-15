@@ -150,6 +150,7 @@ class AddToFavoriteGroupPage extends StatelessWidget {
                                   goToFavoriteGroupDetailsPage(
                                     navigatorKey.currentContext!,
                                     newGroup,
+                                    bloc,
                                   );
                                 }
                               },

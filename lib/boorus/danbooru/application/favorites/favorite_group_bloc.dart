@@ -11,6 +11,7 @@ import 'package:boorusama/boorus/danbooru/application/common.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
+import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
 
@@ -122,14 +123,16 @@ class FavoriteGroupsCreated extends FavoriteGroupsEvent {
     required this.name,
     required this.initialIds,
     required this.isPrivate,
+    this.onFailure,
   });
 
   final String name;
   final String initialIds;
   final bool isPrivate;
+  final void Function(String message, bool translatable)? onFailure;
 
   @override
-  List<Object?> get props => [name, initialIds, isPrivate];
+  List<Object?> get props => [name, initialIds, isPrivate, onFailure];
 }
 
 class FavoriteGroupsEdited extends FavoriteGroupsEvent {
@@ -234,6 +237,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     required FavoriteGroupRepository favoriteGroupRepository,
     required AccountRepository accountRepository,
     required PostRepository postRepository,
+    required User? currentUser,
   }) : super(FavoriteGroupsState.initial()) {
     on<FavoriteGroupsRefreshed>((event, emit) async {
       final currentUser = await accountRepository.get();
@@ -272,6 +276,14 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     });
 
     on<FavoriteGroupsCreated>((event, emit) async {
+      if (currentUser != null &&
+          !isBooruGoldPlusAccount(currentUser.level) &&
+          state.favoriteGroups.length >= 10) {
+        event.onFailure?.call('favorite_groups.max_limit_warning', true);
+
+        return;
+      }
+
       final idString = event.initialIds.split(' ');
       final ids = idString
           .map(
@@ -290,6 +302,8 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
         onSuccess: (success) async {
           if (success) {
             add(const FavoriteGroupsRefreshed());
+          } else {
+            event.onFailure?.call('Fail to create favorite group', false);
           }
         },
       );
@@ -425,9 +439,14 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
     });
   }
 
-  factory FavoriteGroupsBloc.of(BuildContext context) => FavoriteGroupsBloc(
+  factory FavoriteGroupsBloc.of(
+    BuildContext context, {
+    required User? currentUser,
+  }) =>
+      FavoriteGroupsBloc(
         favoriteGroupRepository: context.read<FavoriteGroupRepository>(),
         accountRepository: context.read<AccountRepository>(),
         postRepository: context.read<PostRepository>(),
+        currentUser: currentUser,
       );
 }

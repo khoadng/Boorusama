@@ -9,13 +9,10 @@ import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 
 // Project imports:
 import 'package:boorusama/boorus/danbooru/application/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
-import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/modal_favorite_group_action.dart';
 import 'package:boorusama/core/ui/booru_image.dart';
-import 'package:boorusama/core/ui/warning_container.dart';
 
 class FavoriteGroupsPage extends StatelessWidget {
   const FavoriteGroupsPage({
@@ -40,27 +37,9 @@ class FavoriteGroupsPage extends StatelessWidget {
       body: SafeArea(
         child: BlocBuilder<FavoriteGroupsBloc, FavoriteGroupsState>(
           builder: (context, state) {
-            return Column(
-              children: [
-                BlocBuilder<CurrentUserBloc, CurrentUserState>(
-                  builder: (context, state) {
-                    return state.user != null &&
-                            !isBooruGoldPlusAccount(state.user!.level)
-                        ? WarningContainer(
-                            contentBuilder: (context) =>
-                                const Text('favorite_groups.max_limit_warning')
-                                    .tr(),
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
-                Expanded(
-                  child: CustomScrollView(
-                    slivers: [
-                      if (state.loading) _buildLoading() else _buildList(state),
-                    ],
-                  ),
-                ),
+            return CustomScrollView(
+              slivers: [
+                if (state.loading) _buildLoading() else _buildList(state),
               ],
             );
           },
@@ -110,7 +89,11 @@ class FavoriteGroupsPage extends StatelessWidget {
                 if (!group.isPublic) const Text('favorite_groups.private').tr(),
               ],
             ),
-            onTap: () => goToFavoriteGroupDetailsPage(context, group),
+            onTap: () {
+              final bloc = context.read<FavoriteGroupsBloc>();
+
+              goToFavoriteGroupDetailsPage(context, group, bloc);
+            },
             leading: state.previews.isNotEmpty && group.totalCount > 0
                 ? BooruImage(
                     fit: BoxFit.cover,

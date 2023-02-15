@@ -28,6 +28,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -1297,6 +1298,10 @@ Future<Object?> goToFavoriteGroupCreatePage(
         name: name,
         initialIds: ids,
         isPrivate: isPrivate,
+        onFailure: (message, translatable) => showSimpleSnackBar(
+          context: context,
+          content: translatable ? Text(message).tr() : Text(message),
+        ),
       )),
     ),
   );
@@ -1422,7 +1427,11 @@ void goToFavoriteGroupPage(BuildContext context) {
   );
 }
 
-void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
+void goToFavoriteGroupDetailsPage(
+  BuildContext context,
+  FavoriteGroup group,
+  FavoriteGroupsBloc bloc,
+) {
   AppRouter.router.navigateTo(
     context,
     '/favorite_groups/details',
@@ -1430,6 +1439,7 @@ void goToFavoriteGroupDetailsPage(BuildContext context, FavoriteGroup group) {
       name: RouterPageConstant.favoriteGroupDetails,
       arguments: [
         group,
+        bloc,
       ],
     ),
   );
@@ -1443,12 +1453,18 @@ Future<bool?> goToAddToFavoriteGroupSelectionPage(
     context: navigatorKey.currentContext ?? context,
     duration: const Duration(milliseconds: 200),
     expand: true,
-    builder: (dialogContext) => BlocProvider(
-      create: (context) =>
-          FavoriteGroupsBloc.of(context)..add(const FavoriteGroupsRefreshed()),
-      child: AddToFavoriteGroupPage(
-        posts: posts,
-      ),
+    builder: (dialogContext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+      builder: (context, state) {
+        return BlocProvider(
+          create: (context) => FavoriteGroupsBloc.of(
+            context,
+            currentUser: state.user,
+          )..add(const FavoriteGroupsRefreshed()),
+          child: AddToFavoriteGroupPage(
+            posts: posts,
+          ),
+        );
+      },
     ),
   );
 }
