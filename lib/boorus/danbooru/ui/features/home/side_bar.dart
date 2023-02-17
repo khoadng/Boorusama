@@ -74,6 +74,15 @@ class SideBarMenu extends StatelessWidget {
                         ),
                       if (state.data! != Account.empty)
                         _SideMenuTile(
+                          icon: const Icon(Icons.collections),
+                          title: const Text('Favorite groups'),
+                          onTap: () {
+                            if (popOnSelect) Navigator.of(context).pop();
+                            goToFavoriteGroupPage(context);
+                          },
+                        ),
+                      if (state.data! != Account.empty)
+                        _SideMenuTile(
                           icon: const Icon(Icons.search),
                           title: const Text('Saved search'),
                           onTap: () {

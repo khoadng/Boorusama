@@ -32,6 +32,12 @@ class AppError extends Error with EquatableMixin {
   }
 
   @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => 'Error: $type';
+
+  @override
   List<Object?> get props => [type];
 }
 
@@ -41,6 +47,12 @@ class ServerError extends Error with EquatableMixin {
   });
 
   final int? httpStatusCode;
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => 'HTTP error with status code $httpStatusCode';
 
   @override
   List<Object?> get props => [httpStatusCode];
@@ -81,6 +93,12 @@ class BooruError extends Error with EquatableMixin {
       return unknownError?.call(error) ?? const SizedBox.shrink();
     }
   }
+
+  @override
+  bool? get stringify => false;
+
+  @override
+  String toString() => error.toString();
 
   @override
   List<Object?> get props => [error];

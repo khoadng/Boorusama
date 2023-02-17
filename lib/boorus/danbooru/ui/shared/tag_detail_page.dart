@@ -125,7 +125,7 @@ class TagTitleName extends StatelessWidget {
       child: Text(
         tagName.removeUnderscoreWithSpace(),
         textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headline6!.copyWith(
+        style: Theme.of(context).textTheme.titleLarge!.copyWith(
               fontWeight: FontWeight.w900,
             ),
       ),

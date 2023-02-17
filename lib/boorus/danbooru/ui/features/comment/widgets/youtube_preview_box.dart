@@ -38,7 +38,7 @@ class YoutubePreviewBox extends StatelessWidget {
                   children: [
                     Text(
                       data.siteName,
-                      style: Theme.of(context).textTheme.caption,
+                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                     TextButton(
                       onPressed: () => launchExternalUrl(uri),

@@ -262,7 +262,7 @@ class _LandingView extends StatelessWidget {
 
   void _onHistoryTap(BuildContext context, String value, SearchBloc bloc) {
     Navigator.of(context).pop();
-    bloc.add(SearchRawTagSelected(tag: value));
+    bloc.add(SearchHistoryTagSelected(tag: value));
   }
 
   void _onHistoryCleared(BuildContext context) =>

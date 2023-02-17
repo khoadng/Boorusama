@@ -3,15 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:like_button/like_button.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
-import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
-import 'booru_image.dart';
 
 class AutoScrollOptions {
   const AutoScrollOptions({
@@ -26,47 +23,35 @@ class AutoScrollOptions {
 class ImageGridItem extends StatelessWidget {
   const ImageGridItem({
     super.key,
-    required this.borderRadius,
-    required this.gridSize,
     this.onTap,
-    required this.imageQuality,
     this.isAnimated,
     this.hasComments,
     this.hasParentOrChildren,
     this.isTranslated,
-    required this.previewUrl,
-    required this.previewPlaceholderUrl,
     this.autoScrollOptions,
-    required this.aspectRatio,
-    this.image,
+    required this.image,
     this.enableFav = false,
     this.onFavToggle,
     this.isFaved,
-    this.previewCacheManager,
     this.multiSelect = false,
     this.multiSelectBuilder,
+    this.hideOverlay = false,
   });
 
   final AutoScrollOptions? autoScrollOptions;
   final void Function()? onTap;
-  final GridSize gridSize;
-  final BorderRadius? borderRadius;
-  final ImageQuality imageQuality;
-  final double aspectRatio;
-  final Widget? image;
+  final Widget image;
 
   final bool? isAnimated;
   final bool? hasComments;
   final bool? hasParentOrChildren;
   final bool? isTranslated;
-  final String previewUrl;
-  final String previewPlaceholderUrl;
   final bool enableFav;
   final void Function(bool value)? onFavToggle;
   final bool? isFaved;
-  final CacheManager? previewCacheManager;
   final bool multiSelect;
   final Widget Function()? multiSelectBuilder;
+  final bool hideOverlay;
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +66,7 @@ class ImageGridItem extends StatelessWidget {
       child: Stack(
         children: [
           _buildImage(context),
-          if (enableFav && !multiSelect)
+          if ((enableFav && !multiSelect) && !hideOverlay)
             Positioned(
               bottom: 4,
               right: 4,
@@ -136,31 +121,23 @@ class ImageGridItem extends StatelessWidget {
   }
 
   Widget _buildImage(BuildContext context) {
-    final imageItem = image ??
-        BooruImage(
-          aspectRatio: aspectRatio,
-          imageUrl: previewUrl,
-          placeholderUrl: previewPlaceholderUrl,
-          borderRadius: borderRadius,
-          previewCacheManager: previewCacheManager,
-        );
-
     return !multiSelect
         ? Stack(
             children: [
               GestureDetector(
                 onTap: onTap,
-                child: imageItem,
+                child: image,
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 1, left: 1),
-                child: _buildOverlayIcon(),
-              ),
+              if (!hideOverlay)
+                Padding(
+                  padding: const EdgeInsets.only(top: 1, left: 1),
+                  child: _buildOverlayIcon(),
+                ),
             ],
           )
         : Stack(
             children: [
-              imageItem,
+              image,
               // multiSelectBackgroundBuilder?.call() ?? const SizedBox.shrink(),
               multiSelectBuilder?.call() ?? const SizedBox.shrink(),
             ],

@@ -7,3 +7,4 @@ export 'pool_post_fetcher.dart';
 export 'popular_fetcher.dart';
 export 'saved_search_post_fetcher.dart';
 export 'search_fetcher.dart';
+export 'favorite_group_post_fetcher.dart';

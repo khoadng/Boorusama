@@ -6,7 +6,7 @@ import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 
 // Project imports:
 import 'package:boorusama/core/domain/settings/settings.dart';
-import 'firebase.dart';
+import 'package:boorusama/core/infra/vendors/firebase_crashlytics.dart';
 
 void initializeErrorHandlers(Settings settings) {
   // Pass all uncaught "fatal" errors from the framework to Crashlytics

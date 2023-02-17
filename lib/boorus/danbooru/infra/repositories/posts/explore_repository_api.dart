@@ -46,6 +46,8 @@ class ExploreRepositoryApi implements ExploreRepository {
           .then(parsePost)
           .catchError((e) {
         handleError(e);
+
+        return <Post>[];
       });
 
   @override
@@ -71,5 +73,7 @@ class ExploreRepositoryApi implements ExploreRepository {
           .then(parsePost)
           .catchError((e) {
         handleError(e);
+
+        return <Post>[];
       });
 }

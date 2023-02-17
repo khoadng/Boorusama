@@ -36,7 +36,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
     double Function()? stateIdGenerator,
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
-    bool singleRefresh = false,
     bool? pagination,
   }) : super(PostState.initial(pagination: pagination)) {
     on<PostRefreshed>(
@@ -48,7 +47,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page, limit: singleRefresh ? null : 20)
+                .fetch(postRepository, page)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -60,29 +59,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
                 .then(preloadPreviewImagesWith(previewPreloader)),
             onError: handleErrorWith(emit),
           );
-
-          if (!singleRefresh) {
-            for (var i = 0; i < 2; i++) {
-              await fetch(
-                emit: EmitConfig(
-                  stateGetter: () => state,
-                  emitter: emit,
-                ),
-                fetch: (page) => event.fetcher
-                    .fetch(postRepository, page, limit: 20)
-                    .then(createPostDataWith(
-                      favoritePostRepository,
-                      postVoteRepository,
-                      poolRepository,
-                      accountRepository,
-                    ))
-                    .then(filterWith(blacklistedTagsRepository))
-                    .then(filterFlashFiles())
-                    .then(preloadPreviewImagesWith(previewPreloader)),
-                onError: handleErrorWith(emit),
-              );
-            }
-          }
         } else {
           await load(
             emit: EmitConfig(
@@ -193,6 +169,42 @@ class PostBloc extends Bloc<PostEvent, PostState>
       }
     });
 
+    on<PostRemoved>((event, emit) {
+      final data = [...state.data]
+        ..removeWhere((e) => event.postIds.contains(e.post.id));
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
+    on<PostSwapped>((event, emit) {
+      final data = [...state.data];
+      final tmp = data[event.fromIndex];
+      data[event.fromIndex] = data[event.toIndex];
+      data[event.toIndex] = tmp;
+      swap(event.fromIndex, event.toIndex);
+
+      event.onSuccess?.call();
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
+    on<PostMovedAndInserted>((event, emit) {
+      final data = [...state.data];
+      final item = data.removeAt(event.fromIndex);
+      data.insert(event.toIndex, item);
+      moveAndInsert(event.fromIndex, event.toIndex);
+
+      event.onSuccess?.call();
+
+      emit(state.copyWith(
+        posts: data,
+      ));
+    });
+
     on<PostReset>((event, emit) {
       emit(PostState.initial());
     });
@@ -203,7 +215,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
   factory PostBloc.of(
     BuildContext context, {
     bool? pagination,
-    bool? singleRefresh,
   }) =>
       PostBloc(
         postRepository: context.read<PostRepository>(),
@@ -214,7 +225,6 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
-        singleRefresh: singleRefresh ?? false,
       );
 
   static const postPerPage = 60;

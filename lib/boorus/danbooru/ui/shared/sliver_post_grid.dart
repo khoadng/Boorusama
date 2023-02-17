@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:context_menus/context_menus.dart';
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -17,13 +16,13 @@ import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication_cubit.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
-import 'package:boorusama/boorus/danbooru/router.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/shared.dart';
+import 'package:boorusama/common/double_utils.dart';
 import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/infra/preloader/preloader.dart';
+import 'package:boorusama/core/ui/booru_image.dart';
 import 'package:boorusama/core/ui/booru_image_legacy.dart';
-import 'package:boorusama/core/ui/download_provider_widget.dart';
 import 'package:boorusama/core/ui/image_grid_item.dart';
 import 'selectable_icon_button.dart';
 
@@ -78,9 +77,9 @@ class SliverPostGrid extends HookWidget {
     this.gridSize = GridSize.normal,
     this.borderRadius,
     this.postAnnotationBuilder,
-    this.onMultiSelect,
     this.onPostSelectChanged,
     this.multiSelect = false,
+    required this.contextMenuBuilder,
   });
 
   final List<PostData> posts;
@@ -93,9 +92,9 @@ class SliverPostGrid extends HookWidget {
   final Widget Function(BuildContext context, Post post, int index)?
       postAnnotationBuilder;
   final void Function(int postId, bool value) onFavoriteUpdated;
-  final void Function()? onMultiSelect;
   final void Function(Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
+  final Widget Function(PostData post) contextMenuBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -138,107 +137,97 @@ class SliverPostGrid extends HookWidget {
 
               return ContextMenuRegion(
                 isEnabled: !multiSelect,
-                contextMenu: DownloadProviderWidget(
-                  builder: (context, download) => GenericContextMenu(
-                    buttonConfigs: [
-                      ContextMenuButtonConfig(
-                        'Preview',
-                        onPressed: () =>
-                            goToImagePreviewPage(context, post.post),
+                contextMenu: contextMenuBuilder(post),
+                child: LayoutBuilder(
+                  builder: (context, constraints) => ImageGridItem(
+                    multiSelect: multiSelect,
+                    multiSelectBuilder: () => SelectableIconButton(
+                      unSelectedIcon: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.black45,
+                        ),
+                        child: const Icon(
+                          FontAwesomeIcons.circle,
+                          size: 32,
+                        ),
                       ),
-                      ContextMenuButtonConfig(
-                        'download.download'.tr(),
-                        onPressed: () => download(post.post),
+                      selectedIcon: Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        child: const Icon(
+                          Icons.check,
+                        ),
                       ),
-                      ContextMenuButtonConfig(
-                        'Select',
-                        onPressed: () {
-                          onMultiSelect?.call();
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                child: ImageGridItem(
-                  multiSelect: multiSelect,
-                  multiSelectBuilder: () => SelectableIconButton(
-                    unSelectedIcon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.black45,
-                      ),
-                      child: const Icon(
-                        FontAwesomeIcons.circle,
-                        size: 32,
-                      ),
+                      onChanged: (value) =>
+                          onPostSelectChanged?.call(post.post, value),
                     ),
-                    selectedIcon: Container(
-                      width: 36,
-                      height: 36,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      child: const Icon(
-                        Icons.check,
-                      ),
+                    isFaved: post.isFavorited,
+                    enableFav: authState is Authenticated,
+                    onFavToggle: (isFaved) async {
+                      final success =
+                          await _getFavAction(context, !isFaved, post.post.id);
+                      if (success) {
+                        onFavoriteUpdated.call(
+                          post.post.id,
+                          isFaved,
+                        );
+                      }
+                    },
+                    autoScrollOptions: AutoScrollOptions(
+                      controller: scrollController,
+                      index: index,
                     ),
-                    onChanged: (value) =>
-                        onPostSelectChanged?.call(post.post, value),
-                  ),
-                  previewCacheManager: context.read<PreviewImageCacheManager>(),
-                  isFaved: post.isFavorited,
-                  enableFav: authState is Authenticated,
-                  onFavToggle: (isFaved) async {
-                    final success =
-                        await _getFavAction(context, !isFaved, post.post.id);
-                    if (success) {
-                      onFavoriteUpdated.call(
-                        post.post.id,
-                        isFaved,
-                      );
-                    }
-                  },
-                  autoScrollOptions: AutoScrollOptions(
-                    controller: scrollController,
-                    index: index,
-                  ),
-                  borderRadius: BorderRadius.circular(
-                    state.settings.imageBorderRadius,
-                  ),
-                  aspectRatio: post.post.aspectRatio,
-                  gridSize: gridSize,
-                  imageQuality: state.settings.imageQuality,
-                  image: legacy
-                      ? BooruImageLegacy(
-                          imageUrl: getImageUrlForDisplay(
-                            post.post,
-                            getImageQuality(
-                              size: gridSize,
-                              presetImageQuality: state.settings.imageQuality,
+                    image: legacy
+                        ? BooruImageLegacy(
+                            imageUrl: getImageUrlForDisplay(
+                              post.post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
                             ),
+                            placeholderUrl: post.post.previewImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
+                          )
+                        : BooruImage(
+                            aspectRatio: post.post.aspectRatio,
+                            imageUrl: getImageUrlForDisplay(
+                              post.post,
+                              getImageQuality(
+                                size: gridSize,
+                                presetImageQuality: state.settings.imageQuality,
+                              ),
+                            ),
+                            placeholderUrl: post.post.previewImageUrl,
+                            borderRadius: BorderRadius.circular(
+                              state.settings.imageBorderRadius,
+                            ),
+                            previewCacheManager:
+                                context.read<PreviewImageCacheManager>(),
+                            cacheHeight:
+                                (constraints.maxHeight * 2).toIntOrNull(),
+                            cacheWidth:
+                                (constraints.maxWidth * 2).toIntOrNull(),
                           ),
-                          placeholderUrl: post.post.previewImageUrl,
-                          borderRadius: BorderRadius.circular(
-                            state.settings.imageBorderRadius,
-                          ),
-                        )
-                      : null,
-                  onTap: () => onTap?.call(post.post, index),
-                  isAnimated: post.post.isAnimated,
-                  isTranslated: post.post.isTranslated,
-                  hasComments: post.post.hasComment,
-                  hasParentOrChildren: post.post.hasParentOrChildren,
-                  previewUrl: getImageUrlForDisplay(
-                    post.post,
-                    getImageQuality(
-                      size: gridSize,
-                      presetImageQuality: state.settings.imageQuality,
-                    ),
+                    onTap: () => onTap?.call(post.post, index),
+                    isAnimated: post.post.isAnimated,
+                    isTranslated: post.post.isTranslated,
+                    hasComments: post.post.hasComment,
+                    hasParentOrChildren: post.post.hasParentOrChildren,
                   ),
-                  previewPlaceholderUrl: post.post.previewImageUrl,
                 ),
               );
             }

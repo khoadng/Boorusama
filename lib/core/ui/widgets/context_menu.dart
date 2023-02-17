@@ -25,7 +25,7 @@ class ContextMenuState<T> extends State<ContextMenu<T>> {
     return GestureDetector(
       onTapDown: (details) => _tapDownPosition = details.globalPosition,
       onLongPress: () async {
-        final overlay = Overlay.of(context)?.context.findRenderObject();
+        final overlay = Overlay.of(context).context.findRenderObject();
         if (overlay == null) return;
         if (_tapDownPosition == null) return;
 

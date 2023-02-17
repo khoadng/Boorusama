@@ -15,6 +15,7 @@ import 'package:page_transition/page_transition.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 
 // Project imports:
+import 'package:boorusama/app.dart';
 import 'package:boorusama/boorus/danbooru/application/artist/artist_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/authentication/authentication.dart';
 import 'package:boorusama/boorus/danbooru/application/blacklisted_tags/blacklisted_tags.dart';
@@ -27,6 +28,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -48,6 +50,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_create_pag
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/comment/comment_update_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/explore/explore_detail_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/add_to_favorite_group_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/create_favorite_group_dialog.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_search_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/original_image_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/parent_child_post_page.dart';
@@ -157,6 +161,16 @@ class AppRouter {
         '/users/blacklisted_tags',
         handler: blacklistedTagsHandler,
         transitionType: TransitionType.inFromRight,
+      )
+      ..define(
+        '/favorite_groups/details',
+        handler: favoriteGroupDetailsHandler,
+        transitionType: TransitionType.inFromRight,
+      )
+      ..define(
+        '/favorite_groups',
+        handler: favoriteGroupsHandler,
+        transitionType: TransitionType.material,
       );
   }
 }
@@ -180,7 +194,7 @@ void goToArtistPage(BuildContext context, String artist) {
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => PostBloc.of(context, singleRefresh: true)
+            create: (context) => PostBloc.of(context)
               ..add(PostRefreshed(
                 tag: artist,
                 fetcher: SearchedPostFetcher.fromTags(artist),
@@ -219,7 +233,7 @@ void goToCharacterPage(BuildContext context, String tag) {
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider(
-            create: (context) => PostBloc.of(context, singleRefresh: true)
+            create: (context) => PostBloc.of(context)
               ..add(PostRefreshed(
                 tag: tag,
                 fetcher: SearchedPostFetcher.fromTags(tag),
@@ -644,7 +658,7 @@ void goToExploreDetailPage(
                 title,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .titleLarge!
                     .copyWith(fontWeight: FontWeight.w700),
               ),
               category: category,
@@ -681,7 +695,7 @@ void goToExploreDetailPage(
               title,
               style: Theme.of(context)
                   .textTheme
-                  .headline6!
+                  .titleLarge!
                   .copyWith(fontWeight: FontWeight.w700),
             ),
             category: category,
@@ -1160,7 +1174,7 @@ void goToSavedSearchCreatePage(
       settings: const RouteSettings(
         name: RouterPageConstant.savedSearchCreate,
       ),
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.background,
       builder: (_) => EditSavedSearchSheet(
         initialValue: initialValue,
         onSubmit: (query, label) => bloc.add(SavedSearchCreated(
@@ -1185,7 +1199,7 @@ void goToSavedSearchCreatePage(
       barrierColor: Colors.black54,
       pageBuilder: (context, _, __) {
         return Dialog(
-          backgroundColor: Theme.of(context).backgroundColor,
+          backgroundColor: Theme.of(context).colorScheme.background,
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(8)),
           ),
@@ -1229,7 +1243,7 @@ void goToSavedSearchPatchPage(
     settings: const RouteSettings(
       name: RouterPageConstant.savedSearchPatch,
     ),
-    backgroundColor: Theme.of(context).backgroundColor,
+    backgroundColor: Theme.of(context).colorScheme.background,
     builder: (_) => EditSavedSearchSheet(
       title: 'saved_search.update_saved_search'.tr(),
       initialValue: savedSearch,
@@ -1269,6 +1283,57 @@ Future<Object?> goToFavoriteTagImportPage(
   );
 }
 
+Future<Object?> goToFavoriteGroupCreatePage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc, {
+  bool enableManualPostInput = true,
+}) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (context, _, __) => EditFavoriteGroupDialog(
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.create_group'.tr(),
+      enableManualDataInput: enableManualPostInput,
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsCreated(
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
+        onFailure: (message, translatable) => showSimpleSnackBar(
+          context: context,
+          content: translatable ? Text(message).tr() : Text(message),
+        ),
+      )),
+    ),
+  );
+}
+
+Future<Object?> goToFavoriteGroupEditPage(
+  BuildContext context,
+  FavoriteGroupsBloc bloc,
+  FavoriteGroup group,
+) {
+  return showGeneralDialog(
+    context: context,
+    pageBuilder: (dialogContext, _, __) => EditFavoriteGroupDialog(
+      initialData: group,
+      padding: isMobilePlatform() ? 0 : 8,
+      title: 'favorite_groups.edit_group'.tr(),
+      onDone: (name, ids, isPrivate) => bloc.add(FavoriteGroupsEdited(
+        group: group,
+        name: name,
+        initialIds: ids,
+        isPrivate: isPrivate,
+        onFailure: (message) {
+          showSimpleSnackBar(
+            context: context,
+            content: Text(message.toString()),
+          );
+        },
+      )),
+    ),
+  );
+}
+
 void goToImagePreviewPage(BuildContext context, Post post) {
   showGeneralDialog(
     context: context,
@@ -1300,7 +1365,7 @@ void goToSearchHistoryPage(
       name: RouterPageConstant.searchHistories,
     ),
     duration: const Duration(milliseconds: 200),
-    builder: (context) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
+    builder: (_) => BlocBuilder<SearchHistoryBloc, SearchHistoryState>(
       bloc: bloc,
       builder: (context, state) {
         return Scaffold(
@@ -1308,15 +1373,95 @@ void goToSearchHistoryPage(
             title: const Text('search.history.history').tr(),
             actions: [
               TextButton(
-                onPressed: () => onClear(),
+                onPressed: () => showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: const Text('Are you sure?').tr(),
+                    actions: [
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          foregroundColor:
+                              Theme.of(context).colorScheme.onBackground,
+                        ),
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('generic.action.cancel').tr(),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          onClear();
+                        },
+                        child: const Text('generic.action.ok').tr(),
+                      ),
+                    ],
+                  ),
+                ),
                 child: const Text('search.history.clear').tr(),
               ),
             ],
           ),
           body: FullHistoryView(
+            scrollController: ModalScrollController.of(context),
             onHistoryTap: (value) => onTap(value),
             onHistoryRemoved: (value) => onRemove(value),
-            histories: state.histories,
+            onHistoryFiltered: (value) =>
+                bloc.add(SearchHistoryFiltered(value)),
+            histories: state.filteredhistories,
+          ),
+        );
+      },
+    ),
+  );
+}
+
+void goToFavoriteGroupPage(BuildContext context) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups',
+    routeSettings: const RouteSettings(
+      name: RouterPageConstant.favoriteGroups,
+    ),
+    transition: Screen.of(context).size == ScreenSize.small
+        ? TransitionType.inFromRight
+        : null,
+  );
+}
+
+void goToFavoriteGroupDetailsPage(
+  BuildContext context,
+  FavoriteGroup group,
+  FavoriteGroupsBloc bloc,
+) {
+  AppRouter.router.navigateTo(
+    context,
+    '/favorite_groups/details',
+    routeSettings: RouteSettings(
+      name: RouterPageConstant.favoriteGroupDetails,
+      arguments: [
+        group,
+        bloc,
+      ],
+    ),
+  );
+}
+
+Future<bool?> goToAddToFavoriteGroupSelectionPage(
+  BuildContext context,
+  List<Post> posts,
+) {
+  return showMaterialModalBottomSheet<bool>(
+    context: navigatorKey.currentContext ?? context,
+    duration: const Duration(milliseconds: 200),
+    expand: true,
+    builder: (dialogContext) => BlocBuilder<CurrentUserBloc, CurrentUserState>(
+      builder: (context, state) {
+        return BlocProvider(
+          create: (context) => FavoriteGroupsBloc.of(
+            context,
+            currentUser: state.user,
+          )..add(const FavoriteGroupsRefreshed()),
+          child: AddToFavoriteGroupPage(
+            posts: posts,
           ),
         );
       },

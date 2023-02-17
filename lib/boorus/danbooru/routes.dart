@@ -26,6 +26,7 @@ import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_
 import 'package:boorusama/boorus/danbooru/application/search/search.dart';
 import 'package:boorusama/boorus/danbooru/application/search_history/search_history.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/favorites/favorites.dart';
@@ -41,6 +42,8 @@ import 'package:boorusama/boorus/danbooru/ui/features/artists/artist_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/blacklisted_tags/blacklisted_tags_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/characters/character_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/downloads/bulk_download_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_group_details_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorite_groups_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/favorites/favorites_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/pool/pool_detail_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/post_detail_page.dart';
@@ -135,7 +138,7 @@ final artistHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context, singleRefresh: true)
+        create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
@@ -163,7 +166,7 @@ final characterHandler = Handler(handlerFunc: (
   return MultiBlocProvider(
     providers: [
       BlocProvider(
-        create: (context) => PostBloc.of(context, singleRefresh: true)
+        create: (context) => PostBloc.of(context)
           ..add(PostRefreshed(
             tag: args.first,
             fetcher: SearchedPostFetcher.fromTags(args.first),
@@ -449,6 +452,52 @@ final favoritesHandler =
         ),
       );
     },
+  );
+});
+
+final favoriteGroupsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  return BlocBuilder<CurrentUserBloc, CurrentUserState>(
+    builder: (context, state) {
+      return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => FavoriteGroupsBloc.of(
+              context,
+              currentUser: state.user,
+            )..add(const FavoriteGroupsRefreshed(includePreviews: true)),
+          ),
+        ],
+        child: const FavoriteGroupsPage(),
+      );
+    },
+  );
+});
+
+final favoriteGroupDetailsHandler =
+    Handler(handlerFunc: (context, Map<String, List<String>> params) {
+  final args = context!.settings!.arguments as List;
+
+  final FavoriteGroup group = args.first;
+  final FavoriteGroupsBloc bloc = args[1];
+
+  return MultiBlocProvider(
+    providers: [
+      BlocProvider(
+        create: (context) => PostBloc.of(context)
+          ..add(PostRefreshed(
+            fetcher:
+                FavoriteGroupPostFetcher(ids: group.postIds.take(60).toList()),
+          )),
+      ),
+      BlocProvider.value(value: bloc),
+    ],
+    child: CustomContextMenuOverlay(
+      child: FavoriteGroupDetailsPage(
+        group: group,
+        postIds: QueueList.from(group.postIds.skip(60)),
+      ),
+    ),
   );
 });
 

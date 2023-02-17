@@ -1,3 +1,10 @@
+# 2.10.0
+- Add support for favorite groups
+- Add a search bar in search history page
+- Reduce memory usage when loading images
+- Fix a bug where pick a previous item with multiple tags in history will be meshed into 1 tag
+- Fix the API access denied issue
+
 # 2.9.0
 - Replace preview menu with context menu when long press an image  
 - Add a mode where you can select multiple images at once to perform actions on them. You can find it in the context menu  

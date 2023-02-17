@@ -15,8 +15,10 @@ class BooruImage extends StatelessWidget {
     this.placeholderUrl,
     this.borderRadius,
     this.fit,
-    required this.aspectRatio,
+    this.aspectRatio = 1,
     this.previewCacheManager,
+    this.cacheHeight,
+    this.cacheWidth,
   });
 
   final String imageUrl;
@@ -25,9 +27,18 @@ class BooruImage extends StatelessWidget {
   final BoxFit? fit;
   final double aspectRatio;
   final CacheManager? previewCacheManager;
+  final int? cacheWidth;
+  final int? cacheHeight;
 
   @override
   Widget build(BuildContext context) {
+    if (imageUrl.isEmpty) {
+      return AspectRatio(
+        aspectRatio: aspectRatio,
+        child: _Empty(borderRadius: borderRadius),
+      );
+    }
+
     return ClipRRect(
       borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(4)),
       child: AspectRatio(
@@ -36,6 +47,8 @@ class BooruImage extends StatelessWidget {
           httpHeaders: const {
             'User-Agent': userAgent,
           },
+          memCacheWidth: cacheWidth,
+          memCacheHeight: cacheHeight,
           fit: fit ?? BoxFit.fill,
           imageUrl: imageUrl,
           placeholder: (context, url) => placeholderUrl != null
@@ -65,6 +78,21 @@ class BooruImage extends StatelessWidget {
           fadeOutDuration: const Duration(microseconds: 500),
         ),
       ),
+    );
+  }
+}
+
+class _Empty extends StatelessWidget {
+  const _Empty({
+    required this.borderRadius,
+  });
+
+  final BorderRadius? borderRadius;
+
+  @override
+  Widget build(BuildContext context) {
+    return ImagePlaceHolder(
+      borderRadius: borderRadius ?? const BorderRadius.all(Radius.circular(8)),
     );
   }
 }
@@ -123,7 +151,7 @@ class ErrorPlaceholder extends StatelessWidget {
           ),
           child: Image.asset(
             'assets/images/error.png',
-            color: Theme.of(context).backgroundColor.withOpacity(0.7),
+            color: Theme.of(context).colorScheme.background.withOpacity(0.7),
           ),
         ),
       ),

@@ -25,7 +25,7 @@ class PostGrid extends StatelessWidget {
     this.onTap,
     this.usePlaceholder = true,
     this.onRefresh,
-    this.onMultiSelect,
+    required this.contextMenuBuilder,
     this.multiSelect = false,
     this.onPostSelectChanged,
   });
@@ -34,7 +34,7 @@ class PostGrid extends StatelessWidget {
   final VoidCallback? onTap;
   final bool usePlaceholder;
   final VoidCallback? onRefresh;
-  final void Function()? onMultiSelect;
+  final Widget Function(PostData post) contextMenuBuilder;
   final bool multiSelect;
   final void Function(Post post, bool selected)? onPostSelectChanged;
 
@@ -56,7 +56,7 @@ class PostGrid extends StatelessWidget {
               return _SliverPostGrid(
                 controller: controller,
                 onTap: onTap,
-                onMultiSelect: onMultiSelect,
+                contextMenuBuilder: contextMenuBuilder,
                 multiSelect: multiSelect,
                 onPostSelectChanged: onPostSelectChanged,
               );
@@ -158,14 +158,15 @@ class _SliverPostGrid extends StatelessWidget {
   const _SliverPostGrid({
     required this.controller,
     required this.onTap,
-    this.onMultiSelect,
+    required this.contextMenuBuilder,
     this.onPostSelectChanged,
     this.multiSelect = false,
   });
 
   final AutoScrollController controller;
   final VoidCallback? onTap;
-  final void Function()? onMultiSelect;
+  final Widget Function(PostData post) contextMenuBuilder;
+
   final void Function(Post post, bool selected)? onPostSelectChanged;
   final bool multiSelect;
 
@@ -181,7 +182,7 @@ class _SliverPostGrid extends StatelessWidget {
             scrollController: controller,
             gridSize: gridSize,
             borderRadius: _gridSizeToBorderRadius(gridSize),
-            onMultiSelect: onMultiSelect,
+            contextMenuBuilder: contextMenuBuilder,
             multiSelect: multiSelect,
             onPostSelectChanged: onPostSelectChanged,
             onTap: (post, index) {

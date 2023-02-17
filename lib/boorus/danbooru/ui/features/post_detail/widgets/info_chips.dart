@@ -26,19 +26,19 @@ class InfoChips extends StatelessWidget {
           leftLabel: const Text('post.detail.rating').tr(),
           rightLabel: Text(post.rating.toString().split('.').last.pascalCase),
           leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).backgroundColor,
+          rightColor: Theme.of(context).colorScheme.background,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.size').tr(),
           rightLabel: Text(filesize(post.fileSize, 1)),
           leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).backgroundColor,
+          rightColor: Theme.of(context).colorScheme.background,
         ),
         _InfoChip(
           leftLabel: const Text('post.detail.resolution').tr(),
           rightLabel: Text('${post.width.toInt()}x${post.height.toInt()}'),
           leftColor: Theme.of(context).cardColor,
-          rightColor: Theme.of(context).backgroundColor,
+          rightColor: Theme.of(context).colorScheme.background,
         ),
       ],
     );

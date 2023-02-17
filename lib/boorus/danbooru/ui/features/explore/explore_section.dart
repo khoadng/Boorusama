@@ -31,7 +31,7 @@ class ExploreSection extends StatelessWidget {
             title,
             style: Theme.of(context)
                 .textTheme
-                .headline6!
+                .titleLarge!
                 .copyWith(fontWeight: FontWeight.w700),
           ),
           trailing: TextButton(
@@ -39,7 +39,7 @@ class ExploreSection extends StatelessWidget {
                 goToExploreDetailPage(context, date, title, category),
             child: Text(
               'explore.see_more',
-              style: Theme.of(context).textTheme.button,
+              style: Theme.of(context).textTheme.labelLarge,
             ).tr(),
           ),
         ),

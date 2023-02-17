@@ -34,7 +34,7 @@ class PoolTiles extends StatelessWidget {
                 overflow: TextOverflow.fade,
                 maxLines: 1,
                 softWrap: false,
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
               trailing: const FaIcon(
                 FontAwesomeIcons.angleRight,

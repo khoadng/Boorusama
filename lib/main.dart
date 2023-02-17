@@ -28,11 +28,11 @@ import 'package:boorusama/boorus/danbooru/application/post/post.dart';
 import 'package:boorusama/boorus/danbooru/application/profile/profile.dart';
 import 'package:boorusama/boorus/danbooru/application/saved_search/saved_search_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/tag/tag.dart';
+import 'package:boorusama/boorus/danbooru/application/user/current_user_bloc.dart';
 import 'package:boorusama/boorus/danbooru/application/wiki/wiki_bloc.dart';
 import 'package:boorusama/boorus/danbooru/domain/accounts/accounts.dart';
 import 'package:boorusama/boorus/danbooru/domain/artists/artists.dart';
 import 'package:boorusama/boorus/danbooru/domain/downloads/post_file_name_generator.dart';
-import 'package:boorusama/boorus/danbooru/domain/favorites/favorite_post_repository.dart';
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/post_count_repository.dart';
@@ -45,6 +45,7 @@ import 'package:boorusama/boorus/danbooru/domain/users/users.dart';
 import 'package:boorusama/boorus/danbooru/domain/wikis/wikis.dart';
 import 'package:boorusama/boorus/danbooru/infra/local/repositories/metatags/user_metatag_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/count/post_count_repository_api.dart';
+import 'package:boorusama/boorus/danbooru/infra/repositories/favorites/favorite_group_repository.dart';
 import 'package:boorusama/boorus/danbooru/infra/repositories/saved_searches/save_search_repository_api.dart';
 import 'package:boorusama/boorus/danbooru/infra/services/bulk_downloader.dart';
 import 'package:boorusama/core/analytics.dart';
@@ -70,6 +71,7 @@ import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
 import 'boorus/danbooru/application/tag/most_searched_tag_cubit.dart';
+import 'boorus/danbooru/domain/favorites/favorites.dart';
 import 'boorus/danbooru/infra/local/repositories/search_history/search_history.dart';
 import 'boorus/danbooru/infra/repositories/repositories.dart';
 import 'core/domain/settings/settings.dart';
@@ -348,6 +350,11 @@ void main() async {
                   final savedSearchRepo =
                       SavedSearchRepositoryApi(api, accountRepo);
 
+                  final favoriteGroupRepo = FavoriteGroupRepositoryApi(
+                    api: api,
+                    accountRepository: accountRepo,
+                  );
+
                   final favoritedCubit =
                       FavoritesCubit(postRepository: postRepo);
                   final popularSearchCubit = SearchKeywordCubit(
@@ -416,7 +423,6 @@ void main() async {
                         accountRepository: accountRepo,
                         postVoteRepository: postVoteRepo,
                         poolRepository: poolRepo,
-                        singleRefresh: true,
                       );
 
                   final exploreBloc = ExploreBloc(
@@ -425,6 +431,11 @@ void main() async {
                     hot: create(),
                     mostViewed: create(),
                   )..add(const ExploreFetched());
+
+                  final currentUserBloc = CurrentUserBloc(
+                    userRepository: userRepo,
+                    accountRepository: accountRepo,
+                  )..add(const CurrentUserFetched());
 
                   return MultiRepositoryProvider(
                     providers: [
@@ -479,6 +490,9 @@ void main() async {
                       RepositoryProvider<SavedSearchRepository>.value(
                         value: savedSearchRepo,
                       ),
+                      RepositoryProvider<FavoriteGroupRepository>.value(
+                        value: favoriteGroupRepo,
+                      ),
                     ],
                     child: MultiBlocProvider(
                       providers: [
@@ -501,6 +515,7 @@ void main() async {
                         BlocProvider.value(value: savedSearchBloc),
                         BlocProvider.value(value: favoriteTagBloc),
                         BlocProvider.value(value: exploreBloc),
+                        BlocProvider.value(value: currentUserBloc),
                       ],
                       child: MultiBlocListener(
                         listeners: [
@@ -510,9 +525,11 @@ void main() async {
                               //TODO: login from settings is bugged, it shouldn't be handled together with login flow.
                               if (state is Authenticated) {
                                 accountCubit.setAccount(state.account);
+                                currentUserBloc.add(const CurrentUserFetched());
                               } else if (state is Unauthenticated) {
                                 accountCubit.removeAccount();
                                 blacklistedTagRepo.clearCache();
+                                currentUserBloc.add(const CurrentUserFetched());
                               }
                             },
                           ),

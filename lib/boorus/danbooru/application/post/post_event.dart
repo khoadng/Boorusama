@@ -82,6 +82,47 @@ class PostUpdated extends PostEvent {
   List<Object?> get props => [post];
 }
 
+class PostRemoved extends PostEvent {
+  const PostRemoved({
+    required this.postIds,
+  });
+
+  final List<int> postIds;
+
+  @override
+  List<Object?> get props => [postIds];
+}
+
+class PostSwapped extends PostEvent {
+  const PostSwapped({
+    required this.fromIndex,
+    required this.toIndex,
+    this.onSuccess,
+  });
+
+  final int fromIndex;
+  final int toIndex;
+  final void Function()? onSuccess;
+
+  @override
+  List<Object?> get props => [fromIndex, toIndex, onSuccess];
+}
+
+class PostMovedAndInserted extends PostEvent {
+  const PostMovedAndInserted({
+    required this.fromIndex,
+    required this.toIndex,
+    this.onSuccess,
+  });
+
+  final int fromIndex;
+  final int toIndex;
+  final void Function()? onSuccess;
+
+  @override
+  List<Object?> get props => [fromIndex, toIndex, onSuccess];
+}
+
 class PostReset extends PostEvent {
   const PostReset();
 
