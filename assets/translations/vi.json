@@ -267,6 +267,11 @@
             "privacy" : "Riêng tư",
             "send_error_data_notice" : "Tự động gửi lỗi cho dev"
         },
+        "performance" : {
+            "performance" : "Performance",
+            "posts_per_page" : "Posts per page",
+            "posts_per_page_explain" : "Number of thumbnails per page"
+        },
         "safe_mode" : "18+ mode"
     },
 
