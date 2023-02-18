@@ -10,18 +10,22 @@ import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class AlternativeDownloadService implements DownloadService<Post> {
   AlternativeDownloadService({
     required FileNameGenerator fileNameGenerator,
     required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+    required UserAgentGenerator agentGenerator,
     this.enableNotification = true,
   })  : _fileNameGenerator = fileNameGenerator,
+        _agentGenerator = agentGenerator,
         _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin;
 
   final FileNameGenerator _fileNameGenerator;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   final bool enableNotification;
+  final UserAgentGenerator _agentGenerator;
 
   @override
   // ignore: no-empty-block
@@ -62,7 +66,7 @@ class AlternativeDownloadService implements DownloadService<Post> {
         item.downloadUrl,
         options: Options(
           headers: {
-            'User-Agent': userAgent,
+            'User-Agent': _agentGenerator.generate(),
           },
           responseType: ResponseType.bytes,
           followRedirects: false,

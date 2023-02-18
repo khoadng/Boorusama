@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 
 class BooruImage extends StatelessWidget {
   const BooruImage({
@@ -44,8 +45,8 @@ class BooruImage extends StatelessWidget {
       child: AspectRatio(
         aspectRatio: aspectRatio,
         child: CachedNetworkImage(
-          httpHeaders: const {
-            'User-Agent': userAgent,
+          httpHeaders: {
+            'User-Agent': context.read<UserAgentGenerator>().generate(),
           },
           memCacheWidth: cacheWidth,
           memCacheHeight: cacheHeight,
@@ -53,8 +54,8 @@ class BooruImage extends StatelessWidget {
           imageUrl: imageUrl,
           placeholder: (context, url) => placeholderUrl != null
               ? CachedNetworkImage(
-                  httpHeaders: const {
-                    'User-Agent': userAgent,
+                  httpHeaders: {
+                    'User-Agent': context.read<UserAgentGenerator>().generate(),
                   },
                   fit: fit ?? BoxFit.fill,
                   imageUrl: placeholderUrl!,

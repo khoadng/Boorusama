@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:photo_view/photo_view.dart';
 
 // Project imports:
-import 'package:boorusama/core/application/application.dart';
 import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/mobile.dart';
 import 'package:boorusama/core/ui/widgets/shadow_gradient_overlay.dart';
 
@@ -100,8 +101,8 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
           children: [
             Positioned.fill(
               child: CachedNetworkImage(
-                httpHeaders: const {
-                  'User-Agent': userAgent,
+                httpHeaders: {
+                  'User-Agent': context.read<UserAgentGenerator>().generate(),
                 },
                 imageUrl: widget.post.fullImageUrl,
                 imageBuilder: (context, imageProvider) => Hero(

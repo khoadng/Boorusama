@@ -13,6 +13,7 @@ import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/domain/file_name_generator.dart';
 import 'package:boorusama/core/domain/posts/post.dart';
 import 'package:boorusama/core/domain/settings/settings.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/infra/device_info_service.dart';
 import 'package:boorusama/core/infra/io_helper.dart';
 import 'package:boorusama/core/infra/services/alternative_download_service.dart';
@@ -32,12 +33,14 @@ Future<DownloadService<Post>> createDownloader(
   FileNameGenerator fileNameGenerator,
   DeviceInfo deviceInfo,
   FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+  UserAgentGenerator agentGenerator,
 ) async {
   if (isMobilePlatform()) {
     if (method == DownloadMethod.imageGallerySaver) {
       final d = AlternativeDownloadService(
         fileNameGenerator: fileNameGenerator,
         flutterLocalNotificationsPlugin: flutterLocalNotificationsPlugin,
+        agentGenerator: agentGenerator,
       );
       await d.init();
 
@@ -58,8 +61,8 @@ Future<DownloadService<Post>> createDownloader(
     return d;
   } else {
     final d = isMacOS()
-        ? MacOSDownloader(fileNameGenerator)
-        : WindowDownloader(fileNameGenerator);
+        ? MacOSDownloader(fileNameGenerator, agentGenerator)
+        : WindowDownloader(fileNameGenerator, agentGenerator);
 
     await d.init();
 

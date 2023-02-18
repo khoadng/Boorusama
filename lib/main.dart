@@ -60,6 +60,7 @@ import 'package:boorusama/core/domain/autocompletes/autocompletes.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 import 'package:boorusama/core/domain/settings/setting_repository.dart';
 import 'package:boorusama/core/domain/tags/favorite_tag_repository.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'package:boorusama/core/error.dart';
 import 'package:boorusama/core/infra/caching/lru_cacher.dart';
 import 'package:boorusama/core/infra/infra.dart';
@@ -67,6 +68,7 @@ import 'package:boorusama/core/infra/repositories/favorite_tag_hive_object.dart'
 import 'package:boorusama/core/infra/repositories/favorite_tag_repository.dart';
 import 'package:boorusama/core/infra/services/download_service_flutter_downloader.dart';
 import 'package:boorusama/core/infra/services/tag_info_service.dart';
+import 'package:boorusama/core/infra/services/user_agent_generator_impl.dart';
 import 'package:boorusama/core/internationalization.dart';
 import 'app.dart';
 import 'boorus/danbooru/application/favorites/favorites.dart';
@@ -160,6 +162,11 @@ void main() async {
 
   final tempPath = await getTemporaryDirectory();
 
+  final userAgentGenerator = UserAgentGeneratorImpl(
+    appVersion: packageInfo.packageInfo.version,
+    appName: appInfo.appInfo.appName,
+  );
+
   //TODO: this notification is only used for download feature
   final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
   const InitializationSettings initializationSettings = InitializationSettings(
@@ -177,6 +184,7 @@ void main() async {
     fileNameGenerator,
     deviceInfo,
     flutterLocalNotificationsPlugin,
+    userAgentGenerator,
   );
   final bulkDownloader = BulkDownloader<Post>(
     idSelector: (item) => item.id,
@@ -195,7 +203,7 @@ void main() async {
   final previewPreloader = PostPreviewPreloaderImp(
     previewImageCacheManager,
     httpHeaders: {
-      'User-Agent': userAgent,
+      'User-Agent': userAgentGenerator.generate(),
     },
   );
 
@@ -226,6 +234,9 @@ void main() async {
             RepositoryProvider<PreviewImageCacheManager>.value(
               value: previewImageCacheManager,
             ),
+            RepositoryProvider<UserAgentGenerator>.value(
+              value: userAgentGenerator,
+            ),
           ],
           child: MultiBlocProvider(
             providers: [
@@ -236,7 +247,8 @@ void main() async {
               BlocProvider(
                 create: (_) => ApiCubit(
                   defaultUrl: defaultBooru.url,
-                  onDioRequest: (baseUrl) => dio(tempPath, baseUrl),
+                  onDioRequest: (baseUrl) =>
+                      dio(tempPath, baseUrl, userAgentGenerator),
                 ),
               ),
               BlocProvider(

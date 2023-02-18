@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:path/path.dart' as p;
 
@@ -13,7 +14,7 @@ import 'package:path/path.dart' as p;
 import 'package:boorusama/boorus/danbooru/domain/notes/notes.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/post_detail/widgets/widgets.dart';
-import 'package:boorusama/core/application/api/api.dart';
+import 'package:boorusama/core/domain/user_agent_generator.dart';
 import 'interactive_image.dart';
 
 class PostMediaItem extends StatefulWidget {
@@ -86,8 +87,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                 aspectRatio: widget.post.aspectRatio,
                 child: LayoutBuilder(
                   builder: (context, constraints) => CachedNetworkImage(
-                    httpHeaders: const {
-                      'User-Agent': userAgent,
+                    httpHeaders: {
+                      'User-Agent':
+                          context.read<UserAgentGenerator>().generate(),
                     },
                     imageUrl: widget.post.normalImageUrl,
                     imageBuilder: (context, imageProvider) {
@@ -134,8 +136,9 @@ class _PostMediaItemState extends State<PostMediaItem> {
                     fadeOutDuration: Duration.zero,
                     fadeInDuration: Duration.zero,
                     placeholder: (context, url) => CachedNetworkImage(
-                      httpHeaders: const {
-                        'User-Agent': userAgent,
+                      httpHeaders: {
+                        'User-Agent':
+                            context.read<UserAgentGenerator>().generate(),
                       },
                       fit: BoxFit.fill,
                       imageUrl: widget.post.previewImageUrl,
