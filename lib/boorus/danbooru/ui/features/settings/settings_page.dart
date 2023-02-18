@@ -82,6 +82,14 @@ class SettingsPage extends StatelessWidget {
                                     goToSettingsDownload(context, this),
                               ),
                               ListTile(
+                                title: const Text(
+                                  'settings.performance.performance',
+                                ).tr(),
+                                leading: const FaIcon(FontAwesomeIcons.gear),
+                                onTap: () =>
+                                    goToSettingsPerformance(context, this),
+                              ),
+                              ListTile(
                                 title: const Text('settings.search').tr(),
                                 leading: const FaIcon(
                                   FontAwesomeIcons.magnifyingGlass,
