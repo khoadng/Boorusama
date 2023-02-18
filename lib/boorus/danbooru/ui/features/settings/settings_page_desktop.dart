@@ -1,4 +1,5 @@
 // Flutter imports:
+import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -167,6 +168,9 @@ class _LargeLayoutState extends State<_LargeLayout> {
                   hasAppBar: false,
                 ),
                 DownloadPage(
+                  hasAppBar: false,
+                ),
+                PerformancePage(
                   hasAppBar: false,
                 ),
                 SearchSettingsPage(
