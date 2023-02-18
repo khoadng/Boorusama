@@ -103,7 +103,7 @@ class _LargeLayoutState extends State<_LargeLayout> {
                   ListTile(
                     textColor: index == 4 ? Colors.white : null,
                     tileColor: index == 4 ? Colors.grey[800] : null,
-                    title: const Text('settings.performance').tr(),
+                    title: const Text('settings.performance.performance').tr(),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(

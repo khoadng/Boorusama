@@ -32,7 +32,7 @@ class _PerformancePageState extends State<PerformancePage> {
       condition: widget.hasAppBar,
       conditionalBuilder: (child) => Scaffold(
         appBar: AppBar(
-          title: const Text('settings.performance').tr(),
+          title: const Text('settings.performance.performance').tr(),
         ),
         body: child,
       ),
@@ -42,8 +42,10 @@ class _PerformancePageState extends State<PerformancePage> {
           primary: false,
           children: [
             ListTile(
-              title: Text('Posts per page'),
-              subtitle: Text('Number of thumbnails per page'),
+              title: const Text('settings.performance.posts_per_page').tr(),
+              subtitle:
+                  const Text('settings.performance.posts_per_page_explain')
+                      .tr(),
               trailing: DropdownButtonHideUnderline(
                 child: DropdownButton<int>(
                   alignment: AlignmentDirectional.centerEnd,
