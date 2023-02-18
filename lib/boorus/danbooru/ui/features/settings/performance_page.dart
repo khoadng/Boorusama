@@ -8,6 +8,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 // Project imports:
 import 'package:boorusama/core/application/settings/settings.dart';
+import 'package:boorusama/core/core.dart';
 import 'package:boorusama/core/ui/widgets/conditional_parent_widget.dart';
 
 class PerformancePage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _PerformancePageState extends State<PerformancePage> {
                           .update(settings.copyWith(postsPerPage: newValue));
                     }
                   },
-                  items: [20, 40, 50, 60, 80, 100, 120, 150, 200]
+                  items: getPostsPerPagePossibleValue()
                       .map<DropdownMenuItem<int>>((value) {
                     return DropdownMenuItem<int>(
                       value: value,
