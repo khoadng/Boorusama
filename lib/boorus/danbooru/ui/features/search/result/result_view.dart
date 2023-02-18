@@ -15,6 +15,7 @@ import 'package:boorusama/boorus/danbooru/ui/shared/default_post_context_menu.da
 import 'package:boorusama/boorus/danbooru/ui/shared/infinite_post_list.dart';
 import 'package:boorusama/boorus/danbooru/ui/shared/post_grid.dart';
 import 'package:boorusama/core/application/search/tag_search_item.dart';
+import 'package:boorusama/core/application/settings/settings.dart';
 import 'package:boorusama/core/ui/pagination.dart';
 import 'related_tag_section.dart';
 import 'result_header.dart';
@@ -163,10 +164,12 @@ class _PaginationState extends State<_Pagination>
   @override
   Widget build(BuildContext context) {
     final tags = context.select((SearchBloc bloc) => bloc.state.selectedTags);
+    final postsPerPage = context
+        .select((SettingsCubit cubit) => cubit.state.settings.postsPerPage);
     final totalResults =
         context.select((SearchBloc bloc) => bloc.state.totalResults);
     final maxPage =
-        totalResults != null ? (totalResults / PostBloc.postPerPage).ceil() : 1;
+        totalResults != null ? (totalResults / postsPerPage).ceil() : 1;
     final state = context.watch<PostBloc>().state;
 
     return Scaffold(
@@ -199,12 +202,12 @@ class _PaginationState extends State<_Pagination>
             ),
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 20)),
-          if (totalResults != null && totalResults >= PostBloc.postPerPage)
+          if (totalResults != null && totalResults >= postsPerPage)
             SliverToBoxAdapter(
               child: PageSelector(
                 currentPage: state.page,
                 totalResults: totalResults,
-                itemPerPage: PostBloc.postPerPage,
+                itemPerPage: postsPerPage,
                 onPrevious:
                     state.page > 1 ? () => _fetch(state.page - 1, tags) : null,
                 onNext: maxPage != state.page

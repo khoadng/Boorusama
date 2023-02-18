@@ -19,6 +19,7 @@ import 'package:boorusama/boorus/danbooru/domain/pools/pools.dart';
 import 'package:boorusama/boorus/danbooru/domain/posts/posts.dart';
 import 'package:boorusama/common/bloc/bloc.dart';
 import 'package:boorusama/common/bloc/pagination_mixin.dart';
+import 'package:boorusama/core/application/settings/settings_cubit.dart';
 import 'package:boorusama/core/domain/error.dart';
 import 'package:boorusama/core/domain/posts/post_preloader.dart';
 
@@ -37,6 +38,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
     List<PostData>? initialData,
     PostPreviewPreloader? previewPreloader,
     bool? pagination,
+    int? postsPerPage,
   }) : super(PostState.initial(pagination: pagination)) {
     on<PostRefreshed>(
       (event, emit) async {
@@ -47,7 +49,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             refresh: (page) => event.fetcher
-                .fetch(postRepository, page)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -67,7 +69,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: 1,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: postPerPage)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -93,7 +95,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
               emitter: emit,
             ),
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -115,7 +117,7 @@ class PostBloc extends Bloc<PostEvent, PostState>
             ),
             page: event.page!,
             fetch: (page) => event.fetcher
-                .fetch(postRepository, page, limit: postPerPage)
+                .fetch(postRepository, page, limit: postsPerPage)
                 .then(createPostDataWith(
                   favoritePostRepository,
                   postVoteRepository,
@@ -225,9 +227,8 @@ class PostBloc extends Bloc<PostEvent, PostState>
         poolRepository: context.read<PoolRepository>(),
         previewPreloader: context.read<PostPreviewPreloader>(),
         pagination: pagination,
+        postsPerPage: context.read<SettingsCubit>().state.settings.postsPerPage,
       );
-
-  static const postPerPage = 60;
 
   void Function(Object error, StackTrace stackTrace) handleErrorWith(
     Emitter emit,
