@@ -66,6 +66,7 @@ import 'package:boorusama/boorus/danbooru/ui/features/settings/appearance_page.d
 import 'package:boorusama/boorus/danbooru/ui/features/settings/download_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/general_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/language_page.dart';
+import 'package:boorusama/boorus/danbooru/ui/features/settings/performance_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/privacy_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/search_settings_page.dart';
 import 'package:boorusama/boorus/danbooru/ui/features/settings/settings_page_desktop.dart';
@@ -827,6 +828,18 @@ void goToSettingsDownload(BuildContext context, Widget oldWidget) {
       oldWidget: oldWidget,
       settings: const RouteSettings(
         name: RouterPageConstant.settingsDownload,
+      ),
+    ),
+  );
+}
+
+void goToSettingsPerformance(BuildContext context, Widget oldWidget) {
+  Navigator.of(context).push(
+    ParallaxSlideInPageRoute(
+      enterWidget: const PerformancePage(),
+      oldWidget: oldWidget,
+      settings: const RouteSettings(
+        name: RouterPageConstant.settingsPerformance,
       ),
     ),
   );

@@ -103,14 +103,20 @@ class _LargeLayoutState extends State<_LargeLayout> {
                   ListTile(
                     textColor: index == 4 ? Colors.white : null,
                     tileColor: index == 4 ? Colors.grey[800] : null,
-                    title: const Text('settings.search').tr(),
+                    title: const Text('settings.performance').tr(),
                     onTap: () => currentTab.value = 4,
                   ),
                   ListTile(
                     textColor: index == 5 ? Colors.white : null,
                     tileColor: index == 5 ? Colors.grey[800] : null,
-                    title: const Text('settings.privacy.privacy').tr(),
+                    title: const Text('settings.search').tr(),
                     onTap: () => currentTab.value = 5,
+                  ),
+                  ListTile(
+                    textColor: index == 6 ? Colors.white : null,
+                    tileColor: index == 6 ? Colors.grey[800] : null,
+                    title: const Text('settings.privacy.privacy').tr(),
+                    onTap: () => currentTab.value = 6,
                   ),
                   const Divider(
                     thickness: 0.8,

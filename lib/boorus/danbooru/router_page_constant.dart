@@ -15,6 +15,7 @@ class RouterPageConstant {
   static const settingsAppearance = 'settings/appearance';
   static const settingsLanguage = 'settings/language';
   static const settingsDownload = 'settings/download';
+  static const settingsPerformance = 'settings/performance';
   static const settingsSearch = 'settings/search';
   static const settingsPrivacy = 'settings/privacy';
   static const settingsChangelog = 'settings/changelog';
