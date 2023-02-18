@@ -97,8 +97,11 @@
         "parent_child": {
             "children_of": "Дочерний для"
         },
-        "quick_preview" : {
-            "view_notes" : "Показать перевод текста"
+        "action" : {
+            "preview" : "Preview",
+            "view_comments" : "View comments",
+            "add_to_favorite_group": "Add to favorite group",
+            "select" : "Select"
         },
         "image_fullview" : {
             "view_original" : "Просмотреть оригинальное изображение",

@@ -97,8 +97,11 @@
         "parent_child": {
             "children_of": "Дачэрны для"
         },
-        "quick_preview" : {
-            "view_notes" : "Паказаць пераклад тэксту"
+        "action" : {
+            "preview" : "Preview",
+            "view_comments" : "View comments",
+            "add_to_favorite_group": "Add to favorite group",
+            "select" : "Select"
         },
         "image_fullview" : {
             "view_original" : "Паглядзець арыгінальны малюнак",
