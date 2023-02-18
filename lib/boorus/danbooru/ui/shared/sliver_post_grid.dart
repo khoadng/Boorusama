@@ -193,7 +193,7 @@ class SliverPostGrid extends HookWidget {
                                 presetImageQuality: state.settings.imageQuality,
                               ),
                             ),
-                            placeholderUrl: post.post.previewImageUrl,
+                            placeholderUrl: post.post.thumbnailImageUrl,
                             borderRadius: BorderRadius.circular(
                               state.settings.imageBorderRadius,
                             ),
@@ -211,7 +211,7 @@ class SliverPostGrid extends HookWidget {
                                 presetImageQuality: state.settings.imageQuality,
                               ),
                             ),
-                            placeholderUrl: post.post.previewImageUrl,
+                            placeholderUrl: post.post.thumbnailImageUrl,
                             borderRadius: BorderRadius.circular(
                               state.settings.imageBorderRadius,
                             ),

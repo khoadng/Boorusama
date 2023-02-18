@@ -104,7 +104,7 @@ class _OriginalImagePageState extends State<OriginalImagePage> {
                 httpHeaders: {
                   'User-Agent': context.read<UserAgentGenerator>().generate(),
                 },
-                imageUrl: widget.post.fullImageUrl,
+                imageUrl: widget.post.originalImageUrl,
                 imageBuilder: (context, imageProvider) => Hero(
                   tag: '${widget.post.id}_hero',
                   child: PhotoView(

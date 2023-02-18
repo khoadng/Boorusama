@@ -45,7 +45,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
   late final String videoHtml = '''
             <center>
               <video controls allowfulscreen width="100%" height="100%" controlsList="nodownload" style="background-color:black;vertical-align: middle;display: inline-block;" autoplay muted loop>
-                <source src=${widget.post.normalImageUrl}#t=0.01 type="video/webm" />
+                <source src=${widget.post.sampleImageUrl}#t=0.01 type="video/webm" />
               </video>
             </center>''';
 
@@ -74,7 +74,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
   @override
   Widget build(BuildContext context) {
     return widget.post.isVideo
-        ? p.extension(widget.post.normalImageUrl) == '.webm'
+        ? p.extension(widget.post.sampleImageUrl) == '.webm'
             ? EmbeddedWebViewWebm(videoHtml: videoHtml)
             : PostVideo(post: widget.post)
         : InteractiveImage(
@@ -91,10 +91,10 @@ class _PostMediaItemState extends State<PostMediaItem> {
                       'User-Agent':
                           context.read<UserAgentGenerator>().generate(),
                     },
-                    imageUrl: widget.post.normalImageUrl,
+                    imageUrl: widget.post.sampleImageUrl,
                     imageBuilder: (context, imageProvider) {
                       DefaultCacheManager()
-                          .getFileFromCache(widget.post.normalImageUrl)
+                          .getFileFromCache(widget.post.sampleImageUrl)
                           .then((file) {
                         if (!mounted) return;
                         widget.onCached(file?.file.path);
@@ -141,7 +141,7 @@ class _PostMediaItemState extends State<PostMediaItem> {
                             context.read<UserAgentGenerator>().generate(),
                       },
                       fit: BoxFit.fill,
-                      imageUrl: widget.post.previewImageUrl,
+                      imageUrl: widget.post.thumbnailImageUrl,
                       cacheManager: widget.previewCacheManager,
                       fadeInDuration: Duration.zero,
                       fadeOutDuration: Duration.zero,

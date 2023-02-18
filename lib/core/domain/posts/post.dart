@@ -3,9 +3,9 @@ import 'rating.dart';
 
 abstract class Post {
   int get id;
-  String get previewImageUrl;
-  String get normalImageUrl;
-  String get fullImageUrl;
+  String get thumbnailImageUrl;
+  String get sampleImageUrl;
+  String get originalImageUrl;
   List<String> get tags;
   String? get source;
   Rating get rating;

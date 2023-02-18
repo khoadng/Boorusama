@@ -174,9 +174,9 @@ class _ExploreListState extends State<_ExploreList> {
                   BooruImage(
                     aspectRatio: post.aspectRatio,
                     imageUrl: post.isAnimated
-                        ? post.previewImageUrl
-                        : post.normalImageUrl,
-                    placeholderUrl: post.previewImageUrl,
+                        ? post.thumbnailImageUrl
+                        : post.sampleImageUrl,
+                    placeholderUrl: post.thumbnailImageUrl,
                   ),
                   Positioned.fill(
                     child: ShadowGradientOverlay(

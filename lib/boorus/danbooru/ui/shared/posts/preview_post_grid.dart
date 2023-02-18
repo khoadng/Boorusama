@@ -73,8 +73,8 @@ class PreviewPostGrid extends StatelessWidget {
 }
 
 String _getImageUrl(Post post, ImageQuality quality) {
-  if (post.isAnimated) return post.previewImageUrl;
-  if (quality == ImageQuality.high) return post.normalImageUrl;
+  if (post.isAnimated) return post.thumbnailImageUrl;
+  if (quality == ImageQuality.high) return post.sampleImageUrl;
 
-  return post.previewImageUrl;
+  return post.thumbnailImageUrl;
 }

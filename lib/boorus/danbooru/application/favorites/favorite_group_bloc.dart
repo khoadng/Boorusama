@@ -433,7 +433,7 @@ class FavoriteGroupsBloc extends Bloc<FavoriteGroupsEvent, FavoriteGroupsState>
 
     on<_FetchPreviews>((event, emit) async {
       final posts = await postRepository.getPostsFromIds(event.ids);
-      final map = {for (final p in posts) p.id: p.previewImageUrl};
+      final map = {for (final p in posts) p.id: p.thumbnailImageUrl};
 
       emit(state.copyWith(previews: map));
     });

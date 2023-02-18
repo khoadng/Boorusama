@@ -1355,9 +1355,9 @@ void goToImagePreviewPage(BuildContext context, Post post) {
     ),
     pageBuilder: (context, animation, secondaryAnimation) => QuickPreviewImage(
       child: BooruImage(
-        placeholderUrl: post.previewImageUrl,
+        placeholderUrl: post.thumbnailImageUrl,
         aspectRatio: post.aspectRatio,
-        imageUrl: post.normalImageUrl,
+        imageUrl: post.sampleImageUrl,
         previewCacheManager: context.read<PreviewImageCacheManager>(),
       ),
     ),

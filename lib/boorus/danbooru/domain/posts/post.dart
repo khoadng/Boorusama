@@ -17,9 +17,9 @@ class Post extends Equatable
     implements base.Post {
   const Post({
     required this.id,
-    required this.previewImageUrl,
-    required this.normalImageUrl,
-    required this.fullImageUrl,
+    required this.thumbnailImageUrl,
+    required this.sampleImageUrl,
+    required this.originalImageUrl,
     required this.copyrightTags,
     required this.characterTags,
     required this.artistTags,
@@ -52,9 +52,9 @@ class Post extends Equatable
 
   factory Post.empty() => Post(
         id: 0,
-        previewImageUrl: '',
-        normalImageUrl: '',
-        fullImageUrl: '',
+        thumbnailImageUrl: '',
+        sampleImageUrl: '',
+        originalImageUrl: '',
         copyrightTags: const [],
         characterTags: const [],
         artistTags: const [],
@@ -87,11 +87,11 @@ class Post extends Equatable
   @override
   final int id;
   @override
-  final String previewImageUrl;
+  final String thumbnailImageUrl;
   @override
-  final String normalImageUrl;
+  final String sampleImageUrl;
   @override
-  final String fullImageUrl;
+  final String originalImageUrl;
   final List<String> copyrightTags;
   final List<String> characterTags;
   final List<String> artistTags;
@@ -138,8 +138,8 @@ class Post extends Equatable
     String? format,
     String? md5,
     DateTime? lastCommentAt,
-    String? normalImageUrl,
-    String? fullImageUrl,
+    String? sampleImageUrl,
+    String? originalImageUrl,
     int? upScore,
     int? downScore,
     int? score,
@@ -151,9 +151,9 @@ class Post extends Equatable
   }) =>
       Post(
         id: id ?? this.id,
-        previewImageUrl: previewImageUrl,
-        normalImageUrl: normalImageUrl ?? this.normalImageUrl,
-        fullImageUrl: fullImageUrl ?? this.fullImageUrl,
+        thumbnailImageUrl: thumbnailImageUrl,
+        sampleImageUrl: sampleImageUrl ?? this.sampleImageUrl,
+        originalImageUrl: originalImageUrl ?? this.originalImageUrl,
         copyrightTags: copyrightTags ?? this.copyrightTags,
         characterTags: characterTags ?? this.characterTags,
         artistTags: artistTags ?? this.artistTags,
@@ -187,7 +187,7 @@ class Post extends Equatable
   bool get hasComment => lastCommentAt != null;
 
   @override
-  String get downloadUrl => isVideo ? normalImageUrl : fullImageUrl;
+  String get downloadUrl => isVideo ? sampleImageUrl : originalImageUrl;
 
   bool get hasParent => parentId != null;
   bool get hasBothParentAndChildren => hasChildren && hasParent;
@@ -208,9 +208,9 @@ class Post extends Equatable
   }
 
   bool get viewable => [
-        previewImageUrl,
-        normalImageUrl,
-        fullImageUrl,
+        thumbnailImageUrl,
+        sampleImageUrl,
+        originalImageUrl,
         md5,
       ].every((e) => e != '');
 
