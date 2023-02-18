@@ -36,6 +36,11 @@ class DefaultPostContextMenu extends StatelessWidget {
             'Preview',
             onPressed: () => goToImagePreviewPage(context, post.post),
           ),
+          if (post.post.hasComment)
+            ContextMenuButtonConfig(
+              'View comments',
+              onPressed: () => goToCommentPage(context, post.post.id),
+            ),
           ContextMenuButtonConfig(
             'download.download'.tr(),
             onPressed: () => download(post.post),
