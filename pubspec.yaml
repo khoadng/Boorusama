@@ -33,7 +33,7 @@ dependencies:
   firebase_core: ^2.4.1
   firebase_crashlytics: ^3.0.14
   firebase_performance: ^0.9.0+10
-  fluro: ^2.0.4
+  fluro: ^2.0.5
   flutter:
     sdk: flutter
   flutter_bloc: ^8.1.2
