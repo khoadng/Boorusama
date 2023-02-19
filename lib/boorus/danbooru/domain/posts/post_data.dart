@@ -165,8 +165,10 @@ Future<List<PostData>> Function(List<PostData> posts) filterWith(
 Future<List<PostData>> Function(List<PostData> posts) filterUnsupportedFormat(
   Set<String> fileExtensions,
 ) =>
-    (posts) async =>
-        posts.where((e) => !fileExtensions.contains(e.post.format)).toList();
+    (posts) async => posts
+        .where((e) => !fileExtensions.contains(e.post.format))
+        .where((e) => !e.post.metaTags.contains('flash'))
+        .toList();
 
 Future<List<PostData>> Function(List<PostData> posts) preloadPreviewImagesWith(
   PostPreviewPreloader? preloader,
