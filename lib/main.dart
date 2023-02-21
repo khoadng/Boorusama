@@ -393,7 +393,7 @@ void main() async {
                   final blacklistedTagsBloc = BlacklistedTagsBloc(
                     accountRepository: accountRepo,
                     blacklistedTagsRepository: blacklistedTagRepo,
-                  );
+                  )..add(const BlacklistedTagRequested());
                   final poolOverviewBloc = PoolOverviewBloc()
                     ..add(const PoolOverviewChanged(
                       category: PoolCategory.series,
