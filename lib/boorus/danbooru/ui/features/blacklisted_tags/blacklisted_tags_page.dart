@@ -106,6 +106,13 @@ class BlacklistedTagsList extends StatelessWidget {
       builder: (context, state) {
         if (state.status == LoadStatus.success ||
             state.status == LoadStatus.loading) {
+          final tags = state.blacklistedTags;
+          if (tags == null) {
+            return Center(
+              child: const Text('blacklisted_tags.load_error').tr(),
+            );
+          }
+
           return CustomScrollView(
             slivers: [
               SliverToBoxAdapter(
@@ -115,25 +122,30 @@ class BlacklistedTagsList extends StatelessWidget {
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
-                  (context, index) => BlacklistedTagTile(
-                    tag: state.blacklistedTags[index],
-                    onEditTap: () {
-                      final bloc = context.read<BlacklistedTagsBloc>();
+                  (context, index) {
+                    final tag = tags[index];
 
-                      goToBlacklistedTagsSearchPage(
-                        context,
-                        initialTags: state.blacklistedTags[index].split(' '),
-                        onSelectDone: (tagItems) {
-                          bloc.add(BlacklistedTagReplaced(
-                            oldTag: state.blacklistedTags[index],
-                            newTag: tagItems.map((e) => e.toString()).join(' '),
-                          ));
-                        },
-                        oldWidget: this,
-                      );
-                    },
-                  ),
-                  childCount: state.blacklistedTags.length,
+                    return BlacklistedTagTile(
+                      tag: tag,
+                      onEditTap: () {
+                        final bloc = context.read<BlacklistedTagsBloc>();
+
+                        goToBlacklistedTagsSearchPage(
+                          context,
+                          initialTags: tag.split(' '),
+                          onSelectDone: (tagItems) {
+                            bloc.add(BlacklistedTagReplaced(
+                              oldTag: tag,
+                              newTag:
+                                  tagItems.map((e) => e.toString()).join(' '),
+                            ));
+                          },
+                          oldWidget: this,
+                        );
+                      },
+                    );
+                  },
+                  childCount: tags.length,
                 ),
               ),
             ],

@@ -86,15 +86,26 @@ class BlacklistedTagsPageDesktop extends StatelessWidget {
                   case LoadStatus.loading:
                     return const Center(child: CircularProgressIndicator());
                   case LoadStatus.success:
+                    final tags = state.blacklistedTags;
+                    if (tags == null) {
+                      return Center(
+                        child: const Text('blacklisted_tags.load_error').tr(),
+                      );
+                    }
+
                     return ListView.builder(
-                      itemCount: state.blacklistedTags.length,
-                      itemBuilder: (context, index) => BlacklistedTagTile(
-                        tag: state.blacklistedTags[index],
-                        onEditTap: () => _showEditView(
-                          context,
-                          initialTags: state.blacklistedTags[index].split(' '),
-                        ),
-                      ),
+                      itemCount: tags.length,
+                      itemBuilder: (context, index) {
+                        final tag = tags[index];
+
+                        return BlacklistedTagTile(
+                          tag: tag,
+                          onEditTap: () => _showEditView(
+                            context,
+                            initialTags: tag.split(' '),
+                          ),
+                        );
+                      },
                     );
                   case LoadStatus.failure:
                     return Center(
